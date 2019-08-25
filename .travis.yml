@@ -3,14 +3,13 @@ language: python
 python:
     - "3.7"
 before_deploy:
-    - cd api
     - rm -rf build
     - mkdir build
     - pip install -r requirements.txt -t build
     - cp -R api build/
     - cd build
     - zip -r ../lambda.zip .
-    - cd ../../
+    - cd ..
     - cd app
     - npm install
     - npm run build
@@ -21,7 +20,7 @@ deploy:
     region: "eu-north-1"
     role: $ROLE
     runtime: "python3.7"
-    zip: "api/lambda.zip"
+    zip: "lambda.zip"
     module_name: api
     handler_name: lambda_handler
   - provider: s3
