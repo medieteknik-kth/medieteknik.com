@@ -2,6 +2,8 @@ dist: xenial
 language: python
 python:
     - "3.7"
+install:
+    - pip install -r api/requirements.txt
 before_deploy:
     - rm -rf build
     - mkdir build
