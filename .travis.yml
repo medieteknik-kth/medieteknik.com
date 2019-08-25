@@ -5,7 +5,7 @@ python:
 before_deploy:
     - rm -rf build
     - mkdir build
-    - pip install -r requirements.txt -t build
+    - pip install -r api/requirements.txt -t build
     - cp -R api build/
     - cd build
     - zip -r ../lambda.zip .
