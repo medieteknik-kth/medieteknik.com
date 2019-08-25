@@ -22,7 +22,7 @@ deploy:
     region: "eu-north-1"
     role: $ROLE
     runtime: "python3.7"
-    zip: lambda.zip
+    zip: api
     module_name: api
     handler_name: lambda_handler
   - provider: s3
