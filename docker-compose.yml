@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+    api:
+        build: ./api
+        expose:
+            - 5000
+        ports:
+            - 5000:5000
+        volumes:
+            - ./api:/usr/src/app
+        environment:
+            - FLASK_ENV=development
+            - FLASK_APP=app.py
+            - FLASK_DEBUG=1
+    app:
+        build: ./app
+        expose:
+            - 3000
+        ports:
+            - 3000:3000
+        volumes:
+            - ./app/src:/usr/src/app/src
+            - ./app/public:/usr/src/app/public
+        links:
+            - "api:api"

@@ -1,4 +1,3 @@
-import awsgi
 from flask import (
     Flask,
     jsonify,
@@ -13,7 +12,3 @@ def index():
 @app.route('/api/event')
 def placeholder():
     return jsonify([])
-
-
-def lambda_handler(event, context):
-    return awsgi.response(app, event, context)
