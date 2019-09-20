@@ -24,3 +24,17 @@ services:
             - ./app/public:/usr/src/app/public
         links:
             - "api:api"
+
+    db:
+        image: postgres:10.5
+        container_name: postgres
+        ports:
+            - '5432:5432'
+        expose:
+            - "5432"
+        environment:
+            - POSTGRES_DB=medieteknikdev
+            - POSTGRES_USER=medieteknik
+            - POSTGRES_PASSWORD=rgb
+        volumes:
+            - './db:/docker-entrypoint-initdb.d/'
