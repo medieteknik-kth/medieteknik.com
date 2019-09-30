@@ -1,14 +1,11 @@
-FROM ubuntu:latest
+FROM python:3
 
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
+RUN mkdir -p /usr/src/api
+WORKDIR /usr/src/api
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+COPY requirements.txt /usr/src/api
 
-COPY requirements.txt /usr/src/app
-
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 ENTRYPOINT ["flask"]
 CMD ["run", "--host=0.0.0.0"]
