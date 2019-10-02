@@ -13,6 +13,7 @@ services:
             - FLASK_ENV=development
             - FLASK_APP=/usr/src/api
             - FLASK_DEBUG=1
+            - DB_CONNECT_STR=postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev
     app:
         build: ./app
         expose:
