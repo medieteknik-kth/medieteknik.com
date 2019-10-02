@@ -17,14 +17,25 @@ def get_user(id):
                     frack_name = user.frack_name,
                     kth_year = user.kth_year,
                     linkedin = user.linkedin,
-                    facebook = user.facebook,
+                    facebook = user.facebook
                     )
 
 @app.route('/committee/<id>')
 def get_committee(id):
-    return Committee.query.get(id).name
+    committee = Committee.query.get(id)
+    return jsonify(id = committee.id,
+                    name = committee.name,
+                    posts = committee.name
+
+    )
 
 @app.route('/officials_post/<id>')
 def get_officials_post(id):
-    return OfficialsPost.query.get(id).name
+    officials_post = OfficialsPost.query.get(id)
+    return jsonify(id = officials_post,
+                    name = officials_post.name,
+                    start_date = officials_post.start_end,
+                    end_date = officials_post.end_date,
+                    officials_email = officials_post.officials_email,
+                    )
 
