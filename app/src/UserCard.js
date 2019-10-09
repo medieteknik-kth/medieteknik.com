@@ -1,13 +1,13 @@
 import React from 'react';
 
-class User extends React.Component {
+class UserCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = { user: {} };
     }
 
     componentDidMount() {
-        fetch("http://localhost:5000/user/1").then(response => response.json())
+        fetch("http://localhost:5000/user/" + this.props.id).then(response => response.json())
         .then(data => {
             this.setState({user: data});
         });
@@ -24,4 +24,4 @@ class User extends React.Component {
     }
 }
 
-export default User;
+export default UserCard;
