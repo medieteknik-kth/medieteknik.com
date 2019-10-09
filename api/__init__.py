@@ -1,9 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_cas import CAS
+
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DB_CONNECT_STR"]
 db = SQLAlchemy(app)
 CORS(app)
 

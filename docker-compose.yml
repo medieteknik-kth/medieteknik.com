@@ -10,9 +10,8 @@ services:
         volumes:
             - ./api:/usr/src/api
         environment:
-            - FLASK_ENV=development
-            - FLASK_APP=/usr/src/api
-            - FLASK_DEBUG=1
+            - DB_CONNECT_STR=postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev
+            - GUNICORN_CMD_ARGS="--reload"
     app:
         build: ./app
         expose:
@@ -38,3 +37,16 @@ services:
             - POSTGRES_PASSWORD=rgb
         volumes:
             - './db:/docker-entrypoint-initdb.d/'
+
+    web:
+        image: nginx:1.17.4
+        container_name: web
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 8080:80
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - app
+            - api
