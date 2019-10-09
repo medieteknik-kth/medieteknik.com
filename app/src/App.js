@@ -4,7 +4,9 @@ import UserCard from './UserCard.js';
 
 function App() {
   return (
-    <div className="App">
+    <div class="userList">
+      <UserCard id={1} />
+      <UserCard id={1} />
       <UserCard id={1} />
     </div>
   );

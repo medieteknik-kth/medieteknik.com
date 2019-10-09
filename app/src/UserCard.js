@@ -14,7 +14,7 @@ class UserCard extends React.Component {
     }
 
     render() {
-        return <div>
+        return <div class="userCard">
             <h1>{this.state.user.first_name} {this.state.user.last_name}</h1>
             <p>Email: {this.state.user.email}</p>
             <p>Fracknamn: {this.state.user.frack_name}</p>
