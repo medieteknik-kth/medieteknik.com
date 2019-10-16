@@ -3,6 +3,7 @@ version: "3"
 services:
     api:
         build: ./api
+        restart: unless-stopped
         expose:
             - 5000
         ports:
@@ -15,17 +16,19 @@ services:
     app:
         build: ./app
         expose:
-            - 3000
+            - 3001
         ports:
-            - 3000:3000
+            - 3001:3001
+        environment:
+            - PORT=3001
         volumes:
             - ./app/src:/usr/src/app/src
             - ./app/public:/usr/src/app/public
-        links:
-            - "api:api"
+            - static-files:/usr/src/app/build
+        command: npm run start
 
     db:
-        image: postgres:10.5
+        image: postgres:10-alpine
         container_name: postgres
         ports:
             - 5432:5432
@@ -39,14 +42,22 @@ services:
             - './db:/docker-entrypoint-initdb.d/'
 
     web:
-        image: nginx:1.17.4
+        image: nginx:alpine
         container_name: web
         restart: unless-stopped
         tty: true
         ports:
-            - 8080:80
+            - 3000:3000
+        expose:
+            - 3000
+        environment:
+            - NGINX_SERVER_NAME=localhost
         volumes:
-            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/nginx_dev.conf:/etc/nginx/nginx.conf
+            - static-files:/var/www
         depends_on:
             - app
             - api
+
+volumes:
+    static-files:
