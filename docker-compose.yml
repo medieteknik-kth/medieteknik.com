@@ -13,6 +13,7 @@ services:
         environment:
             - DB_CONNECT_STR=postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev
             - GUNICORN_CMD_ARGS="--reload"
+            - FLASK_SECRET_KEY=2kfueoVmpd0FBVFCJD0V
     app:
         build: ./app
         expose:
