@@ -10,7 +10,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DB_CONNECT_STR"]
 app.config['SECRET_KEY'] = os.environ["FLASK_SECRET_KEY"]
 app.config['CAS_SERVER'] = os.environ["CAS_SERVER"]
-app.config['DEBUG'] = True
 
 db = SQLAlchemy(app)
 CORS(app)
