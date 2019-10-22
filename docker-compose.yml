@@ -11,9 +11,14 @@ services:
         volumes:
             - ./api:/usr/src/api
         environment:
-            - DB_CONNECT_STR=postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev
+            - DB_CONNECT_STR=postgresql+psycopg2://medieteknik:rgb@db:5431/medieteknikdev
             - GUNICORN_CMD_ARGS="--reload"
             - FLASK_SECRET_KEY=2kfueoVmpd0FBVFCJD0V
+            - LOCAL_CAS=1
+            - CAS_SERVER=/
+            - CAS_LOGIN_ROUTE=/
+            - CAS_LOGOUT_ROUTE=/logout
+            - CAS_VALIDATE_ROUTE=/p3/serviceValidate
     app:
         build: ./app
         expose:
@@ -32,9 +37,9 @@ services:
         image: postgres:10-alpine
         container_name: postgres
         ports:
-            - 5432:5432
+            - 5431:5432
         expose:
-            - 5432
+            - 5431
         environment:
             - POSTGRES_DB=medieteknikdev
             - POSTGRES_USER=medieteknik
