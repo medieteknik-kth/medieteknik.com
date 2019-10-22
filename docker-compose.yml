@@ -25,6 +25,7 @@ services:
             - 3001:3001
         environment:
             - PORT=3001
+            - CHOKIDAR_USEPOLLING=true
         volumes:
             - ./app/src:/usr/src/app/src
             - ./app/public:/usr/src/app/public
