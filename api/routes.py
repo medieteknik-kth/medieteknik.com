@@ -46,5 +46,3 @@ def get_officials_post(id):
                     end_date = officials_post.end_date,
                     officials_email = officials_post.officials_email,
                     )
-
-

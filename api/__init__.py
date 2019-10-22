@@ -1,13 +1,27 @@
-from flask import Flask, session, url_for, Blueprint
+from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
+
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DB_CONNECT_STR"]
+app.config['SECRET_KEY'] = os.environ["FLASK_SECRET_KEY"]
+app.config['CAS_SERVER'] = os.environ["CAS_SERVER"]
+app.config['CAS_LOGIN_ROUTE'] = os.environ["CAS_LOGIN_ROUTE"]
+app.config['CAS_LOGOUT_ROUTE'] = os.environ["CAS_LOGOUT_ROUTE"]
+app.config['CAS_VALIDATE_ROUTE'] = os.environ["CAS_VALIDATE_ROUTE"]
+
 db = SQLAlchemy(app)
 CORS(app)
+CAS(app)
+
+@app.route("/authtest")
+@login_required
+def auth_test():
+    return "Du är inloggad som " + str(session["CAS_USERNAME"]) + ". CAS_ATTRIBUTES=" + str(session["CAS_ATTRIBUTES"])
 
 if os.getenv("LOCAL_CAS") == "1":
     local_cas = Blueprint("cas", "cas")
@@ -68,5 +82,7 @@ def route_create_all():
     db.session.commit()
 
     return "klar"
+
+
 
 from api import routes
