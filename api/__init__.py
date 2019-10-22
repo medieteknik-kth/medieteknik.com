@@ -23,28 +23,6 @@ CAS(app)
 def auth_test():
     return "Du är inloggad som " + str(session["CAS_USERNAME"]) + ". CAS_ATTRIBUTES=" + str(session["CAS_ATTRIBUTES"])
 
-if os.getenv("LOCAL_CAS") == "1":
-    local_cas = Blueprint("cas", "cas")
-    @local_cas.route("/login")
-    def login():
-        session["CAS_USERNAME"] = "joppe"
-        session["CAS_ATTRIBUTES"] = ""
-        return "hej"
-    @local_cas.route("/logout")
-    def logout():
-        del session["CAS_USERNAME"]
-        del session["CAS_ATTRIBUTES"]
-        return "hejdå"
-
-    app.register_blueprint(local_cas)
-else:
-    CAS(app)
-
-@app.route("/authtest")
-@login_required
-def auth_test():
-    return "Du är inloggad som " + str(session["CAS_USERNAME"]) + ". CAS_ATTRIBUTES=" + str(session["CAS_ATTRIBUTES"])
-
 @app.route("/create_all")
 def route_create_all():
     from api.models.user import User, Committee, OfficialsPost, relationship_table
