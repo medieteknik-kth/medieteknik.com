@@ -18,3 +18,8 @@
   margin: 20px;
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
+
+.socialmediaIcon {
+  width: 25px;
+  padding: 2px;
+}
