@@ -1,3 +1,17 @@
+.text-header {
+    color: #f0c900;
+    font-family: halyard-display, sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.text-subheader {
+    color: #fff;
+    font-family: halyard-display, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
 .userList {
   display: flex;
   flex-wrap: wrap;
@@ -5,16 +19,39 @@
 }
 
 .userCard {
-  margin: 20px;
-  padding: 20px;
-
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.1);
-  text-align: center;
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 10px;
 }
 
 .userImage {
-  width: 150px;
-  height: 150px;
-  margin: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+.userCardBanner {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.userCardContent {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+}
+
+.userCardBannerHeader {
+    font-size: 24px;
+}
+
+.userCardBannerSubheader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.userCardSubtitle {
+    font-size: 14px;
 }

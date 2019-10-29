@@ -38,6 +38,7 @@ def route_create_all():
     user.kth_year = 2016
     user.facebook = "https://www.facebook.com/jesperlndqvist"
     user.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
+    user.profile_picture = "/default.png"
 
     committee1 = Committee()
     committee1.name = "MKMKMKMKHÄSTEN HETER FÖL"
@@ -51,7 +52,6 @@ def route_create_all():
     user.officials_posts.append(officialspost2)
 
     officialspost1.committee = committee1
-
 
     db.session.add(user)
     db.session.add(committee1)

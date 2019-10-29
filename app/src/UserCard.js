@@ -13,14 +13,20 @@ class UserCard extends React.Component {
         });
     }
     render() {
-            return <div class="userCard">
-            <div class="userImage"></div>
-            <h3>{this.state.user.first_name} {this.state.user.last_name}</h3    >
-            
-            <p>Email: {this.state.user.email}</p>
-            <p>Fracknamn: {this.state.user.frack_name}</p>
-            <p>Började på KTH: {this.state.user.kth_year}</p>
-            <p><a href={this.state.user.facebook}>Facebook</a> - <a href={this.state.user.linkedin}>LinkedIn</a></p>
+        return <div class="userCard">
+            <img class="userImage" src={this.state.user.profile_picture} alt="Profile Picture" />
+            <div class="userCardBanner">
+                <div class="userCardContent">
+                    <div class="text-header userCardBannerHeader">{this.state.user.first_name} {this.state.user.last_name}</div>
+                    <div class="userCardBannerSubheader">
+                        <div class="text-subheader userCardSubtitle">Öfverphös</div>
+                        <div class="userCardSubtitle">f | in</div>
+                    </div>
+                    <div class="userCardBannerSubheader">
+                        <div class="text-subheader userCardSubtitle">jeslundq@kth.se</div>
+                    </div>
+                </div>
+            </div>
         </div>;
     }
 }
