@@ -1,6 +1,7 @@
 import React from "react";
 import "./style.css";
 import UserCard from "./UserCard.js";
+import UserForm from "./UserForm.js";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <UserCard id={1} />
       <UserCard id={1} />
       <UserCard id={1} />
+      <UserForm />
     </div>
   );
 }
