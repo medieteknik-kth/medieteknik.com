@@ -1,20 +1,20 @@
 .userList {
-    display: flex;
-    
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .userCard {
-    margin: 20px;
-    padding: 20px;
+  margin: 20px;
+  padding: 20px;
 
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    text-align: center;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.userImage{
-    width:150px;
-    height:150px;
-    margin:20px;
-    border:1px solid rgba(0,0,0,0.2);
-
+.userImage {
+  width: 150px;
+  height: 150px;
+  margin: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
