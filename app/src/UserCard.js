@@ -7,17 +7,11 @@ class UserCard extends React.Component {
     this.state = { user: {} };
   }
 
-    componentDidMount() {
-        fetch("/api/user/" + this.props.id).then(response => response.json())
-        .then(data => {
-            this.setState({user: data});
-        });
-    }
     render() {
         return <div class="userCard">
-            <img class="userImage" src={this.state.user.profile_picture} alt="Profile Picture" />
+            <img class="userImage" src={this.props.user.profile_picture} alt={this.props.user.first_name + " " + this.props.user.last_name} />
             <div class="userCardBanner">
-                <UserCardTextbox user={this.state.user} />
+                <UserCardTextbox user={this.props.user} />
             </div>
         </div>;
     }

@@ -1,15 +1,26 @@
-.text-header {
+html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.text-title {
     color: #f0c900;
     font-family: halyard-display, sans-serif;
     font-weight: 500;
     font-style: normal;
 }
 
-.text-subheader {
+.text-subtitle {
     color: #fff;
     font-family: halyard-display, sans-serif;
     font-weight: 300;
     font-style: normal;
+}
+
+.text-bg {
+    background-color: #242424;
 }
 
 .userList {
@@ -39,7 +50,10 @@
     display: flex;
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.6);
-    padding: 10px;
+    border-top: 1px solid #f0c900;
+    padding: 15px;
+    padding-top: 5px;
+    height: 70px;
 }
 
 .userCardBannerHeader {
@@ -50,13 +64,34 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .userCardSubtitle {
     font-size: 14px;
 }
 
-.socialmediaIcon {
-  width: 25px;
-  padding: 2px;
+.userCardIcon {
+    padding: 5px;
+}
+
+.firstLoginForm {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.firstLoginFormInput {
+    font-size: 18px;
+    padding: 10px;
+    text-align: center;
+}
+
+.firstLoginFormButton {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f0c900;
+    color: #242424;
+    border: 0;
+    font-size: 18px;
 }
