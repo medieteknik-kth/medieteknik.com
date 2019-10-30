@@ -19,6 +19,8 @@ services:
             - CAS_LOGIN_ROUTE=/
             - CAS_LOGOUT_ROUTE=/logout
             - CAS_VALIDATE_ROUTE=/p3/serviceValidate
+            - CAS_AFTER_LOGIN=/
+            - FLASK_DEBUG=True
     app:
         build: ./app
         ports:

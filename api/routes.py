@@ -1,4 +1,5 @@
-from api import app
+from flask import session, request, redirect
+from api import app, db
 from api.models.user import User, Committee, OfficialsPost
 from flask import jsonify
 
@@ -6,27 +7,55 @@ from flask import jsonify
 def index():
     return "blöööö"
 
+@app.route('/current_user')
+def get_current_user():
+    if session.get("CAS_USERNAME"):
+        user = User.query.filter_by(kth_id=session["CAS_USERNAME"]).first()
+        new_user = False
+
+        if user == None:
+            user = User()
+            user.kth_id = session["CAS_USERNAME"]
+            db.session.add(user)
+            db.session.commit()
+            new_user = True
+
+        return jsonify(loggedin=True, user=user.get_data(), new_user=new_user)
+    else:
+        return jsonify(loggedin=False)
+
+@app.route('/user/<id>', methods=["POST"])
+def update_user(id):
+    user = User.query.get(id)
+    data = request.form
+
+    if data.get("first_name"):
+        user.first_name = data.get("first_name")
+    if data.get("last_name"):
+        user.last_name = data.get("last_name")
+    if data.get("email"):
+        user.email = data.get("email")
+    if data.get("kth_year"):
+        user.kth_year = data.get("kth_year")
+
+    db.session.commit()
+
+    if data.get("redirect"):
+        return redirect(data.get("redirect"))
+
+    return jsonify(success=True)
+
+@app.route('/user')
+def get_all_users():
+    users = User.query.all()
+    data = [user.get_data() for user in users]
+    return jsonify(data)
+
 @app.route('/user/<id>')
 def get_user(id):
     user = User.query.get(id)
+    return jsonify(user.get_data())
 
-    posts = []
-
-    for post in user.officials_posts:
-        posts.append({"name": post.name, "committee": post.committee.name})
-
-    return jsonify(id = user.id,
-                    email = user.email,
-                    profile_picture = user.profile_picture,
-                    first_name = user.first_name,
-                    last_name = user.last_name,
-                    frack_name = user.frack_name,
-                    kth_year = user.kth_year,
-                    linkedin = user.linkedin,
-                    facebook = user.facebook,
-                    officials_post = posts
-
-                    )
 
 @app.route('/committee/<id>')
 def get_committee(id):

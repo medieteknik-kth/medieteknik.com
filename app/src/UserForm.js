@@ -1,27 +1,25 @@
 import React from "react";
+import { UserConsumer } from "./UserContext.js";
 
 class UserForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { username: "" };
   }
+
   render() {
-    let header = "";
-    if (this.state.username) {
-      header = <h1>Redigera din profil</h1>;
-    } else {
-      header = "";
-    }
     return (
-      <form>
-        {header}
-        <p>Namn: </p>
-        <input type="text" onChange={this.myChangeHandler} placeholder="Namn" />
-      </form>
+      <UserConsumer>
+        {({ user }) => (
+          <form method="POST" action={"/api/user/" + user.id}>
+            <p>First name:</p>
+            <input type="text" name="first_name" value={user.first_name} />
+            <p>Last name:</p>
+            <input type="text" name="last_name" value={user.last_name} />
+            <input type="submit" value="Submit" />
+          </form>
+        )}
+      </UserConsumer>
     );
   }
 }
-
-/* ReactDOM.render(<MyForm />, document.getElementById('root')); */
-
 export default UserForm;
