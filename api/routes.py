@@ -24,6 +24,9 @@ def document_endpoint():
         else:
             save_documents(request)
     if request.method == 'GET':
-        tags = request.args.get('tags').split(",")
+        tags = request.args.get('tags')
+        if tags is not None:
+            tags = tags.split(",")
+            
         documents = get_documents(tags)
         return jsonify({"status": 200, "documents":documents})
