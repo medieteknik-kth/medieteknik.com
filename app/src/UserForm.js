@@ -17,30 +17,6 @@ class UserForm extends React.Component {
         {header}
         <p>Namn: </p>
         <input type="text" onChange={this.myChangeHandler} placeholder="Namn" />
-        <p>Efternamn: </p>
-        <input
-          type="text"
-          onChange={this.myChangeHandler}
-          placeholder="Efternamn"
-        />
-        <p>Email: </p>
-        <input
-          type="text"
-          onChange={this.myChangeHandler}
-          placeholder="Email"
-        />
-        <p>Facebook: </p>
-        <input
-          type="text"
-          onChange={this.myChangeHandler}
-          placeholder="Facebook"
-        />
-        <p>Linkedin: </p>
-        <input
-          type="text"
-          onChange={this.myChangeHandler}
-          placeholder="Linkedin"
-        />
       </form>
     );
   }
