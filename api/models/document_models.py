@@ -5,6 +5,9 @@ class Document(db.Model):
     itemId = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String)
 
+    def to_dict(self):
+        return {"itemId": self.itemId, "title": self.title}
+
 class Tag(db.Model):
     __tablename__ = "tags"
     tagId = db.Column(db.Integer, primary_key = True)
