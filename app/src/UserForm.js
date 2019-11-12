@@ -15,9 +15,6 @@ class UserForm extends React.Component {
             
             <p>First name:</p>
             <input type="text" name="first_name" value={user.first_name} />
-
-            <p>Bild:</p>
-            <ImageUpload/>
             
             <p>Last name:</p>
             <input type="text" name="last_name" value={user.last_name} />
@@ -33,6 +30,9 @@ class UserForm extends React.Component {
             
             <p>Året du började på KTH: </p>
             <input type="number" name="kth_year" value={user.kth_name} />
+
+            <p>Bild:</p>
+            <ImageUpload/>
             
             <input type="submit" value="Submit" />
 
