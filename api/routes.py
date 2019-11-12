@@ -29,21 +29,34 @@ def update_user(id):
     user = User.query.get(id)
     data = request.form
 
-    if data.get("first_name"):
-        user.first_name = data.get("first_name")
-    if data.get("last_name"):
-        user.last_name = data.get("last_name")
-    if data.get("email"):
-        user.email = data.get("email")
-    if data.get("kth_year"):
-        user.kth_year = data.get("kth_year")
+    if user.kth_id == session["CAS_USERNAME"]:
 
-    db.session.commit()
+        if data.get("first_name"):
+            user.first_name = data.get("first_name")
+        if data.get("last_name"):
+            user.last_name = data.get("last_name")
+        if data.get("email"):
+            user.email = data.get("email")
+        if data.get("kth_year"):
+            user.kth_year = data.get("kth_year")
+        if data.get("profile_picture"):
+            user.profile_picture = data.get("profile_picture")
+        if data.get("frack_name"):
+            user.frack_name = data.get("frack_name")
+        if data.get("linkedin"):
+            user.linkedin = data.get("linkedin")
+        if data.get("facebook"):
+            user.facebook = data.get("facebook")
 
-    if data.get("redirect"):
-        return redirect(data.get("redirect"))
+        db.session.commit()
 
-    return jsonify(success=True)
+        if data.get("redirect"):
+            return redirect(data.get("redirect"))
+
+        return jsonify(success=True)
+
+    else:
+        return jsonify(success=False)
 
 @app.route('/user')
 def get_all_users():

@@ -17,6 +17,7 @@ class User(db.Model):
     kth_year = db.Column(db.Integer)
     linkedin = db.Column(db.String)
     facebook = db.Column(db.String)
+    alumni = db.Column(db.Boolean)
     officials_posts = db.relationship('OfficialsPost', secondary=relationship_table, backref='users')
 
     def get_data(self):
@@ -35,7 +36,8 @@ class User(db.Model):
                 "kth_year": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
-                "officials_post": posts
+                "officials_post": posts,
+                "alumni": self.alumni
                 }
 
 
