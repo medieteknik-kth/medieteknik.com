@@ -31,6 +31,9 @@ class UserForm extends React.Component {
             <p>Året du började på KTH: </p>
             <input type="number" name="kth_year" value={user.kth_name} />
 
+            <p>Alumn:</p>
+            <input type="checkbox" name="alumni" value={user.alumni} />
+
             <p>Bild:</p>
             <ImageUpload/>
             
