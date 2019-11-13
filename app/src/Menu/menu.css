@@ -1,9 +1,23 @@
 
-
+/*The styling on the container that contains the entire menu*/
 .container {
-  height: 200px;
-  background-image: linear-gradient(to top, rgba(0,0,0,0), rgba(0, 0, 0, 0.555));}
+  height: 90px; /* Sets the height of the navbar */
+  overflow: visible; /* Shows the content even if it is bigger than the container (needed to show the dropdowns)*/
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+}
 
+/*Styling for the menu's bakground color, depending on whether it is at the top or scrolled down*/
+.top {
+  background-image: linear-gradient(to top, rgba(0,0,0,0), rgba(0, 0, 0, 0.295));
+}
+
+.down {
+  background-color: #EEC912;
+}
+  
+/*Styling for the content in the menu*/
 .inner_container {
   display: flex; 
   flex-direction: row; 
@@ -12,11 +26,23 @@
   margin-left: 3%; 
   margin-right: 3%;
 }
+
 .container-right { float: right;}
 
 .container-left { float:left;}
 
-.logo { width: 50px;}
+/*Change the logo on scroll*/
+.logo { width: 50px;
+  position:absolute;
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+/*when scrolled to the top the logo with this class dissappears*/
+.hidden_logo {
+  opacity:0;
+}
 
 
 /*Styling for the dropdowns*/
@@ -36,7 +62,7 @@
   .dropdown-content {
     display: none;
     position: absolute;
-    background-color: grey;
+    background-color: rgba(238, 201, 18, 0.904);
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -54,8 +80,4 @@
   
   .dropdown:hover .dropdown-content {display: block;}
   
-  .dropdown:hover .dropbtn {color: grey;}
-
-
-
-
+  .dropdown:hover .dropbtn {color: #EEC912}
