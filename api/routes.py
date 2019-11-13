@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-from api import app
-
-@app.route('/')
-def index():
-    return "hej"
-=======
 from flask import session, request, redirect
 from sqlalchemy import or_
 from api import app, db
@@ -17,7 +10,6 @@ def index():
 
 @app.route('/search/<search_term>')
 def search(search_term):
-
     user_conds = [User.kth_id.ilike("%"+search_term+"%"), User.email.ilike("%"+search_term+"%"), User.first_name.ilike("%"+search_term+"%"), 
             User.last_name.ilike("%"+search_term+"%"), User.frack_name.ilike("%"+search_term+"%")]
     com_conds = [Committee.name.ilike("%"+search_term+"%")]
@@ -27,7 +19,7 @@ def search(search_term):
 
     u = {"users": [user.get_data() for user in users]}
     c = {"commitees": [committee.get_data() for committee in committees]}
-    
+
     data = [u, c]
     return jsonify(data)
 
@@ -99,4 +91,3 @@ def get_officials_post(id):
                     end_date = officials_post.end_date,
                     officials_email = officials_post.officials_email,
                     )
->>>>>>> Stashed changes
