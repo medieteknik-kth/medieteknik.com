@@ -17,13 +17,14 @@ class User(db.Model):
     kth_year = db.Column(db.Integer)
     linkedin = db.Column(db.String)
     facebook = db.Column(db.String)
+    alumni = db.Column(db.Boolean)
     officials_posts = db.relationship('OfficialsPost', secondary=relationship_table, backref='users')
 
     def get_data(self):
         posts = []
 
         for post in self.officials_posts:
-            posts.append({"name": post.name, "committee": post.committee.name})
+            posts.append(post.get_data())
 
         return {"id": self.id,
                 "email": self.email,
@@ -35,7 +36,8 @@ class User(db.Model):
                 "kth_year": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
-                "officials_post": posts
+                "officials_post": posts,
+                "alumni": self.alumni
                 }
 
 
@@ -48,13 +50,27 @@ class OfficialsPost(db.Model):
     committee_id = db.Column(db.Integer, db.ForeignKey('committee.id'))
     committee = db.relationship("Committee", back_populates = "posts")
 
+    def get_data(self):
+        return {"id": self.id,
+                "name": self.name,
+                "start_date": self.start_date,
+                "end_date": self.end_date,
+                "officials_email": self.officials_email,
+                "committee_id": self.committee_id
+                }
+
 class Committee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     posts = db.relationship("OfficialsPost", back_populates = "committee")
-
+    
     def get_data(self):
+        posts = []
+
+        for post in self.posts:
+            posts.append(post.get_data())
 
         return {"id": self.id,
-                "name": self.name
+                "name": self.name,
+                "posts": posts
                 }

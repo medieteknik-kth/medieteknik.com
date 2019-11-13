@@ -14,13 +14,14 @@ def route_create_all():
 
     user = User()
     user.email = "jeslundq@kth.se"
-    user.first_name = "Jesper"
+    user.first_name = "Jespeer"
     user.last_name = "Lundqvist"
     user.frack_name = "Joppe"
     user.kth_year = 2016
     user.facebook = "https://www.facebook.com/jesperlndqvist"
     user.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
     user.profile_picture = "/default.png"
+    user.profile_picture = False
 
     committee1 = Committee()
     committee1.name = "MKMKMKMKHÄSTEN HETER FÖL"

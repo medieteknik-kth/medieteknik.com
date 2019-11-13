@@ -11,16 +11,19 @@ def index():
 @app.route('/search/<search_term>')
 def search(search_term):
     user_conds = [User.kth_id.ilike("%"+search_term+"%"), User.email.ilike("%"+search_term+"%"), User.first_name.ilike("%"+search_term+"%"), 
-            User.last_name.ilike("%"+search_term+"%"), User.frack_name.ilike("%"+search_term+"%")]
+                User.last_name.ilike("%"+search_term+"%"), User.frack_name.ilike("%"+search_term+"%")]
     com_conds = [Committee.name.ilike("%"+search_term+"%")]
+    post_conds = [OfficialsPost.name.ilike("%"+search_term+"%")]
 
     users = User.query.filter(or_(*user_conds)).all()
     committees = Committee.query.filter(or_(*com_conds)).all()
+    posts = OfficialsPost.query.filter(or_(*post_conds)).all()
 
     u = {"users": [user.get_data() for user in users]}
     c = {"commitees": [committee.get_data() for committee in committees]}
+    p = {"posts": [post.get_data() for post in posts]}
 
-    data = [u, c]
+    data = [u, c, p]
     return jsonify(data)
 
 @app.route('/current_user')
