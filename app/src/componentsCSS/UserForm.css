@@ -1,0 +1,70 @@
+.field {
+  position: relative;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  margin: 10px;
+  /* font-weight: bold; */
+  /* display: inline-block; */
+}
+
+/* label - texten när det står något i rutan */
+label {
+  position: absolute;
+  left: 5px;
+  top: 4px;
+  transition: all 0.2s linear;
+  color: rgb(134, 134, 134);
+  font-size: 8px;
+}
+input {
+  font-family: Helvetica, sans-serif;
+  margin-top: 15px;
+  border: 1px solid #999;
+  padding: 10px;
+  border-radius: 7px;
+}
+input:invalid + label {
+  top: 3px;
+  opacity: 0;
+}
+input:valid + label {
+  opacity: 1;
+  top: 0;
+}
+input:focus {
+  outline: none;
+}
+/* färg när fältet är markerat*/
+input:focus + label {
+  color: rgb(61, 184, 163);
+  font-weight: bold;
+}
+
+/* 
+.userInputForm {
+  margin-bottom: 20px;
+  padding: 8px;
+  display: block;
+  border: 1px solid rgb(228, 227, 227);
+  border-radius: 5px;
+  width: 20%;
+  transition: box-shadow 0.4s;
+}
+.userInputForm:hover {
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.labelInput {
+  margin: 5px;
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+}
+.submitButton {
+  margin: 1px;
+  border-radius: 3px;
+  padding: 5px;
+  border: 1 px solid;
+}
+ */

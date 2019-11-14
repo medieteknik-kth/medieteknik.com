@@ -1,5 +1,6 @@
 import React from "react";
 import { UserConsumer } from "./UserContext.js";
+import "./componentsCSS/UserForm.css";
 
 class UserForm extends React.Component {
   constructor(props) {
@@ -10,13 +11,38 @@ class UserForm extends React.Component {
     return (
       <UserConsumer>
         {({ user }) => (
-          <form method="POST" action={"/api/user/" + user.id}>
-            <p>First name:</p>
-            <input type="text" name="first_name" value={user.first_name} />
-            <p>Last name:</p>
-            <input type="text" name="last_name" value={user.last_name} />
-            <input type="submit" value="Submit" />
-          </form>
+          <React.Fragment>
+            <form
+              className="field"
+              method="POST"
+              action={"/api/user/" + user.id}
+            >
+              <input
+                type="text"
+                pattern=".+"
+                required
+                placeholder="First Name"
+                value={user.first_name}
+              />
+              <label>Last Name</label>
+            </form>
+            <form
+              className="field"
+              method="POST"
+              action={"/api/user/" + user.id}
+            >
+              <input
+                type="text"
+                pattern=".+"
+                required
+                placeholder="Last Name"
+                value={user.last_name}
+              />
+              <label>First Name</label>
+            </form>
+
+            <input class="submitButton" type="submit" value="Submit" />
+          </React.Fragment>
         )}
       </UserConsumer>
     );
