@@ -1,6 +1,6 @@
 .field {
   position: relative;
-  font-family: sans-serif;
+  font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   margin: 10px;
   /* font-weight: bold; */
@@ -14,10 +14,10 @@ label {
   top: 4px;
   transition: all 0.2s linear;
   color: rgb(134, 134, 134);
-  font-size: 8px;
+  font-size: 12px;
 }
 input {
-  font-family: Helvetica, sans-serif;
+  font-family: "Roboto", sans-serif;
   margin-top: 15px;
   border: 1px solid #999;
   padding: 10px;
@@ -36,11 +36,15 @@ input:focus {
 }
 /* färg när fältet är markerat*/
 input:focus + label {
-  color: rgb(61, 184, 163);
-  font-weight: bold;
+  color: rgb(126, 221, 134);
+  /* font-weight: bold; */
 }
 
-/* 
+.alumnCheckbox {
+  display: inline-block;
+}
+
+/* hover shadow design
 .userInputForm {
   margin-bottom: 20px;
   padding: 8px;
@@ -60,11 +64,11 @@ input:focus + label {
   padding: 10px;
   font-family: "Roboto", sans-serif;
   font-weight: 300;
-}
+}*/
 .submitButton {
-  margin: 1px;
-  border-radius: 3px;
+  margin-left: 10px;
+  margin-top: 6px;
+  border-radius: 7px;
   padding: 5px;
   border: 1 px solid;
 }
- */
