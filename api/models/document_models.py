@@ -6,7 +6,7 @@ class Document(db.Model):
     itemId = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String)
     tags = db.relationship("DocumentTags")
-    tags = db.Column(db.DateTime, default=datetime.datetime.now)
+    date = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def to_dict(self):
         return {"itemId": self.itemId, "title": self.title, "tags": [res.serialize() for res in self.tags]}

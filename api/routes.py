@@ -24,6 +24,7 @@ def document_endpoint():
             return jsonify(status=422, message="no files attached")
         else:
             save_documents(request)
+            return jsonify(status=200, message="file uploaded!")
     if request.method == 'GET':
         tags = request.args.get('tags')
         if tags is not None:
