@@ -2,6 +2,7 @@ from flask import session, request, redirect
 from sqlalchemy import or_
 from api import app, db
 from api.models.user import User, Committee, OfficialsPost
+from api.models.document_models import Document, Tag, DocumentTags
 from flask import jsonify
 
 @app.route('/')
@@ -10,20 +11,24 @@ def index():
 
 @app.route('/search/<search_term>')
 def search(search_term):
-    user_conds = [User.kth_id.ilike("%"+search_term+"%"), User.email.ilike("%"+search_term+"%"), User.first_name.ilike("%"+search_term+"%"), 
-                User.last_name.ilike("%"+search_term+"%"), User.frack_name.ilike("%"+search_term+"%")]
-    com_conds = [Committee.name.ilike("%"+search_term+"%")]
-    post_conds = [OfficialsPost.name.ilike("%"+search_term+"%")]
+    search_str = "%"+search_term+"%"
+    user_conds = [User.kth_id.ilike(search_str), User.email.ilike(search_str), User.first_name.ilike(search_str), 
+                User.last_name.ilike(search_str), User.frack_name.ilike(search_str)]
+    com_conds = [Committee.name.ilike(search_str)]
+    post_conds = [OfficialsPost.name.ilike(search_str)]
+    doc_conds = [Document.title.ilike(search_str)]
 
     users = User.query.filter(or_(*user_conds)).all()
     committees = Committee.query.filter(or_(*com_conds)).all()
     posts = OfficialsPost.query.filter(or_(*post_conds)).all()
+    docs = Document.query.filter(or_(*doc_conds)).all()
 
     u = {"users": [user.get_data() for user in users]}
     c = {"commitees": [committee.get_data() for committee in committees]}
     p = {"posts": [post.get_data() for post in posts]}
+    d = {"documents": [doc.to_dict() for doc in docs]}
 
-    data = [u, c, p]
+    data = [u, c, p, d]
     return jsonify(data)
 
 @app.route('/current_user')

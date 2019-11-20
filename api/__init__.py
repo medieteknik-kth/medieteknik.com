@@ -11,6 +11,37 @@ def route_create_all():
     db.drop_all()
     db.create_all()
 
+    from api.models.document_models import Document, Tag, DocumentTags
+    db.drop_all()
+    db.create_all()
+
+    doc = Document()
+    doc.title = "PROTOKOLLLLLA IN DET HÄR"
+
+    tag = Tag()
+    tag.title = "styrelsen"
+    tag.tagId = 2
+
+    doctag = DocumentTags()
+    doctag.itemId = doc.itemId
+    doctag.tagId = tag.tagId
+    doc.tags.append(doctag)
+
+    tag2 = Tag()
+    tag2.title = "testy"
+    tag2.tagId = 3
+
+    doctag2 = DocumentTags()
+    doctag2.itemId = doc.itemId
+    doctag2.tagId = tag2.tagId
+    doc.tags.append(doctag2)
+
+    db.session.add(doc)
+    db.session.add(tag)
+    db.session.add(tag2)
+    db.session.add(doctag)
+    db.session.add(doctag2)
+
 
     user = User()
     user.email = "jeslundq@kth.se"
