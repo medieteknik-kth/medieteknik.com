@@ -1,12 +1,14 @@
 import React from 'react';
 import { Route, Router } from "react-router-dom";
 import Menu from './Menu/menu';
+import StartPage from './StartPage/startpage';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <Menu/>
+      <StartPage/>
     </div>
   );
 }

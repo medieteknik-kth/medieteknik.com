@@ -1,0 +1,45 @@
+.startpage {
+    background-image: url("https://www.holding.kth.se/polopoly_fs/1.746062.1550152630!/image/Sommar%20campus_liten.png");
+    background-size: cover;
+}
+
+.start_picture {
+    padding-top: 15%;
+}
+
+
+.start_text {
+    color: white;
+    font-size: 30px;
+}
+
+.start_text_medieteknik {
+    color:  #EEC912;
+    font-size: 60px;
+}
+
+.start_info_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    background-color: white;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    margin-top: 10%;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding-top:1%;
+    padding-left: 20%;
+    padding-right: 20%;
+    text-align: center;
+  }
+  .grid-item {
+    text-align: center;
+    margin-left: 5%;
+  }
+
