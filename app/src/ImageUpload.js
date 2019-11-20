@@ -1,5 +1,6 @@
 // https://codepen.io/hartzis/pen/VvNGZP
 import React from "react";
+import "./componentsCSS/ImageUpload.css"; 
 
 class ImageUpload extends React.Component{
     constructor(props) {
@@ -37,7 +38,7 @@ class ImageUpload extends React.Component{
       let {imagePreviewUrl} = this.state;
       let $imagePreview = null;
       if (imagePreviewUrl) {
-        $imagePreview = (<img src={imagePreviewUrl} />);
+        $imagePreview = (<img className="imgPreview" src={imagePreviewUrl} />);
       }
   
       return (
