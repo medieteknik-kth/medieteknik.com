@@ -7,6 +7,7 @@ class Home extends Component {
 
     render() {
         let header = [{ name: "KONTAKT", links: [{ name: "Link 1", link: "#1" }, { name: "Link 2", link: "#2" }, { name: "Link 3", link: "#3" }] }, { name: "FÖRETAG", links: [{ name: "Link 4", link: "#4" }, { name: "Link 5", link: "#5" }, { name: "Link 6", link: "#6" }] }, { name: "NÄMNDER", links: [{ name: "Link 7", link: "#7" }, { name: "Link 8", link: "#8" }, { name: "Link 9", link: "#9" }] }]
+        console.log("header: ", header)
         let buttons = header.map((item, key) =>
             <div className="dropdown" key={key}>
                 <button className="dropbtn">{item.name}</button>
