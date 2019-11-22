@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import DownloadBtn from './Download-btn.svg';
-
 
 class DocumentCard extends Component {
     render() {
-
         return (
             <div className={'doc-cards'}>
                 <b>{this.props.doctype}</b>

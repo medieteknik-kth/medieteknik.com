@@ -1,5 +1,5 @@
 import React from 'react';
-import Document from './Document/Document'
+import Document from './Document/Document.js'
 import './App.css';
 
 function App() {
