@@ -7,9 +7,11 @@ class Document(db.Model):
     title = db.Column(db.String)
     tags = db.relationship("DocumentTags")
     date = db.Column(db.DateTime, default=datetime.datetime.now)
+    uploadedBy = db.Column(db.String)
+    fileName = db.Column(db.String)
 
     def to_dict(self):
-        return {"itemId": self.itemId, "title": self.title, "tags": [res.serialize() for res in self.tags]}
+        return {"itemId": self.itemId, "title": self.title, "tags": [res.serialize() for res in self.tags], "filename": self.fileName, "date": str(self.date)}
 
 class Tag(db.Model):
     __tablename__ = "tags"

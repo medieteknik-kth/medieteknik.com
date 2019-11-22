@@ -16,13 +16,20 @@ def route_create_all():
 
     doc = Document()
     doc.title = "PROTOKOLLLLLA IN DET HÄR"
+    doc.fileName = "abc123.pdf"
+    doc.uploadedBy = "Joppe"
+    
 
     tag = Tag()
     tag.title = "styrelsen"
 
+    tag2 = Tag()
+    tag2.title = "annat"
+    
 
     db.session.add(doc)
     db.session.add(tag)
+    db.session.add(tag2)
     db.session.commit()
     doctag = DocumentTags()
     doctag.itemId = doc.itemId
