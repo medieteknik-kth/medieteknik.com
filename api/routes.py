@@ -6,7 +6,6 @@ from flask import (
 from api.documents.document_functions import(
     save_documents, get_documents, get_tags)
 
-
 @app.route('/')
 def index():
     return jsonify(status=200, message='OK')

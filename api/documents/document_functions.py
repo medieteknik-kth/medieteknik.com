@@ -1,11 +1,17 @@
-from api import db
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from api import db, app
 from api.models.document_models import (Document, Tag, DocumentTags)
+from werkzeug import secure_filename
 import sys
+import os
+
+SAVE_FOLDER = os.path.join(os.getcwd(), "static", "documents")
 
 #spara dokument i databas
 def save_documents(request):
     #TODO: skriv funktion för att spara dokument i DB och på disk
-    
+
     doc = request.files["file"]
     print(type(doc))
     d = Document(title=doc.filename)
@@ -17,6 +23,7 @@ def save_documents(request):
     dt.tagId = 1 #TODO: fixa denna, basera på taggar som finns i databasen
     db.session.add(dt)
     db.session.commit()
+    doc.save(os.path.join(SAVE_FOLDER, doc.filename))   #skapar en mapp att spara uppladdade filer i när appen upprättas
 #Hämta dokument från databasen
 #tags borde finnas i databasen så det inte blir knas
 def get_documents(tags: list):
@@ -24,7 +31,7 @@ def get_documents(tags: list):
         q = Document.query.join(DocumentTags).join(Tag).filter(Tag.title.in_(tags)).all()
     else:
         q = Document.query.join(DocumentTags).join(Tag).all()
-    
+
     return [Document.to_dict(res) for res in q]
 
 def get_tags():

@@ -6,7 +6,7 @@ import sys
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DB_CONNECT_STR"]
 db = SQLAlchemy(app)
-
+os.makedirs(os.path.join(os.getcwd(), "static", "documents"), exist_ok=True)
 
 @app.route("/create_all")
 def route_create_all():
@@ -19,7 +19,7 @@ def route_create_all():
 
     tag = Tag()
     tag.title = "styrelsen"
-    
+
 
     db.session.add(doc)
     db.session.add(tag)

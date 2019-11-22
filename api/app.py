@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from flask import (
     Flask,
     jsonify,
@@ -20,7 +22,7 @@ def placeholder():
 def document_endpoint():
     if request.method == 'GET':
         if request.files is None:
-            return jsonify(status=422, status="no files attached")
+            return jsonify(status=422, message="no files attached")
         else:
             save_documents(request.files)
     if request.method == 'POST':
