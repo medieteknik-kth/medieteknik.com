@@ -25,7 +25,6 @@ class Menu extends Component {
         //Finds all headers from the backend (This is not implemented yet though...)
         let header = [{ name: "AKTUELLT"}, { name: "SEKTIONEN", links: [{ name: "Nämnder och projekt", link: "#4" }, { name: "Styrelsen", link: "#5" }, { name: "Dokument", link: "#6" }, { name: "Sektionsmedlemmar", link: "#6" }, { name: "Bokningar/Boka META", link: "#6" }] }, { name: "UTBILDNINGEN", links: [{ name: "Vad är medieteknik?", link: "#7" }, { name: "Antagning", link: "#8" }, { name: "Kurser", link: "#9" }, { name: "Masterprogrammet", link: "#9" }, { name: "Studievägledning", link: "#9" }, { name: "Utlandsstudier", link: "#9" }, { name: "Studenträtt", link: "#9" }] }, { name: "KONTAKT", links: [{ name: "Samarbete", link: "#7" }, { name: "Annonsering", link: "#8" }, { name: "Funktionärer", link: "#9" }, { name: "Styrelsen", link: "#9" }] }]
         //Creates the headers for the menu and their dropdowns. Saves in the variable buttons
-        console.log("header: ", header)
         let buttons = header.map((item, key) =>
             <div className="dropdown" key={key}>
                 <button className="dropbtn">{item.name}</button>
