@@ -1,6 +1,6 @@
 .startpage {
-    background-image: url("https://www.holding.kth.se/polopoly_fs/1.746062.1550152630!/image/Sommar%20campus_liten.png");
-    background-size: cover;
+    background-image: url("header1.jpg");
+    background-size: 100%;
 }
 
 .start_picture {
@@ -10,12 +10,12 @@
 
 .start_text {
     color: white;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 .start_text_medieteknik {
     color:  #EEC912;
-    font-size: 60px;
+    font-size: 75px;
 }
 
 .start_info_container {

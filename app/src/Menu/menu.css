@@ -44,6 +44,11 @@
   opacity:0;
 }
 
+/*search icon*/
+.search_icon {
+  width: 25px;
+}
+
 
 /*Styling for the dropdowns*/
 .dropbtn {
