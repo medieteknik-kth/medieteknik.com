@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import logo from './logo.png';
 import logo_vit from './logo_vit.png'
 import search_icon from './search_icon.svg'
+import login_icon from './login_icon.svg'
+import eng_icon from './eng_icon.svg'
 import './menu.css';
 
 //This file creates the top navbar (or menu)
@@ -52,7 +54,12 @@ class Menu extends Component {
                             <img alt="svgImg" src={search_icon} className="search_icon"/>
                         </button>
                         {/*Måste ha rätt icon!!!*/}
-                        <button className="dropbtn">LOGIN</button>
+                        <button className="dropbtn">
+                            <img alt="svgImg" src={login_icon} className="login_icon"/>
+                        </button>
+                        <button className="dropbtn">
+                            <img alt="svgImg" src={eng_icon} className="eng_icon"/>
+                        </button>
                     </div>
                 </div>
             </div>

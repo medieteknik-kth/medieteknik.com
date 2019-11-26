@@ -24,7 +24,7 @@
   justify-content: space-between; 
   padding-top: 1%;
   margin-left: 3%; 
-  margin-right: 3%;
+  margin-right: 2%;
 }
 
 .container-right { float: right;}
@@ -46,7 +46,19 @@
 
 /*search icon*/
 .search_icon {
+  width: 15px;
+}
+
+/*login icon*/
+.login_icon {
+  width: 14px;
+}
+
+/*english icon*/
+.eng_icon {
   width: 25px;
+  padding-bottom: 1px;
+
 }
 
 
@@ -57,6 +69,9 @@
     padding: 16px;
     font-size: 16px;
     border: none;
+    font-family: calibri;
+    font-weight: 200;
+    letter-spacing: 3px;
   }
   
   .dropdown {
@@ -78,6 +93,9 @@
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    text-align: left;
+    font-size: 14px;
+    padding: px;
   }
 
   

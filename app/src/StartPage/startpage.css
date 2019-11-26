@@ -11,11 +11,14 @@
 .start_text {
     color: white;
     font-size: 25px;
+    font-family: calibri;
 }
 
 .start_text_medieteknik {
     color:  #EEC912;
-    font-size: 75px;
+    font-size: 80px;
+    letter-spacing: 2px;
+    margin: 30px;
 }
 
 .start_info_container {
