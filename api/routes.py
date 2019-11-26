@@ -23,12 +23,9 @@ def search(search_term):
     posts = OfficialsPost.query.filter(or_(*post_conds)).all()
     docs = Document.query.filter(or_(*doc_conds)).all()
 
-    u = {"users": [user.get_data() for user in users]}
-    c = {"commitees": [committee.get_data() for committee in committees]}
-    p = {"posts": [post.get_data() for post in posts]}
-    d = {"documents": [doc.to_dict() for doc in docs]}
-
-    data = [u, c, p, d]
+    data = {"users": [user.get_data() for user in users], "commitees": [committee.get_data() for committee in committees],
+        "posts": [post.get_data() for post in posts], "documents": [doc.to_dict() for doc in docs]}
+    
     return jsonify(data)
 
 @app.route('/current_user')
