@@ -15,6 +15,10 @@ def route_create_all():
     db.drop_all()
     db.create_all()
 
+    from api.models.menu import Menues
+    db.drop_all()
+    db.create_all()
+
     doc = Document()
     doc.title = "PROTOKOLLLLLA IN DET HÄR"
 
@@ -66,6 +70,25 @@ def route_create_all():
     user.officials_posts.append(officialspost2)
 
     officialspost1.committee = committee1
+
+    menu1 = Menu()
+    menu1.title = "AKTUELLT"
+
+    menu2 = Menu()
+    menu2.title = "SEKTIONEN"
+    menu2.link_name = "Nämnder och projekt"
+    menu2.link_nr = "#4"
+
+    
+
+            #let header = [{ name: "AKTUELLT"}, { name: "SEKTIONEN", links: [{ name: "Nämnder och projekt", link: "#4" }, 
+            #{ name: "Styrelsen", link: "#5" }, { name: "Dokument", link: "#6" }, { name: "Sektionsmedlemmar", link: "#6" }, 
+            #{ name: "Bokningar/Boka META", link: "#6" }] }, { name: "UTBILDNINGEN", links: [{ name: "Vad är medieteknik?", link: "#7" },
+             #{ name: "Antagning", link: "#8" }, { name: "Kurser", link: "#9" }, { name: "Masterprogrammet", link: "#9" }, 
+             #{ name: "Studievägledning", link: "#9" }, { name: "Utlandsstudier", link: "#9" }, { name: "Studenträtt", link: "#9" }] },
+              #{ name: "KONTAKT", links: [{ name: "Samarbete", link: "#7" }, { name: "Annonsering", link: "#8" }, { name: "Funktionärer", link: "#9" }, 
+              #{ name: "Styrelsen", link: "#9" }] }]
+
 
     db.session.add(user)
     db.session.add(committee1)
