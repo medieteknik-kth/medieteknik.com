@@ -9,24 +9,28 @@ class UserForm extends React.Component {
   }
 
   render() {
+    var year = new Date().getFullYear();
+
     return (
       <UserConsumer>
         {({ user }) => (
-          <React.Fragment>
+          <div id="userFormContainer">
+            <span class="userFormContainerHeader">FORMULÄR</span>
             <form
               className="field"
               method="POST"
               action={"/api/user/" + user.id}
             >
               <input
+                className="input-req"
                 type="text"
-                /* pattern="[A-Za-z]{99}" */
+                pattern="[\p{L}\s-]{1,99}"
                 required
-                placeholder="First Name"
                 value={user.first_name}
-                title="First names contains only of letters"
+                title="Namn innehåller bara bokstäver t.ex 'Leif' "
               />
-              <label>First Name</label>
+              <label className="floating-label-req">NAMN</label>
+              <span className="focus-border"></span>
             </form>
 
             <form
@@ -35,14 +39,15 @@ class UserForm extends React.Component {
               action={"/api/user/" + user.id}
             >
               <input
+                className="input-req"
                 type="text"
-                /* pattern="[A-Za-z]{99}" */
+                pattern="[\p{L}\s-]{1,99}"
                 required
-                placeholder="Last Name"
                 value={user.last_name}
-                title="Last names contains only of letters"
+                title="Efternamn innehåller bara bokstäver t.ex 'Mediasson' "
               />
-              <label>Last Name</label>
+              <label className="floating-label-req">EFTERNAMN</label>
+              <span className="focus-border"></span>
             </form>
 
             <form
@@ -52,12 +57,13 @@ class UserForm extends React.Component {
             >
               <input
                 type="text"
-                pattern=".+"
-                required
-                placeholder="Frack Name"
+                className="input-not-req"
+                placeholder=" "
                 value={user.frack_name}
+                title="Ej obligatorisk, visas som namn för phösare under mottagningen."
               />
-              <label>Frack Name</label>
+              <label className="floating-label-non-req">FRACKNAMN</label>
+              <span className="focus-border"></span>
             </form>
 
             <form
@@ -66,12 +72,13 @@ class UserForm extends React.Component {
               action={"/api/user/" + user.id}
             >
               <input
-                type="text"
-                required
-                placeholder="Link to Facebook"
+                type="url"
+                placeholder=" "
+                className="inputURL"
                 value={user.facebook}
               />
-              <label>Link to Facebook</label>
+              <label className="URLfloating-label">FACEBOOK</label>
+              <span className="focus-border"></span>
             </form>
 
             <form
@@ -80,12 +87,13 @@ class UserForm extends React.Component {
               action={"/api/user/" + user.id}
             >
               <input
-                type="text"
-                required
-                placeholder="Link to LinkedIn"
+                type="url"
+                placeholder=" "
+                className="inputURL"
                 value={user.linkedin}
               />
-              <label>Link to LinkedIn</label>
+              <label className="URLfloating-label">LINKEDIN</label>
+              <span className="focus-border"></span>
             </form>
 
             <form
@@ -94,29 +102,35 @@ class UserForm extends React.Component {
               action={"/api/user/" + user.id}
             >
               <input
-                type="numbers"
-                /* pattern="[1-2][0-9]{3}" */
+                type="number"
+                className="input-req"
+                name="points"
+                min="1999"
+                max={year}
+                step="1"
                 required
-                placeholder="Antagningsår KTH"
-                value={user.kth_name}
-                title="The year you started KTH, on the form YYYY"
+                title="Året du startade KTH, på formen YYYY"
               />
-              <label>Antagningsår KTH</label>
+              <label className="floating-label-req">ANTAGNINGSÅR </label>
+              <span className="focus-border"></span>
             </form>
 
             <input type="reset" value="Reset" />
+            <br />
             <p>Alumni</p>
+
             <input
               className="alumniCheckbox"
-              type="radio"
+              type="checkbox"
+              value="alumni"
+              checked
               name="alumni"
               value={user.alumni}
               placeholder="Alumni"
             />
-
             <p>Bild:</p>
             <ImageUpload />
-          </React.Fragment>
+          </div>
         )}
       </UserConsumer>
     );

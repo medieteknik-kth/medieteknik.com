@@ -1,74 +1,145 @@
+#userFormContainer {
+  position: relative;
+  margin: auto;
+  width: 40vw;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: "Roboto", sans-serif;
+  /* font-weight: 600; */
+
+  /* display: flex; */
+
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 17px;
+}
+.userFormContainerHeader {
+  padding: 17px;
+  padding-bottom: 5px;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 600;
+}
+
+/*animations for input field*/
+/*-----------------------------*/
+/* styling for all input and field elements */
 .field {
   position: relative;
   font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  margin: 10px;
-  /* font-weight: bold; */
-  /* display: inline-block; */
-}
-
-/* label - texten när det står något i rutan */
-label {
-  position: absolute;
-  left: 5px;
-  top: 4px;
-  transition: all 0.2s linear;
-  color: rgb(134, 134, 134);
-  font-size: 12px;
-}
-input {
-  font-family: "Roboto", sans-serif;
-  margin-top: 15px;
-  border: 1px solid #999;
-  padding: 10px;
-  border-radius: 7px;
-}
-input:invalid + label {
-  top: 3px;
-  opacity: 0;
-}
-input:valid + label {
-  opacity: 1;
-  top: 0;
+  margin: 30px;
+  color: #555555;
 }
 input:focus {
   outline: none;
 }
-/* färg när fältet är markerat*/
-input:focus + label {
-  color: rgb(126, 221, 134);
+
+/* required inputs styling for moving '.floating-label' up */
+/* ------------------------------------------------ */
+
+.input-req:not(:focus):valid ~ .floating-label-req {
+  top: -17px;
+  bottom: 12px;
+  left: 0px;
+  /* opacity: 1; */
+  /* font-size: 22; */
   /* font-weight: bold; */
 }
 
-.alumnCheckbox {
-  display: inline-block;
+.input-req:focus ~ .floating-label-req {
+  top: -17px;
+  bottom: 12px;
+  left: 0px;
+  /* opacity: 1; */
 }
 
-/* hover shadow design
-.userInputForm {
-  margin-bottom: 20px;
-  padding: 8px;
-  display: block;
-  border: 1px solid rgb(228, 227, 227);
-  border-radius: 5px;
-  width: 20%;
-  transition: box-shadow 0.4s;
-}
-.userInputForm:hover {
-  box-shadow: 0 0 11px rgba(33, 33, 33, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0);
+.floating-label-req {
+  position: absolute;
+  pointer-events: none;
+  left: 0px;
+  top: 0px;
+  text-transform: uppercase;
+  transition: 0.2s ease all;
+  color: #555555;
 }
 
-.labelInput {
-  margin: 5px;
-  padding: 10px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
-}*/
+/* ------------------------------------- */
+/* non required inputs */
+.floating-label-non-req {
+  left: 0;
+}
+
+input + .floating-label-non-req {
+  position: absolute;
+  transition: all 200ms;
+  margin-top: -20px;
+  pointer-events: none;
+}
+
+input:placeholder-shown + .floating-label-non-req {
+  margin-top: 0%;
+}
+
+.input-not-req:focus + .floating-label-non-req {
+  position: absolute;
+  transition: all 200ms;
+  margin-top: -20px;
+  pointer-events: none;
+}
+
 .submitButton {
   margin-left: 10px;
   margin-top: 6px;
   border-radius: 7px;
   padding: 5px;
   border: 1 px solid;
+}
+/* --------------------------- */
+/* styling for URL inputs */
+.inputURL:focus + .URLfloating-label {
+  position: absolute;
+  transition: all 200ms;
+  /* margin-left: -160px; */
+  margin-top: -20px;
+  pointer-events: none;
+}
+
+.inputURL:not(:placeholder-shown) + .URLfloating-label {
+  position: absolute;
+  transition: all 200ms;
+  /* margin-left: -160px; */
+  margin-top: -20px;
+  pointer-events: none;
+}
+.URLfloating-label {
+  position: absolute;
+  pointer-events: none;
+  transition: all 200ms;
+  left: 0px;
+}
+
+/* ----------------------------- */
+/* animation for line under input */
+input {
+  width: 100%;
+  border: 0;
+  padding: 7px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+input ~ .focus-border {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #3399ff;
+  transition: 0.3s;
+}
+input:focus ~ .focus-border {
+  width: 100%;
+  transition: 0.3s;
+  left: 0;
 }

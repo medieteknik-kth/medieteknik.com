@@ -49,5 +49,6 @@ class ImageUpload extends React.Component{
     }
 
   }
+}
 
-  export default ImageUpload;
+export default ImageUpload;
