@@ -14,6 +14,7 @@ app.config['CAS_LOGIN_ROUTE'] = os.environ["CAS_LOGIN_ROUTE"]
 app.config['CAS_LOGOUT_ROUTE'] = os.environ["CAS_LOGOUT_ROUTE"]
 app.config['CAS_VALIDATE_ROUTE'] = os.environ["CAS_VALIDATE_ROUTE"]
 app.config['CAS_AFTER_LOGIN'] = os.environ["CAS_AFTER_LOGIN"]
+os.makedirs(os.path.join(os.getcwd(), "api", "static", "profiles"), exist_ok=True)
 
 db = SQLAlchemy(app)
 CORS(app)
@@ -72,7 +73,7 @@ def route_create_all():
     user2.last_name = "Mediansson"
     user2.frack_name = "Media"
     user2.kth_year = 2000
-    user2.profile_picture = "/default.png"
+    user2.profile_picture = "/static/profiles/default.png"
 
     committee1 = Committee()
     committee1.name = "Hemsideprojektet"
