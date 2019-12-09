@@ -9,7 +9,7 @@ class UserCardTextbox extends React.Component {
   }
 
   render() {
-    let posts = this.props.user.officials_post;
+    let posts = this.props.user.committee_post;
     let subtitle = "";
 
     console.log(this.props.user);

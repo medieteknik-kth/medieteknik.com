@@ -50,7 +50,7 @@ def auth_test():
 
 @app.route("/create_all")
 def route_create_all():
-    from api.models.user import User, Committee, OfficialsPost, relationship_table
+    from api.models.user import User, Committee, CommitteePost, relationship_table
     db.drop_all()
     db.create_all()
 
@@ -77,16 +77,16 @@ def route_create_all():
 
     committee1 = Committee()
     committee1.name = "Hemsideprojektet"
-    officialspost1 = OfficialsPost()
-    officialspost1.name= "Projektledare för Hemsidan"
-    user1.officials_posts.append(officialspost1)
+    CommitteePost1 = CommitteePost()
+    CommitteePost1.name= "Projektledare för Hemsidan"
+    user1.committee_posts.append(CommitteePost1)
 
-    officialspost1.committee = committee1
+    CommitteePost1.committee = committee1
 
     db.session.add(user1)
     db.session.add(user2)
     db.session.add(committee1)
-    db.session.add(officialspost1)
+    db.session.add(CommitteePost1)
     db.session.commit()
 
     return "klar"

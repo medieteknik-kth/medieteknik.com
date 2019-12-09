@@ -2,8 +2,8 @@ from api import db
 
 relationship_table=db.Table('relationship_table',
                              db.Column('user_id', db.Integer,db.ForeignKey('user.id'), nullable=False),
-                             db.Column('officials_post_id',db.Integer,db.ForeignKey('officials_post.id'),nullable=False),
-                             db.PrimaryKeyConstraint('user_id', 'officials_post_id') )
+                             db.Column('committee_post_id',db.Integer,db.ForeignKey('committee_post.id'),nullable=False),
+                             db.PrimaryKeyConstraint('user_id', 'committee_post_id') )
 
 
 class User(db.Model):
@@ -18,12 +18,12 @@ class User(db.Model):
     linkedin = db.Column(db.String)
     facebook = db.Column(db.String)
     alumni = db.Column(db.Boolean)
-    officials_posts = db.relationship('OfficialsPost', secondary=relationship_table, backref='users')
+    committee_posts = db.relationship('CommitteePost', secondary=relationship_table, backref='users')
 
     def get_data(self):
         posts = []
 
-        for post in self.officials_posts:
+        for post in self.committee_posts:
             posts.append({"name": post.name, "committee": post.committee.name})
 
         return {"id": self.id,
@@ -36,12 +36,12 @@ class User(db.Model):
                 "kth_year": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
-                "officials_post": posts,
+                "committee_post": posts,
                 "alumni": self.alumni
                 }
 
 
-class OfficialsPost(db.Model):
+class CommitteePost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     start_date = db.Column(db.Date)
@@ -49,6 +49,7 @@ class OfficialsPost(db.Model):
     officials_email = db.Column(db.String)
     committee_id = db.Column(db.Integer, db.ForeignKey('committee.id'))
     committee = db.relationship("Committee", back_populates = "posts")
+    official_post = db.Column(db.Boolean)
 
     def get_data(self):
         return {
@@ -63,7 +64,10 @@ class OfficialsPost(db.Model):
 class Committee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    posts = db.relationship("OfficialsPost", back_populates = "committee")
+    posts = db.relationship("CommitteePost", back_populates = "committee")
+    logo = db.Column(db.String)
+    header_image = db.Column(db.String)
+    
 
     def get_data(self):
         posts = [post.get_data() for post in self.posts]
@@ -72,4 +76,5 @@ class Committee(db.Model):
             "id": self.id,
             "name": self.name,
             "posts": posts
+
         }

@@ -1,6 +1,6 @@
 from flask import session, request, redirect
 from api import app, db
-from api.models.user import User, Committee, OfficialsPost
+from api.models.user import User, Committee, CommitteePost
 from flask import jsonify
 from PIL import Image
 from werkzeug.utils import secure_filename
@@ -109,12 +109,32 @@ def get_committee(id):
 
     )
 
-@app.route('/officials_post/<id>')
-def get_officials_post(id):
-    officials_post = OfficialsPost.query.get(id)
-    return jsonify(id = officials_post,
-                    name = officials_post.name,
-                    start_date = officials_post.start_end,
-                    end_date = officials_post.end_date,
-                    officials_email = officials_post.officials_email,
+@app.route('/committee/<id>', methods=["POST"])
+def add_committee_user(id):
+    committee = Committee.query.get(id)
+    data = request.form
+    is_official = False
+
+    for post in committee.post:
+        if post.official_post == True:
+            for user in post.users:
+                if user.kth_id == session["CAS_USERNAME"]:
+                    is_official = True 
+
+    if is_official:
+        user_id = data.get("user_id")
+        post = CommitteePost()
+        post.users.append(User.query.get(user_id))
+        committee.posts.append(post)
+
+
+
+@app.route('/committee_post/<id>')
+def get_committee_post(id):
+    committee_post = CommitteePost.query.get(id)
+    return jsonify(id = committee_post,
+                    name = committee_post.name,
+                    start_date = committee_post.start_end,
+                    end_date = committee_post.end_date,
+                    officials_email = committee_post.officials_email,
                     )
