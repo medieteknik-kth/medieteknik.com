@@ -1,6 +1,7 @@
 FROM python:3
 
 RUN mkdir -p /usr/src/api
+RUN mkdir -p /usr/src/static/profiles
 WORKDIR /usr/src/api
 
 COPY requirements.txt /usr/src/api/requirements.txt
