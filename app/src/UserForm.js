@@ -16,10 +16,12 @@ class UserForm extends React.Component {
         {({ user }) => (
           <div id="userFormContainer">
             <span class="userFormContainerHeader">FORMULÄR</span>
-            <form
+            <form method="POST"
+            action={"/api/user/" + user.id}
+            enctype="multipart/form-data"
+            >
+            <div
               className="field"
-              method="POST"
-              action={"/api/user/" + user.id}
             >
               <input
                 className="input-req"
@@ -31,12 +33,10 @@ class UserForm extends React.Component {
               />
               <label className="floating-label-req">NAMN</label>
               <span className="focus-border"></span>
-            </form>
+            </div>
 
-            <form
+            <div
               className="field"
-              method="POST"
-              action={"/api/user/" + user.id}
             >
               <input
                 className="input-req"
@@ -48,12 +48,10 @@ class UserForm extends React.Component {
               />
               <label className="floating-label-req">EFTERNAMN</label>
               <span className="focus-border"></span>
-            </form>
+            </div>
 
-            <form
+            <div
               className="field"
-              method="POST"
-              action={"/api/user/" + user.id}
             >
               <input
                 type="text"
@@ -64,12 +62,10 @@ class UserForm extends React.Component {
               />
               <label className="floating-label-non-req">FRACKNAMN</label>
               <span className="focus-border"></span>
-            </form>
+            </div>
 
-            <form
+            <div
               className="field"
-              method="POST"
-              action={"/api/user/" + user.id}
             >
               <input
                 type="url"
@@ -79,12 +75,10 @@ class UserForm extends React.Component {
               />
               <label className="URLfloating-label">FACEBOOK</label>
               <span className="focus-border"></span>
-            </form>
+            </div>
 
-            <form
+            <div
               className="field"
-              method="POST"
-              action={"/api/user/" + user.id}
             >
               <input
                 type="url"
@@ -94,12 +88,10 @@ class UserForm extends React.Component {
               />
               <label className="URLfloating-label">LINKEDIN</label>
               <span className="focus-border"></span>
-            </form>
+            </div>
 
-            <form
+            <div
               className="field"
-              method="POST"
-              action={"/api/user/" + user.id}
             >
               <input
                 type="number"
@@ -108,12 +100,13 @@ class UserForm extends React.Component {
                 min="1999"
                 max={year}
                 step="1"
+                value={user.kth_year}
                 required
                 title="Året du startade KTH, på formen YYYY"
               />
               <label className="floating-label-req">ANTAGNINGSÅR </label>
               <span className="focus-border"></span>
-            </form>
+            </div>
 
             <input type="reset" value="Reset" />
             <br />
@@ -129,7 +122,9 @@ class UserForm extends React.Component {
               placeholder="Alumni"
             />
             <p>Bild:</p>
-            <ImageUpload />
+            <ImageUpload name="profile_picture" />
+            <input type="submit" value="Spara" />
+            </form>
           </div>
         )}
       </UserConsumer>

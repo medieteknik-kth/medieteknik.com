@@ -10,9 +10,10 @@ services:
             - 5000:5000
         volumes:
             - ./api:/usr/src/api
+            - static-files:/usr/src/static
         environment:
             - DB_CONNECT_STR=postgresql+psycopg2://medieteknik:rgb@db/medieteknikdev
-            - GUNICORN_CMD_ARGS="--reload"
+            - GUNICORN_CMD_ARGS="--reload --log-level debug"
             - FLASK_SECRET_KEY=2kfueoVmpd0FBVFCJD0V
             - LOCAL_CAS=1
             - CAS_SERVER=/
