@@ -50,7 +50,26 @@ class OfficialsPost(db.Model):
     committee_id = db.Column(db.Integer, db.ForeignKey('committee.id'))
     committee = db.relationship("Committee", back_populates = "posts")
 
+    def get_data(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "officials_email": self.officials_email,
+            "committee_id": self.committee.id
+        }
+
 class Committee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     posts = db.relationship("OfficialsPost", back_populates = "committee")
+
+    def get_data(self):
+        posts = [post.get_data() for post in self.posts]
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "posts": posts
+        }

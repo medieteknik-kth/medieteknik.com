@@ -94,6 +94,11 @@ def get_user(id):
     user = User.query.get(id)
     return jsonify(user.get_data())
 
+@app.route('/committee')
+def get_all_committees():
+    committees = Committee.query.all()
+    data = [committee.get_data() for committee in committees]
+    return jsonify(data)
 
 @app.route('/committee/<id>')
 def get_committee(id):

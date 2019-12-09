@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import UserList from "./UserList.js";
 import UserForm from "./UserForm.js";
 import FirstLogin from "./FirstLogin.js";
+import CommitteeList from "./CommitteeList.js";
 import { UserProvider, UserConsumer } from "./UserContext.js";
 
 function App() {
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route path="/user/first">
             <FirstLogin />
+          </Route>
+          <Route path="/committee">
+            <CommitteeList />
           </Route>
         </Switch>
       </UserProvider>
