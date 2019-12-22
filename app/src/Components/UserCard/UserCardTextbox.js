@@ -10,23 +10,18 @@ class UserCardTextbox extends React.Component {
 
   render() {
     let posts = this.props.user.committee_post;
-    let subtitle = "";
-
-    console.log(this.props.user);
-    if (posts.length > 0) {
-        subtitle = posts[0].name;
-    }
+    let subtitle = this.props.subtitle;
 
     return (
         <div class="userCardContent">
-            <div class="text-title userCardBannerHeader">{this.props.user.first_name} {this.props.user.last_name}</div>
+            <div class="userCardTitle userCardBannerHeader">{this.props.user.first_name} {this.props.user.last_name}</div>
             <div class="userCardBannerSubheader">
                 <div>
                     <div class="userCardBannerSubheader">
-                        <div class="text-subtitle userCardSubtitle">{subtitle}</div>
+                        <div class="userCardSubtitle">{subtitle}</div>
                     </div>
                     <div class="userCardBannerSubheader">
-                        <div class="text-subtitle userCardSubtitle">{this.props.user.email}</div>
+                        <div class="userCardSubtitle">{this.props.email ? this.props.email : this.props.user.email}</div>
                     </div>
                 </div>
                 <div>

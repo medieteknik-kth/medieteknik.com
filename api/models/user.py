@@ -20,6 +20,20 @@ class User(db.Model):
     alumni = db.Column(db.Boolean)
     committee_posts = db.relationship('CommitteePost', secondary=relationship_table, backref='users')
 
+    def get_data_without_posts(self):
+        return {"id": self.id,
+                "email": self.email,
+                "kth_id": self.kth_id,
+                "profile_picture": self.profile_picture,
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+                "frack_name": self.frack_name,
+                "kth_year": self.kth_year,
+                "linkedin": self.linkedin,
+                "facebook": self.facebook,
+                "alumni": self.alumni
+                }
+
     def get_data(self):
         posts = []
 
@@ -52,13 +66,16 @@ class CommitteePost(db.Model):
     official_post = db.Column(db.Boolean)
 
     def get_data(self):
+        users = [user.get_data() for user in self.users]
+
         return {
             "id": self.id,
             "name": self.name,
             "start_date": self.start_date,
             "end_date": self.end_date,
             "officials_email": self.officials_email,
-            "committee_id": self.committee.id
+            "committee_id": self.committee.id,
+            "users": users
         }
 
 class Committee(db.Model):
@@ -76,5 +93,4 @@ class Committee(db.Model):
             "id": self.id,
             "name": self.name,
             "posts": posts
-
         }

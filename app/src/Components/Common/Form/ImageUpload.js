@@ -1,6 +1,6 @@
 // https://codepen.io/hartzis/pen/VvNGZP
 import React from "react";
-import "./componentsCSS/ImageUpload.css";
+import "./ImageUpload.css";
 
 class ImageUpload extends React.Component{
     constructor(props) {

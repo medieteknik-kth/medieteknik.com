@@ -64,7 +64,6 @@ def route_create_all():
     user1.kth_year = 2016
     user1.facebook = "https://www.facebook.com/jesperlndqvist"
     user1.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
-    user1.profile_picture = "/jesper.jpeg"
 
     user2 = User()
     user2.email = "medieteknik@medieteknik.com"
@@ -73,13 +72,21 @@ def route_create_all():
     user2.last_name = "Mediansson"
     user2.frack_name = "Media"
     user2.kth_year = 2000
-    user2.profile_picture = "/static/profiles/default.png"
 
     committee1 = Committee()
     committee1.name = "Hemsideprojektet"
     CommitteePost1 = CommitteePost()
     CommitteePost1.name= "Projektledare för Hemsidan"
     user1.committee_posts.append(CommitteePost1)
+
+    committee2 = Committee()
+    committee2.name = "Mottagningen"
+    committee_post2 = CommitteePost()
+    committee_post2.name = "Öfverphös"
+    committee_post2.officials_email = "oph@medieteknik.com"
+    committee_post2.committee = committee2
+    user1.committee_posts.append(committee_post2)
+    user2.committee_posts.append(committee_post2)
 
     CommitteePost1.committee = committee1
 
