@@ -10,6 +10,7 @@ import LandingPage from "./Components/LandingPage/LandingPage.js"
 import NotFound from "./Components/NotFound/NotFound.js"
 import OfficialsList from "./Components/OfficialsList/OfficialsList.js"
 import Settings from "./Components/Settings/Settings.js"
+import Document from "./Components/Documents/Document.js"
 
 function App() {
     return <Router>
@@ -19,10 +20,16 @@ function App() {
                 <LandingPage />
             </Route>
             <Route exact path="/officials">
+                <MainMenu />
                 <OfficialsList />
             </Route>
             <Route exact path="/settings">
+                <MainMenu />
                 <Settings />
+            </Route>
+            <Route exact path="/documents">
+                <MainMenu />
+                <Document />
             </Route>
             <Route match="*">
                 <NotFound />
