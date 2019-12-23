@@ -1,7 +1,7 @@
 import React from 'react';
-import { UserConsumer } from './UserContext.js';
+import { UserConsumer } from './UserContext.jsx';
 import './UserForm.css';
-import ImageUpload from './ImageUpload.js';
+import ImageUpload from './ImageUpload.jsx';
 
 class UserForm extends React.Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import UserCardTextbox from './UserCardTextbox.js';
+import UserCardTextbox from './UserCardTextbox.jsx';
 
 import './UserCard.css';
 

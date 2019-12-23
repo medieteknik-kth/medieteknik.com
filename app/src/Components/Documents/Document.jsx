@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './Document.css';
-import './DocumentCard.js'
+import './DocumentCard.jsx'
 import {quickSort} from '../../Utility/SortDocuments.js'
-import DocumentCard from './DocumentCard.js';
+import DocumentCard from './DocumentCard.jsx';
 import EmpyArrowDown from './Arrows/Empty-arrow-down.svg';
 
 // Att göra:

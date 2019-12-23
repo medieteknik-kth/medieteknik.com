@@ -5,12 +5,12 @@ import 'circular-std';
 import 'normalize.css';
 import './Components/Common/Typography.css';
 
-import MainMenu from './Components/MainMenu/MainMenu.js';
-import LandingPage from './Components/LandingPage/LandingPage.js';
-import NotFound from './Components/NotFound/NotFound.js';
-import OfficialsList from './Components/OfficialsList/OfficialsList.js';
-import Settings from './Components/Settings/Settings.js';
-import Document from './Components/Documents/Document.js';
+import MainMenu from './Components/MainMenu/MainMenu';
+import LandingPage from './Components/LandingPage/LandingPage';
+import NotFound from './Components/NotFound/NotFound';
+import OfficialsList from './Components/OfficialsList/OfficialsList';
+import Settings from './Components/Settings/Settings';
+import Document from './Components/Documents/Document';
 
 function App() {
   return (

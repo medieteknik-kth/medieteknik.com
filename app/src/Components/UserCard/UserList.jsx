@@ -1,6 +1,6 @@
 import React from 'react';
-import UserCard from './UserCard.js';
-import UserForm from './UserForm.js';
+import UserCard from './UserCard.jsx';
+import UserForm from './UserForm.jsx';
 
 class UserList extends React.Component {
   constructor(props) {
