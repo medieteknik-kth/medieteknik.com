@@ -1,29 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import UserCard from './UserCard.jsx';
-import UserForm from './UserForm.jsx';
 
-class UserList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      users: [],
-    };
-  }
+export default function UserList() {
+  const [users, setUsers] = useState([]);
 
-  componentDidMount() {
+  useEffect(() => {
     fetch('/api/user').then((response) => response.json())
       .then((data) => {
-        this.setState({ users: data });
+        setUsers(data);
       });
-  }
+  });
 
-  render() {
-    return (
-      <div className="userList">
-        {this.state.users.map((value, index) => <UserCard key={index} user={value} />)}
-      </div>
-    );
-  }
+  return (
+    <div className="userList">
+      {users.map((user) => <UserCard key={user.id} user={user} />)}
+    </div>
+  );
 }
-
-export default UserList;

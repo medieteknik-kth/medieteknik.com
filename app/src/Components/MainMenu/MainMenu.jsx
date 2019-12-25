@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from './logo.png';
 import logo_vit from './logo_vit.png';
 import search_icon from './search_icon.svg';
@@ -11,16 +12,22 @@ class MainManu extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isTop: true,
-    };
+    if (this.props.transparent) {
+      document.addEventListener('scroll', () => {
+        const isTop = window.scrollY < 100;
+        if (isTop !== this.state.isTop) {
+          this.setState({ isTop });
+        }
+      });
 
-    document.addEventListener('scroll', () => {
-      const isTop = window.scrollY < 100;
-      if (isTop !== this.state.isTop) {
-        this.setState({ isTop });
-      }
-    });
+      this.state = {
+        isTop: true,
+      };
+    } else {
+      this.state = {
+        isTop: false,
+      };
+    }
   }
 
   componentDidMount() {
@@ -48,11 +55,13 @@ class MainManu extends React.Component {
         style={{ transition: '1s ease' }}
       >
         <div className="inner_container">
-          <div className="container-left" style={{ transition: '1s ease' }}>
-            {/* changes the logo depending on scroll */}
-            <img src={logo} className={this.state.isTop ? 'logo' : 'logo hidden_logo'} alt="Logo" />
-            <img src={logo_vit} className={this.state.isTop ? 'logo hidden_logo' : 'logo'} alt="Logo" />
-          </div>
+          <Link to="/">
+            <div className="container-left" style={{ transition: '1s ease' }}>
+              {/* changes the logo depending on scroll */}
+              <img src={logo} className={this.state.isTop ? 'logo' : 'logo hidden_logo'} alt="Logo" />
+              <img src={logo_vit} className={this.state.isTop ? 'logo hidden_logo' : 'logo'} alt="Logo" />
+            </div>
+          </Link>
           <div className="container-right">
             { // Shows the headers that were created earlier in render()
                             buttons

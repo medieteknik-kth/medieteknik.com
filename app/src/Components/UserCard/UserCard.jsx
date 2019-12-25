@@ -1,23 +1,19 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import UserCardTextbox from './UserCardTextbox.jsx';
 
 import './UserCard.css';
 
-class UserCard extends React.Component {
-  render() {
-    return (
-      <div className="userCard">
-        <img
-          className="userImage"
-          src={this.props.user.profile_picture}
-          alt={`${this.props.user.first_name} ${this.props.user.last_name}`}
-        />
-        <div className="userCardBanner">
-          <UserCardTextbox user={this.props.user} subtitle={this.props.subtitle} email={this.props.email} />
-        </div>
+export default function UserCard({ user, subtitle, email }) {
+  return (
+    <div className="userCard">
+      <img
+        className="userImage"
+        src={user.profile_picture}
+        alt={`${user.first_name} ${user.last_name}`}
+      />
+      <div className="userCardBanner">
+        <UserCardTextbox user={user} subtitle={subtitle} email={email} />
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default UserCard;

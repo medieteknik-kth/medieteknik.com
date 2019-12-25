@@ -12,12 +12,12 @@ import OfficialsList from './Components/OfficialsList/OfficialsList';
 import Settings from './Components/Settings/Settings';
 import Document from './Components/Documents/Document';
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          <MainMenu />
+          <MainMenu transparent />
           <LandingPage />
         </Route>
         <Route exact path="/officials">
@@ -39,5 +39,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;
