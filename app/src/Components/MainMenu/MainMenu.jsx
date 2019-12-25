@@ -49,35 +49,44 @@ class MainManu extends React.Component {
 
       </div>
     ));
+
+    let className = this.state.isTop ? 'menuContainer top' : 'menuContainer down'; /* Changes the styling class depending on whether we are at the top or scrolled down */
+    if (this.props.transparent) {
+      className += ' ';
+    }
+
     return (
-      <div
-        className={this.state.isTop ? 'container top' : 'container down' /* Changes the styling class depending on whether we are at the top or scrolled down */}
-        style={{ transition: '1s ease' }}
-      >
-        <div className="inner_container">
-          <Link to="/">
-            <div className="container-left" style={{ transition: '1s ease' }}>
-              {/* changes the logo depending on scroll */}
-              <img src={logo} className={this.state.isTop ? 'logo' : 'logo hidden_logo'} alt="Logo" />
-              <img src={logo_vit} className={this.state.isTop ? 'logo hidden_logo' : 'logo'} alt="Logo" />
-            </div>
-          </Link>
-          <div className="container-right">
-            { // Shows the headers that were created earlier in render()
+      <div>
+        <div
+          className={className}
+          style={{ transition: '1s ease' }}
+        >
+          <div className="inner_container">
+            <Link to="/">
+              <div className="container-left" style={{ transition: '1s ease' }}>
+                {/* changes the logo depending on scroll */}
+                <img src={logo} className={this.state.isTop ? 'logo' : 'logo hidden_logo'} alt="Logo" />
+                <img src={logo_vit} className={this.state.isTop ? 'logo hidden_logo' : 'logo'} alt="Logo" />
+              </div>
+            </Link>
+            <div className="container-right">
+              { // Shows the headers that were created earlier in render()
                             buttons
 }
-            <button className="dropbtn">
-              <img alt="svgImg" src={search_icon} className="search_icon" />
-            </button>
-            {/* Måste ha rätt icon!!! */}
-            <button className="dropbtn">
-              <img alt="svgImg" src={login_icon} className="login_icon" />
-            </button>
-            <button className="dropbtn">
-              <img alt="svgImg" src={eng_icon} className="eng_icon" />
-            </button>
+              <button className="dropbtn">
+                <img alt="svgImg" src={search_icon} className="search_icon" />
+              </button>
+              {/* Måste ha rätt icon!!! */}
+              <button className="dropbtn">
+                <img alt="svgImg" src={login_icon} className="login_icon" />
+              </button>
+              <button className="dropbtn">
+                <img alt="svgImg" src={eng_icon} className="eng_icon" />
+              </button>
+            </div>
           </div>
         </div>
+        <div className={this.props.transparent ? '' : 'menuBottomMargin'} />
       </div>
     );
   }

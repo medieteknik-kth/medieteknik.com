@@ -1,5 +1,5 @@
 /*The styling on the container that contains the entire menu*/
-.container {
+.menuContainer {
   height: 90px; /* Sets the height of the navbar */
   overflow: visible; /* Shows the content even if it is bigger than the container (needed to show the dropdowns)*/
   position: fixed; /* Set the navbar to fixed position */
@@ -18,6 +18,10 @@
 
 .down {
   background-color: #eec912;
+}
+
+.menuBottomMargin {
+  margin-bottom: 110px;
 }
 
 /*Styling for the content in the menu*/
@@ -89,7 +93,7 @@
   font-family: sans-serif;
   display: none;
   position: absolute;
-  background-color: rgba(238, 201, 18, 0.904);
+  background-color: rgba(238, 201, 18, 0.904) !important;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
