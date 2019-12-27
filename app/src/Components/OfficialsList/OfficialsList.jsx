@@ -7,7 +7,7 @@ export default function OfficialsList() {
   const [committees, setCommittees] = useState([]);
 
   useEffect(() => {
-    fetch('/api/committee').then((response) => response.json())
+    fetch('http://localhost:5000/committee').then((response) => response.json())
       .then((data) => {
         setCommittees(data);
       });
