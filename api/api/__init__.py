@@ -2,6 +2,13 @@ from flask import Flask, session, jsonify, request, redirect, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
+from flask_restful import Api
+
+from api.db import db
+
+from api.resources.user import UserResource, UserListResource
+from api.resources.committee import CommitteeResource, CommitteeListResource
+from api.resources.committee_post import CommitteePostResource, CommitteePostListResource
 
 import os
 
@@ -16,8 +23,18 @@ app.config['CAS_VALIDATE_ROUTE'] = os.getenv("CAS_VALIDATE_ROUTE", "/p3/serviceV
 app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "/")
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 
-db = SQLAlchemy(app)
+db.init_app(app)
 CORS(app)
+api = Api(app)
+
+api.add_resource(UserListResource, "/users")
+api.add_resource(UserResource, "/users/<id>")
+
+api.add_resource(CommitteeListResource, "/committees")
+api.add_resource(CommitteeResource, "/committees/<id>")
+
+api.add_resource(CommitteePostListResource, "/committee_posts")
+api.add_resource(CommitteePostResource, "/committee_posts/<id>")
 
 if app.debug:
     local_cas = Blueprint("cas", __name__)
@@ -101,7 +118,3 @@ def route_create_all():
     db.session.commit()
 
     return "klar"
-
-
-
-from api import routes
