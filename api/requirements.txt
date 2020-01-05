@@ -1,3 +1,8 @@
 flask==1.0.3
 Flask-SQLAlchemy==2.4.1
-psycopg2==2.8.3
+psycopg2==2.8.4
+Flask-Cors==3.0.8
+Flask-RESTful==0.3.7
+gunicorn==19.9.0
+Pillow==6.2.1
+git+git://github.com/cameronbwhite/Flask-CAS.git@10ee704#egg=Flask-CAS

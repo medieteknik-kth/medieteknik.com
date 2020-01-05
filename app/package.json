@@ -3,8 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.2.25",
+    "@fortawesome/free-brands-svg-icons": "5.11.2",
+    "@fortawesome/free-solid-svg-icons": "5.11.2",
+    "@fortawesome/react-fontawesome": "0.1.7",
+    "circular-std": "^1.0.3",
+    "normalize.css": "^8.0.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.1.1"
   },
   "scripts": {
@@ -27,5 +34,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^1.7.0"
   }
 }

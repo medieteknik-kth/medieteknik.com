@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="462.063px" height="535.5px" viewBox="114.749 128.25 462.063 535.5" enable-background="new 114.749 128.25 462.063 535.5"
+	 xml:space="preserve">
+<g id="Layer_1_1_">
+	<title></title>
+	<g id="login">
+		<line fill="none" stroke="#FFFFFF" stroke-miterlimit="10" x1="136.938" y1="396" x2="385.562" y2="396"/>
+		<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M232.562,223.875V166.5h306v459h-306v-57.375h-38.25v76.5
+			c0,10.562,8.562,19.125,19.125,19.125h344.25c10.562,0,19.125-8.562,19.125-19.125v-497.25c0-10.562-8.562-19.125-19.125-19.125
+			h-344.25c-10.562,0-19.125,8.562-19.125,19.125v76.5H232.562z"/>
+		<line fill="none" stroke="#FFFFFF" stroke-miterlimit="10" x1="385.562" y1="396" x2="309.062" y2="319.5"/>
+		<line fill="none" stroke="#FFFFFF" stroke-miterlimit="10" x1="385.562" y1="396" x2="309.062" y2="472.5"/>
+	</g>
+</g>
+<g id="Layer_2">
+	<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M340.135,415.418h-208.48c0,0-16.904-1.408-16.904-20.074
+		c0-18.664,21.129-19.016,22.186-19.016s203.199,0,203.199,0l-45.781-46.133c0,0-9.861-14.088,1.408-25.355
+		c11.27-11.27,23.419-5.461,28.876,0c5.459,5.457,78.533,78.883,78.533,78.883s4.578,8.102,4.578,14.087
+		c0,5.986-9.332,14.308-10.683,16.199c-1.175,1.643-28.877,28.172-28.877,28.172l-38.738,39.443c0,0-17.843,21.833-33.104,6.572
+		s0.705-27.938-1.175-27.47C293.297,461.199,340.135,415.418,340.135,415.418z"/>
+</g>
+<g id="Layer_3">
+	<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M224.062,415.418v-39.09h-87.127c0,0-22.186-2.141-22.186,19.016
+		c0,21.157,16.904,20.074,16.904,20.074l82.408,0.009L224.062,415.418z"/>
+</g>
+<g id="Layer_4">
+	<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M233.462,166.188h-39.089v87.127c0,0-2.141,22.186,19.016,22.186
+		c21.157,0,20.073-16.904,20.073-16.904l0.01-82.408L233.462,166.188z"/>
+	<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M194.322,628.504h39.09v-87.127c0,0,2.141-22.186-19.016-22.186
+		s-20.074,16.903-20.074,16.903l-0.01,82.408L194.322,628.504z"/>
+</g>
+</svg>
