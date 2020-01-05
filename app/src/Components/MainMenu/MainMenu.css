@@ -1,0 +1,122 @@
+/*The styling on the container that contains the entire menu*/
+.menuContainer {
+  height: 90px; /* Sets the height of the navbar */
+  overflow: visible; /* Shows the content even if it is bigger than the container (needed to show the dropdowns)*/
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+}
+
+/*Styling for the menu's bakground color, depending on whether it is at the top or scrolled down*/
+.top {
+  background-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.295)
+  );
+}
+
+.down {
+  background-color: #eec912;
+}
+
+.menuBottomMargin {
+  margin-bottom: 110px;
+}
+
+/*Styling for the content in the menu*/
+.inner_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 1%;
+  margin-left: 3%;
+  margin-right: 2%;
+}
+
+.container-right {
+  float: right;
+}
+
+.container-left {
+  float: left;
+}
+
+/*Change the logo on scroll*/
+.logo {
+  width: 50px;
+  position: absolute;
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+/*when scrolled to the top the logo with this class dissappears*/
+.hidden_logo {
+  opacity: 0;
+}
+
+/*search icon*/
+.search_icon {
+  width: 15px;
+}
+
+/*login icon*/
+.login_icon {
+  width: 14px;
+}
+
+/*english icon*/
+.eng_icon {
+  width: 25px;
+  padding-bottom: 1px;
+}
+
+/*Styling for the dropdowns*/
+.dropbtn {
+  font-family: sans-serif;
+  background-color: transparent;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  font-weight: 200;
+  letter-spacing: 3px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  font-family: sans-serif;
+  display: none;
+  position: absolute;
+  background-color: rgba(238, 201, 18, 0.904) !important;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  padding: px;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  color: #eec912;
+}
