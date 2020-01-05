@@ -6,7 +6,7 @@ from api.models.user import User
 class UserResource(Resource):
     def get(self, id):
         user = User.query.get(id)
-        return jsonify(user.get_data())
+        return jsonify(user.to_dict())
 
     def put(self, id):
         user = User.query.get(id)
@@ -55,7 +55,7 @@ class UserResource(Resource):
 class UserListResource(Resource):
     def get(self):
         users = User.query.all()
-        data = [user.get_data() for user in users]
+        data = [user.to_dict() for user in users]
         return jsonify(data)
 
 def resize_image(file_path, filename):

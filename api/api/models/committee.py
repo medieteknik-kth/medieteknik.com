@@ -10,8 +10,8 @@ class Committee(db.Model):
     header_image = db.Column(db.String)
     
 
-    def get_data(self):
-        posts = [post.get_data() for post in self.posts]
+    def to_dict(self):
+        posts = [post.to_dict() for post in self.posts]
 
         return {
             "id": self.id,

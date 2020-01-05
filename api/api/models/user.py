@@ -23,21 +23,7 @@ class User(db.Model):
     alumni = db.Column(db.Boolean)
     committee_posts = db.relationship('CommitteePost', secondary=relationship_table, backref='users')
 
-    def get_data_without_posts(self):
-        return {"id": self.id,
-                "email": self.email,
-                "kth_id": self.kth_id,
-                "profile_picture": self.profile_picture,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "frack_name": self.frack_name,
-                "kth_year": self.kth_year,
-                "linkedin": self.linkedin,
-                "facebook": self.facebook,
-                "alumni": self.alumni
-                }
-
-    def get_data(self):
+    def to_dict(self):
         posts = []
 
         for post in self.committee_posts:

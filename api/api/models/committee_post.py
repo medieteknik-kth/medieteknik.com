@@ -10,8 +10,8 @@ class CommitteePost(db.Model):
     committee = db.relationship("Committee", back_populates = "posts")
     official_post = db.Column(db.Boolean)
 
-    def get_data(self):
-        users = [user.get_data() for user in self.users]
+    def to_dict(self):
+        users = [user.to_dict() for user in self.users]
 
         return {
             "id": self.id,
