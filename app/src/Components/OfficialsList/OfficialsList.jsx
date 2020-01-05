@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserCard from '../UserCard/UserCard';
+import Api from '../../Utility/Api.js'
 
 import './OfficialsList.css';
 
@@ -7,7 +8,7 @@ export default function OfficialsList() {
   const [committees, setCommittees] = useState([]);
 
   useEffect(() => {
-    fetch('https://medieteknik.azure-api.net/dev/committee').then((response) => response.json())
+    Api.Committees.GetAll()
       .then((data) => {
         setCommittees(data);
       });
