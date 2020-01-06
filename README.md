@@ -1,4 +1,4 @@
-# Medieteknik.com
+![Medieteknik Logo](docs/images/medieteknik-logo.png)
 
 ## Länkar
 * [Mer info om frontend](app/README.md)
