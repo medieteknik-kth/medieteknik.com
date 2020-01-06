@@ -12,7 +12,7 @@ export default function OfficialsList() {
       .then((data) => {
         setCommittees(data);
       });
-  });
+  }, []);
 
   return (
     <div>
