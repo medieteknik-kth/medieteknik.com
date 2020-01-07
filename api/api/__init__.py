@@ -127,6 +127,29 @@ def route_create_all():
     db.session.add(user2)
     db.session.add(committee1)
     db.session.add(CommitteePost1)
+
+    doc = Document()
+    doc.title = "PROTOKOLLLLLA IN DET HÄR"
+    doc.fileName = "abc123.pdf"
+    doc.uploadedBy = "Joppe"
+    
+
+    tag = Tag()
+    tag.title = "styrelsen"
+
+    tag2 = Tag()
+    tag2.title = "annat"
+    
+
+    db.session.add(doc)
+    db.session.add(tag)
+    db.session.add(tag2)
+    db.session.commit()
+    doctag = DocumentTags()
+    doctag.itemId = doc.itemId
+    doctag.tagId = tag.tagId
+    db.session.add(doctag)
+
     db.session.commit()
 
     return "klar"
