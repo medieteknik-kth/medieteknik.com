@@ -11,13 +11,13 @@
 3. Skapa ett virtualenv i mappen (ni behöver bara göra detta en gång)
     * För Windows:
         * Kör `pip install virtualenv`
-        * Kör `virtualenv -p python3 venv`
+        * Kör `virtualenv -p python venv`
     * För macOS/Linux:
         * Kör `pip3 install virtualenv`
         * Kör `virtualenv -p python3 venv`
 4. Starta er virtualenv (ni behöver göra detta varje gång ni öppnar en ny kommandotolk)
     * För Windows:
-        * Kör `venv/Scripts/activate`
+        * Kör `venv\Scripts\activate`
     * För macOS/Linux:
         * Kör `source venv/bin/activate`
 4. Installera paket genom att köra `pip install -r requirements.txt`
