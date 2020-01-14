@@ -11,6 +11,7 @@ import NotFound from './Components/NotFound/NotFound';
 import OfficialsList from './Components/OfficialsList/OfficialsList';
 import Settings from './Components/Settings/Settings';
 import Document from './Components/Documents/Document';
+import CommitteeList from './Components/Committee/CommitteeList';
 
 export default function App() {
   return (
@@ -20,17 +21,21 @@ export default function App() {
           <MainMenu transparent />
           <LandingPage />
         </Route>
-        <Route exact path="/officials">
+        <Route path="/officials">
           <MainMenu />
           <OfficialsList />
         </Route>
-        <Route exact path="/settings">
+        <Route path="/settings">
           <MainMenu />
           <Settings />
         </Route>
-        <Route exact path="/documents">
+        <Route path="/documents">
           <MainMenu />
           <Document />
+        </Route>
+        <Route path="/committees">
+          <MainMenu />
+          <CommitteeList />
         </Route>
         <Route match="*">
           <NotFound />
