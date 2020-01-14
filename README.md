@@ -10,8 +10,9 @@
 2. Gå in i mappen `api` med din kommandotolk. (allstå inte `api/api`, jag vet, det är förvirrande)
 3. Skapa ett virtualenv i mappen (ni behöver bara göra detta en gång)
     * För Windows:
+        * Dubbelkolla att ni använder Python 3 genom `python --version`
         * Kör `pip install virtualenv`
-        * Kör `virtualenv -p python venv`
+        * Kör `python -m venv venv`
     * För macOS/Linux:
         * Kör `pip3 install virtualenv`
         * Kör `virtualenv -p python3 venv`
@@ -23,7 +24,8 @@
 4. Installera paket genom att köra `pip install -r requirements.txt`
 5. Starta servern
     * För Windows:
-        * Kör `set FLASK_APP=api`
+        * För kommandotolket: `set FLASK_APP=api`
+        * För Powershell: `$env:FLASK_APP = "api"`
         * Kör `flask run`
     * För macOS/Linux:
         * Kör `FLASK_APP=api flask run`
