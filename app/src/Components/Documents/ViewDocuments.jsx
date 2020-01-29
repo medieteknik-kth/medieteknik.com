@@ -269,7 +269,7 @@ class ViewDocuments extends Component {
                         </div>
                         
                         <div className="text-items-in-right-header">
-                            <div className="sortByStyledBoxContainer dropdown">
+                            <div className="sortByStyledBoxContainer doc-dropdown">
                                 <div className="sortByStyledBox">
                                     <div>
                                         {this.state.sortValue === "dateStart" ? 'Sortera efter' : ''}
@@ -281,7 +281,7 @@ class ViewDocuments extends Component {
                                     <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content">
+                                <div className = "doc-dropdown-content">
                                     <p 
                                         onClick = {() => {
                                             this.setState({sortValue: "alphabetical"})
@@ -316,7 +316,7 @@ class ViewDocuments extends Component {
                                 </div>
                             </div>
 
-                            <div className="sortByStyledBoxContainer dropdown">
+                            <div className="sortByStyledBoxContainer doc-dropdown">
                                 <div className="sortByStyledBox orderByStyledBox">
                                     <div>
                                         {this.state.orderValue === "falling" ? 'Fallande' : ''}
@@ -325,7 +325,7 @@ class ViewDocuments extends Component {
                                     <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content-order">
+                                <div className = "doc-dropdown-content-order">
                                     <p 
                                         onClick = {() => {
                                             this.setState({orderValue: "falling"})
@@ -345,7 +345,7 @@ class ViewDocuments extends Component {
                             </div>
                         </div>
 
-                        <div className="sortByStyledBoxContainer dropdown">
+                        <div className="sortByStyledBoxContainer doc-dropdown">
                                 <div className="sortByStyledBox orderByStyledBox">
                                     <div>
                                         Filtrera
@@ -353,7 +353,7 @@ class ViewDocuments extends Component {
                                     <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content-cats">
+                                <div className = "doc-dropdown-content-cats">
                                     <div>
                                         <div className="buttonContainer">
                                             <div 
