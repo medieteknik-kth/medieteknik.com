@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Api from '../../Utility/Api';
 
+import './CommitteePage.css';
+
 export default function CommitteePage() {
   const { committeeId } = useParams();
 
@@ -15,6 +17,9 @@ export default function CommitteePage() {
   }, []);
 
   return (
-    <h1>{committee.name}</h1>
+    <div className="committeePage">
+      <img src={committee.logo} alt={`${committee.name} logo`} width="64" height="64" />
+      <h1>{committee.name}</h1>
+    </div>
   );
 }

@@ -115,6 +115,7 @@ def route_create_all():
 
     committee2 = Committee()
     committee2.name = "Mottagningen"
+    committee2.logo = "http://www.medieteknik.com/sites/default/files/styles/700_width/public/mottagningen_1.png?itok=PDy_0qSI"
     committee_post2 = CommitteePost()
     committee_post2.name = "Öfverphös"
     committee_post2.officials_email = "oph@medieteknik.com"

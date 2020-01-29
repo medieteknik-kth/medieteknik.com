@@ -16,5 +16,7 @@ class Committee(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "posts": posts
+            "posts": posts,
+            "logo": self.logo,
+            "header_image": self.header_image
         }
