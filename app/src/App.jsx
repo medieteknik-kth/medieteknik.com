@@ -16,7 +16,7 @@ export default function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
+        <Route exact path="/MainMenu">
           <MainMenu transparent />
           <LandingPage />
         </Route>
@@ -28,7 +28,7 @@ export default function App() {
           <MainMenu />
           <Settings />
         </Route>
-        <Route exact path="/documents">
+        <Route exact path="/">
           <MainMenu />
           <Document />
         </Route>
