@@ -275,7 +275,6 @@
     border-bottom: 1px solid rgb(160, 160, 160, 0.5);
     cursor: default;
     text-align: left;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -291,7 +290,7 @@
 }
 
 .doc-dropdown-content-cats {
-    display: block;
+    display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 130px;
@@ -300,11 +299,10 @@
     text-align: left;
     padding-left: 10px;
     padding-top: 10px;
-    margin: 0;
 }
 
 .doc-dropdown-content-order {
-    display: block;
+    display: none;
     position: absolute;
     right: 1px;
     background-color: #f9f9f9;
@@ -312,14 +310,14 @@
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     text-align: left;
-    margin: 0;
 }
 
 .doc-dropdown-content-order p {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
-    display: block;    
+    display: block;   
+    margin: 0; 
 }
 
 .doc-dropdown-content-order p:hover {
@@ -329,7 +327,7 @@
 }
 
 .doc-dropdown-content {
-    display: block;
+    display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
@@ -343,6 +341,7 @@
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    margin:0;
   }
 
 .doc-dropdown-content p:hover {
@@ -351,15 +350,15 @@
     cursor: pointer;
 }
 
-.doc-dropdown:hover .dropdown-content{
+.doc-dropdown:hover .doc-dropdown-content{
     display: block;
 }
 
-.doc-dropdown:hover .dropdown-content-order{
+.doc-dropdown:hover .doc-dropdown-content-order{
     display: block;
 }
 
-.doc-dropdown:hover .dropdown-content-cats {
+.doc-dropdown:hover .doc-dropdown-content-cats {
     display: block;
 }
 
