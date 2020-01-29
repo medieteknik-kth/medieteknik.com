@@ -8,7 +8,7 @@ import './Components/Common/Typography.css';
 import MainMenu from './Components/MainMenu/MainMenu';
 import LandingPage from './Components/LandingPage/LandingPage';
 import NotFound from './Components/NotFound/NotFound';
-import OfficialsList from './Components/OfficialsBoard/OfficialsBoard';
+import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Document from './Components/Documents/Document';
 import CommitteeList from './Components/Committee/CommitteeList';
@@ -23,7 +23,7 @@ export default function App() {
         </Route>
         <Route path="/officials">
           <MainMenu />
-          <OfficialsList />
+          <OfficialsBoard />
         </Route>
         <Route path="/settings">
           <MainMenu />
