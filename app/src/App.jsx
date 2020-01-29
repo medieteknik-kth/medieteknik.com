@@ -8,7 +8,7 @@ import './Components/Common/Typography.css';
 import MainMenu from './Components/MainMenu/MainMenu';
 import LandingPage from './Components/LandingPage/LandingPage';
 import NotFound from './Components/NotFound/NotFound';
-import OfficialsList from './Components/OfficialsList/OfficialsList';
+import OfficialsList from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Document from './Components/Documents/Document';
 import CommitteeList from './Components/Committee/CommitteeList';
