@@ -12,6 +12,7 @@ from api.resources.committee_post import CommitteePostResource, CommitteePostLis
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
+from api.resources.post import PostResource
 
 import os
 
@@ -48,6 +49,8 @@ api.add_resource(MenuItemResource, "/menus/<id>")
 
 api.add_resource(SearchResource, "/search/<search_term>")
 
+api.add_resource(PostResource, "/posts")
+
 if app.debug:
     local_cas = Blueprint("cas", __name__)
     @local_cas.route("/login", methods=["GET", "POST"])
@@ -81,10 +84,15 @@ else:
 def auth_test():
     return "Du är inloggad som " + str(session["CAS_USERNAME"])
 
+@app.route("/ek_test")
+def ek_test():
+    return "Wow"
+
 @app.route("/create_all")
 def route_create_all():
     from api.models.user import User, Committee, CommitteePost, relationship_table
     from api.models.document import Document, Tag, DocumentTags
+    from api.models.post import Post
     db.drop_all()
     db.create_all()
 
@@ -133,14 +141,12 @@ def route_create_all():
     doc.title = "PROTOKOLLLLLA IN DET HÄR"
     doc.fileName = "abc123.pdf"
     doc.uploadedBy = "Joppe"
-    
 
     tag = Tag()
     tag.title = "styrelsen"
 
     tag2 = Tag()
     tag2.title = "annat"
-    
 
     db.session.add(doc)
     db.session.add(tag)
@@ -151,6 +157,15 @@ def route_create_all():
     doctag.tagId = tag.tagId
     db.session.add(doctag)
 
+    db.session.commit()
+
+    post = Post()
+    post.title = "Folk söker folk"
+    post.header_image = "wow.jpg"
+    post.body = "hejhej"
+    #post.committee_post = CommitteePost1
+    
+    db.session.add(post)
     db.session.commit()
 
     return "klar"
