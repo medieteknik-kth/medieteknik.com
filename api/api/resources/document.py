@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from flask_restful import Resource
 
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 import sys
 import uuid
 import json
