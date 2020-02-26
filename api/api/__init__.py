@@ -18,9 +18,13 @@ from api.resources.post import PostResource, PostAddResouce, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
+<<<<<<< HEAD
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
 
+=======
+from api.resources.event import EventResource, EventListResource
+>>>>>>> väldigt basic eventmodell
 
 import os
 import datetime
@@ -90,6 +94,8 @@ api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
+api.add_resource(EventListResource, "/events")
+api.add_resource(EventResource, "events/<id>")
 
 api.add_resource(HealthResource, "/health")
 
