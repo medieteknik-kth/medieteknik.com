@@ -20,7 +20,7 @@ class User(db.Model):
     kth_year = db.Column(db.Integer)
     linkedin = db.Column(db.String)
     facebook = db.Column(db.String)
-    alumni = db.Column(db.Boolean)
+    alumni = db.Column(db.Boolean, default=False)
     committee_posts = db.relationship('CommitteePost', secondary=relationship_table, backref='users')
 
     def to_dict(self):

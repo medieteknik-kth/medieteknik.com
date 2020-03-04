@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import 'circular-std';
 import 'normalize.css';
 import './Components/Common/Typography.css';
+import './Components/Common/Content.css';
 
 import MainMenu from './Components/MainMenu/MainMenu';
 import LandingPage from './Components/LandingPage/LandingPage';
@@ -12,6 +13,7 @@ import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Document from './Components/Documents/Document';
 import CommitteeList from './Components/Committee/CommitteeList';
+import PageManager from './Components/Page/PageManager'
 
 export default function App() {
   return (
@@ -36,6 +38,10 @@ export default function App() {
         <Route path="/committees">
           <MainMenu />
           <CommitteeList />
+        </Route>
+        <Route path="/pages">
+          <MainMenu />
+          <PageManager />
         </Route>
         <Route match="*">
           <NotFound />
