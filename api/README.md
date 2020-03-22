@@ -39,4 +39,4 @@ Ifall ni vill skapa en modell som ska lagras i databasen skapar ni en ny fil i `
 
 När ni har en ny modell behöver ni skapa den i databasen. Detta gör ni enklast genom att starta servern och gå in på http://localhost:5000/create_all. Detta rensar databasen och skapar nya tabeller efter alla modeller.
 
-Ni kan läsa mer om hur SQL-alchemy och modeller funkar [här](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/).
+Ni kan läsa mer om hur SQL-alchemy och modeller funkar [här](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/) och [här](https://hackersandslackers.com/database-queries-sqlalchemy-orm/).
