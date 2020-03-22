@@ -12,8 +12,10 @@ from api.resources.committee_post import CommitteePostResource, CommitteePostLis
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
+from api.resources.officials import OfficialsResource
 
 import os
+import datetime
 
 app = Flask(__name__)
 
@@ -47,6 +49,8 @@ api.add_resource(MenuResource, "/menus")
 api.add_resource(MenuItemResource, "/menus/<id>")
 
 api.add_resource(SearchResource, "/search/<search_term>")
+
+api.add_resource(OfficialsResource, "/officials")
 
 if app.debug:
     local_cas = Blueprint("cas", __name__)
