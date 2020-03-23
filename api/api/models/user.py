@@ -1,19 +1,14 @@
 from api.db import db
 
-from api.models.committee_post import CommitteePost
 from api.models.committee import Committee
-
-relationship_table=db.Table('relationship_table',
-                             db.Column('user_id', db.Integer,db.ForeignKey('user.id'), nullable=False),
-                             db.Column('committee_post_id',db.Integer,db.ForeignKey('committee_post.id'),nullable=False),
-                             db.PrimaryKeyConstraint('user_id', 'committee_post_id') )
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     kth_id = db.Column(db.String, unique=True)
     email = db.Column(db.String)
-    profile_picture = db.Column(db.String, default="/static/profiles/default.png")
+    profile_picture = db.Column(
+        db.String, default="/static/profiles/default.png")
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     frack_name = db.Column(db.String)
@@ -21,27 +16,40 @@ class User(db.Model):
     linkedin = db.Column(db.String)
     facebook = db.Column(db.String)
     alumni = db.Column(db.Boolean, default=False)
-    committee_posts = db.relationship('CommitteePost', secondary=relationship_table, backref='users')
+    post_terms = db.relationship("CommitteePostTerm", back_populates="user")
 
     def to_dict(self):
-        posts = []
+        terms = []
 
-        for post in self.committee_posts:
-            posts.append({"name": post.name, "committee": post.committee.name})
+        for term in self.post_terms:
+            terms.append({"post": term.post.to_dict(),
+                          "startDate": term.start_date,
+                          "endDate": term.end_date})
 
         return {"id": self.id,
                 "email": self.email,
-                "kth_id": self.kth_id,
-                "profile_picture": self.profile_picture,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "frack_name": self.frack_name,
-                "kth_year": self.kth_year,
+                "kthId": self.kth_id,
+                "profilePicture": self.profile_picture,
+                "firstName": self.first_name,
+                "lastName": self.last_name,
+                "frackName": self.frack_name,
+                "kthYear": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
-                "committee_post": posts,
+                "committePostTerms": terms,
                 "alumni": self.alumni
                 }
-
-
-
+    
+    def to_dict_without_terms(self):
+        return {"id": self.id,
+                "email": self.email,
+                "kthId": self.kth_id,
+                "profilePicture": self.profile_picture,
+                "firstName": self.first_name,
+                "lastName": self.last_name,
+                "frackName": self.frack_name,
+                "kthYear": self.kth_year,
+                "linkedin": self.linkedin,
+                "facebook": self.facebook,
+                "alumni": self.alumni
+                }

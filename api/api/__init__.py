@@ -13,8 +13,10 @@ from api.resources.document import DocumentResource, DocumentListResource, Docum
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
 from api.resources.page import PageResource, PageListResource
+from api.resources.officials import OfficialsResource
 
 import os
+import datetime
 
 app = Flask(__name__)
 
@@ -52,6 +54,8 @@ api.add_resource(SearchResource, "/search/<search_term>")
 api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
 
+api.add_resource(OfficialsResource, "/officials")
+
 if app.debug:
     local_cas = Blueprint("cas", __name__)
     @local_cas.route("/login", methods=["GET", "POST"])
@@ -87,7 +91,8 @@ def auth_test():
 
 @app.route("/create_all")
 def route_create_all():
-    from api.models.user import User, Committee, CommitteePost, relationship_table
+    from api.models.user import User, Committee
+    from api.models.committee_post import CommitteePost, CommitteePostTerm
     from api.models.document import Document, Tag, DocumentTags
     from api.models.page import Page, PageRevision, PageRevisionType
     db.drop_all()
@@ -127,39 +132,25 @@ def route_create_all():
     committee1.description = "Vi bygger sektionens nästa hemsida."
     committee1.instagram_url = "https://www.instagram.com/medieteknik_kth/"
 
-    CommitteePost1 = CommitteePost()
-    CommitteePost1.name= "Projektledare för Hemsidan"
-    user1.committee_posts.append(CommitteePost1)
+    post = CommitteePost()
+    post.name = "Projektledare för Hemsidan"
+    post.committee = committee1
+    post.is_official = True
+    term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
+    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2019, 6, 30))
 
-    committee2 = Committee()
-    committee2.name = "Mottagningen"
-    committee2.logo = "http://www.medieteknik.com/sites/default/files/styles/700_width/public/mottagningen_1.png?itok=PDy_0qSI"
-    committee_post2 = CommitteePost()
-    committee_post2.name = "Öfverphös"
-    committee_post2.officials_email = "oph@medieteknik.com"
-    committee_post2.committee = committee2
-    user1.committee_posts.append(committee_post2)
-    user2.committee_posts.append(committee_post2)
-
-    CommitteePost1.committee = committee1
+    user1.post_terms.append(term1)
+    user2.post_terms.append(term2)
 
     page = Page()
     page_revision1 = PageRevision()
     page_revision1.title = "Rubrik"
-    page_revision1.content = "<p>tjenare</p>"
+    page_revision1.content = ""
     page_revision1.author = user1
     page_revision1.revision_type = PageRevisionType.created
-    page_revision1.published = False
-
-    page_revision2 = PageRevision()
-    page_revision2.title = "Rubriken"
-    page_revision2.content = "<p>hallå</p>"
-    page_revision2.author = user2
-    page_revision2.revision_type = PageRevisionType.edited
-    page_revision2.published = True
+    page_revision1.published = True
 
     page.revisions.append(page_revision1)
-    page.revisions.append(page_revision2)
 
     committee1.page = page
 
@@ -167,9 +158,8 @@ def route_create_all():
     db.session.add(user2)
     db.session.add(user3)
     db.session.add(committee1)
-    db.session.add(CommitteePost1)
+    db.session.add(post)
     db.session.add(page_revision1)
-    db.session.add(page_revision2)
     db.session.add(page)
 
     doc = Document()
