@@ -55,7 +55,7 @@ class PageRevision(db.Model):
             "id": self.id,
             "timestamp": self.timestamp,
             "type": self.revision_type.name,
-            "author": self.author.to_dict() if self.author != None else None,
+            "author": self.author.to_dict_without_terms() if self.author != None else None,
             "title": self.title,
             "content": self.content,
             "published": self.published

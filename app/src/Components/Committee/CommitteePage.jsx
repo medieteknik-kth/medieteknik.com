@@ -25,6 +25,7 @@ export default function CommitteePage() {
       .then((data) => {
         setCommittee(data);
         setPosts(data.posts);
+        posts.map((post) => (post.currentTerms.map((term) => console.log(term.user))));
         if (data.page) {
           try {
             const contentData = JSON.parse(data.page.content);
@@ -86,7 +87,7 @@ export default function CommitteePage() {
       <div
         className="committeePageFooter"
       >
-        {posts.map((post) => (post.users.map((user) => <UserCard key={user.id} user={user} subtitle={post.name} email={post.officials_email} />)))}
+        {posts.map((post) => (post.currentTerms.map((term) => <UserCard key={term.user.id} user={term.user} subtitle={post.name} email={post.email} />)))}
       </div>
     </div>
   );
