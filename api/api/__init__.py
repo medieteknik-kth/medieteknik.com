@@ -132,12 +132,24 @@ def route_create_all():
     committee1.description = "Vi bygger sektionens nästa hemsida."
     committee1.instagram_url = "https://www.instagram.com/medieteknik_kth/"
 
+    committee2 = Committee()
+    committee2.name = "Mottagningen"
+
     post = CommitteePost()
     post.name = "Projektledare för Hemsidan"
     post.committee = committee1
     post.is_official = True
+    post.category = "Näringsliv- och kommunikation"
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
     term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2019, 6, 30))
+
+    oph = CommitteePost()
+    oph.name = "Öfverphös"
+    oph.committee = committee2
+    oph.is_official = True
+    oph.category = "Studiesocialt"
+    term3 = oph.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31, 23, 59))
+    user2.post_terms.append(term3)
 
     user1.post_terms.append(term1)
     user2.post_terms.append(term2)

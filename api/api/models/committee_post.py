@@ -11,6 +11,7 @@ class CommitteePost(db.Model):
     committee = db.relationship("Committee", back_populates = "posts")
     is_official = db.Column(db.Boolean)
     terms = db.relationship("CommitteePostTerm", back_populates="post")
+    category = db.Column(db.String)
 
     def current_terms(self):
         date = datetime.now()
@@ -40,7 +41,18 @@ class CommitteePost(db.Model):
             "email": self.officials_email,
             "committeeId": self.committee_id,
             "isOfficial": self.is_official,
-            "currentTerms": terms
+            "currentTerms": terms,
+            "category": self.category
+        }
+    
+    def to_dict_without_terms(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.officials_email,
+            "committeeId": self.committee_id,
+            "isOfficial": self.is_official,
+            "category": self.category
         }
 
 class CommitteePostTerm(db.Model):

@@ -46,8 +46,8 @@ class OfficialsResource(Resource):
             data.append({
                 "startDate": term.start_date,
                 "endDate": term.end_date,
-                "post": term.post.to_dict(),
-                "user": term.user.to_dict()
+                "post": term.post.to_dict_without_terms(),
+                "user": term.user.to_dict_without_terms()
             })
 
         return jsonify(data)
