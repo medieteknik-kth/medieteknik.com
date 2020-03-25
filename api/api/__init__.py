@@ -151,8 +151,20 @@ def route_create_all():
     term3 = oph.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31, 23, 59))
     user2.post_terms.append(term3)
 
+    mkm = Committee()
+    mkm.name = "MKM"
+    
+    kbm = CommitteePost()
+    kbm.name = "Klubbmästare"
+    kbm.committee = mkm
+    kbm.is_official = True
+    kbm.category = "Studiesocialt"
+    term4 = kbm.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 6, 30))
+
+
     user1.post_terms.append(term1)
     user2.post_terms.append(term2)
+    user2.post_terms.append(term4)
 
     page = Page()
     page_revision1 = PageRevision()
