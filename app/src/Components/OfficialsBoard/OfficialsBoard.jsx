@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import UserCard from '../UserCard/UserCard';
-import Api from '../../Utility/Api';
+import React, { useState, useEffect } from "react";
+import UserCard from "../UserCard/UserCard";
+import Api from "../../Utility/Api";
 
-import './OfficialsBoard.css';
+import "./OfficialsBoard.css";
 
 export default function OfficialsBoard() {
-  const [committees, setCommittees] = useState([]);
+  const [officials, setOfficials] = useState([]);
 
   useEffect(() => {
-    Api.Committees.GetAll()
-      .then((data) => {
-        setCommittees(data);
-      });
+    Api.Officials.GetAll().then(data => {
+      setOfficials(data);
+    });
   }, []);
 
   return (
     <div>
-      {committees.map((committee) => (
-        <div>
-          <h2 className="committeeHeader">{committee.name}</h2>
-          <div className="userList">
-            {committee.posts.map((post) => (
-              post.users.map((user) => (
-                <UserCard key={user.id} user={user} subtitle={post.name} email={post.officials_email} />
-              ))
-            ))}
-          </div>
+      {officials.map(official => (
+        <div className="userList">
+          <UserCard
+            key={official.user.id}
+            user={official.user}
+            subtitle={official.post.name}
+            email={official.post.email}
+          />
         </div>
       ))}
     </div>
