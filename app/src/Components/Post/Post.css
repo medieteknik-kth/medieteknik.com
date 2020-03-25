@@ -1,0 +1,75 @@
+:root {
+    --content-margin: 60px;
+}
+
+.post-container {
+    display: flex;
+    max-width: 100%;
+    min-height: 100%;
+    background-color: #f0f0f0;
+}
+
+.post-content-cont {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-height: 100%;
+    flex-direction: column;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.post-content-cont .post-go-back {
+    cursor: pointer;
+    font-weight: normal;
+    text-transform: uppercase;
+    width: 1120px;
+    color: #a2a2a2;
+    transition: color 0.2s ease-in;
+}
+
+.post-content-cont .post-go-back::before {
+    content: "< ";
+}
+
+.post-content-cont .post-go-back:hover {
+    color: #000000;
+}
+
+.post-content-cont .post-content {
+    background-color: #ffffff;
+    padding-top: calc( var(--content-margin)/2);
+    padding-right:  var(--content-margin);
+    padding-left: var(--content-margin);
+    padding-bottom: calc( var(--content-margin)/2);
+    width: 1000px;
+}
+
+.post-content .post-header {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.post-content .post-header h5 {
+    font-weight: normal;
+    color: #727171;
+}
+
+.post-content img {
+    max-width: 100%;
+}
+
+.post-footer h5 {
+    color: #c3c3c3;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.post-footer .post-tag:hover {
+    transition: color 0.2s ease-in-out;
+}
+
+.post-footer .post-tag:hover {
+    cursor: pointer;
+    color: #000000;
+}

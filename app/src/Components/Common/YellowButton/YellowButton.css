@@ -1,0 +1,15 @@
+.yellow-button {
+    cursor: pointer;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-transform: uppercase;
+    border: none;
+    background-color: #f0c900;
+    color: #ffffff;
+    border-radius: 40px;
+    padding: 20px 70px 20px 70px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.yellow-button:hover {
+    background-color: #000000;
+}

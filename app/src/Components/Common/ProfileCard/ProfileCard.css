@@ -1,0 +1,30 @@
+.profile-card {
+    display: flex;
+    height: 150px;
+}
+
+.profile-card::before {
+    content: " ";
+    display: block;
+    float: left;
+    height: 100%;
+    border-left: 10px solid #f0c900;
+}
+
+.profile-card img {
+    height: inherit;
+}
+
+.profile-details {
+    text-transform: uppercase;
+    padding: 20px;
+}
+
+.profile-details .profile-name {
+    font-weight: normal;
+}
+
+.profile-details .profile-title {
+    color: #b7b6b6;
+    font-weight: normal;
+}
