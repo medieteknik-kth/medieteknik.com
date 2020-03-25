@@ -12,6 +12,7 @@ class CommitteePost(db.Model):
     is_official = db.Column(db.Boolean)
     terms = db.relationship("CommitteePostTerm", back_populates="post")
     category = db.Column(db.String)
+    weight = db.Column(db.Integer, default=1)
 
     def current_terms(self):
         date = datetime.now()
@@ -42,7 +43,8 @@ class CommitteePost(db.Model):
             "committeeId": self.committee_id,
             "isOfficial": self.is_official,
             "currentTerms": terms,
-            "category": self.category
+            "category": self.category,
+            "weight": self.weight
         }
     
     def to_dict_without_terms(self):
@@ -52,7 +54,8 @@ class CommitteePost(db.Model):
             "email": self.officials_email,
             "committeeId": self.committee_id,
             "isOfficial": self.is_official,
-            "category": self.category
+            "category": self.category,
+            "weight": self.weight
         }
 
 class CommitteePostTerm(db.Model):

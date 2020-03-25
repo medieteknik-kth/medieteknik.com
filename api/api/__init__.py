@@ -148,6 +148,7 @@ def route_create_all():
     oph.committee = committee2
     oph.is_official = True
     oph.category = "Studiesocialt"
+    oph.weight = 100
     term3 = oph.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31, 23, 59))
     user2.post_terms.append(term3)
 

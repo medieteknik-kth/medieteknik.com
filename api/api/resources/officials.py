@@ -41,16 +41,13 @@ class OfficialsResource(Resource):
 
             terms = CommitteePostTerm.query.filter(CommitteePostTerm.post.has(CommitteePost.is_official == True)).filter(and_(CommitteePostTerm.start_date <= date, CommitteePostTerm.end_date >= date)).all()
 
-        data = {}
+        data = []
         for term in terms:
-            if term.post.category not in data:
-                data[term.post.category] = []
-
-            data[term.post.category].append({
+            data.append({
                 "startDate": term.start_date,
                 "endDate": term.end_date,
                 "post": term.post.to_dict_without_terms(),
                 "user": term.user.to_dict_without_terms()
             })
-        
+
         return jsonify(data)
