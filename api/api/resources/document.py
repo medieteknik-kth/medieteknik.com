@@ -50,7 +50,7 @@ def save_documents(request):
     for doc in files:
         file_ext = os.path.splitext(doc.filename)[1]
         fileName = str(uuid.uuid4())
-        d = Document(title=doc.filename, fileName = fileName + file_ext)
+        d = Document(title=request.form["title"], fileName = fileName + file_ext, tags=request.form["tag"])
         db.session.add(d)
         db_docs.append(d)
         doc.save(os.path.join(SAVE_FOLDER, doc.filename))   #skapar en mapp att spara uppladdade filer i när appen upprättas

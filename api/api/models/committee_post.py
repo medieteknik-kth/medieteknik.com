@@ -1,4 +1,7 @@
 from api.db import db
+from sqlalchemy import and_
+
+from datetime import datetime
 
 class CommitteePost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,6 +12,12 @@ class CommitteePost(db.Model):
     is_official = db.Column(db.Boolean)
     terms = db.relationship("CommitteePostTerm", back_populates="post")
 
+    def current_terms(self):
+        date = datetime.now()
+        terms = CommitteePostTerm.query.filter(CommitteePostTerm.post_id == self.id).filter(and_(CommitteePostTerm.start_date <= date, CommitteePostTerm.end_date >= date)).all()
+
+        return terms
+
     def new_term(self, start_date, end_date):
         term = CommitteePostTerm()
         term.post = self
@@ -17,12 +26,21 @@ class CommitteePost(db.Model):
         return term
     
     def to_dict(self):
+        terms = []
+        for term in self.current_terms():
+            terms.append({
+                "startDate": term.start_date,
+                "endDate": term.end_date,
+                "user": term.user.to_dict_without_terms()
+            })
+
         return {
             "id": self.id,
             "name": self.name,
             "email": self.officials_email,
             "committeeId": self.committee_id,
-            "isOfficial": self.is_official
+            "isOfficial": self.is_official,
+            "currentTerms": terms
         }
 
 class CommitteePostTerm(db.Model):

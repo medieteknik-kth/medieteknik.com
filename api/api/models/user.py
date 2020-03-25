@@ -15,7 +15,7 @@ class User(db.Model):
     kth_year = db.Column(db.Integer)
     linkedin = db.Column(db.String)
     facebook = db.Column(db.String)
-    alumni = db.Column(db.Boolean)
+    alumni = db.Column(db.Boolean, default=False)
     post_terms = db.relationship("CommitteePostTerm", back_populates="user")
 
     def to_dict(self):
@@ -28,14 +28,28 @@ class User(db.Model):
 
         return {"id": self.id,
                 "email": self.email,
-                "kth_id": self.kth_id,
-                "profile_picture": self.profile_picture,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "frack_name": self.frack_name,
-                "kth_year": self.kth_year,
+                "kthId": self.kth_id,
+                "profilePicture": self.profile_picture,
+                "firstName": self.first_name,
+                "lastName": self.last_name,
+                "frackName": self.frack_name,
+                "kthYear": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
                 "committePostTerms": terms,
+                "alumni": self.alumni
+                }
+    
+    def to_dict_without_terms(self):
+        return {"id": self.id,
+                "email": self.email,
+                "kthId": self.kth_id,
+                "profilePicture": self.profile_picture,
+                "firstName": self.first_name,
+                "lastName": self.last_name,
+                "frackName": self.frack_name,
+                "kthYear": self.kth_year,
+                "linkedin": self.linkedin,
+                "facebook": self.facebook,
                 "alumni": self.alumni
                 }
