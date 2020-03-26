@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import UserCard from '../UserCard/UserCard';
-import Api from '../../Utility/Api.js'
+import Api from '../../Utility/Api';
 
-import './OfficialsList.css';
+import './OfficialsBoard.css';
 
-export default function OfficialsList() {
+export default function OfficialsBoard() {
   const [committees, setCommittees] = useState([]);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ export default function OfficialsList() {
       .then((data) => {
         setCommittees(data);
       });
-  });
+  }, []);
 
   return (
     <div>

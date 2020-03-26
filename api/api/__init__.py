@@ -12,8 +12,11 @@ from api.resources.committee_post import CommitteePostResource, CommitteePostLis
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
+from api.resources.page import PageResource, PageListResource
+from api.resources.officials import OfficialsResource
 
 import os
+import datetime
 
 app = Flask(__name__)
 
@@ -47,6 +50,11 @@ api.add_resource(MenuResource, "/menus")
 api.add_resource(MenuItemResource, "/menus/<id>")
 
 api.add_resource(SearchResource, "/search/<search_term>")
+
+api.add_resource(PageListResource, "/pages")
+api.add_resource(PageResource, "/pages/<id>")
+
+api.add_resource(OfficialsResource, "/officials")
 
 if app.debug:
     local_cas = Blueprint("cas", __name__)
@@ -83,8 +91,10 @@ def auth_test():
 
 @app.route("/create_all")
 def route_create_all():
-    from api.models.user import User, Committee, CommitteePost, relationship_table
+    from api.models.user import User, Committee
+    from api.models.committee_post import CommitteePost, CommitteePostTerm
     from api.models.document import Document, Tag, DocumentTags
+    from api.models.page import Page, PageRevision, PageRevisionType
     db.drop_all()
     db.create_all()
 
@@ -101,33 +111,56 @@ def route_create_all():
 
     user2 = User()
     user2.email = "medieteknik@medieteknik.com"
-    user2.kth_id = "test"
+    user2.kth_id = "test2"
     user2.first_name = "Media"
     user2.last_name = "Mediansson"
     user2.frack_name = "Media"
     user2.kth_year = 2000
 
+    user3 = User()
+    user3.email = "medieteknik@medieteknik.com"
+    user3.kth_id = "test"
+    user3.first_name = "Media2"
+    user3.last_name = "Mediansson"
+    user3.frack_name = "Media"
+    user3.kth_year = 2000
+
     committee1 = Committee()
     committee1.name = "Hemsideprojektet"
-    CommitteePost1 = CommitteePost()
-    CommitteePost1.name= "Projektledare för Hemsidan"
-    user1.committee_posts.append(CommitteePost1)
+    committee1.logo = "https://i.imgur.com/29xtEWZ.png"
+    committee1.header_image = "https://i.imgur.com/h6jxbaR.jpg"
+    committee1.description = "Vi bygger sektionens nästa hemsida."
+    committee1.instagram_url = "https://www.instagram.com/medieteknik_kth/"
 
-    committee2 = Committee()
-    committee2.name = "Mottagningen"
-    committee_post2 = CommitteePost()
-    committee_post2.name = "Öfverphös"
-    committee_post2.officials_email = "oph@medieteknik.com"
-    committee_post2.committee = committee2
-    user1.committee_posts.append(committee_post2)
-    user2.committee_posts.append(committee_post2)
+    post = CommitteePost()
+    post.name = "Projektledare för Hemsidan"
+    post.committee = committee1
+    post.is_official = True
+    term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
+    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2019, 6, 30))
 
-    CommitteePost1.committee = committee1
+    user1.post_terms.append(term1)
+    user2.post_terms.append(term2)
+
+    page = Page()
+    page_revision1 = PageRevision()
+    page_revision1.title = "Rubrik"
+    page_revision1.content = ""
+    page_revision1.author = user1
+    page_revision1.revision_type = PageRevisionType.created
+    page_revision1.published = True
+
+    page.revisions.append(page_revision1)
+
+    committee1.page = page
 
     db.session.add(user1)
     db.session.add(user2)
+    db.session.add(user3)
     db.session.add(committee1)
-    db.session.add(CommitteePost1)
+    db.session.add(post)
+    db.session.add(page_revision1)
+    db.session.add(page)
 
     doc = Document()
     doc.title = "PROTOKOLLLLLA IN DET HÄR"

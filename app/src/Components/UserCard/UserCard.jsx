@@ -8,8 +8,8 @@ export default function UserCard({ user, subtitle, email }) {
     <div className="userCard">
       <img
         className="userImage"
-        src={user.profile_picture}
-        alt={`${user.first_name} ${user.last_name}`}
+        src={user.profilePicture}
+        alt={`${user.firstName} ${user.lastName}`}
       />
       <div className="userCardBanner">
         <UserCardTextbox user={user} subtitle={subtitle} email={email} />

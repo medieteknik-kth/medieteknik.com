@@ -1,0 +1,8 @@
+.addUserButtonContainer {
+    width: 250px;
+    height: 250px;
+    margin: 10px;
+    background-color: white;
+    border: 1px solid lightgray;
+    cursor: pointer;
+}

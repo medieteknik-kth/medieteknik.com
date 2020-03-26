@@ -6,9 +6,9 @@ export default function UserCardTextbox({ user, subtitle, email }) {
   return (
     <div className="userCardContent">
       <div className="userCardTitle userCardBannerHeader">
-        {user.first_name}
+        {user.firstName}
         {' '}
-        {user.last_name}
+        {user.lastName}
       </div>
       <div className="userCardBannerSubheader">
         <div>
