@@ -1,5 +1,5 @@
 import React from 'react';
-import './UserForm.css';
+// import './UserForm.css';
 import ImageUpload from '../Common/Form/ImageUpload.jsx';
 
 class Settings extends React.Component {
