@@ -235,6 +235,31 @@ h3 {
     margin-left: 5px;
 }
 
+@media (max-width: 690px) {
+    .textItemsInRightHeader {
+        margin-left: 0;
+        /* background-color: blue; */
+    }
+}
+
+@media (max-width: 690px) {
+    .filterClass {
+        float: right;
+        /* background-color: red; */
+    }
+
+    .SortByClass {
+        width: 30%;
+        margin-right: 10px;
+        /* background-color: blue; */
+    }
+
+    .sortDirectionClass {
+        /* background-color: green; */
+    }
+}
+
+
 .docList h3 {
     text-align: left;
     margin-left: 10px;
@@ -294,11 +319,20 @@ h3 {
     outline: none;
 }
 
+@media (max-width: 690px) {
+    .searchDoc {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5px;
+    }
+}
+
 .sortByStyledBox {
     font-size: 16px;
     width: 175px;
-    padding-top: 3px;
-    padding-bottom: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     padding-right: 5px;
     margin-left: 5px;
     margin-right: 5px;
@@ -312,14 +346,36 @@ h3 {
     justify-content: space-between;
 }
 
+@media (max-width: 690px) {
+    .sortByStyledBox {
+        width: 100%;
+        margin-left: 5px;
+    }
+}
+
 .orderByStyledBox {
     width: 100px;
+}
+
+@media (max-width: 690px) {
+    .orderByStyledBox {
+        width: 80px;
+        margin-left: 15px;
+    }
 }
 
 .sortByStyledBoxContainer {
     position: relative;
     display: inline-block;
 }
+
+@media (max-width: 690px) {
+    .sortByStyledBoxContainer {
+        /* background-color: red; */
+    }
+}
+
+
 
 .dropdownContentCats {
     display: none;

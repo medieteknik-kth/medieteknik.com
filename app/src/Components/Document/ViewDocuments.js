@@ -112,10 +112,10 @@ class ViewDocuments extends Component {
             sortValue: 'dateStart',
             orderValue: 'falling',
 
-            // cardsViewSelected: window.innerWidth >= 800 ? false : true,
-            // listViewSelected: window.innerWidth >= 800 ? true : false,
-            cardsViewSelected: true,
-            listViewSelected: false,
+            cardsViewSelected: window.innerWidth >= 800 ? false : true,
+            listViewSelected: window.innerWidth >= 800 ? true : false,
+            // cardsViewSelected: true,
+            // listViewSelected: false,
 
             query: '',
 
@@ -330,7 +330,7 @@ class ViewDocuments extends Component {
                         
                         <div className={classes.textItemsInRightHeader}>
                             <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
-                                <div className={classes.sortByStyledBox}>
+                                <div className={classes.sortByStyledBox + " " + classes.SortByClass}>
                                     <div>
                                         {this.state.sortValue === "dateStart" ? 'Sortera efter' : ''}
                                         {this.state.sortValue === "date" ? 'Uppladdningsdatum' : ''}
@@ -377,7 +377,7 @@ class ViewDocuments extends Component {
                             </div>
 
                             <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
-                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox}>
+                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox + " " + classes.sortDirectionClass}>
                                     <div>
                                         {this.state.orderValue === "falling" ? 'Fallande' : ''}
                                         {this.state.orderValue === "rising" ? 'Stigande' : ''} 
@@ -406,7 +406,7 @@ class ViewDocuments extends Component {
                         </div>
 
                         <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
-                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox}>
+                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox + " " + classes.filterClass}>
                                     <div>
                                         Filtrera
                                     </div>
