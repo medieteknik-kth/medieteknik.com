@@ -1,40 +1,44 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class PublishDocuments extends Component {
-    render() {
-        return (
-            <div>
-            <form onSubmit={this.handleSubmit}>
+import classes from './PublishDocument.module.css';
+
+// Att göra:
+// - Kolla upp hur FormData fungerar
+// - Ladda upp dokument
+// - Dokumenttitel (Anta dokumentnamn först)
+// - Välj dokumenttyp
+// - Namn, efternamn och datum väljs automatiskt
+// - Fixa konstig loga
+// - Ladda upp knapp
+
+export default function PublishDocuments() {
+    return (
+        <div className={classes.Publish}>
+            <form method="get" encType="multipart/form-data" action="http://localhost:5000/documents">
                 <div>
-                    <label>Förnamn </label>
+                    <label>Rubrik </label>
                     <input
-                        id="forName"
-                        type="text"
-                        name="name"
-                        placeholder="Förnamn"
-                        ref = {input => this.search = input}
+                        name="title"
                     />
                 </div>
                 
                 <div>
-                    <label>Efternamn </label>
+                    <label>Dokumenttyp </label>
                     <input
-                        id="surName"
-                        type="text"
-                        name="name"
-                        placeholder="Efternamn"
-                        ref = {input => this.search = input}
+                        name="tag"
                     />
                 </div>
-               
 
-
-
-                <input type="submit" value="Submit" />
-                </form>
-            </div>
-        )
-    }
+                <div>
+                    <label>Fil </label>
+                    <input
+                        type="file"
+                        name="file"
+                    />
+                </div>
+        
+                <button type="submit">Ladda upp</button>
+            </form>
+        </div>
+    )
 }
-
-export default PublishDocuments;
