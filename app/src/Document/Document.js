@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Document.css';
+
 import './ViewDocuments.js'
 import ViewDocuments from './ViewDocuments.js';
 import PublishDocument from './PublishDocument.js'
@@ -13,6 +13,7 @@ import PublishDocument from './PublishDocument.js'
 // - Namn, efternamn och datum väljs automatiskt
 // - Fixa konstig loga
 // - Ladda upp knapp
+// - Fixa två knappar så att man kan switcha mellan att kolla på dokument och att ladda upp dokument
 
 
 class Document extends Component {

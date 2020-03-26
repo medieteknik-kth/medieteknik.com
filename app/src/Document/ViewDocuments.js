@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Document.css';
+import classes from './Document.module.css';
 import './DocumentCard.js';
 import {quickSort} from '../libaries/SortDocuments.js';
 import DocumentCard from './DocumentCard.js';
@@ -216,14 +216,58 @@ class ViewDocuments extends Component {
         })
     }
     
-    render() {  
+    render() {
+
+        let documentNameOrderValueClass;
+        let typeOrderValueClass;
+        let publisherOrderValueClass;
+        let dateOrderValueClass;
+
+        if (this.state.orderValue === "falling") {
+            documentNameOrderValueClass = classes.arrowDown;
+            typeOrderValueClass = classes.arrowDown;
+            publisherOrderValueClass = classes.arrowDown;
+            dateOrderValueClass = classes.arrowDown;
+        } else {
+            documentNameOrderValueClass = classes.arrowUp;
+            typeOrderValueClass = classes.arrowUp;
+            publisherOrderValueClass = classes.arrowUp;
+            dateOrderValueClass = classes.arrowUp;
+        }
+
+        if (this.state.sortValue === "alphabetical") {
+            if (typeOrderValueClass === classes.arrowDown) {
+                documentNameOrderValueClass = classes.arrowDownSelected
+            } else {
+                documentNameOrderValueClass = classes.arrowUpSelected
+            }
+        } else if (this.state.sortValue === "type") {
+            if (typeOrderValueClass === classes.arrowDown) {
+                typeOrderValueClass = classes.arrowDownSelected
+            } else {
+                typeOrderValueClass = classes.arrowUpSelected
+            }
+        } else if (this.state.sortValue === "publisher") {
+            if (publisherOrderValueClass === classes.arrowDown) {
+                publisherOrderValueClass = classes.arrowDownSelected
+            } else {
+                publisherOrderValueClass = classes.arrowUpSelected
+            }
+        } else if (this.state.sortValue === "date") {
+            if (dateOrderValueClass === classes.arrowDown) {
+                dateOrderValueClass = classes.arrowDownSelected
+            } else {
+                dateOrderValueClass = classes.arrowUpSelected
+            }
+        }
+
         return (
-            <div className="flex-container-1">
-                <div className="main">
-                    <div className="header-row bottom-border">
-                        <div className="view-selected">
+            <div className={classes.firstFlexContainer}>
+                <div className={classes.main}>
+                    <div className={classes.headerRow + " " + classes.bottomBorder}>
+                        <div className={classes.viewSelected}>
                             <i
-                                className = {this.state.cardsViewSelected ? "create-cards-view-logo-selected" : "create-cards-view-logo"}
+                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
                                 onClick={() => {
                                     if(!this.state.cardsViewSelected) {
                                         this.setState({listViewSelected: !this.state.listViewSelected})
@@ -232,18 +276,18 @@ class ViewDocuments extends Component {
                                 }}
                             >
                                 <div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
                                 </div>
                                 
                                 <div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
                                 </div>
                             </i>
 
                             <i
-                                className = {this.state.listViewSelected ? "create-list-view-logo-selected" : "create-list-view-logo"}
+                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
                                 onClick={() => {
                                     if(!this.state.listViewSelected) {
                                         this.setState({listViewSelected: !this.state.listViewSelected})
@@ -251,26 +295,26 @@ class ViewDocuments extends Component {
                                     }
                                 }}
                             >
-                                <div className = "bullet-row">
-                                    <div className = {this.state.listViewSelected ? "bullet-selected" : "bullet"}></div>
-                                    <div className = {this.state.listViewSelected ? "anonymus-text-selected" : "anonymus-text"}></div>
+                                <div className = {classes.bulletRow}>
+                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
+                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
                                 </div>
 
-                                <div className = "bullet-row">
-                                    <div className = {this.state.listViewSelected ? "bullet-selected" : "bullet"}></div>
-                                    <div className = {this.state.listViewSelected ? "anonymus-text-selected" : "anonymus-text"}></div>
+                                <div className = {classes.bulletRow}>
+                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
+                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
                                 </div>
                                 
-                                <div className = "bullet-row">
-                                    <div className = {this.state.listViewSelected ? "bullet-selected" : "bullet"}></div>
-                                    <div className = {this.state.listViewSelected ? "anonymus-text-selected" : "anonymus-text"}></div>
+                                <div className = {classes.bulletRow}>
+                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
+                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
                                 </div>
                             </i>
                         </div>
                         
-                        <div className="text-items-in-right-header">
-                            <div className="sortByStyledBoxContainer dropdown">
-                                <div className="sortByStyledBox">
+                        <div className={classes.textItemsInRightHeader}>
+                            <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
+                                <div className={classes.sortByStyledBox}>
                                     <div>
                                         {this.state.sortValue === "dateStart" ? 'Sortera efter' : ''}
                                         {this.state.sortValue === "date" ? 'Uppladdningsdatum' : ''}
@@ -281,7 +325,7 @@ class ViewDocuments extends Component {
                                     <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content">
+                                <div className = {classes.dropdownContent}>
                                     <p 
                                         onClick = {() => {
                                             this.setState({sortValue: "alphabetical"})
@@ -316,8 +360,8 @@ class ViewDocuments extends Component {
                                 </div>
                             </div>
 
-                            <div className="sortByStyledBoxContainer dropdown">
-                                <div className="sortByStyledBox orderByStyledBox">
+                            <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
+                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox}>
                                     <div>
                                         {this.state.orderValue === "falling" ? 'Fallande' : ''}
                                         {this.state.orderValue === "rising" ? 'Stigande' : ''} 
@@ -325,7 +369,7 @@ class ViewDocuments extends Component {
                                     <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content-order">
+                                <div className = {classes.dropdownContentOrder}>
                                     <p 
                                         onClick = {() => {
                                             this.setState({orderValue: "falling"})
@@ -345,19 +389,19 @@ class ViewDocuments extends Component {
                             </div>
                         </div>
 
-                        <div className="sortByStyledBoxContainer dropdown">
-                                <div className="sortByStyledBox orderByStyledBox">
+                        <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
+                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox}>
                                     <div>
                                         Filtrera
                                     </div>
                                     <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content-cats">
+                                <div className = {classes.dropdownContentCats}>
                                     <div>
-                                        <div className="buttonContainer">
+                                        <div className={classes.buttonContainer}>
                                             <div 
-                                                className="checkButtonClearCat" 
+                                                className={classes.checkButtonClearCat} 
                                                 onClick = {() => {
                                                     this.setState({catsViewed: 0})
                                                     this.clearCat()
@@ -369,7 +413,7 @@ class ViewDocuments extends Component {
 
                                         {
                                             this.categories.map(category => (
-                                                <label className="container">
+                                                <label className={classes.container}>
                                                     <input
                                                         name={category}
                                                         type="checkbox"
@@ -388,7 +432,7 @@ class ViewDocuments extends Component {
                                                         }}
                                                     />
                                                     
-                                                    <span className="checkmark"></span>
+                                                    <span className={classes.checkmark}></span>
                                                     {category}
                                                     <br />
                                                 </label>
@@ -399,7 +443,7 @@ class ViewDocuments extends Component {
                             </div>
 
                         <input
-                            id="searchDoc"
+                            className={classes.searchDoc}
                             type="text"
                             onKeyUp={this.handleSearch}
                             name="name"
@@ -409,7 +453,7 @@ class ViewDocuments extends Component {
                     </div>
                     
                     
-                    <div className="document-list">
+                    <div className={classes.documentList}>
                         {
                             this.state.cardsViewSelected ?
                                 this.state.catsViewed === 0 ? 
@@ -442,25 +486,25 @@ class ViewDocuments extends Component {
                                 
                                 :
 
-                                <div className="doc-list">              
+                                <div className={classes.docList}>              
                                     <table>
                                         <thead>
                                             <tr>
-                                                <th onClick = {this.handleOrderChangeHeadAlphabetical} className="cat-param">
-                                                    Dokumentnamn 
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "alphabetical" ? "-selected" : "")}></i>
+                                                <th onClick = {this.handleOrderChangeHeadAlphabetical} className={classes.catParam}>
+                                                    Dokumentnamn
+                                                    <i className={documentNameOrderValueClass}></i>
                                                 </th>
-                                                <th onClick = {this.handleOrderChangeHeadType} className="cat-param">
+                                                <th onClick = {this.handleOrderChangeHeadType} className={classes.catParam}>
                                                     Typ 
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "type" ? "-selected" : "")}></i>
+                                                    <i className={typeOrderValueClass}></i>
                                                 </th>
-                                                <th onClick = {this.handleOrderChangeHeadPublisher} className="cat-param">
+                                                <th onClick = {this.handleOrderChangeHeadPublisher} className={classes.catParam}>
                                                     Uppladdat av 
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "publisher" ? "-selected" : "")}></i>
+                                                    <i className={publisherOrderValueClass}></i>
                                                 </th>
-                                                <th onClick = {this.handleOrderChangeHeadDate} className="cat-param">
+                                                <th onClick = {this.handleOrderChangeHeadDate} className={classes.catParam}>
                                                     Uppladdningsdatum
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "date" || this.state.sortValue === "dateStart" ? "-selected" : "")}></i>
+                                                    <i className={dateOrderValueClass}></i>
                                                 </th>
                                             </tr>
                                         </thead>
@@ -481,8 +525,8 @@ class ViewDocuments extends Component {
                                                                 }
                                                             </td>
                                                             <td>
-                                                                <div className = "download-btn-circle">
-                                                                    <i className = "download-btn-arrow"></i>
+                                                                <div className = {classes.downloadButtonCircle}>
+                                                                    <i className = {classes.downloadButtonArrow}></i>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -502,8 +546,8 @@ class ViewDocuments extends Component {
                                                             }
                                                         </td>
                                                         <td>
-                                                            <div className = "download-btn-circle">
-                                                                <i className = "download-btn-arrow"></i>
+                                                            <div className = {classes.downloadButtonCircle}>
+                                                                <i className = {classes.downloadButtonArrow}></i>
                                                             </div>
                                                         </td>
                                                     </tr>

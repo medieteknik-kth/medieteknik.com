@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './Document.css';
 
 class PublishDocuments extends Component {
     render() {
