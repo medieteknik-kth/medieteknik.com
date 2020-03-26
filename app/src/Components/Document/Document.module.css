@@ -37,6 +37,7 @@ h3 {
 .firstFlexContainer {
     display: flex;
     font-family: sans-serif;
+    clear: both;
 }
 
 .main {
