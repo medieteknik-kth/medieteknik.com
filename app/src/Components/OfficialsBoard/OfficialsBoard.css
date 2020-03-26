@@ -1,3 +1,7 @@
 .committeeHeader {
-    text-align: center;
+  text-align: center;
+}
+.officialHeader {
+  margin-top: 20px;
+  text-align: center;
 }
