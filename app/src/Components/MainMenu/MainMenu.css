@@ -120,3 +120,9 @@
 .dropdown:hover .dropbtn {
   color: #eec912;
 }
+
+@media (max-width: 680px) {
+    .dropbtn img {
+        display: none;
+    }
+}
