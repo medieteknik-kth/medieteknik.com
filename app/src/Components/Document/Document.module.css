@@ -269,9 +269,10 @@ h3 {
 .docList table {
     margin: 10px auto;
     text-align: left;
-    width: 95%;
+    width: 97%;
     border-collapse: separate; 
     border-spacing: 0 0px;
+    
 }
 
 .docList thead th:hover {
@@ -282,12 +283,17 @@ h3 {
     line-height: 35px;
 }
 
+.docList tr td{
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid transparent;
+}
+
 .docList tbody tr:nth-child(odd) {
     background: #c4c4c434;
 }
 
-.docList tbody tr:hover {
-    background-color: #f0c900;
+.docList tbody tr:hover td{
+    border-bottom: 3px solid #f0c900;
     cursor: pointer;
 }
 
