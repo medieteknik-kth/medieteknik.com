@@ -26,18 +26,19 @@ export default function PublishDocuments() {
         const formData = new FormData();
         const fileField = document.querySelector('input[type="file"]');
 
+        formData.append('title', title);
         formData.append('filename', fileField.files[0]);
 
-        console.log(formData.get('documentFile'))
-        console.log(formData.get('fileName'))
+        console.log(formData.get('title'))
+        console.log(formData.get('filename'))
 
         Api.Documents.PublishDocument(formData)
-            // .then((response) => response.json())
+            .then((response) => console.log(response))//response.json())
             .then((result) => {
-            console.log('Success:', result);
+                console.log('Success:', result);
             })
             .catch((error) => {
-            console.error('Error:', error);
+                console.error('Error:', error);
             });
     }
 
