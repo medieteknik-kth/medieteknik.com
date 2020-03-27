@@ -278,7 +278,7 @@ class ViewDocuments extends Component {
         }
 
         return (
-            <div className={classes.firstFlexContainer} onResize={() => this.setState({screenWidth: window.innerWidth})}>
+            <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
                     <div className={classes.headerRow + " " + classes.bottomBorder}>
                         <div className={classes.viewSelected}>

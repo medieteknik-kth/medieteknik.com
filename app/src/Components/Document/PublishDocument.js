@@ -14,7 +14,12 @@ import classes from './PublishDocument.module.css';
 export default function PublishDocuments() {
     return (
         <div className={classes.Publish}>
-            <form method="get" encType="multipart/form-data" action="http://localhost:5000/documents">
+            <form 
+                method="put" 
+                encType="multipart/form-data" 
+                action="http://localhost:5000/documents"
+                onSubmit={e => e.preventDefault()}
+            >
                 <div>
                     <label>Rubrik </label>
                     <input
