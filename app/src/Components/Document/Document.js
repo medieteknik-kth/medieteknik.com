@@ -20,7 +20,8 @@ class Document extends Component {
         super();
 
         this.state = {
-            viewCardsview: true
+            viewCardsview: true,
+            propUserFunkis: true // Ska komma som prop
         }
     }
 
@@ -33,7 +34,7 @@ class Document extends Component {
     }
 
     uploadModeHandler = () => {
-        if (this.state.viewCardsview) {
+        if (this.state.viewCardsview && this.state.propUserFunkis) {
             this.setState({
                 viewCardsview: false
             })
@@ -41,18 +42,39 @@ class Document extends Component {
     }
 
     render() {
+        let publishDocumentsClass;
+        let viewDocumentsClass;
+
+        if (!this.state.viewCardsview) {
+            publishDocumentsClass = classes.selected;
+        } else {
+            publishDocumentsClass = classes.notSelected;
+        }
+
+        if (this.state.viewCardsview) {
+            viewDocumentsClass = classes.selected;
+        } else {
+            viewDocumentsClass = classes.notSelected;
+        }
+
+        if (!this.state.propUserFunkis) {
+            publishDocumentsClass = classes.disabled;
+            viewDocumentsClass = classes.selectedOnly;
+        }
+
         return (
             <div>
-                <div className={classes.buttonContainer} onClick={this.uploadModeHandler}>
+                <div className={classes.buttonContainer} >
                     <div 
-                        className={!this.state.viewCardsview ? classes.selected : classes.notSelected}
+                        className = {publishDocumentsClass} 
+                        onClick = {this.uploadModeHandler}
                     >Ladda upp</div>
 
-                    <div onClick = {this.viewModeHandler}
-                        className={this.state.viewCardsview ? classes.selected : classes.notSelected}
+                    <div 
+                        className = {viewDocumentsClass}
+                        onClick = {this.viewModeHandler}
                     >Bläddra</div>
                 </div>
-                
 
                 {
                     this.state.viewCardsview ? 

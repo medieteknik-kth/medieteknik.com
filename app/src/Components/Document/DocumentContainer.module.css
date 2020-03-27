@@ -26,7 +26,21 @@
     font-size: 25px;
     padding: 15px 0;
     user-select: none;
-    cursor: not-allowed;
     font-family: sans-serif;
     border-bottom: 5px solid #f0c900;
+}
+
+.selectedOnly {
+    float: left;
+    width: 100%;
+    display: inline-block;
+    font-size: 25px;
+    padding: 15px 0;
+    user-select: none;
+    font-family: sans-serif;
+    border-bottom: 5px solid #f0c900; 
+}
+
+.disabled {
+    display: none;
 }
