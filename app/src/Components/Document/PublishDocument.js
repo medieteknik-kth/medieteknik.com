@@ -15,10 +15,10 @@ export default function PublishDocuments() {
     return (
         <div className={classes.Publish}>
             <form 
-                method="put" 
+                method="post" 
                 encType="multipart/form-data" 
                 action="http://localhost:5000/documents"
-                onSubmit={e => e.preventDefault()}
+                //onSubmit={e => e.preventDefault()}
             >
                 <div>
                     <label>Rubrik </label>
