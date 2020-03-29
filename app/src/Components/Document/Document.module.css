@@ -1,7 +1,6 @@
 * {
     margin: 0;
     padding: 0;
-    color: #0f0f0f;
 }
 
 h3 {
@@ -160,47 +159,6 @@ h3 {
     padding-bottom: 10px;
 }
 
-.docCards {
-    margin-top: 15px;
-    margin-right: 10px;
-    padding: 10px;
-    width: 20%;
-    border: #f0c900 dashed 2px;
-    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
-    text-align: left;
-    cursor:pointer;
-    position: relative;
-}
-
-@media (max-width: 1280px) {
-    .docCards {
-        width: 45%;
-    }
-}
-
-@media (max-width: 850px) {
-    .docCards {
-        width: 100%;
-    }
-}
-
-.docCards div {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-}
-
-.docCards h3 {
-    margin-left: -1px;
-}
-
-.docCards p {
-    color: #a0a0a0;
-}
-
-.docCards:hover {
-    background-color: #e0e0e0;
-}
 
 .usersOnlyCards:hover {
     background-color: #d4b100;

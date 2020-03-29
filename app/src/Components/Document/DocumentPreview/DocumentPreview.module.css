@@ -1,0 +1,8 @@
+.pdfContainer {
+    width: 200px; /* Om denna bredd ändras måste den också ändras i Page*/;
+    border-radius: 3px;
+    padding: 3px;
+    border: 1px solid #232323;
+    margin: 0 auto;
+    margin-top: 5px;
+}

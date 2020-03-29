@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import classes from './Document.module.css';
-import './DocumentCard.js';
 import {quickSort} from '../../libaries/SortDocuments.js';
-import DocumentCard from './DocumentCard.js';
+import DocumentCard from './DocumentCard/DocumentCard.js';
 import EmptyArrowDown from './Arrows/Empty-arrow-down.svg';
+import samplePDF from './Assets/test.pdf';
 
 // Att göra:x       
 // - Använd object för att göra preview
@@ -112,10 +112,10 @@ class ViewDocuments extends Component {
             sortValue: 'dateStart',
             orderValue: 'falling',
 
-            cardsViewSelected: window.innerWidth >= 800 ? false : true,
-            listViewSelected: window.innerWidth >= 800 ? true : false,
-            // cardsViewSelected: true,
-            // listViewSelected: false,
+            // cardsViewSelected: window.innerWidth >= 800 ? false : true,
+            // listViewSelected: window.innerWidth >= 800 ? true : false,
+            cardsViewSelected: true,
+            listViewSelected: false,
 
             query: '',
 
@@ -485,6 +485,7 @@ class ViewDocuments extends Component {
                                                         ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
                                                         (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
                                                     }
+                                                    pdfFile = {samplePDF}
                                                 />
                                         )) 
                                     }
