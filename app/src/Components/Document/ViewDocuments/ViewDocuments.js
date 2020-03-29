@@ -478,13 +478,10 @@ class ViewDocuments extends Component {
                     {
                         this.state.cardsViewSelected ?
                             this.state.catsViewed === 0 ?
-                                <div className={classes.documentList}>
-                                    <DocumentCards documents={this.cards} />
-                                </div>
+                                <DocumentCards documents={this.cards} />
                             :
-                                <div className={classes.documentList}>
-                                    <DocumentList documents={this.cards} />
-                                </div>
+                                
+                                <DocumentList documents={this.cards} />
                             
                             :
 

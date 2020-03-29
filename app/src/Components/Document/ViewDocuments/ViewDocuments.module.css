@@ -43,14 +43,7 @@ h3 {
     flex: 91%;
 }
 
-.documentList {
-    display: flex;
-    flex-wrap: wrap;
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-}
+
 
 .categoriesList {
     padding: 10px 20px;
