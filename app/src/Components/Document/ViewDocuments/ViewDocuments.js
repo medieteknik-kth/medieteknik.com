@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
-import './Document.css';
-import './DocumentCard.jsx'
-import {quickSort} from '../../Utility/SortDocuments.js'
-import DocumentCard from './DocumentCard.jsx';
-import EmpyArrowDown from './Arrows/Empty-arrow-down.svg';
+import classes from './ViewDocuments.module.css';
+import {quickSort} from '../../../libaries/SortDocuments.js';
 
-// Att göra:
-// - Använd object för att göra preview
+import DocumentCards from './DocumentCards/DocumentCards';
+import DocumentList from './DocumentList/DocumentList';
+
+import EmptyArrowDown from '../Assets/Arrows/Empty-arrow-down.svg';
+
+import samplePDF from '../Assets/test.pdf';
+import samplePDF2 from '../Assets/test2.pdf';
 
 
-class Document extends Component {
+class ViewDocuments extends Component {
     constructor() {
         super();
+        window.addEventListener('resize', this.handleResize);
 
         this.cards = [
             {
@@ -20,7 +23,8 @@ class Document extends Component {
                 headingText: 'Budgetförslag MBD',
                 publisher: 'Rasmus Rudling',
                 publishDate: new Date(2019, 8, 27),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -29,7 +33,8 @@ class Document extends Component {
                 headingText: 'Lägg ned spelnörderiet',
                 publisher: 'Jesper Lundqvist',
                 publishDate: new Date(2019, 10, 3),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             },
 
             {
@@ -38,7 +43,8 @@ class Document extends Component {
                 headingText: 'SM#4 17/18',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2017, 4, 14),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -47,7 +53,8 @@ class Document extends Component {
                 headingText: 'SM#4 16/17',
                 publisher: 'Disa Gillner',
                 publishDate: new Date(2016, 5, 28),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             },
 
             {
@@ -56,7 +63,8 @@ class Document extends Component {
                 headingText: 'NLG 19/20',
                 publisher: 'Sandra Larsson',
                 publishDate: new Date(2019, 5, 28),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -65,7 +73,8 @@ class Document extends Component {
                 headingText: 'Alkohol på TB:s',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2019, 7, 13),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             },
 
             {
@@ -74,7 +83,8 @@ class Document extends Component {
                 headingText: 'SBA-blankett',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2019, 2, 10),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -83,7 +93,8 @@ class Document extends Component {
                 headingText: 'MKM:s beerpongregler',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2018, 7, 9),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             }
         ]
 
@@ -111,12 +122,15 @@ class Document extends Component {
             sortValue: 'dateStart',
             orderValue: 'falling',
 
-            cardsViewSelected: false,
-            listViewSelected: true,
+            // cardsViewSelected: window.innerWidth >= 800 ? false : true,
+            // listViewSelected: window.innerWidth >= 800 ? true : false,
+            cardsViewSelected: true,
+            listViewSelected: false,
 
             query: '',
 
-            catsViewed: 0
+            catsViewed: 0,
+            screenWidth: window.innerWidth
         };
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
@@ -138,6 +152,19 @@ class Document extends Component {
         } else {
             this.setState({orderValue: 'falling'})
             this.cards = quickSort(this.cards, "alphabetical", 'falling');
+        }
+    }
+    
+    handleResize = () => {
+        this.setState({
+            screenWidth: window.innerWidth
+        })
+
+        if (window.innerWidth < 800) {
+            this.setState({
+                cardsViewSelected: true,
+                listViewSelected: false
+        })
         }
     }
 
@@ -216,14 +243,16 @@ class Document extends Component {
         })
     }
     
-    render() {  
+    render() {
+        
+
         return (
-            <div className="flex-container-1">
-                <div className="main">
-                    <div className="header-row bottom-border">
-                        <div className="view-selected">
-                            <i
-                                className = {this.state.cardsViewSelected ? "create-cards-view-logo-selected" : "create-cards-view-logo"}
+            <div className={classes.firstFlexContainer}>
+                <div className={classes.main}>
+                    <div className={classes.headerRow + " " + classes.bottomBorder}>
+                        <div className={classes.viewSelected}>
+                            {this.state.screenWidth >= 800 ? <i
+                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
                                 onClick={() => {
                                     if(!this.state.cardsViewSelected) {
                                         this.setState({listViewSelected: !this.state.listViewSelected})
@@ -232,18 +261,18 @@ class Document extends Component {
                                 }}
                             >
                                 <div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
                                 </div>
                                 
                                 <div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
-                                    <div className = {this.state.cardsViewSelected ? "small-square-selected" : "small-square"}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
+                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
                                 </div>
-                            </i>
+                            </i> : null}
 
-                            <i
-                                className = {this.state.listViewSelected ? "create-list-view-logo-selected" : "create-list-view-logo"}
+                            {this.state.screenWidth >= 800 ? <i
+                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
                                 onClick={() => {
                                     if(!this.state.listViewSelected) {
                                         this.setState({listViewSelected: !this.state.listViewSelected})
@@ -251,26 +280,26 @@ class Document extends Component {
                                     }
                                 }}
                             >
-                                <div className = "bullet-row">
-                                    <div className = {this.state.listViewSelected ? "bullet-selected" : "bullet"}></div>
-                                    <div className = {this.state.listViewSelected ? "anonymus-text-selected" : "anonymus-text"}></div>
+                                <div className = {classes.bulletRow}>
+                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
+                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
                                 </div>
 
-                                <div className = "bullet-row">
-                                    <div className = {this.state.listViewSelected ? "bullet-selected" : "bullet"}></div>
-                                    <div className = {this.state.listViewSelected ? "anonymus-text-selected" : "anonymus-text"}></div>
+                                <div className = {classes.bulletRow}>
+                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
+                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
                                 </div>
                                 
-                                <div className = "bullet-row">
-                                    <div className = {this.state.listViewSelected ? "bullet-selected" : "bullet"}></div>
-                                    <div className = {this.state.listViewSelected ? "anonymus-text-selected" : "anonymus-text"}></div>
+                                <div className = {classes.bulletRow}>
+                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
+                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
                                 </div>
-                            </i>
+                            </i> : null}
                         </div>
                         
-                        <div className="text-items-in-right-header">
-                            <div className="sortByStyledBoxContainer dropdown">
-                                <div className="sortByStyledBox">
+                        <div className={classes.textItemsInRightHeader}>
+                            <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
+                                <div className={classes.sortByStyledBox + " " + classes.SortByClass}>
                                     <div>
                                         {this.state.sortValue === "dateStart" ? 'Sortera efter' : ''}
                                         {this.state.sortValue === "date" ? 'Uppladdningsdatum' : ''}
@@ -278,10 +307,10 @@ class Document extends Component {
                                         {this.state.sortValue === "publisher" ? 'Uppladdat av' : ''}
                                         {this.state.sortValue === "alphabetical" ? 'Dokumentnamn' : ''} 
                                     </div>
-                                    <img src={EmpyArrowDown} alt="Arrow"/>
+                                    <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content">
+                                <div className = {classes.dropdownContent}>
                                     <p 
                                         onClick = {() => {
                                             this.setState({sortValue: "alphabetical"})
@@ -316,16 +345,16 @@ class Document extends Component {
                                 </div>
                             </div>
 
-                            <div className="sortByStyledBoxContainer dropdown">
-                                <div className="sortByStyledBox orderByStyledBox">
+                            <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
+                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox + " " + classes.sortDirectionClass}>
                                     <div>
                                         {this.state.orderValue === "falling" ? 'Fallande' : ''}
                                         {this.state.orderValue === "rising" ? 'Stigande' : ''} 
                                     </div>
-                                    <img src={EmpyArrowDown} alt="Arrow"/>
+                                    <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content-order">
+                                <div className = {classes.dropdownContentOrder}>
                                     <p 
                                         onClick = {() => {
                                             this.setState({orderValue: "falling"})
@@ -345,19 +374,19 @@ class Document extends Component {
                             </div>
                         </div>
 
-                        <div className="sortByStyledBoxContainer dropdown">
-                                <div className="sortByStyledBox orderByStyledBox">
+                        <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
+                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox + " " + classes.filterClass}>
                                     <div>
                                         Filtrera
                                     </div>
-                                    <img src={EmpyArrowDown} alt="Arrow"/>
+                                    <img src={EmptyArrowDown} alt="Arrow"/>
                                 </div>
 
-                                <div className = "dropdown-content-cats">
+                                <div className = {classes.dropdownContentCats}>
                                     <div>
-                                        <div className="buttonContainer">
+                                        <div className={classes.buttonContainer}>
                                             <div 
-                                                className="checkButtonClearCat" 
+                                                className={classes.checkButtonClearCat} 
                                                 onClick = {() => {
                                                     this.setState({catsViewed: 0})
                                                     this.clearCat()
@@ -369,13 +398,13 @@ class Document extends Component {
 
                                         {
                                             this.categories.map(category => (
-                                                <label className="container">
+                                                <label className={classes.container} key = {category}>
                                                     <input
                                                         name={category}
                                                         type="checkbox"
                                                         
                                                         checked={this.state.shown[category]}
-                                                        
+                                                        onChange = {() => null}
                                                         onClick={() => {
                                                             
                                                             this.state.shown[category] === false ? this.setState({catsViewed: this.state.catsViewed + 1}) : this.setState({catsViewed: this.state.catsViewed - 1})
@@ -388,20 +417,18 @@ class Document extends Component {
                                                         }}
                                                     />
                                                     
-                                                    <span className="checkmark"></span>
+                                                    <span className={classes.checkmark}></span>
                                                     {category}
                                                     <br />
                                                 </label>
                                             ))
                                         }
-
                                     </div>
-                                    
                                 </div>
                             </div>
 
                         <input
-                            id="searchDoc"
+                            className={classes.searchDoc}
                             type="text"
                             onKeyUp={this.handleSearch}
                             name="name"
@@ -410,116 +437,30 @@ class Document extends Component {
                         />
                     </div>
                     
-                    
-                    <div className="document-list">
-                        {
-                            this.state.cardsViewSelected ?
-                                this.state.catsViewed === 0 ? 
-                                    this.cards.filter(doc => doc.displayCard).map(doc => (
-                                            <DocumentCard
-                                                doctypeId = {doc.doctypeId}
-                                                doctype = {doc.doctype === 'Motioner' ? 'Motion' : doc.doctype}
-                                                headingText = {doc.headingText}
-                                                publisher = {doc.publisher}
-                                                publishDate = {
-                                                    doc.publishDate.getFullYear() + "-" + 
-                                                    ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
-                                                    (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
-                                                }
-                                            />
-                                    )) :
-                                    this.cards.filter(category => this.state.shown[category.doctype]).filter(doc => doc.displayCard).map(doc => (
-                                            <DocumentCard
-                                                doctypeId = {doc.doctypeId}
-                                                doctype = {doc.doctype === 'Motioner' ? 'Motion' : doc.doctype}
-                                                headingText = {doc.headingText}
-                                                publisher = {doc.publisher}
-                                                publishDate = {
-                                                    doc.publishDate.getFullYear() + "-" + 
-                                                    ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
-                                                    (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
-                                                }
-                                            />
-                                    )) 
-                                
-                                :
-
-                                <div className="doc-list">              
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th onClick = {this.handleOrderChangeHeadAlphabetical} className="cat-param">
-                                                    Dokumentnamn 
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "alphabetical" ? "-selected" : "")}></i>
-                                                </th>
-                                                <th onClick = {this.handleOrderChangeHeadType} className="cat-param">
-                                                    Typ 
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "type" ? "-selected" : "")}></i>
-                                                </th>
-                                                <th onClick = {this.handleOrderChangeHeadPublisher} className="cat-param">
-                                                    Uppladdat av 
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "publisher" ? "-selected" : "")}></i>
-                                                </th>
-                                                <th onClick = {this.handleOrderChangeHeadDate} className="cat-param">
-                                                    Uppladdningsdatum
-                                                    <i className={(this.state.orderValue === "falling" ? "arrow-down" : "arrow-up") + (this.state.sortValue === "date" || this.state.sortValue === "dateStart" ? "-selected" : "")}></i>
-                                                </th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {
-                                                this.state.catsViewed === 0 ?
-                                                    this.cards.filter(doc => doc.displayCard).map(category => (
-                                                        <tr>
-                                                            <td>{category.headingText}</td>
-                                                            <td>{category.doctype === 'Motioner' ? 'Motion' : category.doctype}</td>
-                                                            <td>{category.publisher}</td>
-                                                            <td>
-                                                                {
-                                                                    category.publishDate.getFullYear() + "-" + 
-                                                                    ((category.publishDate.getMonth() + 1) < 10 ? `0${(category.publishDate.getMonth() + 1)}` : (category.publishDate.getMonth() + 1)) + "-" + 
-                                                                    (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
-                                                                }
-                                                            </td>
-                                                            <td>
-                                                                <div className = "download-btn-circle">
-                                                                    <i className = "download-btn-arrow"></i>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                :
-
-                                                this.cards.filter(category => this.state.shown[category.doctype]).filter(doc => doc.displayCard).map(category => (
-                                                    <tr>
-                                                        <td>{category.headingText}</td>
-                                                        <td>{category.doctype === 'Motioner' ? 'Motion' : category.doctype}</td>
-                                                        <td>{category.publisher}</td>
-                                                        <td>
-                                                            {
-                                                                category.publishDate.getFullYear() + "-" + 
-                                                                ((category.publishDate.getMonth() + 1) < 10 ? `0${(category.publishDate.getMonth() + 1)}` : (category.publishDate.getMonth() + 1)) + "-" + 
-                                                                (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
-                                                            }
-                                                        </td>
-                                                        <td>
-                                                            <div className = "download-btn-circle">
-                                                                <i className = "download-btn-arrow"></i>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                        }
-                    </div>
+                    {
+                        this.state.cardsViewSelected ?
+                            <DocumentCards 
+                                documents={this.cards}
+                                categoriesToShow={this.state.shown}
+                                zeroCategoriesSelected = {this.state.catsViewed === 0}
+                            />
+                        :
+                            <DocumentList 
+                                documents = {this.cards}
+                                categoriesToShow = {this.state.shown}
+                                zeroCategoriesSelected = {this.state.catsViewed === 0}
+                                orderValue = {this.state.orderValue}
+                                sortValue = {this.state.sortValue}
+                                handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
+                                handleOrderChangeHeadType = {this.handleOrderChangeHeadType}
+                                handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
+                                handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
+                            />
+                    }
                 </div>
             </div>
           );
     }
 }
 
-export default Document;
+export default ViewDocuments;

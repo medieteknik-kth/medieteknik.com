@@ -5,6 +5,7 @@
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
+  z-index: 500;
 }
 
 /*Styling for the menu's bakground color, depending on whether it is at the top or scrolled down*/
@@ -119,4 +120,10 @@
 
 .dropdown:hover .dropbtn {
   color: #eec912;
+}
+
+@media (max-width: 680px) {
+    .dropbtn img {
+        display: none;
+    }
 }

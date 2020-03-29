@@ -1,0 +1,12 @@
+.Publish {
+    margin: 5px auto;
+    padding: 10px;
+    width: 40%;
+    clear: both;
+    border: 2px solid #f0c900;
+    border-radius: 5px;
+}
+
+.Publish div {
+    margin-bottom: 10px;
+}
