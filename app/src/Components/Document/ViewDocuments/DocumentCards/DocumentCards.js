@@ -1,13 +1,24 @@
 import React from 'react';
 
-import DocumentCard from '../DocumentCard/DocumentCard';
+import DocumentCard from './DocumentCard/DocumentCard';
 import classes from './DocumentCards.module.css';
 
 const DocumentCards = (props) => {
+    let documentsToRender = [];
+
+    if (props.zeroCategoriesSelected) {
+        documentsToRender = props.documents
+            .filter(doc => doc.displayCard);
+    } else {
+        documentsToRender = props.documents
+            .filter(category => props.categoriesToShow[category.doctype])
+            .filter(doc => doc.displayCard);
+    }
+
     return (
         <div className={classes.DocumentCards}>
             {
-                props.documents.filter(doc => doc.displayCard).map(doc => (
+                documentsToRender.map(doc => (
                     <DocumentCard
                         doctypeId = {doc.doctypeId}
                         doctype = {doc.doctype === 'Motioner' ? 'Motion' : doc.doctype}

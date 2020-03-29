@@ -25,19 +25,7 @@ function GetApiObject(resource) {
         },
         body: JSON.stringify(data),
       });
-    },
-    PublishDocument(formData) {
-        console.log(`[Api.js] formData:`);
-        console.log(formData);
-        console.log(API_BASE_URL + resource)
-        return fetch(API_BASE_URL + resource, {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: formData,
-        });
-      },
+    }
   };
 }
 

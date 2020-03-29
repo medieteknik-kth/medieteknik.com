@@ -43,8 +43,6 @@ h3 {
     flex: 91%;
 }
 
-
-
 .categoriesList {
     padding: 10px 20px;
     flex: 9%;
@@ -211,51 +209,6 @@ h3 {
     }
 }
 
-
-.docList h3 {
-    text-align: left;
-    margin-left: 10px;
-}
-
-.docList table {
-    margin: 10px auto;
-    text-align: left;
-    width: 97%;
-    border-collapse: separate; 
-    border-spacing: 0 0px;
-    
-}
-
-.docList thead th:hover {
-    color: #ccc;
-}
-
-.docList tr {
-    line-height: 35px;
-}
-
-.docList tr td{
-    border-bottom: 3px solid transparent;
-    border-top: 3px solid transparent;
-}
-
-.docList tbody tr:nth-child(odd) {
-    background: #c4c4c434;
-}
-
-.docList tbody tr:hover td{
-    border-bottom: 3px solid #f0c900;
-    cursor: pointer;
-}
-
-.docList th img {
-    width: 12px;
-}
-
-.catParam {
-    cursor: pointer;
-    user-select: none;
-}
 
 .rightHeader img {
     cursor: pointer;
@@ -585,74 +538,4 @@ h3 {
 
 .viewSelected {
     display: flex;
-}
-
-.arrowDown {
-    border: solid #ccc;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    margin-left: 5px;
-}
-
-.arrowDownSelected {
-    border: solid #f0c900;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    margin-left: 5px;
-}
-
-.arrowUp {
-    border: solid #ccc;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    margin-left: 5px;
-}
-
-.arrowUpSelected {
-    border: solid #f0c900;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    margin-left: 5px;
-}
-
-.downloadButtonCircle {
-    width: 25px;
-    height: 25px;
-    border: 2px solid #1f1f1f;
-    border-radius: 50%;
-    position: relative;
-    transition: .3s;
-}
-
-.downloadButtonArrow {
-    border: solid #1f1f1f;
-    position: absolute;
-    left: 7px;
-    top: 5px;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 4px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    transition: .3s;
-}
-
-.downloadButtonCircle:hover {
-    border-color: #fff;
-}
-
-.downloadButtonCircle:hover .download-btn-arrow{
-    border-color: #fff;
 }
