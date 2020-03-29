@@ -1,0 +1,665 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h3 {
+    margin-left: 0;
+}
+
+
+
+.bottomBorder {
+    border-bottom: 1px #0f0f0f solid;
+    margin: 0px 20px;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 8px;
+    padding-bottom: 5px;
+}
+
+@media (max-width: 750px) {
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+}
+
+.headerRow h2 {
+    padding: 10px 0px;
+}
+
+
+.firstFlexContainer {
+    display: flex;
+    font-family: sans-serif;
+    clear: both;
+}
+
+.main {
+    flex: 91%;
+}
+
+.documentList {
+    display: flex;
+    flex-wrap: wrap;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.categoriesList {
+    padding: 10px 20px;
+    flex: 9%;
+    border-right: 1px #0f0f0f solid;
+}
+
+.container input {
+    padding-left: 100px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    text-decoration: none;
+    display: block;  
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #eee;
+    margin-top: 3px;
+  }
+
+.container {
+    display: block;
+    position: relative;
+    padding-left: 23px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    align-items: center;
+}
+
+.checkButtonShowCat {
+    width: 45%;
+    padding: 2px 5px 5px 5px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    background-color: #f0c900;
+    cursor: pointer;
+    text-align: center;
+    color: #1f1f1f;
+    user-select: none;
+}
+
+.checkButtonShowCat:hover {
+    background-color: #b39502;
+}
+
+.checkButtonClearCat {
+    width: 45%;
+    padding: 2px 5px 5px 5px;
+    margin-bottom: 10px;
+    background-color: #c23535;
+    cursor: pointer;
+    text-align: center;
+    color: #f1f1f1;
+    user-select: none;
+}
+
+.checkButtonClearCat:hover {
+    background-color: #a72222;
+}
+
+
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.container input:checked ~ .checkmark {
+    background-color: #f0c900;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.container .checkmark:after {
+    left: 5px;
+    top: 0.5px;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.categoriesList h2 {
+    padding-bottom: 10px;
+}
+
+
+.usersOnlyCards:hover {
+    background-color: #d4b100;
+}
+
+.categoriesList form {
+    text-align: left;
+}
+
+.categoriesList input {
+    margin-right: 5px;
+}
+
+.hideCard {
+    display: none;
+}
+
+.usersOnlyCategory {
+    color: #f0c900;
+    font-weight: 400;
+}
+
+.notBold {
+    font-weight: 400;
+}
+
+.logoStyle {
+    height: 30px;
+    cursor: pointer;
+}
+
+.textItemsInRightHeader {
+    margin-left: 5px;
+}
+
+@media (max-width: 690px) {
+    .textItemsInRightHeader {
+        margin-left: 0;
+        /* background-color: blue; */
+    }
+}
+
+@media (max-width: 690px) {
+    .filterClass {
+        float: right;
+        /* background-color: red; */
+    }
+
+    .SortByClass {
+        width: 30%;
+        margin-right: 10px;
+        /* background-color: blue; */
+    }
+
+    .sortDirectionClass {
+        /* background-color: green; */
+    }
+}
+
+
+.docList h3 {
+    text-align: left;
+    margin-left: 10px;
+}
+
+.docList table {
+    margin: 10px auto;
+    text-align: left;
+    width: 97%;
+    border-collapse: separate; 
+    border-spacing: 0 0px;
+    
+}
+
+.docList thead th:hover {
+    color: #ccc;
+}
+
+.docList tr {
+    line-height: 35px;
+}
+
+.docList tr td{
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid transparent;
+}
+
+.docList tbody tr:nth-child(odd) {
+    background: #c4c4c434;
+}
+
+.docList tbody tr:hover td{
+    border-bottom: 3px solid #f0c900;
+    cursor: pointer;
+}
+
+.docList th img {
+    width: 12px;
+}
+
+.catParam {
+    cursor: pointer;
+    user-select: none;
+}
+
+.rightHeader img {
+    cursor: pointer;
+}
+
+.textItemsInRightHeader select {
+    margin-left: 5px;
+}
+
+.searchDoc {
+    background-image: url('../Assets/Search-logo.svg');
+    background-position: 1px 0px;
+    background-repeat: no-repeat;
+    font-size: 13px;
+    padding: 5px 20px 5px 35px;
+    border: 1px solid rgb(160, 160, 160);
+    border-radius: 4px;
+    margin-right: 5px;
+    outline: none;
+}
+
+@media (max-width: 690px) {
+    .searchDoc {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5px;
+    }
+}
+
+.sortByStyledBox {
+    font-size: 16px;
+    width: 175px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-right: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-top: 1px solid rgba(160, 160, 160, 0.5);
+    border-bottom: 1px solid rgb(160, 160, 160, 0.5);
+    cursor: default;
+    text-align: left;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 690px) {
+    .sortByStyledBox {
+        width: 100%;
+        margin-left: 5px;
+    }
+}
+
+.orderByStyledBox {
+    width: 100px;
+}
+
+@media (max-width: 690px) {
+    .orderByStyledBox {
+        width: 80px;
+        margin-left: 15px;
+    }
+}
+
+.sortByStyledBoxContainer {
+    position: relative;
+    display: inline-block;
+}
+
+@media (max-width: 690px) {
+    .sortByStyledBoxContainer {
+        /* background-color: red; */
+    }
+}
+
+
+
+.dropdownContentCats {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: left;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.dropdownContentOrder {
+    display: none;
+    position: absolute;
+    right: 1px;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: left;
+}
+
+.dropdownContentOrder p {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;    
+}
+
+.dropdownContentOrder p:hover {
+    background-color: #f0c900;
+    user-select: none;
+    cursor: pointer;
+}
+
+.dropdownContent {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: left;
+  }
+
+.dropdownContent p {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+.dropdownContent p:hover {
+    background-color: #f0c900;
+    user-select: none;
+    cursor: pointer;
+}
+
+.dropdown:hover .dropdownContent{
+    display: block;
+}
+
+.dropdown:hover .dropdownContentOrder{
+    display: block;
+}
+
+.dropdown:hover .dropdownContentCats {
+    display: block;
+}
+
+.dropdown img {
+    transition: 1s;
+}
+
+.dropdown:hover img {
+    -webkit-transform: rotate(180deg); /* Safari */
+    transform: rotate(180deg);
+}
+
+.sortByStyledBox img {
+    position: relative;
+    right: 0px;
+    top: 0px;
+    width: 16px;
+}
+
+.createCardsViewLogo {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: .3s;
+}
+
+.createCardsViewLogoSelected {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    background-color: #f0c900;
+    margin-right: 5px;
+    cursor: default;
+    transition: .3s;
+}
+
+.createCardsViewLogo:hover {
+    background-color: #ccc;
+}
+
+.createCardsViewLogo:hover .smallSquare {
+    border: 1.25px solid #fff;
+}
+
+.smallSquare {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 2px;
+    width: 8px;
+    height: 8px;
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: .3s;
+}
+
+.smallSquareSelected {
+    border: 1.25px solid #fff;
+    border-radius: 2px;
+    width: 8px;
+    height: 8px;
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: .3s;
+}
+
+.bullet {
+    width: 2px;
+    height: 2px;
+    background-color: #1f1f1f;
+    border: 1px solid #1f1f1f;
+    margin-left: 3px;
+    margin-top: 4.5px;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+.bulletSelected {
+    width: 2px;
+    height: 2px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    margin-left: 3px;
+    margin-top: 4.5px;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+.anonymusText {
+    width: 16px;
+    height: 1px;
+    background-color: #1f1f1f;
+    border: 1px solid #1f1f1f;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.anonymusTextSelected {
+    width: 16px;
+    height: 1px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.createListViewLogo {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    transition: .3s;
+}
+
+.createListViewLogoSelected {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    background-color: #f0c900;
+    cursor: default;
+    transition: .3s;
+}
+
+.createListViewLogo:hover {
+    background-color: #ccc;
+}
+
+.createListViewLogo:hover .bullet {
+    background-color: #fff;
+    border: 1px solid #fff;
+}
+
+
+.createListViewLogo:hover .anonymusText {
+    background-color: #fff;
+    border: 1px solid #fff;
+}
+
+@media (max-width: 800px) {
+    .createListViewLogo {
+        display: none;
+    }
+
+    .reateListViewLogoSelected {
+        display: none;
+    }
+}
+
+.bulletRow {
+    display: flex;
+}
+
+.viewSelected {
+    display: flex;
+}
+
+.arrowDown {
+    border: solid #ccc;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin-left: 5px;
+}
+
+.arrowDownSelected {
+    border: solid #f0c900;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin-left: 5px;
+}
+
+.arrowUp {
+    border: solid #ccc;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    margin-left: 5px;
+}
+
+.arrowUpSelected {
+    border: solid #f0c900;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    margin-left: 5px;
+}
+
+.downloadButtonCircle {
+    width: 25px;
+    height: 25px;
+    border: 2px solid #1f1f1f;
+    border-radius: 50%;
+    position: relative;
+    transition: .3s;
+}
+
+.downloadButtonArrow {
+    border: solid #1f1f1f;
+    position: absolute;
+    left: 7px;
+    top: 5px;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transition: .3s;
+}
+
+.downloadButtonCircle:hover {
+    border-color: #fff;
+}
+
+.downloadButtonCircle:hover .download-btn-arrow{
+    border-color: #fff;
+}

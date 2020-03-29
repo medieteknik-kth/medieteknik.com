@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import './ViewDocuments.js';
-import ViewDocuments from './ViewDocuments.js';
-import PublishDocument from './PublishDocument.js';
-import classes from './DocumentContainer.module.css';
+import './ViewDocuments/ViewDocuments.js';
+import ViewDocuments from './ViewDocuments/ViewDocuments.js';
+import PublishDocument from './PublishDocument/PublishDocument.js';
+import classes from './Document.module.css';
 
 // Att göra:
 // - Kolla upp hur FormData fungerar
