@@ -12,13 +12,25 @@ import Api from '../../../Utility/Api';
 // - Fixa konstig loga
 // - Ladda upp knapp
 
-
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
 export default function PublishDocuments() {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('2020-03-27 11:45:52.914672');
     const [fileName, setFileName] = useState('abc123.pdf');
 
+    const publishDocumentApi = (formData) => {
+        console.log(`[Api.js] formData:`);
+        console.log(formData);
+        console.log(API_BASE_URL + 'documents')
+        return fetch(API_BASE_URL + 'documents', {
+            method: 'post',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: formData,
+        });
+    }
 
     const submitFormHandler = (event) => {
         event.preventDefault();
@@ -32,7 +44,7 @@ export default function PublishDocuments() {
         console.log(formData.get('title'))
         console.log(formData.get('filename'))
 
-        Api.Documents.PublishDocument(formData)
+        publishDocumentApi(formData)
             .then((response) => console.log(response))//response.json())
             .then((result) => {
                 console.log('Success:', result);

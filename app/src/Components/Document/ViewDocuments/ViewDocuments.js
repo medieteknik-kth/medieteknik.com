@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import classes from './ViewDocuments.module.css';
 import {quickSort} from '../../../libaries/SortDocuments.js';
+
 import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
+
 import EmptyArrowDown from '../Assets/Arrows/Empty-arrow-down.svg';
+
 import samplePDF from '../Assets/test.pdf';
 import samplePDF2 from '../Assets/test2.pdf';
 
@@ -241,48 +244,7 @@ class ViewDocuments extends Component {
     }
     
     render() {
-        let documentNameOrderValueClass;
-        let typeOrderValueClass;
-        let publisherOrderValueClass;
-        let dateOrderValueClass;
-
-        if (this.state.orderValue === "falling") {
-            documentNameOrderValueClass = classes.arrowDown;
-            typeOrderValueClass = classes.arrowDown;
-            publisherOrderValueClass = classes.arrowDown;
-            dateOrderValueClass = classes.arrowDown;
-        } else {
-            documentNameOrderValueClass = classes.arrowUp;
-            typeOrderValueClass = classes.arrowUp;
-            publisherOrderValueClass = classes.arrowUp;
-            dateOrderValueClass = classes.arrowUp;
-        }
-
-        if (this.state.sortValue === "alphabetical") {
-            if (typeOrderValueClass === classes.arrowDown) {
-                documentNameOrderValueClass = classes.arrowDownSelected
-            } else {
-                documentNameOrderValueClass = classes.arrowUpSelected
-            }
-        } else if (this.state.sortValue === "type") {
-            if (typeOrderValueClass === classes.arrowDown) {
-                typeOrderValueClass = classes.arrowDownSelected
-            } else {
-                typeOrderValueClass = classes.arrowUpSelected
-            }
-        } else if (this.state.sortValue === "publisher") {
-            if (publisherOrderValueClass === classes.arrowDown) {
-                publisherOrderValueClass = classes.arrowDownSelected
-            } else {
-                publisherOrderValueClass = classes.arrowUpSelected
-            }
-        } else if (this.state.sortValue === "date") {
-            if (dateOrderValueClass === classes.arrowDown) {
-                dateOrderValueClass = classes.arrowDownSelected
-            } else {
-                dateOrderValueClass = classes.arrowUpSelected
-            }
-        }
+        
 
         return (
             <div className={classes.firstFlexContainer}>
@@ -477,84 +439,23 @@ class ViewDocuments extends Component {
                     
                     {
                         this.state.cardsViewSelected ?
-                            this.state.catsViewed === 0 ?
-                                <DocumentCards documents={this.cards} />
-                            :
-                                
-                                <DocumentList documents={this.cards} />
-                            
-                            :
-
-                            <div className={classes.docList}>              
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th onClick = {this.handleOrderChangeHeadAlphabetical} className={classes.catParam}>
-                                                Dokumentnamn
-                                                <i className={documentNameOrderValueClass}></i>
-                                            </th>
-                                            <th onClick = {this.handleOrderChangeHeadType} className={classes.catParam}>
-                                                Typ 
-                                                <i className={typeOrderValueClass}></i>
-                                            </th>
-                                            <th onClick = {this.handleOrderChangeHeadPublisher} className={classes.catParam}>
-                                                Uppladdat av 
-                                                <i className={publisherOrderValueClass}></i>
-                                            </th>
-                                            <th onClick = {this.handleOrderChangeHeadDate} className={classes.catParam}>
-                                                Uppladdningsdatum
-                                                <i className={dateOrderValueClass}></i>
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {
-                                            this.state.catsViewed === 0 ?
-                                                this.cards.filter(doc => doc.displayCard).map(category => (
-                                                    <tr>
-                                                        <td>{category.headingText}</td>
-                                                        <td>{category.doctype === 'Motioner' ? 'Motion' : category.doctype}</td>
-                                                        <td>{category.publisher}</td>
-                                                        <td>
-                                                            {
-                                                                category.publishDate.getFullYear() + "-" + 
-                                                                ((category.publishDate.getMonth() + 1) < 10 ? `0${(category.publishDate.getMonth() + 1)}` : (category.publishDate.getMonth() + 1)) + "-" + 
-                                                                (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
-                                                            }
-                                                        </td>
-                                                        <td>
-                                                            <div className = {classes.downloadButtonCircle}>
-                                                                <i className = {classes.downloadButtonArrow}></i>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            :
-
-                                            this.cards.filter(category => this.state.shown[category.doctype]).filter(doc => doc.displayCard).map(category => (
-                                                <tr>
-                                                    <td>{category.headingText}</td>
-                                                    <td>{category.doctype === 'Motioner' ? 'Motion' : category.doctype}</td>
-                                                    <td>{category.publisher}</td>
-                                                    <td>
-                                                        {
-                                                            category.publishDate.getFullYear() + "-" + 
-                                                            ((category.publishDate.getMonth() + 1) < 10 ? `0${(category.publishDate.getMonth() + 1)}` : (category.publishDate.getMonth() + 1)) + "-" + 
-                                                            (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        <div className = {classes.downloadButtonCircle}>
-                                                            <i className = {classes.downloadButtonArrow}></i>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                            <DocumentCards 
+                                documents={this.cards}
+                                categoriesToShow={this.state.shown}
+                                zeroCategoriesSelected = {this.state.catsViewed === 0}
+                            />
+                        :
+                            <DocumentList 
+                                documents = {this.cards}
+                                categoriesToShow = {this.state.shown}
+                                zeroCategoriesSelected = {this.state.catsViewed === 0}
+                                orderValue = {this.state.orderValue}
+                                sortValue = {this.state.sortValue}
+                                handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
+                                handleOrderChangeHeadType = {this.handleOrderChangeHeadType}
+                                handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
+                                handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
+                            />
                     }
                 </div>
             </div>
