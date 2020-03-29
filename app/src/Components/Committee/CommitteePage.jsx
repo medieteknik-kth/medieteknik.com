@@ -32,7 +32,7 @@ export default function CommitteePage() {
             setContent(contentData);
             setOldContent(contentData);
           } catch (error) {
-            setOldContent('');
+            setOldContent(null);
             console.error(error);
           }
         }
