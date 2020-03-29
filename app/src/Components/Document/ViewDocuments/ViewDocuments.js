@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import classes from './Document.module.css';
-import './DocumentCard.js';
-import {quickSort} from '../../libaries/SortDocuments.js';
-import DocumentCard from './DocumentCard.js';
-import EmptyArrowDown from './Arrows/Empty-arrow-down.svg';
-
-// Att göra:x       
-// - Använd object för att göra preview
+import classes from './ViewDocuments.module.css';
+import {quickSort} from '../../../libaries/SortDocuments.js';
+import DocumentCards from './DocumentCards/DocumentCards';
+import DocumentList from './DocumentList/DocumentList';
+import EmptyArrowDown from '../Assets/Arrows/Empty-arrow-down.svg';
+import samplePDF from '../Assets/test.pdf';
+import samplePDF2 from '../Assets/test2.pdf';
 
 
 class ViewDocuments extends Component {
@@ -21,7 +20,8 @@ class ViewDocuments extends Component {
                 headingText: 'Budgetförslag MBD',
                 publisher: 'Rasmus Rudling',
                 publishDate: new Date(2019, 8, 27),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -30,7 +30,8 @@ class ViewDocuments extends Component {
                 headingText: 'Lägg ned spelnörderiet',
                 publisher: 'Jesper Lundqvist',
                 publishDate: new Date(2019, 10, 3),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             },
 
             {
@@ -39,7 +40,8 @@ class ViewDocuments extends Component {
                 headingText: 'SM#4 17/18',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2017, 4, 14),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -48,7 +50,8 @@ class ViewDocuments extends Component {
                 headingText: 'SM#4 16/17',
                 publisher: 'Disa Gillner',
                 publishDate: new Date(2016, 5, 28),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             },
 
             {
@@ -57,7 +60,8 @@ class ViewDocuments extends Component {
                 headingText: 'NLG 19/20',
                 publisher: 'Sandra Larsson',
                 publishDate: new Date(2019, 5, 28),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -66,7 +70,8 @@ class ViewDocuments extends Component {
                 headingText: 'Alkohol på TB:s',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2019, 7, 13),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             },
 
             {
@@ -75,7 +80,8 @@ class ViewDocuments extends Component {
                 headingText: 'SBA-blankett',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2019, 2, 10),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF
             },
 
             {
@@ -84,7 +90,8 @@ class ViewDocuments extends Component {
                 headingText: 'MKM:s beerpongregler',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2018, 7, 9),
-                displayCard: true
+                displayCard: true,
+                pdfFile: samplePDF2
             }
         ]
 
@@ -112,10 +119,10 @@ class ViewDocuments extends Component {
             sortValue: 'dateStart',
             orderValue: 'falling',
 
-            cardsViewSelected: window.innerWidth >= 800 ? false : true,
-            listViewSelected: window.innerWidth >= 800 ? true : false,
-            // cardsViewSelected: true,
-            // listViewSelected: false,
+            // cardsViewSelected: window.innerWidth >= 800 ? false : true,
+            // listViewSelected: window.innerWidth >= 800 ? true : false,
+            cardsViewSelected: true,
+            listViewSelected: false,
 
             query: '',
 
@@ -278,7 +285,7 @@ class ViewDocuments extends Component {
         }
 
         return (
-            <div className={classes.firstFlexContainer} onResize={() => this.setState({screenWidth: window.innerWidth})}>
+            <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
                     <div className={classes.headerRow + " " + classes.bottomBorder}>
                         <div className={classes.viewSelected}>
@@ -429,13 +436,13 @@ class ViewDocuments extends Component {
 
                                         {
                                             this.categories.map(category => (
-                                                <label className={classes.container}>
+                                                <label className={classes.container} key = {category}>
                                                     <input
                                                         name={category}
                                                         type="checkbox"
                                                         
                                                         checked={this.state.shown[category]}
-                                                        
+                                                        onChange = {() => null}
                                                         onClick={() => {
                                                             
                                                             this.state.shown[category] === false ? this.setState({catsViewed: this.state.catsViewed + 1}) : this.setState({catsViewed: this.state.catsViewed - 1})
@@ -468,45 +475,13 @@ class ViewDocuments extends Component {
                         />
                     </div>
                     
-                    
                     {
                         this.state.cardsViewSelected ?
                             this.state.catsViewed === 0 ?
-                                <div className={classes.documentList}>
-                                    {
-                                        this.cards.filter(doc => doc.displayCard).map(doc => (
-                                                <DocumentCard
-                                                    doctypeId = {doc.doctypeId}
-                                                    doctype = {doc.doctype === 'Motioner' ? 'Motion' : doc.doctype}
-                                                    headingText = {doc.headingText}
-                                                    publisher = {doc.publisher}
-                                                    publishDate = {
-                                                        doc.publishDate.getFullYear() + "-" + 
-                                                        ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
-                                                        (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
-                                                    }
-                                                />
-                                        )) 
-                                    }
-                                </div>
+                                <DocumentCards documents={this.cards} />
                             :
-                                <div className={classes.documentList}>
-                                    {
-                                        this.cards.filter(category => this.state.shown[category.doctype]).filter(doc => doc.displayCard).map(doc => (
-                                                <DocumentCard
-                                                    doctypeId = {doc.doctypeId}
-                                                    doctype = {doc.doctype === 'Motioner' ? 'Motion' : doc.doctype}
-                                                    headingText = {doc.headingText}
-                                                    publisher = {doc.publisher}
-                                                    publishDate = {
-                                                        doc.publishDate.getFullYear() + "-" + 
-                                                        ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
-                                                        (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
-                                                    }
-                                                />
-                                        ))
-                                    }
-                                </div>
+                                
+                                <DocumentList documents={this.cards} />
                             
                             :
 
