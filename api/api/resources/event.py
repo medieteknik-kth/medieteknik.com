@@ -10,7 +10,7 @@ class EventResource(Resource):
         event = Event.query.get(id)
         return jsonify(event.to_dict())
 
-    def put(self):
+    def post(self):
         add_event(request)
         return jsonify(message="event added!")
 
