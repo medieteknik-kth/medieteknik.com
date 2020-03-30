@@ -21,13 +21,11 @@
     }
 }
 
-@media (max-width: 550px) {
+@media (max-width: 550px) and (min-width: 388px) {
     .dropdownContentCats {
         right: 13px;
         top: 140px;
     }
-
-
 }
 
 .dropdownContentOrder {
@@ -102,8 +100,6 @@
     padding-top: 7px;
     padding-bottom: 7px;
     padding-right: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
     border-top: 1px solid rgba(160, 160, 160, 0.5);
     border-bottom: 1px solid rgb(160, 160, 160, 0.5);
     cursor: default;

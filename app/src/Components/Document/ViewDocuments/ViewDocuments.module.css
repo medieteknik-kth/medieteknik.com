@@ -90,10 +90,6 @@ h3 {
     cursor: pointer;
 }
 
-.textItemsInRightHeader {
-    margin-left: 5px;
-}
-
 .rightHeader img {
     cursor: pointer;
 }
@@ -123,21 +119,21 @@ h3 {
     }
 }
 
-@media (max-width: 550px) and (min-width: 456px) {
+@media (max-width: 550px) and (min-width: 388px) {
     .searchDoc {
-        width: 40%;
+        width: 125px;
         margin-left: 0;
         margin-top: 10px;
         clear: both;
     }
 }
 
-@media (max-width: 455px) {
+@media (max-width: 387px) {
     .searchDoc {
-        width: 25%;
-        margin-left: 0;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
         margin-top: 10px;
-        clear: both;
     }
 }
 
@@ -322,7 +318,7 @@ h3 {
 
     .dropdownFilterStyle {
         position: absolute;
-        right: 8px;
+        right: 10px;
     }
 
     .textItemsInRightHeader {
@@ -333,12 +329,12 @@ h3 {
 @media (max-width: 550px) and (min-width: 450px) {
     .dropdownFilterStyle {
         position: absolute;
-        right: 8px;
+        right: 10px;
         top: 105px;
     }
 
     .textItemsInRightHeader {
-        margin-left: -4px;
+        width: 100%;
     }
 
     .headerRow {
@@ -349,12 +345,16 @@ h3 {
     .sortByStyle {
         margin-right: 5px;
     }
+    
+    .sortOrderStyle {
+        float: right;
+    }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 450px) and (min-width: 388px) {
     .dropdownFilterStyle {
         position: absolute;
-        right: 8px;
+        right: 10px;
         top: 105px;
     }
 
@@ -364,7 +364,31 @@ h3 {
     }
 
     .textItemsInRightHeader {
-        margin-left: -4px;
+        width: 100%;
+    }
+
+    .sortOrderStyle {
+        float: right;
+    }
+}
+
+@media (max-width: 387px) {
+
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+
+    .textItemsInRightHeader {
+        width: 100%;
+    }
+
+    .sortOrderStyle {
+        margin-bottom: 10px;
+    }
+    
+    .sortByStyle {
+        margin-bottom: 10px;
     }
 }
 
@@ -379,12 +403,14 @@ h3 {
 
 .sortByStyle {
     float: left;
+    width: 180px;
+    margin-right: 10px;
 }
 
 .dropdownFilterStyle {
     width: 135px;
 }
 
-.sortByStyle {
-    width: 180px;
+.sortOrderStyle {
+    width: 140px;
 }
