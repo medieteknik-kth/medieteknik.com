@@ -21,7 +21,7 @@ export default function PublishDocuments() {
 
     const publishDocumentApi = (formData) => {
         console.log(`[Api.js] formData:`);
-        console.log(formData.filename);
+        console.log(formData.get('files'));
         console.log(API_BASE_URL + 'documents')
         return fetch(API_BASE_URL + 'documents', {
             method: 'post',
@@ -45,7 +45,7 @@ export default function PublishDocuments() {
         console.log(formData.get('files'))
 
         publishDocumentApi(formData)
-            .then((response) => console.log(response))//response.json())
+            .then((response) => response.json())
             .then((result) => {
                 console.log('Success:', result);
             })

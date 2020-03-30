@@ -125,10 +125,10 @@ class ViewDocuments extends Component {
             sortValue: 'dateStart',
             orderValue: 'falling',
 
-            // cardsViewSelected: window.innerWidth >= 800 ? false : true,
-            // listViewSelected: window.innerWidth >= 800 ? true : false,
-            cardsViewSelected: true,
-            listViewSelected: false,
+            cardsViewSelected: window.innerWidth >= 845 ? false : true,
+            listViewSelected: window.innerWidth >= 845 ? true : false,
+            // cardsViewSelected: true,
+            // listViewSelected: false,
 
             query: '',
 
@@ -164,7 +164,7 @@ class ViewDocuments extends Component {
             screenWidth: window.innerWidth
         })
 
-        if (window.innerWidth < 800) {
+        if (window.innerWidth < 845) {
             this.setState({
                 cardsViewSelected: true,
                 listViewSelected: false
@@ -286,7 +286,7 @@ class ViewDocuments extends Component {
                 <div className={classes.main}>
                     <div className={classes.headerRow + " " + classes.bottomBorder}>
                         <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 800 ? <i
+                            {this.state.screenWidth >= 845 ? <i
                                 className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
                                 onClick={() => {
                                     if(!this.state.cardsViewSelected) {
@@ -306,7 +306,7 @@ class ViewDocuments extends Component {
                                 </div>
                             </i> : null}
 
-                            {this.state.screenWidth >= 800 ? <i
+                            {this.state.screenWidth >= 845 ? <i
                                 className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
                                 onClick={() => {
                                     if(!this.state.listViewSelected) {

@@ -13,6 +13,7 @@ SAVE_FOLDER = os.path.join(os.getcwd(), "static", "documents")
 
 #spara dokument i databas
 def save_documents(request):
+    print(request)
     #Ta filer från requesten
     files = request.files.getlist("files")
     # lista att hålla koll på DB_objekt med när de skapats

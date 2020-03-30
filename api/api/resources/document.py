@@ -16,7 +16,7 @@ class DocumentResource(Resource):
         return jsonify(document.to_dict())
 
 class DocumentListResource(Resource):
-    def put(self):
+    def post(self):
         if request.files is None:
             return jsonify(message="no files attached"), 422
         else:
