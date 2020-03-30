@@ -18,7 +18,7 @@ const SortBySelector = (props) => {
     }
 
     return (
-        <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown].join(' ')}>
+        <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox, dropdownClasses.SortByClass].join(' ')}>
                 {dropdownTitle}
                 <img src={EmptyArrowDown} alt="Arrow"/>

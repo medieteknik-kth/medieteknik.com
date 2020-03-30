@@ -7,8 +7,6 @@ h3 {
     margin-left: 0;
 }
 
-
-
 .bottomBorder {
     border-bottom: 1px #0f0f0f solid;
     margin: 0px 20px;
@@ -19,13 +17,6 @@ h3 {
     justify-content: space-around;
     padding-top: 8px;
     padding-bottom: 5px;
-}
-
-@media (max-width: 750px) {
-    .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
-    }
 }
 
 .headerRow h2 {
@@ -49,10 +40,6 @@ h3 {
     border-right: 1px #0f0f0f solid;
 }
 
-
-
-
-
 .checkButtonShowCat {
     width: 45%;
     padding: 2px 5px 5px 5px;
@@ -68,8 +55,6 @@ h3 {
 .checkButtonShowCat:hover {
     background-color: #b39502;
 }
-
-
 
 .categoriesList h2 {
     padding-bottom: 10px;
@@ -109,15 +94,6 @@ h3 {
     margin-left: 5px;
 }
 
-@media (max-width: 690px) {
-    .textItemsInRightHeader {
-        margin-left: 0;
-        /* background-color: blue; */
-    }
-}
-
-
-
 .rightHeader img {
     cursor: pointer;
 }
@@ -138,12 +114,30 @@ h3 {
     outline: none;
 }
 
-@media (max-width: 690px) {
+@media (max-width: 775px) and (min-width: 551px) {
     .searchDoc {
         width: 100%;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 5px;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 550px) and (min-width: 456px) {
+    .searchDoc {
+        width: 40%;
+        margin-left: 0;
+        margin-top: 10px;
+        clear: both;
+    }
+}
+
+@media (max-width: 455px) {
+    .searchDoc {
+        width: 25%;
+        margin-left: 0;
+        margin-top: 10px;
+        clear: both;
     }
 }
 
@@ -294,15 +288,86 @@ h3 {
     border: 1px solid #fff;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 845px) and (min-width: 776px){
     .createListViewLogo {
         display: none;
     }
 
-    .reateListViewLogoSelected {
+    .createListViewLogoSelected {
+        display: none;
+    }
+
+    .createCardsViewLogo {
+        display: none;
+    }
+
+    .createCardsViewLogoSelected {
         display: none;
     }
 }
+
+@media (max-width: 775px) and (min-width: 551px) {
+    .createListViewLogo {
+        display: none;
+    }
+
+    .createListViewLogoSelected {
+        display: none;
+    }
+
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+
+    .dropdownFilterStyle {
+        position: absolute;
+        right: 8px;
+    }
+
+    .textItemsInRightHeader {
+        margin-left: -3px;
+    }
+}
+
+@media (max-width: 550px) and (min-width: 450px) {
+    .dropdownFilterStyle {
+        position: absolute;
+        right: 8px;
+        top: 105px;
+    }
+
+    .textItemsInRightHeader {
+        margin-left: -4px;
+    }
+
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+
+    .sortByStyle {
+        margin-right: 5px;
+    }
+}
+
+@media (max-width: 450px) {
+    .dropdownFilterStyle {
+        position: absolute;
+        right: 8px;
+        top: 105px;
+    }
+
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+
+    .textItemsInRightHeader {
+        margin-left: -4px;
+    }
+}
+
 
 .bulletRow {
     display: flex;
@@ -312,13 +377,14 @@ h3 {
     display: flex;
 }
 
-.orderByStyledBox {
-    width: 100px;
+.sortByStyle {
+    float: left;
 }
 
-@media (max-width: 690px) {
-    .orderByStyledBox {
-        width: 80px;
-        margin-left: 15px;
-    }
+.dropdownFilterStyle {
+    width: 135px;
+}
+
+.sortByStyle {
+    width: 180px;
 }

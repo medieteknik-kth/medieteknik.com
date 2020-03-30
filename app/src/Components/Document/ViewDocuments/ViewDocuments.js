@@ -336,6 +336,7 @@ class ViewDocuments extends Component {
                             <SortBySelector 
                                 sortByChangedHandler = {this.sortByChangedHandler}
                                 sortValue = {this.state.sortValue}
+                                addClass = {classes.sortByStyle}
                             />
 
                             <SortOrderSelector 
@@ -349,6 +350,7 @@ class ViewDocuments extends Component {
                             categoriesToShow = {this.state.shown}
                             categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
                             clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
+                            addClass = {classes.dropdownFilterStyle}
                         />
 
                         <input

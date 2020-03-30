@@ -6,8 +6,8 @@ import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 
 const CategoriesFilter = (props) => {
     return (
-        <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown].join(' ')}>
-            <div className={[dropdownClasses.sortByStyledBox, classes.filterClass].join(' ')}>
+        <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
+            <div className={[dropdownClasses.sortByStyledBox, classes.filterClass, props.addClass].join(' ')}>
                 Filtrera
                 <img src={EmptyArrowDown} alt="Arrow"/>
             </div>

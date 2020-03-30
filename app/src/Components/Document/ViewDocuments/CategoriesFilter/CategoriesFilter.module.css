@@ -75,23 +75,6 @@
     background-color: #a72222;
 }
 
-@media (max-width: 690px) {
-    .filterClass {
-        float: right;
-        /* background-color: red; */
-    }
-
-    .SortByClass {
-        width: 30%;
-        margin-right: 10px;
-        /* background-color: blue; */
-    }
-
-    .sortDirectionClass {
-        /* background-color: green; */
-    }
-}
-
 .buttonContainer {
     width: 100%;
     text-align: center;
