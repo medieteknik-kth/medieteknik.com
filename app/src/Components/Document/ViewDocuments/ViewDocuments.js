@@ -4,11 +4,12 @@ import {quickSort} from '../../../libaries/SortDocuments.js';
 
 import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
-
-import EmptyArrowDown from '../Assets/Arrows/Empty-arrow-down.svg';
+import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 
 import samplePDF from '../Assets/test.pdf';
 import samplePDF2 from '../Assets/test2.pdf';
+import SortBySelector from './SortBySelector/SortBySelector';
+import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
 
 
 class ViewDocuments extends Component {
@@ -105,6 +106,7 @@ class ViewDocuments extends Component {
             "Budget",
             "Policies",
             "Blanketter",
+            "Fakturor",
             "Övrigt"
         ];
 
@@ -116,6 +118,7 @@ class ViewDocuments extends Component {
                 "Budget": false,
                 "Policies": false,
                 "Blanketter": false,
+                "Fakturor": false,
                 "Övrigt": false
             },
 
@@ -139,6 +142,7 @@ class ViewDocuments extends Component {
         this.handleOrderChangeHeadType = this.handleOrderChangeHeadType.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
+
         this.cards = quickSort(this.cards, this.state.sortValue, this.state.orderValue);
     }
 
@@ -164,8 +168,24 @@ class ViewDocuments extends Component {
             this.setState({
                 cardsViewSelected: true,
                 listViewSelected: false
-        })
+            })
         }
+    }
+
+    categoriesFilterChangeHandler = (category) => {
+        console.log('Hej01')
+        if (!this.state.shown[category]) {
+            this.setState({catsViewed: this.state.catsViewed + 1})
+        } else {
+            this.setState({catsViewed: this.state.catsViewed - 1})
+        }
+        
+        this.setState({
+            shown: {
+                ...this.state.shown,
+                [category]: !this.state.shown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
+            }
+        })
     }
 
     handleOrderChangeHeadDate = () => {
@@ -228,6 +248,8 @@ class ViewDocuments extends Component {
             return(doc)
         })
     }
+
+
     
     clearCat = () => {
         this.setState({
@@ -242,10 +264,23 @@ class ViewDocuments extends Component {
             }
         })
     }
+
+    clearCategoriesFilterHandler = () => {
+        this.setState({catsViewed: 0})
+        this.clearCat()
+    }
+
+    sortByChangedHandler = (sortType) => {
+        this.setState({sortValue: sortType})
+        this.cards = quickSort(this.cards, sortType, this.state.orderValue);
+    }
+
+    sortOrderChangedHandler = (sortOrder) => {
+        this.setState({orderValue: sortOrder})
+        this.cards = quickSort(this.cards, this.state.sortValue, sortOrder);
+    }
     
     render() {
-        
-
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
@@ -298,134 +333,25 @@ class ViewDocuments extends Component {
                         </div>
                         
                         <div className={classes.textItemsInRightHeader}>
-                            <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
-                                <div className={classes.sortByStyledBox + " " + classes.SortByClass}>
-                                    <div>
-                                        {this.state.sortValue === "dateStart" ? 'Sortera efter' : ''}
-                                        {this.state.sortValue === "date" ? 'Uppladdningsdatum' : ''}
-                                        {this.state.sortValue === "type" ? 'Typ' : ''}
-                                        {this.state.sortValue === "publisher" ? 'Uppladdat av' : ''}
-                                        {this.state.sortValue === "alphabetical" ? 'Dokumentnamn' : ''} 
-                                    </div>
-                                    <img src={EmptyArrowDown} alt="Arrow"/>
-                                </div>
+                            <SortBySelector 
+                                sortByChangedHandler = {this.sortByChangedHandler}
+                                sortValue = {this.state.sortValue}
+                                addClass = {classes.sortByStyle}
+                            />
 
-                                <div className = {classes.dropdownContent}>
-                                    <p 
-                                        onClick = {() => {
-                                            this.setState({sortValue: "alphabetical"})
-                                            this.cards = quickSort(this.cards, "alphabetical", this.state.orderValue);
-                                        }}>
-                                        Dokumentnamn
-                                    </p>
-
-                                    <p 
-                                        onClick = {() => {
-                                            this.setState({sortValue: "type"})
-                                            this.cards = quickSort(this.cards, "type", this.state.orderValue);
-                                        }}>
-                                        Typ
-                                    </p>
-                                        
-                                    <p 
-                                        onClick = {() => {
-                                            this.setState({sortValue: "publisher"})
-                                            this.cards = quickSort(this.cards, "publisher", this.state.orderValue);
-                                        }}>
-                                        Uppladdat av
-                                    </p>
-
-                                    <p 
-                                        onClick = {() => {
-                                            this.setState({sortValue: "date"})
-                                            this.cards = quickSort(this.cards, "date", this.state.orderValue);
-                                        }}>
-                                        Uppladdningsdatum
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
-                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox + " " + classes.sortDirectionClass}>
-                                    <div>
-                                        {this.state.orderValue === "falling" ? 'Fallande' : ''}
-                                        {this.state.orderValue === "rising" ? 'Stigande' : ''} 
-                                    </div>
-                                    <img src={EmptyArrowDown} alt="Arrow"/>
-                                </div>
-
-                                <div className = {classes.dropdownContentOrder}>
-                                    <p 
-                                        onClick = {() => {
-                                            this.setState({orderValue: "falling"})
-                                            this.cards = quickSort(this.cards, this.state.sortValue, "falling");
-                                        }}>
-                                        Fallande
-                                    </p>
-
-                                    <p 
-                                        onClick = {() => {
-                                            this.setState({orderValue: "rising"})
-                                            this.cards = quickSort(this.cards, this.state.sortValue, "rising");
-                                        }}>
-                                        Stigande
-                                    </p>
-                                </div>
-                            </div>
+                            <SortOrderSelector 
+                                sortOrderChangedHandler = {this.sortOrderChangedHandler}
+                                orderValue =  {this.orderValue}
+                            />
                         </div>
 
-                        <div className={classes.sortByStyledBoxContainer + " " + classes.dropdown}>
-                                <div className={classes.sortByStyledBox + " " + classes.orderByStyledBox + " " + classes.filterClass}>
-                                    <div>
-                                        Filtrera
-                                    </div>
-                                    <img src={EmptyArrowDown} alt="Arrow"/>
-                                </div>
-
-                                <div className = {classes.dropdownContentCats}>
-                                    <div>
-                                        <div className={classes.buttonContainer}>
-                                            <div 
-                                                className={classes.checkButtonClearCat} 
-                                                onClick = {() => {
-                                                    this.setState({catsViewed: 0})
-                                                    this.clearCat()
-                                                }}
-                                            >
-                                                Rensa
-                                            </div>
-                                        </div>
-
-                                        {
-                                            this.categories.map(category => (
-                                                <label className={classes.container} key = {category}>
-                                                    <input
-                                                        name={category}
-                                                        type="checkbox"
-                                                        
-                                                        checked={this.state.shown[category]}
-                                                        onChange = {() => null}
-                                                        onClick={() => {
-                                                            
-                                                            this.state.shown[category] === false ? this.setState({catsViewed: this.state.catsViewed + 1}) : this.setState({catsViewed: this.state.catsViewed - 1})
-                                                            this.setState({
-                                                                shown: {
-                                                                    ...this.state.shown,
-                                                                    [category]: !this.state.shown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
-                                                                }
-                                                            })
-                                                        }}
-                                                    />
-                                                    
-                                                    <span className={classes.checkmark}></span>
-                                                    {category}
-                                                    <br />
-                                                </label>
-                                            ))
-                                        }
-                                    </div>
-                                </div>
-                            </div>
+                        <CategoriesFilter 
+                            categories = {this.categories} 
+                            categoriesToShow = {this.state.shown}
+                            categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
+                            clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
+                            addClass = {classes.dropdownFilterStyle}
+                        />
 
                         <input
                             className={classes.searchDoc}
