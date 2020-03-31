@@ -337,7 +337,7 @@ class ViewDocuments extends Component {
 
                             <SortOrderSelector 
                                 sortOrderChangedHandler = {this.sortOrderChangedHandler}
-                                orderValue =  {this.orderValue}
+                                orderValue =  {this.state.orderValue}
                                 addClass = {classes.sortOrderStyle}
                             />
                         </div>

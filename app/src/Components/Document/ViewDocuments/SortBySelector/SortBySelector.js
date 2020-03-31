@@ -29,10 +29,6 @@ const SortBySelector = (props) => {
                     Dokumentnamn
                 </p>
 
-                <p onClick = {() => props.sortByChangedHandler("type")}>
-                    Typ
-                </p>
-
                 <p onClick = {() => props.sortByChangedHandler("publisher")}>
                     Uppladdat av
                 </p>
