@@ -18,31 +18,26 @@ export default function PublishDocuments() {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('2020-03-27 11:45:52.914672');
     const [fileName, setFileName] = useState('abc123.pdf');
+    const fileInput = React.useRef(); //använd en ref för att hålla koll på form genom stateändringar
 
     const publishDocumentApi = (formData) => {
         console.log(`[Api.js] formData:`);
-        console.log(formData.get('files'));
+        console.log( formData instanceof FormData);
         console.log(API_BASE_URL + 'documents')
         return fetch(API_BASE_URL + 'documents', {
-            method: 'post',
-            headers: {
-            'Content-Type': 'application/json',
-            },
+            method: 'POST',
             body: formData,
         });
     }
 
     const submitFormHandler = (event) => {
         event.preventDefault();
-
-        const formData = new FormData();
-        const fileField = document.querySelector('input[type="file"]');
-
-        formData.append('title', title);
-        formData.append('files', fileField.files);
-
-        console.log(formData.get('title'))
-        console.log(formData.get('files'))
+        console.log(fileInput.current)
+        const formData = new FormData(fileInput.current);
+        
+        //TODO: fixa så att tags appendas dynamiskt, förslagsvis genom att splitta på komman
+        //det verkar som att sidan bara stödjer en fil i taget, så plonka bara in arrayn som value för 0
+        formData.append("tags", JSON.stringify({0: ["a", "b"]}))
 
         publishDocumentApi(formData)
             .then((response) => response.json())
@@ -60,20 +55,21 @@ export default function PublishDocuments() {
 
     return (
         <div className={classes.Publish}>
-            <form 
-                method="post" 
-                encType="multipart/form-data" 
-                action="http://localhost:5000/documents"
+            <form
+                method="post"
+                encType="multipart/form-data"
+                action="localhost:5000/documents"
                 onSubmit={submitFormHandler}
+                ref={fileInput}
             >
                 <div>
                     <label>Titel </label>
                     <input
                         name="title"
-                        onChange = {changeTitleHandler}
+                        onChange={changeTitleHandler}
                     />
                 </div>
-                
+
                 <div>
                     <label>Dokumenttyp </label>
                     <input
@@ -88,7 +84,7 @@ export default function PublishDocuments() {
                         name="file"
                     />
                 </div>
-        
+
                 <button type="submit">Ladda upp</button>
             </form>
         </div>
