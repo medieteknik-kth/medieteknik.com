@@ -5,8 +5,6 @@ import classes from './CategoriesFilter.module.css';
 import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 
 const CategoriesFilter = (props) => {
-
-    
     return (
         <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox, classes.filterClass, props.addClass].join(' ')}>

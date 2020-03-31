@@ -51,7 +51,6 @@ export default function PublishDocuments() {
 
     const submitFormHandler = (event) => {
         event.preventDefault();
-        console.log('Hej02')
         console.log(fileInput.current)
         const formData = new FormData(fileInput.current);
 
@@ -61,8 +60,7 @@ export default function PublishDocuments() {
 
         console.log(tagsList)
         
-        //TODO: fixa så att tags appendas dynamiskt, förslagsvis genom att splitta på komman
-        //det verkar som att sidan bara stödjer en fil i taget, så plonka bara in arrayn som value för 0
+        // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({0: tagsList}))
 
         publishDocumentApi(formData)
@@ -130,6 +128,14 @@ export default function PublishDocuments() {
                     <input
                         type="file"
                         name="file"
+                    />
+                </div>
+
+                <div>
+                    <label><strong>Ditt namn</strong> </label>
+                    <input
+                        type="text"
+                        name="publisher"
                     />
                 </div>
 

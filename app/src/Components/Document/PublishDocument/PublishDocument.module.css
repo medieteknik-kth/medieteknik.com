@@ -29,6 +29,7 @@
 }
 
 .container {
+    display: block;
     position: relative;
     padding-left: 23px;
     margin-bottom: 10px;

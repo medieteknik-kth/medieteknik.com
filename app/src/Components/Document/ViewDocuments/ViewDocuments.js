@@ -20,7 +20,7 @@ class ViewDocuments extends Component {
         this.cards = [
             {
                 doctypeId: 0,
-                doctype: 'Motioner',
+                doctags: [' Motioner'],
                 headingText: 'Budgetförslag MBD',
                 publisher: 'Rasmus Rudling',
                 publishDate: new Date(2019, 8, 27),
@@ -30,7 +30,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 1,
-                doctype: 'Motioner',
+                doctags: [' Motioner'],
                 headingText: 'Lägg ned spelnörderiet',
                 publisher: 'Jesper Lundqvist',
                 publishDate: new Date(2019, 10, 3),
@@ -40,7 +40,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 2,
-                doctype: 'SM-handlingar',
+                doctags: [' SM-handlingar'],
                 headingText: 'SM#4 17/18',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2017, 4, 14),
@@ -50,7 +50,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 3,
-                doctype: 'Valkompass',
+                doctags: [' Valkompass'],
                 headingText: 'SM#4 16/17',
                 publisher: 'Disa Gillner',
                 publishDate: new Date(2016, 5, 28),
@@ -60,7 +60,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 4,
-                doctype: 'Budget',
+                doctags: [' Budget'],
                 headingText: 'NLG 19/20',
                 publisher: 'Sandra Larsson',
                 publishDate: new Date(2019, 5, 28),
@@ -70,7 +70,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 5,
-                doctype: 'Policies',
+                doctags: [' Policies', ' Övrigt', ' Blanketter'],
                 headingText: 'Alkohol på TB:s',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2019, 7, 13),
@@ -80,7 +80,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 6,
-                doctype: 'Blanketter',
+                doctags: [' Blanketter'],
                 headingText: 'SBA-blankett',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2019, 2, 10),
@@ -90,7 +90,7 @@ class ViewDocuments extends Component {
 
             {
                 doctypeId: 7,
-                doctype: 'Övrigt',
+                doctags: [' Övrigt'],
                 headingText: 'MKM:s beerpongregler',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2018, 7, 9),
@@ -121,8 +121,9 @@ class ViewDocuments extends Component {
                 "Fakturor": false,
                 "Övrigt": false
             },
+            categoryTagsSelected: [],
 
-            sortValue: 'dateStart',
+            sortValue: 'date',
             orderValue: 'falling',
 
             cardsViewSelected: window.innerWidth >= 845 ? false : true,
@@ -139,7 +140,6 @@ class ViewDocuments extends Component {
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
         this.handleOrderChangeHeadDate = this.handleOrderChangeHeadDate.bind(this);
         this.handleOrderChangeHeadPublisher = this.handleOrderChangeHeadPublisher.bind(this);
-        this.handleOrderChangeHeadType = this.handleOrderChangeHeadType.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
 
@@ -173,18 +173,28 @@ class ViewDocuments extends Component {
     }
 
     categoriesFilterChangeHandler = (category) => {
+        const categoriesKeysList = Object.keys(this.state.shown);
+
+        let categoriesSelected = categoriesKeysList.filter(categoryKey => {
+            return this.state.shown[categoryKey]
+        })
+
         if (!this.state.shown[category]) {
-            this.setState({catsViewed: this.state.catsViewed + 1})
+            this.setState({catsViewed: this.state.catsViewed + 1});
+            categoriesSelected.push(category)
         } else {
             this.setState({catsViewed: this.state.catsViewed - 1})
+            categoriesSelected = categoriesSelected.filter(_category => _category !== category)
         }
         
         this.setState({
             shown: {
                 ...this.state.shown,
                 [category]: !this.state.shown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
-            }
+            },
+            categoryTagsSelected: categoriesSelected
         })
+
     }
 
     handleOrderChangeHeadDate = () => {
@@ -197,19 +207,6 @@ class ViewDocuments extends Component {
         } else {
             this.setState({orderValue: 'falling'})
             this.cards = quickSort(this.cards, "date", 'falling');
-        }
-    }
-
-    handleOrderChangeHeadType = () => {
-        if (this.state.sortValue !== 'type') {
-            this.setState({sortValue: "type"});
-            this.cards = quickSort(this.cards, "type", this.state.orderValue);
-        } else if (this.state.orderValue === 'rising') {
-            this.setState({orderValue: 'falling'})
-            this.cards = quickSort(this.cards, "type", 'falling');
-        } else {
-            this.setState({orderValue: 'rising'})
-            this.cards = quickSort(this.cards, "type", 'rising');
         }
     }
 
@@ -229,7 +226,6 @@ class ViewDocuments extends Component {
     handleSearch = () => {
         let searchVal = this.search.value
         let filteredString = searchVal.toUpperCase()
-        console.log(filteredString)
         this.setState({query: this.search.value})
         
         
@@ -238,7 +234,7 @@ class ViewDocuments extends Component {
             ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
             (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
 
-            if(doc.headingText.toUpperCase().indexOf(filteredString) > -1 || doc.doctype.toUpperCase().indexOf(filteredString) > -1 || doc.publisher.toUpperCase().indexOf(filteredString) > -1 || dateString.indexOf(filteredString) > -1) {
+            if(doc.headingText.toUpperCase().indexOf(filteredString) > -1 || doc.publisher.toUpperCase().indexOf(filteredString) > -1 || dateString.indexOf(filteredString) > -1) {
                 doc.displayCard = true
             } else {
                 doc.displayCard = false
@@ -260,7 +256,8 @@ class ViewDocuments extends Component {
                 "Policies": false,
                 "Blanketter": false,
                 "Övrigt": false
-            }
+            },
+            categoriesShownList: []
         })
     }
 
@@ -367,18 +364,17 @@ class ViewDocuments extends Component {
                         this.state.cardsViewSelected ?
                             <DocumentCards 
                                 documents={this.cards}
-                                categoriesToShow={this.state.shown}
+                                categoriesToShow={this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                             />
                         :
                             <DocumentList 
                                 documents = {this.cards}
-                                categoriesToShow = {this.state.shown}
+                                categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                                 orderValue = {this.state.orderValue}
                                 sortValue = {this.state.sortValue}
                                 handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
-                                handleOrderChangeHeadType = {this.handleOrderChangeHeadType}
                                 handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
                                 handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
                             />
