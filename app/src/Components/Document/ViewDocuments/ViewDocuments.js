@@ -173,7 +173,6 @@ class ViewDocuments extends Component {
     }
 
     categoriesFilterChangeHandler = (category) => {
-        console.log('Hej01')
         if (!this.state.shown[category]) {
             this.setState({catsViewed: this.state.catsViewed + 1})
         } else {

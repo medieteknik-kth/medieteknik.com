@@ -14,11 +14,30 @@ import Api from '../../../Utility/Api';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
+const categories = [
+    "Styrelsemötesprotokoll",
+    "SM-protokoll",
+    "Blanketter",
+    "Mallar",
+    "Budget/Ekonomi",
+    "Policys/Reglemente/Stadgar",
+    "Fakturor",
+    "Övrigt"
+];
+
 export default function PublishDocuments() {
-    const [title, setTitle] = useState('');
-    const [date, setDate] = useState('2020-03-27 11:45:52.914672');
-    const [fileName, setFileName] = useState('abc123.pdf');
     const fileInput = React.useRef(); //använd en ref för att hålla koll på form genom stateändringar
+
+    const [categoriesToUse, setCategoriesToUse] = useState({
+        "Styrelsemötesprotokoll": false,
+        "SM-protokoll": false,
+        "Blanketter": false,
+        "Mallar": false,
+        "Budget/Ekonomi": false,
+        "Policys/Reglemente/Stadgar": false,
+        "Fakturor": false,
+        "Övrigt": false
+    })
 
     const publishDocumentApi = (formData) => {
         console.log(`[Api.js] formData:`);
@@ -32,12 +51,19 @@ export default function PublishDocuments() {
 
     const submitFormHandler = (event) => {
         event.preventDefault();
+        console.log('Hej02')
         console.log(fileInput.current)
         const formData = new FormData(fileInput.current);
+
+        const tagsList = categories.filter(category => {
+            return categoriesToUse[category];
+        })
+
+        console.log(tagsList)
         
         //TODO: fixa så att tags appendas dynamiskt, förslagsvis genom att splitta på komman
         //det verkar som att sidan bara stödjer en fil i taget, så plonka bara in arrayn som value för 0
-        formData.append("tags", JSON.stringify({0: ["a", "b"]}))
+        formData.append("tags", JSON.stringify({0: tagsList}))
 
         publishDocumentApi(formData)
             .then((response) => response.json())
@@ -49,8 +75,11 @@ export default function PublishDocuments() {
             });
     }
 
-    const changeTitleHandler = (event) => {
-        setTitle(event.target.value)
+    const categoriesFilterChangeHandler = (category) => {        
+        setCategoriesToUse({
+            ...categoriesToUse,
+            [category]: !categoriesToUse[category], // brackets runt säger att det ska vara värdet av dena här variabeln
+        })
     }
 
     return (
@@ -63,22 +92,41 @@ export default function PublishDocuments() {
                 ref={fileInput}
             >
                 <div>
-                    <label>Titel </label>
+                    <label><strong>Dokumenttitel</strong> </label>
                     <input
                         name="title"
-                        onChange={changeTitleHandler}
                     />
                 </div>
 
                 <div>
-                    <label>Dokumenttyp </label>
-                    <input
-                        name="tag"
-                    />
+                    <label><strong>Dokumenttaggar</strong> </label>
+
+                    <div className={classes.categoriesTags}>
+                        {
+                            categories.map(category => (
+                                <label 
+                                    className = {classes.container} 
+                                    key = {category}
+                                >
+                                    <input
+                                        name={category}
+                                        type="checkbox"
+                                        
+                                        checked={categoriesToUse[category]}
+                                        onChange={() => categoriesFilterChangeHandler(category)}
+                                    />
+                                    
+                                    <span className={classes.checkmark}></span>
+                                    {category}
+                                </label>
+                            ))
+                        }
+                    </div>
+                    
                 </div>
 
                 <div>
-                    <label>Fil </label>
+                    <label><strong>Fil</strong> </label>
                     <input
                         type="file"
                         name="file"

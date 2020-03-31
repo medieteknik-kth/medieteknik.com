@@ -20,7 +20,7 @@ class Document extends Component {
         super();
 
         this.state = {
-            viewCardsview: true,
+            viewCardsview: false,
             propUserFunkis: true// Ska komma som prop
         }
     }
