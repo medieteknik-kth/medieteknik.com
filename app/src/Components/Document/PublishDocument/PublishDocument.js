@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+/* eslint-disable quotes */
+/* eslint-disable indent */
+import React, { useState, useEffect } from 'react';
 
 import classes from './PublishDocument.module.css';
 import Api from '../../../Utility/Api';
+
 
 // Att göra:
 // - Kolla upp hur FormData fungerar
@@ -25,8 +28,11 @@ const categories = [
     "Övrigt"
 ];
 
+
+
 export default function PublishDocuments() {
     const fileInput = React.useRef(); //använd en ref för att hålla koll på form genom stateändringar
+    const [categoriesList, setCategoriesList] = useState([]);
 
     const [categoriesToUse, setCategoriesToUse] = useState({
         "Styrelsemötesprotokoll": false,
@@ -39,9 +45,22 @@ export default function PublishDocuments() {
         "Övrigt": false
     })
 
+    useEffect(() => {
+        fetch(API_BASE_URL + 'document_tags')
+            .then(response => response.json())
+            .then(jsonObject => {
+                console.log(jsonObject);
+                setCategoriesList(jsonObject);
+                // const categoryState = {jsonObject.map( obj => obj.title: false)}
+                // Fixa så att den nya listan lägger till kategorier dynamiskt
+
+                //setCategoriesToUse(//categoryState)
+            });
+    }, []);
+
     const publishDocumentApi = (formData) => {
         console.log(`[Api.js] formData:`);
-        console.log( formData instanceof FormData);
+        console.log(formData instanceof FormData);
         console.log(API_BASE_URL + 'documents')
         return fetch(API_BASE_URL + 'documents', {
             method: 'POST',
@@ -59,9 +78,9 @@ export default function PublishDocuments() {
         })
 
         console.log(tagsList)
-        
+
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
-        formData.append("tags", JSON.stringify({0: tagsList}))
+        formData.append("tags", JSON.stringify({ 0: tagsList }))
 
         publishDocumentApi(formData)
             .then((response) => response.json())
@@ -73,7 +92,7 @@ export default function PublishDocuments() {
             });
     }
 
-    const categoriesFilterChangeHandler = (category) => {        
+    const categoriesFilterChangeHandler = (category) => {
         setCategoriesToUse({
             ...categoriesToUse,
             [category]: !categoriesToUse[category], // brackets runt säger att det ska vara värdet av dena här variabeln
@@ -98,29 +117,28 @@ export default function PublishDocuments() {
 
                 <div>
                     <label><strong>Dokumenttaggar</strong> </label>
-
                     <div className={classes.categoriesTags}>
                         {
-                            categories.map(category => (
-                                <label 
-                                    className = {classes.container} 
-                                    key = {category}
+                            categoriesList.map(category => (
+                                <label
+                                    className={classes.container}
+                                    key={category.title}
                                 >
                                     <input
-                                        name={category}
+                                        name={category.title}
                                         type="checkbox"
-                                        
+
                                         checked={categoriesToUse[category]}
-                                        onChange={() => categoriesFilterChangeHandler(category)}
+                                        onChange={() => categoriesFilterChangeHandler(category.title)}
                                     />
-                                    
+
                                     <span className={classes.checkmark}></span>
-                                    {category}
+                                    {category.title}
                                 </label>
                             ))
                         }
                     </div>
-                    
+
                 </div>
 
                 <div>
