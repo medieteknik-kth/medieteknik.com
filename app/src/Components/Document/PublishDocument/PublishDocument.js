@@ -33,28 +33,30 @@ const categories = [
 export default function PublishDocuments() {
     const fileInput = React.useRef(); //använd en ref för att hålla koll på form genom stateändringar
     const [categoriesList, setCategoriesList] = useState([]);
+    const [categoriesToUse, setCategoriesToUse] = useState({});
 
-    const [categoriesToUse, setCategoriesToUse] = useState({
-        "Styrelsemötesprotokoll": false,
-        "SM-protokoll": false,
-        "Blanketter": false,
-        "Mallar": false,
-        "Budget/Ekonomi": false,
-        "Policys/Reglemente/Stadgar": false,
-        "Fakturor": false,
-        "Övrigt": false
-    })
+    // const [categoriesToUse, setCategoriesToUse] = useState({
+    //     "Styrelsemötesprotokoll": false,
+    //     "SM-protokoll": false,
+    //     "Blanketter": false,
+    //     "Mallar": false,
+    //     "Budget/Ekonomi": false,
+    //     "Policys/Reglemente/Stadgar": false,
+    //     "Fakturor": false,
+    //     "Övrigt": false
+    // })
+
+
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
             .then(jsonObject => {
-                console.log(jsonObject);
-                setCategoriesList(jsonObject);
-                // const categoryState = {jsonObject.map( obj => obj.title: false)}
-                // Fixa så att den nya listan lägger till kategorier dynamiskt
+                const tempCategoriesToUseArray = jsonObject.map( categoryObject => [categoryObject.title, false])
+                const tempCategoriesToUseObject = Object.fromEntries(tempCategoriesToUseArray);
 
-                //setCategoriesToUse(//categoryState)
+                setCategoriesList(jsonObject);
+                setCategoriesToUse(tempCategoriesToUseObject);
             });
     }, []);
 
@@ -73,11 +75,9 @@ export default function PublishDocuments() {
         console.log(fileInput.current)
         const formData = new FormData(fileInput.current);
 
-        const tagsList = categories.filter(category => {
-            return categoriesToUse[category];
-        })
-
-        console.log(tagsList)
+        const tagsList = categoriesList
+            .filter(categoryObject => categoriesToUse[categoryObject.title])
+            .map(categoryObject => categoryObject.title)
 
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({ 0: tagsList }))
