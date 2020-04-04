@@ -26,14 +26,14 @@
     padding-top: 10px;
 }
 
-@media (max-width: 775px) and (min-width: 551px) {
+@media (max-width: 831px) and (min-width: 551px) {
     .dropdownContentCats {
         right: 13px;
         top: 34.3px;
     }
 
     .dropdownContentCatsFixed {
-        right: 0;
+        right: 34.5px;
         top: 133px;
     }
 }
@@ -45,7 +45,7 @@
     }
 
     .dropdownContentCatsFixed {
-        right: 0;
+        right: 14.5px;
         top: 173.5px;
     }
 }

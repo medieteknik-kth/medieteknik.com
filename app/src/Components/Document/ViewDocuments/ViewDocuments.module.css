@@ -17,13 +17,14 @@ h3 {
     padding: 8px 20px;
     padding-top: 8px;
     padding-bottom: 5px;
-    width: 100%;
 }
 
 .headerRowFixed {
+    margin: 0 auto;
+    width: 90%;
     position: fixed;
     background-color: #fff;
-    left: 0;
+    left: 3.45%;
     top: 90px;
     z-index: 500;
     box-shadow: 0 1px 1px -1px rgba(0,0,0,0.11), 
@@ -127,7 +128,7 @@ h3 {
     outline: none;
 }
 
-@media (max-width: 775px) and (min-width: 551px) {
+@media (max-width: 830px) and (min-width: 551px) {
     .searchDoc {
         width: 100%;
         margin-left: auto;
@@ -301,7 +302,7 @@ h3 {
     border: 1px solid #fff;
 }
 
-@media (max-width: 845px) and (min-width: 776px){
+@media (max-width: 900px) and (min-width: 831px){
     .createListViewLogo {
         display: none;
     }
@@ -319,7 +320,7 @@ h3 {
     }
 }
 
-@media (max-width: 775px) and (min-width: 551px) {
+@media (max-width: 830px) and (min-width: 551px) {
     .createListViewLogo {
         display: none;
     }
@@ -340,7 +341,7 @@ h3 {
 
     .dropdownFilterStyleFixed {
         position: absolute;
-        right: 20px;
+        right: 10px;
     }
 }
 
@@ -353,7 +354,7 @@ h3 {
 
     .dropdownFilterStyleFixed {
         position: fixed;
-        right: 0px;
+        right: 14.5px;
         top: 139px;
     }
 
@@ -372,7 +373,6 @@ h3 {
     
     .sortOrderStyle {
         float: right;
-        margin-right: 20px;
     }
 }
 
