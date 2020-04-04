@@ -14,10 +14,27 @@
     padding-top: 10px;
 }
 
+.dropdownContentCatsFixed {
+    display: none;
+    position: fixed;
+    background-color: #f9f9f9;
+    min-width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: left;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
 @media (max-width: 775px) and (min-width: 551px) {
     .dropdownContentCats {
         right: 13px;
         top: 34.3px;
+    }
+
+    .dropdownContentCatsFixed {
+        right: 0;
+        top: 133px;
     }
 }
 
@@ -25,6 +42,11 @@
     .dropdownContentCats {
         right: 13px;
         top: 140px;
+    }
+
+    .dropdownContentCatsFixed {
+        right: 0;
+        top: 173.5px;
     }
 }
 
@@ -83,6 +105,10 @@
 }
 
 .dropdown:hover .dropdownContentCats {
+    display: block;
+}
+
+.dropdown:hover .dropdownContentCatsFixed {
     display: block;
 }
 
