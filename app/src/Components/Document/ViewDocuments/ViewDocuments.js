@@ -12,6 +12,9 @@ import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
 
 
+// --- ATT GÖRA ---
+// - Fixa så att sökmenyn hänger med även när man är funkis
+
 class ViewDocuments extends Component {
     constructor() {
         super();
@@ -277,10 +280,23 @@ class ViewDocuments extends Component {
     }
     
     render() {
+        let headerRowPlaceHolderClass = null;
+        let headerRowClasses = [classes.headerRow, classes.bottomBorder];
+        let categoriesFilterClass = classes.dropdownFilterStyle;
+
+        if (!this.props.userIsFunkis) {
+            headerRowPlaceHolderClass = classes.headerRowPlaceHolder;
+
+            headerRowClasses = [...headerRowClasses, classes.headerRowFixed];
+
+            categoriesFilterClass = classes.dropdownFilterStyleFixed;
+        }
+
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
-                    <div className={classes.headerRow + " " + classes.bottomBorder}>
+                    <div className= {headerRowPlaceHolderClass} />
+                    <div className={headerRowClasses.join(' ')}>
                         <div className={classes.viewSelected}>
                             {this.state.screenWidth >= 845 ? <i
                                 className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
@@ -347,7 +363,8 @@ class ViewDocuments extends Component {
                             categoriesToShow = {this.state.shown}
                             categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
                             clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
-                            addClass = {classes.dropdownFilterStyle}
+                            addClass = {categoriesFilterClass}
+                            userIsFunkis = {this.props.userIsFunkis}
                         />
 
                         <input

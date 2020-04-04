@@ -5,6 +5,12 @@ import classes from './CategoriesFilter.module.css';
 import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 
 const CategoriesFilter = (props) => {
+    let dropdownContentClass = dropdownClasses.dropdownContentCats;
+
+    if (!props.userIsFunkis) {
+        dropdownContentClass = dropdownClasses.dropdownContentCatsFixed;
+    }
+
     return (
         <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox, classes.filterClass, props.addClass].join(' ')}>
@@ -12,7 +18,7 @@ const CategoriesFilter = (props) => {
                 <img src={EmptyArrowDown} alt="Arrow"/>
             </div>
 
-            <div className = {dropdownClasses.dropdownContentCats}>
+            <div className = {dropdownContentClass}>
                 <div className={classes.buttonContainer}>
                     <div 
                         className={classes.checkButtonClearCat} 

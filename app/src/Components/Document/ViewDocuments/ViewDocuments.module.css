@@ -9,20 +9,37 @@ h3 {
 
 .bottomBorder {
     border-bottom: 1px #0f0f0f solid;
-    margin: 0px 20px;
 }
 
 .headerRow {
     display: flex;
     justify-content: space-around;
+    padding: 8px 20px;
     padding-top: 8px;
     padding-bottom: 5px;
+    width: 100%;
+}
+
+.headerRowFixed {
+    position: fixed;
+    background-color: #fff;
+    left: 0;
+    top: 90px;
+    z-index: 500;
+    box-shadow: 0 1px 1px -1px rgba(0,0,0,0.11), 
+              0 2px 2px -2px rgba(0,0,0,0.11), 
+              0 4px 4px -4px rgba(0,0,0,0.11), 
+              0 6px 8px -8px rgba(0,0,0,0.11),
+              0 8px 16px -16px rgba(0,0,0,0.11);
 }
 
 .headerRow h2 {
     padding: 10px 0px;
 }
 
+.headerRowPlaceHolder {
+    height: 40px;
+}
 
 .firstFlexContainer {
     display: flex;
@@ -103,7 +120,7 @@ h3 {
     background-position: 1px 0px;
     background-repeat: no-repeat;
     font-size: 13px;
-    padding: 5px 20px 5px 35px;
+    padding: 7.5px 20px 7.5px 35px;
     border: 1px solid rgb(160, 160, 160);
     border-radius: 4px;
     margin-right: 5px;
@@ -321,16 +338,23 @@ h3 {
         right: 10px;
     }
 
-    .textItemsInRightHeader {
-        margin-left: -3px;
+    .dropdownFilterStyleFixed {
+        position: absolute;
+        right: 20px;
     }
 }
 
-@media (max-width: 550px) and (min-width: 450px) {
+@media (max-width: 550px) and (min-width: 388px) {
     .dropdownFilterStyle {
         position: absolute;
         right: 10px;
         top: 105px;
+    }
+
+    .dropdownFilterStyleFixed {
+        position: fixed;
+        right: 0px;
+        top: 139px;
     }
 
     .textItemsInRightHeader {
@@ -348,12 +372,19 @@ h3 {
     
     .sortOrderStyle {
         float: right;
+        margin-right: 20px;
     }
 }
 
-@media (max-width: 450px) and (min-width: 388px) {
+/* @media (max-width: 450px) and (min-width: 388px) {
     .dropdownFilterStyle {
         position: absolute;
+        right: 10px;
+        top: 105px;
+    }
+
+    .dropdownFilterStyleFixed {
+        position: fixed;
         right: 10px;
         top: 105px;
     }
@@ -370,7 +401,7 @@ h3 {
     .sortOrderStyle {
         float: right;
     }
-}
+} */
 
 @media (max-width: 387px) {
 
@@ -407,6 +438,10 @@ h3 {
 }
 
 .dropdownFilterStyle {
+    width: 135px;
+}
+
+.dropdownFilterStyleFixed {
     width: 135px;
 }
 

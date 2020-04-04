@@ -59,7 +59,7 @@ class Document extends Component {
 
         if (!this.state.propUserFunkis) {
             publishDocumentsClass = classes.disabled;
-            viewDocumentsClass = classes.selectedOnly;
+            viewDocumentsClass = classes.disabled;
         }
 
         return (
@@ -78,7 +78,7 @@ class Document extends Component {
 
                 {
                     this.state.viewCardsview ? 
-                    <ViewDocuments /> : 
+                    <ViewDocuments userIsFunkis = {this.state.propUserFunkis} /> : 
                     <PublishDocument />
                 }
             </div>

@@ -105,9 +105,9 @@ export default function PublishDocuments() {
                     pdf.getPage(1).then(firstPage => {
                         let thumbnailCanvas = document.createElement('canvas');
                         let context = thumbnailCanvas.getContext("2d");
-                        let viewport = firstPage.getViewport(0.36); // getViewport(scale, angle)
-                        thumbnailCanvas.width = 200;
-                        thumbnailCanvas.height = 200;
+                        let viewport = firstPage.getViewport(1); // getViewport(scale, angle)
+                        thumbnailCanvas.width = viewport.width;
+                        thumbnailCanvas.height = viewport.height;
 
                         const renderContext = {
                             canvasContext: context,
