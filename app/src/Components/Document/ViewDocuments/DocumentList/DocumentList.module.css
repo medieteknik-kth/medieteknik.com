@@ -12,10 +12,6 @@
     
 }
 
-.DocumentList thead th:hover {
-    color: #ccc;
-}
-
 .DocumentList tr {
     line-height: 35px;
 }
@@ -26,7 +22,7 @@
 }
 
 .DocumentList tbody tr:nth-child(odd) {
-    background: #c4c4c434;
+    background: hsla(0, 0%, 77%, 0.204);
 }
 
 .DocumentList tbody tr:hover td{
@@ -111,4 +107,12 @@
 .catParam {
     cursor: pointer;
     user-select: none;
+}
+
+.catParam:hover {
+    color: #ccc;
+}
+
+.notClickable {
+    color: #1f1f1f;
 }

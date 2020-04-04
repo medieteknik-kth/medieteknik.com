@@ -11,7 +11,15 @@ const DocumentCards = (props) => {
             .filter(doc => doc.displayCard);
     } else {
         documentsToRender = props.documents
-            .filter(category => props.categoriesToShow[category.doctype])
+            .filter(_document => {
+                let renderDocument = false;
+                _document.doctags.forEach(documentTag => {
+                    if (props.categoriesToShow.includes(documentTag.trim())) {
+                        renderDocument = true;
+                    }
+                })
+                return renderDocument;
+            })
             .filter(doc => doc.displayCard);
     }
 
@@ -21,7 +29,7 @@ const DocumentCards = (props) => {
                 documentsToRender.map(doc => (
                     <DocumentCard
                         doctypeId = {doc.doctypeId}
-                        doctype = {doc.doctype === 'Motioner' ? 'Motion' : doc.doctype}
+                        doctype = {doc.doctags.toString()}
                         headingText = {doc.headingText}
                         publisher = {doc.publisher}
                         publishDate = {
@@ -29,7 +37,7 @@ const DocumentCards = (props) => {
                             ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
                             (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
                         }
-                        pdfFile = {doc.pdfFile}
+                        thumbnail = {doc.thumbnail}
                         key = {doc.publishDate}
                     />
                 )) 

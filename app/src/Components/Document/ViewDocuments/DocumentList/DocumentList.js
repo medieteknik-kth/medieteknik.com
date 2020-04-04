@@ -10,9 +10,18 @@ const DocumentList = (props) => {
             .filter(doc => doc.displayCard);
     } else {
         documentsToRender = props.documents
-            .filter(category => props.categoriesToShow[category.doctype])
+            .filter(_document => {
+                let renderDocument = false;
+                _document.doctags.forEach(documentTag => {
+                    if (props.categoriesToShow.includes(documentTag.trim())) {
+                        renderDocument = true;
+                    }
+                })
+                return renderDocument;
+            })
             .filter(doc => doc.displayCard);
     }
+
 
     let documentNameOrderValueClass;
         let typeOrderValueClass;
@@ -37,12 +46,6 @@ const DocumentList = (props) => {
             } else {
                 documentNameOrderValueClass = classes.arrowUpSelected
             }
-        } else if (props.sortValue === "type") {
-            if (typeOrderValueClass === classes.arrowDown) {
-                typeOrderValueClass = classes.arrowDownSelected
-            } else {
-                typeOrderValueClass = classes.arrowUpSelected
-            }
         } else if (props.sortValue === "publisher") {
             if (publisherOrderValueClass === classes.arrowDown) {
                 publisherOrderValueClass = classes.arrowDownSelected
@@ -66,9 +69,8 @@ const DocumentList = (props) => {
                             Dokumentnamn
                             <i className={documentNameOrderValueClass}></i>
                         </th>
-                        <th onClick = {props.handleOrderChangeHeadType} className={classes.catParam}>
+                        <th>
                             Typ 
-                            <i className={typeOrderValueClass}></i>
                         </th>
                         <th onClick = {props.handleOrderChangeHeadPublisher} className={classes.catParam}>
                             Uppladdat av 
@@ -86,7 +88,7 @@ const DocumentList = (props) => {
                         documentsToRender.map(category => (
                             <tr key={category.publishDate}>
                                 <td>{category.headingText}</td>
-                                <td>{category.doctype === 'Motioner' ? 'Motion' : category.doctype}</td>
+                                <td>{category.doctags.toString()}</td>
                                 <td>{category.publisher}</td>
                                 <td>
                                     {

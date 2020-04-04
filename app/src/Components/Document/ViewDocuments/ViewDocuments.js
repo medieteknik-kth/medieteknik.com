@@ -6,8 +6,8 @@ import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 
-import samplePDF from '../Assets/test.pdf';
-import samplePDF2 from '../Assets/test2.pdf';
+import sampleThumbnail1 from '../Assets/testThumbnail1.png';
+import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
 
@@ -20,82 +20,82 @@ class ViewDocuments extends Component {
         this.cards = [
             {
                 doctypeId: 0,
-                doctype: 'Motioner',
+                doctags: [' Motioner'],
                 headingText: 'Budgetförslag MBD',
                 publisher: 'Rasmus Rudling',
                 publishDate: new Date(2019, 8, 27),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
                 doctypeId: 1,
-                doctype: 'Motioner',
+                doctags: [' Motioner'],
                 headingText: 'Lägg ned spelnörderiet',
                 publisher: 'Jesper Lundqvist',
                 publishDate: new Date(2019, 10, 3),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             },
 
             {
                 doctypeId: 2,
-                doctype: 'SM-handlingar',
+                doctags: [' SM-handlingar'],
                 headingText: 'SM#4 17/18',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2017, 4, 14),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
                 doctypeId: 3,
-                doctype: 'Valkompass',
+                doctags: [' Valkompass'],
                 headingText: 'SM#4 16/17',
                 publisher: 'Disa Gillner',
                 publishDate: new Date(2016, 5, 28),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             },
 
             {
                 doctypeId: 4,
-                doctype: 'Budget',
+                doctags: [' Budget'],
                 headingText: 'NLG 19/20',
                 publisher: 'Sandra Larsson',
                 publishDate: new Date(2019, 5, 28),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
                 doctypeId: 5,
-                doctype: 'Policies',
+                doctags: [' Policies', ' Övrigt', ' Blanketter'],
                 headingText: 'Alkohol på TB:s',
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2019, 7, 13),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             },
 
             {
                 doctypeId: 6,
-                doctype: 'Blanketter',
+                doctags: [' Blanketter'],
                 headingText: 'SBA-blankett',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2019, 2, 10),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
                 doctypeId: 7,
-                doctype: 'Övrigt',
+                doctags: [' Övrigt'],
                 headingText: 'MKM:s beerpongregler',
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2018, 7, 9),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             }
         ]
 
@@ -121,12 +121,13 @@ class ViewDocuments extends Component {
                 "Fakturor": false,
                 "Övrigt": false
             },
+            categoryTagsSelected: [],
 
-            sortValue: 'dateStart',
+            sortValue: 'date',
             orderValue: 'falling',
 
-            // cardsViewSelected: window.innerWidth >= 800 ? false : true,
-            // listViewSelected: window.innerWidth >= 800 ? true : false,
+            // cardsViewSelected: window.innerWidth >= 845 ? false : true,
+            // listViewSelected: window.innerWidth >= 845 ? true : false,
             cardsViewSelected: true,
             listViewSelected: false,
 
@@ -139,7 +140,6 @@ class ViewDocuments extends Component {
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
         this.handleOrderChangeHeadDate = this.handleOrderChangeHeadDate.bind(this);
         this.handleOrderChangeHeadPublisher = this.handleOrderChangeHeadPublisher.bind(this);
-        this.handleOrderChangeHeadType = this.handleOrderChangeHeadType.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
 
@@ -164,7 +164,7 @@ class ViewDocuments extends Component {
             screenWidth: window.innerWidth
         })
 
-        if (window.innerWidth < 800) {
+        if (window.innerWidth < 845) {
             this.setState({
                 cardsViewSelected: true,
                 listViewSelected: false
@@ -173,19 +173,28 @@ class ViewDocuments extends Component {
     }
 
     categoriesFilterChangeHandler = (category) => {
-        console.log('Hej01')
+        const categoriesKeysList = Object.keys(this.state.shown);
+
+        let categoriesSelected = categoriesKeysList.filter(categoryKey => {
+            return this.state.shown[categoryKey]
+        })
+
         if (!this.state.shown[category]) {
-            this.setState({catsViewed: this.state.catsViewed + 1})
+            this.setState({catsViewed: this.state.catsViewed + 1});
+            categoriesSelected.push(category)
         } else {
             this.setState({catsViewed: this.state.catsViewed - 1})
+            categoriesSelected = categoriesSelected.filter(_category => _category !== category)
         }
         
         this.setState({
             shown: {
                 ...this.state.shown,
                 [category]: !this.state.shown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
-            }
+            },
+            categoryTagsSelected: categoriesSelected
         })
+
     }
 
     handleOrderChangeHeadDate = () => {
@@ -198,19 +207,6 @@ class ViewDocuments extends Component {
         } else {
             this.setState({orderValue: 'falling'})
             this.cards = quickSort(this.cards, "date", 'falling');
-        }
-    }
-
-    handleOrderChangeHeadType = () => {
-        if (this.state.sortValue !== 'type') {
-            this.setState({sortValue: "type"});
-            this.cards = quickSort(this.cards, "type", this.state.orderValue);
-        } else if (this.state.orderValue === 'rising') {
-            this.setState({orderValue: 'falling'})
-            this.cards = quickSort(this.cards, "type", 'falling');
-        } else {
-            this.setState({orderValue: 'rising'})
-            this.cards = quickSort(this.cards, "type", 'rising');
         }
     }
 
@@ -230,7 +226,6 @@ class ViewDocuments extends Component {
     handleSearch = () => {
         let searchVal = this.search.value
         let filteredString = searchVal.toUpperCase()
-        console.log(filteredString)
         this.setState({query: this.search.value})
         
         
@@ -239,7 +234,7 @@ class ViewDocuments extends Component {
             ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
             (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
 
-            if(doc.headingText.toUpperCase().indexOf(filteredString) > -1 || doc.doctype.toUpperCase().indexOf(filteredString) > -1 || doc.publisher.toUpperCase().indexOf(filteredString) > -1 || dateString.indexOf(filteredString) > -1) {
+            if(doc.headingText.toUpperCase().indexOf(filteredString) > -1 || doc.publisher.toUpperCase().indexOf(filteredString) > -1 || dateString.indexOf(filteredString) > -1) {
                 doc.displayCard = true
             } else {
                 doc.displayCard = false
@@ -261,7 +256,8 @@ class ViewDocuments extends Component {
                 "Policies": false,
                 "Blanketter": false,
                 "Övrigt": false
-            }
+            },
+            categoriesShownList: []
         })
     }
 
@@ -286,7 +282,7 @@ class ViewDocuments extends Component {
                 <div className={classes.main}>
                     <div className={classes.headerRow + " " + classes.bottomBorder}>
                         <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 800 ? <i
+                            {this.state.screenWidth >= 845 ? <i
                                 className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
                                 onClick={() => {
                                     if(!this.state.cardsViewSelected) {
@@ -306,7 +302,7 @@ class ViewDocuments extends Component {
                                 </div>
                             </i> : null}
 
-                            {this.state.screenWidth >= 800 ? <i
+                            {this.state.screenWidth >= 845 ? <i
                                 className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
                                 onClick={() => {
                                     if(!this.state.listViewSelected) {
@@ -341,7 +337,7 @@ class ViewDocuments extends Component {
 
                             <SortOrderSelector 
                                 sortOrderChangedHandler = {this.sortOrderChangedHandler}
-                                orderValue =  {this.orderValue}
+                                orderValue =  {this.state.orderValue}
                                 addClass = {classes.sortOrderStyle}
                             />
                         </div>
@@ -368,18 +364,17 @@ class ViewDocuments extends Component {
                         this.state.cardsViewSelected ?
                             <DocumentCards 
                                 documents={this.cards}
-                                categoriesToShow={this.state.shown}
+                                categoriesToShow={this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                             />
                         :
                             <DocumentList 
                                 documents = {this.cards}
-                                categoriesToShow = {this.state.shown}
+                                categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                                 orderValue = {this.state.orderValue}
                                 sortValue = {this.state.sortValue}
                                 handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
-                                handleOrderChangeHeadType = {this.handleOrderChangeHeadType}
                                 handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
                                 handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
                             />

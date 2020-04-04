@@ -5,18 +5,11 @@ import dropdownClasses from '../DropdownButtonStyle.module.css';
 import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 
 const SortOrderSelector = (props) => {
-    let dropdownTitle = '';
-
-    if (props.orderValue === "falling") {
-        dropdownTitle = 'Fallande';
-    } else {
-        dropdownTitle = 'Stigande';
-    }
 
     return (
         <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox].join(' ')}>
-                {dropdownTitle}
+                {props.orderValue === "falling" ? 'Fallande' : 'Stigande'}
                 <img src={EmptyArrowDown} alt="Arrow"/>
             </div>
 
