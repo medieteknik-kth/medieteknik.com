@@ -1,10 +1,10 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 
 import classes from './PublishDocument.module.css';
 import Api from '../../../Utility/Api';
-
 
 // Att göra:
 // - Kolla upp hur FormData fungerar
@@ -16,6 +16,8 @@ import Api from '../../../Utility/Api';
 // - Ladda upp knapp
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 
 const categories = [
     "Styrelsemötesprotokoll",
@@ -28,10 +30,9 @@ const categories = [
     "Övrigt"
 ];
 
-
-
 export default function PublishDocuments() {
-    const fileInput = React.useRef(); //använd en ref för att hålla koll på form genom stateändringar
+    const formInput = useRef(); //använd en ref för att hålla koll på form genom stateändringar
+    let fileUpload = null;
     const [categoriesList, setCategoriesList] = useState([]);
     const [categoriesToUse, setCategoriesToUse] = useState({});
 
@@ -72,8 +73,7 @@ export default function PublishDocuments() {
 
     const submitFormHandler = (event) => {
         event.preventDefault();
-        console.log(fileInput.current)
-        const formData = new FormData(fileInput.current);
+        const formData = new FormData(formInput.current);
 
         const tagsList = categoriesList
             .filter(categoryObject => categoriesToUse[categoryObject.title])
@@ -90,6 +90,49 @@ export default function PublishDocuments() {
             .catch((error) => {
                 console.error('Error:', error);
             });
+
+        // --- PDF-Thumbnail ---
+        let fileReader = new FileReader();
+
+        fileReader.readAsArrayBuffer(fileUpload.files[0])
+        
+        fileReader.onload = () => {
+            let typedArray = new Uint8Array(fileReader.result);
+            let pdfHandle = pdfjs.getDocument(typedArray);
+            
+            pdfHandle.promise
+                .then(pdf => {
+                    pdf.getPage(1).then(firstPage => {
+                        let thumbnailCanvas = document.createElement('canvas');
+                        let context = thumbnailCanvas.getContext("2d");
+                        let viewport = firstPage.getViewport(0.36); // getViewport(scale, angle)
+                        thumbnailCanvas.width = 200;
+                        thumbnailCanvas.height = 200;
+
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        }
+
+                        let renderPageTask = firstPage.render(renderContext);
+
+                        renderPageTask.promise
+                            .then(() => {
+                                const thumbnailImage = thumbnailCanvas.toDataURL();
+                                formData.append("thumbnail", thumbnailImage);
+
+                                const linkElement = document.createElement('a');
+                                linkElement.href = thumbnailImage;
+                                linkElement.download = "thumbnail.png";
+                                linkElement.click();
+                            })
+                    });
+                })
+                .catch(error => {
+                    console.log('Något gick fel! Nedan ser du vilket error som uppstod.')
+                    console.log(error)
+                })
+        }
     }
 
     const categoriesFilterChangeHandler = (category) => {
@@ -100,65 +143,68 @@ export default function PublishDocuments() {
     }
 
     return (
-        <div className={classes.Publish}>
-            <form
-                method="post"
-                encType="multipart/form-data"
-                action="localhost:5000/documents"
-                onSubmit={submitFormHandler}
-                ref={fileInput}
-            >
-                <div>
-                    <label><strong>Dokumenttitel</strong> </label>
-                    <input
-                        name="title"
-                    />
-                </div>
-
-                <div>
-                    <label><strong>Dokumenttaggar</strong> </label>
-                    <div className={classes.categoriesTags}>
-                        {
-                            categoriesList.map(category => (
-                                <label
-                                    className={classes.container}
-                                    key={category.title}
-                                >
-                                    <input
-                                        name={category.title}
-                                        type="checkbox"
-
-                                        checked={categoriesToUse[category]}
-                                        onChange={() => categoriesFilterChangeHandler(category.title)}
-                                    />
-
-                                    <span className={classes.checkmark}></span>
-                                    {category.title}
-                                </label>
-                            ))
-                        }
+        <React.Fragment>
+            <div className={classes.Publish}>
+                <form
+                    method="post"
+                    encType="multipart/form-data"
+                    action="localhost:5000/documents"
+                    onSubmit={submitFormHandler}
+                    ref={formInput}
+                >
+                    <div>
+                        <label><strong>Dokumenttitel</strong> </label>
+                        <input
+                            name="title"
+                        />
                     </div>
 
-                </div>
+                    <div>
+                        <label><strong>Dokumenttaggar</strong> </label>
+                        <div className={classes.categoriesTags}>
+                            {
+                                categoriesList.map(category => (
+                                    <label
+                                        className={classes.container}
+                                        key={category.title}
+                                    >
+                                        <input
+                                            name={category.title}
+                                            type="checkbox"
 
-                <div>
-                    <label><strong>Fil</strong> </label>
-                    <input
-                        type="file"
-                        name="file"
-                    />
-                </div>
+                                            checked={categoriesToUse[category]}
+                                            onChange={() => categoriesFilterChangeHandler(category.title)}
+                                        />
 
-                <div>
-                    <label><strong>Ditt namn</strong> </label>
-                    <input
-                        type="text"
-                        name="publisher"
-                    />
-                </div>
+                                        <span className={classes.checkmark}></span>
+                                        {category.title}
+                                    </label>
+                                ))
+                            }
+                        </div>
 
-                <button type="submit">Ladda upp</button>
-            </form>
-        </div>
+                    </div>
+
+                    <div>
+                        <label><strong>Fil</strong> </label>
+                        <input
+                            type="file"
+                            name="file"
+                            ref={(ref) => fileUpload = ref}
+                        />
+                    </div>
+
+                    <div>
+                        <label><strong>Ditt namn</strong> </label>
+                        <input
+                            type="text"
+                            name="publisher"
+                        />
+                    </div>
+
+                    <button type="submit">Ladda upp</button>
+                </form>
+            </div>
+        </React.Fragment>
     )
 }

@@ -6,8 +6,8 @@ import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 
-import samplePDF from '../Assets/test.pdf';
-import samplePDF2 from '../Assets/test2.pdf';
+import sampleThumbnail1 from '../Assets/testThumbnail1.png';
+import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
 
@@ -25,7 +25,7 @@ class ViewDocuments extends Component {
                 publisher: 'Rasmus Rudling',
                 publishDate: new Date(2019, 8, 27),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
@@ -35,7 +35,7 @@ class ViewDocuments extends Component {
                 publisher: 'Jesper Lundqvist',
                 publishDate: new Date(2019, 10, 3),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             },
 
             {
@@ -45,7 +45,7 @@ class ViewDocuments extends Component {
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2017, 4, 14),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
@@ -55,7 +55,7 @@ class ViewDocuments extends Component {
                 publisher: 'Disa Gillner',
                 publishDate: new Date(2016, 5, 28),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             },
 
             {
@@ -65,7 +65,7 @@ class ViewDocuments extends Component {
                 publisher: 'Sandra Larsson',
                 publishDate: new Date(2019, 5, 28),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
@@ -75,7 +75,7 @@ class ViewDocuments extends Component {
                 publisher: 'Oliver Kamruzzaman',
                 publishDate: new Date(2019, 7, 13),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             },
 
             {
@@ -85,7 +85,7 @@ class ViewDocuments extends Component {
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2019, 2, 10),
                 displayCard: true,
-                pdfFile: samplePDF
+                thumbnail: sampleThumbnail1
             },
 
             {
@@ -95,7 +95,7 @@ class ViewDocuments extends Component {
                 publisher: 'Moa Engquist',
                 publishDate: new Date(2018, 7, 9),
                 displayCard: true,
-                pdfFile: samplePDF2
+                thumbnail: sampleThumbnail2
             }
         ]
 
@@ -126,10 +126,10 @@ class ViewDocuments extends Component {
             sortValue: 'date',
             orderValue: 'falling',
 
-            cardsViewSelected: window.innerWidth >= 845 ? false : true,
-            listViewSelected: window.innerWidth >= 845 ? true : false,
-            // cardsViewSelected: true,
-            // listViewSelected: false,
+            // cardsViewSelected: window.innerWidth >= 845 ? false : true,
+            // listViewSelected: window.innerWidth >= 845 ? true : false,
+            cardsViewSelected: true,
+            listViewSelected: false,
 
             query: '',
 

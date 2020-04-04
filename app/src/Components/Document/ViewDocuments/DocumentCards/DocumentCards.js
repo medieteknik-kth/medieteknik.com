@@ -37,7 +37,7 @@ const DocumentCards = (props) => {
                             ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
                             (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
                         }
-                        pdfFile = {doc.pdfFile}
+                        thumbnail = {doc.thumbnail}
                         key = {doc.publishDate}
                     />
                 )) 
