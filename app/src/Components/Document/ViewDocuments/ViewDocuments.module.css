@@ -14,19 +14,18 @@ h3 {
 .headerRow {
     display: flex;
     justify-content: space-around;
-    padding: 8px 20px;
-    padding-top: 8px;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
 }
 
 .headerRowFixed {
     margin: 0 auto;
-    width: 90%;
+    width: 100%;
     position: fixed;
     background-color: #fff;
-    left: 3.45%;
-    top: 90px;
+    left: 0;
+    top: 89px;
     z-index: 500;
+    padding-top: 9.6px;
     box-shadow: 0 1px 1px -1px rgba(0,0,0,0.11), 
               0 2px 2px -2px rgba(0,0,0,0.11), 
               0 4px 4px -4px rgba(0,0,0,0.11), 
@@ -39,7 +38,25 @@ h3 {
 }
 
 .headerRowPlaceHolder {
-    height: 40px;
+    height: 45px;
+}
+
+@media (max-width: 701px) {
+    .headerRowPlaceHolder {
+        height: 90px;
+    }
+}
+
+@media (max-width: 525px) {
+    .headerRowPlaceHolder {
+        height: 133px;
+    }
+}
+
+@media (max-width: 360px) {
+    .headerRowPlaceHolder {
+        height: 178px;
+    }
 }
 
 .firstFlexContainer {
@@ -112,8 +129,8 @@ h3 {
     cursor: pointer;
 }
 
-.textItemsInRightHeader select {
-    margin-left: 5px;
+.filterAndSearchContainer div {
+    margin-right: 20px;
 }
 
 .searchDoc {
@@ -121,38 +138,10 @@ h3 {
     background-position: 1px 0px;
     background-repeat: no-repeat;
     font-size: 13px;
-    padding: 7.5px 20px 7.5px 35px;
+    padding: 9px 20px 9px 35px;
     border: 1px solid rgb(160, 160, 160);
     border-radius: 4px;
-    margin-right: 5px;
     outline: none;
-}
-
-@media (max-width: 830px) and (min-width: 551px) {
-    .searchDoc {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 10px;
-    }
-}
-
-@media (max-width: 550px) and (min-width: 388px) {
-    .searchDoc {
-        width: 125px;
-        margin-left: 0;
-        margin-top: 10px;
-        clear: both;
-    }
-}
-
-@media (max-width: 387px) {
-    .searchDoc {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 10px;
-    }
 }
 
 .createCardsViewLogo {
@@ -302,6 +291,27 @@ h3 {
     border: 1px solid #fff;
 }
 
+.bulletRow {
+    display: flex;
+}
+
+.viewSelected {
+    display: flex;
+}
+
+.sortByStyle {
+    width: 180px;
+    margin-right: 10px;
+}
+
+.dropdownFilterStyle {
+    width: 135px;
+}
+
+.sortOrderStyle {
+    width: 100px;
+}
+
 @media (max-width: 900px) and (min-width: 831px){
     .createListViewLogo {
         display: none;
@@ -320,7 +330,7 @@ h3 {
     }
 }
 
-@media (max-width: 830px) and (min-width: 551px) {
+@media (max-width: 701px) and (min-width: 526px) {
     .createListViewLogo {
         display: none;
     }
@@ -330,121 +340,110 @@ h3 {
     }
 
     .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
+        display: block;
     }
 
-    .dropdownFilterStyle {
-        position: absolute;
-        right: 10px;
-    }
-
-    .dropdownFilterStyleFixed {
-        position: absolute;
-        right: 10px;
-    }
-}
-
-@media (max-width: 550px) and (min-width: 388px) {
-    .dropdownFilterStyle {
-        position: absolute;
-        right: 10px;
-        top: 105px;
-    }
-
-    .dropdownFilterStyleFixed {
-        position: fixed;
-        right: 14.5px;
-        top: 139px;
+    .filterAndSearchContainer {
+        clear: both;
+        margin: 0 auto;
+        width: 75%;
     }
 
     .textItemsInRightHeader {
-        width: 100%;
-    }
-
-    .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
+        margin: 0 auto;
+        width: 75%;
+        height: 34px;
+        margin-bottom: 10px;
     }
 
     .sortByStyle {
-        margin-right: 5px;
+        float: left;
     }
-    
+
     .sortOrderStyle {
         float: right;
+        width: 177px;
+    }
+
+    .dropdownFilterStyle {
+        float: left;
+        width: 180px;
+    }
+
+    .searchDoc {
+        width: 120px;
+        float: right;
+    }
+
+    .filterAndSearchContainer {
+        height: 34px;
     }
 }
 
-/* @media (max-width: 450px) and (min-width: 388px) {
-    .dropdownFilterStyle {
-        position: absolute;
-        right: 10px;
-        top: 105px;
-    }
 
-    .dropdownFilterStyleFixed {
-        position: fixed;
-        right: 10px;
-        top: 105px;
-    }
-
+@media (max-width: 525px) and (min-width: 361px) {
     .headerRow {
         flex-wrap: wrap;
         justify-content: left;
     }
 
     .textItemsInRightHeader {
-        width: 100%;
-    }
-
-    .sortOrderStyle {
-        float: right;
-    }
-} */
-
-@media (max-width: 387px) {
-
-    .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
-    }
-
-    .textItemsInRightHeader {
-        width: 100%;
-    }
-
-    .sortOrderStyle {
+        margin: 0 auto;
+        width: 85%;
+        height: 34px;
         margin-bottom: 10px;
+    }
+
+    .filterAndSearchContainer {
+        width: 85%;
+        margin: 0 auto;
+    }
+
+    .dropdownFilterStyle {
+        width: 175px;
     }
     
     .sortByStyle {
         margin-bottom: 10px;
     }
+
+    .searchDoc {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 10px;
+    }
 }
 
-.bulletRow {
-    display: flex;
-}
+@media (max-width: 360px) {
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
 
-.viewSelected {
-    display: flex;
-}
+    .textItemsInRightHeader {
+        margin: 0 auto;
+        width: 85%;
+        height: 34px;
+        margin-bottom: 10px;
+    }
 
-.sortByStyle {
-    float: left;
-    width: 180px;
-    margin-right: 10px;
-}
+    .filterAndSearchContainer {
+        width: 85%;
+        margin: 45px auto 0px auto;
+    }
 
-.dropdownFilterStyle {
-    width: 135px;
-}
+    .dropdownFilterStyle {
+        width: 175px;
+    }
+    
+    .sortByStyle {
+        margin-bottom: 10px;
+        margin-right: 30px;
+    }
 
-.dropdownFilterStyleFixed {
-    width: 135px;
-}
-
-.sortOrderStyle {
-    width: 140px;
+    .searchDoc {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 10px;
+    }
 }
