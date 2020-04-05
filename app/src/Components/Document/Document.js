@@ -21,7 +21,7 @@ class Document extends Component {
 
         this.state = {
             viewCardsview: true,
-            propUserFunkis: true// Ska komma som prop
+            propUserFunkis: false// Ska komma som prop
         }
     }
 

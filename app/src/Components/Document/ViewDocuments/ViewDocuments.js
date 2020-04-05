@@ -140,8 +140,7 @@ class ViewDocuments extends Component {
             screenWidth: window.innerWidth,
             headerRowFixed: false,
             headerRowPlaceHolderClass: null,
-            headerRowClasses: [classes.headerRow, classes.bottomBorder],
-            categoriesFilterClass: classes.dropdownFilterStyle
+            headerRowClasses: [classes.headerRow, classes.bottomBorder]
         };
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
@@ -284,32 +283,30 @@ class ViewDocuments extends Component {
     }
     
     render() {
-        if (!this.props.userIsFunkis) {
+        if (!this.props.userIsFunkis && !this.state.headerRowFixed) {
             this.setState({
                 headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
                 headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                categoriesFilterClass: classes.dropdownFilterStyleFixed
+                headerRowFixed: true
             })
         }
 
         window.addEventListener('scroll', () => {
             
-            if (window.scrollY >= 73 && this.props.userIsFunkis && !this.state.headerRowFixed) {
+            if (window.scrollY >= 63.5 && this.props.userIsFunkis && !this.state.headerRowFixed) {
                 console.log(window.scrollY)
                 this.setState({
                     headerRowFixed: true,
                     headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
                     headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                    categoriesFilterClass: classes.dropdownFilterStyleFixed
                 })
                 
-            } else if (window.scrollY < 73 && this.props.userIsFunkis && this.state.headerRowFixed) {
+            } else if (window.scrollY < 63.5 && this.props.userIsFunkis && this.state.headerRowFixed) {
                 console.log(window.scrollY)
                 this.setState({
                     headerRowFixed: false,
                     headerRowPlaceHolderClass: null,
                     headerRowClasses: [classes.headerRow, classes.bottomBorder],
-                    categoriesFilterClass: classes.dropdownFilterStyle
                 })
                 
             }
@@ -387,7 +384,7 @@ class ViewDocuments extends Component {
                                 categoriesToShow = {this.state.shown}
                                 categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
                                 clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
-                                addClass = {this.state.categoriesFilterClass}
+                                addClass = {classes.dropdownFilterStyle}
                                 userIsFunkis = {this.props.userIsFunkis}
                             />
 

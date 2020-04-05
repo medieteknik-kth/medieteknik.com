@@ -22,9 +22,9 @@
 }
 
 
-@media (max-width: 908px) and (min-width: 701px) {
+@media (max-width: 908px) and (min-width: 736px) {
     .docCards {
-        width: 40%;
+        width: 30%;
         text-align: center;
     }
 
@@ -33,7 +33,7 @@
     }
 }
 
-@media (max-width: 700px) and (min-width: 576px) {
+@media (max-width: 735px) and (min-width: 651px) {
     .docCards {
         width: 80%;
         text-align: center;
@@ -44,7 +44,7 @@
     }
 }
 
-@media (max-width: 575px) and (min-width: 481px) {
+@media (max-width: 650px) and (min-width: 481px) {
     .docCards {
         width: 70%;
         text-align: center;
