@@ -26,30 +26,6 @@
     padding-top: 10px;
 }
 
-@media (max-width: 831px) and (min-width: 551px) {
-    .dropdownContentCats {
-        right: 13px;
-        top: 34.3px;
-    }
-
-    .dropdownContentCatsFixed {
-        right: 34.5px;
-        top: 133px;
-    }
-}
-
-@media (max-width: 550px) and (min-width: 388px) {
-    .dropdownContentCats {
-        right: 13px;
-        top: 140px;
-    }
-
-    .dropdownContentCatsFixed {
-        right: 14.5px;
-        top: 173.5px;
-    }
-}
-
 .dropdownContentOrder {
     display: none;
     position: absolute;

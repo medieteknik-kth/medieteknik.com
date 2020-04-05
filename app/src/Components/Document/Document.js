@@ -40,7 +40,7 @@ class Document extends Component {
             })
         }
     }
-
+    
     render() {
         let publishDocumentsClass;
         let viewDocumentsClass;

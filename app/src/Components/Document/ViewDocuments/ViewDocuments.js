@@ -129,15 +129,19 @@ class ViewDocuments extends Component {
             sortValue: 'date',
             orderValue: 'falling',
 
-            // cardsViewSelected: window.innerWidth >= 845 ? false : true,
-            // listViewSelected: window.innerWidth >= 845 ? true : false,
+            // cardsViewSelected: window.innerWidth >= 900 ? false : true,
+            // listViewSelected: window.innerWidth >= 900 ? true : false,
             cardsViewSelected: true,
             listViewSelected: false,
 
             query: '',
 
             catsViewed: 0,
-            screenWidth: window.innerWidth
+            screenWidth: window.innerWidth,
+            headerRowFixed: false,
+            headerRowPlaceHolderClass: null,
+            headerRowClasses: [classes.headerRow, classes.bottomBorder],
+            categoriesFilterClass: classes.dropdownFilterStyle
         };
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
@@ -149,6 +153,7 @@ class ViewDocuments extends Component {
         this.cards = quickSort(this.cards, this.state.sortValue, this.state.orderValue);
     }
 
+    
     handleOrderChangeHeadAlphabetical = () => {
         if (this.state.sortValue !== 'alphabetical') {
             this.setState({sortValue: "alphabetical"});
@@ -248,7 +253,6 @@ class ViewDocuments extends Component {
     }
 
 
-    
     clearCat = () => {
         this.setState({
             shown: {
@@ -280,25 +284,44 @@ class ViewDocuments extends Component {
     }
     
     render() {
-        let headerRowPlaceHolderClass = null;
-        let headerRowClasses = [classes.headerRow, classes.bottomBorder];
-        let categoriesFilterClass = classes.dropdownFilterStyle;
-
         if (!this.props.userIsFunkis) {
-            headerRowPlaceHolderClass = classes.headerRowPlaceHolder;
-
-            headerRowClasses = [...headerRowClasses, classes.headerRowFixed];
-
-            categoriesFilterClass = classes.dropdownFilterStyleFixed;
+            this.setState({
+                headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
+                headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
+                categoriesFilterClass: classes.dropdownFilterStyleFixed
+            })
         }
+
+        window.addEventListener('scroll', () => {
+            
+            if (window.scrollY >= 73 && this.props.userIsFunkis && !this.state.headerRowFixed) {
+                console.log(window.scrollY)
+                this.setState({
+                    headerRowFixed: true,
+                    headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
+                    headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
+                    categoriesFilterClass: classes.dropdownFilterStyleFixed
+                })
+                
+            } else if (window.scrollY < 73 && this.props.userIsFunkis && this.state.headerRowFixed) {
+                console.log(window.scrollY)
+                this.setState({
+                    headerRowFixed: false,
+                    headerRowPlaceHolderClass: null,
+                    headerRowClasses: [classes.headerRow, classes.bottomBorder],
+                    categoriesFilterClass: classes.dropdownFilterStyle
+                })
+                
+            }
+        })
 
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
-                    <div className= {headerRowPlaceHolderClass} />
-                    <div className={headerRowClasses.join(' ')}>
+                    <div className= {this.state.headerRowPlaceHolderClass} />
+                    <div className={this.state.headerRowClasses.join(' ')}>
                         <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 845 ? <i
+                            {this.state.screenWidth >= 900 ? <i
                                 className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
                                 onClick={() => {
                                     if(!this.state.cardsViewSelected) {
@@ -318,7 +341,7 @@ class ViewDocuments extends Component {
                                 </div>
                             </i> : null}
 
-                            {this.state.screenWidth >= 845 ? <i
+                            {this.state.screenWidth >= 900 ? <i
                                 className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
                                 onClick={() => {
                                     if(!this.state.listViewSelected) {
@@ -358,23 +381,26 @@ class ViewDocuments extends Component {
                             />
                         </div>
 
-                        <CategoriesFilter 
-                            categories = {this.categories} 
-                            categoriesToShow = {this.state.shown}
-                            categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
-                            clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
-                            addClass = {categoriesFilterClass}
-                            userIsFunkis = {this.props.userIsFunkis}
-                        />
+                        <div className={classes.filterAndSearchContainer}>
+                            <CategoriesFilter 
+                                categories = {this.categories} 
+                                categoriesToShow = {this.state.shown}
+                                categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
+                                clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
+                                addClass = {this.state.categoriesFilterClass}
+                                userIsFunkis = {this.props.userIsFunkis}
+                            />
 
-                        <input
-                            className={classes.searchDoc}
-                            type="text"
-                            onKeyUp={this.handleSearch}
-                            name="name"
-                            placeholder="Sök efter dokument.."
-                            ref = {input => this.search = input}
-                        />
+                            <input
+                                className={classes.searchDoc}
+                                type="text"
+                                onKeyUp={this.handleSearch}
+                                name="name"
+                                placeholder="Sök efter dokument.."
+                                ref = {input => this.search = input}
+                            />
+                        </div>
+                        
                     </div>
                     
                     {

@@ -17,6 +17,7 @@ h3 {
     padding: 8px 20px;
     padding-top: 8px;
     padding-bottom: 5px;
+    transition: 0.5s ease-in-out;
 }
 
 .headerRowFixed {
@@ -32,6 +33,7 @@ h3 {
               0 4px 4px -4px rgba(0,0,0,0.11), 
               0 6px 8px -8px rgba(0,0,0,0.11),
               0 8px 16px -16px rgba(0,0,0,0.11);
+    transition: opacity 3s ease-in-out;
 }
 
 .headerRow h2 {
@@ -112,8 +114,8 @@ h3 {
     cursor: pointer;
 }
 
-.textItemsInRightHeader select {
-    margin-left: 5px;
+.filterAndSearchContainer div {
+    margin-right: 20px;
 }
 
 .searchDoc {
@@ -124,16 +126,16 @@ h3 {
     padding: 7.5px 20px 7.5px 35px;
     border: 1px solid rgb(160, 160, 160);
     border-radius: 4px;
-    margin-right: 5px;
     outline: none;
 }
 
 @media (max-width: 830px) and (min-width: 551px) {
     .searchDoc {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 10px;
+        width: 120px;
+    }
+
+    .filterAndSearchContainer {
+        clear: both;
     }
 }
 
@@ -330,18 +332,24 @@ h3 {
     }
 
     .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
+        display: block;
+        text-align: center;
+    }
+
+    .filterAndSearchContainer {
+        clear: both;
     }
 
     .dropdownFilterStyle {
-        position: absolute;
-        right: 10px;
+
     }
 
     .dropdownFilterStyleFixed {
-        position: absolute;
-        right: 10px;
+
+    }
+
+    .textItemsInRightHeader {
+        margin-bottom: 15px;
     }
 }
 
@@ -359,6 +367,10 @@ h3 {
     }
 
     .textItemsInRightHeader {
+        width: 100%;
+    }
+
+    .filterAndSearchContainer {
         width: 100%;
     }
 
@@ -414,6 +426,10 @@ h3 {
         width: 100%;
     }
 
+    .filterAndSearchContainer {
+        width: 100%;
+    }
+
     .sortOrderStyle {
         margin-bottom: 10px;
     }
@@ -432,7 +448,6 @@ h3 {
 }
 
 .sortByStyle {
-    float: left;
     width: 180px;
     margin-right: 10px;
 }
