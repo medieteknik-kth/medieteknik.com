@@ -28,6 +28,7 @@
 .DocumentList tbody tr:hover td{
     border-bottom: 3px solid #f0c900;
     cursor: pointer;
+    background-color: #fff4bd
 }
 
 .DocumentList th img {

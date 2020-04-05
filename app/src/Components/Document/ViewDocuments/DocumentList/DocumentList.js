@@ -97,11 +97,11 @@ const DocumentList = (props) => {
                                         (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
                                     }
                                 </td>
-                                <td>
+                                {/* <td>
                                     <div className = {classes.downloadButtonCircle}>
                                         <i className = {classes.downloadButtonArrow}></i>
                                     </div>
-                                </td>
+                                </td> */}
                             </tr>
                         ))
                     }
