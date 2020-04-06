@@ -7,12 +7,13 @@ import {
 } from 'react-router-dom';
 
 import Api from '../../../Utility/Api';
+import classes from './CommitteeList.module.css';
 
 import mbdLogo from '../CommitteeAssets/mbdLogo.png';
 import mkmLogo from '../CommitteeAssets/mkmLogo.png';
 import CommitteeCard from './CommitteeCard/CommitteeCard';
 
-import CommitteePage from './CommitteePage';
+import CommitteePage from '../CommitteePage/CommitteePage';
 
 export default function CommitteeList() {
     // const [committees, setCommittees] = useState([]);
@@ -22,14 +23,68 @@ export default function CommitteeList() {
         mbd: {
             id: 1,
             name: 'Medias Branschdag',
-            logo: mbdLogo
+            logo: mbdLogo,
+            text: 'Vår årliga branschdagsmässa hålls för att studenter och företag ska kunna mötas för utbyten - oavsett om det som söks är ett eventuellt sommarjobb eller insikt i vad det egentligen innebär att jobba som medietekniker i praktiken.'
             
         },
         mkm: {
             id: 2,
             name: 'Medias Klubbmästeri',
-            logo: mkmLogo
-        }
+            logo: mkmLogo,
+            text: 'MKM är Medias klubbmästeri. Vi anordnar torsdagspubar, tentapubar och gasquer året om. Missa inte våra Storpubar varje månad efter löning, då bjuder vi på extra underhållning och extra mycket drag. Kom förbi META på torsdagar och spela pingis, drick öl eller ta en god drink.'
+        },
+        nlg: {
+            id: 3,
+            name: 'Medias Branschdag',
+            logo: mbdLogo,
+            text: 'Vår årliga branschdagsmässa hålls för att studenter och företag ska kunna mötas för utbyten - oavsett om det som söks är ett eventuellt sommarjobb eller insikt i vad det egentligen innebär att jobba som medietekniker i praktiken.'
+            
+        },
+        fotogruppen: {
+            id: 4,
+            name: 'Medias Klubbmästeri',
+            logo: mkmLogo,
+            text: 'MKM är Medias klubbmästeri. Vi anordnar torsdagspubar, tentapubar och gasquer året om. Missa inte våra Storpubar varje månad efter löning, då bjuder vi på extra underhållning och extra mycket drag. Kom förbi META på torsdagar och spela pingis, drick öl eller ta en god drink.'
+        },
+        idrottsnämnden: {
+            id: 5,
+            name: 'Medias Branschdag',
+            logo: mbdLogo,
+            text: 'Vår årliga branschdagsmässa hålls för att studenter och företag ska kunna mötas för utbyten - oavsett om det som söks är ett eventuellt sommarjobb eller insikt i vad det egentligen innebär att jobba som medietekniker i praktiken.'
+            
+        },
+        komN: {
+            id: 6,
+            name: 'Medias Klubbmästeri',
+            logo: mkmLogo,
+            text: 'MKM är Medias klubbmästeri. Vi anordnar torsdagspubar, tentapubar och gasquer året om. Missa inte våra Storpubar varje månad efter löning, då bjuder vi på extra underhållning och extra mycket drag. Kom förbi META på torsdagar och spela pingis, drick öl eller ta en god drink.'
+        },
+        matlaget: {
+            id: 7,
+            name: 'Medias Branschdag',
+            logo: mbdLogo,
+            text: 'Vår årliga branschdagsmässa hålls för att studenter och företag ska kunna mötas för utbyten - oavsett om det som söks är ett eventuellt sommarjobb eller insikt i vad det egentligen innebär att jobba som medietekniker i praktiken.'
+            
+        },
+        medielabbet: {
+            id: 8,
+            name: 'Medias Klubbmästeri',
+            logo: mkmLogo,
+            text: 'MKM är Medias klubbmästeri. Vi anordnar torsdagspubar, tentapubar och gasquer året om. Missa inte våra Storpubar varje månad efter löning, då bjuder vi på extra underhållning och extra mycket drag. Kom förbi META på torsdagar och spela pingis, drick öl eller ta en god drink.'
+        },
+        metadorerna: {
+            id: 9,
+            name: 'Medias Branschdag',
+            logo: mbdLogo,
+            text: 'Vår årliga branschdagsmässa hålls för att studenter och företag ska kunna mötas för utbyten - oavsett om det som söks är ett eventuellt sommarjobb eller insikt i vad det egentligen innebär att jobba som medietekniker i praktiken.'
+            
+        },
+        metaspexet: {
+            id: 10,
+            name: 'Medias Klubbmästeri',
+            logo: mkmLogo,
+            text: 'MKM är Medias klubbmästeri. Vi anordnar torsdagspubar, tentapubar och gasquer året om. Missa inte våra Storpubar varje månad efter löning, då bjuder vi på extra underhållning och extra mycket drag. Kom förbi META på torsdagar och spela pingis, drick öl eller ta en god drink.'
+        },
     }
   
 
@@ -48,13 +103,14 @@ export default function CommitteeList() {
             </Route>
 
             <Route path={match.path}>
-                <div>
+                <div className={classes.CommitteeList}>
                     {
-                        committees.map(committeeObject => (
+                        Object.keys(committees).map(committeeKey => (
                             <CommitteeCard 
-                                key = {committeeObject.id}
-                                committeeName = {committeeObject.name}
-                                committeeLogo = {committeeObject.logo}
+                                key = {committees[committeeKey].id}
+                                committeeName = {committees[committeeKey].name}
+                                committeeLogo = {committees[committeeKey].logo}
+                                committeeText = {committees[committeeKey].text}
                             />
                         ))
                     }

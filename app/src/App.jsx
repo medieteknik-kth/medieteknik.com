@@ -12,7 +12,7 @@ import NotFound from './Components/NotFound/NotFound';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Documents from './Components/Document/Document';
-import CommitteeList from './Components/Committee/CommitteeList';
+import CommitteeList from './Components/Committee/CommitteeList/CommitteeList';
 import PageManager from './Components/Page/PageManager'
 
 export default function App() {

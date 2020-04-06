@@ -1,4 +1,4 @@
-.comitteeCard {
+.CommitteeCard {
     padding: 10px;
     border: 5px solid transparent;
     border-radius: 10px;
@@ -15,9 +15,60 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    width: 400px;
+    margin-top: 20px;
 }
 
-.comitteeCard:hover {
+@media (max-width: 1000px) {
+    .CommitteeCard {
+        width: 40%;
+    }
+}
+
+@media (max-width: 785px) {
+    .CommitteeCard {
+        width: 60%;
+    }
+}
+
+@media (max-width: 600px) {
+    .CommitteeCard {
+        width: 75%;
+    }
+}
+
+@media (max-width: 400px) {
+    .CommitteeCard h3 {
+        font-size: 1.2rem;
+    }
+}
+
+.CommitteeCard:hover {
     border: 5px solid #f0c900;
     transform: scale(1.05);
+}
+
+.CommitteeCard p {
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+
+.headerContainer {
+    display: flex;
+    align-items: center;
+}
+
+.headerContainer img {
+    width: 20%;
+    float: left;
+}
+
+.headerContainer h3 {
+    padding-left: 10px;
+}
+
+.titleContainer {
+    width: 80%;
+    float: left;
+    text-align: center;
 }

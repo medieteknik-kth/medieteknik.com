@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 
-import Api from '../../Utility/Api';
-import UserCard from '../UserCard/UserCard';
-import Page from '../Page/Page';
+import Api from '../../../Utility/Api';
+import UserCard from '../../UserCard/UserCard';
+import Page from '../../Page/Page';
 
 import './CommitteePage.css';
 
