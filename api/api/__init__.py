@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -43,7 +43,6 @@ api.add_resource(CommitteePostListResource, "/committee_posts")
 api.add_resource(CommitteePostResource, "/committee_posts/<id>")
 
 api.add_resource(DocumentListResource, "/documents")
-api.add_resource(DocumentResource, "/documents/<id>")
 api.add_resource(DocumentTagResource, "/document_tags")
 
 api.add_resource(MenuResource, "/menus")
@@ -88,6 +87,12 @@ else:
 @login_required
 def auth_test():
     return "Du är inloggad som " + str(session["CAS_USERNAME"])
+
+# serva sparade dokument
+@app.route("/documents/<filename>")
+def send_document(filename):
+    DOCUMENT_FOLDER = os.path.join(os.getcwd(), "static", "documents")
+    return send_from_directory(DOCUMENT_FOLDER, filename)
 
 @app.route("/create_all")
 def route_create_all():
