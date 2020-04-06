@@ -143,6 +143,12 @@ def send_document(filename):
     DOCUMENT_FOLDER = os.path.join(os.getcwd(), "static", "documents")
     return send_from_directory(DOCUMENT_FOLDER, filename)
 
+@app.route("/thumbnails/<filename>")
+def send_thumbnail(filename):
+    print(filename)
+    THUMBNAIL_FOLDER = os.path.join(os.getcwd(), "static", "thumbnails")
+    return send_from_directory(THUMBNAIL_FOLDER, filename)
+
 @app.route("/create_all")
 def route_create_all():
     from api.models.user import User, Committee
