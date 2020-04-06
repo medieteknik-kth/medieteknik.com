@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for,send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -71,7 +71,6 @@ api.add_resource(CommitteePostListResource, "/committee_posts")
 api.add_resource(CommitteePostResource, "/committee_posts/<id>")
 
 api.add_resource(DocumentListResource, "/documents")
-api.add_resource(DocumentResource, "/documents/<id>")
 api.add_resource(DocumentTagResource, "/document_tags")
 
 api.add_resource(MenuResource, "/menus")
@@ -137,6 +136,12 @@ def auth_test():
 @app.route('/get_image')
 def get_image():
     return send_file(request.args.get('path'), mimetype='image/png')
+
+# serva sparade dokument
+@app.route("/documents/<filename>")
+def send_document(filename):
+    DOCUMENT_FOLDER = os.path.join(os.getcwd(), "static", "documents")
+    return send_from_directory(DOCUMENT_FOLDER, filename)
 
 @app.route("/create_all")
 def route_create_all():
