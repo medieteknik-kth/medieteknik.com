@@ -1,0 +1,23 @@
+.comitteeCard {
+    padding: 10px;
+    border: 5px solid transparent;
+    border-radius: 10px;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 
+              0 2px 2px rgba(0,0,0,0.11), 
+              0 4px 4px rgba(0,0,0,0.11), 
+              0 6px 8px rgba(0,0,0,0.11),
+              0 8px 16px rgba(0,0,0,0.11);
+    transition: all .31s ease-in-out;
+    width: 230px;
+    margin: 10px 22px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.comitteeCard:hover {
+    border: 5px solid #f0c900;
+    transform: scale(1.05);
+}
