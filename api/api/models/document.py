@@ -9,9 +9,10 @@ class Document(db.Model):
     date = db.Column(db.DateTime, default=datetime.datetime.now)
     uploadedBy = db.Column(db.String)
     fileName = db.Column(db.String)
+    thumbnail = db.Column(db.String, default="parrot.gif")
 
     def to_dict(self):
-        return {"itemId": self.itemId, "title": self.title, "tags": [res.serialize() for res in self.tags], "filename": self.fileName, "date": str(self.date)}
+        return {"itemId": self.itemId, "title": self.title, "tags": [res.serialize() for res in self.tags], "filename": self.fileName, "date": str(self.date), "thumbnail":self.thumbnail}
 
 class Tag(db.Model):
     __tablename__ = "tags"

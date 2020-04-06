@@ -82,14 +82,7 @@ export default function PublishDocuments() {
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({ 0: tagsList }))
 
-        publishDocumentApi(formData)
-            .then((response) => response.json())
-            .then((result) => {
-                console.log('Success:', result);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        
 
         // --- PDF-Thumbnail ---
         let fileReader = new FileReader();
@@ -120,12 +113,14 @@ export default function PublishDocuments() {
                             .then(() => {
                                 const thumbnailImage = thumbnailCanvas.toDataURL();
                                 formData.append("thumbnail", thumbnailImage);
-
-                                const linkElement = document.createElement('a');
-                                linkElement.href = thumbnailImage;
-                                linkElement.download = "thumbnail.png";
-                                linkElement.click();
+                            }).then(() => publishDocumentApi(formData)
+                            .then((response) => response.json())
+                            .then((result) => {
+                                console.log('Success:', result);
                             })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            }));
                     });
                 })
                 .catch(error => {
