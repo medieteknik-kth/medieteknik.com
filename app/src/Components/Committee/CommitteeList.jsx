@@ -8,6 +8,7 @@ import {
 import Api from '../../Utility/Api';
 
 import CommitteePage from './CommitteePage';
+import ManageMembers from './ManageMembers';
 
 export default function CommitteeList() {
   const [committees, setCommittees] = useState([]);
@@ -22,6 +23,9 @@ export default function CommitteeList() {
 
   return (
     <Switch>
+      <Route path={`${match.path}/manage/:committeeId`}>
+        <ManageMembers />
+      </Route>
       <Route path={`${match.path}/:committeeId`}>
         <CommitteePage />
       </Route>
