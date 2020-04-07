@@ -11,11 +11,12 @@ import LandingPage from './Components/LandingPage/LandingPage';
 import NotFound from './Components/NotFound/NotFound';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
-import Document from './Components/Documents/Document';
+import Documents from './Components/Document/Document';
 import CommitteeList from './Components/Committee/CommitteeList';
 import PageManager from './Components/Page/PageManager'
 
 export default function App() {
+
   return (
     <Router>
       <Switch>
@@ -32,8 +33,8 @@ export default function App() {
           <Settings />
         </Route>
         <Route path="/documents">
-          <MainMenu />
-          <Document />
+            <MainMenu />
+            <Documents />
         </Route>
         <Route path="/committees">
           <MainMenu />

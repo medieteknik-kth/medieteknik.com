@@ -1,0 +1,80 @@
+.Publish {
+    margin: 5px auto;
+    padding: 10px;
+    width: 40%;
+    clear: both;
+    border: 2px solid #f0c900;
+    border-radius: 5px;
+    font-family: sans-serif;
+}
+
+.Publish div {
+    margin-bottom: 10px;
+}
+
+.categoriesTags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container input {
+    padding-left: 100px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    text-decoration: none;
+    display: block;  
+}
+
+.container {
+    display: block;
+    position: relative;
+    padding-left: 23px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    width: 40%;
+    margin-right: 15px;
+    font-size: 15px;
+    user-select: none;
+    align-items: center;
+}
+
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.container input:checked ~ .checkmark {
+    background-color: #f0c900;
+}
+
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.container .checkmark:after {
+    left: 5px;
+    top: 0.5px;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #eee;
+    margin-top: 3px;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}

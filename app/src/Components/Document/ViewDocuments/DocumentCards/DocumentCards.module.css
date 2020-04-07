@@ -1,0 +1,7 @@
+.DocumentCards {
+    display: flex;
+    flex-wrap: wrap;
+    width: 97%;
+    justify-content: space-evenly;
+    margin: 10px auto;
+}
