@@ -11,7 +11,7 @@ const documentCard = (props) => {
                 <p>Uppladdat: {props.publishDate}</p>
                 <p>Av: {props.publisher}</p>
             </div>
-            <DocumentPreview pdfFile = {props.pdfFile} className={classes.pdfFile} />
+            <DocumentPreview thumbnail = {props.thumbnail} className={classes.thumbnail} />
         </div>
     );
 }

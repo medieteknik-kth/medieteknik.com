@@ -16,6 +16,7 @@ import CommitteeList from './Components/Committee/CommitteeList';
 import PageManager from './Components/Page/PageManager'
 
 export default function App() {
+
   return (
     <Router>
       <Switch>
@@ -32,8 +33,8 @@ export default function App() {
           <Settings />
         </Route>
         <Route path="/documents">
-          <MainMenu />
-          <Documents />
+            <MainMenu />
+            <Documents />
         </Route>
         <Route path="/committees">
           <MainMenu />

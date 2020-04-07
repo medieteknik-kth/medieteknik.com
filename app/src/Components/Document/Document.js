@@ -21,7 +21,7 @@ class Document extends Component {
 
         this.state = {
             viewCardsview: true,
-            propUserFunkis: true// Ska komma som prop
+            propUserFunkis: false// Ska komma som prop
         }
     }
 
@@ -40,7 +40,7 @@ class Document extends Component {
             })
         }
     }
-
+    
     render() {
         let publishDocumentsClass;
         let viewDocumentsClass;
@@ -59,7 +59,7 @@ class Document extends Component {
 
         if (!this.state.propUserFunkis) {
             publishDocumentsClass = classes.disabled;
-            viewDocumentsClass = classes.selectedOnly;
+            viewDocumentsClass = classes.disabled;
         }
 
         return (
@@ -78,7 +78,7 @@ class Document extends Component {
 
                 {
                     this.state.viewCardsview ? 
-                    <ViewDocuments /> : 
+                    <ViewDocuments userIsFunkis = {this.state.propUserFunkis} /> : 
                     <PublishDocument />
                 }
             </div>
