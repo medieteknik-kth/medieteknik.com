@@ -1,11 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-} from 'react-router-dom';
-import Api from '../../Utility/Api';
+import React from 'react';
 import './Post.css'
 import YellowButton from '../Common/YellowButton/YellowButton'
 import ProfileCard from '../Common/ProfileCard/ProfileCard';

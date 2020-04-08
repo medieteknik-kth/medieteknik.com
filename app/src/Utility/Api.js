@@ -1,6 +1,6 @@
 function GetApiObject(resource) {
-  let API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
-  API_BASE_URL = 'https://api.medieteknik.com/'
+  //const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+  const API_BASE_URL = 'https://api.medieteknik.com/';
   return {
     GetAll() {
       return fetch(API_BASE_URL + resource).then((response) => response.json());
