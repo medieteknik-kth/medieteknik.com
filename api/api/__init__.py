@@ -12,12 +12,9 @@ from api.resources.committee_post import CommitteePostResource, CommitteePostLis
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
-<<<<<<< HEAD
-from api.resources.post import PostResource
-=======
+from api.resources.post import PostResource, PostListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
->>>>>>> origin/master
 
 import os
 import datetime
@@ -55,14 +52,13 @@ api.add_resource(MenuItemResource, "/menus/<id>")
 
 api.add_resource(SearchResource, "/search/<search_term>")
 
-<<<<<<< HEAD
-api.add_resource(PostResource, "/posts")
-=======
+api.add_resource(PostListResource, "/posts")
+api.add_resource(PostResource, "/post/<id>")
+
 api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
->>>>>>> origin/master
 
 if app.debug:
     local_cas = Blueprint("cas", __name__)
@@ -96,21 +92,15 @@ else:
 @login_required
 def auth_test():
     return "Du är inloggad som " + str(session["CAS_USERNAME"])
-
-@app.route("/ek_test")
-def ek_test():
-    return "Wow"
+    
 
 @app.route("/create_all")
 def route_create_all():
     from api.models.user import User, Committee
-    from api.models.committee_post import CommitteePost, CommitteePostTerm
+    from api.models.committee_post import CommitteePost#, CommitteePostTerm
     from api.models.document import Document, Tag, DocumentTags
-<<<<<<< HEAD
     from api.models.post import Post
-=======
     from api.models.page import Page, PageRevision, PageRevisionType
->>>>>>> origin/master
     db.drop_all()
     db.create_all()
 
@@ -154,9 +144,13 @@ def route_create_all():
     post.is_official = True
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
     term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2019, 6, 30))
+    
+    term3 = post.new_term(datetime.datetime(2015, 7, 1), datetime.datetime(2017, 6, 30))
 
     user1.post_terms.append(term1)
     user2.post_terms.append(term2)
+    
+    user3.post_terms.append(term3)
 
     page = Page()
     page_revision1 = PageRevision()
@@ -204,7 +198,8 @@ def route_create_all():
     post.title = "Folk söker folk"
     post.header_image = "wow.jpg"
     post.body = "hejhej"
-    #post.committee_post = CommitteePost1
+    post.user_id = user2.id
+    post.committee_id = 1
     
     db.session.add(post)
     db.session.commit()
