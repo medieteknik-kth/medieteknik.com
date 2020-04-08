@@ -1,10 +1,11 @@
 /*The styling on the container that contains the entire menu*/
 .menuContainer {
   height: 90px; /* Sets the height of the navbar */
-  overflow: visible; /* Shows the content even if it is bigger than the container (needed to show the dropdowns)*/
+  overflow: hidden; /* Shows the content even if it is bigger than the container (needed to show the dropdowns)*/
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
+  z-index: 500;
 }
 
 /*Styling for the menu's bakground color, depending on whether it is at the top or scrolled down*/
@@ -21,7 +22,7 @@
 }
 
 .menuBottomMargin {
-  margin-bottom: 110px;
+  margin-bottom: 90px;
 }
 
 /*Styling for the content in the menu*/
@@ -119,4 +120,10 @@
 
 .dropdown:hover .dropbtn {
   color: #eec912;
+}
+
+@media (max-width: 680px) {
+    .dropbtn img {
+        display: none;
+    }
 }

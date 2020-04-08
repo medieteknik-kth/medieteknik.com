@@ -1,32 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+} from 'react-router-dom';
+import Api from '../../Utility/Api';
 
-class CommitteeList extends React.Component {
-  constructor(props) {
-    super(props);
+import CommitteePage from './CommitteePage';
 
-    this.state = {
-      committees: [],
-    };
-  }
+export default function CommitteeList() {
+  const [committees, setCommittees] = useState([]);
+  const match = useRouteMatch();
 
-  componentDidMount() {
-    fetch('/api/committee').then((response) => response.json())
+  useEffect(() => {
+    Api.Committees.GetAll()
       .then((data) => {
-        this.setState({ committees: data });
+        setCommittees(data);
       });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div>
-        {this.state.committees.map((value, index) => (
-          <div>
-            <p key={index}>{value.name}</p>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  return (
+    <Switch>
+      <Route path={`${match.path}/:committeeId`}>
+        <CommitteePage />
+      </Route>
+      <Route path={match.path}>
+        <div>
+          {committees.map((value) => (
+            <div>
+              <Link to={`${match.url}/${value.id}`}><p key={value.id}>{value.name}</p></Link>
+            </div>
+          ))}
+        </div>
+      </Route>
+    </Switch>
+
+  );
 }
-
-export default CommitteeList;
