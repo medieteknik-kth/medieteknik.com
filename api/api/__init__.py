@@ -145,7 +145,7 @@ def route_create_all():
     page = Page()
     page_revision1 = PageRevision()
     page_revision1.title = "Rubrik"
-    page_revision1.content = ""
+    page_revision1.content = "{\"ops\":[{\"insert\":\"Hej hall\u00e5!\\n\"}]}"
     page_revision1.author = user1
     page_revision1.revision_type = PageRevisionType.created
     page_revision1.published = True
