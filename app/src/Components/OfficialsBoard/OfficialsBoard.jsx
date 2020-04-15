@@ -7,28 +7,29 @@ import "./OfficialsBoard.css";
 export default function OfficialsBoard() {
   const [officials, setOfficials] = useState([]);
   useEffect(() => {
-    Api.Officials.GetAll().then(data => {
+    Api.Officials.GetAll().then((data) => {
       setOfficials(data);
     });
   }, []);
   const official_title = [];
 
-  officials.map(official =>
+  officials.map((official) =>
     !official_title.includes(official.post.category)
       ? official_title.push(official.post.category)
       : null
   );
 
   return (
-    <div>
-      {official_title.map(title => (
-        <div>
-          <h3 className="officialHeader">{title}</h3>
+    <div id="officialsBoard">
+      <div className="officialsBoardHeader">Funktionärstavlan</div>
+      {official_title.map((title) => (
+        <div id="officialCategory">
+          <h3 className="committeeHeader">{title}</h3>
 
           <div className="userList">
             {officials
-              .filter(official => official.post.category === title)
-              .map(official => (
+              .filter((official) => official.post.category === title)
+              .map((official) => (
                 <UserCard
                   key={official.user.id}
                   user={official.user}
