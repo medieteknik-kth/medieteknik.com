@@ -12,7 +12,7 @@ from api.resources.committee_post import CommitteePostResource, CommitteePostLis
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
-from api.resources.post import PostResource, PostListResource
+from api.resources.post import PostResource, PostAddResouce, PostListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
 
@@ -53,7 +53,8 @@ api.add_resource(MenuItemResource, "/menus/<id>")
 api.add_resource(SearchResource, "/search/<search_term>")
 
 api.add_resource(PostListResource, "/posts")
-api.add_resource(PostResource, "/post/<id>")
+api.add_resource(PostResource, "/posts/<id>")
+api.add_resource(PostAddResouce, "/post")
 
 api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
