@@ -144,7 +144,7 @@ def route_create_all():
     post.committee = committee1
     post.is_official = True
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
-    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2019, 6, 30))
+    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2020, 6, 30))
     
     term3 = post.new_term(datetime.datetime(2015, 7, 1), datetime.datetime(2017, 6, 30))
 

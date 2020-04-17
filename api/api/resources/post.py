@@ -5,12 +5,17 @@ from datetime import datetime
 from api.db import db
 
 from sqlalchemy import and_, exc
-
 from api.models.post import Post, PostEdit
 from api.models.user import User
 from api.models.committee import Committee
 
-dynamic_cols = ['committee_id', 'title', 'header_image', 'body']
+import os
+from werkzeug.utils import secure_filename
+import uuid
+
+SAVE_FOLDER = os.path.join(os.getcwd(), "static", "posts")
+IMAGE_PATH = "/api/static/posts/"
+IMAGE_COL = "header_image"
 
 class PostResource(Resource):
     def get(self, id):
@@ -31,9 +36,8 @@ class PostResource(Resource):
             data = request.form
 
             if post_user or committee_member:
-                for col in dynamic_cols: 
-                    if data.get(col):
-                        setattr(post, col, data.get(col))
+                
+                add_cols(data, post, request)
 
                 post_edit = PostEdit()
                 post_edit.post = post
@@ -58,9 +62,7 @@ class PostAddResouce(Resource):
                 post = Post()
                 post.user_id = user.id
                 
-                for col in dynamic_cols: 
-                    if data.get(col):
-                        setattr(post, col, data.get(col))
+                add_cols(data, post, request)
 
                 db.session.add(post)
                 db.session.commit()
@@ -70,9 +72,32 @@ class PostAddResouce(Resource):
         except Exception as error:
             return make_response(jsonify(success=False, error=str(error)), 403)
         
-
 class PostListResource(Resource):
     def get(self):
         posts = Post.query.all()
         data = [post.to_dict() for post in posts]
         return jsonify(data)
+
+def add_cols(data, post, request):
+    dynamic_cols = ["committee_id", "title", "body"]
+
+    for col in dynamic_cols: 
+        if data.get(col):
+            setattr(post, col, data.get(col))
+
+    if IMAGE_COL in request.files:
+        image = request.files[IMAGE_COL]
+        post.header_image = save_image(image, IMAGE_PATH)
+
+def save_image(image, path):
+    local_path = ""
+    ALLOWED_EXTENTIONS = [".png", ".jpg", ".jpeg"]
+    original_filename, extension = os.path.splitext(secure_filename(image.filename))
+    filename = str(uuid.uuid4()) + extension
+    if extension in ALLOWED_EXTENTIONS:
+        path = os.path.join(path, filename)
+        local_path = os.path.join(SAVE_FOLDER, filename)
+        image.save(local_path)
+        return path
+    else:
+        raise "you can only upload .png or .jpg-files."
