@@ -13,8 +13,8 @@ import os
 from werkzeug.utils import secure_filename
 import uuid
 
-SAVE_FOLDER = os.path.join(os.getcwd(), "static", "posts")
-IMAGE_PATH = "/api/static/posts/"
+SAVE_FOLDER = os.path.join(os.getcwd(), "api", "static", "posts")
+IMAGE_PATH = "static/posts/"
 IMAGE_COL = "header_image"
 
 class PostResource(Resource):

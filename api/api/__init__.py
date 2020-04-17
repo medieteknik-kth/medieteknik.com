@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -29,6 +29,7 @@ app.config['CAS_LOGOUT_ROUTE'] = os.getenv("CAS_LOGOUT_ROUTE", "/logout")
 app.config['CAS_VALIDATE_ROUTE'] = os.getenv("CAS_VALIDATE_ROUTE", "/p3/serviceValidate")
 app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "/")
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
+os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
 db.init_app(app)
 CORS(app)
@@ -94,6 +95,9 @@ else:
 def auth_test():
     return "Du är inloggad som " + str(session["CAS_USERNAME"])
     
+@app.route('/get_image')
+def get_image():
+    return send_file(request.args.get('path'), mimetype='image/png')
 
 @app.route("/create_all")
 def route_create_all():
@@ -197,7 +201,6 @@ def route_create_all():
 
     post = Post()
     post.title = "Folk söker folk"
-    post.header_image = "wow.jpg"
     post.body = "hejhej"
     post.user_id = user2.id
     post.committee_id = 1

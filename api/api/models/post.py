@@ -34,7 +34,6 @@ class Post(db.Model):
     edited = db.relationship("PostEdit", back_populates = "post")
 
     def to_dict(self):
-        edited = [edit.to_dict() for edit in self.edited]
         return {
             "id": self.id,
             "title": self.title,
@@ -43,5 +42,5 @@ class Post(db.Model):
             "body": self.body,
             "user_id": self.user_id,
             "committee_id": self.committee_id,
-            "edited": edited
+            "edited": [edit.to_dict() for edit in self.edited]
         }
