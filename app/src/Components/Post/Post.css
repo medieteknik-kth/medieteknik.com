@@ -55,8 +55,16 @@
     color: #727171;
 }
 
-.post-content img {
+.post-content .img-container {
+    text-align: center;
+}
+
+.post-content .img-container img {
     max-width: 100%;
+}
+
+.post-body {
+    padding: 25px 0 25px 0;
 }
 
 .post-footer h5 {
