@@ -3,6 +3,7 @@ from api.db import db
 
 from api.models.user import User
 from api.models.committee import Committee
+from api.models.post_tag import PostTag
 
 class PostEdit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,6 +22,12 @@ class PostEdit(db.Model):
             "post_id": self.post_id
         }
 
+
+posts_tags = db.Table('association', db.Model.metadata,
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('post_tag.id'))
+)
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
@@ -32,6 +39,9 @@ class Post(db.Model):
     committee_id = db.Column(db.Integer, db.ForeignKey("committee.id"),
         nullable=True)
     edited = db.relationship("PostEdit", back_populates = "post")
+    tags = db.relationship("PostTag",
+                    secondary=posts_tags)
+
 
     def to_dict(self):
         return {
@@ -42,5 +52,6 @@ class Post(db.Model):
             "body": self.body,
             "user_id": self.user_id,
             "committee_id": self.committee_id,
-            "edited": [edit.to_dict() for edit in self.edited]
+            "edited": [edit.to_dict() for edit in self.edited],
+            "tags": [tag.to_dict() for tag in self.tags]
         }

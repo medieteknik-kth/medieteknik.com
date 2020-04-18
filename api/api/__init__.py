@@ -13,6 +13,7 @@ from api.resources.document import DocumentResource, DocumentListResource, Docum
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
 from api.resources.post import PostResource, PostAddResouce, PostListResource
+from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
 
@@ -56,6 +57,10 @@ api.add_resource(SearchResource, "/search/<search_term>")
 api.add_resource(PostListResource, "/posts")
 api.add_resource(PostResource, "/posts/<id>")
 api.add_resource(PostAddResouce, "/post")
+
+api.add_resource(PostTagListResource, "/post_tags")
+api.add_resource(PostTagResource, "/post_tags/<id>")
+api.add_resource(PostTagAddResource, "/post_tag")
 
 api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
@@ -106,6 +111,7 @@ def route_create_all():
     from api.models.document import Document, Tag, DocumentTags
     from api.models.post import Post
     from api.models.page import Page, PageRevision, PageRevisionType
+    from api.models.post_tag import PostTag
     db.drop_all()
     db.create_all()
 
@@ -204,6 +210,11 @@ def route_create_all():
     post.body = "hejhej"
     post.user_id = user2.id
     post.committee_id = 1
+
+    
+    post_tag = PostTag()
+    post_tag.title = "ansökan"
+    post.tags.append(post_tag)
     
     db.session.add(post)
     db.session.commit()

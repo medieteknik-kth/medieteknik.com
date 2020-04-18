@@ -1,11 +1,13 @@
 from flask import jsonify, session, request, make_response
 from flask_restful import Resource
 from datetime import datetime
+import json
 
 from api.db import db
 
 from sqlalchemy import and_, exc
 from api.models.post import Post, PostEdit
+from api.models.post_tag import PostTag
 from api.models.user import User
 from api.models.committee import Committee
 
@@ -39,12 +41,12 @@ class PostResource(Resource):
                 
                 add_cols(data, post, request)
 
-                post_edit = PostEdit()
-                post_edit.post = post
-                post_edit.user_id = user.id
-                post_edit.post_id = post.id
+                edit = PostEdit()
+                edit.post = post
+                edit.user_id = user.id
+                edit.post_id = post.id
                 
-                db.session.add(post_edit)
+                db.session.add(edit)
                 db.session.commit()
                 return make_response(jsonify(success=True))
             else:
@@ -88,6 +90,12 @@ def add_cols(data, post, request):
     if IMAGE_COL in request.files:
         image = request.files[IMAGE_COL]
         post.header_image = save_image(image, IMAGE_PATH)
+    
+    if data.get("tags"):
+        tags = json.loads(data["tags"])
+        for tag_id in tags:
+            post.tags.append(PostTag.query.get(tag_id))
+
 
 def save_image(image, path):
     local_path = ""
