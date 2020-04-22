@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -12,6 +12,8 @@ from api.resources.committee_post import CommitteePostResource, CommitteePostLis
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
 from api.resources.search import SearchResource
+from api.resources.post import PostResource, PostAddResouce, PostListResource
+from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
 
@@ -28,6 +30,7 @@ app.config['CAS_LOGOUT_ROUTE'] = os.getenv("CAS_LOGOUT_ROUTE", "/logout")
 app.config['CAS_VALIDATE_ROUTE'] = os.getenv("CAS_VALIDATE_ROUTE", "/p3/serviceValidate")
 app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "/")
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
+os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
 db.init_app(app)
 CORS(app)
@@ -50,6 +53,14 @@ api.add_resource(MenuResource, "/menus")
 api.add_resource(MenuItemResource, "/menus/<id>")
 
 api.add_resource(SearchResource, "/search/<search_term>")
+
+api.add_resource(PostListResource, "/posts")
+api.add_resource(PostResource, "/posts/<id>")
+api.add_resource(PostAddResouce, "/post")
+
+api.add_resource(PostTagListResource, "/post_tags")
+api.add_resource(PostTagResource, "/post_tags/<id>")
+api.add_resource(PostTagAddResource, "/post_tag")
 
 api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
@@ -88,13 +99,19 @@ else:
 @login_required
 def auth_test():
     return "Du är inloggad som " + str(session["CAS_USERNAME"])
+    
+@app.route('/get_image')
+def get_image():
+    return send_file(request.args.get('path'), mimetype='image/png')
 
 @app.route("/create_all")
 def route_create_all():
     from api.models.user import User, Committee
-    from api.models.committee_post import CommitteePost, CommitteePostTerm
+    from api.models.committee_post import CommitteePost#, CommitteePostTerm
     from api.models.document import Document, Tag, DocumentTags
+    from api.models.post import Post
     from api.models.page import Page, PageRevision, PageRevisionType
+    from api.models.post_tag import PostTag
     db.drop_all()
     db.create_all()
 
@@ -137,10 +154,14 @@ def route_create_all():
     post.committee = committee1
     post.is_official = True
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
-    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2019, 6, 30))
+    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2020, 6, 30))
+    
+    term3 = post.new_term(datetime.datetime(2015, 7, 1), datetime.datetime(2017, 6, 30))
 
     user1.post_terms.append(term1)
     user2.post_terms.append(term2)
+    
+    user3.post_terms.append(term3)
 
     page = Page()
     page_revision1 = PageRevision()
@@ -166,14 +187,12 @@ def route_create_all():
     doc.title = "PROTOKOLLLLLA IN DET HÄR"
     doc.fileName = "abc123.pdf"
     doc.uploadedBy = "Joppe"
-    
 
     tag = Tag()
     tag.title = "styrelsen"
 
     tag2 = Tag()
     tag2.title = "annat"
-    
 
     db.session.add(doc)
     db.session.add(tag)
@@ -184,6 +203,20 @@ def route_create_all():
     doctag.tagId = tag.tagId
     db.session.add(doctag)
 
+    db.session.commit()
+
+    post = Post()
+    post.title = "Folk söker folk"
+    post.body = "hejhej"
+    post.user_id = user2.id
+    post.committee_id = 1
+
+    
+    post_tag = PostTag()
+    post_tag.title = "ansökan"
+    post.tags.append(post_tag)
+    
+    db.session.add(post)
     db.session.commit()
 
     return "klar"

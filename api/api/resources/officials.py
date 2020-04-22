@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse
 from sqlalchemy import and_, or_
 
 from api.models.user import User
-from api.models.committee_post import CommitteePost, CommitteePostTerm
+from api.models.committee_post import CommitteePost #,CommitteePostTerm
 
 from datetime import datetime
 
