@@ -20,9 +20,9 @@ import { LocaleContext } from './Contexts/LocaleContext';
 export default function App() {
   return (
     <Router>
-      <Switch>
-        <LocaleContext.Provider value="sv">
-          <UserContext.Provider value="">
+      <LocaleContext.Provider value="sv">
+        <UserContext.Provider value="">
+          <Switch>
             <Route exact path="/">
               <MainMenu transparent />
               <LandingPage />
@@ -50,9 +50,9 @@ export default function App() {
             <Route match="*">
               <NotFound />
             </Route>
-          </UserContext.Provider>
-        </LocaleContext.Provider>
-      </Switch>
+          </Switch>
+        </UserContext.Provider>
+      </LocaleContext.Provider>
     </Router>
   );
 }
