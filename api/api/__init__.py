@@ -142,6 +142,12 @@ def route_create_all():
     user1.post_terms.append(term1)
     user2.post_terms.append(term2)
 
+    post2 = CommitteePost()
+    post2.committee = committee1
+    post2.is_official = False
+    term3 = post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
+    user2.post_terms.append(term3)
+
     page = Page()
     page_revision1 = PageRevision()
     page_revision1.title = "Rubrik"
@@ -159,6 +165,7 @@ def route_create_all():
     db.session.add(user3)
     db.session.add(committee1)
     db.session.add(post)
+    db.session.add(post2)
     db.session.add(page_revision1)
     db.session.add(page)
 

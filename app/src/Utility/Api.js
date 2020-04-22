@@ -32,5 +32,6 @@ function GetApiObject(resource) {
 export default {
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
-  Documents: GetApiObject('documents')
+  Documents: GetApiObject('documents'),
+  Users: GetApiObject('users'),
 };
