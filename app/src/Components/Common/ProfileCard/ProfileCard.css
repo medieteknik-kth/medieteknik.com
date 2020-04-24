@@ -28,3 +28,9 @@
     color: #b7b6b6;
     font-weight: normal;
 }
+
+@media (max-width: 850px) {
+    .profile-card {
+        height: 75px;
+    }
+}
