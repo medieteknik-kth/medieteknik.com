@@ -1,6 +1,6 @@
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+
 function GetApiObject(resource) {
-  const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
-    // const API_BASE_URL = 'https://api.medieteknik.com/';
   return {
     GetAll() {
       return fetch(API_BASE_URL + resource).then((response) => response.json());
@@ -29,8 +29,15 @@ function GetApiObject(resource) {
   };
 }
 
+function GetImage(path) {
+  return API_BASE_URL + 'get_image?path=' + path;
+}
+
 export default {
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
-  Documents: GetApiObject('documents')
+  Users: GetApiObject('users'),
+  Documents: GetApiObject('documents'),
+  Posts: GetApiObject('posts'),
+  Images: GetImage,
 };

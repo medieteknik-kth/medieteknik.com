@@ -14,6 +14,8 @@ import Settings from './Components/Settings/Settings';
 import Documents from './Components/Document/Document';
 import CommitteeList from './Components/Committee/CommitteeList';
 import PageManager from './Components/Page/PageManager'
+import Post from './Components/Post/Post';
+import ProfileCard from './Components/Common/ProfileCard/ProfileCard';
 
 export default function App() {
 
@@ -43,6 +45,10 @@ export default function App() {
         <Route path="/pages">
           <MainMenu />
           <PageManager />
+        </Route>
+        <Route path="/posts/:id">
+          <MainMenu />
+          <Post/>
         </Route>
         <Route match="*">
           <NotFound />

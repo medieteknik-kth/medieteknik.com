@@ -3,3 +3,8 @@
     margin-left: 100px;
     margin-right: 100px;
 }
+
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
