@@ -22,7 +22,7 @@ const Post = (props) => {
           
           <div className='post-over'>
             <h5 className='post-go-back'>
-                <NavLink to='/posts'>
+                <NavLink to='/feed'>
                   Tillbaka till inlägg
                 </NavLink>
             </h5>

@@ -16,6 +16,7 @@ import CommitteeList from './Components/Committee/CommitteeList';
 import PageManager from './Components/Page/PageManager'
 import Post from './Components/Post/Post';
 import ProfileCard from './Components/Common/ProfileCard/ProfileCard';
+import Feed from './Components/Feed/Feed';
 
 export default function App() {
 
@@ -45,6 +46,10 @@ export default function App() {
         <Route path="/pages">
           <MainMenu />
           <PageManager />
+        </Route>
+        <Route path="/feed">
+          <MainMenu />
+          <Feed />
         </Route>
         <Route path="/posts/:id">
           <MainMenu />
