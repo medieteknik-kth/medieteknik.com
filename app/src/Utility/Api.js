@@ -33,5 +33,11 @@ export default {
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),
-  Authenticate: () => fetch(`${API_BASE_URL}auth`).then((response) => response.json()),
+  Authenticate: (token) => fetch(`${API_BASE_URL}auth`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `token=${token}`,
+  }).then((response) => response.json()),
 };

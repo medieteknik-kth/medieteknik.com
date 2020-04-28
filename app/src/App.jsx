@@ -15,6 +15,7 @@ import Documents from './Components/Document/Document';
 import CommitteeList from './Components/Committee/CommitteeList';
 import PageManager from './Components/Page/PageManager';
 import UserProvider from './Contexts/UserContext';
+import Login from './Components/Login/Login';
 
 export default function App() {
   return (
@@ -24,6 +25,10 @@ export default function App() {
           <Route exact path="/">
             <MainMenu transparent />
             <LandingPage />
+          </Route>
+          <Route exact path="/login">
+            <MainMenu />
+            <Login />
           </Route>
           <Route path="/officials">
             <MainMenu />

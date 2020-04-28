@@ -1,4 +1,4 @@
-from flask import jsonify, session, request
+from flask import jsonify, session, request, redirect, url_for
 from flask_restful import Resource
 from flask_cas import login_required
 
@@ -48,15 +48,23 @@ class AuthenticationResource(Resource):
 
 class CASResource(Resource):
     def get(self):
-        if "CAS_USERNAME" in session:
+        if "CAS_USERNAME" not in session:
+            return redirect(url_for("cas.login"))
+
+        if "origin" in request.args.keys():
+            session["origin"] = request.args["origin"]
+        
+        if "origin" in session and "CAS_USERNAME" in session:
             user = User.query.filter_by(kth_id=session["CAS_USERNAME"]).first()
             
             if not user:
-                return {
-                    "token": None
-                }, 404
-            
-            s = Serializer("hejpådig", expires_in = 3600)
-            data = s.dumps({ 'kth_id': user.kth_id })
-            token = data.decode('utf-8')
-            return jsonify({"token": token})
+                origin = session.pop("origin")
+                return redirect(origin)
+            else:
+                s = Serializer("hejpådig", expires_in = 3600)
+                data = s.dumps({ 'kth_id': user.kth_id })
+                token = data.decode('utf-8')
+                origin = session.pop("origin")
+                return redirect(origin + "?token=" + token)
+        
+        return "Invalid request", 400
