@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -16,6 +16,7 @@ from api.resources.post import PostResource, PostAddResouce, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
+from api.resources.authentication import AuthenticationResource, CASResource
 
 import os
 import datetime
@@ -28,7 +29,7 @@ app.config['CAS_SERVER'] = os.getenv("CAS_SERVER", "/")
 app.config['CAS_LOGIN_ROUTE'] = os.getenv("CAS_LOGIN_ROUTE", "/login")
 app.config['CAS_LOGOUT_ROUTE'] = os.getenv("CAS_LOGOUT_ROUTE", "/logout")
 app.config['CAS_VALIDATE_ROUTE'] = os.getenv("CAS_VALIDATE_ROUTE", "/p3/serviceValidate")
-app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "/")
+app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "casresource")
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
@@ -67,17 +68,22 @@ api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
 
+api.add_resource(AuthenticationResource, "/auth")
+api.add_resource(CASResource, "/cas")
+
 if app.debug:
+    from api.models.user import User
+
     local_cas = Blueprint("cas", __name__)
     @local_cas.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == 'POST':
-            session["CAS_USERNAME"] = request.form["username"]
+            if User.query.filter_by(kth_id=request.form["username"]).first() != None:
+                session["CAS_USERNAME"] = request.form["username"]
 
-            if request.args.get('service'):
-                return redirect(request.args.get('service'))
-
-            return jsonify(success=True)
+                return redirect(url_for(app.config['CAS_AFTER_LOGIN']))
+            else:
+                return "Ogiltigt användarnamn. Användarnamnet behöver vara ett giltigt KTH-ID (ex. u1xxxxxx)."
         else:
             return "<form method='POST'><input placeholder='användarnamn' name='username'></input><input type='submit' /></form>"
 
@@ -118,7 +124,7 @@ def route_create_all():
 
     user1 = User()
     user1.email = "jeslundq@kth.se"
-    user1.kth_id = "joppe"
+    user1.kth_id = "u1veo32n"
     user1.first_name = "Jesper"
     user1.last_name = "Lundqvist"
     user1.frack_name = "Joppe"

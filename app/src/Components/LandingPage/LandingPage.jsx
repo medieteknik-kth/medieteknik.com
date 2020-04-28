@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { UserContext } from '../../Contexts/UserContext';
 
 import './LandingPage.css';
 
 export default function LandingPage() {
+  const {user, login} = useContext(UserContext);
+
+  if (user == null) {
+    // login();
+  }
+
   return (
     <div className="startpage">
       <div className="start_picture">
-        <h2 className="start_text">VÄLKOMMEN TILL</h2>
+        <h2 className="start_text">VÄLKOMMEN {user} TILL</h2>
         <h1 className="start_text_medieteknik">MEDIETEKNIK</h1>
         <h3 className="start_text">KUNGLIGA TEKNISKA HÖGSKOLAN</h3>
       </div>
