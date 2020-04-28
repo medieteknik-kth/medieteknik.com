@@ -26,8 +26,9 @@
     color: #c3c3c3;
     font-weight: normal;
     text-transform: uppercase;
-    min-height: 40px;
+    height: 18px;
     padding-top: 10px;
+    overflow: hidden;
 }
 
 .feed-tags span:hover {
@@ -47,6 +48,6 @@
     }
 
     .feed-tags {
-        min-height: 24px;
+        height: 12px;
     }
 }

@@ -14,10 +14,12 @@ const ProfileCard = (props) => {
             setUser(data);
           });
 
-        Api.Committees.GetById(props.committeeId)
-        .then((data) => {
-            setCommittee(data);
-        });
+        if(props.committeeId) {
+            Api.Committees.GetById(props.committeeId)
+            .then((data) => {
+                setCommittee(data);
+            });
+        }
     }, []);
 
     return (
