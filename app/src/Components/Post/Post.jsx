@@ -22,7 +22,7 @@ const Post = (props) => {
           
           <div className='post-over'>
             <h5 className='post-go-back'>
-                <NavLink to='/posts'>
+                <NavLink to='/feed'>
                   Tillbaka till inlägg
                 </NavLink>
             </h5>
@@ -46,7 +46,7 @@ const Post = (props) => {
                 <h5>
                   Taggar:
                   {post.tags.map(tag=>
-                    <span className='post-tag'> #{tag.title}</span>
+                    <span key={tag.id} className='post-tag'> #{tag.title}</span>
                   )}
                 </h5>
               </div>
