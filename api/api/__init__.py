@@ -122,31 +122,75 @@ def route_create_all():
     db.create_all()
 
 
-    user1 = User()
-    user1.email = "jeslundq@kth.se"
-    user1.kth_id = "u1veo32n"
-    user1.first_name = "Jesper"
-    user1.last_name = "Lundqvist"
-    user1.frack_name = "Joppe"
-    user1.kth_year = 2016
-    user1.facebook = "https://www.facebook.com/jesperlndqvist"
-    user1.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
+    joppe = User()
+    joppe.email = "jeslundq@kth.se"
+    joppe.kth_id = "u1veo32n"
+    joppe.first_name = "Jesper"
+    joppe.last_name = "Lundqvist"
+    joppe.frack_name = "Joppe"
+    joppe.kth_year = 2016
+    joppe.facebook = "https://www.facebook.com/jesperlndqvist"
+    joppe.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
 
-    user2 = User()
-    user2.email = "medieteknik@medieteknik.com"
-    user2.kth_id = "test2"
-    user2.first_name = "Media"
-    user2.last_name = "Mediansson"
-    user2.frack_name = "Media"
-    user2.kth_year = 2000
+    mikaela = User()
+    mikaela.email = "migarde@kth.se"
+    mikaela.kth_id = "u1w37ayy"
+    mikaela.first_name = "Mikaela"
+    mikaela.last_name = "Gärde"
+    mikaela.frack_name = "Mickan"
+    mikaela.kth_year = 2018
 
-    user3 = User()
-    user3.email = "medieteknik@medieteknik.com"
-    user3.kth_id = "test"
-    user3.first_name = "Media2"
-    user3.last_name = "Mediansson"
-    user3.frack_name = "Media"
-    user3.kth_year = 2000
+    rasmus = User()
+    rasmus.email = "rrudling@kth.se"
+    rasmus.kth_id = "u1dgt6op"
+    rasmus.first_name = "Rasmus"
+    rasmus.last_name = "Rudling"
+    rasmus.frack_name = "Rasmus"
+    rasmus.kth_year = 2017
+
+    mina = User()
+    mina.email = "minata@kth.se"
+    mina.kth_id = "u1dyjin1"
+    mina.first_name = "Mina"
+    mina.last_name = "Tavakoli"
+    mina.kth_year = 2016
+
+    fredrik = User()
+    fredrik.email = "flundkvi@kth.se"
+    fredrik.kth_id = "u16en6op"
+    fredrik.first_name = "Fredrik"
+    fredrik.last_name = "Lundkvist"
+    fredrik.frack_name = "Foppe"
+    fredrik.kth_year = 2016
+
+    jessie = User()
+    jessie.email = "jessieli@kth.se"
+    jessie.kth_id = "u1nv9g8f"
+    jessie.first_name = "Jessie"
+    jessie.last_name = "Liu"
+    jessie.kth_year = 2018
+
+    kristina = User()
+    kristina.email = "kan2@kth.se"
+    kristina.kth_id = "u166gwua"
+    kristina.first_name = "Kristina"
+    kristina.last_name = "Andersson"
+    kristina.frack_name = "Kristina"
+    kristina.kth_year = 2017
+    
+    albin = User()
+    albin.email = "agyllang@kth.se"
+    albin.kth_id = "u1euay4u"
+    albin.first_name = "Albin"
+    albin.last_name = "Matson Gyllang"
+    albin.kth_year = 2017
+
+    ellaklara = User()
+    ellaklara.email = "ekwe@kth.se"
+    ellaklara.kth_id = "u1a6m9eb"
+    ellaklara.first_name = "Ella Klara"
+    ellaklara.last_name = "Westerlund"
+    ellaklara.kth_year = 2017
 
     committee1 = Committee()
     committee1.name = "Hemsideprojektet"
@@ -160,20 +204,14 @@ def route_create_all():
     post.committee = committee1
     post.is_official = True
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
-    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2020, 6, 30))
-    
-    term3 = post.new_term(datetime.datetime(2015, 7, 1), datetime.datetime(2017, 6, 30))
 
-    user1.post_terms.append(term1)
-    user2.post_terms.append(term2)
+    joppe.post_terms.append(term1)
     
-    user3.post_terms.append(term3)
-
     page = Page()
     page_revision1 = PageRevision()
     page_revision1.title = "Rubrik"
     page_revision1.content = ""
-    page_revision1.author = user1
+    page_revision1.author = joppe
     page_revision1.revision_type = PageRevisionType.created
     page_revision1.published = True
 
@@ -181,9 +219,16 @@ def route_create_all():
 
     committee1.page = page
 
-    db.session.add(user1)
-    db.session.add(user2)
-    db.session.add(user3)
+    db.session.add(joppe)
+    db.session.add(mikaela)
+    db.session.add(rasmus)
+    db.session.add(mina)
+    db.session.add(fredrik)
+    db.session.add(jessie)
+    db.session.add(kristina)
+    db.session.add(albin)
+    db.session.add(ellaklara)
+
     db.session.add(committee1)
     db.session.add(post)
     db.session.add(page_revision1)
@@ -214,7 +259,7 @@ def route_create_all():
     post = Post()
     post.title = "Folk söker folk"
     post.body = "hejhej"
-    post.user_id = user2.id
+    post.user_id = mikaela.id
     post.committee_id = 1
 
     

@@ -11,10 +11,10 @@ class User(db.Model):
         db.String, default="/static/profiles/default.png")
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
-    frack_name = db.Column(db.String)
+    frack_name = db.Column(db.String, nullable=True)
     kth_year = db.Column(db.Integer)
-    linkedin = db.Column(db.String)
-    facebook = db.Column(db.String)
+    linkedin = db.Column(db.String, nullable=True)
+    facebook = db.Column(db.String, nullable=True)
     alumni = db.Column(db.Boolean, default=False)
     post_terms = db.relationship("CommitteePostTerm", back_populates="user")
 
@@ -22,7 +22,7 @@ class User(db.Model):
         terms = []
 
         for term in self.post_terms:
-            terms.append({"post": term.post.to_dict(),
+            terms.append({"post": term.post.to_dict_without_terms(),
                           "startDate": term.start_date,
                           "endDate": term.end_date})
 
