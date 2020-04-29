@@ -9,4 +9,6 @@ COPY . /usr/src/api
 
 RUN pip3 install -r requirements.txt
 
+RUN pip3 install psycopg2
+
 CMD gunicorn --workers 3 --bind=0.0.0.0:80 --chdir /usr/src/api api:app
