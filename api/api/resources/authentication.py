@@ -48,11 +48,11 @@ class AuthenticationResource(Resource):
 
 class CASResource(Resource):
     def get(self):
-        if "CAS_USERNAME" not in session:
-            return redirect(url_for("cas.login"))
-
         if "origin" in request.args.keys():
             session["origin"] = request.args["origin"]
+
+        if "CAS_USERNAME" not in session:
+            return redirect(url_for("cas.login"))
         
         if "origin" in session and "CAS_USERNAME" in session:
             user = User.query.filter_by(kth_id=session["CAS_USERNAME"]).first()
