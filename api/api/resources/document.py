@@ -72,7 +72,6 @@ def save_documents(request):
             dt = DocumentTags()
             dt.itemId = docobj.itemId
             dt.tagId = t
-            print(dt, file=sys.stderr)
             db.session.add(dt)
 
     db.session.commit()
@@ -80,7 +79,7 @@ def save_documents(request):
 #tags borde finnas i databasen så det inte blir knas
 def get_documents(tags: list):
     if tags is not None:
-        q = Document.query.join(DocumentTags).join(Tag).filter(Tag.title.in_(tags)).all()
+        q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags)).all()
     else:
         q = Document.query.all()
     return [Document.to_dict(res) for res in q]
