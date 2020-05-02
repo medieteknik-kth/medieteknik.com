@@ -16,6 +16,8 @@ import CommitteeList from './Components/Committee/CommitteeList';
 import PageManager from './Components/Page/PageManager';
 import UserProvider from './Contexts/UserContext';
 import Login from './Components/Login/Login';
+import Post from './Components/Post/Post';
+import Feed from './Components/Feed/Feed';
 
 export default function App() {
   return (
@@ -49,6 +51,14 @@ export default function App() {
           <Route path="/pages">
             <MainMenu />
             <PageManager />
+          </Route>
+          <Route path="/feed">
+            <MainMenu />
+            <Feed />
+          </Route>
+          <Route path="/posts/:id">
+            <MainMenu />
+            <Post />
           </Route>
           <Route match="*">
             <NotFound />

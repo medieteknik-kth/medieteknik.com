@@ -39,6 +39,10 @@ function GetApiObject(resource) {
   };
 }
 
+function GetImage(path) {
+  return API_BASE_URL + 'get_image?path=' + path;
+}
+
 export default {
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
@@ -51,4 +55,6 @@ export default {
     body: `token=${token}`,
   }).then((response) => response.json()),
   Users: GetApiObject('users'),
+  Posts: GetApiObject('posts'),
+  Images: GetImage,
 };

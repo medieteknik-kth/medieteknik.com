@@ -32,7 +32,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
-    header_image = db.Column(db.String)
+    header_image = db.Column(db.String, default="static/posts/default.png")
     body = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"),
         nullable=False)
