@@ -2,21 +2,21 @@ export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api
 
 function GetApiObject(resource) {
   return {
-    GetAll(token = null) {
+    GetAll(token = window.localStorage.getItem('user_token')) {
       return fetch(API_BASE_URL + resource, {
         headers: {
           token,
         },
       }).then((response) => response.json());
     },
-    GetById(id, token = null) {
+    GetById(id, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         headers: {
           token,
         },
       }).then((response) => response.json());
     },
-    Update(id, data, token = null) {
+    Update(id, data, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: 'PUT',
         headers: {
@@ -26,7 +26,7 @@ function GetApiObject(resource) {
         body: JSON.stringify(data),
       });
     },
-    Create(data, token = null) {
+    Create(data, token = window.localStorage.getItem('user_token')) {
       return fetch(API_BASE_URL + resource, {
         method: 'POST',
         headers: {

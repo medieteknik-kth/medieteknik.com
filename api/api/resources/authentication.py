@@ -25,7 +25,7 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('token')
-        if not auth:
+        if not token:
             return {
                 "message": "Missing token"
             }, 400
@@ -36,12 +36,13 @@ def requires_auth(f):
                 "message": "Invalid token"
             }, 400
         
-        if not User.query.filter_by(kth_id=kth_id).first():
+        user = User.query.filter_by(kth_id=kth_id).first()
+        if not user:
             return {
                 "message": "Invalid user"
             }, 404
 
-        return f(*args, **kwargs)
+        return f(user, *args, **kwargs)
 
     return decorated
 

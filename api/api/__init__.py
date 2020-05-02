@@ -231,7 +231,6 @@ def route_create_all():
 
     db.session.add(committee1)
     db.session.add(post)
-    db.session.add(post2)
     db.session.add(page_revision1)
     db.session.add(page)
 

@@ -56,7 +56,8 @@ export default function CommitteePage() {
             // TODO: Meddelande att allt gått bra
             setOldContent(content);
           }).catch((error) => {
-            // TODO: Meddelande att något gick snett
+            alert("Kunde inte spara sida.");
+            setIsEditing(true);
             console.error(error);
           });
         }

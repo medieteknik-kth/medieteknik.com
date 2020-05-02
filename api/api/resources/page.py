@@ -12,7 +12,8 @@ class PageResource(Resource):
         return jsonify(page.to_dict())
     
     @requires_auth
-    def put(self, id):
+    def put(self, user, id):
+        ## TODO: Tillåt bara användare som får redigera att redigera sida
         page = Page.query.get(id)
         keys = request.json.keys()
 
