@@ -4,13 +4,16 @@ from flask import jsonify, request
 from flask_restful import Resource
 
 from api.models.page import Page, PageRevision, PageRevisionType
+from api.resources.authentication import requires_auth
 
 class PageResource(Resource):
     def get(self, id):
         page = Page.query.get(id)
         return jsonify(page.to_dict())
     
-    def put(self, id):
+    @requires_auth
+    def put(self, user, id):
+        ## TODO: Tillåt bara användare som får redigera att redigera sida
         page = Page.query.get(id)
         keys = request.json.keys()
 

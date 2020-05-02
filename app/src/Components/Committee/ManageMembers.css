@@ -1,0 +1,10 @@
+.committeeMembersTable {
+    font-family: sans-serif;
+    border-collapse: collapse;
+}
+
+.committeeMembersTable th, td {
+    text-align: left;
+    padding: 15px;
+    border: 1px solid lightgray;
+}

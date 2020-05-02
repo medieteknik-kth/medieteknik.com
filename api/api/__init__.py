@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -16,6 +16,7 @@ from api.resources.post import PostResource, PostAddResouce, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
+from api.resources.authentication import AuthenticationResource, CASResource
 
 import os
 import datetime
@@ -28,7 +29,7 @@ app.config['CAS_SERVER'] = os.getenv("CAS_SERVER", "/")
 app.config['CAS_LOGIN_ROUTE'] = os.getenv("CAS_LOGIN_ROUTE", "/login")
 app.config['CAS_LOGOUT_ROUTE'] = os.getenv("CAS_LOGOUT_ROUTE", "/logout")
 app.config['CAS_VALIDATE_ROUTE'] = os.getenv("CAS_VALIDATE_ROUTE", "/p3/serviceValidate")
-app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "/")
+app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "casresource")
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
@@ -67,17 +68,22 @@ api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
 
+api.add_resource(AuthenticationResource, "/auth")
+api.add_resource(CASResource, "/cas")
+
 if app.debug:
+    from api.models.user import User
+
     local_cas = Blueprint("cas", __name__)
     @local_cas.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == 'POST':
-            session["CAS_USERNAME"] = request.form["username"]
+            if User.query.filter_by(kth_id=request.form["username"]).first() != None:
+                session["CAS_USERNAME"] = request.form["username"]
 
-            if request.args.get('service'):
-                return redirect(request.args.get('service'))
-
-            return jsonify(success=True)
+                return redirect(url_for(app.config['CAS_AFTER_LOGIN']))
+            else:
+                return "Ogiltigt användarnamn. Användarnamnet behöver vara ett giltigt KTH-ID (ex. u1xxxxxx)."
         else:
             return "<form method='POST'><input placeholder='användarnamn' name='username'></input><input type='submit' /></form>"
 
@@ -116,31 +122,75 @@ def route_create_all():
     db.create_all()
 
 
-    user1 = User()
-    user1.email = "jeslundq@kth.se"
-    user1.kth_id = "joppe"
-    user1.first_name = "Jesper"
-    user1.last_name = "Lundqvist"
-    user1.frack_name = "Joppe"
-    user1.kth_year = 2016
-    user1.facebook = "https://www.facebook.com/jesperlndqvist"
-    user1.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
+    joppe = User()
+    joppe.email = "jeslundq@kth.se"
+    joppe.kth_id = "u1veo32n"
+    joppe.first_name = "Jesper"
+    joppe.last_name = "Lundqvist"
+    joppe.frack_name = "Joppe"
+    joppe.kth_year = 2016
+    joppe.facebook = "https://www.facebook.com/jesperlndqvist"
+    joppe.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
 
-    user2 = User()
-    user2.email = "medieteknik@medieteknik.com"
-    user2.kth_id = "test2"
-    user2.first_name = "Media"
-    user2.last_name = "Mediansson"
-    user2.frack_name = "Media"
-    user2.kth_year = 2000
+    mikaela = User()
+    mikaela.email = "migarde@kth.se"
+    mikaela.kth_id = "u1w37ayy"
+    mikaela.first_name = "Mikaela"
+    mikaela.last_name = "Gärde"
+    mikaela.frack_name = "Mickan"
+    mikaela.kth_year = 2018
 
-    user3 = User()
-    user3.email = "medieteknik@medieteknik.com"
-    user3.kth_id = "test"
-    user3.first_name = "Media2"
-    user3.last_name = "Mediansson"
-    user3.frack_name = "Media"
-    user3.kth_year = 2000
+    rasmus = User()
+    rasmus.email = "rrudling@kth.se"
+    rasmus.kth_id = "u1dgt6op"
+    rasmus.first_name = "Rasmus"
+    rasmus.last_name = "Rudling"
+    rasmus.frack_name = "Rasmus"
+    rasmus.kth_year = 2017
+
+    mina = User()
+    mina.email = "minata@kth.se"
+    mina.kth_id = "u1dyjin1"
+    mina.first_name = "Mina"
+    mina.last_name = "Tavakoli"
+    mina.kth_year = 2016
+
+    fredrik = User()
+    fredrik.email = "flundkvi@kth.se"
+    fredrik.kth_id = "u16en6op"
+    fredrik.first_name = "Fredrik"
+    fredrik.last_name = "Lundkvist"
+    fredrik.frack_name = "Foppe"
+    fredrik.kth_year = 2016
+
+    jessie = User()
+    jessie.email = "jessieli@kth.se"
+    jessie.kth_id = "u1nv9g8f"
+    jessie.first_name = "Jessie"
+    jessie.last_name = "Liu"
+    jessie.kth_year = 2018
+
+    kristina = User()
+    kristina.email = "kan2@kth.se"
+    kristina.kth_id = "u166gwua"
+    kristina.first_name = "Kristina"
+    kristina.last_name = "Andersson"
+    kristina.frack_name = "Kristina"
+    kristina.kth_year = 2017
+    
+    albin = User()
+    albin.email = "agyllang@kth.se"
+    albin.kth_id = "u1euay4u"
+    albin.first_name = "Albin"
+    albin.last_name = "Matson Gyllang"
+    albin.kth_year = 2017
+
+    ellaklara = User()
+    ellaklara.email = "ekwe@kth.se"
+    ellaklara.kth_id = "u1a6m9eb"
+    ellaklara.first_name = "Ella Klara"
+    ellaklara.last_name = "Westerlund"
+    ellaklara.kth_year = 2017
 
     committee1 = Committee()
     committee1.name = "Hemsideprojektet"
@@ -154,20 +204,14 @@ def route_create_all():
     post.committee = committee1
     post.is_official = True
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
-    term2 = post.new_term(datetime.datetime(2018, 7, 1), datetime.datetime(2020, 6, 30))
-    
-    term3 = post.new_term(datetime.datetime(2015, 7, 1), datetime.datetime(2017, 6, 30))
 
-    user1.post_terms.append(term1)
-    user2.post_terms.append(term2)
+    joppe.post_terms.append(term1)
     
-    user3.post_terms.append(term3)
-
     page = Page()
     page_revision1 = PageRevision()
     page_revision1.title = "Rubrik"
-    page_revision1.content = ""
-    page_revision1.author = user1
+    page_revision1.content = "{\"ops\":[{\"insert\":\"Hej hall\u00e5!\\n\"}]}"
+    page_revision1.author = joppe
     page_revision1.revision_type = PageRevisionType.created
     page_revision1.published = True
 
@@ -175,9 +219,16 @@ def route_create_all():
 
     committee1.page = page
 
-    db.session.add(user1)
-    db.session.add(user2)
-    db.session.add(user3)
+    db.session.add(joppe)
+    db.session.add(mikaela)
+    db.session.add(rasmus)
+    db.session.add(mina)
+    db.session.add(fredrik)
+    db.session.add(jessie)
+    db.session.add(kristina)
+    db.session.add(albin)
+    db.session.add(ellaklara)
+
     db.session.add(committee1)
     db.session.add(post)
     db.session.add(page_revision1)
@@ -207,11 +258,12 @@ def route_create_all():
 
     post = Post()
     post.title = "Folk söker folk"
+    post.body = "hejhej"
+    post.user_id = mikaela.id
     post.body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque finibus, ante at tristique accumsan, tellus nulla consequat nisl, quis mollis quam arcu vel urna. Proin eleifend augue ante, malesuada porta libero ullamcorper vel. Mauris quis diam augue. Integer consectetur justo lorem, vitae consectetur lectus laoreet ac. Sed vel accumsan nulla, et laoreet justo. Sed porttitor dui nec nisi aliquam, elementum sagittis velit molestie. Nam rhoncus nibh neque, eget scelerisque quam sollicitudin ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus eget dictum diam. Phasellus gravida dui et nunc finibus, ut feugiat nisi pulvinar. Nulla egestas, lorem vitae elementum sodales, diam mauris dictum sapien, in luctus velit lorem nec ante. \
     Proin facilisis augue nibh, vitae placerat metus rhoncus at. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisi a mauris elementum imperdiet ac in velit. Curabitur scelerisque, justo id molestie molestie, augue elit elementum orci, vitae fringilla turpis magna vitae nisl. Vestibulum id suscipit felis, vel bibendum tortor. Mauris porta tortor lorem, eget feugiat enim bibendum laoreet. Cras lacinia at massa sed scelerisque. Curabitur porta tristique suscipit. Etiam interdum lacus id cursus porttitor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. \
     Morbi sed metus aliquam, sollicitudin arcu sed, feugiat nunc. Duis libero nisi, ornare ac finibus eu, placerat vitae elit. Nulla convallis feugiat placerat. Sed fringilla, arcu sit amet condimentum gravida, tortor lorem aliquet nulla, id sagittis elit erat at libero. Suspendisse laoreet orci vitae risus pretium, in auctor neque mattis. Aliquam erat volutpat. Vivamus in lacus in arcu eleifend molestie. Sed elit dui, malesuada nec erat vel, commodo porta metus. In tempor iaculis tortor, sed finibus risus dignissim ac. Etiam tortor diam, euismod vel arcu ac, convallis finibus nulla. Morbi orci turpis, dapibus et bibendum a, pretium id velit. Curabitur molestie purus vel ex porttitor finibus. Nunc sodales facilisis orci, quis facilisis nisl malesuada quis. \
     Sed bibendum pharetra vehicula. In erat eros, facilisis sed viverra vulputate, mollis a odio. Donec tempor purus fermentum neque ullamcorper, non consequat nisl pellentesque. Nulla velit odio, gravida ac ex et, sollicitudin rhoncus libero. Nam ultricies eleifend eros. Nunc rhoncus tellus at augue semper ullamcorper. Nullam malesuada tellus ac lorem molestie tristique. Ut mattis eros in neque molestie, a rhoncus felis rhoncus. Vestibulum erat velit, convallis sit amet mattis eget, faucibus ac mauris. Integer imperdiet diam at quam tristique, ut dapibus dui hendrerit. Aenean commodo vitae enim ac blandit."
-    post.user_id = user2.id
     post.committee_id = 1
 
     
