@@ -34,13 +34,13 @@ def requires_auth(f):
         if not kth_id:
             return {
                 "message": "Invalid token"
-            }, 400
+            }, 401
         
         user = User.query.filter_by(kth_id=kth_id).first()
         if not user:
             return {
                 "message": "Invalid user"
-            }, 404
+            }, 401
 
         return f(user, *args, **kwargs)
 
