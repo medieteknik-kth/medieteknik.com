@@ -9,6 +9,7 @@ import Page from '../Page/Page';
 import { UserContext } from '../../Contexts/UserContext';
 
 import './CommitteePage.css';
+import AddUserButton from './AddUserButton';
 
 export default function CommitteePage() {
   const { committeeId } = useParams();
@@ -96,7 +97,8 @@ export default function CommitteePage() {
       <div
         className="committeePageFooter"
       >
-        {posts.map((post) => (post.currentTerms.map((term) => <UserCard key={term.user.id} user={term.user} subtitle={post.name} email={post.email} />)))}
+        {posts.map((post) => (post.currentTerms.map((term) => <UserCard key={term.user.id} user={term.user} subtitle={post.name} email={post.email} deleteable={isEditing && !post.isOfficial} />)))}
+        {isEditing ? <AddUserButton addedUser={(user) => { console.log(user); }} /> : <div />}
       </div>
     </div>
   );

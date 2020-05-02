@@ -43,6 +43,7 @@ export default {
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),
+<<<<<<< HEAD
   Authenticate: (token) => fetch(`${API_BASE_URL}auth`, {
     method: 'POST',
     headers: {
@@ -50,4 +51,7 @@ export default {
     },
     body: `token=${token}`,
   }).then((response) => response.json()),
+=======
+  Users: GetApiObject('users'),
+>>>>>>> committee-page
 };
