@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
@@ -6,17 +6,22 @@ import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import Api from '../../Utility/Api';
 import UserCard from '../UserCard/UserCard';
 import Page from '../Page/Page';
+import { UserContext } from '../../Contexts/UserContext';
 
 import './CommitteePage.css';
 
 export default function CommitteePage() {
   const { committeeId } = useParams();
 
+  const { user } = useContext(UserContext);
+
   const [committee, setCommittee] = useState({});
   const [posts, setPosts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState('');
   const [oldContent, setOldContent] = useState(null);
+
+  const editingAllowed = user == null ? false : user.committeePostTerms.some((term) => term.post.committeeId === committee.id);
 
   const quillRef = null;
 
@@ -74,9 +79,13 @@ export default function CommitteePage() {
           { backgroundImage: `url('${committee.header_image}')` }
         }
       >
-        <button type="button" className="committeePageEditButton" onClick={didPressEditButton}>
-          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
-        </button>
+        {editingAllowed
+          ? (
+            <button type="button" className="committeePageEditButton" onClick={didPressEditButton}>
+              <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
+            </button>
+          )
+          : <div />}
         <span className="committeePageHeaderText">{committee.name}</span>
       </div>
       <div className="committeePageContent content">

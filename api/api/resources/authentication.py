@@ -1,29 +1,63 @@
 from flask import jsonify, session, request, redirect, url_for
 from flask_restful import Resource
 from flask_cas import login_required
+from functools import wraps
 
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 from api.models.user import User
 
+import os
+
+secret = os.getenv("SECRET_KEY", "2kfueoVmpd0FBVFCJD0V")
+
+def check_token(token):
+    s = Serializer(secret)
+    try:
+        data = s.loads(token)
+    except:
+        return None
+    
+    return data["kth_id"]
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get('token')
+        if not auth:
+            return {
+                "message": "Missing token"
+            }, 400
+        
+        kth_id = check_token(token)
+        if not kth_id:
+            return {
+                "message": "Invalid token"
+            }, 400
+        
+        if not User.query.filter_by(kth_id=kth_id).first():
+            return {
+                "message": "Invalid user"
+            }, 404
+
+        return f(*args, **kwargs)
+
+    return decorated
+
 class AuthenticationResource(Resource):
     def post(self):
         if "token" in request.form.keys():
             token = request.form["token"]
-            s = Serializer("hejpådig")
-            try:
-                data = s.loads(token)
-            except SignatureExpired:
+            kth_id = check_token(token)
+
+            if not kth_id:
                 return {
-                    "message": "Token expired"
-                }, 400
-            except BadSignature:
-                return {
+                    "authenticated": False,
                     "message": "Invalid token"
                 }, 400
-            
-            current_user = User.query.filter_by(kth_id=data["kth_id"]).first()
+
+            current_user = User.query.filter_by(kth_id=kth_id).first()
             if not current_user:
                 return {
                     "authenticated": False,
@@ -41,10 +75,6 @@ class AuthenticationResource(Resource):
                 "message": "Missing token"
             }, 400
 
-    def generate_auth_token(self, expiration = 2700):
-        s = Serializer("hejpådig", expires_in = expiration)
-        return s.dumps({ 'kth_id': self.id })
-
 
 class CASResource(Resource):
     def get(self):
@@ -61,7 +91,7 @@ class CASResource(Resource):
                 origin = session.pop("origin")
                 return redirect(origin)
             else:
-                s = Serializer("hejpådig", expires_in = 3600)
+                s = Serializer(secret, expires_in = 3600)
                 data = s.dumps({ 'kth_id': user.kth_id })
                 token = data.decode('utf-8')
                 origin = session.pop("origin")

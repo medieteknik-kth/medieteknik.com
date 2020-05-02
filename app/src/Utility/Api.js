@@ -2,30 +2,40 @@ export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api
 
 function GetApiObject(resource) {
   return {
-    GetAll() {
-      return fetch(API_BASE_URL + resource).then((response) => response.json());
+    GetAll(token = null) {
+      return fetch(API_BASE_URL + resource, {
+        headers: {
+          token,
+        },
+      }).then((response) => response.json());
     },
-    GetById(id) {
-      return fetch(`${API_BASE_URL}${resource}/${id}`).then((response) => response.json());
+    GetById(id, token = null) {
+      return fetch(`${API_BASE_URL}${resource}/${id}`, {
+        headers: {
+          token,
+        },
+      }).then((response) => response.json());
     },
-    Update(id, data) {
+    Update(id, data, token = null) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          token,
         },
         body: JSON.stringify(data),
       });
     },
-    Create(data) {
+    Create(data, token = null) {
       return fetch(API_BASE_URL + resource, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          token,
         },
         body: JSON.stringify(data),
       });
-    }
+    },
   };
 }
 

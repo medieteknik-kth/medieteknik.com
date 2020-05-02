@@ -36,7 +36,7 @@ class User(db.Model):
                 "kthYear": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
-                "committePostTerms": terms,
+                "committeePostTerms": terms,
                 "alumni": self.alumni
                 }
     

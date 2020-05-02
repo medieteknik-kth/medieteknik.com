@@ -9,7 +9,7 @@ function useQuery() {
 
 export default function Login() {
   const [hasCapturedToken, setHasCapturedToken] = useState(false);
-  const { user, setToken } = useContext(UserContext);
+  const { user, setToken, logout } = useContext(UserContext);
   const query = useQuery();
 
   const token = query.get('token');
@@ -20,10 +20,6 @@ export default function Login() {
 
   const login = () => {
     window.location.replace(`${API_BASE_URL}cas?origin=${window.location.href}`);
-  };
-
-  const logout = () => {
-    window.location.replace(`${API_BASE_URL}logout`);
   };
 
   return (
