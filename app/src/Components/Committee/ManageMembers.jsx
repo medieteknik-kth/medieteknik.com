@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Api from '../../Utility/Api';
 
 import './ManageMembers.css';
+import { LocaleText } from '../../Contexts/LocaleContext';
 
 export default function ManageMembers() {
   const { committeeId } = useParams();
@@ -20,12 +21,12 @@ export default function ManageMembers() {
     <div>
       {committee != null ? (
         <div className="content" style={{ marginTop: '125px' }}>
-          <h1>Hantera medlemmar</h1>
+          <h1><LocaleText phrase="committee/manage/mng_members"/></h1>
           <h3>{committee.name}</h3>
           <table className="committeeMembersTable">
             <tr>
-              <th>Namn</th>
-              <th>Post</th>
+              <th><LocaleText phrase="common/name"/></th>
+              <th><LocaleText phrase="common/post"/></th>
             </tr>
             {committee.posts.map((post) => post.currentTerms.map((term) => (
               <tr>
@@ -42,7 +43,7 @@ export default function ManageMembers() {
             }}
             type="button"
           >
-            <span>Lägg till</span>
+            <span><LocaleText phrase="committee/manage/add"/></span>
           </button>
         </div>
       ) : <div />}

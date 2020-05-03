@@ -83,6 +83,7 @@
   border: none;
   font-weight: 200;
   letter-spacing: 3px;
+  outline: none;
 }
 
 .dropdown {

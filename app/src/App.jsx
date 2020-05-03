@@ -18,53 +18,56 @@ import UserProvider from './Contexts/UserContext';
 import Login from './Components/Login/Login';
 import Post from './Components/Post/Post';
 import Feed from './Components/Feed/Feed';
+import LocaleProvider from './Contexts/LocaleContext';
 
 export default function App() {
   return (
     <Router>
-      <UserProvider>
-        <Switch>
-          <Route exact path="/">
-            <MainMenu transparent />
-            <LandingPage />
-          </Route>
-          <Route exact path="/login">
-            <MainMenu />
-            <Login />
-          </Route>
-          <Route path="/officials">
-            <MainMenu />
-            <OfficialsBoard />
-          </Route>
-          <Route path="/settings">
-            <MainMenu />
-            <Settings />
-          </Route>
-          <Route path="/documents">
-            <MainMenu />
-            <Documents />
-          </Route>
-          <Route path="/committees">
-            <MainMenu />
-            <CommitteeList />
-          </Route>
-          <Route path="/pages">
-            <MainMenu />
-            <PageManager />
-          </Route>
-          <Route path="/feed">
-            <MainMenu />
-            <Feed />
-          </Route>
-          <Route path="/posts/:id">
-            <MainMenu />
-            <Post />
-          </Route>
-          <Route match="*">
-            <NotFound />
-          </Route>
-        </Switch>
-      </UserProvider>
+      <LocaleProvider>
+        <UserProvider>
+          <Switch>
+            <Route exact path="/">
+              <MainMenu transparent />
+              <LandingPage />
+            </Route>
+            <Route exact path="/login">
+              <MainMenu/>
+              <Login />
+            </Route>
+            <Route path="/officials">
+              <MainMenu />
+              <OfficialsBoard />
+            </Route>
+            <Route path="/settings">
+              <MainMenu />
+              <Settings />
+            </Route>
+            <Route path="/documents">
+              <MainMenu />
+              <Documents />
+            </Route>
+            <Route path="/committees">
+              <MainMenu />
+              <CommitteeList />
+            </Route>
+            <Route path="/pages">
+              <MainMenu />
+              <PageManager />
+            </Route>
+            <Route path="/feed">
+              <MainMenu />
+              <Feed />
+            </Route>
+            <Route path="/posts/:id">
+              <MainMenu />
+              <Post />
+            </Route>
+            <Route match="*">
+              <NotFound />
+            </Route>
+          </Switch>
+        </UserProvider>
+      </LocaleProvider>
     </Router>
   );
 }

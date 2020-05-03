@@ -3,6 +3,7 @@ import './Post.css'
 import ProfileCard from '../Common/ProfileCard/ProfileCard';
 import { useParams, NavLink } from 'react-router-dom';
 import Api from '../../Utility/Api.js'
+import { LocaleText } from '../../Contexts/LocaleContext';
 
 const Post = (props) => {
 
@@ -23,7 +24,7 @@ const Post = (props) => {
           <div className='post-over'>
             <h5 className='post-go-back'>
                 <NavLink to='/feed'>
-                  Tillbaka till inlägg
+                  <LocaleText phrase='feed/post/go_back'/>
                 </NavLink>
             </h5>
           </div>
@@ -44,7 +45,7 @@ const Post = (props) => {
             <div className='post-footer'>
               <div className='post-tags'>
                 <h5>
-                  Taggar:
+                  <LocaleText phrase='feed/tags'/>:
                   {post.tags.map(tag=>
                     <span key={tag.id} className='post-tag'> #{tag.title}</span>
                   )}

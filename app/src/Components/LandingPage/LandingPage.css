@@ -12,6 +12,7 @@
     color: white;
     font-size: 25px;
     line-height: normal;
+    text-transform: uppercase;
 }
 
 .start_text_medieteknik {
@@ -20,6 +21,7 @@
     letter-spacing: 2px;
     margin: 30px;
     line-height: normal;
+    text-transform: uppercase;
 }
 
 .start_info_container {
@@ -32,6 +34,10 @@
     padding-bottom: 2%;
     margin-top: 10%;
     text-align: center;
+}
+
+.start_info_container h3, h4 {
+    text-transform: uppercase;
 }
 
 .grid-container {
