@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Feed.css'
 import Api from '../../Utility/Api.js'
 import FeedCard from './FeedCard/FeedCard.jsx';
+import { LocaleText } from '../../Contexts/LocaleContext';
 
 const Feed = (props) => {
 
@@ -14,9 +15,10 @@ const Feed = (props) => {
         });
     }, []);
 
+
     return (
         <div className='feed-container'>
-            <h1>Inlägg & Event</h1>
+            <h1><LocaleText phrase='feed/header'/></h1>
             <div className='feed-cards'>
                 {cont ? cont.map(post =>
                     <FeedCard 

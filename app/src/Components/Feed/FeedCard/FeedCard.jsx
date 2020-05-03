@@ -2,6 +2,7 @@ import React from 'react';
 import './FeedCard.css'
 import { NavLink } from 'react-router-dom';
 import Api from '../../../Utility/Api.js'
+import { LocaleText } from '../../../Contexts/LocaleContext';
 
 const FeedCard = (props) => {
 
@@ -29,7 +30,7 @@ const FeedCard = (props) => {
                         {props.body.trunc(250)}
                     </p>
                     <h5 className='feed-tags'>
-                    Taggar:
+                    <LocaleText phrase='feed/tags'/>
                     {props.tags.map(tag=>
                         <span key={tag.id}> #{tag.title}</span>
                     )}
