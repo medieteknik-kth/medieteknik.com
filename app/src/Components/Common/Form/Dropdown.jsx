@@ -33,7 +33,6 @@ const Dropdown = ({options, onChange}) => {
             border: 0,
             backgroundColor: '#fff',
             ...textStyle,
-            width: '300px',
             highlight: 'none',
             padding: '1rem',
             boxShadow: state.isFocused ? 0 : 0,

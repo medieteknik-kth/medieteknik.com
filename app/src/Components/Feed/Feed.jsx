@@ -3,7 +3,9 @@ import './Feed.css'
 import Api from '../../Utility/Api.js'
 import FeedCard from './FeedCard/FeedCard.jsx';
 import { LocaleText } from '../../Contexts/LocaleContext';
-import Dropdown from '../Common/Form/Dropdown/Dropdown';
+import Dropdown from '../Common/Form/Dropdown';
+import FormTitle from '../Common/Form/FormTitle';
+import Input from '../Common/Form/Input';
 
 const Feed = (props) => {
 
@@ -17,7 +19,10 @@ const Feed = (props) => {
     }, []);
 
 
-    return (
+    return (<div style={{backgroundColor: '#f0f0f0', height: '100vh'}}>
+        <FormTitle>Hej</FormTitle>
+        <Input  onChange={(e)=> console.log(e.target.value)}></Input>
+        <Dropdown options={[{label: 'Hje', value: 'OK'}]} onChange={(value)=> console.log(value)}/></div>/*
         <div className='feed-container'>
             <h1><LocaleText phrase='feed/header'/></h1>
             <div className='feed-cards'>
@@ -32,7 +37,7 @@ const Feed = (props) => {
                         tags={post.tags}/>
                 ): <></>}
             </div>
-        </div>
+        </div>*/
         );
 }
 
