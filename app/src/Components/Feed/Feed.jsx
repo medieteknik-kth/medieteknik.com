@@ -3,6 +3,7 @@ import './Feed.css'
 import Api from '../../Utility/Api.js'
 import FeedCard from './FeedCard/FeedCard.jsx';
 import { LocaleText } from '../../Contexts/LocaleContext';
+import Dropdown from '../Common/Form/Dropdown/Dropdown';
 
 const Feed = (props) => {
 
