@@ -1,5 +1,6 @@
 import React from 'react'
 import './Input.css'
+import LeftArrow from './Assets/form-left-arrow.svg'
 
 const Input = ({onChange, errorMsg, hasError, inputStyle}) => {      
     return (

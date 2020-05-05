@@ -33,8 +33,19 @@
     font-size: 0.8rem;
     padding: 0.5rem;
     height: 100%;
-    margin-left: 1rem;
+    margin-left: 1.3rem;
     opacity: 0;
+}
+
+.input-error-msg::before {
+    display: block;
+    position: absolute;
+    content: ' ';
+    background-image: url('./Assets/form-left-arrow.svg');
+    background-size: 0.8rem 0.8rem;
+    height: 0.8rem;
+    width: 0.8rem;
+    margin-left: -1.3rem;
 }
 
 .input-error-msg.display {
