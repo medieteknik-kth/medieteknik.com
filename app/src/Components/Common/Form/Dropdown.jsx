@@ -34,11 +34,11 @@ const Dropdown = ({options, onChange}) => {
             backgroundColor: '#fff',
             ...textStyle,
             highlight: 'none',
-            padding: '1rem',
+            padding: '0.8rem',
             boxShadow: state.isFocused ? 0 : 0,
             '&:hover': {
                border: state.isFocused ? 0 : 0
-            }
+            },
         }),
         menu: (provided, state) => ({
             ...provided,

@@ -13,6 +13,32 @@
             "en": "Name"
         }
     },
+    "form": {
+        "add_document": {
+            "se": "Ladda upp",
+            "en": "Add document"
+        },
+        "change_file": {
+            "se": "Byt fil",
+            "en": "Change file"
+        },
+        "save": {
+            "se": "Spara",
+            "en": "Save"            
+        },
+        "title": {
+            "se": "Titel",
+            "en": "Title"            
+        },
+        "doc_type": {
+            "se": "Dokumenttyp",
+            "en": "Document type"            
+        },
+        "doc_upload": {
+            "se": "Dokumentuppladdning",
+            "en": "Document upload"            
+        }
+    },
     "landing": {
         "welcome": {
             "se": "Välkommen till",

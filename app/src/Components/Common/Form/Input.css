@@ -1,9 +1,42 @@
-.input {
+.input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+}
+
+.input, .input-error-msg {
     font-family: 'Roboto';
     font-weight: 100;
+}
+
+.input {
     font-size: 1.2rem;
     color: #909090;
     border: 0;
     padding: 1.2rem;
     outline: none;
+    size: 50;
+}
+
+.input.error {
+    background-image: url('./Assets/form-wronginput.png');
+    background-repeat: no-repeat;
+    background-size: 1.5rem;
+    background-position-x: 95%;
+    background-position-y: 1rem;
+}
+
+.input-error-msg {
+    background-color: #ff7373;
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    height: 100%;
+    margin-left: 1rem;
+    opacity: 0;
+}
+
+.input-error-msg.display {
+    opacity: 1;
 }

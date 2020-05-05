@@ -1,9 +1,12 @@
 import React from 'react'
 import './Input.css'
 
-const Input = ({children, onChange}) => {      
+const Input = ({onChange, errorMsg, hasError, inputStyle}) => {      
     return (
-        <input className='input' onChange={onChange}></input>
+        <div className='input-container'>
+            <input className={`input ${hasError ? 'error' : ''}`} onChange={onChange} style={inputStyle}></input>
+            <div class={`input-error-msg ${hasError ? 'display': ''}`}>{errorMsg}</div>
+        </div>
     );
 }
 
