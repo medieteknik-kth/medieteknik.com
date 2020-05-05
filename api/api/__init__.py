@@ -4,6 +4,8 @@ from flask_cors import CORS
 from flask_cas import CAS, login_required
 from flask_restful import Api
 
+from flasgger import Swagger
+
 from api.db import db
 
 from api.resources.user import UserResource, UserListResource
@@ -33,9 +35,28 @@ app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "casresource")
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
+app.config['SWAGGER'] = {
+    "title": "Medieteknik API",
+    "description": None,
+    "termsOfService": None,
+    "version": "0.1.0",
+    "openapi": "3.0.2",
+    "uiversion": 3,
+    "components": {
+        "securitySchemes": {
+            "authenticated": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "token"
+            }
+        },
+    }
+}
+
 db.init_app(app)
 CORS(app)
 api = Api(app)
+swagger = Swagger(app)
 
 api.add_resource(UserListResource, "/users")
 api.add_resource(UserResource, "/users/<id>")

@@ -3,12 +3,37 @@ from flask_restful import Resource, reqparse
 from sqlalchemy import and_, or_
 
 from api.models.user import User
-from api.models.committee_post import CommitteePost #,CommitteePostTerm
+from api.models.committee_post import CommitteePost ,CommitteePostTerm
 
 from datetime import datetime
 
 class OfficialsResource(Resource):
     def get(self):
+        """
+        Gets officials with optional filters. If no filter is applied, all current officials are returned.
+        ---
+        tags:
+            - Officials
+        parameters:
+        - name: atDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: forOperationalYear
+          in: query
+          description: In format YYYY/YYYY (ex. 2019/2020)
+          schema:
+            type: string
+        responses:
+            200:
+                description: OK
+            400:
+                description: Missing authentication token
+            402:
+                description: Not authenticated
+        """
+
         # users = User.query.all()
         # data = [user.to_dict() for user in users]
         # return jsonify(data)
