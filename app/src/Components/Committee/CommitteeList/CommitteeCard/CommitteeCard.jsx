@@ -5,16 +5,8 @@ import classes from './CommitteeCard.module.css';
 const CommitteeCard = (props) => {
     return (
         <div className={classes.CommitteeCard}>
-            <div className={classes.headerContainer}>
-                <img src={props.committeeLogo} width='100'/>
-
-                <div className={classes.titleContainer}>
-                    <h3>{props.committeeName}</h3>
-                </div>
-                
-            </div>
-            
-            <p>{props.committeeText}</p>
+            <img src={props.committeeLogo}/>
+            <p>{props.committeeName}</p>
         </div>
     )
 }

@@ -1,74 +1,32 @@
 .CommitteeCard {
-    padding: 10px;
-    border: 5px solid transparent;
+    padding: 10px 10px 5px 10px;
+    border: 2px solid transparent;
     border-radius: 10px;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 
-              0 2px 2px rgba(0,0,0,0.11), 
-              0 4px 4px rgba(0,0,0,0.11), 
-              0 6px 8px rgba(0,0,0,0.11),
-              0 8px 16px rgba(0,0,0,0.11);
     transition: all .31s ease-in-out;
     width: 230px;
     margin: 10px 22px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 400px;
-    margin-top: 20px;
+    width: 240px;
+    transition: 0.75s;
 }
 
-@media (max-width: 1000px) {
-    .CommitteeCard {
-        width: 40%;
-    }
+.CommitteeCard:hover{
+    /* border: 2px solid #f0c900; */
+    transform: scale(1.15);
+    /* letter-spacing: 2px; */
+    text-shadow:
+    0px 0px 1px #000;
 }
 
-@media (max-width: 785px) {
-    .CommitteeCard {
-        width: 60%;
-    }
-}
-
-@media (max-width: 600px) {
-    .CommitteeCard {
-        width: 75%;
-    }
-}
-
-@media (max-width: 400px) {
-    .CommitteeCard h3 {
-        font-size: 1.2rem;
-    }
-}
-
-.CommitteeCard:hover {
-    border: 5px solid #f0c900;
-    transform: scale(1.05);
+.CommitteeCard img {
+    height: 100px;
+    margin-bottom: 15px;
+    width: auto;
 }
 
 .CommitteeCard p {
-    margin-top: 10px;
-    font-size: 0.8rem;
+    text-transform: uppercase;
+    clear: both;
 }
 
-.headerContainer {
-    display: flex;
-    align-items: center;
-}
-
-.headerContainer img {
-    width: 20%;
-    float: left;
-}
-
-.headerContainer h3 {
-    padding-left: 10px;
-}
-
-.titleContainer {
-    width: 80%;
-    float: left;
-    text-align: center;
-}
