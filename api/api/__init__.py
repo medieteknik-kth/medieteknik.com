@@ -18,13 +18,10 @@ from api.resources.post import PostResource, PostAddResouce, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
-<<<<<<< HEAD
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
 
-=======
 from api.resources.event import EventResource, EventListResource
->>>>>>> väldigt basic eventmodell
 
 import os
 import datetime
@@ -95,7 +92,7 @@ api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
 api.add_resource(EventListResource, "/events")
-api.add_resource(EventResource, "events/<id>")
+api.add_resource(EventResource, "/events/<id>")
 
 api.add_resource(HealthResource, "/health")
 
@@ -149,6 +146,7 @@ def route_create_all():
     from api.models.post import Post
     from api.models.page import Page, PageRevision, PageRevisionType
     from api.models.post_tag import PostTag
+    from api.models.event import Event
     db.drop_all()
     db.create_all()
 
@@ -299,6 +297,7 @@ def route_create_all():
 
     db.session.commit()
 
+<<<<<<< HEAD
     post = Post()
     post.title = "Folk söker folk"
     post.title_en = "People are looking for people"
@@ -316,6 +315,7 @@ def route_create_all():
     post.tags.append(post_tag)
     
     db.session.add(post)
+<<<<<<< HEAD
 
     post = Post()
     post.title = "Kom på torsdagspub!"
@@ -346,6 +346,16 @@ def route_create_all():
     post.tags.append(post_tag)
     
     db.session.add(post)
+=======
+=======
+    event1 = Event()
+    event1.title= "Spritdrickande"
+    event1.description="Vi ska dricka sprit tillsammans"
+    event1.location="META"
+
+    db.session.add(event1)
+>>>>>>> Resurser för event, saknar endast filtrering när man hämtar flera
+>>>>>>> Resurser för event, saknar endast filtrering när man hämtar flera
     db.session.commit()
 
     return "klar"

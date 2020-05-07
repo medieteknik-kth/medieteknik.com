@@ -1,10 +1,11 @@
 from api.db import db
+import datetime
 
 class Event(db.Model):
     __tablename__ = "events"
     eventId = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     description = db.Column(db.Text)
     location = db.Column(db.String)
 
@@ -14,5 +15,5 @@ class Event(db.Model):
             "title": self.title,
             "date": self.date,
             "description": self.description,
-            "location": self.place
+            "location": self.location
         }
