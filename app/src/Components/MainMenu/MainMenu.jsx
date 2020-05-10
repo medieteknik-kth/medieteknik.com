@@ -1,81 +1,169 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import logo from './logo.png';
-import logo_vit from './logo_vit.png';
-import search_icon from './search_icon.svg';
-import login_icon from './login_icon.svg';
-import EnIcon from './en_icon.svg';
-import SeIcon from './se_icon.svg';
+import React, { useState, useContext } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 
-import './MainMenu.css';
-import { LocaleContext } from '../../Contexts/LocaleContext';
-import { useState } from 'react';
+import styles from './MainMenu.module.css';
+import { API_BASE_URL } from '../../Utility/Api';
+import { UserContext } from '../../Contexts/UserContext';
 
-const MainMenu = (props) => {
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
-  const { lang, setLocale } = useContext(LocaleContext);
-  const [isTop, setIsTop] = useState(false)
-  if (props.transparent) {
-    document.addEventListener('scroll', () => {
-      setIsTop(window.scrollY < 100);
-    });
+const PageWithMainMenu = (props) => {
+  const [mainMenuExpanded, setMainMenuExpanded] = useState(false);
+  const [expandedSubMenu, setExpandedSubMenu] = useState(null);
+
+  const [hasCapturedToken, setHasCapturedToken] = useState(false);
+  const { user, setToken } = useContext(UserContext);
+  const query = useQuery();
+
+  const token = query.get('token');
+  if (token && !hasCapturedToken) {
+    setToken(token);
+    setHasCapturedToken(true);
   }
 
-  // Finds all headers from the backend (This is not implemented yet though...)
-  const header = [{ name: 'AKTUELLT' }, { name: 'SEKTIONEN', links: [{ name: 'Nämnder och projekt', link: '#4' }, { name: 'Styrelsen', link: '#5' }, { name: 'Dokument', link: '#6' }, { name: 'Sektionsmedlemmar', link: '#6' }, { name: 'Bokningar/Boka META', link: '#6' }] }, { name: 'UTBILDNINGEN', links: [{ name: 'Vad är medieteknik?', link: '#7' }, { name: 'Antagning', link: '#8' }, { name: 'Kurser', link: '#9' }, { name: 'Masterprogrammet', link: '#9' }, { name: 'Studievägledning', link: '#9' }, { name: 'Utlandsstudier', link: '#9' }, { name: 'Studenträtt', link: '#9' }] }, { name: 'KONTAKT', links: [{ name: 'Samarbete', link: '#7' }, { name: 'Annonsering', link: '#8' }, { name: 'Funktionärer', link: '#9' }, { name: 'Styrelsen', link: '#9' }] }];
-  // Creates the headers for the menu and their dropdowns. Saves in the variable buttons
-  const buttons = header.map((item, key) => (
-    <div className="dropdown" key={key}>
-      <button className="dropbtn">{item.name}</button>
-      {item.links ? (
-        <div className="dropdown-content">
-          {item.links.map((item, key) => <a key={key} href={item.link}>{item.name}</a>)}
+  const menus = [
+    {
+      id: 0,
+      title: 'Aktuellt',
+      link: '/feed',
+      subMenus: [],
+    },
+    {
+      id: 1,
+      title: 'Sektionen',
+      link: '/',
+      subMenus: [
+        { title: 'Nämnder och projekt', link: '/committees' },
+        { title: 'Styrelsen', link: '/' },
+        { title: 'Dokument', link: '/documents' },
+        { title: 'Sektionsmedlemmar', link: '/' },
+        { title: 'Bokningar', link: '/' },
+      ],
+    },
+    {
+      id: 2,
+      title: 'Utbildningen',
+      link: '/',
+      subMenus: [
+        { title: 'Vad är Medieteknik?', link: '/' },
+        { title: 'Antagning', link: '/' },
+        { title: 'Kurser', link: '/' },
+        { title: 'Masterprogrammet', link: '/' },
+        { title: 'Studievägledning', link: '/' },
+        { title: 'Utlandsstudier', link: '/' },
+        { title: 'Studenträtt', link: '/' },
+      ],
+    },
+    {
+      id: 3,
+      title: 'Kontakt',
+      link: '/',
+      subMenus: [
+        { title: 'Samarbete', link: '/' },
+        { title: 'Annonsering', link: '/' },
+        { title: 'Funktionärer', link: '/' },
+        { title: 'Styrelsen', link: '/' },
+      ],
+    },
+  ];
+
+  const menuFrom = (menu) => (
+    <div className={`${styles.button} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
+      <Link to={menu.link}>
+        <div
+          className={styles.buttonTitle}
+          onClick={(e) => {
+            if (menu.subMenus.length > 0) {
+              e.preventDefault();
+              setExpandedSubMenu(expandedSubMenu !== menu.id ? menu.id : null);
+            } else {
+              setMainMenuExpanded(false);
+            }
+          }}
+        >
+          {menu.title}
         </div>
-      )
-        : null}
+      </Link>
+      {menu.subMenus.length !== 0
+        ? (
+          <ul className={`${styles.buttonDropdown} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
+            {menu.subMenus.map((subMenu) => (
+              <Link to={subMenu.link} onClick={() => { setMainMenuExpanded(false); }}>
+                <li className={styles.buttonDropdownItem}>{subMenu.title}</li>
+              </Link>
+            ))}
+          </ul>
+        )
+        : <div />}
 
     </div>
-  ));
+  );
 
-  let className = isTop ? 'menuContainer top' : 'menuContainer down'; /* Changes the styling class depending on whether we are at the top or scrolled down */
-  if (props.transparent) {
-    className += ' ';
-  }
+  const loginButton = (additionalStyles) => (
+    user === null
+      ? (
+        <div className={`${styles.icon} ${additionalStyles}`}>
+          <a href={`${API_BASE_URL}cas?origin=${window.location.href}`}>
+            <FontAwesomeIcon icon={faUser} size="lg" />
+          </a>
+        </div>
+      )
+      : (
+        <div className={`${styles.icon} ${additionalStyles}`}>
+          <Link to="/">
+            <FontAwesomeIcon icon={faUser} size="lg" />
+          </Link>
+        </div>
+      )
+  );
 
   return (
-      <div>
-        <div
-          className={className}
-          style={{ transition: '1s ease' }}
-        >
-          <div className="inner_container">
-            <Link to="/">
-              <div className="container-left" style={{ transition: '1s ease' }}>
-                {/* changes the logo depending on scroll */}
-                <img src={logo} className={isTop ? 'logo' : 'logo hidden_logo'} alt="Logo" />
-                <img src={logo_vit} className={isTop ? 'logo hidden_logo' : 'logo'} alt="Logo" />
-              </div>
-            </Link>
-            <div className="container-right">
-              { // Shows the headers that were created earlier in render()
-                            buttons
-}
-              <button className="dropbtn">
-                <img alt="svgImg" src={search_icon} className="search_icon" />
-              </button>
-              {/* Måste ha rätt icon!!! */}
-              <button className="dropbtn">
-                <img alt="svgImg" src={login_icon} className="login_icon" />
-              </button>
-              <button className="dropbtn" onClick={() => setLocale(lang === 'se' ? 'en' : 'se')}>
-                <img alt="svgImg" src={lang === 'se' ? EnIcon : SeIcon} className="eng_icon" />
-              </button>
-            </div>
+    <div>
+      <div className={styles.mainMenu}>
+        <div className={styles.logoContainer}>
+          <Link
+            to="/"
+            onClick={() => {
+              setMainMenuExpanded(false);
+            }}
+          >
+            <img src="logo.png" alt="Medieteknik Logo" className={styles.logo} />
+          </Link>
+        </div>
+        <div className={styles.iconContainer}>
+          <div className={`${styles.icon} ${styles.responsiveIcon}`}>
+            <FontAwesomeIcon icon={faSearch} size="lg" />
+          </div>
+          {loginButton(styles.responsiveIcon)}
+          <div
+            className={styles.expandButton}
+            onClick={() => {
+              setMainMenuExpanded(!mainMenuExpanded);
+              if (!mainMenuExpanded) {
+                setExpandedSubMenu(null);
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faBars} size="2x" />
           </div>
         </div>
-        <div className={props.transparent ? '' : 'menuBottomMargin'} />
+        <div className={`${styles.buttonsContainer} ${mainMenuExpanded ? styles.menuExpanded : ''}`}>
+          {menus.map((menu) => menuFrom(menu))}
+          <div className={styles.icon}>
+            <FontAwesomeIcon icon={faSearch} size="lg" />
+          </div>
+          {loginButton()}
+        </div>
       </div>
-    );
-}
+      <div className={styles.content}>
+        {props.children}
+      </div>
+    </div>
+  );
+};
 
-export default MainMenu;
+export default PageWithMainMenu;

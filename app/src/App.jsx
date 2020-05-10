@@ -6,7 +6,7 @@ import 'normalize.css';
 import './Components/Common/Typography.css';
 import './Components/Common/Content.css';
 
-import MainMenu from './Components/MainMenu/MainMenu';
+import PageWithMainMenu from './Components/MainMenu/MainMenu';
 import LandingPage from './Components/LandingPage/LandingPage';
 import NotFound from './Components/NotFound/NotFound';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
@@ -27,43 +27,34 @@ export default function App() {
         <UserProvider>
           <Switch>
             <Route exact path="/">
-              <MainMenu transparent />
-              <LandingPage />
+              <PageWithMainMenu><LandingPage /></PageWithMainMenu>
             </Route>
             <Route exact path="/login">
-              <MainMenu/>
-              <Login />
+              <PageWithMainMenu><Login /></PageWithMainMenu>
             </Route>
             <Route path="/officials">
-              <MainMenu />
-              <OfficialsBoard />
+              <PageWithMainMenu><OfficialsBoard /></PageWithMainMenu>
             </Route>
             <Route path="/settings">
-              <MainMenu />
-              <Settings />
+              <PageWithMainMenu><Settings /></PageWithMainMenu>
             </Route>
             <Route path="/documents">
-              <MainMenu />
-              <Documents />
+              <PageWithMainMenu><Documents /></PageWithMainMenu>
             </Route>
             <Route path="/committees">
-              <MainMenu />
-              <CommitteeList />
+              <PageWithMainMenu><CommitteeList /></PageWithMainMenu>
             </Route>
             <Route path="/pages">
-              <MainMenu />
-              <PageManager />
+              <PageWithMainMenu><PageManager /></PageWithMainMenu>
             </Route>
             <Route path="/feed">
-              <MainMenu />
-              <Feed />
+              <PageWithMainMenu><Feed /></PageWithMainMenu>
             </Route>
             <Route path="/posts/:id">
-              <MainMenu />
-              <Post />
+              <PageWithMainMenu><Post /></PageWithMainMenu>
             </Route>
             <Route match="*">
-              <NotFound />
+              <PageWithMainMenu><NotFound /></PageWithMainMenu>
             </Route>
           </Switch>
         </UserProvider>
