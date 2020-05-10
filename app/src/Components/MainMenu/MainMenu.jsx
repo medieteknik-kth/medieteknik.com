@@ -18,9 +18,11 @@ const PageWithMainMenu = (props) => {
   const [hasCapturedToken, setHasCapturedToken] = useState(false);
   const { user, setToken } = useContext(UserContext);
   const query = useQuery();
+  const location = useLocation();
 
   const token = query.get('token');
   if (token && !hasCapturedToken) {
+    window.history.replaceState({}, document.title, location.pathname);
     setToken(token);
     setHasCapturedToken(true);
   }
@@ -106,18 +108,18 @@ const PageWithMainMenu = (props) => {
   const loginButton = (additionalStyles) => (
     user === null
       ? (
-        <div className={`${styles.icon} ${additionalStyles}`}>
-          <a href={`${API_BASE_URL}cas?origin=${window.location.href}`}>
+        <a href={`${API_BASE_URL}cas?origin=${window.location.href}`}>
+          <div className={`${styles.icon} ${additionalStyles}`}>
             <FontAwesomeIcon icon={faUser} size="lg" />
-          </a>
-        </div>
+          </div>
+        </a>
       )
       : (
-        <div className={`${styles.icon} ${additionalStyles}`}>
-          <Link to="/">
+        <Link to="/">
+          <div className={`${styles.icon} ${additionalStyles}`}>
             <FontAwesomeIcon icon={faUser} size="lg" />
-          </Link>
-        </div>
+          </div>
+        </Link>
       )
   );
 
