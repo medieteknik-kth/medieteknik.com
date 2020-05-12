@@ -16,8 +16,7 @@ const Feed = (props) => {
     }, []);
 
 
-    return (
-        <div className='feed-container'>
+    return (<div className='feed-container'>
             <h1><LocaleText phrase='feed/header'/></h1>
             <div className='feed-cards'>
                 {cont ? cont.map(post =>
@@ -31,8 +30,7 @@ const Feed = (props) => {
                         tags={post.tags}/>
                 ): <></>}
             </div>
-        </div>
-        );
+        </div>);
 }
 
 export default Feed;

@@ -19,6 +19,7 @@ import Login from './Components/Login/Login';
 import Post from './Components/Post/Post';
 import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
+import Playground from './Components/Playground/Playground';
 
 export default function App() {
   return (
@@ -52,6 +53,10 @@ export default function App() {
             </Route>
             <Route path="/posts/:id">
               <PageWithMainMenu><Post /></PageWithMainMenu>
+            </Route>
+            <Route path="/playground">
+              <MainMenu />
+              <Playground />
             </Route>
             <Route match="*">
               <PageWithMainMenu><NotFound /></PageWithMainMenu>
