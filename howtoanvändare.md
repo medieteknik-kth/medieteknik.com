@@ -10,6 +10,14 @@ Sen kan du hämta vem som är inloggad med:
 ```jsx
 const { user } = useContext(UserContext);
 ```
+eller med klasskomponenter:
+```jsx
+<UserContext.Consumer>
+  {props => {
+    return <div>{props.user.firstName}</div>
+  }}
+</UserContext.Consumer>
+```
 Om `user` är `null` så innebär det att ingen är inloggad.
 
 Ifall du vill bara låta vissa användare se något så kan du validera med något i denna stil:
