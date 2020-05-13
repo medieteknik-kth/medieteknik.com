@@ -55,8 +55,7 @@ export default function App() {
               <PageWithMainMenu><Post /></PageWithMainMenu>
             </Route>
             <Route path="/playground">
-              <MainMenu />
-              <Playground />
+              <PageWithMainMenu><Playground /></PageWithMainMenu>
             </Route>
             <Route match="*">
               <PageWithMainMenu><NotFound /></PageWithMainMenu>
