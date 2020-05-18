@@ -279,12 +279,13 @@ def route_create_all():
 
     post = Post()
     post.title = "Folk söker folk"
-    post.body = "hejhej"
+    post.title_en = "People are looking for people"
     post.user_id = mikaela.id
     post.body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque finibus, ante at tristique accumsan, tellus nulla consequat nisl, quis mollis quam arcu vel urna. Proin eleifend augue ante, malesuada porta libero ullamcorper vel. Mauris quis diam augue. Integer consectetur justo lorem, vitae consectetur lectus laoreet ac. Sed vel accumsan nulla, et laoreet justo. Sed porttitor dui nec nisi aliquam, elementum sagittis velit molestie. Nam rhoncus nibh neque, eget scelerisque quam sollicitudin ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus eget dictum diam. Phasellus gravida dui et nunc finibus, ut feugiat nisi pulvinar. Nulla egestas, lorem vitae elementum sodales, diam mauris dictum sapien, in luctus velit lorem nec ante. \
     Proin facilisis augue nibh, vitae placerat metus rhoncus at. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisi a mauris elementum imperdiet ac in velit. Curabitur scelerisque, justo id molestie molestie, augue elit elementum orci, vitae fringilla turpis magna vitae nisl. Vestibulum id suscipit felis, vel bibendum tortor. Mauris porta tortor lorem, eget feugiat enim bibendum laoreet. Cras lacinia at massa sed scelerisque. Curabitur porta tristique suscipit. Etiam interdum lacus id cursus porttitor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. \
     Morbi sed metus aliquam, sollicitudin arcu sed, feugiat nunc. Duis libero nisi, ornare ac finibus eu, placerat vitae elit. Nulla convallis feugiat placerat. Sed fringilla, arcu sit amet condimentum gravida, tortor lorem aliquet nulla, id sagittis elit erat at libero. Suspendisse laoreet orci vitae risus pretium, in auctor neque mattis. Aliquam erat volutpat. Vivamus in lacus in arcu eleifend molestie. Sed elit dui, malesuada nec erat vel, commodo porta metus. In tempor iaculis tortor, sed finibus risus dignissim ac. Etiam tortor diam, euismod vel arcu ac, convallis finibus nulla. Morbi orci turpis, dapibus et bibendum a, pretium id velit. Curabitur molestie purus vel ex porttitor finibus. Nunc sodales facilisis orci, quis facilisis nisl malesuada quis. \
     Sed bibendum pharetra vehicula. In erat eros, facilisis sed viverra vulputate, mollis a odio. Donec tempor purus fermentum neque ullamcorper, non consequat nisl pellentesque. Nulla velit odio, gravida ac ex et, sollicitudin rhoncus libero. Nam ultricies eleifend eros. Nunc rhoncus tellus at augue semper ullamcorper. Nullam malesuada tellus ac lorem molestie tristique. Ut mattis eros in neque molestie, a rhoncus felis rhoncus. Vestibulum erat velit, convallis sit amet mattis eget, faucibus ac mauris. Integer imperdiet diam at quam tristique, ut dapibus dui hendrerit. Aenean commodo vitae enim ac blandit."
+    post.body_en ="Lorem ipsum in English."
     post.committee_id = 1
 
     
@@ -296,7 +297,9 @@ def route_create_all():
 
     post = Post()
     post.title = "Kom på torsdagspub!"
+    post.title_en = "Come to the thursday pub!"
     post.body = "En lite kortare text."
+    post.body_en ="A bit shorter text."
     post.header_image = "static/posts/21af3945-035f-4195-8729-c815536c3312.png"
     post.user_id = joppe.id
     

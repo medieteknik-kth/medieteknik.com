@@ -33,3 +33,11 @@ export const LocaleText = ({phrase}) => (
         }}
     </LocaleContext.Consumer>
 );
+
+export const translate = ({se, en}) => (
+    <LocaleContext.Consumer>
+        {({ lang }) => {
+            return lang === 'se' ? se : (( en === '' || !en ) ? se : en )
+        }}
+    </LocaleContext.Consumer>
+)

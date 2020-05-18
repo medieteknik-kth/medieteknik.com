@@ -10,6 +10,7 @@ from api.models.post import Post, PostEdit
 from api.models.post_tag import PostTag
 from api.models.user import User
 from api.models.committee import Committee
+from api.resources.authentication import requires_auth
 
 import os
 from werkzeug.utils import secure_filename
@@ -21,10 +22,67 @@ IMAGE_COL = "header_image"
 
 class PostResource(Resource):
     def get(self, id):
+        """
+        Returns a post by id.
+        ---
+        tags:
+            - Posts
+        parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+        responses:
+            200:
+                description: OK
+        """   
         post = Post.query.get(id)
         return jsonify(post.to_dict())
 
+    @requires_auth
     def put(self, id):
+        """
+        Edits a post by id.
+        ---
+        tags:
+            - Posts
+        security:
+            - authenticated: []
+        parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+        - name: post
+          in: body
+          schema:
+            type: object
+            properties:
+              committee_id:
+                type: number   
+              header_image:
+                type: string
+                format: binary
+              title:
+                type: string
+              title_en:
+                type: string
+              body:
+                type: string
+              body_en:
+                type: string
+              tags:
+                type: array
+                items:
+                    type: integer
+        responses:
+            200:
+                description: OK
+            400:
+                description: Missing authentication token
+            402:
+                description: Not authenticated
+        """
         try:
             post = Post.query.get(id)
             user = User.query.filter(User.kth_id == session["CAS_USERNAME"]).first()
@@ -52,10 +110,53 @@ class PostResource(Resource):
             else:
                 raise Exception("this user can't edit this post") 
         except Exception as error:
-            return make_response(jsonify(success=False, error=str(error)), 403)
+            return make_response(jsonify(success=False, error=str(error)), 402)
 
 class PostAddResouce(Resource):
+    @requires_auth
     def post(self):
+        """
+        Adds a new post.
+        ---
+        tags:
+            - Posts
+        security:
+            - authenticated: []
+        parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+        - name: post
+          in: body
+          schema:
+            type: object
+            properties:
+              committee_id:
+                type: number   
+              header_image:
+                type: string
+                format: binary
+              title:
+                type: string
+              title_en:
+                type: string
+              body:
+                type: string
+              body_en:
+                type: string
+              tags:
+                type: array
+                items:
+                    type: integer
+        responses:
+            200:
+                description: OK
+            400:
+                description: Missing authentication token
+            402:
+                description: Not authenticated
+        """
         try:
             data = request.form
             user = User.query.filter_by(kth_id=session["CAS_USERNAME"]).first()
@@ -74,14 +175,23 @@ class PostAddResouce(Resource):
         except Exception as error:
             return make_response(jsonify(success=False, error=str(error)), 403)
         
-class PostListResource(Resource):
+class PostListResource(Resource): 
     def get(self):
+        """
+        Returns a list of all posts.
+        ---
+        tags:
+            - Posts
+        responses:
+            200:
+                description: OK
+        """   
         posts = Post.query.all()
         data = [post.to_dict() for post in posts]
         return jsonify(data)
 
 def add_cols(data, post, request):
-    dynamic_cols = ["committee_id", "title", "body"]
+    dynamic_cols = ["committee_id", "title", "body", "title_en", "body_en"]
 
     for col in dynamic_cols: 
         if data.get(col):

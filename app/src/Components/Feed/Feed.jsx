@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Feed.css'
 import Api from '../../Utility/Api.js'
 import FeedCard from './FeedCard/FeedCard.jsx';
-import { LocaleText } from '../../Contexts/LocaleContext';
+import { LocaleText, translate } from '../../Contexts/LocaleContext';
 
 const Feed = (props) => {
 
@@ -15,6 +15,14 @@ const Feed = (props) => {
         });
     }, []);
 
+    String.prototype.trunc =
+    function(n,useWordBoundary){
+        if (this.length <= n) { return this; }
+        var subString = this.substr(0, n-1);
+        return (useWordBoundary 
+           ? subString.substr(0, subString.lastIndexOf(' ')) 
+           : subString) + "...";
+    };
 
     return (<div className='feed-container'>
             <h1><LocaleText phrase='feed/header'/></h1>
@@ -23,9 +31,9 @@ const Feed = (props) => {
                     <FeedCard 
                         key={post.id}
                         path={'/posts/'+post.id}
-                        title={post.title}
+                        title={translate(post.title)}
                         date={post.date}
-                        body={post.body}
+                        body={translate({ se: post.body.se.trunc(250), en: post.body.en ? post.body.en.trunc(250) : '' })}
                         headerImage={post.header_image}
                         tags={post.tags}/>
                 ): <></>}
