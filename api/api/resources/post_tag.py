@@ -6,10 +6,46 @@ from api.models.post_tag import PostTag
 
 class PostTagResource(Resource):
     def get(self, id):
+        """
+        Returns a post tag by id.
+        ---
+        tags:
+            - Posts
+        parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+        responses:
+            200:
+                description: OK
+        """   
         tag = PostTag.query.get(id)
         return jsonify(tag.to_dict())
 
+
     def put(self, id):
+        """
+        Edits a post tag.
+        ---
+        tags:
+            - Posts
+        parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+        - name: tag
+          in: body
+          schema:
+            type: object
+            properties:
+              title:
+                type: number
+        responses:
+            200:
+                description: OK
+        """
         try:
             data = request.form
             tag = PostTag.query.get(id)
@@ -23,6 +59,27 @@ class PostTagResource(Resource):
 
 class PostTagAddResource(Resource):
     def post(self):
+        """
+        Adds a new post tag.
+        ---
+        tags:
+            - Posts
+        parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+        - name: tag
+          in: body
+          schema:
+            type: object
+            properties:
+              title:
+                type: number
+        responses:
+            200:
+                description: OK
+        """
         try:
             data = request.form
             tag = PostTag()
@@ -37,6 +94,15 @@ class PostTagAddResource(Resource):
         
 class PostTagListResource(Resource):
     def get(self):
+        """
+        Returns a list of all post tags.
+        ---
+        tags:
+            - Posts
+        responses:
+            200:
+                description: OK
+        """   
         tags = PostTag.query.all()
         data = [tag.to_dict() for tag in tags]
         return jsonify(data)
