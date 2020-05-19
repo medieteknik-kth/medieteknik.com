@@ -19,6 +19,8 @@ from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagL
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
 from api.resources.authentication import AuthenticationResource, CASResource
+from api.resources.health import HealthResource
+
 
 import os
 import datetime
@@ -88,6 +90,8 @@ api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
+
+api.add_resource(HealthResource, "/health")
 
 api.add_resource(AuthenticationResource, "/auth")
 api.add_resource(CASResource, "/cas")
