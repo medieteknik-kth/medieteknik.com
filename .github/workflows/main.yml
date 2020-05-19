@@ -2,7 +2,7 @@ name: Deploy frontend
 
 on:
   push:
-    branches: [ deploy-test ]
+    branches: [ master ]
 
 jobs:
   build:
