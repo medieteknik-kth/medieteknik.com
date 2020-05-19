@@ -55,7 +55,7 @@
         grid-template-columns: 1fr;
     }
 
-    .landing-text {
+    .landing-header > h3.landing-text {
         font-size: 1.3em;
         word-wrap: break-word;
     }
