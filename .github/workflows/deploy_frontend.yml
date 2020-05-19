@@ -2,7 +2,7 @@ name: Deploy frontend
 
 on:
   push:
-    branches: [ deploy-test ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -28,9 +28,10 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: build
-          path: build
+          path: app/build
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_PATH: ./app 
