@@ -3,3 +3,7 @@
     margin-left: 100px;
     margin-right: 100px;
 }
+
+html, body {
+    background-color: #f0f0f0;
+}

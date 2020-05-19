@@ -304,7 +304,7 @@ def route_create_all():
     post.title_en = "Come to the thursday pub!"
     post.body = "En lite kortare text."
     post.body_en ="A bit shorter text."
-    post.header_image = "static/posts/21af3945-035f-4195-8729-c815536c3312.png"
+    post.header_image = "/static/posts/21af3945-035f-4195-8729-c815536c3312.png"
     post.user_id = joppe.id
     
     post_tag = PostTag()
