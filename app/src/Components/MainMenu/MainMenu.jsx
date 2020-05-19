@@ -133,7 +133,7 @@ const PageWithMainMenu = (props) => {
               setMainMenuExpanded(false);
             }}
           >
-            <img src="logo.png" alt="Medieteknik Logo" className={styles.logo} />
+            <img src="/logo.png" alt="Medieteknik Logo" className={styles.logo} />
           </Link>
         </div>
         <div className={styles.iconContainer}>
