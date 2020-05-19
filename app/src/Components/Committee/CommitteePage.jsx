@@ -9,7 +9,6 @@ import Page from '../Page/Page';
 import { UserContext } from '../../Contexts/UserContext';
 
 import './CommitteePage.css';
-import AddUserButton from './AddUserButton';
 
 export default function CommitteePage() {
   const { committeeId } = useParams();
@@ -19,6 +18,7 @@ export default function CommitteePage() {
   const [committee, setCommittee] = useState({});
   const [posts, setPosts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+
   const [content, setContent] = useState('');
   const [oldContent, setOldContent] = useState(null);
 
@@ -31,7 +31,6 @@ export default function CommitteePage() {
       .then((data) => {
         setCommittee(data);
         setPosts(data.posts);
-        posts.map((post) => (post.currentTerms.map((term) => console.log(term.user))));
         if (data.page) {
           try {
             const contentData = JSON.parse(data.page.content);
@@ -56,7 +55,7 @@ export default function CommitteePage() {
             // TODO: Meddelande att allt gått bra
             setOldContent(content);
           }).catch((error) => {
-            alert("Kunde inte spara sida.");
+            alert('Kunde inte spara sida.');
             setIsEditing(true);
             console.error(error);
           });
@@ -98,8 +97,7 @@ export default function CommitteePage() {
       <div
         className="committeePageFooter"
       >
-        {posts.map((post) => (post.currentTerms.map((term) => <UserCard key={term.user.id} user={term.user} subtitle={post.name} email={post.email} deleteable={isEditing && !post.isOfficial} />)))}
-        {isEditing ? <AddUserButton addedUser={(user) => { console.log(user); }} /> : <div />}
+        {posts.map((post) => (post.currentTerms.map((term) => <UserCard key={term.user.id} user={term.user} subtitle={post.name} email={post.email} />)))}
       </div>
     </div>
   );

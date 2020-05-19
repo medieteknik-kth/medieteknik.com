@@ -8,7 +8,7 @@ class User(db.Model):
     kth_id = db.Column(db.String, unique=True)
     email = db.Column(db.String)
     profile_picture = db.Column(
-        db.String, default="static/profiles/default.png")
+        db.String, default="/static/profiles/default.png")
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     frack_name = db.Column(db.String, nullable=True)
