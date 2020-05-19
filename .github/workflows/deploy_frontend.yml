@@ -28,7 +28,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: build
-          path: build
+          path: app/build
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
