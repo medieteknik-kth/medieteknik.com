@@ -1,16 +1,24 @@
-.img-fluid {
-    width:100%;
-    height:auto;
-    max-height: 200px;
-    max-width: 600px;
+.swiper-container{
+    width: 100%;
 }
 
 .swiper-wrapper {
-    height: auto !important;
+    width: 50%;
+}
+
+.swiper-slide {
+    text-align: center;
+    width: auto;
+}
+
+.img-fluid {
+    height: 200px;
+    width: auto;
 }
 
 .swiper-slide {
     height:auto !important;
+    cursor: pointer;
 }
 
 .swiper-button-prev, .swiper-button-next {
@@ -18,7 +26,7 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     position: absolute;
-    transform: translateY(-40%);
+    transform: translateY(-41%);
     z-index: 9999;
     color: #fff;
 }
