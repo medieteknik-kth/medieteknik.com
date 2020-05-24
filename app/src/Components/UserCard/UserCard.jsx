@@ -6,25 +6,12 @@ import UserCardTextbox from './UserCardTextbox.jsx';
 import './UserCard.css';
 
 export default function UserCard({
-  user, subtitle, email, editing, didEdit, deleteable, didDelete,
+  user, subtitle, email,
 }) {
   const [activeUser, setActiveUser] = useState(user);
 
   return (
     <div className="userCard">
-      {deleteable ? (
-        <button
-          type="button"
-          className="userCardDeleteButton"
-          onClick={() => {
-            if (didDelete) {
-              didDelete(user);
-            }
-          }}
-        >
-          <FontAwesomeIcon icon={faMinusCircle} color="black" size="xs" />
-        </button>
-      ) : <span />}
       <img
         className="userImage"
         src={activeUser.profilePicture}
@@ -35,13 +22,6 @@ export default function UserCard({
           user={activeUser}
           subtitle={subtitle}
           email={email}
-          editing={editing}
-          didChange={(newUser) => {
-            setActiveUser(newUser);
-            if (didEdit) {
-              didEdit(newUser);
-            }
-          }}
         />
       </div>
     </div>

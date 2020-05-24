@@ -11,6 +11,22 @@
         "name": {
             "se": "Namn",
             "en": "Name"
+        },
+        "post": {
+            "se": "Post",
+            "en": "Post"
+        },
+        "start-date": {
+            "se": "Startdatum",
+            "en": "Start date"
+        },
+        "end-date": {
+            "se": "Slutdatum",
+            "en": "End date"
+        },
+        "manage": {
+            "se": "Hantera",
+            "en": "Hantera"
         }
     },
     "form": {
@@ -68,8 +84,8 @@
                 "en": "Manage members"
             },
             "add": {
-                "se": "Lägg till",
-                "en": "Add"
+                "se": "Lägg till medlem",
+                "en": "Add member"
             }
         }
     },

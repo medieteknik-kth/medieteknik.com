@@ -1,4 +1,3 @@
-/* TODO: Margin beroende på skärmstorlek */
 .content {
     margin-left: 100px;
     margin-right: 100px;
@@ -12,4 +11,17 @@
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+@media screen and (min-width: 920px) {
+    .content {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+}
+
+html, body {
+    background-color: #f0f0f0;
 }

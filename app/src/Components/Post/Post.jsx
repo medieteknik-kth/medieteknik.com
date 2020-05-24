@@ -3,7 +3,7 @@ import './Post.css'
 import ProfileCard from '../Common/ProfileCard/ProfileCard';
 import { useParams, NavLink } from 'react-router-dom';
 import Api from '../../Utility/Api.js'
-import { LocaleText } from '../../Contexts/LocaleContext';
+import { LocaleText, translate } from '../../Contexts/LocaleContext';
 
 const Post = (props) => {
 
@@ -30,7 +30,7 @@ const Post = (props) => {
           </div>
           <div className='post-content'>
             <div className='post-header'>
-              <h1>{post.title}</h1>
+              <h1>{translate(post.title)}</h1>
               <h5>{post.date}</h5>
             </div>
             { post.header_image ? 
@@ -40,7 +40,7 @@ const Post = (props) => {
               : <></>
             }
             <p className='post-body'>
-              {post.body}
+              {translate(post.body)}
             </p>
             <div className='post-footer'>
               <div className='post-tags'>
