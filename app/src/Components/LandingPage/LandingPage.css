@@ -37,7 +37,7 @@
     text-align: center;
 }
 
-.landing-info h3, h4 {
+.landing-info h3, .landing-info h4 {
     text-transform: uppercase;
 }
 
@@ -53,6 +53,7 @@
 @media (max-width: 800px) {
     .landing-grid {
         grid-template-columns: 1fr;
+        padding-bottom: 2em;
     }
 
     .landing-header > h3.landing-text {
@@ -65,7 +66,7 @@
         margin: 10px;
     }
 
-    .landing-info h3, h4 {
+    .landing-info h3, .landing-info h4 {
         padding: 1em;
     }
     

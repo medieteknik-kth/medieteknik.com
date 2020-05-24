@@ -20,6 +20,7 @@ import Post from './Components/Post/Post';
 import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
 import Playground from './Components/Playground/Playground';
+import Footer from './Components/Footer/Footer';
 
 export default function App() {
   return (
@@ -61,6 +62,7 @@ export default function App() {
               <PageWithMainMenu><NotFound /></PageWithMainMenu>
             </Route>
           </Switch>
+          <Footer/>
         </UserProvider>
       </LocaleProvider>
     </Router>
