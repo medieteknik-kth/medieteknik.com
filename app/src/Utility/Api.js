@@ -5,10 +5,10 @@ function GetApiObject(resource) {
       : "http://localhost:5000/";
   return {
     GetAll() {
-      return fetch(API_BASE_URL + resource).then(response => response.json());
+      return fetch(API_BASE_URL + resource).then((response) => response.json());
     },
     GetById(id) {
-      return fetch(`${API_BASE_URL}${resource}/${id}`).then(response =>
+      return fetch(`${API_BASE_URL}${resource}/${id}`).then((response) =>
         response.json()
       );
     },
@@ -16,25 +16,25 @@ function GetApiObject(resource) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
     },
     Create(data) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
-    }
+    },
   };
 }
 
 export default {
-  Committees: GetApiObject("committees"),
   Officials: GetApiObject("officials"),
-  Pages: GetApiObject("pages")
+  Committees: GetApiObject("committees"),
+  Pages: GetApiObject("pages"),
 };

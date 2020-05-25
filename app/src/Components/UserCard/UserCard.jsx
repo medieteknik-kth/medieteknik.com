@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
-import UserCardTextbox from './UserCardTextbox.jsx';
+import React, { PropTypes } from "react";
+import UserCardTextbox from "./UserCardTextbox.jsx";
 
-import './UserCard.css';
+import "./UserCard.css";
 
 export default function UserCard({ user, subtitle, email }) {
   return (
