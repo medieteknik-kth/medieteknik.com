@@ -245,7 +245,7 @@ def route_create_all():
     create_official("Saga", "Palmér", valberedare, False)
 
     revisor = create_post(create_committee("Revisorerna"), "Revisor")
-    create_official("Kristina", "Andersson", revisor, True)
+    kristina = create_official("Kristina", "Andersson", revisor, True)
     create_official("Mahmoud", "Sherzad", revisor, True)
 
     fanborg = create_post(create_committee("Fanborgen"), "Fanbärare")
@@ -298,7 +298,6 @@ def route_create_all():
     jessie.last_name = "Liu"
     jessie.kth_year = 2018
 
-    kristina = User()
     kristina.email = "kan2@kth.se"
     kristina.kth_id = "u166gwua"
     kristina.first_name = "Kristina"
