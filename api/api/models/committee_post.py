@@ -57,6 +57,15 @@ class CommitteePost(db.Model):
             "category": self.category,
             "weight": self.weight
         }
+    
+    def to_dict_without_terms(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.officials_email,
+            "committeeId": self.committee_id,
+            "isOfficial": self.is_official
+        }
 
 class CommitteePostTerm(db.Model):
     __tablename__ = "committee_post_term"

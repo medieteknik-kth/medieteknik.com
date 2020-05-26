@@ -1,3 +1,18 @@
+.userCardDeleteButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  padding: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid #C4C4C4;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
 .userCardTitle {
   color: #f0c900;
   font-family: sans-serif;

@@ -1,0 +1,81 @@
+.docCards {
+    padding: 10px;
+    border: 5px solid transparent;
+    border-radius: 10px;
+    text-align: left;
+    cursor:pointer;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 
+              0 2px 2px rgba(0,0,0,0.11), 
+              0 4px 4px rgba(0,0,0,0.11), 
+              0 6px 8px rgba(0,0,0,0.11),
+              0 8px 16px rgba(0,0,0,0.11);
+    transition: all .31s ease-in-out;
+    width: 230px;
+    margin: 10px 22px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.textContent h5 {
+    color: #c7c7c7;
+}
+
+
+@media (max-width: 908px) and (min-width: 736px) {
+    .docCards {
+        width: 30%;
+        text-align: center;
+    }
+
+    .textContent {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 735px) and (min-width: 651px) {
+    .docCards {
+        width: 80%;
+        text-align: center;
+    }
+
+    .textContent {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 650px) and (min-width: 481px) {
+    .docCards {
+        width: 70%;
+        text-align: center;
+        display: block;
+    }
+
+    .textContent {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .docCards {
+        width: 75%;
+        text-align: center;
+    }
+
+    .textContent {
+        margin: 0 auto;
+    }
+}
+
+.docCards h3 {
+    margin-left: -1px;
+}
+
+.docCards p {
+    color: #a0a0a0;
+}
+
+.docCards:hover {
+    border: 5px solid #f0c900;
+    transform: scale(1.05);
+}

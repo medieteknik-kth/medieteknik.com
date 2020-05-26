@@ -1,0 +1,449 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h3 {
+    margin-left: 0;
+}
+
+.bottomBorder {
+    border-bottom: 1px #0f0f0f solid;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 10px;
+}
+
+.headerRowFixed {
+    margin: 0 auto;
+    width: 100%;
+    position: fixed;
+    background-color: #fff;
+    left: 0;
+    top: 89px;
+    z-index: 500;
+    padding-top: 9.6px;
+    box-shadow: 0 1px 1px -1px rgba(0,0,0,0.11), 
+              0 2px 2px -2px rgba(0,0,0,0.11), 
+              0 4px 4px -4px rgba(0,0,0,0.11), 
+              0 6px 8px -8px rgba(0,0,0,0.11),
+              0 8px 16px -16px rgba(0,0,0,0.11);
+}
+
+.headerRow h2 {
+    padding: 10px 0px;
+}
+
+.headerRowPlaceHolder {
+    height: 45px;
+}
+
+@media (max-width: 701px) {
+    .headerRowPlaceHolder {
+        height: 90px;
+    }
+}
+
+@media (max-width: 525px) {
+    .headerRowPlaceHolder {
+        height: 133px;
+    }
+}
+
+@media (max-width: 360px) {
+    .headerRowPlaceHolder {
+        height: 178px;
+    }
+}
+
+.firstFlexContainer {
+    display: flex;
+    font-family: sans-serif;
+    clear: both;
+}
+
+.main {
+    flex: 91%;
+}
+
+.categoriesList {
+    padding: 10px 20px;
+    flex: 9%;
+    border-right: 1px #0f0f0f solid;
+}
+
+.checkButtonShowCat {
+    width: 45%;
+    padding: 2px 5px 5px 5px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    background-color: #f0c900;
+    cursor: pointer;
+    text-align: center;
+    color: #1f1f1f;
+    user-select: none;
+}
+
+.checkButtonShowCat:hover {
+    background-color: #b39502;
+}
+
+.categoriesList h2 {
+    padding-bottom: 10px;
+}
+
+.usersOnlyCards:hover {
+    background-color: #d4b100;
+}
+
+.categoriesList form {
+    text-align: left;
+}
+
+.categoriesList input {
+    margin-right: 5px;
+}
+
+.hideCard {
+    display: none;
+}
+
+.usersOnlyCategory {
+    color: #f0c900;
+    font-weight: 400;
+}
+
+.notBold {
+    font-weight: 400;
+}
+
+.logoStyle {
+    height: 30px;
+    cursor: pointer;
+}
+
+.rightHeader img {
+    cursor: pointer;
+}
+
+.filterAndSearchContainer div {
+    margin-right: 20px;
+}
+
+.searchDoc {
+    background-image: url('../Assets/Search-logo.svg');
+    background-position: 1px 0px;
+    background-repeat: no-repeat;
+    font-size: 13px;
+    padding: 9px 20px 9px 35px;
+    border: 1px solid rgb(160, 160, 160);
+    border-radius: 4px;
+    outline: none;
+}
+
+.createCardsViewLogo {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: .3s;
+}
+
+.createCardsViewLogoSelected {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    background-color: #f0c900;
+    margin-right: 5px;
+    cursor: default;
+    transition: .3s;
+}
+
+.createCardsViewLogo:hover {
+    background-color: #ccc;
+}
+
+.createCardsViewLogo:hover .smallSquare {
+    border: 1.25px solid #fff;
+}
+
+.smallSquare {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 2px;
+    width: 8px;
+    height: 8px;
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: .3s;
+}
+
+.smallSquareSelected {
+    border: 1.25px solid #fff;
+    border-radius: 2px;
+    width: 8px;
+    height: 8px;
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: .3s;
+}
+
+.bullet {
+    width: 2px;
+    height: 2px;
+    background-color: #1f1f1f;
+    border: 1px solid #1f1f1f;
+    margin-left: 3px;
+    margin-top: 4.5px;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+.bulletSelected {
+    width: 2px;
+    height: 2px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    margin-left: 3px;
+    margin-top: 4.5px;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+.anonymusText {
+    width: 16px;
+    height: 1px;
+    background-color: #1f1f1f;
+    border: 1px solid #1f1f1f;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.anonymusTextSelected {
+    width: 16px;
+    height: 1px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.createListViewLogo {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    transition: .3s;
+}
+
+.createListViewLogoSelected {
+    border: 1.25px solid #1f1f1f;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 3px;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    background-color: #f0c900;
+    cursor: default;
+    transition: .3s;
+}
+
+.createListViewLogo:hover {
+    background-color: #ccc;
+}
+
+.createListViewLogo:hover .bullet {
+    background-color: #fff;
+    border: 1px solid #fff;
+}
+
+
+.createListViewLogo:hover .anonymusText {
+    background-color: #fff;
+    border: 1px solid #fff;
+}
+
+.bulletRow {
+    display: flex;
+}
+
+.viewSelected {
+    display: flex;
+}
+
+.sortByStyle {
+    width: 180px;
+    margin-right: 10px;
+}
+
+.dropdownFilterStyle {
+    width: 135px;
+}
+
+.sortOrderStyle {
+    width: 100px;
+}
+
+@media (max-width: 900px) and (min-width: 831px){
+    .createListViewLogo {
+        display: none;
+    }
+
+    .createListViewLogoSelected {
+        display: none;
+    }
+
+    .createCardsViewLogo {
+        display: none;
+    }
+
+    .createCardsViewLogoSelected {
+        display: none;
+    }
+}
+
+@media (max-width: 701px) and (min-width: 526px) {
+    .createListViewLogo {
+        display: none;
+    }
+
+    .createListViewLogoSelected {
+        display: none;
+    }
+
+    .headerRow {
+        display: block;
+    }
+
+    .filterAndSearchContainer {
+        clear: both;
+        margin: 0 auto;
+        width: 75%;
+    }
+
+    .textItemsInRightHeader {
+        margin: 0 auto;
+        width: 75%;
+        height: 34px;
+        margin-bottom: 10px;
+    }
+
+    .sortByStyle {
+        float: left;
+    }
+
+    .sortOrderStyle {
+        float: right;
+        width: 177px;
+    }
+
+    .dropdownFilterStyle {
+        float: left;
+        width: 180px;
+    }
+
+    .searchDoc {
+        width: 120px;
+        float: right;
+    }
+
+    .filterAndSearchContainer {
+        height: 34px;
+    }
+}
+
+
+@media (max-width: 525px) and (min-width: 361px) {
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+
+    .textItemsInRightHeader {
+        margin: 0 auto;
+        width: 85%;
+        height: 34px;
+        margin-bottom: 10px;
+    }
+
+    .filterAndSearchContainer {
+        width: 85%;
+        margin: 0 auto;
+    }
+
+    .dropdownFilterStyle {
+        width: 175px;
+    }
+    
+    .sortByStyle {
+        margin-bottom: 10px;
+    }
+
+    .searchDoc {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .headerRow {
+        flex-wrap: wrap;
+        justify-content: left;
+    }
+
+    .textItemsInRightHeader {
+        margin: 0 auto;
+        width: 85%;
+        height: 34px;
+        margin-bottom: 10px;
+    }
+
+    .filterAndSearchContainer {
+        width: 85%;
+        margin: 45px auto 0px auto;
+    }
+
+    .dropdownFilterStyle {
+        width: 175px;
+    }
+    
+    .sortByStyle {
+        margin-bottom: 10px;
+        margin-right: 30px;
+    }
+
+    .searchDoc {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
