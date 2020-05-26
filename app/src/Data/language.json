@@ -104,5 +104,11 @@
                 "en": "Back to feed"
             }
         }
+    },
+    "gallery": {
+        "gallery_header": {
+            "se": "Bildgalleri",
+            "en": "Gallery"
+        }
     }
 }

@@ -20,6 +20,8 @@ import Post from './Components/Post/Post';
 import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
 import Playground from './Components/Playground/Playground';
+import Gallery from './Components/Gallery/Gallery';
+import Album from './Components/Gallery/Album/Album';
 
 export default function App() {
   return (
@@ -56,6 +58,12 @@ export default function App() {
             </Route>
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
+            </Route>
+            <Route path="/gallery">
+              <PageWithMainMenu><Gallery /></PageWithMainMenu>
+            </Route>
+            <Route path="/album/:id">
+              <PageWithMainMenu><Album /></PageWithMainMenu>
             </Route>
             <Route match="*">
               <PageWithMainMenu><NotFound /></PageWithMainMenu>
