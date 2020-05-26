@@ -152,11 +152,12 @@ def route_create_all():
         db.session.add(committee)
         return committee
     
-    def create_post(committee, post_name):
+    def create_post(committee, post_name, category):
         post = CommitteePost()
         post.name = post_name
         post.committee = committee
         post.is_official = True
+        post.category = category
         db.session.add(post)
         return post
 
@@ -178,65 +179,65 @@ def route_create_all():
             user.post_terms.append(post.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31)))
 
     mkm = create_committee("Medias Klubbmästeri")
-    kbm = create_post(mkm, "Klubbmästare")
+    kbm = create_post(mkm, "Klubbmästare", "Studiesocialt")
     create_official("Hilda", "Robertsson", kbm, True)
     create_official("Amalia", "Berglöf", kbm, True)
 
     styrelsen = create_committee("Styrelsen")
-    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande"), True)
-    create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande"), False)
-    sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör"), True)
-    jessie = create_official("Jessie", "Liu", create_post(styrelsen, "Sekreterare"), False)
-    create_official("Lina", "Bengtsson", create_post(styrelsen, "Ledamot för Utbildningsfrågor"), True)
-    create_official("Samuel", "Kraft", create_post(styrelsen, "Ledamot för Studiesocialt"), True)
-    create_official("Hanna", "Bjarre", create_post(styrelsen, "Ledamot för Näringsliv- och kommunikation"), True)
+    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "Styrelsen"), True)
+    create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande", "Styrelsen"), False)
+    sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör", "Styrelsen"), True)
+    jessie = create_official("Jessie", "Liu", create_post(styrelsen, "Sekreterare", "Styrelsen"), False)
+    create_official("Lina", "Bengtsson", create_post(styrelsen, "Ledamot för Utbildningsfrågor", "Styrelsen"), True)
+    create_official("Samuel", "Kraft", create_post(styrelsen, "Ledamot för Studiesocialt", "Styrelsen"), True)
+    create_official("Hanna", "Bjarre", create_post(styrelsen, "Ledamot för Näringsliv- och kommunikation", "Styrelsen"), True)
 
-    create_official("Moa", "Engquist", create_post(create_committee("Jubileet"), "Jubelgeneral"), True)
-    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna"), "Sektionslokalsansvarig"), True)
-    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet"), "Spexmästare"), True)
-    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet"), "Öfversångledare"), False)
-    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet"), "Medielabbets Ordförande"), True)
-    fotogruppsansvarig = create_post(create_committee("Fotogruppen"), "Fotogruppsansvarig")
-    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden"), "Idrottsnämndsordförande"), True)
-    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden"), "Qulturnämndsordförande"), False)
+    create_official("Moa", "Engquist", create_post(create_committee("Jubileet"), "Jubelgeneral", "Studiesocialt"), True)
+    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna"), "Sektionslokalsansvarig", "Studiesocialt"), True)
+    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet"), "Spexmästare", "Studiesocialt"), True)
+    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet"), "Öfversångledare", "Studiesocialt"), False)
+    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet"), "Medielabbets Ordförande", "Studiesocialt"), True)
+    fotogruppsansvarig = create_post(create_committee("Fotogruppen"), "Fotogruppsansvarig", "Studiesocialt")
+    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden"), "Idrottsnämndsordförande", "Studiesocialt"), True)
+    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden"), "Qulturnämndsordförande", "Studiesocialt"), False)
     
-    mtgn = create_committee("Jubileet")
-    oph = create_post(mtgn, "Öfverphös")
+    mtgn = create_committee("Mottagningen")
+    oph = create_post(mtgn, "Öfverphös", "Studiesocialt")
     create_official("Kajsa", "Saare", oph, False)
     add_post_to_user(sandra, oph, False)
     create_official("Gabriella", "Dalman", oph, False)
     
-    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget"), "Mästerkocken"), True)
-    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker"), "Ljud- och ljustekniker"), True)
+    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget"), "Mästerkocken", "Studiesocialt"), True)
+    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker"), "Ljud- och ljustekniker", "Studiesocialt"), True)
     
     are = create_committee("spÅre")
-    ursparare = create_post(are, "UrSpårare")
+    ursparare = create_post(are, "UrSpårare", "Studiesocialt")
     create_official("John", "Brink", ursparare, True)
     erik = create_official("Erik", "Meurk", ursparare, True)
     simon = create_official("Simon", "Sundström", ursparare, True)
 
-    add_post_to_user(erik, create_post(create_committee("Kommunikationsnämnden"), "Kommunikatör"), True)
+    add_post_to_user(erik, create_post(create_committee("Kommunikationsnämnden"), "Kommunikatör", "Näringsliv- och kommunikation"), True)
 
-    nlgordf = create_post(create_committee("Näringslivsgruppen"), "Näringslivsansvarig")
+    nlgordf = create_post(create_committee("Näringslivsgruppen"), "Näringslivsansvarig", "Näringsliv- och kommunikation")
     create_official("Johanna", "Iivanainen", nlgordf, True)
     create_official("Anna", "Gustavsson", nlgordf, True)
 
-    branchdagen = create_post(create_committee("Medias Branschdag"), "Projektledare för Branschdagen")
+    branchdagen = create_post(create_committee("Medias Branschdag"), "Projektledare för Branschdagen", "Näringsliv- och kommunikation")
     rasmus = create_official("Rasmus", "Rudling", branchdagen, True)
     ellaklara = create_official("Ella Klara", "Westerlund", branchdagen, True)
 
-    joppe = create_official("Jesper", "Lundqvist", create_post(create_committee("Webmaster"), "Webmaster"), False)
+    joppe = create_official("Jesper", "Lundqvist", create_post(create_committee("Webmaster"), "Webmaster", "Näringsliv- och kommunikation"), False)
     
     studie = create_committee("Studienämnden")
-    create_official("Sofia", "Lundin Ziegler", create_post(studie, "Studienämndsordförande"), True)
-    create_official("Amanda", "Andrén", create_post(studie, "Programansvarig student"), False)
-    create_official("Nina", "Nokelainen", create_post(studie, "Studerandeskyddsombud"), True)
-    create_official("Christoffer", "Vikström", create_post(studie, "Jämlikhets- och mångfaldsombud"), True)
-    add_post_to_user(simon, create_post(create_committee("Internationell Samordnare"), "Internationella nämnden"), True)
+    create_official("Sofia", "Lundin Ziegler", create_post(studie, "Studienämndsordförande", "Utbildning"), True)
+    create_official("Amanda", "Andrén", create_post(studie, "Programansvarig student", "Utbildning"), False)
+    create_official("Nina", "Nokelainen", create_post(studie, "Studerandeskyddsombud", "Utbildning"), True)
+    create_official("Christoffer", "Vikström", create_post(studie, "Jämlikhets- och mångfaldsombud", "Utbildning"), True)
+    add_post_to_user(simon, create_post(create_committee("Internationell Samordnare"), "Internationella nämnden", "Utbildning"), True)
     
     val = create_committee("Valberedningen")
-    create_official("Mimmi", "Andreasson", create_post(val, "Valberedningens Ordförande"), True)
-    valberedare = create_post(val, "Valberedare")
+    create_official("Mimmi", "Andreasson", create_post(val, "Valberedningens Ordförande", "Valberedningen"), True)
+    valberedare = create_post(val, "Valberedare", "Valberedningen")
     create_official("Anja", "Studic", valberedare, True)
     create_official("Nathalie", "Lock", valberedare, True)
     create_official("Alex", "Modee", valberedare, True)
@@ -244,11 +245,11 @@ def route_create_all():
     create_official("Anna", "Eckernäs", valberedare, False)
     create_official("Saga", "Palmér", valberedare, False)
 
-    revisor = create_post(create_committee("Revisorerna"), "Revisor")
+    revisor = create_post(create_committee("Revisorerna"), "Revisor", "Revisorerna")
     kristina = create_official("Kristina", "Andersson", revisor, True)
     create_official("Mahmoud", "Sherzad", revisor, True)
 
-    fanborg = create_post(create_committee("Fanborgen"), "Fanbärare")
+    fanborg = create_post(create_committee("Fanborgen"), "Fanbärare", "Fanborgen")
     create_official("Sofia", "Blomgren", fanborg, True)
     create_official("Emil", "Erlandsson", fanborg, True)
 
