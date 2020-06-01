@@ -9,6 +9,7 @@ class PageRevisionType(enum.Enum):
 
 class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String, unique=True)
     revisions = db.relationship("PageRevision", backref="page", order_by=lambda:PageRevision.timestamp.desc())
 
     def latest_published_revision(self):
@@ -31,6 +32,7 @@ class Page(db.Model):
 
         return {
             "id": self.id,
+            "slug": self.slug,
             "title": title,
             "content": content,
             "author": author,

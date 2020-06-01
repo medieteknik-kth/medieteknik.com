@@ -9,6 +9,10 @@ from api.resources.authentication import requires_auth
 class PageResource(Resource):
     def get(self, id):
         page = Page.query.get(id)
+
+        if page == None:
+            page = Page.query.filter(Page.slug==id).first()
+
         return jsonify(page.to_dict())
     
     @requires_auth

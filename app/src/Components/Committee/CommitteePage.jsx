@@ -5,7 +5,7 @@ import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 
 import Api from '../../Utility/Api';
 import UserCard from '../UserCard/UserCard';
-import Page from '../Page/Page';
+import BasePage from '../Page/BasePage';
 import { UserContext } from '../../Contexts/UserContext';
 
 import './CommitteePage.css';
@@ -91,7 +91,7 @@ export default function CommitteePage() {
       </div>
       <div className="committeePageContent content">
         { oldContent !== null
-          ? <Page initialContent={oldContent} isEditing={isEditing} onChange={onChange} />
+          ? <BasePage initialContent={oldContent} isEditing={isEditing} onChange={onChange} />
           : <div />}
       </div>
       <div
