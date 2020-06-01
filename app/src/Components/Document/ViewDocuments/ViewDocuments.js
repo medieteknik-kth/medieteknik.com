@@ -96,6 +96,86 @@ class ViewDocuments extends Component {
                 displayCard: true,
                 thumbnail: sampleThumbnail2
             }
+
+            // {
+            //     doctypeId: 8,
+            //     doctags: [' Motioner'],
+            //     headingText: 'Budgetförslag MBD',
+            //     publisher: 'Rasmus Rudling',
+            //     publishDate: new Date(2019, 8, 27),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail1
+            // },
+
+            // {
+            //     doctypeId: 9,
+            //     doctags: [' Motioner'],
+            //     headingText: 'Lägg ned spelnörderiet',
+            //     publisher: 'Jesper Lundqvist',
+            //     publishDate: new Date(2019, 10, 3),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail2
+            // },
+
+            // {
+            //     doctypeId: 10,
+            //     doctags: [' SM-handlingar'],
+            //     headingText: 'SM#4 17/18',
+            //     publisher: 'Oliver Kamruzzaman',
+            //     publishDate: new Date(2017, 4, 14),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail1
+            // },
+
+            // {
+            //     doctypeId: 11,
+            //     doctags: [' Valkompass'],
+            //     headingText: 'SM#4 16/17',
+            //     publisher: 'Disa Gillner',
+            //     publishDate: new Date(2016, 5, 28),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail2
+            // },
+
+            // {
+            //     doctypeId: 12,
+            //     doctags: [' Budget'],
+            //     headingText: 'NLG 19/20',
+            //     publisher: 'Sandra Larsson',
+            //     publishDate: new Date(2019, 5, 28),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail1
+            // },
+
+            // {
+            //     doctypeId: 13,
+            //     doctags: [' Policies', ' Övrigt', ' Blanketter'],
+            //     headingText: 'Alkohol på TB:s',
+            //     publisher: 'Oliver Kamruzzaman',
+            //     publishDate: new Date(2019, 7, 13),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail2
+            // },
+
+            // {
+            //     doctypeId: 14,
+            //     doctags: [' Blanketter'],
+            //     headingText: 'SBA-blankett',
+            //     publisher: 'Moa Engquist',
+            //     publishDate: new Date(2019, 2, 10),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail1
+            // },
+
+            // {
+            //     doctypeId: 15,
+            //     doctags: [' Övrigt'],
+            //     headingText: 'MKM:s beerpongregler',
+            //     publisher: 'Moa Engquist',
+            //     publishDate: new Date(2018, 7, 9),
+            //     displayCard: true,
+            //     thumbnail: sampleThumbnail2
+            // }
         ]
 
         this.categories = [
@@ -309,7 +389,9 @@ class ViewDocuments extends Component {
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
+                    <h2>Dokument</h2>
                     <div className= {this.state.headerRowPlaceHolderClass} />
+                    
                     <div className={this.state.headerRowClasses.join(' ')}>
                         <div className={classes.viewSelected}>
                             {this.state.screenWidth >= 900 ? <i

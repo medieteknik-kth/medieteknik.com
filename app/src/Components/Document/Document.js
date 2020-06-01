@@ -24,58 +24,10 @@ class Document extends Component {
             propUserFunkis: false// Ska komma som prop
         }
     }
-
-    viewModeHandler = () => {
-        if (!this.state.viewCardsview) {
-            this.setState({
-                viewCardsview: true
-            })
-        }
-    }
-
-    uploadModeHandler = () => {
-        if (this.state.viewCardsview && this.state.propUserFunkis) {
-            this.setState({
-                viewCardsview: false
-            })
-        }
-    }
     
     render() {
-        let publishDocumentsClass;
-        let viewDocumentsClass;
-
-        if (!this.state.viewCardsview) {
-            publishDocumentsClass = classes.selected;
-        } else {
-            publishDocumentsClass = classes.notSelected;
-        }
-
-        if (this.state.viewCardsview) {
-            viewDocumentsClass = classes.selected;
-        } else {
-            viewDocumentsClass = classes.notSelected;
-        }
-
-        if (!this.state.propUserFunkis) {
-            publishDocumentsClass = classes.disabled;
-            viewDocumentsClass = classes.disabled;
-        }
-
         return (
             <div>
-                <div className={classes.buttonContainer} >
-                    <div 
-                        className = {publishDocumentsClass} 
-                        onClick = {this.uploadModeHandler}
-                    >Ladda upp</div>
-
-                    <div 
-                        className = {viewDocumentsClass}
-                        onClick = {this.viewModeHandler}
-                    >Bläddra</div>
-                </div>
-
                 {
                     this.state.viewCardsview ? 
                     <ViewDocuments userIsFunkis = {this.state.propUserFunkis} /> : 
