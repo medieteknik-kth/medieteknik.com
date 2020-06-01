@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import 'circular-std';
+// import 'circular-std';
 import 'normalize.css';
 import './Components/Common/Typography.css';
 import './Components/Common/Content.css';
