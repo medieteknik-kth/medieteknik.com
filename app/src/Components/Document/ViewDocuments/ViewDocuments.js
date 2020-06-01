@@ -11,10 +11,6 @@ import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
 
-
-// --- ATT GÖRA ---
-// - Fixa så att sökmenyn hänger med även när man är funkis
-
 class ViewDocuments extends Component {
     constructor() {
         super();
@@ -129,10 +125,8 @@ class ViewDocuments extends Component {
             sortValue: 'date',
             orderValue: 'falling',
 
-            // cardsViewSelected: window.innerWidth >= 900 ? false : true,
-            // listViewSelected: window.innerWidth >= 900 ? true : false,
-            cardsViewSelected: true,
-            listViewSelected: false,
+            cardsViewSelected: window.innerWidth >= 900 ? false : true,
+            listViewSelected: window.innerWidth >= 900 ? true : false,
 
             query: '',
 

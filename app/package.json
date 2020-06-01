@@ -8,7 +8,6 @@
     "@fortawesome/free-solid-svg-icons": "5.11.2",
     "@fortawesome/react-fontawesome": "0.1.7",
     "@react-pdf/renderer": "^1.6.8",
-    "circular-std": "^1.0.3",
     "normalize.css": "^8.0.1",
     "pdfjs-dist": "^2.3.200",
     "react": "^16.9.0",
