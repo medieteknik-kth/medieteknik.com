@@ -1,11 +1,13 @@
 from api.db import db
 
 from api.models.committee_post import CommitteePost
+from api.models.event import Event
 
 class Committee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     posts = db.relationship("CommitteePost", back_populates = "committee")
+    events = db.relationship("Event", back_populates="committee")
     logo = db.Column(db.String)
     header_image = db.Column(db.String)
     description = db.Column(db.String)
@@ -15,6 +17,7 @@ class Committee(db.Model):
 
     def to_dict(self):
         posts = [post.to_dict() for post in self.posts]
+        events = [event.to_dict() for event in self.events]
 
         if self.page != None:
             page = self.page.to_dict()
@@ -29,5 +32,6 @@ class Committee(db.Model):
             "header_image": self.header_image,
             "description": self.description,
             "instagram_url": self.instagram_url,
-            "page": page
+            "page": page,
+            "events": events,
         }

@@ -21,6 +21,7 @@ from api.resources.officials import OfficialsResource
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
 
+from api.resources.event import EventResource, EventListResource
 
 import os
 import datetime
@@ -90,6 +91,8 @@ api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
+api.add_resource(EventListResource, "/events")
+api.add_resource(EventResource, "/events/<id>")
 
 api.add_resource(HealthResource, "/health")
 
@@ -144,6 +147,9 @@ def route_create_all():
     from api.models.page import Page, PageRevision, PageRevisionType
     from api.models.post_tag import PostTag
     from api.models.menu import Menu, MenuItem
+
+    from api.models.event import Event
+
     db.drop_all()
     db.create_all()
 
@@ -294,6 +300,7 @@ def route_create_all():
 
     db.session.commit()
 
+
     post = Post()
     post.title = "Folk söker folk"
     post.title_en = "People are looking for people"
@@ -311,6 +318,7 @@ def route_create_all():
     post.tags.append(post_tag)
     
     db.session.add(post)
+
 
     post = Post()
     post.title = "Kom på torsdagspub!"
@@ -376,6 +384,21 @@ def route_create_all():
     db.session.add(menu)
 
     db.session.add(post)
+
+    event1 = Event()
+    event1.title= "Spritdrickande"
+    event1.description="Vi ska dricka sprit tillsammans"
+    event1.location="META"
+    event1.committee=committee1
+    event1.facebook_link = "https://www.facebook.com/events/284688576033658/"
+
+    post_tag2 = PostTag()
+    post_tag2.title = "fezt"
+
+    event1.tags.append(post_tag)
+    event1.tags.append(post_tag2)
+
+    db.session.add(event1)
     db.session.commit()
 
     return "klar"
