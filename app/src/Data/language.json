@@ -27,6 +27,10 @@
         "manage": {
             "se": "Hantera",
             "en": "Hantera"
+        },
+        "page_not_found": {
+            "se": "Kunde inte hitta sida",
+            "en": "Could not find page"
         }
     },
     "form": {
