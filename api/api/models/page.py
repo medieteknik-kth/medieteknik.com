@@ -21,12 +21,14 @@ class Page(db.Model):
 
         if published:
             title = current.title
-            content = current.content
+            content_sv = current.content_sv
+            content_en = current.content_en
             author = current.author.to_dict() if current.author != None else None
             updated = current.timestamp
         else:
             title = None
-            content = None
+            content_sv = None
+            content_en = None
             author = None
             updated = None
 
@@ -34,7 +36,8 @@ class Page(db.Model):
             "id": self.id,
             "slug": self.slug,
             "title": title,
-            "content": content,
+            "content_sv": content_sv,
+            "content_en": content_en,
             "author": author,
             "revisions": [revision.to_dict() for revision in self.revisions],
             "published": published,
@@ -48,7 +51,8 @@ class PageRevision(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User")
     title = db.Column(db.String)
-    content = db.Column(db.String)
+    content_sv = db.Column(db.String)
+    content_en = db.Column(db.String, default="{\"ops\":[{\"insert\":\"This page in unavaliable in English\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"}]}")
     page_id = db.Column(db.Integer, db.ForeignKey("page.id"))
     published = db.Column(db.Boolean, default=False)
 
@@ -59,6 +63,7 @@ class PageRevision(db.Model):
             "type": self.revision_type.name,
             "author": self.author.to_dict_without_terms() if self.author != None else None,
             "title": self.title,
-            "content": self.content,
+            "content_sv": self.content_sv,
+            "content_en": self.content_en,
             "published": self.published
         }

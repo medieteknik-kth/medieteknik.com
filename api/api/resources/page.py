@@ -36,7 +36,9 @@ class PageResource(Resource):
             properties:
               title:
                 type: string
-              content:
+              content_sv:
+                type: string
+              content_en:
                 type: string
               published:
                 type: boolean
@@ -58,8 +60,10 @@ class PageResource(Resource):
         
         if "title" in keys:
             revision.title = request.json["title"]
-        if "content" in keys:
-            revision.content = request.json["content"]
+        if "content_sv" in keys:
+            revision.content_sv = request.json["content_sv"]
+        if "content_en" in keys:
+            revision.content_en = request.json["content_en"]
         if "published" in keys:
             revision.published = request.json["published"]
 
@@ -154,8 +158,10 @@ class PageListResource(Resource):
         
         if "title" in keys:
             revision.title = request.json["title"]
-        if "content" in keys:
-            revision.content = request.json["content"]
+        if "content_sv" in keys:
+            revision.content_sv = request.json["content_sv"]
+        if "content_en" in keys:
+            revision.content_en = request.json["content_en"]
         if "published" in keys:
             revision.published = request.json["published"]
 
