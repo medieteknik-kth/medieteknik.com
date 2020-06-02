@@ -15,158 +15,71 @@ ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 class EventResource(Resource):
     def get(self, id):
-        """
-        Returns an event with the corresponding ID (if it exists).
-        ---
-        tags:
-            -Events
-        parameters:
-            -name: id
-            in: query
-            schema:
-                type: Integer
-            responses:
-                200: 
-                    description:OK
-        """
         event = Event.query.get(id)
         return jsonify(event.to_dict())
     @requires_auth
     def delete(self, id):
-        """
-        Deletes the event with the given ID
-        ---
-        tags:
-            -Events
-        security:
-            Authenticated: []
-
-        parameters:
-            -name: id
-            in: query
-            schema:
-                type: Integer
-            responses:
-                200:
-                description: OK
-        """
         delete_event(id)
         return jsonify(message="event deleted!")
 
     @requires_auth
     def put(self, id):
-        """
-        Updates the event with the given ID
-        ---
-        tags:
-            -Events
-        security:
-            Authenticated:[]
         
-        parameters:
-            -name: id
-            in: query
-            schema:
-                type: Integer
-            -name: event
-            in:body
-            schema:
-                type: object
-                properties:
-                    committee_id:
-                        type: number
-                    date:
-                        type: String
-                        description: use Date.toISOString() for correct formatting
-                    description:
-                        type: String
-                    facebook_link:
-                        type:String
-                        description: Link to the facebook event associated with this event
-                    id:
-                        type:Integer
-                        description: the event ID
-                    location: 
-                        type:String
-                    title:
-                        type: String
-                    tags:
-                        type: Array[Integer]
-        responses:
-            200:
-                description: OK
-            400:
-                description: missing authentication token
-            402: 
-                description: Not authenticated
-        """
         update_event(request, id)
         return jsonify(message="event updated!")
 
 class EventListResource(Resource):
     def get(self):
-        """
-        Get a list of all events
-        ---
-        tags:
-            -Events
-        responses:
-            200:
-                description: OK
-        """
         events = get_events()
         return jsonify({"events": events})
-    
+    @requires_auth
     def post(self):
         """
-        Creates a new event
+        Creates a new event with an optional image.
         ---
         tags:
-            -Events
+            - Event
+        
         security:
-            Authenticated:[]
-
-        requestBody:
-            multipart/form-data:
-                schema:
-                 type: object
-                 properties:
-                    data:
-                    type: object
-                    properties:
-                        committee_id:
-                            type: number
-                        date:
-                            type: String
-                            description: use Date.toISOString() for correct formatting
-                        description:
-                            type: String
-                        facebook_link:
-                            type:String
-                            description: Link to the facebook event associated with this event
-                        id:
-                            type:Integer
-                            description: the event ID
-                        location: 
-                            type:String
-                        title:
-                            type: String
-                        tags:
-                            type: Array[Integer]
-                    header-image:
-                        type:file
-                        
+            - authenticated: []
         parameters:
-            -name: id
-            in: query
-            schema:
-                type: Integer
+        - name: data
+          in: body
+
+          description: The 'date' string is in ISO-8601 format. In JS, use Date.toISOString()
+          contentType:
+            multipart/form-data:
+          schema:
+            type: object
+            properties:
+              committee_id:
+                type: integer
+              date:
+                type: string
+              fb_link:
+                type: string
+              event_id:
+                type: number
+              title:
+                type: string
+              "description":
+                type: string
+              headerImage:
+                type: string
+              tags:
+                type: array
+                items:
+                    type: integer
+              event_id:
+                type: integer
+              location:
+                type: string
         responses:
             200:
                 description: OK
             400:
-                description: missing authentication token
-            402: 
+                description: Missing authentication token
+            402:
                 description: Not authenticated
         """
         add_event(request)

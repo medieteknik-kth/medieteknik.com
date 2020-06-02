@@ -27,13 +27,13 @@ class Event(db.Model):
 
     def to_dict(self):
         return {
-            "id": self.event_id,
+            "event_id": self.event_id,
             "title": self.title,
             "date": self.date,
             "description": self.description,
             "location": self.location,
             "headerImage": self.header_image,
-            "committeee_id": self.committee_id,
+            "committee_id": self.committee_id,
             "tags": [t.to_dict() for t in self.tags],
             "fb_link": self.facebook_link
         }
