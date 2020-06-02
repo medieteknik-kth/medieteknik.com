@@ -6,6 +6,7 @@ import { faBars, faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './MainMenu.module.css';
 import { API_BASE_URL } from '../../Utility/Api';
 import { UserContext } from '../../Contexts/UserContext';
+import { LocaleContext } from '../../Contexts/LocaleContext';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -17,6 +18,7 @@ const PageWithMainMenu = (props) => {
 
   const [hasCapturedToken, setHasCapturedToken] = useState(false);
   const { user, setToken } = useContext(UserContext);
+  const { lang, setLocale } = useContext(LocaleContext);
   const query = useQuery();
   const location = useLocation();
 
@@ -30,45 +32,49 @@ const PageWithMainMenu = (props) => {
   const menus = [
     {
       id: 0,
-      title: 'Aktuellt',
+      title_sv: 'Aktuellt',
+      title_en: 'Feed',
       link: '/feed',
       subMenus: [],
     },
     {
       id: 1,
-      title: 'Sektionen',
+      title_sv: 'Sektionen',
+      title_en: 'Chapter',
       link: '/',
       subMenus: [
-        { title: 'Nämnder och projekt', link: '/committees' },
-        { title: 'Styrelsen', link: '/' },
-        { title: 'Dokument', link: '/documents' },
-        { title: 'Sektionsmedlemmar', link: '/' },
-        { title: 'Bokningar', link: '/' },
+        { title_sv: 'Nämnder och projekt', title_en: 'Committees', link: '/committees' },
+        { title_sv: 'Styrelsen', title_en: 'The Board', link: '/styrelsen' },
+        { title_sv: 'Dokument', title_en: 'Documents', link: '/documents' },
+        { title_sv: 'Sektionsmedlemmar', title_en: 'Chapter Members', link: '/medlemmar' },
+        { title_sv: 'Bokningar', title_en: 'Booking', link: '/bokningar' },
       ],
     },
     {
       id: 2,
-      title: 'Utbildningen',
+      title_sv: 'Utbildningen',
+      title_en: 'Education',
       link: '/',
       subMenus: [
-        { title: 'Vad är Medieteknik?', link: '/' },
-        { title: 'Antagning', link: '/' },
-        { title: 'Kurser', link: '/' },
-        { title: 'Masterprogrammet', link: '/' },
-        { title: 'Studievägledning', link: '/' },
-        { title: 'Utlandsstudier', link: '/' },
-        { title: 'Studenträtt', link: '/' },
+        { title_sv: 'Vad är Medieteknik?', title_en: 'Media Technology', link: '/medieteknik' },
+        { title_sv: 'Antagning', title_en: 'Admissions', link: '/antagning' },
+        { title_sv: 'Kurser', title_en: 'Courses', link: '/kurser' },
+        { title_sv: 'Masterprogram', title_en: 'Master Programmes', link: '/masterprogram' },
+        { title_sv: 'Studievägledning', title_en: 'Study Counciling', link: '/studievagledning' },
+        { title_sv: 'Utlandsstudier', title_en: 'Study Abroad', link: '/utlandsstudier' },
+        { title_sv: 'Studenträtt', title_en: 'Student Rights', link: '/studentratt' },
       ],
     },
     {
       id: 3,
-      title: 'Kontakt',
+      title_sv: 'Kontakt',
+      title_en: 'Contact',
       link: '/',
       subMenus: [
-        { title: 'Samarbete', link: '/' },
-        { title: 'Annonsering', link: '/' },
-        { title: 'Funktionärer', link: '/' },
-        { title: 'Styrelsen', link: '/' },
+        { title_sv: 'Samarbete', title_en: 'Collaborate', link: '/samarbete' },
+        { title_sv: 'Annonsering', title_en: 'Advertise', link: '/annonsering' },
+        { title_sv: 'Funktionärer', title_en: 'Officials', link: '/officials' },
+        { title_sv: 'Styrelsen', title_en: 'The Board', link: '/styrelsen' },
       ],
     },
   ];
@@ -87,7 +93,7 @@ const PageWithMainMenu = (props) => {
             }
           }}
         >
-          {menu.title}
+          {lang === 'se' ? menu.title_sv : menu.title_en}
         </div>
       </Link>
       {menu.subMenus.length !== 0
@@ -95,7 +101,7 @@ const PageWithMainMenu = (props) => {
           <ul className={`${styles.buttonDropdown} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
             {menu.subMenus.map((subMenu) => (
               <Link to={subMenu.link} onClick={() => { setMainMenuExpanded(false); }}>
-                <li className={styles.buttonDropdownItem}>{subMenu.title}</li>
+                <li className={styles.buttonDropdownItem}>{lang === 'se' ? subMenu.title_sv : subMenu.title_en}</li>
               </Link>
             ))}
           </ul>
@@ -123,6 +129,10 @@ const PageWithMainMenu = (props) => {
       )
   );
 
+  const localeButton = (additionalStyles) => (lang === 'se'
+    ? <div className={`${styles.button} ${styles.localeButton} ${styles.icon} ${additionalStyles}`} onClick={() => { setLocale('en'); window.location.reload(); }}>EN</div>
+    : <div className={`${styles.button} ${styles.localeButton} ${styles.icon} ${additionalStyles}`} onClick={() => { setLocale('se'); window.location.reload(); }}>SV</div>
+  );
   return (
     <div>
       <div className={styles.mainMenu}>
@@ -141,6 +151,7 @@ const PageWithMainMenu = (props) => {
             <FontAwesomeIcon icon={faSearch} size="lg" />
           </div>
           {loginButton(styles.responsiveIcon)}
+          {localeButton(styles.responsiveIcon)}
           <div
             className={styles.expandButton}
             onClick={() => {
@@ -158,7 +169,8 @@ const PageWithMainMenu = (props) => {
           <div className={styles.icon}>
             <FontAwesomeIcon icon={faSearch} size="lg" />
           </div>
-          {loginButton()}
+          {loginButton('')}
+          {localeButton('')}
         </div>
       </div>
       <div className={styles.content}>
