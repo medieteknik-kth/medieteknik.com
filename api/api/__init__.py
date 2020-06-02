@@ -297,7 +297,7 @@ def route_create_all():
 
     db.session.commit()
 
-<<<<<<< HEAD
+
     post = Post()
     post.title = "Folk söker folk"
     post.title_en = "People are looking for people"
@@ -315,7 +315,7 @@ def route_create_all():
     post.tags.append(post_tag)
     
     db.session.add(post)
-<<<<<<< HEAD
+
 
     post = Post()
     post.title = "Kom på torsdagspub!"
@@ -346,16 +346,21 @@ def route_create_all():
     post.tags.append(post_tag)
     
     db.session.add(post)
-=======
-=======
+
     event1 = Event()
     event1.title= "Spritdrickande"
     event1.description="Vi ska dricka sprit tillsammans"
     event1.location="META"
+    event1.committee=committee1
+    event1.facebook_link = "https://www.facebook.com/events/284688576033658/"
+
+    post_tag2 = PostTag()
+    post_tag2.title = "fezt"
+
+    event1.tags.append(post_tag)
+    event1.tags.append(post_tag2)
 
     db.session.add(event1)
->>>>>>> Resurser för event, saknar endast filtrering när man hämtar flera
->>>>>>> Resurser för event, saknar endast filtrering när man hämtar flera
     db.session.commit()
 
     return "klar"

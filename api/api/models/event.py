@@ -12,7 +12,8 @@ class Event(db.Model):
     committee_id = db.Column(db.Integer, db.ForeignKey('committee.id'))
     committee = db.relationship("Committee", back_populates = "events")
     header_image = db.Column(db.String)
-    #tags = db.relationship("PostTag")
+    tags = db.relationship("PostTag", secondary=events_tags)
+    facebook_link = db.Column(db.String)
 
     
 
@@ -24,6 +25,7 @@ class Event(db.Model):
             "description": self.description,
             "location": self.location,
             "headerImage": self.header_image,
-            "committeee": self.committee_id,
-            #"tags": [t.to_dict() for t in self.tags]
+            "committeee_id": self.committee_id,
+            "tags": [t.to_dict() for t in self.tags],
+            "fb_link": self.facebook_link
         }
