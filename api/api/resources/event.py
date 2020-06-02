@@ -10,6 +10,9 @@ from api.db import db
 from api.models.event import Event
 from api.models.post_tag import PostTag
 
+PATH = "static/events/"
+ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
+
 class EventResource(Resource):
     def get(self, id):
         """
@@ -113,7 +116,7 @@ class EventListResource(Resource):
         """
         events = get_events()
         return jsonify({"events": events})
-    @requires_auth
+    
     def post(self):
         """
         Creates a new event
@@ -172,9 +175,16 @@ class EventListResource(Resource):
 
 
 def get_events():
-    #TODO: implement filtering based on different attributes
-    #For now, we just get all events
-    q = Event.query.all()
+     #get query string params
+    user_query = request.args.to_dict()
+    print(user_query)
+    #if the user supplied a query, filter
+    if user_query:
+        
+        q = Event.query.filter_by(**user_query)
+    else:
+        #if user did not provide filter, just send all events
+        q = Event.query.all()
     return [Event.to_dict(res) for res in q]
 
 

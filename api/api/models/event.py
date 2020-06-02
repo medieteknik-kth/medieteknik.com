@@ -2,8 +2,16 @@ from api.db import db
 import datetime
 
 from api.models.post_tag import PostTag
+
+
+#Association table for tags and events
+events_tags = db.Table('eventsTags', db.Model.metadata,
+    db.Column('event_id', db.Integer, db.ForeignKey('event.event_id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('post_tag.id'))
+)
+
 class Event(db.Model):
-    __tablename__ = "events"
+    __tablename__ = "event"
     event_id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String)
     date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
