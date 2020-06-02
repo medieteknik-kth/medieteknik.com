@@ -39,16 +39,18 @@ class EventListResource(Resource):
         ---
         tags:
             - Event
-        
+        consumes:
+            mutipart/form-data
         security:
             - authenticated: []
         parameters:
+        - name: header_image
+          in: body
+          schema:
+            type: file
         - name: data
           in: body
-
           description: The 'date' string is in ISO-8601 format. In JS, use Date.toISOString()
-          contentType:
-            multipart/form-data:
           schema:
             type: object
             properties:
@@ -64,8 +66,6 @@ class EventListResource(Resource):
                 type: string
               "description":
                 type: string
-              headerImage:
-                type: string
               tags:
                 type: array
                 items:
@@ -74,6 +74,8 @@ class EventListResource(Resource):
                 type: integer
               location:
                 type: string
+
+        
         responses:
             200:
                 description: OK
