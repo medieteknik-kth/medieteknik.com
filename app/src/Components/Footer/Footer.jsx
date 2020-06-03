@@ -38,13 +38,13 @@ const Footer = (props) => {
     return (<div className='footer'>
         <div className='footer-cont'>
             {
-                footerLinks.map(section =>
-                    <div className='footer-cell'>
+                footerLinks.map((section, i) =>
+                    <div key={i} className='footer-cell'>
                         <h6>{section.title}</h6>
                         <div className='footer-cell-cont'>
                             {
-                                section.links.map(link =>
-                                    <p>
+                                section.links.map((link, i) =>
+                                    <p key={i}>
                                         <a href={link.href}>{link.desc}</a>
                                     </p>
                                 )
@@ -54,7 +54,7 @@ const Footer = (props) => {
                 )
             }
             <div className='footer-cell'>
-                <h6>{translate({ se: 'Kontakt', en: 'Contact'})}</h6>
+                <h6><LocaleText phrase='footer/contact'/></h6>
                 <div className='footer-cell-cont'>
                    <p>
                         Fack vid THS<br/>
@@ -66,12 +66,18 @@ const Footer = (props) => {
                 </div>
             </div>
             <div className='footer-cell'>
-                <h6>{translate({ se: 'Följ Medieteknik', en: 'Follow Media Technology'})}</h6>
+                <h6><LocaleText phrase='footer/follow'/></h6>
                 <div className='footer-cell-cont'>
                     <div>
-                        <a href='http://www.facebook.com/medieteknik.kth'><FontAwesomeIcon class='footer-icon' icon={faFacebookF} color="white" size="lg" /></a>
-                        <a href='https://www.instagram.com/medieteknik_kth/'><FontAwesomeIcon class='footer-icon' icon={faInstagram} color="white" size="lg" /></a>
-                        <a href='https://www.linkedin.com/company/sektionen-f%C3%B6r-medieteknik-%C2%A0kth/'><FontAwesomeIcon class='footer-icon' icon={faLinkedinIn} color="white" size="lg" /></a>
+                        <a href='http://www.facebook.com/medieteknik.kth' target='_blank' rel='noopener noreferrer'>
+                            <FontAwesomeIcon className='footer-icon' icon={faFacebookF} color="white" size="lg" />
+                        </a>
+                        <a href='https://www.instagram.com/medieteknik_kth/' target='_blank' rel='noopener noreferrer'>
+                            <FontAwesomeIcon className='footer-icon' icon={faInstagram} color="white" size="lg" />
+                        </a>
+                        <a href='https://www.linkedin.com/company/sektionen-f%C3%B6r-medieteknik-%C2%A0kth/' target='_blank' rel='noopener noreferrer'>
+                            <FontAwesomeIcon className='footer-icon' icon={faLinkedinIn} color="white" size="lg" />
+                        </a>
                     </div>
                 </div>
             </div>

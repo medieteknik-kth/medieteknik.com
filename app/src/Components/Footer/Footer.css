@@ -39,8 +39,9 @@
 }
 
 .footer-icon {
-    padding-right: 1em;
-    height: 1em;
+    height: 0.8em;
+    padding-right: 0.5em;
+    transition: color 0.2s ease-in;
 }
 
 .footer-icon:hover {

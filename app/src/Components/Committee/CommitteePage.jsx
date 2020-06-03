@@ -5,15 +5,17 @@ import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 
 import Api from '../../Utility/Api';
 import UserCard from '../UserCard/UserCard';
-import Page from '../Page/Page';
+import BasePage from '../Page/BasePage';
 import { UserContext } from '../../Contexts/UserContext';
 
 import './CommitteePage.css';
+import { LocaleContext } from '../../Contexts/LocaleContext';
 
 export default function CommitteePage() {
   const { committeeId } = useParams();
 
   const { user } = useContext(UserContext);
+  const { lang } = useContext(LocaleContext);
 
   const [committee, setCommittee] = useState({});
   const [posts, setPosts] = useState([]);
@@ -33,7 +35,7 @@ export default function CommitteePage() {
         setPosts(data.posts);
         if (data.page) {
           try {
-            const contentData = JSON.parse(data.page.content);
+            const contentData = JSON.parse(lang === 'se' ? data.page.content_sv : data.page.content_en);
             setContent(contentData);
             setOldContent(contentData);
           } catch (error) {
@@ -91,7 +93,7 @@ export default function CommitteePage() {
       </div>
       <div className="committeePageContent content">
         { oldContent !== null
-          ? <Page initialContent={oldContent} isEditing={isEditing} onChange={onChange} />
+          ? <BasePage initialContent={oldContent} isEditing={isEditing} onChange={onChange} />
           : <div />}
       </div>
       <div

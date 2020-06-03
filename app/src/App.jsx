@@ -8,7 +8,6 @@ import './Components/Common/Content.css';
 
 import PageWithMainMenu from './Components/MainMenu/MainMenu';
 import LandingPage from './Components/LandingPage/LandingPage';
-import NotFound from './Components/NotFound/NotFound';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Documents from './Components/Document/Document';
@@ -21,6 +20,9 @@ import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
 import Playground from './Components/Playground/Playground';
 import Footer from './Components/Footer/Footer';
+import Gallery from './Components/Gallery/Gallery';
+import Album from './Components/Gallery/Album/Album';
+import Page from './Components/Page/Page';
 
 export default function App() {
   return (
@@ -58,9 +60,16 @@ export default function App() {
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
             </Route>
-            <Route match="*">
-              <PageWithMainMenu><NotFound /></PageWithMainMenu>
+            <Route path="/gallery">
+              <PageWithMainMenu><Gallery /></PageWithMainMenu>
             </Route>
+            <Route path="/album/:id">
+              <PageWithMainMenu><Album /></PageWithMainMenu>
+            </Route>
+            <Route
+              path="/:pageSlug"
+              render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
+            />
           </Switch>
           <Footer/>
         </UserProvider>
