@@ -19,6 +19,7 @@ import Post from './Components/Post/Post';
 import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
 import Playground from './Components/Playground/Playground';
+import Footer from './Components/Footer/Footer';
 import Gallery from './Components/Gallery/Gallery';
 import Album from './Components/Gallery/Album/Album';
 import Page from './Components/Page/Page';
@@ -70,6 +71,7 @@ export default function App() {
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
             />
           </Switch>
+          <Footer/>
         </UserProvider>
       </LocaleProvider>
     </Router>

@@ -118,6 +118,10 @@
   margin-top: 80px;
 }
 
+.container {
+  flex: 1;
+}
+
 @media screen and (min-width: 960px) {
   .expandButton {
     display: none;

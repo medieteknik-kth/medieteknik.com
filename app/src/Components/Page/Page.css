@@ -1,12 +1,12 @@
 .pageContainer {
-    margin: 100px 10px 0 10px;
+    margin: 120px 10px 40px 10px;
     padding: 10px 20px 10px 20px;
     background-color: white;
 }
 
 @media screen and (min-width: 500px) {
     .pageContainer {
-        margin: 100px 50px 0 50px;
+        margin: 120px 50px 40px 50px;
         padding: 10px 20px 10px 20px;
     }
 }

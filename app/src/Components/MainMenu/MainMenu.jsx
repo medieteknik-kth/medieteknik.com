@@ -134,7 +134,7 @@ const PageWithMainMenu = (props) => {
     : <div className={`${styles.button} ${styles.localeButton} ${styles.icon} ${additionalStyles}`} onClick={() => { setLocale('se'); window.location.reload(); }}>SV</div>
   );
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.mainMenu}>
         <div className={styles.logoContainer}>
           <Link

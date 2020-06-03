@@ -114,5 +114,15 @@
             "se": "Bildgalleri",
             "en": "Gallery"
         }
+    },
+    "footer": {
+        "contact": {
+            "se": "Kontakt",
+            "en": "Contact"
+        },
+        "follow": { 
+            "se": "Följ Medieteknik", 
+            "en": "Follow Media Technology"
+        }       
     }
 }
