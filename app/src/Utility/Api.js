@@ -56,5 +56,6 @@ export default {
   }).then((response) => response.json()),
   Users: GetApiObject('users'),
   Posts: GetApiObject('posts'),
+  Events: GetApiObject('events'),
   Images: GetImage,
 };

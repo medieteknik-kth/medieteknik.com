@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask_restful import Resource
 from datetime import datetime
 import json
+import os
 
 from api.function_library.image_functions import save_image
 from api.resources.authentication import requires_auth
@@ -10,6 +11,7 @@ from api.db import db
 from api.models.event import Event
 from api.models.post_tag import PostTag
 
+SAVE_FOLDER = os.path.join(os.getcwd(), "api", "static", "events")
 PATH = "static/events/"
 ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -124,7 +126,7 @@ class EventListResource(Resource):
             description: an array of event objects
         """
         events = get_events()
-        return jsonify({"events": events})
+        return events
     @requires_auth
     def post(self):
         """
@@ -183,7 +185,6 @@ class EventListResource(Resource):
 def get_events():
      #get query string params
     user_query = request.args.to_dict()
-    print(user_query)
     #if the user supplied a query, filter
     if user_query:
         
@@ -191,7 +192,8 @@ def get_events():
     else:
         #if user did not provide filter, just send all events
         q = Event.query.all()
-    return [Event.to_dict(res) for res in q]
+    data = [Event.to_dict(res) for res in q]
+    return jsonify(data)
 
 
 def add_event(request):
@@ -199,7 +201,7 @@ def add_event(request):
     e = Event(title=params["title"], date=datetime.strptime(params["date"], ISO_DATE_DEF),
               description=params["description"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"])
     if "header_image" in request.files:
-        image_name = save_image(request.files["header_image"], PATH)
+        image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
         e.header_image = image_name
     if params["tags"]:
         #tag the event
