@@ -15,21 +15,95 @@ ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 class EventResource(Resource):
     def get(self, id):
-        event = Event.query.get(id)
-        return jsonify(event.to_dict())
+      """
+      Get the event with the provided ID
+      ---
+      tags:
+          - Events
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+      responses:
+          200:
+            description: OK
+      """
+      event = Event.query.get(id)
+      return jsonify(event.to_dict())
     @requires_auth
     def delete(self, id):
-        delete_event(id)
-        return jsonify(message="event deleted!")
+      """
+      Delete the event with the given ID
+      ---
+      tags:
+        - Events
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+      """
+      delete_event(id)
+      return jsonify(message="event deleted!")
 
     @requires_auth
     def put(self, id):
-        
-        update_event(request, id)
-        return jsonify(message="event updated!")
+      """
+      Update an event
+      ---
+      tags:
+        - Events
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+      - name: event
+        in: body
+        description: "You should always send an entire object. Modify the event object you want to update, and send it in the request.
+        Date is an ISO-8601 string; if you change the date of an event, use Date.toISOString() to correctly format the string that you send to the backend."
+        schema:
+          type: object
+          properties:
+            event_id:
+              type: integer
+            title:
+              type: string
+            date:
+              type: string
+            description:
+              type: string
+            location:
+              type: string
+            committee_id:
+              type: string
+            tags:
+              type: array
+              items:
+                type: integer
+            facebook_link:
+              type: string
+      """  
+      update_event(request, id)
+      return jsonify(message="event updated!")
 
 class EventListResource(Resource):
     def get(self):
+        """
+        Get a list of all events
+        ---
+        tags:
+          - Events
+        produces:
+          application/json
+        responses:
+          200:
+            description: an array of event objects
+        """
         events = get_events()
         return jsonify({"events": events})
     @requires_auth
@@ -38,7 +112,7 @@ class EventListResource(Resource):
         Creates a new event with an optional image.
         ---
         tags:
-            - Event
+            - Events
         consumes:
             mutipart/form-data
         security:
@@ -58,7 +132,7 @@ class EventListResource(Resource):
                 type: integer
               date:
                 type: string
-              fb_link:
+              facebook_link:
                 type: string
               event_id:
                 type: number
@@ -74,8 +148,6 @@ class EventListResource(Resource):
                 type: integer
               location:
                 type: string
-
-        
         responses:
             200:
                 description: OK
