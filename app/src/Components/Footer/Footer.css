@@ -4,6 +4,7 @@
     color: #fff;
     justify-content: center;
     padding-bottom: 4em;
+    flex-shrink: 0;
 }
 
 .footer-cont {
