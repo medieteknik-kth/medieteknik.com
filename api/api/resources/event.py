@@ -98,6 +98,25 @@ class EventListResource(Resource):
         ---
         tags:
           - Events
+        parameters:
+        - name: committee_id
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: Committee ID's can be found via the comittee endpoint
+        - name: location
+          in: query
+          schema:
+            type: string
+          example: KTH campus
+          description: The name of the location (we're not cool enough for GPS)
+        - name: date
+          in: query
+          schema:
+            type: string
+          description:  ISO-8601 string
+          example: 2020-02-09T14:44:44+0200
         produces:
           application/json
         responses:
