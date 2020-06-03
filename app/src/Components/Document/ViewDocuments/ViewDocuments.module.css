@@ -10,12 +10,7 @@ h3 {
 h2 {
     font-weight: 100;
     margin-top: 60px;
-    margin-bottom: 20px;
     text-align: center;
-}
-
-.bottomBorder {
-    border-bottom: 1px #0f0f0f solid;
 }
 
 .headerRow {
@@ -27,7 +22,6 @@ h2 {
 .headerRowFixed {
     margin: 0 auto;
     width: 100%;
-    background-color: #fff;
     padding-top: 9.6px;
 }
 
