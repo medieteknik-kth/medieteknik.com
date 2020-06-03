@@ -1,41 +1,35 @@
 import React from 'react';
 import './Footer.css'
 import { LocaleText, translate } from '../../Contexts/LocaleContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookF, faLinkedinIn, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = (props) => {
 
     const footerLinks = [
         {
-            title: 'Om medieteknik',
+            title: translate({ se: 'Om medieteknik', en: 'About Media Technology'}),
             links: [
                 {
-                    desc: 'Sektionen',
-                    href: '/'
+                    desc: translate({ se: 'Vad är medieteknik?', en: 'What is Media Technology?'}),
+                    href: '/medieteknik'
                 },
                 {
-                    desc: 'Utbildningen',
-                    href: '/'
+                    desc: 'Kurser',
+                    href: '/kurser'
                 },
             ]
         },
         {
-            title: 'Länkar',
+            title: translate({ se: 'Länkar', en: 'Links'}),
             links: [
                 {
-                    desc: 'Cookies',
-                    href: '/'
+                    desc: translate({ se: 'Samarbete', en: 'Partner with us'}),
+                    href: '/samarbete'
                 },
                 {
-                    desc: 'Information om webbplatsen',
-                    href: '/'
-                },
-                {
-                    desc: 'Annosering',
-                    href: '/'
-                },
-                {
-                    desc: 'Kontakt',
-                    href: '/'
+                    desc: translate({ se: 'Annonsering', en: 'Advertising'}),
+                    href: '/annonsering'
                 },
             ]
         }
@@ -60,7 +54,7 @@ const Footer = (props) => {
                 )
             }
             <div className='footer-cell'>
-                <h6>Kontakt</h6>
+                <h6>{translate({ se: 'Kontakt', en: 'Contact'})}</h6>
                 <div className='footer-cell-cont'>
                    <p>
                         Fack vid THS<br/>
@@ -72,10 +66,13 @@ const Footer = (props) => {
                 </div>
             </div>
             <div className='footer-cell'>
-                <h6>Följ medieteknik KTH</h6>
+                <h6>{translate({ se: 'Följ Medieteknik', en: 'Follow Media Technology'})}</h6>
                 <div className='footer-cell-cont'>
-                   <p>
-                   </p>
+                    <div>
+                        <a href='http://www.facebook.com/medieteknik.kth'><FontAwesomeIcon class='footer-icon' icon={faFacebookF} color="white" size="lg" /></a>
+                        <a href='https://www.instagram.com/medieteknik_kth/'><FontAwesomeIcon class='footer-icon' icon={faInstagram} color="white" size="lg" /></a>
+                        <a href='https://www.linkedin.com/company/sektionen-f%C3%B6r-medieteknik-%C2%A0kth/'><FontAwesomeIcon class='footer-icon' icon={faLinkedinIn} color="white" size="lg" /></a>
+                    </div>
                 </div>
             </div>
         </div>
