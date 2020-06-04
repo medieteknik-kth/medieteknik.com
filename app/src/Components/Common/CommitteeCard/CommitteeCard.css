@@ -1,0 +1,32 @@
+.committee-card {
+    display: flex;
+    height: 150px;
+}
+
+.committee-card::before {
+    content: " ";
+    display: block;
+    float: left;
+    height: 100%;
+    border-left: 10px solid #f0c900;
+}
+
+.committee-card img {
+    height: inherit;
+}
+
+.committee-details {
+    text-transform: uppercase;
+    padding: 20px;
+}
+
+.committee-details .committee-title {
+    color: #b7b6b6;
+    font-weight: normal;
+}
+
+@media (max-width: 850px) {
+    .committee-card {
+        height: 75px;
+    }
+}

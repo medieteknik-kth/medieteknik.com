@@ -32,7 +32,8 @@ const FeedCard = ({feedItem}) => {
                         date={feedItem.date}
                         body={feedItem.description}
                         headerImage={feedItem.header_image}
-                        tags={feedItem.tags} />)
+                        tags={feedItem.tags} 
+                        location={feedItem.location}/>)
         default:
             return (<h1>unkown type</h1>)
     }

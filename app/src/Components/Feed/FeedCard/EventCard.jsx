@@ -3,6 +3,8 @@ import './FeedCard.css'
 import { NavLink } from 'react-router-dom';
 import Api from '../../../Utility/Api.js'
 import { LocaleText } from '../../../Contexts/LocaleContext';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faMapMarker} from '@fortawesome/free-solid-svg-icons';
 
 const EventCard = (props) => {
     return (
@@ -16,6 +18,9 @@ const EventCard = (props) => {
                         <h3>{props.title}</h3>
                     </NavLink>
                     <h4>{props.date}</h4>
+                    <h4>
+                        <FontAwesomeIcon icon={faMapMarker}/> {props.location}
+                    </h4>
                     <p>
                         {props.body}
                     </p>
