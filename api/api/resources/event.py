@@ -75,9 +75,13 @@ class EventResource(Resource):
               type: integer
             title:
               type: string
+            title_en:
+              type: string
             date:
               type: string
             description:
+              type: string
+            description_en:
               type: string
             location:
               type: string
@@ -159,7 +163,11 @@ class EventListResource(Resource):
                 type: number
               title:
                 type: string
+              title_en:
+                type: string
               "description":
+                type: string
+              description_en:
                 type: string
               tags:
                 type: array
@@ -199,7 +207,8 @@ def get_events():
 def add_event(request):
     params = json.loads(request.form.get('data'))
     e = Event(title=params["title"], date=datetime.strptime(params["date"], ISO_DATE_DEF),
-              description=params["description"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"])
+              description=params["description"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
+              description_en=params["description_en"], title_en=params["title_en"])
     if "header_image" in request.files:
         image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
         e.header_image = image_name
@@ -219,7 +228,9 @@ def update_event(request,id):
     params = request.json
     e = Event.query.filter(Event.eventId == id).first()
     e.description = params["description"]
+    e.description_en = params["description_en"]
     e.title = params["title"]
+    e.title_en = params["title_en"]
     e.date = datetime.strptime(params["date"], "%Y-%m-%dT%H:%M:%S%z")
     e.location = params["location"]
     e.committee_id = params["comittee_id"]

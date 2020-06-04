@@ -29,7 +29,7 @@ const Event = ({ }) => {
                 </div>
                 <div className="event-content">
                     <div className="event-header">
-                        <h1>{event.title}</h1>
+                        <h1>{translate(event.title)}</h1>
                         <h5>{event.date}</h5>
                         <h5><FontAwesomeIcon icon={faMapMarker}/> {event.location}</h5>
                     </div>
@@ -40,7 +40,7 @@ const Event = ({ }) => {
                         : <></>
                     }
                     <p className="event-description">
-                        {event.description}
+                        {translate(event.description)}
                     </p>
                     <div className="event-footer">
                         <div className="event-tags">

@@ -348,9 +348,11 @@ def route_create_all():
     db.session.add(post)
 
     event1 = Event()
-    event1.title= "Spritdrickande"
-    event1.description="Vi ska dricka sprit tillsammans"
-    event1.location="META"
+    event1.title= "Camping"
+    event1.title_en = "Camping"
+    event1.description="Vi ska sova utomhus! Häng med, det kommer bli skitkul :))))))"
+    event1.description_en="Ah, the great outdoors! We will be braving the wilderness of Bergshamra, showing that humanity can overcome any hurdle! To sleep outside is to be one with nature, to embrace your connection to the planet which birthed us all. This text is gonan be pretty long, so don't read it all."
+    event1.location="Bergshamra"
     event1.committee=committee1
     event1.facebook_link = "https://www.facebook.com/events/284688576033658/"
 

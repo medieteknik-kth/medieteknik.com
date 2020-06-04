@@ -2,7 +2,7 @@ import React from 'react';
 import './FeedCard.css'
 import { NavLink } from 'react-router-dom';
 import Api from '../../../Utility/Api.js'
-import { LocaleText } from '../../../Contexts/LocaleContext';
+import { LocaleText, translate } from '../../../Contexts/LocaleContext';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faMapMarker} from '@fortawesome/free-solid-svg-icons';
 

@@ -28,9 +28,9 @@ const FeedCard = ({feedItem}) => {
             return (<EventCard
                 key={feedItem.id}
                         path={'/events/' + feedItem.event_id}
-                        title={feedItem.title}
+                        title={translate(feedItem.title)}
                         date={feedItem.date}
-                        body={feedItem.description}
+                        body={translate({se: feedItem.description.se.trunc(250), en: feedItem.description.en ? feedItem.description.en.trunc(250): ''})}
                         headerImage={feedItem.header_image}
                         tags={feedItem.tags} 
                         location={feedItem.location}/>)
