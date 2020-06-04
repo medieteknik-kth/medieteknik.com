@@ -137,158 +137,55 @@ h2 {
 }
 
 .createCardsViewLogo {
-    border: 1.25px solid #1f1f1f;
-    border-radius: 3px;
-    width: 30px;
-    height: 30px;
-    position: relative;
-    display: inline-block;
-    margin-top: 3px;
-    display: flex;
+    border: 1.25px solid #909090;
+    background-color: #f0f0f0;
+    border-radius: 1px;
+    height: 20px;
     cursor: pointer;
-    margin-right: 5px;
     transition: .3s;
+    padding: 5px;
 }
 
 .createCardsViewLogoSelected {
-    border: 1.25px solid #1f1f1f;
-    border-radius: 3px;
-    width: 30px;
-    height: 30px;
-    position: relative;
-    display: inline-block;
-    margin-top: 3px;
-    display: flex;
-    cursor: pointer;
-    background-color: #f0c900;
-    margin-right: 5px;
-    cursor: default;
+    border: 1.25px solid #f0c900;
+    background-color: #f0f0f0;
+    border-radius: 1px;
+    height: 20px;
     transition: .3s;
-}
-
-.createCardsViewLogo:hover {
-    background-color: #ccc;
-}
-
-.createCardsViewLogo:hover .smallSquare {
-    border: 1.25px solid #fff;
-}
-
-.smallSquare {
-    border: 1.25px solid #1f1f1f;
-    border-radius: 2px;
-    width: 8px;
-    height: 8px;
-    margin-left: 3px;
-    margin-top: 3px;
-    transition: .3s;
-}
-
-.smallSquareSelected {
-    border: 1.25px solid #fff;
-    border-radius: 2px;
-    width: 8px;
-    height: 8px;
-    margin-left: 3px;
-    margin-top: 3px;
-    transition: .3s;
-}
-
-.bullet {
-    width: 2px;
-    height: 2px;
-    background-color: #1f1f1f;
-    border: 1px solid #1f1f1f;
-    margin-left: 3px;
-    margin-top: 4.5px;
-    border-radius: 50%;
-    transition: .3s;
-}
-
-.bulletSelected {
-    width: 2px;
-    height: 2px;
-    background-color: #fff;
-    border: 1px solid #fff;
-    margin-left: 3px;
-    margin-top: 4.5px;
-    border-radius: 50%;
-    transition: .3s;
-}
-
-.anonymusText {
-    width: 16px;
-    height: 1px;
-    background-color: #1f1f1f;
-    border: 1px solid #1f1f1f;
-    margin-left: 2px;
-    margin-top: 5px;
-    border-radius: 10px;
-    transition: .3s;
-}
-
-.anonymusTextSelected {
-    width: 16px;
-    height: 1px;
-    background-color: #fff;
-    border: 1px solid #fff;
-    margin-left: 2px;
-    margin-top: 5px;
-    border-radius: 10px;
-    transition: .3s;
+    padding: 5px;
 }
 
 .createListViewLogo {
-    border: 1.25px solid #1f1f1f;
-    border-radius: 3px;
-    width: 30px;
-    height: 30px;
-    position: relative;
-    display: inline-block;
-    margin-top: 3px;
-    display: flex;
+    border: 1.25px solid #909090;
+    background-color: #f0f0f0;
+    border-radius: 1px;
+    height: 20px;
     cursor: pointer;
-    flex-direction: column;
     transition: .3s;
+    padding: 5px;
 }
 
 .createListViewLogoSelected {
-    border: 1.25px solid #1f1f1f;
-    border-radius: 3px;
-    width: 30px;
-    height: 30px;
-    position: relative;
-    display: inline-block;
-    margin-top: 3px;
-    display: flex;
-    cursor: pointer;
-    flex-direction: column;
-    background-color: #f0c900;
-    cursor: default;
+    border: 1.25px solid #f0c900;
+    border-radius: 1px;
+    background-color: #f0f0f0;
+    height: 20px;
     transition: .3s;
+    padding: 5px;
 }
 
-.createListViewLogo:hover {
-    background-color: #ccc;
-}
-
-.createListViewLogo:hover .bullet {
+.createListViewLogo:hover, .createCardsViewLogo:hover {
     background-color: #fff;
-    border: 1px solid #fff;
-}
-
-
-.createListViewLogo:hover .anonymusText {
-    background-color: #fff;
-    border: 1px solid #fff;
-}
-
-.bulletRow {
-    display: flex;
+    border-color: #f0c900;
+    /* Lägg in förklarande text här, eftersom att det bara är då vi vill visa texten! */
+    /* transform: scale(1.05); */
+    /* background-color: rgb(220, 220, 220); */
 }
 
 .viewSelected {
+    width: 80px;
     display: flex;
+    justify-content: space-between;
 }
 
 .sortByStyle {

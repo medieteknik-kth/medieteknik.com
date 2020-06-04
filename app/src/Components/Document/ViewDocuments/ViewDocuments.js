@@ -11,6 +11,15 @@ import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
 
+import gridViewIcon from './grid_view.png';
+import listViewIcon from './list_view.png';
+import gridViewIconSelected from './grid_view_selected.png';
+import listViewIconSelected from './list_view_selected.png';
+import searchGlassIcon from './search.png';
+
+// Att göra:
+// 1. Inforuta som förklarar "Gallerivy och listvy"
+
 class ViewDocuments extends Component {
     constructor() {
         super();
@@ -96,86 +105,6 @@ class ViewDocuments extends Component {
                 displayCard: true,
                 thumbnail: sampleThumbnail2
             }
-
-            // {
-            //     doctypeId: 8,
-            //     doctags: [' Motioner'],
-            //     headingText: 'Budgetförslag MBD',
-            //     publisher: 'Rasmus Rudling',
-            //     publishDate: new Date(2019, 8, 27),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail1
-            // },
-
-            // {
-            //     doctypeId: 9,
-            //     doctags: [' Motioner'],
-            //     headingText: 'Lägg ned spelnörderiet',
-            //     publisher: 'Jesper Lundqvist',
-            //     publishDate: new Date(2019, 10, 3),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail2
-            // },
-
-            // {
-            //     doctypeId: 10,
-            //     doctags: [' SM-handlingar'],
-            //     headingText: 'SM#4 17/18',
-            //     publisher: 'Oliver Kamruzzaman',
-            //     publishDate: new Date(2017, 4, 14),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail1
-            // },
-
-            // {
-            //     doctypeId: 11,
-            //     doctags: [' Valkompass'],
-            //     headingText: 'SM#4 16/17',
-            //     publisher: 'Disa Gillner',
-            //     publishDate: new Date(2016, 5, 28),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail2
-            // },
-
-            // {
-            //     doctypeId: 12,
-            //     doctags: [' Budget'],
-            //     headingText: 'NLG 19/20',
-            //     publisher: 'Sandra Larsson',
-            //     publishDate: new Date(2019, 5, 28),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail1
-            // },
-
-            // {
-            //     doctypeId: 13,
-            //     doctags: [' Policies', ' Övrigt', ' Blanketter'],
-            //     headingText: 'Alkohol på TB:s',
-            //     publisher: 'Oliver Kamruzzaman',
-            //     publishDate: new Date(2019, 7, 13),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail2
-            // },
-
-            // {
-            //     doctypeId: 14,
-            //     doctags: [' Blanketter'],
-            //     headingText: 'SBA-blankett',
-            //     publisher: 'Moa Engquist',
-            //     publishDate: new Date(2019, 2, 10),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail1
-            // },
-
-            // {
-            //     doctypeId: 15,
-            //     doctags: [' Övrigt'],
-            //     headingText: 'MKM:s beerpongregler',
-            //     publisher: 'Moa Engquist',
-            //     publishDate: new Date(2018, 7, 9),
-            //     displayCard: true,
-            //     thumbnail: sampleThumbnail2
-            // }
         ]
 
         this.categories = [
@@ -393,53 +322,6 @@ class ViewDocuments extends Component {
                     <div className= {this.state.headerRowPlaceHolderClass} />
                     
                     <div className={this.state.headerRowClasses.join(' ')}>
-                        <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 900 ? <i
-                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
-                                onClick={() => {
-                                    if(!this.state.cardsViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                </div>
-                                
-                                <div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                </div>
-                            </i> : null}
-
-                            {this.state.screenWidth >= 900 ? <i
-                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
-                                onClick={() => {
-                                    if(!this.state.listViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            >
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-                                
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-                            </i> : null}
-                        </div>
-                        
                         <div className={classes.textItemsInRightHeader}>
                             <SortBySelector 
                                 sortByChangedHandler = {this.sortByChangedHandler}
@@ -473,7 +355,28 @@ class ViewDocuments extends Component {
                                 ref = {input => this.search = input}
                             />
                         </div>
-                        
+
+                        <div className={classes.viewSelected}>
+                            {this.state.screenWidth >= 900 ? <img src={this.state.cardsViewSelected ? gridViewIconSelected : gridViewIcon}
+                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
+                                onClick={() => {
+                                    if(!this.state.cardsViewSelected) {
+                                        this.setState({listViewSelected: !this.state.listViewSelected})
+                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                    }
+                                }}
+                            /> : null}
+
+                            {this.state.screenWidth >= 900 ? <img src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
+                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
+                                onClick={() => {
+                                    if(!this.state.listViewSelected) {
+                                        this.setState({listViewSelected: !this.state.listViewSelected})
+                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                    }
+                                }}
+                            /> : null}
+                        </div>
                     </div>
                     
                     {

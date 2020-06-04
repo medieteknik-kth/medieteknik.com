@@ -9,7 +9,6 @@
     width: 210px;
     margin: 5px 25px 25px 25px;
     display: flex;
-    /* align-items: center; */
     flex-wrap: wrap;
     height: 311px;
     overflow: hidden;
