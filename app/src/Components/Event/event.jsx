@@ -3,10 +3,13 @@ import './event.css';
 import ProfileCard from '../Common/ProfileCard/ProfileCard';
 import { useParams, NavLink } from 'react-router-dom';
 import Api from '../../Utility/Api';
-import { LocaleText, translate } from '../../Contexts/LocaleContext';
+import { LocaleText, translate, localeDate } from '../../Contexts/LocaleContext';
 import CommitteeCard from '../Common/CommitteeCard/CommitteeCard';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faMapMarker} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarker, faClock } from '@fortawesome/free-solid-svg-icons';
+
+
+
 
 const Event = ({ }) => {
     const { id } = useParams();
@@ -16,6 +19,12 @@ const Event = ({ }) => {
         Api.Events.GetById(id)
             .then(event => setEvent(event));
     }, []);
+
+    const getTime = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+    }
+
 
     return (event ?
         <div className="event-container">
@@ -30,12 +39,13 @@ const Event = ({ }) => {
                 <div className="event-content">
                     <div className="event-header">
                         <h1>{translate(event.title)}</h1>
-                        <h5>{event.date}</h5>
-                        <h5><FontAwesomeIcon icon={faMapMarker}/> {event.location}</h5>
+                        <h5>{localeDate(event.date)}</h5>
+                        <h5><FontAwesomeIcon icon={faClock} /> {getTime(event.date)}</h5>
+                        <h5><FontAwesomeIcon icon={faMapMarker} /> {event.location}</h5>
                     </div>
                     {event.header_image ?
                         <div className="img-container">
-                            <img src={Api.Images(event.header_image)}/>
+                            <img src={Api.Images(event.header_image)} />
                         </div>
                         : <></>
                     }
@@ -45,9 +55,9 @@ const Event = ({ }) => {
                     <div className="event-footer">
                         <div className="event-tags">
                             <h5>
-                                <LocaleText phrase="feed/tags"/>:
-                                {event.tags.map(tag => 
-                                    <span key={tag.id} className="event-tag">#{tag.title}</span>    
+                                <LocaleText phrase="feed/tags" />:
+                                {event.tags.map(tag =>
+                                    <span key={tag.id} className="event-tag">#{tag.title}</span>
                                 )}
                             </h5>
                         </div>
