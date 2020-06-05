@@ -357,25 +357,35 @@ class ViewDocuments extends Component {
                         </div>
 
                         <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 900 ? <img src={this.state.cardsViewSelected ? gridViewIconSelected : gridViewIcon}
-                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
-                                onClick={() => {
-                                    if(!this.state.cardsViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            /> : null}
-
-                            {this.state.screenWidth >= 900 ? <img src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
-                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
-                                onClick={() => {
-                                    if(!this.state.listViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            /> : null}
+                            {this.state.screenWidth >= 900 ? 
+                                <div className={classes.tooltipGrid}>
+                                    <img 
+                                        src={this.state.cardsViewSelected ? gridViewIconSelected : gridViewIcon}
+                                        className={this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
+                                        onClick={() => {
+                                            if(!this.state.cardsViewSelected) {
+                                                this.setState({listViewSelected: !this.state.listViewSelected})
+                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                            }
+                                        }}
+                                    />
+                                    <span>Gallerivy</span>
+                                </div> : null}
+                                        
+                            {this.state.screenWidth >= 900 ?
+                                <div>
+                                    <img 
+                                        src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
+                                        className={this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
+                                        onClick={() => {
+                                            if(!this.state.listViewSelected) {
+                                                this.setState({listViewSelected: !this.state.listViewSelected})
+                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                            }
+                                        }}
+                                    />
+                                    {/* <span>Listvy</span> */}
+                                </div> : null}
                         </div>
                     </div>
                     

@@ -177,10 +177,31 @@ h2 {
 .createListViewLogo:hover, .createCardsViewLogo:hover {
     background-color: #fff;
     border-color: #f0c900;
+
     /* Lägg in förklarande text här, eftersom att det bara är då vi vill visa texten! */
     /* transform: scale(1.05); */
     /* background-color: rgb(220, 220, 220); */
 }
+
+/* TOOLTIP */
+.tooltipGrid {
+    position: relative;
+}
+
+.tooltipGrid span {
+    background-color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -35px;
+    margin-left: -70px;
+}
+
+
+
+/* ******* */
 
 .viewSelected {
     width: 80px;
