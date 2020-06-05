@@ -33,8 +33,9 @@
 }
 
 .container .checkmark:after {
+    position: absolute;
     left: 5px;
-    top: 0.5px;
+    top: 0px;
     width: 4px;
     height: 10px;
     border: solid white;
@@ -49,7 +50,7 @@
     height: 16px;
     width: 16px;
     background-color: #eee;
-    margin-top: 3px;
+    margin-top: 0px;
 }
 
 .checkmark:after {
@@ -60,17 +61,18 @@
 
 .checkButtonClearCat {
     width: 45%;
-    padding: 2px 5px 5px 5px;
-    margin-bottom: 10px;
-    background-color: #c23535;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #ff7373;
+    /* margin: 0 auto; */
     cursor: pointer;
     text-align: center;
-    color: #f1f1f1;
+    color: #fff;
     user-select: none;
 }
 
 .checkButtonClearCat:hover {
-    background-color: #a72222;
+    background-color: #ff3737;
 }
 
 .buttonContainer {

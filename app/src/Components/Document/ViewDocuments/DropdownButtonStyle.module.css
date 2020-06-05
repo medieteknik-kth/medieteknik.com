@@ -1,15 +1,14 @@
-.sortByStyledBoxContainer {
-    display: inline-block;
-}
-
 .dropdownContentCats {
+    font-family: 'Roboto';
+    font-weight: 300;
     display: none;
     position: absolute;
     background-color: #fff;
-    min-width: 150px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    min-width: 145px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+    z-index: 4;
     text-align: left;
+    margin-top: 38px;
     padding-left: 10px;
     padding-top: 10px;
 }
@@ -20,7 +19,7 @@
     position: absolute;
     background-color: #fff;
     min-width: 130px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
     z-index: 1;
     text-align: left;
 }
@@ -42,12 +41,12 @@
 
 .dropdownContent {
     display: none;
-    position: relative;
+    position: absolute;
     background-color: #fff;
     min-width: 190px;
-    box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
     overflow-y: hidden;
-    z-index: 1;
+    z-index: 9;
     text-align: left;
   }
 
@@ -92,6 +91,8 @@
 }
 
 .sortByStyledBox {
+    font-family: 'Roboto';
+    font-weight: 300;
     background-color: #fff;
     position: relative;
     font-size: 16px;
@@ -103,9 +104,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 5;
+    z-index: 10;
 }
 
 .sortByStyledBox img {
     width: 16px;
+}
+
+
+@media (max-width: 715px) {
+    .dropdownContentCats {
+        margin-top: 0;
+    }
 }

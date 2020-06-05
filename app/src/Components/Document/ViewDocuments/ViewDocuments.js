@@ -131,11 +131,11 @@ class ViewDocuments extends Component {
             },
             categoryTagsSelected: [],
 
-            sortValue: 'date',
+            sortValue: 'dateStart',
             orderValue: 'rising',
 
-            cardsViewSelected: window.innerWidth >= 900 ? false : true,
-            listViewSelected: window.innerWidth >= 900 ? true : false,
+            cardsViewSelected: true,
+            listViewSelected: false,
 
             query: '',
 
@@ -274,7 +274,13 @@ class ViewDocuments extends Component {
 
     sortByChangedHandler = (sortType) => {
         this.setState({sortValue: sortType})
-        this.cards = quickSort(this.cards, sortType, this.state.orderValue);
+
+        if (sortType === 'date') {
+            this.cards = quickSort(this.cards, sortType, 'falling');
+        } else {
+            this.cards = quickSort(this.cards, sortType, 'rising');
+        }
+        // this.cards = quickSort(this.cards, sortType, this.state.orderValue);
     }
 
     sortOrderChangedHandler = (sortOrder) => {
@@ -290,13 +296,12 @@ class ViewDocuments extends Component {
 
                     <div className={classes.headerRow}>
                         <div className={classes.searchParameters}>
-                            <SortBySelector 
+                            <SortBySelector
                                 sortByChangedHandler = {this.sortByChangedHandler}
                                 sortValue = {this.state.sortValue}
                                 addClass = {classes.sortByStyle}
                             />
 
-                            {/* Genom att ta bort denna del som kommentar kan man välja ordning på sortering */}
                             {/* <SortOrderSelector 
                                 sortOrderChangedHandler = {this.sortOrderChangedHandler}
                                 orderValue =  {this.state.orderValue}
