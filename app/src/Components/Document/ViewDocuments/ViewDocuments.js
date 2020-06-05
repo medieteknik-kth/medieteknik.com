@@ -373,7 +373,7 @@ class ViewDocuments extends Component {
                                 </div> : null}
                                         
                             {this.state.screenWidth >= 900 ?
-                                <div>
+                                <div className={classes.tooltipList}>
                                     <img 
                                         src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
                                         className={this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
@@ -384,7 +384,7 @@ class ViewDocuments extends Component {
                                             }
                                         }}
                                     />
-                                    {/* <span>Listvy</span> */}
+                                    <span>Listvy</span>
                                 </div> : null}
                         </div>
                     </div>

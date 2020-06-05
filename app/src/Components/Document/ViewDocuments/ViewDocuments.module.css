@@ -189,17 +189,64 @@ h2 {
 }
 
 .tooltipGrid span {
+    opacity: 0%;
     background-color: #fff;
     text-align: center;
     border-radius: 3px;
-    padding: 5px;
+    padding: 6px;
     position: absolute;
     z-index: 1;
-    top: -35px;
-    margin-left: -70px;
+    top: -38px;
+    margin-left: -74px;
+    transition: .3s;
 }
 
+.tooltipGrid span::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 76%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+}
 
+.tooltipGrid:hover span {
+    opacity: 100%;
+}
+
+.tooltipList {
+    position: relative;
+}
+
+.tooltipList span {
+    opacity: 0%;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    padding: 6px;
+    position: absolute;
+    z-index: 1;
+    top: -38px;
+    margin-left: -37px;
+    transition: .3s;
+}
+
+.tooltipList span::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 30%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+}
+
+.tooltipList:hover span {
+    opacity: 100%;
+}
 
 /* ******* */
 
