@@ -9,46 +9,25 @@ h3 {
 
 h2 {
     font-weight: 100;
-    margin-top: 60px;
+    margin: 60px 0px;
     text-align: center;
 }
 
 .headerRow {
+    width: 95%;
     display: flex;
+    margin: 0 auto;
+    
     justify-content: space-around;
     padding-bottom: 10px;
-}
-
-.headerRowFixed {
-    margin: 0 auto;
-    width: 100%;
-    padding-top: 9.6px;
 }
 
 .headerRow h2 {
     padding: 10px 0px;
 }
 
-.headerRowPlaceHolder {
+.headerRow {
     height: 45px;
-}
-
-@media (max-width: 701px) {
-    .headerRowPlaceHolder {
-        height: 90px;
-    }
-}
-
-@media (max-width: 525px) {
-    .headerRowPlaceHolder {
-        height: 133px;
-    }
-}
-
-@media (max-width: 360px) {
-    .headerRowPlaceHolder {
-        height: 178px;
-    }
 }
 
 .firstFlexContainer {
@@ -126,14 +105,18 @@ h2 {
 }
 
 .searchDoc {
-    background-image: url('../Assets/Search-logo.svg');
-    background-position: 1px 0px;
-    background-repeat: no-repeat;
-    font-size: 13px;
-    padding: 9px 20px 9px 35px;
-    border: 1px solid rgb(160, 160, 160);
-    border-radius: 4px;
+    font-family: 'Roboto';
+    font-weight: 300;
+    font-size: 15px;
+    color: #909090;
+    border: 0;
+    padding: 10px 10px 10px 40px;
     outline: none;
+    background-image: url('./Assets/search.png');
+    background-position: 5px 6px;
+    background-size: 25px;
+    background-repeat: no-repeat;
+    float: left;
 }
 
 .createCardsViewLogo {
@@ -175,12 +158,7 @@ h2 {
 }
 
 .createListViewLogo:hover, .createCardsViewLogo:hover {
-    background-color: #fff;
-    border-color: #f0c900;
-
-    /* Lägg in förklarande text här, eftersom att det bara är då vi vill visa texten! */
-    /* transform: scale(1.05); */
-    /* background-color: rgb(220, 220, 220); */
+    background-color: rgb(220, 220, 220);
 }
 
 /* TOOLTIP */
@@ -199,6 +177,8 @@ h2 {
     top: -38px;
     margin-left: -74px;
     transition: .3s;
+    cursor: default;
+    user-select: none;
 }
 
 .tooltipGrid span::after {
@@ -212,7 +192,7 @@ h2 {
     border-color: #fff transparent transparent transparent;
 }
 
-.tooltipGrid:hover span {
+.tooltipGrid img:hover + span {
     opacity: 100%;
 }
 
@@ -231,6 +211,8 @@ h2 {
     top: -38px;
     margin-left: -37px;
     transition: .3s;
+    cursor: default;
+    user-select: none;
 }
 
 .tooltipList span::after {
@@ -244,7 +226,7 @@ h2 {
     border-color: #fff transparent transparent transparent;
 }
 
-.tooltipList:hover span {
+.tooltipList img:hover + span {
     opacity: 100%;
 }
 
@@ -257,150 +239,18 @@ h2 {
 }
 
 .sortByStyle {
-    width: 180px;
+    width: 190px;
     margin-right: 10px;
+    float: left;
 }
 
 .dropdownFilterStyle {
     width: 135px;
+    float: left;
+    margin-right: 30px;
 }
 
 .sortOrderStyle {
     width: 100px;
-}
-
-@media (max-width: 900px) and (min-width: 831px){
-    .createListViewLogo {
-        display: none;
-    }
-
-    .createListViewLogoSelected {
-        display: none;
-    }
-
-    .createCardsViewLogo {
-        display: none;
-    }
-
-    .createCardsViewLogoSelected {
-        display: none;
-    }
-}
-
-@media (max-width: 701px) and (min-width: 526px) {
-    .createListViewLogo {
-        display: none;
-    }
-
-    .createListViewLogoSelected {
-        display: none;
-    }
-
-    .headerRow {
-        display: block;
-    }
-
-    .filterAndSearchContainer {
-        clear: both;
-        margin: 0 auto;
-        width: 75%;
-    }
-
-    .textItemsInRightHeader {
-        margin: 0 auto;
-        width: 75%;
-        height: 34px;
-        margin-bottom: 10px;
-    }
-
-    .sortByStyle {
-        float: left;
-    }
-
-    .sortOrderStyle {
-        float: right;
-        width: 177px;
-    }
-
-    .dropdownFilterStyle {
-        float: left;
-        width: 180px;
-    }
-
-    .searchDoc {
-        width: 120px;
-        float: right;
-    }
-
-    .filterAndSearchContainer {
-        height: 34px;
-    }
-}
-
-
-@media (max-width: 525px) and (min-width: 361px) {
-    .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
-    }
-
-    .textItemsInRightHeader {
-        margin: 0 auto;
-        width: 85%;
-        height: 34px;
-        margin-bottom: 10px;
-    }
-
-    .filterAndSearchContainer {
-        width: 85%;
-        margin: 0 auto;
-    }
-
-    .dropdownFilterStyle {
-        width: 175px;
-    }
-    
-    .sortByStyle {
-        margin-bottom: 10px;
-    }
-
-    .searchDoc {
-        box-sizing: border-box;
-        width: 100%;
-        margin-top: 10px;
-    }
-}
-
-@media (max-width: 360px) {
-    .headerRow {
-        flex-wrap: wrap;
-        justify-content: left;
-    }
-
-    .textItemsInRightHeader {
-        margin: 0 auto;
-        width: 85%;
-        height: 34px;
-        margin-bottom: 10px;
-    }
-
-    .filterAndSearchContainer {
-        width: 85%;
-        margin: 45px auto 0px auto;
-    }
-
-    .dropdownFilterStyle {
-        width: 175px;
-    }
-    
-    .sortByStyle {
-        margin-bottom: 10px;
-        margin-right: 30px;
-    }
-
-    .searchDoc {
-        box-sizing: border-box;
-        width: 100%;
-        margin-top: 10px;
-    }
+    float: left;
 }

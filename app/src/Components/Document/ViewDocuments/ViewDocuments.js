@@ -10,15 +10,15 @@ import sampleThumbnail1 from '../Assets/testThumbnail1.png';
 import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
+    
+import gridViewIcon from './Assets/grid_view.png';
 
-import gridViewIcon from './grid_view.png';
-import listViewIcon from './list_view.png';
-import gridViewIconSelected from './grid_view_selected.png';
-import listViewIconSelected from './list_view_selected.png';
-import searchGlassIcon from './search.png';
+import listViewIcon from './Assets/list_view.png';
+import gridViewIconSelected from './Assets/grid_view_selected.png';
+import listViewIconSelected from './Assets/list_view_selected.png';
 
 // Att göra:
-// 1. Inforuta som förklarar "Gallerivy och listvy"
+
 
 class ViewDocuments extends Component {
     constructor() {
@@ -132,7 +132,7 @@ class ViewDocuments extends Component {
             categoryTagsSelected: [],
 
             sortValue: 'date',
-            orderValue: 'falling',
+            orderValue: 'rising',
 
             cardsViewSelected: window.innerWidth >= 900 ? false : true,
             listViewSelected: window.innerWidth >= 900 ? true : false,
@@ -141,9 +141,6 @@ class ViewDocuments extends Component {
 
             catsViewed: 0,
             screenWidth: window.innerWidth,
-            headerRowFixed: false,
-            headerRowPlaceHolderClass: null,
-            headerRowClasses: [classes.headerRow, classes.bottomBorder]
         };
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
@@ -286,57 +283,26 @@ class ViewDocuments extends Component {
     }
     
     render() {
-        if (!this.props.userIsFunkis && !this.state.headerRowFixed) {
-            this.setState({
-                headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
-                headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                headerRowFixed: true
-            })
-        }
-
-        window.addEventListener('scroll', () => {
-            
-            if (window.scrollY >= 63.5 && this.props.userIsFunkis && !this.state.headerRowFixed) {
-                console.log(window.scrollY)
-                this.setState({
-                    headerRowFixed: true,
-                    headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
-                    headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                })
-                
-            } else if (window.scrollY < 63.5 && this.props.userIsFunkis && this.state.headerRowFixed) {
-                console.log(window.scrollY)
-                this.setState({
-                    headerRowFixed: false,
-                    headerRowPlaceHolderClass: null,
-                    headerRowClasses: [classes.headerRow, classes.bottomBorder],
-                })
-                
-            }
-        })
-
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
                     <h2>Dokument</h2>
-                    <div className= {this.state.headerRowPlaceHolderClass} />
-                    
-                    <div className={this.state.headerRowClasses.join(' ')}>
-                        <div className={classes.textItemsInRightHeader}>
+
+                    <div className={classes.headerRow}>
+                        <div className={classes.searchParameters}>
                             <SortBySelector 
                                 sortByChangedHandler = {this.sortByChangedHandler}
                                 sortValue = {this.state.sortValue}
                                 addClass = {classes.sortByStyle}
                             />
 
-                            <SortOrderSelector 
+                            {/* Genom att ta bort denna del som kommentar kan man välja ordning på sortering */}
+                            {/* <SortOrderSelector 
                                 sortOrderChangedHandler = {this.sortOrderChangedHandler}
                                 orderValue =  {this.state.orderValue}
                                 addClass = {classes.sortOrderStyle}
-                            />
-                        </div>
+                            /> */}
 
-                        <div className={classes.filterAndSearchContainer}>
                             <CategoriesFilter 
                                 categories = {this.categories} 
                                 categoriesToShow = {this.state.shown}
@@ -351,9 +317,11 @@ class ViewDocuments extends Component {
                                 type="text"
                                 onKeyUp={this.handleSearch}
                                 name="name"
-                                placeholder="Sök efter dokument.."
+                                placeholder="Sök efter dokument"
                                 ref = {input => this.search = input}
                             />
+
+                            
                         </div>
 
                         <div className={classes.viewSelected}>

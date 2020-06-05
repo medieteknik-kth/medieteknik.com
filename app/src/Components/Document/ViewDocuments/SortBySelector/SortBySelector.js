@@ -9,8 +9,6 @@ const SortBySelector = (props) => {
 
     if (props.sortValue === "dateStart" || props.sortValue === "date") {
         dropdownTitle = 'Uppladdningsdatum';
-    } else if (props.sortValue === "type") {
-        dropdownTitle = 'Typ';
     } else if (props.sortValue === "publisher") {
         dropdownTitle = 'Uppladdat av';
     } else if (props.sortValue === "alphabetical") {
@@ -30,7 +28,7 @@ const SortBySelector = (props) => {
                 </p>
 
                 <p onClick = {() => props.sortByChangedHandler("publisher")}>
-                    Uppladdat av
+                    Publicerat av
                 </p>
 
                 <p onClick = {() => props.sortByChangedHandler("date")}>
