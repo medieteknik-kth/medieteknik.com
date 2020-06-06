@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from api import db, app
 from api.models.document_models import (Document, Tag, DocumentTags)
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 import sys
 import uuid
 import json

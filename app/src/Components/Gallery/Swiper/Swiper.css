@@ -1,0 +1,40 @@
+.swiper-container{
+    width: 100%;
+}
+
+.swiper-wrapper {
+    width: 50%;
+}
+
+.swiper-slide {
+    text-align: center;
+    width: auto;
+}
+
+.img-fluid {
+    height: 200px;
+    width: auto;
+}
+
+.swiper-slide {
+    height:auto !important;
+    cursor: pointer;
+}
+
+.swiper-button-prev, .swiper-button-next {
+    width: 4em;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    transform: translateY(-41%);
+    z-index: 9999;
+    color: #fff;
+}
+
+.swiper-button-prev {
+    left: 0;
+}
+
+.swiper-button-next {
+    right: 0;
+}

@@ -1,0 +1,62 @@
+.album-header {
+    text-align: center;
+    padding: 2em;
+}
+
+.album-header h1, h5 {
+    margin: 0;
+}
+
+.album-header h5 {
+    text-transform: uppercase;
+    color: #777;
+}
+
+.album-container {
+    margin: 0 auto;
+    max-width: 1500px;
+    padding: 0 1rem;
+}
+  
+.responsive-image {
+    max-width: 100%;
+}
+
+.album-cell {
+    margin: 1rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.album-cell img {
+    display: block;
+}
+
+@media screen and (min-width: 600px){
+    .album-grid {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+
+    .album-cell {
+        width:50%;
+    }
+}
+
+@media screen and (min-width: 1000px){
+    .album-cell {
+        width:calc (100%/3);
+    }
+}
+
+@media screen and (min-width: 600px){
+    .album-cell {
+        width: calc(50% - 2rem);
+    }
+}
+@media screen and (min-width: 1000px){
+    .album-cell{
+        width: calc(25% - 2rem);
+    }
+}

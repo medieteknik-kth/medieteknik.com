@@ -1,0 +1,128 @@
+{
+    "common": {
+        "media_technology": {
+            "se": "Medieteknik",
+            "en": "Media Technology"
+        },
+        "kth_full": {
+            "se": "Kungliga Tekniska högskolan",
+            "en": "KTH Royal Institute of Technology"
+        },
+        "name": {
+            "se": "Namn",
+            "en": "Name"
+        },
+        "post": {
+            "se": "Post",
+            "en": "Post"
+        },
+        "start-date": {
+            "se": "Startdatum",
+            "en": "Start date"
+        },
+        "end-date": {
+            "se": "Slutdatum",
+            "en": "End date"
+        },
+        "manage": {
+            "se": "Hantera",
+            "en": "Hantera"
+        },
+        "page_not_found": {
+            "se": "Kunde inte hitta sida",
+            "en": "Could not find page"
+        }
+    },
+    "form": {
+        "add_document": {
+            "se": "Ladda upp",
+            "en": "Add document"
+        },
+        "change_file": {
+            "se": "Byt fil",
+            "en": "Change file"
+        },
+        "save": {
+            "se": "Spara",
+            "en": "Save"            
+        },
+        "title": {
+            "se": "Titel",
+            "en": "Title"            
+        },
+        "doc_type": {
+            "se": "Dokumenttyp",
+            "en": "Document type"            
+        },
+        "doc_upload": {
+            "se": "Dokumentuppladdning",
+            "en": "Document upload"            
+        }
+    },
+    "landing": {
+        "welcome": {
+            "se": "Välkommen till",
+            "en": "Welcome to"
+        },
+        "what_is": {
+            "se": "Vad är medieteknik?",
+            "en": "What is Media Technology?"
+        },
+        "the_chapter": {
+            "se": "Sektionen",
+            "en": "The Chapter"
+        },
+        "the_program": {
+            "se": "Utbildningen",
+            "en": "The Program"
+        }
+    },
+    "committee": {
+        "post": {
+            "se": "Post",
+            "en": "Post"
+        },
+        "manage": {
+            "mng_members": {
+                "se": "Hantera medlemmar",
+                "en": "Manage members"
+            },
+            "add": {
+                "se": "Lägg till medlem",
+                "en": "Add member"
+            }
+        }
+    },
+    "feed": {
+        "header": {
+            "se": "Inlägg & Event",
+            "en": "Posts & Events"
+        },
+        "tags": {
+            "se": "Taggar",
+            "en": "Tags"
+        },
+        "post": {
+            "go_back": {
+                "se": "Tillbaka till flödet",
+                "en": "Back to feed"
+            }
+        }
+    },
+    "gallery": {
+        "gallery_header": {
+            "se": "Bildgalleri",
+            "en": "Gallery"
+        }
+    },
+    "footer": {
+        "contact": {
+            "se": "Kontakt",
+            "en": "Contact"
+        },
+        "follow": { 
+            "se": "Följ Medieteknik", 
+            "en": "Follow Media Technology"
+        }       
+    }
+}
