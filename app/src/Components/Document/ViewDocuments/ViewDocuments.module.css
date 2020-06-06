@@ -16,7 +16,7 @@ h2 {
 .headerRow {
     width: 84.5%;
     margin: 0 auto;
-    padding-bottom: 10px;
+    padding-bottom: 30px;
     height: 45px;
 }
 
@@ -107,7 +107,7 @@ h2 {
     padding: 11px 10px 11px 40px;
     outline: none;
     background-image: url('./Assets/search.png');
-    background-position: 5px 6px;
+    background-position: 7px 6px;
     background-size: 25px;
     background-repeat: no-repeat;
     float: left;
@@ -262,16 +262,13 @@ h2 {
         width: 100%;
     }
 
-    .headerRow {
-
-    }
-
     .sortByStyle {
         display: block;
         clear: both;
         float: initial;
         margin-left: auto;
         margin-right: auto;
+        width: 215px;
     }
 
     .dropdownFilterStyle {
@@ -282,6 +279,7 @@ h2 {
         margin-left: auto;
         margin-right: auto;
         border-right: 20px solid #f0f0f0;
+        width: 195px;
     }
 
     .searchDoc {

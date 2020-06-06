@@ -115,5 +115,10 @@
 @media (max-width: 715px) {
     .dropdownContentCats {
         margin-top: 0;
+        min-width: 205px;
+    }
+
+    .dropdownContent {
+        min-width: 215px;
     }
 }

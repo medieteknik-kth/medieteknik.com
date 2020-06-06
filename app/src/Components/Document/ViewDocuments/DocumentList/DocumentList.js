@@ -32,16 +32,16 @@ const DocumentList = (props) => {
             <table>
                 <thead>
                     <tr>
-                        <th onClick = {props.handleOrderChangeHeadAlphabetical} className={classes.catParam}>
+                        <th className={classes.catParam}>
                             Dokumentnamn
                         </th>
                         <th>
                             Typ 
                         </th>
-                        <th onClick = {props.handleOrderChangeHeadPublisher} className={classes.catParam}>
-                            Uppladdat av 
+                        <th className={classes.catParam}>
+                            Publicerat av 
                         </th>
-                        <th onClick = {props.handleOrderChangeHeadDate} className={classes.catParam}>
+                        <th className={classes.catParam}>
                             Uppladdningsdatum
                         </th>
                     </tr>

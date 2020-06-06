@@ -44,3 +44,8 @@
 .disabled {
     display: none;
 }
+
+h2 {
+    font-family: 'Roboto';
+    font-weight: 300;
+}

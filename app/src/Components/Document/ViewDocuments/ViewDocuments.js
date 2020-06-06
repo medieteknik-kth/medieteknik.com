@@ -134,8 +134,8 @@ class ViewDocuments extends Component {
             sortValue: 'dateStart',
             orderValue: 'rising',
 
-            cardsViewSelected: true,
-            listViewSelected: false,
+            cardsViewSelected: false,
+            listViewSelected: true,
 
             query: '',
 
@@ -171,7 +171,7 @@ class ViewDocuments extends Component {
             screenWidth: window.innerWidth
         })
 
-        if (window.innerWidth < 845) {
+        if (window.innerWidth < 900) {
             this.setState({
                 cardsViewSelected: true,
                 listViewSelected: false
@@ -374,11 +374,6 @@ class ViewDocuments extends Component {
                                 documents = {this.cards}
                                 categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
-                                orderValue = {this.state.orderValue}
-                                sortValue = {this.state.sortValue}
-                                handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
-                                handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
-                                handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
                             />
                     }
                 </div>
