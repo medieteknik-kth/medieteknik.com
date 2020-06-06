@@ -35,119 +35,12 @@ import CommitteeCard from './CommitteeCard/CommitteeCard';
 import CommitteePage from '../CommitteePage/CommitteePage';
 
 export default function CommitteeList() {
-    // const [committees, setCommittees] = useState([]);
+    const [committees, setCommittees] = useState([]);
     const match = useRouteMatch();
 
-    const committees = {
-        fotogruppen: {
-            id: 1,
-            name: 'Fotogruppen',
-            logo: fotogruppenLogo,
-            pageLink: '#'
-        },
-        idrottsnamnden: {
-            id: 2,
-            name: 'Idrottsnämnden',
-            logo: idrottsnamndenLogo,
-            pageLink: '#'
-        },
-        jubileet: {
-            id: 3,
-            name: 'Jubileet',
-            logo: jubileetLogo,
-            pageLink: '#'
-        },
-        kommunikationsnamnden: {
-            id: 4,
-            name: 'Kommunikationsnämnden',
-            logo: komNLogo,
-            pageLink: '#'
-        },
-        matlaget: {
-            id: 5,
-            name: 'Matlaget',
-            logo: matlagetLogo,
-            pageLink: '#'
-        },
-        mediasBranschdag: {
-            id: 6,
-            name: 'Medias Branschdag',
-            logo: mbdLogo,
-            pageLink: '#'
-        },
-        medielabbet: {
-            id: 7,
-            name: 'Medielabbet',
-            logo: medielabbetLogo,
-            pageLink: '#'
-        },
-        metadorerna: {
-            id: 8,
-            name: 'METAdorerna',
-            logo: metadorernaLogo,
-            pageLink: '#'
-        },
-        metaspexet: {
-            id: 9,
-            name: 'METAspexet',
-            logo: metaspexetLogo,
-            pageLink: '#'
-        },
-        mediasKlubbmasteri: {
-            id: 10,
-            name: 'Medias Klubbmästeri',
-            logo: mkmLogo,
-            pageLink: '#'
-        },
-        mottagningen: {
-            id: 11,
-            name: 'Mottagningen',
-            logo: mtgnLogo,
-            pageLink: '#'
-        },
-        naringslivsgruppen: {
-            id: 12,
-            name: 'Näringslivsgruppen',
-            logo: nlgLogo,
-            pageLink: '#'
-        },
-        qulturnamnden: {
-            id: 13,
-            name: 'Qulturnämnden',
-            logo: qnLogo,
-            pageLink: '#'
-        },
-        sanglederiet: {
-            id: 14,
-            name: 'Sånglederiet',
-            logo: sanglederietLogo,
-            pageLink: '#'
-        },
-        spexmasteriet: {
-            id: 15,
-            name: 'Spexmästeriet',
-            logo: spexMLogo,
-            pageLink: '#'
-        },
-        studienamnden: {
-            id: 16,
-            name: 'Studienämnden',
-            logo: studienamndenLogo,
-            pageLink: '#'
-        },
-        styrelsen: {
-            id: 17,
-            name: 'Styrelsen',
-            logo: styrelsenLogo,
-            pageLinke: '#'
-        },
-        valberedningen: {
-            id: 18,
-            name: 'Valberedningen',
-            logo: valberedningenLogo,
-            pageLinke: '#'
-        }
-    }
+    Api.Committees.GetAll().then((data) => {
+        setCommittees(data);
+    });
 
     return (
         <Switch>
@@ -162,13 +55,13 @@ export default function CommitteeList() {
                     <div className={classes.CommitteeList}>
                         {
                             Object.keys(committees).map(committeeKey => (
-                                <CommitteeCard 
+                                <Link to={"/committees/" + committees[committeeKey].id}><CommitteeCard 
                                     key = {committees[committeeKey].id}
                                     committeeName = {committees[committeeKey].name}
                                     committeeLogo = {committees[committeeKey].logo}
                                     committeeText = {committees[committeeKey].text}
                                     committeeLink = {committees[committeeKey].pageLink}
-                                />
+                                /></Link>
                             ))
                         }
                     </div>
