@@ -1,6 +1,13 @@
 import React, { createContext, useState } from 'react';
 import LangData from '../Data/language.json'
 
+const DATE_FORMAT ={
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+};
+
 export const LocaleContext = createContext();
 
 export default function LocaleProvider(props) {
@@ -38,6 +45,18 @@ export const translate = ({se, en}) => (
     <LocaleContext.Consumer>
         {({ lang }) => {
             return lang === 'se' ? se : (( en === '' || !en ) ? se : en )
+        }}
+    </LocaleContext.Consumer>
+)
+
+// get locale corresponding to the chosen language
+// needed for dates to work correctly
+export const localeDate = (dateStr) => (
+    <LocaleContext.Consumer>
+        {({ lang }) => {
+            const loc = lang === 'se' ? 'sv-SE': 'en-GB'
+            const date = new Date(dateStr)
+            return date.toLocaleString(loc, DATE_FORMAT)
         }}
     </LocaleContext.Consumer>
 )

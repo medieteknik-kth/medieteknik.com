@@ -16,6 +16,7 @@ import PageManager from './Components/Page/PageManager';
 import UserProvider from './Contexts/UserContext';
 import Login from './Components/Login/Login';
 import Post from './Components/Post/Post';
+import Event from './Components/Event/event';
 import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
 import Playground from './Components/Playground/Playground';
@@ -56,6 +57,9 @@ export default function App() {
             </Route>
             <Route path="/posts/:id">
               <PageWithMainMenu><Post /></PageWithMainMenu>
+            </Route>
+            <Route path="/events/:id">
+              <PageWithMainMenu><Event /></PageWithMainMenu>
             </Route>
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
