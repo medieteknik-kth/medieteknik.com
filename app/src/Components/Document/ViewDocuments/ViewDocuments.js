@@ -17,8 +17,10 @@ import listViewIcon from './Assets/list_view.png';
 import gridViewIconSelected from './Assets/grid_view_selected.png';
 import listViewIconSelected from './Assets/list_view_selected.png';
 
-// Att göra:
+import Button from './Assets/ButtonRasmus';
 
+// Att göra:
+// 1. Hämta dokument från backend
 
 class ViewDocuments extends Component {
     constructor() {
@@ -292,6 +294,8 @@ class ViewDocuments extends Component {
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
+                    <Button>Ladda upp dokument +</Button>
+
                     <h2>Dokument</h2>
 
                     <div className={classes.headerRow}>
