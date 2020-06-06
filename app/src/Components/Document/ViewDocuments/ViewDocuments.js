@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+
 import classes from './ViewDocuments.module.css';
 import {quickSort} from '../../../libaries/SortDocuments.js';
 
@@ -10,10 +12,18 @@ import sampleThumbnail1 from '../Assets/testThumbnail1.png';
 import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
+    
+import gridViewIcon from './Assets/grid_view.png';
+
+import listViewIcon from './Assets/list_view.png';
+import gridViewIconSelected from './Assets/grid_view_selected.png';
+import listViewIconSelected from './Assets/list_view_selected.png';
 
 
-// --- ATT GÖRA ---
-// - Fixa så att sökmenyn hänger med även när man är funkis
+
+// Att göra:
+// 1. Hämta dokument från backend
+// 2. Gör så att gallerivy presenteras som ett grid
 
 class ViewDocuments extends Component {
     constructor() {
@@ -126,21 +136,16 @@ class ViewDocuments extends Component {
             },
             categoryTagsSelected: [],
 
-            sortValue: 'date',
-            orderValue: 'falling',
+            sortValue: 'dateStart',
+            orderValue: 'rising',
 
-            // cardsViewSelected: window.innerWidth >= 900 ? false : true,
-            // listViewSelected: window.innerWidth >= 900 ? true : false,
-            cardsViewSelected: true,
-            listViewSelected: false,
+            cardsViewSelected: false,
+            listViewSelected: true,
 
             query: '',
 
             catsViewed: 0,
             screenWidth: window.innerWidth,
-            headerRowFixed: false,
-            headerRowPlaceHolderClass: null,
-            headerRowClasses: [classes.headerRow, classes.bottomBorder]
         };
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
@@ -149,7 +154,7 @@ class ViewDocuments extends Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
 
-        this.cards = quickSort(this.cards, this.state.sortValue, this.state.orderValue);
+        this.cards = quickSort(this.cards, 'date', 'falling');
     }
 
     
@@ -171,7 +176,7 @@ class ViewDocuments extends Component {
             screenWidth: window.innerWidth
         })
 
-        if (window.innerWidth < 845) {
+        if (window.innerWidth < 900) {
             this.setState({
                 cardsViewSelected: true,
                 listViewSelected: false
@@ -274,7 +279,13 @@ class ViewDocuments extends Component {
 
     sortByChangedHandler = (sortType) => {
         this.setState({sortValue: sortType})
-        this.cards = quickSort(this.cards, sortType, this.state.orderValue);
+
+        if (sortType === 'date') {
+            this.cards = quickSort(this.cards, sortType, 'falling');
+        } else {
+            this.cards = quickSort(this.cards, sortType, 'rising');
+        }
+        // this.cards = quickSort(this.cards, sortType, this.state.orderValue);
     }
 
     sortOrderChangedHandler = (sortOrder) => {
@@ -283,102 +294,27 @@ class ViewDocuments extends Component {
     }
     
     render() {
-        if (!this.props.userIsFunkis && !this.state.headerRowFixed) {
-            this.setState({
-                headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
-                headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                headerRowFixed: true
-            })
-        }
-
-        window.addEventListener('scroll', () => {
-            
-            if (window.scrollY >= 63.5 && this.props.userIsFunkis && !this.state.headerRowFixed) {
-                console.log(window.scrollY)
-                this.setState({
-                    headerRowFixed: true,
-                    headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
-                    headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                })
-                
-            } else if (window.scrollY < 63.5 && this.props.userIsFunkis && this.state.headerRowFixed) {
-                console.log(window.scrollY)
-                this.setState({
-                    headerRowFixed: false,
-                    headerRowPlaceHolderClass: null,
-                    headerRowClasses: [classes.headerRow, classes.bottomBorder],
-                })
-                
-            }
-        })
-
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
-                    <div className= {this.state.headerRowPlaceHolderClass} />
-                    <div className={this.state.headerRowClasses.join(' ')}>
-                        <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 900 ? <i
-                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
-                                onClick={() => {
-                                    if(!this.state.cardsViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                </div>
-                                
-                                <div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                </div>
-                            </i> : null}
+                   
 
-                            {this.state.screenWidth >= 900 ? <i
-                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
-                                onClick={() => {
-                                    if(!this.state.listViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            >
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
+                    <h2>Dokument</h2>
 
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-                                
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-                            </i> : null}
-                        </div>
-                        
-                        <div className={classes.textItemsInRightHeader}>
-                            <SortBySelector 
+                    <div className={classes.headerRow}>
+                        <div className={classes.searchParameters}>
+                            <SortBySelector
                                 sortByChangedHandler = {this.sortByChangedHandler}
                                 sortValue = {this.state.sortValue}
                                 addClass = {classes.sortByStyle}
                             />
 
-                            <SortOrderSelector 
+                            {/* <SortOrderSelector 
                                 sortOrderChangedHandler = {this.sortOrderChangedHandler}
                                 orderValue =  {this.state.orderValue}
                                 addClass = {classes.sortOrderStyle}
-                            />
-                        </div>
+                            /> */}
 
-                        <div className={classes.filterAndSearchContainer}>
                             <CategoriesFilter 
                                 categories = {this.categories} 
                                 categoriesToShow = {this.state.shown}
@@ -393,11 +329,44 @@ class ViewDocuments extends Component {
                                 type="text"
                                 onKeyUp={this.handleSearch}
                                 name="name"
-                                placeholder="Sök efter dokument.."
+                                placeholder="Sök efter dokument"
                                 ref = {input => this.search = input}
                             />
+
+                            
                         </div>
-                        
+
+                        <div className={classes.viewSelected}>
+                            {this.state.screenWidth >= 900 ? 
+                                <div className={classes.tooltipGrid}>
+                                    <img 
+                                        src={this.state.cardsViewSelected ? gridViewIconSelected : gridViewIcon}
+                                        className={this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
+                                        onClick={() => {
+                                            if(!this.state.cardsViewSelected) {
+                                                this.setState({listViewSelected: !this.state.listViewSelected})
+                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                            }
+                                        }}
+                                    />
+                                    <span>Gallerivy</span>
+                                </div> : null}
+                                        
+                            {this.state.screenWidth >= 900 ?
+                                <div className={classes.tooltipList}>
+                                    <img 
+                                        src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
+                                        className={this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
+                                        onClick={() => {
+                                            if(!this.state.listViewSelected) {
+                                                this.setState({listViewSelected: !this.state.listViewSelected})
+                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                            }
+                                        }}
+                                    />
+                                    <span>Listvy</span>
+                                </div> : null}
+                        </div>
                     </div>
                     
                     {
@@ -412,11 +381,6 @@ class ViewDocuments extends Component {
                                 documents = {this.cards}
                                 categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
-                                orderValue = {this.state.orderValue}
-                                sortValue = {this.state.sortValue}
-                                handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
-                                handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
-                                handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
                             />
                     }
                 </div>

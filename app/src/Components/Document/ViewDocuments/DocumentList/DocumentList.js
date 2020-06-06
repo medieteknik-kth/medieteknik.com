@@ -24,61 +24,25 @@ const DocumentList = (props) => {
 
 
     let documentNameOrderValueClass;
-        let typeOrderValueClass;
-        let publisherOrderValueClass;
-        let dateOrderValueClass;
-
-        if (props.orderValue === "falling") {
-            documentNameOrderValueClass = classes.arrowDown;
-            typeOrderValueClass = classes.arrowDown;
-            publisherOrderValueClass = classes.arrowDown;
-            dateOrderValueClass = classes.arrowDown;
-        } else {
-            documentNameOrderValueClass = classes.arrowUp;
-            typeOrderValueClass = classes.arrowUp;
-            publisherOrderValueClass = classes.arrowUp;
-            dateOrderValueClass = classes.arrowUp;
-        }
-
-        if (props.sortValue === "alphabetical") {
-            if (typeOrderValueClass === classes.arrowDown) {
-                documentNameOrderValueClass = classes.arrowDownSelected
-            } else {
-                documentNameOrderValueClass = classes.arrowUpSelected
-            }
-        } else if (props.sortValue === "publisher") {
-            if (publisherOrderValueClass === classes.arrowDown) {
-                publisherOrderValueClass = classes.arrowDownSelected
-            } else {
-                publisherOrderValueClass = classes.arrowUpSelected
-            }
-        } else if (props.sortValue === "date") {
-            if (dateOrderValueClass === classes.arrowDown) {
-                dateOrderValueClass = classes.arrowDownSelected
-            } else {
-                dateOrderValueClass = classes.arrowUpSelected
-            }
-        }
+    let publisherOrderValueClass;
+    let dateOrderValueClass;
 
     return (
         <div className={classes.DocumentList}>              
             <table>
                 <thead>
                     <tr>
-                        <th onClick = {props.handleOrderChangeHeadAlphabetical} className={classes.catParam}>
+                        <th className={classes.catParam}>
                             Dokumentnamn
-                            <i className={documentNameOrderValueClass}></i>
                         </th>
                         <th>
                             Typ 
                         </th>
-                        <th onClick = {props.handleOrderChangeHeadPublisher} className={classes.catParam}>
-                            Uppladdat av 
-                            <i className={publisherOrderValueClass}></i>
+                        <th className={classes.catParam}>
+                            Publicerat av 
                         </th>
-                        <th onClick = {props.handleOrderChangeHeadDate} className={classes.catParam}>
+                        <th className={classes.catParam}>
                             Uppladdningsdatum
-                            <i className={dateOrderValueClass}></i>
                         </th>
                     </tr>
                 </thead>
@@ -97,11 +61,6 @@ const DocumentList = (props) => {
                                         (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
                                     }
                                 </td>
-                                {/* <td>
-                                    <div className = {classes.downloadButtonCircle}>
-                                        <i className = {classes.downloadButtonArrow}></i>
-                                    </div>
-                                </td> */}
                             </tr>
                         ))
                     }

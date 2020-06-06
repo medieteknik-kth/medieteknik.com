@@ -1,70 +1,36 @@
 .docCards {
-    padding: 10px;
-    border: 5px solid transparent;
-    border-radius: 10px;
+    padding: 15px;
+    border: 2px solid transparent;
+    border-radius: 3px;
     text-align: left;
     cursor:pointer;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 
-              0 2px 2px rgba(0,0,0,0.11), 
-              0 4px 4px rgba(0,0,0,0.11), 
-              0 6px 8px rgba(0,0,0,0.11),
-              0 8px 16px rgba(0,0,0,0.11);
-    transition: all .31s ease-in-out;
-    width: 230px;
-    margin: 10px 22px;
+    background-color: white;
+    transition: all .25s ease-in-out;
+    width: 210px;
+    margin: 5px 25px 25px 25px;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
+    height: 311px;
+    overflow: hidden;
 }
 
-.textContent h5 {
+.docCards img {
+    transform: scale(1.15);
+}
+
+h4 {
+	font-size: 20px;
+    font-weight: 550;
+    text-transform: none;
+    padding: 0;
+}
+
+
+h5 {
     color: #c7c7c7;
-}
-
-
-@media (max-width: 908px) and (min-width: 736px) {
-    .docCards {
-        width: 30%;
-        text-align: center;
-    }
-
-    .textContent {
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 735px) and (min-width: 651px) {
-    .docCards {
-        width: 80%;
-        text-align: center;
-    }
-
-    .textContent {
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 650px) and (min-width: 481px) {
-    .docCards {
-        width: 70%;
-        text-align: center;
-        display: block;
-    }
-
-    .textContent {
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 480px) {
-    .docCards {
-        width: 75%;
-        text-align: center;
-    }
-
-    .textContent {
-        margin: 0 auto;
-    }
+    padding-left: 42px;
+    text-transform: uppercase;
+    font-size: 12px;
 }
 
 .docCards h3 {
@@ -73,9 +39,10 @@
 
 .docCards p {
     color: #a0a0a0;
+    font-size: 12px;
 }
 
 .docCards:hover {
-    border: 5px solid #f0c900;
-    transform: scale(1.05);
+    border: 2px solid #f0c900;
+    transform: scale(1.02);
 }

@@ -6,114 +6,40 @@
 .DocumentList table {
     margin: 10px auto;
     text-align: left;
-    width: 97%;
+    width: 85%;
     border-collapse: separate; 
     border-spacing: 0 0px;
     
 }
 
 .DocumentList tr {
-    line-height: 35px;
+    line-height: 10px;
+    font-family: 'Roboto';
+    font-weight: 300;
 }
 
 .DocumentList tr td{
-    border-bottom: 3px solid transparent;
-    border-top: 3px solid transparent;
-}
-
-.DocumentList tbody tr:nth-child(odd) {
-    background: hsla(0, 0%, 77%, 0.204);
+    border-bottom: 5px solid #f0f0f0;
+    border-top: 5px solid #f0f0f0;
+    border-left: 0;
+    border-right: 0;
+    background-color: #fff;
+    transition: .2s;
 }
 
 .DocumentList tbody tr:hover td{
-    border-bottom: 3px solid #f0c900;
+    /* border-bottom: 3px solid #f0c900; */
     cursor: pointer;
-    background-color: #fff4bd
+    /* background-color: #dadada; */
+    color: #fff;
+    background-color: #f0c900;
 }
 
-.DocumentList th img {
-    width: 12px;
-}
-
-.arrowUpSelected {
-    border: solid #f0c900;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    margin-left: 5px;
-}
-
-.arrowDownSelected {
-    border: solid #f0c900;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    margin-left: 5px;
-}
-
-.arrowUp {
-    border: solid #ccc;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    margin-left: 5px;
-}
-
-.arrowDown {
-    border: solid #ccc;
-    border-width: 0 4px 4px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    margin-left: 5px;
-}
-
-.downloadButtonCircle {
-    width: 25px;
-    height: 25px;
-    border: 2px solid #1f1f1f;
-    border-radius: 50%;
-    position: relative;
-    transition: .3s;
-}
-
-.downloadButtonCircle:hover {
-    border-color: #fff;
-}
-
-.downloadButtonCircle:hover .download-btn-arrow{
-    border-color: #fff;
-}
-
-.downloadButtonArrow {
-    border: solid #1f1f1f;
-    position: absolute;
-    left: 7px;
-    top: 5px;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 4px;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    transition: .3s;
-}
-
-.catParam {
-    cursor: pointer;
-    user-select: none;
-}
-
-.catParam:hover {
-    color: #ccc;
-}
-
-.notClickable {
-    color: #1f1f1f;
+.DocumentList th {
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 12px;
+    color: #c4c4c4;
+    padding-left: 15px;
+    padding-bottom: 10px;
 }

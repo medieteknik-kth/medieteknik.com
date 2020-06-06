@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import Api from '../../Utility/Api';
 
-import CommitteePage from './CommitteePage';
+// import CommitteePage from './CommitteePage';
 import ManageMembers from './ManageMembers';
 
 export default function CommitteeList() {
@@ -27,7 +27,7 @@ export default function CommitteeList() {
         <ManageMembers />
       </Route>
       <Route path={`${match.path}/:committeeId`}>
-        <CommitteePage />
+        {/* <CommitteePage /> */}
       </Route>
       <Route path={match.path}>
         <div>

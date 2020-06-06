@@ -7,10 +7,10 @@ import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 const SortBySelector = (props) => {
     let dropdownTitle = '';
 
-    if (props.sortValue === "dateStart" || props.sortValue === "date") {
+    if (props.sortValue === "dateStart") {
+        dropdownTitle = 'Sortera efter';
+    } else if (props.sortValue === "date") {
         dropdownTitle = 'Uppladdningsdatum';
-    } else if (props.sortValue === "type") {
-        dropdownTitle = 'Typ';
     } else if (props.sortValue === "publisher") {
         dropdownTitle = 'Uppladdat av';
     } else if (props.sortValue === "alphabetical") {
@@ -30,7 +30,7 @@ const SortBySelector = (props) => {
                 </p>
 
                 <p onClick = {() => props.sortByChangedHandler("publisher")}>
-                    Uppladdat av
+                    Publicerat av
                 </p>
 
                 <p onClick = {() => props.sortByChangedHandler("date")}>
