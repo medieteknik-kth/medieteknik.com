@@ -5,7 +5,7 @@ from flask import (
     jsonify,
     request,
 )
-from app.documents.document_functions import save_documents, get_documents
+#from app.documents.document_functions import save_documents, get_documents
 #Den filen verkar inte användas
 app = Flask(__name__)
 

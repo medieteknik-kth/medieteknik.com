@@ -1,18 +1,28 @@
-import React, { PropTypes } from 'react';
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import UserCardTextbox from './UserCardTextbox.jsx';
 
 import './UserCard.css';
 
-export default function UserCard({ user, subtitle, email }) {
+export default function UserCard({
+  user, subtitle, email,
+}) {
+  const [activeUser, setActiveUser] = useState(user);
+
   return (
     <div className="userCard">
       <img
         className="userImage"
-        src={user.profilePicture}
-        alt={`${user.firstName} ${user.lastName}`}
+        src={activeUser.profilePicture}
+        alt={`${activeUser.firstName} ${activeUser.lastName}`}
       />
       <div className="userCardBanner">
-        <UserCardTextbox user={user} subtitle={subtitle} email={email} />
+        <UserCardTextbox
+          user={activeUser}
+          subtitle={subtitle}
+          email={email}
+        />
       </div>
     </div>
   );

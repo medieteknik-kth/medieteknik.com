@@ -42,6 +42,15 @@ class CommitteePost(db.Model):
             "isOfficial": self.is_official,
             "currentTerms": terms
         }
+    
+    def to_dict_without_terms(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.officials_email,
+            "committeeId": self.committee_id,
+            "isOfficial": self.is_official
+        }
 
 class CommitteePostTerm(db.Model):
     __tablename__ = "committee_post_term"

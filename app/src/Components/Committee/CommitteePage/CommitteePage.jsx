@@ -1,22 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 
 import Api from '../../Utility/Api';
 import UserCard from '../UserCard/UserCard';
-import Page from '../Page/Page';
+import BasePage from '../Page/BasePage';
+import { UserContext } from '../../Contexts/UserContext';
 
 import './CommitteePage.css';
+import { LocaleContext } from '../../Contexts/LocaleContext';
 
 export default function CommitteePage() {
   const { committeeId } = useParams();
 
+  const { user } = useContext(UserContext);
+  const { lang } = useContext(LocaleContext);
+
   const [committee, setCommittee] = useState({});
   const [posts, setPosts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+
   const [content, setContent] = useState('');
   const [oldContent, setOldContent] = useState(null);
+
+  const editingAllowed = user == null ? false : user.committeePostTerms.some((term) => term.post.committeeId === committee.id);
 
   const quillRef = null;
 
@@ -25,14 +33,13 @@ export default function CommitteePage() {
       .then((data) => {
         setCommittee(data);
         setPosts(data.posts);
-        posts.map((post) => (post.currentTerms.map((term) => console.log(term.user))));
         if (data.page) {
           try {
-            const contentData = JSON.parse(data.page.content);
+            const contentData = JSON.parse(lang === 'se' ? data.page.content_sv : data.page.content_en);
             setContent(contentData);
             setOldContent(contentData);
           } catch (error) {
-            setOldContent('');
+            setOldContent(null);
             console.error(error);
           }
         }
@@ -50,7 +57,8 @@ export default function CommitteePage() {
             // TODO: Meddelande att allt gått bra
             setOldContent(content);
           }).catch((error) => {
-            // TODO: Meddelande att något gick snett
+            alert('Kunde inte spara sida.');
+            setIsEditing(true);
             console.error(error);
           });
         }
@@ -74,14 +82,18 @@ export default function CommitteePage() {
           { backgroundImage: `url('${committee.header_image}')` }
         }
       >
-        <button type="button" className="committeePageEditButton" onClick={didPressEditButton}>
-          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
-        </button>
+        {editingAllowed
+          ? (
+            <button type="button" className="committeePageEditButton" onClick={didPressEditButton}>
+              <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
+            </button>
+          )
+          : <div />}
         <span className="committeePageHeaderText">{committee.name}</span>
       </div>
       <div className="committeePageContent content">
         { oldContent !== null
-          ? <Page initialContent={oldContent} isEditing={isEditing} onChange={onChange} />
+          ? <BasePage initialContent={oldContent} isEditing={isEditing} onChange={onChange} />
           : <div />}
       </div>
       <div
