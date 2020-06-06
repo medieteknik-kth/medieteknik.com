@@ -4,7 +4,12 @@ import classes from './CommitteeCard.module.css';
 
 const CommitteeCard = (props) => {
     return (
-        <div className={classes.CommitteeCard}>
+        <div 
+            className={classes.CommitteeCard}
+            onClick={() => {
+                // Skicka till "props.committeeLink"
+            }}
+        >
             <img src={props.committeeLogo}/>
             <p>{props.committeeName}</p>
         </div>

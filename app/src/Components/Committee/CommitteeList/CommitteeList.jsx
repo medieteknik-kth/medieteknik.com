@@ -42,92 +42,110 @@ export default function CommitteeList() {
         fotogruppen: {
             id: 1,
             name: 'Fotogruppen',
-            logo: fotogruppenLogo
+            logo: fotogruppenLogo,
+            pageLink: '#'
         },
         idrottsnamnden: {
             id: 2,
             name: 'Idrottsnämnden',
-            logo: idrottsnamndenLogo
+            logo: idrottsnamndenLogo,
+            pageLink: '#'
         },
         jubileet: {
             id: 3,
             name: 'Jubileet',
-            logo: jubileetLogo
+            logo: jubileetLogo,
+            pageLink: '#'
         },
         kommunikationsnamnden: {
             id: 4,
             name: 'Kommunikationsnämnden',
-            logo: komNLogo
+            logo: komNLogo,
+            pageLink: '#'
         },
         matlaget: {
             id: 5,
             name: 'Matlaget',
-            logo: matlagetLogo
+            logo: matlagetLogo,
+            pageLink: '#'
         },
         mediasBranschdag: {
             id: 6,
             name: 'Medias Branschdag',
-            logo: mbdLogo
+            logo: mbdLogo,
+            pageLink: '#'
         },
         medielabbet: {
             id: 7,
             name: 'Medielabbet',
-            logo: medielabbetLogo
+            logo: medielabbetLogo,
+            pageLink: '#'
         },
         metadorerna: {
             id: 8,
             name: 'METAdorerna',
-            logo: metadorernaLogo
+            logo: metadorernaLogo,
+            pageLink: '#'
         },
         metaspexet: {
             id: 9,
             name: 'METAspexet',
-            logo: metaspexetLogo
+            logo: metaspexetLogo,
+            pageLink: '#'
         },
         mediasKlubbmasteri: {
             id: 10,
             name: 'Medias Klubbmästeri',
-            logo: mkmLogo
+            logo: mkmLogo,
+            pageLink: '#'
         },
         mottagningen: {
             id: 11,
             name: 'Mottagningen',
-            logo: mtgnLogo
+            logo: mtgnLogo,
+            pageLink: '#'
         },
         naringslivsgruppen: {
             id: 12,
             name: 'Näringslivsgruppen',
-            logo: nlgLogo
+            logo: nlgLogo,
+            pageLink: '#'
         },
         qulturnamnden: {
             id: 13,
             name: 'Qulturnämnden',
-            logo: qnLogo
+            logo: qnLogo,
+            pageLink: '#'
         },
         sanglederiet: {
             id: 14,
             name: 'Sånglederiet',
-            logo: sanglederietLogo
+            logo: sanglederietLogo,
+            pageLink: '#'
         },
         spexmasteriet: {
             id: 15,
             name: 'Spexmästeriet',
-            logo: spexMLogo
+            logo: spexMLogo,
+            pageLink: '#'
         },
         studienamnden: {
             id: 16,
             name: 'Studienämnden',
-            logo: studienamndenLogo
+            logo: studienamndenLogo,
+            pageLink: '#'
         },
         styrelsen: {
             id: 17,
             name: 'Styrelsen',
-            logo: styrelsenLogo
+            logo: styrelsenLogo,
+            pageLinke: '#'
         },
         valberedningen: {
             id: 18,
             name: 'Valberedningen',
-            logo: valberedningenLogo
+            logo: valberedningenLogo,
+            pageLinke: '#'
         }
     }
 
@@ -149,6 +167,7 @@ export default function CommitteeList() {
                                     committeeName = {committees[committeeKey].name}
                                     committeeLogo = {committees[committeeKey].logo}
                                     committeeText = {committees[committeeKey].text}
+                                    committeeLink = {committees[committeeKey].pageLink}
                                 />
                             ))
                         }
