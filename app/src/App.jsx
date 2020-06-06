@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import 'circular-std';
+// import 'circular-std';
 import 'normalize.css';
 import './Components/Common/Typography.css';
 import './Components/Common/Content.css';
@@ -11,7 +11,7 @@ import LandingPage from './Components/LandingPage/LandingPage';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Documents from './Components/Document/Document';
-import CommitteeList from './Components/Committee/CommitteeList';
+import CommitteeList from './Components/Committee/CommitteeList/CommitteeList';
 import PageManager from './Components/Page/PageManager';
 import UserProvider from './Contexts/UserContext';
 import Login from './Components/Login/Login';
