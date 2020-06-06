@@ -149,7 +149,7 @@ class ViewDocuments extends Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
 
-        this.cards = quickSort(this.cards, this.state.sortValue, this.state.orderValue);
+        this.cards = quickSort(this.cards, 'date', 'falling');
     }
 
     
