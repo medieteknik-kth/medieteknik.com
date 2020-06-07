@@ -9,6 +9,10 @@ from api.resources.authentication import requires_auth
 class PageResource(Resource):
     def get(self, id):
         page = Page.query.get(id)
+
+        if page == None:
+            page = Page.query.filter(Page.slug==id).first()
+
         return jsonify(page.to_dict())
     
     @requires_auth
@@ -32,7 +36,9 @@ class PageResource(Resource):
             properties:
               title:
                 type: string
-              content:
+              content_sv:
+                type: string
+              content_en:
                 type: string
               published:
                 type: boolean
@@ -54,8 +60,10 @@ class PageResource(Resource):
         
         if "title" in keys:
             revision.title = request.json["title"]
-        if "content" in keys:
-            revision.content = request.json["content"]
+        if "content_sv" in keys:
+            revision.content_sv = request.json["content_sv"]
+        if "content_en" in keys:
+            revision.content_en = request.json["content_en"]
         if "published" in keys:
             revision.published = request.json["published"]
 
@@ -150,8 +158,10 @@ class PageListResource(Resource):
         
         if "title" in keys:
             revision.title = request.json["title"]
-        if "content" in keys:
-            revision.content = request.json["content"]
+        if "content_sv" in keys:
+            revision.content_sv = request.json["content_sv"]
+        if "content_en" in keys:
+            revision.content_en = request.json["content_en"]
         if "published" in keys:
             revision.published = request.json["published"]
 

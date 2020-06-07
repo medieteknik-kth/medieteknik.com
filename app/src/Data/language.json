@@ -27,6 +27,10 @@
         "manage": {
             "se": "Hantera",
             "en": "Hantera"
+        },
+        "page_not_found": {
+            "se": "Kunde inte hitta sida",
+            "en": "Could not find page"
         }
     },
     "form": {
@@ -110,5 +114,15 @@
             "se": "Bildgalleri",
             "en": "Gallery"
         }
+    },
+    "footer": {
+        "contact": {
+            "se": "Kontakt",
+            "en": "Contact"
+        },
+        "follow": { 
+            "se": "Följ Medieteknik", 
+            "en": "Follow Media Technology"
+        }       
     }
 }

@@ -74,6 +74,10 @@
   cursor: pointer;
 }
 
+.localeButton {
+  font-weight: bold;
+}
+
 .buttonTitle {
   padding-left: 45px;
   padding-right: 45px;
@@ -114,7 +118,11 @@
   margin-top: 80px;
 }
 
-@media screen and (min-width: 920px) {
+.container {
+  flex: 1;
+}
+
+@media screen and (min-width: 960px) {
   .expandButton {
     display: none;
   }

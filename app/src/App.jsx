@@ -1,27 +1,29 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import 'circular-std';
+// import 'circular-std';
 import 'normalize.css';
 import './Components/Common/Typography.css';
 import './Components/Common/Content.css';
 
 import PageWithMainMenu from './Components/MainMenu/MainMenu';
 import LandingPage from './Components/LandingPage/LandingPage';
-import NotFound from './Components/NotFound/NotFound';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Documents from './Components/Document/Document';
-import CommitteeList from './Components/Committee/CommitteeList';
+import CommitteeList from './Components/Committee/CommitteeList/CommitteeList';
 import PageManager from './Components/Page/PageManager';
 import UserProvider from './Contexts/UserContext';
 import Login from './Components/Login/Login';
 import Post from './Components/Post/Post';
+import Event from './Components/Event/event';
 import Feed from './Components/Feed/Feed';
 import LocaleProvider from './Contexts/LocaleContext';
 import Playground from './Components/Playground/Playground';
+import Footer from './Components/Footer/Footer';
 import Gallery from './Components/Gallery/Gallery';
 import Album from './Components/Gallery/Album/Album';
+import Page from './Components/Page/Page';
 
 export default function App() {
   return (
@@ -56,6 +58,9 @@ export default function App() {
             <Route path="/posts/:id">
               <PageWithMainMenu><Post /></PageWithMainMenu>
             </Route>
+            <Route path="/events/:id">
+              <PageWithMainMenu><Event /></PageWithMainMenu>
+            </Route>
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
             </Route>
@@ -65,10 +70,12 @@ export default function App() {
             <Route path="/album/:id">
               <PageWithMainMenu><Album /></PageWithMainMenu>
             </Route>
-            <Route match="*">
-              <PageWithMainMenu><NotFound /></PageWithMainMenu>
-            </Route>
+            <Route
+              path="/:pageSlug"
+              render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
+            />
           </Switch>
+          <Footer/>
         </UserProvider>
       </LocaleProvider>
     </Router>
