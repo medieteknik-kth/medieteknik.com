@@ -36,19 +36,6 @@ export default function PublishDocuments() {
     const [categoriesList, setCategoriesList] = useState([]);
     const [categoriesToUse, setCategoriesToUse] = useState({});
 
-    // const [categoriesToUse, setCategoriesToUse] = useState({
-    //     "Styrelsemötesprotokoll": false,
-    //     "SM-protokoll": false,
-    //     "Blanketter": false,
-    //     "Mallar": false,
-    //     "Budget/Ekonomi": false,
-    //     "Policys/Reglemente/Stadgar": false,
-    //     "Fakturor": false,
-    //     "Övrigt": false
-    // })
-
-
-
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
@@ -116,7 +103,7 @@ export default function PublishDocuments() {
                             .then((response) => response.json())
                             .then((result) => {
                                 console.log('Success:', result);
-                                console.log(formData.getAll("thumbnail")[0])
+                                // console.log(formData.getAll("thumbnail")[0])
                                 console.log(formData.getAll("tags")[0])
                             })
                             .catch((error) => {

@@ -13,7 +13,7 @@ const DocumentList = (props) => {
             .filter(_document => {
                 let renderDocument = false;
                 _document.doctags.forEach(documentTag => {
-                    if (props.categoriesToShow.includes(documentTag.trim())) {
+                    if (props.categoriesToShow.includes(documentTag.toString().trim())) {
                         renderDocument = true;
                     }
                 })
@@ -42,7 +42,7 @@ const DocumentList = (props) => {
                             Publicerat av 
                         </th>
                         <th className={classes.catParam}>
-                            Uppladdningsdatum
+                            Publiceringssdatum
                         </th>
                     </tr>
                 </thead>
@@ -50,7 +50,7 @@ const DocumentList = (props) => {
                 <tbody>
                     {
                         documentsToRender.map(category => (
-                            <tr key={category.publishDate}>
+                            <tr key={category.docId}>
                                 <td>{category.headingText}</td>
                                 <td>{category.doctags.toString()}</td>
                                 <td>{category.publisher}</td>
