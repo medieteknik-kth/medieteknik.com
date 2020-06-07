@@ -19,13 +19,25 @@ import listViewIcon from './Assets/list_view.png';
 import gridViewIconSelected from './Assets/grid_view_selected.png';
 import listViewIconSelected from './Assets/list_view_selected.png';
 
-
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
 // Att göra:
 // 1. Hämta dokument från backend
 // 2. Gör så att gallerivy presenteras som ett grid
 
 class ViewDocuments extends Component {
+    // Funkar detta tro? Glöm ej att stara backend
+    componentDidMount() {
+        fetch(API_BASE_URL + 'documents')
+            .then(response => response.json())
+            .then(jsonObject => {
+                jsonObject.documents.map(doc => {
+                    console.log(doc);
+                })
+                console.log(jsonObject);
+            });
+    };
+
     constructor() {
         super();
         window.addEventListener('resize', this.handleResize);
