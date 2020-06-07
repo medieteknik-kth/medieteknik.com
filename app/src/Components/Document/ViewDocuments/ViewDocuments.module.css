@@ -258,7 +258,7 @@ h2 {
 
 /* RESPONSIVE */
 
-@media (max-width: 715px) {
+@media (max-width: 899px) {
     .searchParameters {
         width: 100%;
     }
@@ -269,7 +269,7 @@ h2 {
         float: initial;
         margin-left: auto;
         margin-right: auto;
-        width: 215px;
+        width: 245px;
     }
 
     .dropdownFilterStyle {
@@ -280,11 +280,12 @@ h2 {
         margin-left: auto;
         margin-right: auto;
         border-right: 20px solid #f0f0f0;
-        width: 195px;
+        width: 225px;
     }
 
     .searchDoc {
         display: block;
+        padding-right: 40px;
         float: initial;
         clear: both;
         margin: 15px 0;

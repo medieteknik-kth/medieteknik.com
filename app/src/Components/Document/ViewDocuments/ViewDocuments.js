@@ -19,7 +19,7 @@ import listViewIcon from './Assets/list_view.png';
 import gridViewIconSelected from './Assets/grid_view_selected.png';
 import listViewIconSelected from './Assets/list_view_selected.png';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+const API_BASE_URL = 'https://api.medieteknik.com/'; //process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
 // Att göra:
 // 1. Hämta dokument från backend
@@ -34,7 +34,6 @@ class ViewDocuments extends Component {
                 jsonObject.documents.map(doc => {
                     console.log(doc);
                 })
-                console.log(jsonObject);
             });
     };
 
