@@ -14,7 +14,12 @@ function GetApiObject(resource) {
         headers: {
           token,
         },
-      }).then((response) => response.json());
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      });
     },
     Update(id, data, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
