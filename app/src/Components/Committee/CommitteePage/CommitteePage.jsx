@@ -24,7 +24,7 @@ export default function CommitteePage() {
   const [content, setContent] = useState('');
   const [oldContent, setOldContent] = useState(null);
 
-  const editingAllowed = user == null ? false : user.committeePostTerms.some((term) => term.post.committeeId === committee.id);
+  const editingAllowed = (user !== null);
 
   const quillRef = null;
 
