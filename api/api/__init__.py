@@ -153,14 +153,128 @@ def route_create_all():
     db.drop_all()
     db.create_all()
 
+    def create_committee(name, logo_name, has_banner = False):
+        committee = Committee()
+        committee.name = name
+        committee.logo = "/static/committees/" + logo_name + ".png"
+        if has_banner:
+            committee.header_image = "/static/committee_banners/" + logo_name + ".jpg"
+        db.session.add(committee)
+        return committee
+    
+    def create_post(committee, post_name, category):
+        post = CommitteePost()
+        post.name = post_name
+        post.committee = committee
+        post.is_official = True
+        post.category = category
+        db.session.add(post)
+        return post
 
-    joppe = User()
+    def create_official(first_name, last_name, post, follows_operational_year, picture_name = None):
+        user = User()
+        user.first_name = first_name
+        user.last_name = last_name
+
+        if picture_name != None:
+            user.profile_picture = "/static/profiles/" + picture_name + ".jpg"
+
+        if follows_operational_year:
+            user.post_terms.append(post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2021, 6, 30)))
+        else:
+            user.post_terms.append(post.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31)))
+        db.session.add(user)
+        return user
+
+    def add_post_to_user(user, post, follows_operational_year):
+        if follows_operational_year:
+            user.post_terms.append(post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2021, 6, 30)))
+        else:
+            user.post_terms.append(post.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31)))
+
+    mkm = create_committee("Medias Klubbmästeri", "mkm", True)
+    kbm = create_post(mkm, "Klubbmästare", "Studiesocialt")
+    create_official("Hilda", "Robertsson", kbm, True, "Hilda")
+    create_official("Amalia", "Berglöf", kbm, True, "Amalia")
+
+    styrelsen = create_committee("Styrelsen", "styrelsen", True)
+    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "Styrelsen"), True, "Oliver")
+    create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande", "Styrelsen"), False, "My")
+    sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör", "Styrelsen"), True, "Sandra")
+    jessie = create_official("Jessie", "Liu", create_post(styrelsen, "Sekreterare", "Styrelsen"), False, "Jessie")
+    create_official("Lina", "Bengtsson", create_post(styrelsen, "Ledamot för Utbildningsfrågor", "Styrelsen"), True, "Lina")
+    create_official("Samuel", "Kraft", create_post(styrelsen, "Ledamot för Studiesocialt", "Styrelsen"), True, "kraft")
+    create_official("Hanna", "Bjarre", create_post(styrelsen, "Ledamot för Näringsliv- och kommunikation", "Styrelsen"), True, "Hanna")
+
+    create_official("Moa", "Engquist", create_post(create_committee("Jubileet", "jubileet", True), "Jubelgeneral", "Studiesocialt"), True, "Moa")
+    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna", "metadorerna"), "Sektionslokalsansvarig", "Studiesocialt"), True, "Johanna_N")
+    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet", "spexm"), "Spexmästare", "Studiesocialt"), True, "Johanna_S")
+    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet", "sanglederiet"), "Öfversångledare", "Studiesocialt"), False, "kraft")
+    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet", "medielabbet"), "Medielabbets Ordförande", "Studiesocialt"), True)
+    fotogruppsansvarig = create_post(create_committee("Fotogruppen", "fotogruppen"), "Fotogruppsansvarig", "Studiesocialt")
+    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden", "idrottsnamnden"), "Idrottsnämndsordförande", "Studiesocialt"), True, "Andreas")
+    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden", "qn"), "Qulturnämndsordförande", "Studiesocialt"), False, "Hoffe")
+    
+    mtgn = create_committee("Mottagningen", "mtgn", True)
+    oph = create_post(mtgn, "Öfverphös", "Studiesocialt")
+    create_official("Kajsa", "Saare", oph, False, "Kajsa")
+    add_post_to_user(sandra, oph, False)
+    create_official("Gabriella", "Dalman", oph, False)
+    
+    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget", "matlaget"), "Mästerkocken", "Studiesocialt"), True, "Amanda_A")
+    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker", "medieteknik"), "Ljud- och ljustekniker", "Studiesocialt"), True, "Oskar")
+    
+    are = create_committee("spÅre", "medieteknik")
+    ursparare = create_post(are, "UrSpårare", "Studiesocialt")
+    create_official("John", "Brink", ursparare, True, "John")
+    erik = create_official("Erik", "Meurk", ursparare, True, "Erik")
+    simon = create_official("Simon", "Sundström", ursparare, True, "Simon")
+
+    add_post_to_user(erik, create_post(create_committee("Kommunikationsnämnden", "komn"), "Kommunikatör", "Näringsliv- och kommunikation"), True)
+
+    nlgordf = create_post(create_committee("Näringslivsgruppen", "nlg"), "Näringslivsansvarig", "Näringsliv- och kommunikation")
+    create_official("Johanna", "Iivanainen", nlgordf, True, "Johanna_I")
+    create_official("Anna", "Gustavsson", nlgordf, True)
+
+    branchdagen = create_post(create_committee("Medias Branschdag", "mbd"), "Projektledare för Branschdagen", "Näringsliv- och kommunikation")
+    rasmus = create_official("Rasmus", "Rudling", branchdagen, True, "Rasmus")
+    ellaklara = create_official("Ella Klara", "Westerlund", branchdagen, True, "Ella_Klara")
+
+    joppe = create_official("Jesper", "Lundqvist", create_post(create_committee("Webmaster", "medieteknik"), "Webmaster", "Näringsliv- och kommunikation"), False)
+    
+    studie = create_committee("Studienämnden", "studienamnden")
+    create_official("Sofia", "Lundin Ziegler", create_post(studie, "Studienämndsordförande", "Utbildning"), True, "Sofia_L")
+    create_official("Amanda", "Andrén", create_post(studie, "Programansvarig student", "Utbildning"), False, "Amanda_A")
+    create_official("Nina", "Nokelainen", create_post(studie, "Studerandeskyddsombud", "Utbildning"), True, "Nina")
+    create_official("Christoffer", "Vikström", create_post(studie, "Jämlikhets- och mångfaldsombud", "Utbildning"), True)
+    add_post_to_user(simon, create_post(create_committee("Internationell Samordnare", "medieteknik"), "Internationella nämnden", "Utbildning"), True)
+    
+    val = create_committee("Valberedningen", "valberedningen")
+    create_official("Mimmi", "Andreasson", create_post(val, "Valberedningens Ordförande", "Valberedningen"), True, "Mimmi")
+    valberedare = create_post(val, "Valberedare", "Valberedningen")
+    create_official("Anja", "Studic", valberedare, True)
+    create_official("Nathalie", "Lock", valberedare, True, "Nathalie")
+    create_official("Alex", "Modee", valberedare, True)
+    create_official("Emma", "Hagrot", valberedare, False, "Emma")
+    create_official("Anna", "Eckernäs", valberedare, False)
+    create_official("Saga", "Palmér", valberedare, False, "Saga")
+
+    revisor = create_post(create_committee("Revisorerna", "medieteknik"), "Revisor", "Revisorerna")
+    kristina = create_official("Kristina", "Andersson", revisor, True)
+    create_official("Mahmoud", "Sherzad", revisor, True, "Mood")
+
+    fanborg = create_post(create_committee("Fanborgen", "medieteknik"), "Fanbärare", "Fanborgen")
+    create_official("Sofia", "Blomgren", fanborg, True, "Sofia_B")
+    create_official("Emil", "Erlandsson", fanborg, True), "Emil"
+
+
     joppe.email = "jeslundq@kth.se"
     joppe.kth_id = "u1veo32n"
     joppe.first_name = "Jesper"
     joppe.last_name = "Lundqvist"
     joppe.frack_name = "Joppe"
     joppe.kth_year = 2016
+    joppe.profile_picture = "/static/profiles/Jesper.jpg"
     joppe.facebook = "https://www.facebook.com/jesperlndqvist"
     joppe.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
 
@@ -172,7 +286,6 @@ def route_create_all():
     mikaela.frack_name = "Mickan"
     mikaela.kth_year = 2018
 
-    rasmus = User()
     rasmus.email = "rrudling@kth.se"
     rasmus.kth_id = "u1dgt6op"
     rasmus.first_name = "Rasmus"
@@ -195,14 +308,12 @@ def route_create_all():
     fredrik.frack_name = "Foppe"
     fredrik.kth_year = 2016
 
-    jessie = User()
     jessie.email = "jessieli@kth.se"
     jessie.kth_id = "u1nv9g8f"
     jessie.first_name = "Jessie"
     jessie.last_name = "Liu"
     jessie.kth_year = 2018
 
-    kristina = User()
     kristina.email = "kan2@kth.se"
     kristina.kth_id = "u166gwua"
     kristina.first_name = "Kristina"
@@ -217,7 +328,6 @@ def route_create_all():
     albin.last_name = "Matson Gyllang"
     albin.kth_year = 2017
 
-    ellaklara = User()
     ellaklara.email = "ekwe@kth.se"
     ellaklara.kth_id = "u1a6m9eb"
     ellaklara.first_name = "Ella Klara"
@@ -231,10 +341,14 @@ def route_create_all():
     committee1.description = "Vi bygger sektionens nästa hemsida."
     committee1.instagram_url = "https://www.instagram.com/medieteknik_kth/"
 
+    committee2 = Committee()
+    committee2.name = "Mottagningen"
+
     post = CommitteePost()
     post.name = "Projektledare för Hemsidan"
     post.committee = committee1
     post.is_official = True
+    post.category = "Näringsliv- och kommunikation"
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
     
     post2 = CommitteePost()
@@ -248,6 +362,8 @@ def route_create_all():
     kristina.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     albin.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     ellaklara.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
+
+    mikaela.post_terms.append(fotogruppsansvarig.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 6, 30)))
 
     joppe.post_terms.append(term1)
     

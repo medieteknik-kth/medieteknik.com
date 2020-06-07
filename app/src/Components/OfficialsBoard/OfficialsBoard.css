@@ -1,3 +1,131 @@
+#officialsBoard {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-gap: 2vh;
+
+  margin-top: 150px;
+  margin-right: 20px;
+  margin-left: 20px;
+
+  border: 4px solid #f0c900;
+}
+
+.officialsBoardHeader {
+  font-family: CircularStd, sans-serif;
+  text-transform: uppercase;
+
+  margin-top: 2vh;
+  margin-bottom: 1vh;
+
+  grid-column: 3 / span 2;
+  justify-items: end;
+  font-size: 7vw;
+}
+
 .committeeHeader {
-    text-align: center;
+  text-transform: uppercase;
+  margin-top: 20px;
+  line-height: 1;
+  font-size: 5vw;
+  color: #f0c900;
+}
+.committeeMail {
+  text-transform: uppercase;
+}
+#officialCategory {
+  grid-column: 2/10;
+}
+
+/* SPECIFIC STYLING FOR PHONES*/
+@media only screen and (min-device-width: 260px) and (max-device-width: 480px) {
+  .committeeHeader {
+    font-size: 6.5vw;
+    padding: 0px;
+    margin-left: 5%;
+    margin-bottom: 1rem;
+  }
+  .committeeMail {
+    font-size: 3vw;
+    margin-left: 5%;
+    margin-bottom: 2rem;
+  }
+  .userListOfficial {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 0.45fr));
+  }
+  .officialsBoardHeader {
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    grid-column: 3;
+    justify-items: end;
+    font-size: 8vw !important;
+  }
+}
+/* SPECIFIC STYLING FOR TABLETS*/
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) {
+  .committeeHeader {
+    font-size: 6vw;
+    padding: 0px;
+    margin-left: 5%;
+    margin-bottom: 1rem;
+  }
+  .committeeMail {
+    font-size: 3vw;
+    margin-left: 5%;
+    margin-top: 0.2rem;
+  }
+  .userListOfficial {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 0.3fr));
+    margin-left: 5%;
+  }
+  .officialsBoardHeader {
+    text-transform: uppercase;
+
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+
+    grid-column: 4;
+    justify-items: end;
+    font-size: 8vw !important;
+  }
+  .titleHeader {
+    font-size: 1.5vw;
+  }
+}
+
+/* SPECIFIC STYLING FOR LARGER SCREENS (desktops etc)*/
+@media only screen and (min-device-width: 1025px) {
+  .committeeHeader {
+    font-size: 4.5vw;
+    padding: 0px;
+    margin-left: 5%;
+    margin-bottom: 1rem;
+  }
+  .committeeMail {
+    font-size: 2.5vw;
+    margin-left: 5%;
+    margin-top: 0.2rem;
+  }
+  .userListOfficial {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 0.15fr));
+    margin-left: 5%;
+  }
+  .officialsBoardHeader {
+    text-transform: uppercase;
+
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+
+    grid-column: 4;
+    justify-items: end;
+    font-size: 8vw !important;
+  }
+  .titleHeader {
+    font-size: 1vw;
+  }
+  .userName {
+    font-size: 1.3vw;
+  }
 }
