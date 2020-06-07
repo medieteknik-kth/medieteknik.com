@@ -18,7 +18,7 @@ function GetApiObject(resource) {
     },
     Update(id, data, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
           'Content-Type': 'application/json',
           token,
@@ -28,7 +28,7 @@ function GetApiObject(resource) {
     },
     Create(data, token = window.localStorage.getItem('user_token')) {
       return fetch(API_BASE_URL + resource, {
-        method: 'POST',
+        method: "POST",
         headers: {
           'Content-Type': 'application/json',
           token,
@@ -44,6 +44,7 @@ function GetImage(path) {
 }
 
 export default {
+  Officials: GetApiObject('officials'),
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),

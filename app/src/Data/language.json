@@ -31,6 +31,10 @@
         "page_not_found": {
             "se": "Kunde inte hitta sida",
             "en": "Could not find page"
+        },
+        "committees-and-projects": {
+            "se": "Nämnder och projekt",
+            "en": "Committees and projects"
         }
     },
     "form": {

@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-import UserCardTextbox from './UserCardTextbox.jsx';
+import React, { useState } from "react";
+import UserCardTextbox from "./UserCardTextbox.jsx";
 
-import './UserCard.css';
+import "./UserCard.css";
 
 export default function UserCard({
   user, subtitle, email,
