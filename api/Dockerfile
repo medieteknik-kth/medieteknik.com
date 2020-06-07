@@ -2,7 +2,7 @@ FROM python:3-alpine
 
 EXPOSE 80
 
-RUN apk add postgresql-dev
+RUN apk add postgresql-dev git
 
 RUN mkdir -p /usr/src/api
 WORKDIR /usr/src/api
