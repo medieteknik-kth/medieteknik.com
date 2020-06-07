@@ -22,11 +22,6 @@ const DocumentList = (props) => {
             .filter(doc => doc.displayCard);
     }
 
-
-    let documentNameOrderValueClass;
-    let publisherOrderValueClass;
-    let dateOrderValueClass;
-
     return (
         <div className={classes.DocumentList}>              
             <table>
@@ -49,20 +44,23 @@ const DocumentList = (props) => {
 
                 <tbody>
                     {
-                        documentsToRender.map(category => (
-                            <tr key={category.docId}>
-                                <td>{category.headingText}</td>
-                                <td>{category.doctags.toString()}</td>
-                                <td>{category.publisher}</td>
-                                <td>
-                                    {
-                                        category.publishDate.getFullYear() + "-" + 
-                                        ((category.publishDate.getMonth() + 1) < 10 ? `0${(category.publishDate.getMonth() + 1)}` : (category.publishDate.getMonth() + 1)) + "-" + 
-                                        (category.publishDate.getDate() < 10 ? `0${category.publishDate.getDate()}` : category.publishDate.getDate())
-                                    }
-                                </td>
-                            </tr>
-                        ))
+                        documentsToRender.map(document => {
+                            let docTypeString = document.doctags.join(', ');
+
+                            return (
+                                <tr key={document.docId}>
+                                    <td>{document.headingText}</td>
+                                    <td>{docTypeString}</td>
+                                    <td>{document.publisher}</td>
+                                    <td>
+                                        {
+                                            document.publishDate.getFullYear() + "-" + 
+                                            ((document.publishDate.getMonth() + 1) < 10 ? `0${(document.publishDate.getMonth() + 1)}` : (document.publishDate.getMonth() + 1)) + "-" + 
+                                            (document.publishDate.getDate() < 10 ? `0${document.publishDate.getDate()}` : document.publishDate.getDate())
+                                        }
+                                    </td>
+                                </tr>)
+                        })
                     }
                 </tbody>
             </table>

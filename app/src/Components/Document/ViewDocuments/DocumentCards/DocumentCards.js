@@ -29,7 +29,7 @@ const DocumentCards = (props) => {
                 documentsToRender.map(doc => (
                     <DocumentCard
                         doctypeId = {doc.itemId}
-                        doctype = {doc.doctags.toString()}
+                        doctype = {doc.doctags}
                         headingText = {doc.headingText}
                         publisher = {doc.publisher}
                         publishDate = {

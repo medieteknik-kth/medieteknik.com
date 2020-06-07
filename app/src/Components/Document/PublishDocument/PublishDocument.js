@@ -116,6 +116,8 @@ export default function PublishDocuments() {
                     console.log(error)
                 })
         }
+
+        document.getElementById('publishDocForm').reset();
     }
 
     const categoriesFilterChangeHandler = (category) => {
@@ -134,6 +136,7 @@ export default function PublishDocuments() {
                     action="localhost:5000/documents"
                     onSubmit={submitFormHandler}
                     ref={formInput}
+                    id = 'publishDocForm'
                 >
                     <div>
                         <label><strong>Dokumenttitel</strong> </label>
