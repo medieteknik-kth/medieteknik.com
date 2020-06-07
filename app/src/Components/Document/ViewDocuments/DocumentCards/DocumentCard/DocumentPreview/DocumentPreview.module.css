@@ -1,5 +1,5 @@
 .thumbnailContainer {
-    width: 200px; /* Om denna bredd ändras måste den också ändras i Page*/;
+    /* width: 200px;  Om denna bredd ändras måste den också ändras i Page*/
     height: 240px;
     margin: 0 auto;
     overflow: hidden;

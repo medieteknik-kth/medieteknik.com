@@ -36,8 +36,8 @@ class ViewDocuments extends Component {
             sortValue: 'dateStart',
             orderValue: 'rising',
 
-            cardsViewSelected: false,
-            listViewSelected: true,
+            cardsViewSelected: true,
+            listViewSelected: false,
 
             query: '',
 
@@ -225,10 +225,6 @@ class ViewDocuments extends Component {
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
-                   
-
-                    <h2>Dokument</h2>
-
                     <div className={classes.headerRow}>
                         <div className={classes.searchParameters}>
                             <SortBySelector

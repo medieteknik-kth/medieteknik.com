@@ -3,16 +3,15 @@
     border: 2px solid transparent;
     border-radius: 3px;
     text-align: left;
-    cursor:pointer;
+    cursor: pointer;
     background-color: white;
     transition: all .25s ease-in-out;
     width: 210px;
-    margin: 5px 25px 25px 25px;
-    display: flex;
-    flex-wrap: wrap;
+    margin-top: 5px;
     height: 311px;
     overflow: hidden;
 }
+
 
 .docCards img {
     transform: scale(1.15);
@@ -28,7 +27,7 @@ h4 {
 
 h5 {
     color: #c7c7c7;
-    padding-left: 42px;
+    padding-left: 17px;
     text-transform: uppercase;
     font-size: 12px;
 }

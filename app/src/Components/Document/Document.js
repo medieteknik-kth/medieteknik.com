@@ -33,6 +33,8 @@ class Document extends Component {
                      
                      this.setState({viewCardsview: !this.state.viewCardsview});
                  }}>{this.state.viewCardsview ? 'Ladda upp dokument +' : 'Bläddra bland dokument'}</Button>
+
+                <h2 className={classes.secHeader}>{this.state.viewCardsview ? 'Dokument' : 'Ladda upp dokument'}</h2>
                 {
                     this.state.viewCardsview ? 
                     <ViewDocuments userIsFunkis = {this.state.propUserFunkis} /> : 

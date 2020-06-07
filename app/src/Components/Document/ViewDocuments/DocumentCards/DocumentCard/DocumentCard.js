@@ -4,7 +4,7 @@ import DocumentPreview from './DocumentPreview/DocumentPreview';
 
 const documentCard = (props) => {
     return (
-        <div>
+        <div className={classes.cardContainer}>
             <h5>{props.doctype}</h5>
 
             <div className={classes.docCards}>
