@@ -18,25 +18,17 @@ import gridViewIcon from './Assets/grid_view.png';
 import listViewIcon from './Assets/list_view.png';
 import gridViewIconSelected from './Assets/grid_view_selected.png';
 import listViewIconSelected from './Assets/list_view_selected.png';
+// import {Images} from '../../../Utility/Api';
 
-const API_BASE_URL = 'https://api.medieteknik.com/'; //process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+
+
 
 // Att göra:
 // 1. Hämta dokument från backend
 // 2. Gör så att gallerivy presenteras som ett grid
 
 class ViewDocuments extends Component {
-    // Funkar detta tro? Glöm ej att stara backend
-    componentDidMount() {
-        fetch(API_BASE_URL + 'documents')
-            .then(response => response.json())
-            .then(jsonObject => {
-                jsonObject.documents.map(doc => {
-                    console.log(doc);
-                })
-            });
-    };
-
     constructor() {
         super();
         window.addEventListener('resize', this.handleResize);
@@ -157,14 +149,67 @@ class ViewDocuments extends Component {
 
             catsViewed: 0,
             screenWidth: window.innerWidth,
+
+            documentsFromServer: [],
+            categoriesFromServer: []
         };
+
+        fetch(API_BASE_URL + 'document_tags')
+            .then(response => response.json())
+            .then(jsonObject => {
+                let categoriesListTemp = [];
+
+                jsonObject.map(categoryObject => {
+                    categoriesListTemp = [...categoriesListTemp, categoryObject.title];
+                })
+
+                this.setState({categoriesFromServer: categoriesListTemp});
+            });
+
+        let documentsFromServerTemp = [];
+
+        fetch(API_BASE_URL + 'documents')
+            .then(response => response.json())
+            .then(jsonObject => {
+                jsonObject.documents.map(doc => {
+                    let publishYear = doc.date.slice(0, 4);
+                    let publishMonth = doc.date.slice(5, 7);
+                    let publishDay = doc.date.slice(8, 10);
+
+                    if (publishMonth[0] == 0) {
+                        publishMonth = publishMonth[1];
+                    }
+
+                    if (publishDay[0] == 0) {
+                        publishDay = publishDay[1];
+                    }
+
+                    fetch(API_BASE_URL + `get_image?path=../static/documents/${doc.thumbnail}`)
+                        .then(thumbnail => {
+                            let docObject = {
+                                doctypeId: doc.itemId,
+                                doctags: ['styrelsen'], //doc.tags,
+                                headingText: doc.title,
+                                publisher: '',
+                                publishDate: new Date(publishYear, publishMonth, publishDay),
+                                displayCard: true,
+                                thumbnail: thumbnail
+                            }
+        
+                            documentsFromServerTemp = [...documentsFromServerTemp, docObject];
+                            documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
+                            this.setState({documentsFromServer: documentsFromServerTemp});
+                        })
+                })
+            });
+        
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
         this.handleOrderChangeHeadDate = this.handleOrderChangeHeadDate.bind(this);
         this.handleOrderChangeHeadPublisher = this.handleOrderChangeHeadPublisher.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
-
+        
         this.cards = quickSort(this.cards, 'date', 'falling');
     }
 
@@ -327,7 +372,7 @@ class ViewDocuments extends Component {
                             /> */}
 
                             <CategoriesFilter 
-                                categories = {this.categories} 
+                                categories = {this.state.categoriesFromServer} 
                                 categoriesToShow = {this.state.shown}
                                 categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
                                 clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
@@ -383,13 +428,13 @@ class ViewDocuments extends Component {
                     {
                         this.state.cardsViewSelected ?
                             <DocumentCards 
-                                documents={this.cards}
+                                documents={this.state.documentsFromServer}
                                 categoriesToShow={this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                             />
                         :
                             <DocumentList 
-                                documents = {this.cards}
+                                documents = {this.state.documentsFromServer}
                                 categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                             />
