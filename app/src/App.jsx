@@ -37,9 +37,9 @@ export default function App() {
             <Route exact path="/login">
               <PageWithMainMenu><Login /></PageWithMainMenu>
             </Route>
-            <Route path="/officials">
+            {/* <Route path="/officials">
               <PageWithMainMenu><OfficialsBoard /></PageWithMainMenu>
-            </Route>
+            </Route> */}
             <Route path="/settings">
               <PageWithMainMenu><Settings /></PageWithMainMenu>
             </Route>
