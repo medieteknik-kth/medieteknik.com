@@ -3,6 +3,7 @@ import './ViewDocuments/ViewDocuments.js';
 import ViewDocuments from './ViewDocuments/ViewDocuments.js';
 import PublishDocument from './PublishDocument/PublishDocument.js';
 import classes from './Document.module.css';
+import Button from './ViewDocuments/Assets/ButtonRasmus';
 
 // Att göra:
 // - Kolla upp hur FormData fungerar
@@ -21,61 +22,19 @@ class Document extends Component {
 
         this.state = {
             viewCardsview: true,
-            propUserFunkis: true// Ska komma som prop
-        }
-    }
-
-    viewModeHandler = () => {
-        if (!this.state.viewCardsview) {
-            this.setState({
-                viewCardsview: true
-            })
-        }
-    }
-
-    uploadModeHandler = () => {
-        if (this.state.viewCardsview && this.state.propUserFunkis) {
-            this.setState({
-                viewCardsview: false
-            })
+            propUserFunkis: false // Ska komma som prop
         }
     }
     
     render() {
-        let publishDocumentsClass;
-        let viewDocumentsClass;
-
-        if (!this.state.viewCardsview) {
-            publishDocumentsClass = classes.selected;
-        } else {
-            publishDocumentsClass = classes.notSelected;
-        }
-
-        if (this.state.viewCardsview) {
-            viewDocumentsClass = classes.selected;
-        } else {
-            viewDocumentsClass = classes.notSelected;
-        }
-
-        if (!this.state.propUserFunkis) {
-            publishDocumentsClass = classes.disabled;
-            viewDocumentsClass = classes.disabled;
-        }
-
         return (
             <div>
-                <div className={classes.buttonContainer} >
-                    <div 
-                        className = {publishDocumentsClass} 
-                        onClick = {this.uploadModeHandler}
-                    >Ladda upp</div>
+                 {/* <Button onClick={() => {
+                     
+                     this.setState({viewCardsview: !this.state.viewCardsview});
+                 }}>{this.state.viewCardsview ? 'Ladda upp dokument +' : 'Bläddra bland dokument'}</Button> */}
 
-                    <div 
-                        className = {viewDocumentsClass}
-                        onClick = {this.viewModeHandler}
-                    >Bläddra</div>
-                </div>
-
+                <h2 className={classes.secHeader}>{this.state.viewCardsview ? 'Dokument' : 'Ladda upp dokument'}</h2>
                 {
                     this.state.viewCardsview ? 
                     <ViewDocuments userIsFunkis = {this.state.propUserFunkis} /> : 

@@ -36,19 +36,6 @@ export default function PublishDocuments() {
     const [categoriesList, setCategoriesList] = useState([]);
     const [categoriesToUse, setCategoriesToUse] = useState({});
 
-    // const [categoriesToUse, setCategoriesToUse] = useState({
-    //     "Styrelsemötesprotokoll": false,
-    //     "SM-protokoll": false,
-    //     "Blanketter": false,
-    //     "Mallar": false,
-    //     "Budget/Ekonomi": false,
-    //     "Policys/Reglemente/Stadgar": false,
-    //     "Fakturor": false,
-    //     "Övrigt": false
-    // })
-
-
-
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
@@ -82,15 +69,6 @@ export default function PublishDocuments() {
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({ 0: tagsList }))
 
-        publishDocumentApi(formData)
-            .then((response) => response.json())
-            .then((result) => {
-                console.log('Success:', result);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
         // --- PDF-Thumbnail ---
         let fileReader = new FileReader();
 
@@ -120,12 +98,17 @@ export default function PublishDocuments() {
                             .then(() => {
                                 const thumbnailImage = thumbnailCanvas.toDataURL();
                                 formData.append("thumbnail", thumbnailImage);
-
-                                const linkElement = document.createElement('a');
-                                linkElement.href = thumbnailImage;
-                                linkElement.download = "thumbnail.png";
-                                linkElement.click();
                             })
+                            .then(() => publishDocumentApi(formData)
+                            .then((response) => response.json())
+                            .then((result) => {
+                                console.log('Success:', result);
+                                // console.log(formData.getAll("thumbnail")[0])
+                                console.log(formData.getAll("tags")[0])
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            }));
                     });
                 })
                 .catch(error => {
@@ -133,6 +116,8 @@ export default function PublishDocuments() {
                     console.log(error)
                 })
         }
+
+        document.getElementById('publishDocForm').reset();
     }
 
     const categoriesFilterChangeHandler = (category) => {
@@ -151,6 +136,7 @@ export default function PublishDocuments() {
                     action="localhost:5000/documents"
                     onSubmit={submitFormHandler}
                     ref={formInput}
+                    id = 'publishDocForm'
                 >
                     <div>
                         <label><strong>Dokumenttitel</strong> </label>

@@ -1,7 +1,32 @@
 .DocumentCards {
-    display: flex;
-    flex-wrap: wrap;
-    width: 97%;
-    justify-content: space-evenly;
-    margin: 10px auto;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 244px 244px 244px 244px; /*Make the grid smaller than the container */
+    grid-gap: 50px;
+    /* padding: 10px; */
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+}
+
+@media (max-width: 1320px) {
+    .DocumentCards {
+        width: 100%;
+        grid-template-columns: 244px 244px 244px;
+    }
+}
+
+@media (max-width: 899px) {
+    .DocumentCards {
+        width: 100%;
+        grid-template-columns: 244px 244px;
+    }
+}
+
+@media (max-width: 599px) {
+    .DocumentCards {
+        width: 100%;
+        grid-template-columns: 244px;
+    }
 }

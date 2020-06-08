@@ -6,7 +6,7 @@ import classes from './DocumentPreview.module.css';
 
 const DocumentPreview = (props) => (
     <div className={classes.thumbnailContainer}>
-        <img src={props.thumbnail} width='200'/>
+        <img src={props.thumbnail.url} width='200'/>
     </div>
 )
         

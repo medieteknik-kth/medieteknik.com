@@ -1,42 +1,32 @@
-.sortByStyledBoxContainer {
-    display: inline-block;
-}
-
 .dropdownContentCats {
+    font-family: 'Roboto';
+    font-weight: 300;
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 130px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    background-color: #fff;
+    min-width: 145px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+    z-index: 4;
     text-align: left;
+    margin-top: 38px;
     padding-left: 10px;
     padding-top: 10px;
 }
 
-@media (max-width: 701px) and (min-width: 526px) {
-    .dropdownContentCats {
-        margin-top: 34.5px;
-    }
-}
-
-/* @media (max-width: 525px) {
-    .dropdownContentCats {
-        margin-top: 34.5px;
-    }
-} */
 
 .dropdownContentOrder {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    background-color: #fff;
+    min-width: 130px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
     z-index: 1;
     text-align: left;
 }
 
 .dropdownContentOrder p {
+    font-family: 'Roboto';
+    font-weight: 300;
     color: black;
     padding: 12px 16px;
     text-decoration: none;
@@ -44,7 +34,7 @@
 }
 
 .dropdownContentOrder p:hover {
-    background-color: #f0c900;
+    background-color: #f0f0f0;
     user-select: none;
     cursor: pointer;
 }
@@ -52,14 +42,17 @@
 .dropdownContent {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    background-color: #fff;
+    min-width: 190px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+    overflow-y: hidden;
+    z-index: 9;
     text-align: left;
   }
 
 .dropdownContent p {
+    font-family: 'Roboto';
+    font-weight: 300;
     color: black;
     padding: 12px 16px;
     text-decoration: none;
@@ -67,7 +60,7 @@
   }
 
 .dropdownContent p:hover {
-    background-color: #f0c900;
+    background-color: #f0f0f0;
     user-select: none;
     cursor: pointer;
 }
@@ -98,24 +91,34 @@
 }
 
 .sortByStyledBox {
+    font-family: 'Roboto';
+    font-weight: 300;
+    background-color: #fff;
+    position: relative;
     font-size: 16px;
     padding-top: 7px;
     padding-bottom: 7px;
     padding-right: 5px;
-    border-top: 1px solid rgba(160, 160, 160, 0.5);
-    border-bottom: 1px solid rgb(160, 160, 160, 0.5);
     cursor: default;
-    text-align: left;
-
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    z-index: 10;
 }
 
 .sortByStyledBox img {
-    position: relative;
-    right: 0px;
-    top: 0px;
     width: 16px;
-    margin-left: 5px;
+}
+
+
+@media (max-width: 715px) {
+    .dropdownContentCats {
+        margin-top: 0;
+        min-width: 235px;
+    }
+
+    .dropdownContent {
+        min-width: 245px;
+    }
 }
