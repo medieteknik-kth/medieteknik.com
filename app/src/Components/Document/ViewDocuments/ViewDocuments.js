@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+
 import classes from './ViewDocuments.module.css';
-import {quickSort} from '../../../libaries/SortDocuments.js';
+import {quickSort} from '../../../Utility/SortDocuments.js';
 
 import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
@@ -10,127 +12,30 @@ import sampleThumbnail1 from '../Assets/testThumbnail1.png';
 import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 import SortBySelector from './SortBySelector/SortBySelector';
 import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
+    
+import gridViewIcon from './Assets/grid_view.png';
 
+import listViewIcon from './Assets/list_view.png';
+import gridViewIconSelected from './Assets/grid_view_selected.png';
+import listViewIconSelected from './Assets/list_view_selected.png';
 
-// --- ATT GÖRA ---
-// - Fixa så att sökmenyn hänger med även när man är funkis
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+
+// Att göra:
+// 1. Gör så att gallerivy presenteras som ett grid
 
 class ViewDocuments extends Component {
     constructor() {
         super();
         window.addEventListener('resize', this.handleResize);
 
-        this.cards = [
-            {
-                doctypeId: 0,
-                doctags: [' Motioner'],
-                headingText: 'Budgetförslag MBD',
-                publisher: 'Rasmus Rudling',
-                publishDate: new Date(2019, 8, 27),
-                displayCard: true,
-                thumbnail: sampleThumbnail1
-            },
-
-            {
-                doctypeId: 1,
-                doctags: [' Motioner'],
-                headingText: 'Lägg ned spelnörderiet',
-                publisher: 'Jesper Lundqvist',
-                publishDate: new Date(2019, 10, 3),
-                displayCard: true,
-                thumbnail: sampleThumbnail2
-            },
-
-            {
-                doctypeId: 2,
-                doctags: [' SM-handlingar'],
-                headingText: 'SM#4 17/18',
-                publisher: 'Oliver Kamruzzaman',
-                publishDate: new Date(2017, 4, 14),
-                displayCard: true,
-                thumbnail: sampleThumbnail1
-            },
-
-            {
-                doctypeId: 3,
-                doctags: [' Valkompass'],
-                headingText: 'SM#4 16/17',
-                publisher: 'Disa Gillner',
-                publishDate: new Date(2016, 5, 28),
-                displayCard: true,
-                thumbnail: sampleThumbnail2
-            },
-
-            {
-                doctypeId: 4,
-                doctags: [' Budget'],
-                headingText: 'NLG 19/20',
-                publisher: 'Sandra Larsson',
-                publishDate: new Date(2019, 5, 28),
-                displayCard: true,
-                thumbnail: sampleThumbnail1
-            },
-
-            {
-                doctypeId: 5,
-                doctags: [' Policies', ' Övrigt', ' Blanketter'],
-                headingText: 'Alkohol på TB:s',
-                publisher: 'Oliver Kamruzzaman',
-                publishDate: new Date(2019, 7, 13),
-                displayCard: true,
-                thumbnail: sampleThumbnail2
-            },
-
-            {
-                doctypeId: 6,
-                doctags: [' Blanketter'],
-                headingText: 'SBA-blankett',
-                publisher: 'Moa Engquist',
-                publishDate: new Date(2019, 2, 10),
-                displayCard: true,
-                thumbnail: sampleThumbnail1
-            },
-
-            {
-                doctypeId: 7,
-                doctags: [' Övrigt'],
-                headingText: 'MKM:s beerpongregler',
-                publisher: 'Moa Engquist',
-                publishDate: new Date(2018, 7, 9),
-                displayCard: true,
-                thumbnail: sampleThumbnail2
-            }
-        ]
-
-        this.categories = [
-            "Motioner",
-            "SM-handlingar",
-            "Valkompass",
-            "Budget",
-            "Policies",
-            "Blanketter",
-            "Fakturor",
-            "Övrigt"
-        ];
-
         this.state = {
-            shown: {
-                "Motioner": false,
-                "SM-handlingar": false,
-                "Valkompass": false,
-                "Budget": false,
-                "Policies": false,
-                "Blanketter": false,
-                "Fakturor": false,
-                "Övrigt": false
-            },
+            categoriesShown: {},
             categoryTagsSelected: [],
 
-            sortValue: 'date',
-            orderValue: 'falling',
+            sortValue: 'dateStart',
+            orderValue: 'rising',
 
-            // cardsViewSelected: window.innerWidth >= 900 ? false : true,
-            // listViewSelected: window.innerWidth >= 900 ? true : false,
             cardsViewSelected: true,
             listViewSelected: false,
 
@@ -138,40 +43,77 @@ class ViewDocuments extends Component {
 
             catsViewed: 0,
             screenWidth: window.innerWidth,
-            headerRowFixed: false,
-            headerRowPlaceHolderClass: null,
-            headerRowClasses: [classes.headerRow, classes.bottomBorder]
+
+            documentsFromServer: [],
+            categoriesFromServer: []
         };
+
+        fetch(API_BASE_URL + 'document_tags')
+            .then(response => response.json())
+            .then(jsonObject => {
+                let categoriesListTemp = [];
+                let categoriesShownTemp = {};
+
+                jsonObject.map(categoryObject => {
+                    categoriesListTemp = [...categoriesListTemp, categoryObject.title];
+                    categoriesShownTemp[categoryObject.title] = false;
+                })
+
+
+                this.setState({
+                    categoriesFromServer: categoriesListTemp,
+                    categoriesShown: categoriesShownTemp
+                });
+            });
+
+        let documentsFromServerTemp = [];
+
+        fetch(API_BASE_URL + 'documents')
+            .then(response => response.json())
+            .then(jsonObject => {
+                jsonObject.documents.map(doc => {
+                    let publishYear = parseInt(doc.date.slice(0, 4));
+                    let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
+                    let publishDay = parseInt(doc.date.slice(8, 10));
+
+
+                    fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
+                        .then(thumbnail => {
+                            let docObject = {
+                                docId: doc.itemId,
+                                doctags: doc.tags,
+                                headingText: doc.title,
+                                publisher: '',
+                                publishDate: new Date(publishYear, publishMonth, publishDay),
+                                displayCard: true,
+                                thumbnail: thumbnail,
+                                filename: doc.filename
+                            }
+        
+                            documentsFromServerTemp = [...documentsFromServerTemp, docObject];
+                            documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
+                            this.setState({documentsFromServer: documentsFromServerTemp});
+                        })
+                })
+            });
+        
   
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
         this.handleOrderChangeHeadDate = this.handleOrderChangeHeadDate.bind(this);
         this.handleOrderChangeHeadPublisher = this.handleOrderChangeHeadPublisher.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
-
-        this.cards = quickSort(this.cards, this.state.sortValue, this.state.orderValue);
     }
 
     
-    handleOrderChangeHeadAlphabetical = () => {
-        if (this.state.sortValue !== 'alphabetical') {
-            this.setState({sortValue: "alphabetical"});
-            this.cards = quickSort(this.cards, "alphabetical", this.state.orderValue);
-        } else if (this.state.orderValue === 'falling') {
-            this.setState({orderValue: 'rising'})
-            this.cards = quickSort(this.cards, "alphabetical", 'rising');
-        } else {
-            this.setState({orderValue: 'falling'})
-            this.cards = quickSort(this.cards, "alphabetical", 'falling');
-        }
-    }
+    
     
     handleResize = () => {
         this.setState({
             screenWidth: window.innerWidth
         })
 
-        if (window.innerWidth < 845) {
+        if (window.innerWidth < 900) {
             this.setState({
                 cardsViewSelected: true,
                 listViewSelected: false
@@ -180,13 +122,13 @@ class ViewDocuments extends Component {
     }
 
     categoriesFilterChangeHandler = (category) => {
-        const categoriesKeysList = Object.keys(this.state.shown);
+        const categoriesKeysList = Object.keys(this.state.categoriesShown);
 
         let categoriesSelected = categoriesKeysList.filter(categoryKey => {
-            return this.state.shown[categoryKey]
+            return this.state.categoriesShown[categoryKey]
         })
 
-        if (!this.state.shown[category]) {
+        if (!this.state.categoriesShown[category]) {
             this.setState({catsViewed: this.state.catsViewed + 1});
             categoriesSelected.push(category)
         } else {
@@ -195,48 +137,42 @@ class ViewDocuments extends Component {
         }
         
         this.setState({
-            shown: {
-                ...this.state.shown,
-                [category]: !this.state.shown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
+            categoriesShown: {
+                ...this.state.categoriesShown,
+                [category]: !this.state.categoriesShown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
             },
             categoryTagsSelected: categoriesSelected
         })
+    }
 
+    handleOrderChangeHeadAlphabetical = () => {
+        if (this.state.sortValue !== 'alphabetical') {
+            this.setState({sortValue: "alphabetical"});
+            
+            this.setState({documentsFromServer: quickSort(this.state.documentsFromServer, "alphabetical", 'falling')});
+        }
     }
 
     handleOrderChangeHeadDate = () => {
         if (this.state.sortValue !== 'date') {
             this.setState({sortValue: "date"});
-            this.cards = quickSort(this.cards, "date", this.state.orderValue);
-        } else if (this.state.orderValue === 'falling') {
-            this.setState({orderValue: 'rising'})
-            this.cards = quickSort(this.cards, "date", 'rising');
-        } else {
-            this.setState({orderValue: 'falling'})
-            this.cards = quickSort(this.cards, "date", 'falling');
-        }
+            this.setState({documentsFromServer: quickSort(this.state.documentsFromServer, "date", 'falling')});
+        } 
     }
 
     handleOrderChangeHeadPublisher = () => {
         if (this.state.sortValue !== 'publisher') {
             this.setState({sortValue: "publisher"});
-            this.cards = quickSort(this.cards, "publisher", this.state.orderValue);
-        } else if (this.state.orderValue === 'rising') {
-            this.setState({orderValue: 'falling'})
-            this.cards = quickSort(this.cards, "publisher", 'falling');
-        } else {
-            this.setState({orderValue: 'rising'})
-            this.cards = quickSort(this.cards, "publisher", 'rising');
-        }
+            this.setState({documentsFromServer: quickSort(this.state.documentsFromServer, "publisher", 'rising')});
+        } 
     }
 
     handleSearch = () => {
         let searchVal = this.search.value
         let filteredString = searchVal.toUpperCase()
         this.setState({query: this.search.value})
-        
-        
-        this.cards = this.cards.filter(doc => {
+    
+        let tempSearchArray = this.state.documentsFromServer.filter(doc => {
             let dateString = doc.publishDate.getFullYear() + "-" + 
             ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
             (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
@@ -249,20 +185,20 @@ class ViewDocuments extends Component {
             
             return(doc)
         })
+
+        this.setState({documentsFromServer: tempSearchArray})
     }
 
 
     clearCat = () => {
+        let categoriesShownClearTemp = {};
+
+        this.state.categoriesFromServer.map(cat => {
+            categoriesShownClearTemp[cat] = false;
+        })
+
         this.setState({
-            shown: {
-                "Motioner": false,
-                "SM-handlingar": false,
-                "Valkompass":false,
-                "Budget": false,
-                "Policies": false,
-                "Blanketter": false,
-                "Övrigt": false
-            },
+            categoriesShown: categoriesShownClearTemp,
             categoriesShownList: []
         })
     }
@@ -274,114 +210,39 @@ class ViewDocuments extends Component {
 
     sortByChangedHandler = (sortType) => {
         this.setState({sortValue: sortType})
-        this.cards = quickSort(this.cards, sortType, this.state.orderValue);
+
+        if (sortType === 'date') {
+            let sortedTempArr = quickSort(this.state.documentsFromServer, sortType, 'falling');
+            this.setState({documentsFromServer: sortedTempArr});
+        } else {
+            let sortedTempArr = quickSort(this.state.documentsFromServer, sortType, 'rising');
+            this.setState({documentsFromServer: sortedTempArr});
+            console.log(sortedTempArr);
+        }
     }
 
-    sortOrderChangedHandler = (sortOrder) => {
-        this.setState({orderValue: sortOrder})
-        this.cards = quickSort(this.cards, this.state.sortValue, sortOrder);
-    }
     
     render() {
-        if (!this.props.userIsFunkis && !this.state.headerRowFixed) {
-            this.setState({
-                headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
-                headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                headerRowFixed: true
-            })
-        }
-
-        window.addEventListener('scroll', () => {
-            
-            if (window.scrollY >= 63.5 && this.props.userIsFunkis && !this.state.headerRowFixed) {
-                console.log(window.scrollY)
-                this.setState({
-                    headerRowFixed: true,
-                    headerRowPlaceHolderClass: classes.headerRowPlaceHolder,
-                    headerRowClasses: [...this.state.headerRowClasses, classes.headerRowFixed],
-                })
-                
-            } else if (window.scrollY < 63.5 && this.props.userIsFunkis && this.state.headerRowFixed) {
-                console.log(window.scrollY)
-                this.setState({
-                    headerRowFixed: false,
-                    headerRowPlaceHolderClass: null,
-                    headerRowClasses: [classes.headerRow, classes.bottomBorder],
-                })
-                
-            }
-        })
-
         return (
             <div className={classes.firstFlexContainer}>
                 <div className={classes.main}>
-                    <div className= {this.state.headerRowPlaceHolderClass} />
-                    <div className={this.state.headerRowClasses.join(' ')}>
-                        <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 900 ? <i
-                                className = {this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
-                                onClick={() => {
-                                    if(!this.state.cardsViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                </div>
-                                
-                                <div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                    <div className = {this.state.cardsViewSelected ? classes.smallSquareSelected : classes.smallSquare}></div>
-                                </div>
-                            </i> : null}
-
-                            {this.state.screenWidth >= 900 ? <i
-                                className = {this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
-                                onClick={() => {
-                                    if(!this.state.listViewSelected) {
-                                        this.setState({listViewSelected: !this.state.listViewSelected})
-                                        this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                    }
-                                }}
-                            >
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-                                
-                                <div className = {classes.bulletRow}>
-                                    <div className = {this.state.listViewSelected ? classes.bulletSelected : classes.bullet}></div>
-                                    <div className = {this.state.listViewSelected ? classes.anonymusTextSelected : classes.anonymusText}></div>
-                                </div>
-                            </i> : null}
-                        </div>
-                        
-                        <div className={classes.textItemsInRightHeader}>
-                            <SortBySelector 
+                    <div className={classes.headerRow}>
+                        <div className={classes.searchParameters}>
+                            <SortBySelector
                                 sortByChangedHandler = {this.sortByChangedHandler}
                                 sortValue = {this.state.sortValue}
                                 addClass = {classes.sortByStyle}
                             />
 
-                            <SortOrderSelector 
+                            {/* <SortOrderSelector 
                                 sortOrderChangedHandler = {this.sortOrderChangedHandler}
                                 orderValue =  {this.state.orderValue}
                                 addClass = {classes.sortOrderStyle}
-                            />
-                        </div>
+                            /> */}
 
-                        <div className={classes.filterAndSearchContainer}>
                             <CategoriesFilter 
-                                categories = {this.categories} 
-                                categoriesToShow = {this.state.shown}
+                                categories = {this.state.categoriesFromServer} 
+                                categoriesToShow = {this.state.categoriesShown}
                                 categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
                                 clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
                                 addClass = {classes.dropdownFilterStyle}
@@ -393,30 +254,58 @@ class ViewDocuments extends Component {
                                 type="text"
                                 onKeyUp={this.handleSearch}
                                 name="name"
-                                placeholder="Sök efter dokument.."
+                                placeholder="Sök efter dokument"
                                 ref = {input => this.search = input}
                             />
+
+                            
                         </div>
-                        
+
+                        <div className={classes.viewSelected}>
+                            {this.state.screenWidth >= 900 ? 
+                                <div className={classes.tooltipGrid}>
+                                    <img 
+                                        src={this.state.cardsViewSelected ? gridViewIconSelected : gridViewIcon}
+                                        className={this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
+                                        onClick={() => {
+                                            if(!this.state.cardsViewSelected) {
+                                                this.setState({listViewSelected: !this.state.listViewSelected})
+                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                            }
+                                        }}
+                                    />
+                                    <span>Gallerivy</span>
+                                </div> : null}
+                                        
+                            {this.state.screenWidth >= 900 ?
+                                <div className={classes.tooltipList}>
+                                    <img 
+                                        src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
+                                        className={this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
+                                        onClick={() => {
+                                            if(!this.state.listViewSelected) {
+                                                this.setState({listViewSelected: !this.state.listViewSelected})
+                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
+                                            }
+                                        }}
+                                    />
+                                    <span>Listvy</span>
+                                </div> : null}
+                        </div>
                     </div>
                     
                     {
                         this.state.cardsViewSelected ?
                             <DocumentCards 
-                                documents={this.cards}
+                                documents={this.state.documentsFromServer}
                                 categoriesToShow={this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
                             />
                         :
                             <DocumentList 
-                                documents = {this.cards}
+                                documents = {this.state.documentsFromServer}
                                 categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
-                                orderValue = {this.state.orderValue}
-                                sortValue = {this.state.sortValue}
-                                handleOrderChangeHeadAlphabetical = {this.handleOrderChangeHeadAlphabetical}
-                                handleOrderChangeHeadPublisher = {this.handleOrderChangeHeadPublisher}
-                                handleOrderChangeHeadDate = {this.handleOrderChangeHeadDate}
                             />
                     }
                 </div>

@@ -8,6 +8,7 @@ export const quickSort = (inputArray, sortParam, sortDir) => {
   const pivot = inputArray.pop();
   const { length } = inputArray;
 
+
   if (sortDir === 'falling') {
     for (let i = 0; i < length; i++) {
       if (sortParam === 'date') {
@@ -17,12 +18,12 @@ export const quickSort = (inputArray, sortParam, sortDir) => {
           right.push(inputArray[i]);
         }
       } else if (sortParam === 'alphabetical') {
-        if (inputArray[i].headingText >= pivot.headingText) {
+        if (inputArray[i].headingText.toUpperCase() >= pivot.headingText.toUpperCase()) {
           left.push(inputArray[i]);
         } else {
           right.push(inputArray[i]);
         }
-      } else if (inputArray[i].publisher >= pivot.publisher) {
+      } else if (inputArray[i].publisher.toUpperCase() >= pivot.publisher.toUpperCase()) {
         left.push(inputArray[i]);
       } else {
         right.push(inputArray[i]);
@@ -37,12 +38,12 @@ export const quickSort = (inputArray, sortParam, sortDir) => {
           right.push(inputArray[j]);
         }
       } else if (sortParam === 'alphabetical') {
-        if (inputArray[j].headingText <= pivot.headingText) {
+        if (inputArray[j].headingText.toUpperCase() <= pivot.headingText.toUpperCase()) {
           left.push(inputArray[j]);
         } else {
           right.push(inputArray[j]);
         }
-      } else if (inputArray[j].publisher <= pivot.publisher) {
+      } else if (inputArray[j].publisher.toUpperCase() <= pivot.publisher.toUpperCase()) {
         left.push(inputArray[j]);
       } else {
         right.push(inputArray[j]);

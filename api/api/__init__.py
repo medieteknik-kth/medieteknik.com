@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for,send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cas import CAS, login_required
@@ -71,7 +71,6 @@ api.add_resource(CommitteePostListResource, "/committee_posts")
 api.add_resource(CommitteePostResource, "/committee_posts/<id>")
 
 api.add_resource(DocumentListResource, "/documents")
-api.add_resource(DocumentResource, "/documents/<id>")
 api.add_resource(DocumentTagResource, "/document_tags")
 
 api.add_resource(MenuResource, "/menus")
@@ -137,6 +136,18 @@ def auth_test():
 @app.route('/get_image')
 def get_image():
     return send_file(request.args.get('path'), mimetype='image/png')
+
+# serva sparade dokument
+@app.route("/documents/<filename>")
+def send_document(filename):
+    DOCUMENT_FOLDER = os.path.join(os.getcwd(), "static", "documents")
+    return send_from_directory(DOCUMENT_FOLDER, filename)
+
+@app.route("/thumbnails/<filename>")
+def send_thumbnail(filename):
+    print(filename)
+    THUMBNAIL_FOLDER = os.path.join(os.getcwd(), "static", "thumbnails")
+    return send_from_directory(THUMBNAIL_FOLDER, filename)
 
 @app.route("/create_all")
 def route_create_all():
@@ -395,17 +406,25 @@ def route_create_all():
     db.session.add(page)
 
     doc = Document()
-    doc.title = "PROTOKOLLLLLA IN DET HÄR"
-    doc.fileName = "abc123.pdf"
-    doc.uploadedBy = "Joppe"
+    doc.title = "SM#4 Handlingar"
+    doc.fileName = "sm4.pdf"
+    doc.uploadedBy = "Oliver Kamruzzaman"
+    doc.thumbnail = "sm4.png"
+
+    doc2 = Document()
+    doc2.title = "Beta-SM Handlingar"
+    doc2.fileName = "beta-sm.pdf"
+    doc2.uploadedBy = "Oliver Kamruzzaman"
+    doc2.thumbnail = "beta-sm.png"
 
     tag = Tag()
-    tag.title = "styrelsen"
+    tag.title = "Handlingar"
 
     tag2 = Tag()
-    tag2.title = "annat"
+    tag2.title = "Annar"
 
     db.session.add(doc)
+    db.session.add(doc2)
     db.session.add(tag)
     db.session.add(tag2)
     db.session.commit()

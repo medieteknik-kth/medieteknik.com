@@ -1,0 +1,23 @@
+.button {
+    cursor: pointer;
+    font-size: 12px;
+    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    border: 1px solid #f0c900;
+    /* box-shadow: inset 0px 0px 0px 2px #f0c900; */
+    color: #000;
+    border-radius: 40px;
+    padding: 5px 15px;
+    outline: none;
+    float: right;
+    margin-right: 8%;
+    margin-top: 20px;
+    clear: both;
+    transition: .2s;
+}
+
+.button:hover {
+    background-color: #f0c900;
+    color: #fff;
+}
