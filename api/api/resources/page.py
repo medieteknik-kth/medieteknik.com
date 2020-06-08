@@ -8,10 +8,10 @@ from api.resources.authentication import requires_auth
 
 class PageResource(Resource):
     def get(self, id):
-        page = Page.query.get(id)
-
-        if page == None:
-            page = Page.query.filter(Page.slug==id).first()
+        if id.isnumeric():
+            page = Page.query.get(id)
+        else:
+            page = Page.query.filter(Page.slug==id).first_or_404()
 
         return jsonify(page.to_dict())
     

@@ -21,8 +21,8 @@ export default function Page() {
   const { lang } = useContext(LocaleContext);
 
   useEffect(() => {
-    Api.Pages.GetById(pageSlug).then((pageData) => {
-      setPage(pageData);
+    Api.Pages.GetById(pageSlug).then((data) => {
+      setPage(data);
     }).catch(() => {
       setNotFound(true);
     });

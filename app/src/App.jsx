@@ -11,7 +11,7 @@ import LandingPage from './Components/LandingPage/LandingPage';
 import OfficialsBoard from './Components/OfficialsBoard/OfficialsBoard';
 import Settings from './Components/Settings/Settings';
 import Documents from './Components/Document/Document';
-import CommitteeList from './Components/Committee/CommitteeList';
+import CommitteeList from './Components/Committee/CommitteeList/CommitteeList';
 import PageManager from './Components/Page/PageManager';
 import UserProvider from './Contexts/UserContext';
 import Login from './Components/Login/Login';
@@ -37,9 +37,9 @@ export default function App() {
             <Route exact path="/login">
               <PageWithMainMenu><Login /></PageWithMainMenu>
             </Route>
-            <Route path="/officials">
+            {/* <Route path="/officials">
               <PageWithMainMenu><OfficialsBoard /></PageWithMainMenu>
-            </Route>
+            </Route> */}
             <Route path="/settings">
               <PageWithMainMenu><Settings /></PageWithMainMenu>
             </Route>
