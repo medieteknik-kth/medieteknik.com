@@ -71,7 +71,7 @@ class PageResource(Resource):
 
         db.session.add(revision)
         db.session.commit()
-        return jsonify({message: "OK"})
+        return jsonify({"message": "OK"})
     
     @requires_auth
     def delete(self, id):
