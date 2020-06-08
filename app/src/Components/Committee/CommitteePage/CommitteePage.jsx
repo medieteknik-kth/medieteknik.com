@@ -50,10 +50,20 @@ export default function CommitteePage() {
     if (committee.page) {
       if (isEditing) {
         if (content !== oldContent) {
-          Api.Pages.Update(committee.page.id, {
-            content: JSON.stringify(content),
-            published: true,
-          }).then(() => {
+          let data;
+
+          if (lang === 'se') {
+            data = {
+              content_sv: JSON.stringify(content),
+              published: true,
+            };
+          } else {
+            data = {
+              content_en: JSON.stringify(content),
+              published: true,
+            };
+          }
+          Api.Pages.Update(committee.page.id, data).then(() => {
             // TODO: Meddelande att allt gått bra
             setOldContent(content);
           }).catch((error) => {
