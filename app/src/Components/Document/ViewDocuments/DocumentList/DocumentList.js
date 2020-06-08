@@ -1,6 +1,7 @@
 import React from 'react';
 
 import classes from './DocumentList.module.css';
+import { API_BASE_URL } from '../../../../Utility/Api';
 
 const DocumentList = (props) => {
     let documentsToRender = [];
@@ -48,8 +49,8 @@ const DocumentList = (props) => {
                             let docTypeString = document.doctags.join(', ');
 
                             return (
-                                <tr key={document.docId}>
-                                    <td>{document.headingText}</td>
+                                    <tr key={document.docId}>
+                                    <td><a href={API_BASE_URL + `documents/${document.filename}`}>{document.headingText}</a></td>
                                     <td>{docTypeString}</td>
                                     <td>{document.publisher}</td>
                                     <td>

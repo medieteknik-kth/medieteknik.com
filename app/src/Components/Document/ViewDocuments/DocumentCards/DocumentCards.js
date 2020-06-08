@@ -3,6 +3,8 @@ import React from 'react';
 import DocumentCard from './DocumentCard/DocumentCard';
 import classes from './DocumentCards.module.css';
 
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+
 const DocumentCards = (props) => {
     let documentsToRender = [];
 
@@ -27,6 +29,7 @@ const DocumentCards = (props) => {
         <div className={classes.DocumentCards}>
             {
                 documentsToRender.map(doc => (
+                    <a href={API_BASE_URL + `documents/${doc.filename}`}>
                     <DocumentCard
                         doctypeId = {doc.itemId}
                         doctype = {doc.doctags}
@@ -40,6 +43,7 @@ const DocumentCards = (props) => {
                         thumbnail = {doc.thumbnail}
                         key = {doc.publishDate}
                     />
+                    </a>
                 )) 
             }
         </div>

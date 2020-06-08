@@ -77,7 +77,7 @@ class ViewDocuments extends Component {
                     let publishDay = parseInt(doc.date.slice(8, 10));
 
 
-                    fetch(API_BASE_URL + `get_image?path=../static/thumbnails/${doc.thumbnail}`)
+                    fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
                         .then(thumbnail => {
                             let docObject = {
                                 docId: doc.itemId,
@@ -86,7 +86,8 @@ class ViewDocuments extends Component {
                                 publisher: '',
                                 publishDate: new Date(publishYear, publishMonth, publishDay),
                                 displayCard: true,
-                                thumbnail: thumbnail
+                                thumbnail: thumbnail,
+                                filename: doc.filename
                             }
         
                             documentsFromServerTemp = [...documentsFromServerTemp, docObject];
