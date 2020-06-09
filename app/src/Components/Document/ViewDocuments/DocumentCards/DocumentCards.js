@@ -16,7 +16,7 @@ const DocumentCards = (props) => {
             .filter(_document => {
                 let renderDocument = false;
                 _document.doctags.forEach(documentTag => {
-                    if (props.categoriesToShow.includes(documentTag.toString().trim())) {
+                    if (props.categoriesToShow.includes(documentTag.title.toString().trim())) {
                         renderDocument = true;
                     }
                 })
