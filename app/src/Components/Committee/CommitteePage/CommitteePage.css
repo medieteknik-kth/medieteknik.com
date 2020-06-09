@@ -38,10 +38,16 @@
 
 .committeePageHeaderText {
     font-family: CircularStd, sans-serif;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 500;
     line-height: 300px;
     color: white;
+}
+
+@media (min-width: 670px) {
+    .committeePageHeaderText {
+        font-size: 3rem;
+    }
 }
 
 .committeePageContent {
