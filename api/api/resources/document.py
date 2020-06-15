@@ -22,6 +22,7 @@ class DocumentListResource(Resource):
         if request.files is None:
             return jsonify(message="no files attached"), 422
         else:
+            print("should save document")
             save_documents(request)
             return jsonify(message="file uploaded!")
 
@@ -60,7 +61,7 @@ def save_documents(request):
         d = Document(title=request.form["title"], fileName = fileName + file_ext, thumbnail=thumb_name)
         db.session.add(d)
         db_docs.append(d)
-        doc.save(os.path.join(SAVE_FOLDER, doc.filename))   #skapar en mapp att spara uppladdade filer i när appen upprättas
+        doc.save(os.path.join(SAVE_FOLDER, d.fileName)) #skapar en mapp att spara uppladdade filer i när appen upprättas
     db.session.commit()
 
     #tagga dokumenten ordentligt
