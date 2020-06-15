@@ -22,7 +22,6 @@ class DocumentListResource(Resource):
         if request.files is None:
             return jsonify(message="no files attached"), 422
         else:
-            print("should save document")
             save_documents(request)
             return jsonify(message="file uploaded!")
 
