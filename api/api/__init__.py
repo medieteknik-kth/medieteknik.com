@@ -143,12 +143,6 @@ def send_document(filename):
     DOCUMENT_FOLDER = os.path.join(os.getcwd(), "static", "documents")
     return send_from_directory(DOCUMENT_FOLDER, filename)
 
-# serva sparade dokument
-@app.route("/documents/<filename>")
-def send_document(filename):
-    DOCUMENT_FOLDER = os.path.join(os.getcwd(), "static", "documents")
-    return send_from_directory(DOCUMENT_FOLDER, filename)
-
 @app.route("/thumbnails/<filename>")
 def send_thumbnail(filename):
     print(filename)
