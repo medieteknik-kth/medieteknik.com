@@ -7,59 +7,51 @@ import {
 } from 'react-router-dom';
 
 import Api from '../../../Utility/Api';
+import classes from './CommitteeList.module.css';
 
-import mbdLogo from '../CommitteeAssets/mbdLogo.png';
-import mkmLogo from '../CommitteeAssets/mkmLogo.png';
+
 import CommitteeCard from './CommitteeCard/CommitteeCard';
-
-import CommitteePage from './CommitteePage';
+import CommitteePage from '../CommitteePage/CommitteePage';
+import { LocaleText } from '../../../Contexts/LocaleContext';
 
 export default function CommitteeList() {
-    // const [committees, setCommittees] = useState([]);
-    const match = useRouteMatch();
+  const [committees, setCommittees] = useState([]);
+  const match = useRouteMatch();
 
-    const committees = {
-        mbd: {
-            id: 1,
-            name: 'Medias Branschdag',
-            logo: mbdLogo
-            
-        },
-        mkm: {
-            id: 2,
-            name: 'Medias Klubbmästeri',
-            logo: mkmLogo
-        }
-    }
-  
+  useEffect(() => {
+    Api.Committees.GetAll().then((data) => {
+      setCommittees(data);
+    });
+  }, []);
 
-    useEffect(() => {
-        // Api.Committees.GetAll()
-        //   .then((data) => {
-        //     setCommittees(data);
-        //   });
+  return (
+    <Switch>
+      <Route path={`${match.path}/:committeeId`}>
+        <CommitteePage />
+      </Route>
 
-    }, []);
+      <Route path={match.path}>
+        <div className={classes.committeeContainer}>
+          <h2><LocaleText phrase="common/committees-and-projects" /></h2>
 
-    return (
-        <Switch>
-            <Route path={`${match.path}/:committeeId`}>
-                <CommitteePage />
-            </Route>
+          <div className={classes.CommitteeList}>
+            {
+                            Object.keys(committees).map((committeeKey) => (
+                              <Link to={`/committees/${committees[committeeKey].id}`}>
+                                <CommitteeCard
+                                  key={committees[committeeKey].id}
+                                  committeeName={committees[committeeKey].name}
+                                  committeeLogo={committees[committeeKey].logo}
+                                  committeeText={committees[committeeKey].text}
+                                  committeeLink={committees[committeeKey].pageLink}
+                                />
+                              </Link>
+                            ))
+                        }
+          </div>
+        </div>
 
-            <Route path={match.path}>
-                <div>
-                    {
-                        committees.map(committeeObject => (
-                            <CommitteeCard 
-                                key = {committeeObject.id}
-                                committeeName = {committeeObject.name}
-                                committeeLogo = {committeeObject.logo}
-                            />
-                        ))
-                    }
-                </div>
-            </Route>
-        </Switch>
-    );
+      </Route>
+    </Switch>
+  );
 }

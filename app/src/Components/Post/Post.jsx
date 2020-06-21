@@ -35,7 +35,7 @@ const Post = (props) => {
             </div>
             { post.header_image ? 
               <div className='img-container'>
-                <img src={Api.Images(post.header_image)}/>
+                <img src={post.header_image}/>
               </div>
               : <></>
             }

@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, desc
 
 from api.models.user import User
 from api.models.committee_post import CommitteePost ,CommitteePostTerm
@@ -57,22 +57,22 @@ class OfficialsResource(Resource):
                     and_(CommitteePostTerm.start_date >= start_date_year, CommitteePostTerm.start_date <= end_date_year),
                     and_(CommitteePostTerm.end_date >= start_date_year, CommitteePostTerm.end_date <= end_date_year),
                     and_(CommitteePostTerm.start_date <= start_date_year, CommitteePostTerm.end_date >= end_date_year)
-                )).all()
+                )).join(CommitteePost).order_by(CommitteePost.category, desc(CommitteePost.weight)).all()
             else:
                 return jsonify({"message": "Invalid input"})
         else:
             if date == None:
                 date = datetime.now()
 
-            terms = CommitteePostTerm.query.filter(CommitteePostTerm.post.has(CommitteePost.is_official == True)).filter(and_(CommitteePostTerm.start_date <= date, CommitteePostTerm.end_date >= date)).all()
 
+            terms = CommitteePostTerm.query.filter(CommitteePostTerm.post.has(CommitteePost.is_official == True)).filter(and_(CommitteePostTerm.start_date <= date, CommitteePostTerm.end_date >= date)).join(CommitteePost).order_by(CommitteePost.category, desc(CommitteePost.weight)).all()
         data = []
         for term in terms:
             data.append({
                 "startDate": term.start_date,
                 "endDate": term.end_date,
-                "post": term.post.to_dict(),
-                "user": term.user.to_dict()
+                "post": term.post.to_dict_without_terms(),
+                "user": term.user.to_dict_without_terms()
             })
 
         return jsonify(data)

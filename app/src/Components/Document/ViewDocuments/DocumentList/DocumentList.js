@@ -1,6 +1,7 @@
 import React from 'react';
 
 import classes from './DocumentList.module.css';
+import { API_BASE_URL } from '../../../../Utility/Api';
 
 const DocumentList = (props) => {
     let documentsToRender = [];
@@ -13,7 +14,7 @@ const DocumentList = (props) => {
             .filter(_document => {
                 let renderDocument = false;
                 _document.doctags.forEach(documentTag => {
-                    if (props.categoriesToShow.includes(documentTag.toString().trim())) {
+                    if (props.categoriesToShow.includes(documentTag.title.toString().trim())) {
                         renderDocument = true;
                     }
                 })
@@ -45,11 +46,11 @@ const DocumentList = (props) => {
                 <tbody>
                     {
                         documentsToRender.map(document => {
-                            let docTypeString = document.doctags.join(', ');
+                            let docTypeString = document.doctags.map((tag) => tag.title).join(', ');
 
                             return (
-                                <tr key={document.docId}>
-                                    <td>{document.headingText}</td>
+                                    <tr key={document.docId}>
+                                    <td><a href={API_BASE_URL + `documents/${document.filename}`}>{document.headingText}</a></td>
                                     <td>{docTypeString}</td>
                                     <td>{document.publisher}</td>
                                     <td>

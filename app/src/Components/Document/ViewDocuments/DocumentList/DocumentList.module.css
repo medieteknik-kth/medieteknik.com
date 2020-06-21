@@ -9,13 +9,14 @@
     width: 80%;
     border-collapse: separate; 
     border-spacing: 0 0px;
-    
 }
 
 .DocumentList tr {
     line-height: 10px;
     font-family: 'Roboto';
     font-weight: 300;
+    width: 100%;
+    height: 50px;
 }
 
 .DocumentList tr td{

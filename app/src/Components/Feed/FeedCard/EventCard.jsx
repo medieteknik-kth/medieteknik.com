@@ -25,7 +25,7 @@ const EventCard = (props) => {
         <div className='feed-card-container'>
             <div className='feed-card'>
                 <NavLink to={props.path}>
-                    <div className='feed-card-img' style={{ backgroundImage: `url('${Api.Images(props.headerImage)}')` }} />
+                    <div className='feed-card-img' style={{ backgroundImage: `url('${props.headerImage}')` }} />
                 </NavLink>
                 <div className='feed-card-text'>
 

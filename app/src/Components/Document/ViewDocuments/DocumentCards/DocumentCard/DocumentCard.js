@@ -3,7 +3,7 @@ import classes from './DocumentCard.module.css';
 import DocumentPreview from './DocumentPreview/DocumentPreview';
 
 const documentCard = (props) => {
-    let docTypeString = props.doctype.join(', ');
+    let docTypeString = props.doctype.map((tag) => tag.title).join(', ');
 
     return (
         <div className={classes.cardContainer}>

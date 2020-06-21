@@ -22,12 +22,12 @@
 }
 
 .userCardSubtitle {
-    font-size: 0.8rem;
-    color: #fff;
-    font-family: sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
+  font-size: 0.8rem;
+  color: #fff;
+  font-family: sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 
 .text-bg {
   background-color: #242424;
@@ -49,6 +49,7 @@
 
 .userImage {
   width: 100%;
+  object-fit: cover;
   background-size: cover;
   transition: all 0.7s;
   background-repeat: no-repeat;
@@ -101,4 +102,10 @@
 
 .userCardIcon {
   padding: 5px;
+}
+@media only screen and (min-device-width: 260px) and (max-device-width: 480px) {
+  .userCard {
+    width: 100px;
+    height: 100px;
+  }
 }

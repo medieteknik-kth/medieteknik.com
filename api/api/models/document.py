@@ -31,4 +31,5 @@ class DocumentTags(db.Model):
     tagId = db.Column(db.Integer, db.ForeignKey("tags.tagId"))
 
     def serialize(self):
-        return self.tagId
+        tag = Tag.query.get(self.tagId)
+        return tag.to_dict()

@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 
-import Api from '../../Utility/Api';
-import UserCard from '../UserCard/UserCard';
-import BasePage from '../Page/BasePage';
-import { UserContext } from '../../Contexts/UserContext';
+import Api from '../../../Utility/Api';
+import UserCard from '../../UserCard/UserCard';
+import BasePage from '../../Page/BasePage';
+import { UserContext } from '../../../Contexts/UserContext';
 
 import './CommitteePage.css';
-import { LocaleContext } from '../../Contexts/LocaleContext';
+import { LocaleContext } from '../../../Contexts/LocaleContext';
 
 export default function CommitteePage() {
   const { committeeId } = useParams();
@@ -24,7 +24,7 @@ export default function CommitteePage() {
   const [content, setContent] = useState('');
   const [oldContent, setOldContent] = useState(null);
 
-  const editingAllowed = user == null ? false : user.committeePostTerms.some((term) => term.post.committeeId === committee.id);
+  const editingAllowed = (user !== null);
 
   const quillRef = null;
 
@@ -50,10 +50,20 @@ export default function CommitteePage() {
     if (committee.page) {
       if (isEditing) {
         if (content !== oldContent) {
-          Api.Pages.Update(committee.page.id, {
-            content: JSON.stringify(content),
-            published: true,
-          }).then(() => {
+          let data;
+
+          if (lang === 'se') {
+            data = {
+              content_sv: JSON.stringify(content),
+              published: true,
+            };
+          } else {
+            data = {
+              content_en: JSON.stringify(content),
+              published: true,
+            };
+          }
+          Api.Pages.Update(committee.page.id, data).then(() => {
             // TODO: Meddelande att allt gått bra
             setOldContent(content);
           }).catch((error) => {

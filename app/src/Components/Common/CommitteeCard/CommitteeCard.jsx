@@ -13,7 +13,7 @@ const CommitteeCard = ({committeeId}) => {
 
     return (
         <div className="committee-card">
-            <img src={Api.Images(committee.logo)}/>
+            <img src={committee.logo}/>
             <div className="comittee-details">
                 <NavLink to={`/committees/${committee.id}`}>
                     <h5 className="committee-title">{committee.name}</h5>

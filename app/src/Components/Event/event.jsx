@@ -45,7 +45,7 @@ const Event = ({ }) => {
                     </div>
                     {event.header_image ?
                         <div className="img-container">
-                            <img src={Api.Images(event.header_image)} />
+                            <img src={event.header_image} />
                         </div>
                         : <></>
                     }

@@ -1,0 +1,16 @@
+.committeeContainer {
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+.committeeContainer h2 {
+    padding: 50px 0;
+}
+
+.CommitteeList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin: 10px auto;
+}
+
