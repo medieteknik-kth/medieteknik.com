@@ -83,6 +83,10 @@
   padding-right: 45px;
 }
 
+.buttonTitle:hover {
+  background-color: #f0f0f0;
+}
+
 .buttonDropdown {
   display: none;
   background-color: #f0f0f0;
@@ -106,7 +110,7 @@
 }
 
 .buttonDropdownItem:hover {
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
 }
 
 .iconContainer {
@@ -162,6 +166,10 @@
     color: black;
   }
 
+  .buttonTitle:hover {
+    background-color: initial;
+  }
+
   .buttonsContainer > .button:hover, .icon:hover {
     color: #f0c900;
     box-shadow: inset 0 -5px 0 #f0c900;
@@ -183,6 +191,10 @@
   .buttonDropdownItem {
     padding: 10px 5px 10px 5px;
     text-align: center;
+  }
+
+  .buttonDropdownItem:hover {
+    background-color: #f0f0f0;
   }
 
   .icon {
