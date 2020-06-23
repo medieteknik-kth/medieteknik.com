@@ -122,6 +122,17 @@
   flex: 1;
 }
 
+.contentWithExpandedMenu::before {
+  content:"";
+  display: block;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
 @media screen and (min-width: 1080px) {
   .logoContainer {
     padding-left: 50px;
@@ -182,5 +193,16 @@
 
   .icon.responsiveIcon {
     display: none;
+  }
+
+  .contentWithExpandedMenu::before {
+    content:"";
+    display: block;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.0);
   }
 }

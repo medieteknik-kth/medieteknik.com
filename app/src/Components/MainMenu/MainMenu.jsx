@@ -173,7 +173,7 @@ const PageWithMainMenu = (props) => {
           {localeButton('')}
         </div>
       </div>
-      <div className={styles.content}>
+      <div className={`${styles.content} ${mainMenuExpanded ? styles.contentWithExpandedMenu : ''}`}>
         {props.children}
       </div>
     </div>
