@@ -28,14 +28,14 @@ export default function Page() {
     });
   }, []);
 
-  const noContent = (notFound ? <NotFound /> : <div />);
+  const noContent = (notFound ? <div className="pageContent"><NotFound /></div> : <div />);
 
   const onChange = (newContent) => {
     setContent(newContent);
   };
 
   const didPressEditButton = () => {
-    if (isEditing) {
+    if (isEditing && content != null) {
       Api.Pages.Update(page.id, {
         content_sv: JSON.stringify(content),
         published: true,
@@ -56,7 +56,18 @@ export default function Page() {
         : <div />}
       <div className="pageContainer">
         { page !== null
-          ? <BasePage initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''} isEditing={isEditing} onChange={onChange} />
+          ? (
+            <div>
+              { page.image !== null ? <img src={page.image} alt={page.title} className="pageImage" /> : <div /> }
+              <div className="pageContent">
+                <BasePage
+                  initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''}
+                  isEditing={isEditing}
+                  onChange={onChange}
+                />
+              </div>
+            </div>
+          )
           : noContent}
       </div>
     </div>

@@ -1,7 +1,8 @@
 .ql-editor {
-    padding-bottom: 3em !important;
+    padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    padding-top: 0 !important;
     font-size: medium !important;
 }
 
@@ -10,16 +11,13 @@
 }
 
 .ql-toolbar.ql-snow {
-    transition: all 0.3s ease 0s;
-    opacity: 0;
-    visibility: hidden;
     background-color: white;
     z-index: 1000;
+    display: none;
 }
 
 .editorIsEditing > .ql-toolbar.ql-snow {
-    opacity: 1;
-    visibility: visible;
+    display: block;
 }
 
 .ql-editor p {
