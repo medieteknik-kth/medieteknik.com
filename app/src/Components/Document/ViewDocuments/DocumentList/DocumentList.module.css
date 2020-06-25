@@ -44,3 +44,8 @@
     padding-left: 15px;
     padding-bottom: 10px;
 }
+
+.DocumentList td a { 
+    display: block; 
+    padding: 15px; 
+ }

@@ -29,20 +29,20 @@ const DocumentCards = (props) => {
         <div className={classes.DocumentCards}>
             {
                 documentsToRender.map(doc => (
-                    <a href={API_BASE_URL + `documents/${doc.filename}`}>
-                    <DocumentCard
-                        doctypeId = {doc.itemId}
-                        doctype = {doc.doctags}
-                        headingText = {doc.headingText}
-                        publisher = {doc.publisher}
-                        publishDate = {
-                            doc.publishDate.getFullYear() + "-" + 
-                            ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
-                            (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
-                        }
-                        thumbnail = {doc.thumbnail}
-                        key = {doc.publishDate}
-                    />
+                    <a href={API_BASE_URL + `documents/${doc.filename}`} target="_blank">
+                        <DocumentCard
+                            doctypeId = {doc.itemId}
+                            doctype = {doc.doctags}
+                            headingText = {doc.headingText}
+                            publisher = {doc.publisher}
+                            publishDate = {
+                                doc.publishDate.getFullYear() + "-" + 
+                                ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
+                                (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
+                            }
+                            thumbnail = {doc.thumbnail}
+                            key = {doc.publishDate}
+                        />
                     </a>
                 )) 
             }
