@@ -21,9 +21,6 @@ import listViewIconSelected from './Assets/list_view_selected.png';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
-// Att göra:
-// 1. Gör så att gallerivy presenteras som ett grid
-
 class ViewDocuments extends Component {
     constructor() {
         super();
@@ -68,6 +65,7 @@ class ViewDocuments extends Component {
 
         let documentsFromServerTemp = [];
 
+
         fetch(API_BASE_URL + 'documents')
             .then(response => response.json())
             .then(jsonObject => {
@@ -89,7 +87,8 @@ class ViewDocuments extends Component {
                                 thumbnail: thumbnail,
                                 filename: doc.filename
                             }
-        
+                            
+                            console.log('Hej1');
                             documentsFromServerTemp = [...documentsFromServerTemp, docObject];
                             documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
                             this.setState({documentsFromServer: documentsFromServerTemp});
@@ -104,9 +103,6 @@ class ViewDocuments extends Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.clearCat = this.clearCat.bind(this);
     }
-
-    
-    
     
     handleResize = () => {
         this.setState({
@@ -217,7 +213,6 @@ class ViewDocuments extends Component {
         } else {
             let sortedTempArr = quickSort(this.state.documentsFromServer, sortType, 'rising');
             this.setState({documentsFromServer: sortedTempArr});
-            console.log(sortedTempArr);
         }
     }
 

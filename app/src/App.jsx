@@ -24,6 +24,7 @@ import Footer from './Components/Footer/Footer';
 import Gallery from './Components/Gallery/Gallery';
 import Album from './Components/Gallery/Album/Album';
 import Page from './Components/Page/Page';
+import Spinner from './Components/Common/Spinner/spinner';
 
 export default function App() {
   return (
@@ -48,6 +49,9 @@ export default function App() {
             </Route>
             <Route path="/committees">
               <PageWithMainMenu><CommitteeList /></PageWithMainMenu>
+            </Route>
+            <Route path="/spinner">
+              <PageWithMainMenu><Spinner /></PageWithMainMenu>
             </Route>
             <Route path="/pages">
               <PageWithMainMenu><PageManager /></PageWithMainMenu>
