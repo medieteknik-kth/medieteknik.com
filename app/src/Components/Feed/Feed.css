@@ -5,6 +5,7 @@
     background-color: #f0f0f0;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 40px;
 }
 
 .feed-container h1 {
@@ -13,15 +14,20 @@
 }
 
 .feed-cards {
-    width: 80%;
-    justify-content: center;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(2, 500px);
+    column-gap: 60px;
+    row-gap: 60px;
 }
 
 @media (max-width: 800px) {
+    
     .feed-cards {
-        width: 95%;
+        grid-template-columns: 1fr;
+        row-gap: 20px;
+    }
+
+    .feed-container {
+        padding-bottom: 20px;
     }
 }
