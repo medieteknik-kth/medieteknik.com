@@ -123,6 +123,12 @@
             "en": "Gallery"
         }
     },
+    "officials": {
+        "could_not_load": {
+            "se": "Kunde inte ladda funktionärer.",
+            "en": "Could not load officials."
+        }
+    },
     "footer": {
         "contact": {
             "se": "Kontakt",

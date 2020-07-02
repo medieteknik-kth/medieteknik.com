@@ -9,6 +9,7 @@ import { LocaleText } from '../../Contexts/LocaleContext';
 
 export default function OfficialsBoard() {
 
+  //TODO: Add backend for operational years
   const operationalYears = [
     '2019/2020',
     '2018/2019'
@@ -19,54 +20,65 @@ export default function OfficialsBoard() {
 
   useEffect(() => {
     setIsLoading(true);
-    Api.Officials.GetWithParameters({ 'forOperationalYear' : operationalYear }).then((data) => {
+    Api.Officials.GetWithParameters({'forOperationalYear' : operationalYear}).then((data) => {
       setOfficials(data)
       setIsLoading(false);
+    }).catch(err => {
+      setIsLoading(false)
     });
   }, [operationalYear]);
 
-  //Used for setting titles for category
-  const titles = [];
+  //TODO: Add backend for post categories (weigth, email etc)
+  const categoryTitles = [];
   officials.map((official) =>
-    !titles.includes(official.post.category)
-      ? titles.push(official.post.category)
+    !categoryTitles.includes(official.post.category)
+      ? categoryTitles.push(official.post.category)
       : null
   );
 
-  return (<div className='officials-board-container'>
-    <div className='officials-board'>
-      <div className='officials-header'>
-        <h1><LocaleText phrase='common/officials'/></h1>
-        <div className='officials-select'>
-          <Dropdown 
-            options={operationalYears.map(year => { return {value: year, label: year}})}
-            onChange={(option) => setOperationalYear(option.value)}/>
-        </div>
-      </div>
-
-      { isLoading ? <Spinner/> :
-         titles.map((title) => (
-          <div className='official-category' key={title}>
-            <div className='category-header'>
-              <h2>{title}</h2>
-              <p>medieteknik@medieteknik.com</p> {/*TODO: Add backend for post category email*/}
-            </div>
-
-            <div className='user-list-official'>
-              {officials
-                .filter((official) => official.post.category === title)
-                .map((official) => (
-                  <OfficialCard
-                    key={`${official.post.name}_${official.user.id}`}
-                    user={official.user}
-                    title={official.post.name}
-                    email={official.post.email}
-                  />
-                ))}
-            </div>
+  return (
+    <div className='officials-board-container'>
+      <div className='officials-board'>
+        <div className='officials-header'>
+          <h1><LocaleText phrase='common/officials'/></h1>
+          <div className='officials-select'>
+            <Dropdown 
+              options={operationalYears.map(year => { return {value: year, label: year}})}
+              onChange={(option) => setOperationalYear(option.value)}/>
           </div>
-        ))}
-    </div>
+        </div>
+
+        { isLoading ? 
+          <div className='official-center'>
+            <Spinner/>
+          </div> :
+          categoryTitles.length > 0 ? 
+            categoryTitles.map((title) => (
+              <div className='official-category' key={title}>
+                <div className='category-header'>
+                  <h2>{title}</h2>
+                  <p>medieteknik@medieteknik.com</p> {/*TODO: Add backend for post categories email*/}
+                </div>
+
+                <div className='user-list-official'>
+                  {officials
+                    .filter((official) => official.post.category === title)
+                    .map((official) => (
+                      <OfficialCard
+                        key={`${official.post.name}_${official.user.id}`}
+                        user={official.user}
+                        title={official.post.name}
+                        email={official.post.email}
+                      />
+                    ))}
+                </div>
+              </div>))
+            : 
+              <div className='official-center'>
+                <LocaleText phrase='officials/could_not_load'/>
+              </div>
+            }
+      </div>
     </div>
   );
 }
