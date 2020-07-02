@@ -24,7 +24,7 @@ import Footer from './Components/Footer/Footer';
 import Gallery from './Components/Gallery/Gallery';
 import Album from './Components/Gallery/Album/Album';
 import Page from './Components/Page/Page';
-import Spinner from './Components/Common/Spinner/spinner';
+import Spinner from './Components/Common/Spinner/Spinner';
 
 export default function App() {
   return (
