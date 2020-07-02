@@ -35,6 +35,10 @@
         "committees-and-projects": {
             "se": "Nämnder och projekt",
             "en": "Committees and projects"
+        },
+        "officials": {
+            "se": "Funktionärer",
+            "en": "Officials"           
         }
     },
     "form": {
