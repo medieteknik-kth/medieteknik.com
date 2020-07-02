@@ -1,5 +1,5 @@
 .spinnerContainer {
-    margin-top: 145px;
+    margin-top: 120px;
 }
 
 .loader,
@@ -18,7 +18,7 @@
     border-left: 1.1em solid #f0c900;
 
     animation-iteration-count: infinite;
-    animation-duration: 1.55s;
+    animation-duration: 1.4s;
     animation-timing-function: cubic-bezier(.7, .2, .25, .8);
     animation-name: load8;
 }
