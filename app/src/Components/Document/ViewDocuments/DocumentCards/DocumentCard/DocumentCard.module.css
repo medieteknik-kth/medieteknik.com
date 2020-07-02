@@ -17,15 +17,14 @@
     transform: scale(1.15);
 }
 
-h4 {
+.docCards h4 {
 	font-size: 20px;
     font-weight: 550;
     text-transform: none;
     padding: 0;
 }
 
-
-h5 {
+.docCards h5 {
     color: #c7c7c7;
     padding-left: 17px;
     text-transform: uppercase;

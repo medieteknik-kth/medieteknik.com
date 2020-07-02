@@ -1,42 +1,48 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import Api from '../../../Utility/Api.js'
-import { LocaleText, translate } from '../../../Contexts/LocaleContext';
-import PostCard from './PostCard';
-import EventCard from './EventCard';
+import { LocaleText, localeDate } from '../../../Contexts/LocaleContext';
+import './FeedCard.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarker, faCalendar } from '@fortawesome/free-solid-svg-icons';
 
-export const itemTypes = {
+export const feedTypes = {
     POST: "post",
     EVENT: "event"
 }
 
-// return a suitable component based on the type of feed item
-const FeedCard = ({feedItem}) => {
-    switch(feedItem.type){
-        
-        case itemTypes.POST:
-            return (<PostCard
-            key={feedItem.id}
-                    path={'/posts/' + feedItem.id}
-                    title={translate(feedItem.title)}
-                    date={feedItem.date}
-                    body={translate({ se: feedItem.body.se.trunc(250), en: feedItem.body.en ? feedItem.body.en.trunc(250) : '' })}
-                    headerImage={feedItem.header_image}
-                    tags={feedItem.tags} />)
-        
-        case itemTypes.EVENT:
-            return (<EventCard
-                key={feedItem.id}
-                        path={'/events/' + feedItem.event_id}
-                        title={translate(feedItem.title)}
-                        date={feedItem.date}
-                        body={translate({se: feedItem.description.se.trunc(250), en: feedItem.description.en ? feedItem.description.en.trunc(250): ''})}
-                        headerImage={feedItem.header_image}
-                        tags={feedItem.tags} 
-                        location={feedItem.location}/>)
-        default:
-            return (<h1>unkown type</h1>)
-    }
+const FeedCard = (props) => {
+    return (
+        <NavLink to={props.path}>
+            <div className='feed-card-container'>
+                <div className='feed-card'>
+                    <div className='feed-card-img' style={{ backgroundImage: `url('${props.headerImage}')` }} />
+                    <div className='feed-card-text'>
+                        <h4>{props.title}</h4>
+                        { props.type === feedTypes.EVENT ? 
+                            <>
+                                <h5>
+                                    <FontAwesomeIcon icon={faCalendar}/> {localeDate(props.date)}
+                                </h5>
+                                <h5>
+                                    <FontAwesomeIcon icon={faMapMarker} /> {props.location}
+                                </h5>
+                            </> : <h5>{localeDate(props.date)}</h5>
+                        }
+                        <p>
+                            {props.body}
+                        </p>
+                        { props.type === feedTypes.POST ? <h6 className='feed-rb'>-</h6> : <></> } 
+                        <h5 className='feed-tags'>
+                            <LocaleText phrase='feed/tags'/>
+                            {props.tags.map((tag) =>
+                                <span key={tag.title}> #{tag.title}</span>
+                            )}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </NavLink>
+    );
 }
 
 export default FeedCard;

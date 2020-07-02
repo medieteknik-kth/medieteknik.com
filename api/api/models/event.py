@@ -6,18 +6,18 @@ from api.models.post_tag import PostTag
 
 #Association table for tags and events
 events_tags = db.Table('eventsTags', db.Model.metadata,
-    db.Column('event_id', db.Integer, db.ForeignKey('event.event_id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('post_tag.id'))
 )
 
 class Event(db.Model):
     __tablename__ = "event"
-    event_id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String, nullable=False)
     title_en = db.Column(db.String, nullable=True)
     date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    description = db.Column(db.Text, nullable=False)
-    description_en = db.Column(db.Text, nullable=True)
+    body = db.Column(db.Text, nullable=False)
+    body_en = db.Column(db.Text, nullable=True)
     location = db.Column(db.String)
     committee_id = db.Column(db.Integer, db.ForeignKey('committee.id'))
     committee = db.relationship("Committee", back_populates = "events")
@@ -29,15 +29,15 @@ class Event(db.Model):
 
     def to_dict(self):
         return {
-            "event_id": self.event_id,
+            "id": self.id,
             "title": {
                 "se": self.title,
                 "en": self.title_en
             },
             "date": self.date,
-            "description": {
-                "se": self.description,
-                "en": self.description_en
+            "body": {
+                "se": self.body,
+                "en": self.body_en
             },
             "location": self.location,
             "header_image": self.header_image,

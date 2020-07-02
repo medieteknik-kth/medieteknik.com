@@ -71,7 +71,7 @@ class EventResource(Resource):
         schema:
           type: object
           properties:
-            event_id:
+            id:
               type: integer
             title:
               type: string
@@ -79,9 +79,9 @@ class EventResource(Resource):
               type: string
             date:
               type: string
-            description:
+            body:
               type: string
-            description_en:
+            body_en:
               type: string
             location:
               type: string
@@ -159,21 +159,21 @@ class EventListResource(Resource):
                 type: string
               facebook_link:
                 type: string
-              event_id:
+              id:
                 type: number
               title:
                 type: string
               title_en:
                 type: string
-              "description":
+              body:
                 type: string
-              description_en:
+              body_en:
                 type: string
               tags:
                 type: array
                 items:
                     type: integer
-              event_id:
+              id:
                 type: integer
               location:
                 type: string
@@ -207,8 +207,8 @@ def get_events():
 def add_event(request):
     params = json.loads(request.form.get('data'))
     e = Event(title=params["title"], date=datetime.strptime(params["date"], ISO_DATE_DEF),
-              description=params["description"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
-              description_en=params["description_en"], title_en=params["title_en"])
+              body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
+              body_en=params["body_en"], title_en=params["title_en"])
     if "header_image" in request.files:
         image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
         e.header_image = image_name
@@ -227,8 +227,8 @@ def delete_event(id):
 def update_event(request,id):
     params = request.json
     e = Event.query.filter(Event.eventId == id).first()
-    e.description = params["description"]
-    e.description_en = params["description_en"]
+    e.body = params["body"]
+    e.body_en = params["body_en"]
     e.title = params["title"]
     e.title_en = params["title_en"]
     e.date = datetime.strptime(params["date"], "%Y-%m-%dT%H:%M:%S%z")

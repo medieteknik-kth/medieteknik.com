@@ -99,8 +99,8 @@
     },
     "feed": {
         "header": {
-            "se": "Inlägg & Event",
-            "en": "Posts & Events"
+            "se": "Aktuellt",
+            "en": "Feed"
         },
         "tags": {
             "se": "Taggar",
