@@ -39,15 +39,23 @@
   word-wrap: break-word;
 }
 
-.user-list-official {
+.officials-list {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   column-gap: 1em;
 }
 
+.officials-center {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  padding: 2em 0 2em 0;
+}
+
 @media (max-width: 1600px) {
   
-  .user-list-official {
+  .officials-list {
     grid-template-columns: repeat(5, 1fr);
   }
 
@@ -59,7 +67,7 @@
     width: 100%;
   }
   
-  .user-list-official {
+  .officials-list {
     grid-template-columns: repeat(1, 1fr);
   }
 
