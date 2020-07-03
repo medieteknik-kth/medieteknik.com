@@ -165,7 +165,6 @@ def route_create_all():
     db.drop_all()
     db.create_all()
 
-    
 
     def create_committee_category(name, weight, email=""):
         committee_category = CommitteeCategory()
@@ -175,15 +174,7 @@ def route_create_all():
         db.session.add(committee_category)
         return committee_category
 
-    styrelsen =  create_committee_category("Styrelsen", 7, "styrelsen@medieteknik.com")
-    valberedningen = create_committee_category("Valberedningen", 6, "val@medieteknik.com")
-    utbildning = create_committee_category("Studienämnden", 5)
-    naringsliv = create_committee_category("Näringsliv och Kommunikation", 4)
-    studiesocialt = create_committee_category("Studiesocialt", 3)
-    fanborgen = create_committee_category("Fanborgen", 2)
-    revisorerna = create_committee_category("Revisorerna", 1)
-
-    def create_committee(name, logo_name, has_banner = False, category=studiesocialt):
+    def create_committee(name, logo_name, has_banner = False, category= None):
         committee = Committee()
         committee.name = name
         committee.logo = "/static/committees/" + logo_name + ".png"
@@ -224,12 +215,20 @@ def route_create_all():
             user.post_terms.append(post.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31)))
 
 
-    mkm = create_committee("Medias Klubbmästeri", "mkm", True)
+    styrelsen =  create_committee_category("Styrelsen", 7, "styrelsen@medieteknik.com")
+    valberedningen = create_committee_category("Valberedningen", 6, "val@medieteknik.com")
+    utbildning = create_committee_category("Studienämnden", 5)
+    naringsliv = create_committee_category("Näringsliv och Kommunikation", 4)
+    studiesocialt = create_committee_category("Studiesocialt", 3)
+    fanborgen = create_committee_category("Fanborgen", 2)
+    revisorerna = create_committee_category("Revisorerna", 1)
+
+    mkm = create_committee("Medias Klubbmästeri", "mkm", True, category=studiesocialt)
     kbm = create_post(mkm, "Klubbmästare")
     create_official("Hilda", "Robertsson", kbm, True, "Hilda")
     create_official("Amalia", "Berglöf", kbm, True, "Amalia")
 
-    styrelsen = create_committee("Styrelsen", "styrelsen", True, styrelsen)
+    styrelsen = create_committee("Styrelsen", "styrelsen", True, category=styrelsen)
     create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "ordf@medieteknik.com"), True, "Oliver")
     create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande"), False, "My")
     sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör"), True, "Sandra")
@@ -238,23 +237,23 @@ def route_create_all():
     create_official("Samuel", "Kraft", create_post(styrelsen, "Ledamot för Studiesocialt"), True, "kraft")
     create_official("Hanna", "Bjarre", create_post(styrelsen, "Ledamot för Näringsliv- och kommunikation"), True, "Hanna")
 
-    create_official("Moa", "Engquist", create_post(create_committee("Jubileet", "jubileet", True, studiesocialt), "Jubelgeneral"), True, "Moa")
-    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna", "metadorerna", studiesocialt), "Sektionslokalsansvarig"), True, "Johanna_N")
-    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet", "spexm", studiesocialt), "Spexmästare"), True, "Johanna_S")
-    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet", "sanglederiet", studiesocialt), "Öfversångledare"), False, "kraft")
-    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet", "medielabbet", studiesocialt), "Medielabbets Ordförande"), True)
-    fotogruppsansvarig = create_post(create_committee("Fotogruppen", "fotogruppen", studiesocialt), "Fotogruppsansvarig")
-    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden", "idrottsnamnden", studiesocialt), "Idrottsnämndsordförande"), True, "Andreas")
-    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden", "qn", studiesocialt), "Qulturnämndsordförande"), False, "Hoffe")
+    create_official("Moa", "Engquist", create_post(create_committee("Jubileet", "jubileet", True, category=studiesocialt), "Jubelgeneral"), True, "Moa")
+    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna", "metadorerna", category=studiesocialt), "Sektionslokalsansvarig"), True, "Johanna_N")
+    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet", "spexm", category=studiesocialt), "Spexmästare"), True, "Johanna_S")
+    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet", "sanglederiet", category=studiesocialt), "Öfversångledare"), False, "kraft")
+    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet", "medielabbet", category=studiesocialt), "Medielabbets Ordförande"), True)
+    fotogruppsansvarig = create_post(create_committee("Fotogruppen", "fotogruppen", category=studiesocialt), "Fotogruppsansvarig")
+    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden", "idrottsnamnden", category=studiesocialt), "Idrottsnämndsordförande"), True, "Andreas")
+    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden", "qn", category=studiesocialt), "Qulturnämndsordförande"), False, "Hoffe")
     
-    mtgn = create_committee("Mottagningen", "mtgn", True, studiesocialt)
+    mtgn = create_committee("Mottagningen", "mtgn", True, category=studiesocialt)
     oph = create_post(mtgn, "Öfverphös")
     create_official("Kajsa", "Saare", oph, False, "Kajsa")
     add_post_to_user(sandra, oph, False)
     create_official("Gabriella", "Dalman", oph, False)
     
-    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget", "matlaget"), "Mästerkocken"), True, "Amanda_A")
-    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker", "medieteknik"), "Ljud- och ljustekniker"), True, "Oskar")
+    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget", "matlaget", category=studiesocialt), "Mästerkocken"), True, "Amanda_A")
+    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker", "medieteknik", category=studiesocialt), "Ljud- och ljustekniker"), True, "Oskar")
     
     are = create_committee("spÅre", "medieteknik", category=studiesocialt)
     ursparare = create_post(are, "UrSpårare")
