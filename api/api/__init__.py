@@ -152,6 +152,7 @@ def send_thumbnail(filename):
 @app.route("/create_all")
 def route_create_all():
     from api.models.user import User, Committee
+    from api.models.committee import CommitteeCategory
     from api.models.committee_post import CommitteePost#, CommitteePostTerm
     from api.models.document import Document, Tag, DocumentTags
     from api.models.post import Post
@@ -164,21 +165,39 @@ def route_create_all():
     db.drop_all()
     db.create_all()
 
-    def create_committee(name, logo_name, has_banner = False):
+    
+
+    def create_committee_category(name, weight, email=""):
+        committee_category = CommitteeCategory()
+        committee_category.title = name
+        committee_category.weight = weight
+        committee_category.email = email
+        db.session.add(committee_category)
+        return committee_category
+
+    styrelsen =  create_committee_category("Styrelsen", 7, "styrelsen@medieteknik.com")
+    valberedningen = create_committee_category("Valberedningen", 6, "val@medieteknik.com")
+    utbildning = create_committee_category("Studienämnden", 5)
+    naringsliv = create_committee_category("Näringsliv och Kommunikation", 4)
+    studiesocialt = create_committee_category("Studiesocialt", 3)
+    fanborgen = create_committee_category("Fanborgen", 2)
+    revisorerna = create_committee_category("Revisorerna", 1)
+
+    def create_committee(name, logo_name, has_banner = False, category=studiesocialt):
         committee = Committee()
         committee.name = name
         committee.logo = "/static/committees/" + logo_name + ".png"
+        committee.category = category
         if has_banner:
             committee.header_image = "/static/committee_banners/" + logo_name + ".jpg"
         db.session.add(committee)
         return committee
     
-    def create_post(committee, post_name, category, email = ""):
+    def create_post(committee, post_name, email = ""):
         post = CommitteePost()
         post.name = post_name
         post.committee = committee
         post.is_official = True
-        post.category = category
         post.officials_email = email
         db.session.add(post)
         return post
@@ -204,66 +223,67 @@ def route_create_all():
         else:
             user.post_terms.append(post.new_term(datetime.datetime(2019, 1, 1), datetime.datetime(2020, 12, 31)))
 
+
     mkm = create_committee("Medias Klubbmästeri", "mkm", True)
-    kbm = create_post(mkm, "Klubbmästare", "Studiesocialt")
+    kbm = create_post(mkm, "Klubbmästare")
     create_official("Hilda", "Robertsson", kbm, True, "Hilda")
     create_official("Amalia", "Berglöf", kbm, True, "Amalia")
 
-    styrelsen = create_committee("Styrelsen", "styrelsen", True)
-    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "Styrelsen", "ordf@medieteknik.com"), True, "Oliver")
-    create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande", "Styrelsen"), False, "My")
-    sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör", "Styrelsen"), True, "Sandra")
-    jessie = create_official("Jessie", "Liu", create_post(styrelsen, "Sekreterare", "Styrelsen"), False, "Jessie")
-    create_official("Lina", "Bengtsson", create_post(styrelsen, "Ledamot för Utbildningsfrågor", "Styrelsen"), True, "Lina")
-    create_official("Samuel", "Kraft", create_post(styrelsen, "Ledamot för Studiesocialt", "Styrelsen"), True, "kraft")
-    create_official("Hanna", "Bjarre", create_post(styrelsen, "Ledamot för Näringsliv- och kommunikation", "Styrelsen"), True, "Hanna")
+    styrelsen = create_committee("Styrelsen", "styrelsen", True, styrelsen)
+    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "ordf@medieteknik.com"), True, "Oliver")
+    create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande"), False, "My")
+    sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör"), True, "Sandra")
+    jessie = create_official("Jessie", "Liu", create_post(styrelsen, "Sekreterare"), False, "Jessie")
+    create_official("Lina", "Bengtsson", create_post(styrelsen, "Ledamot för Utbildningsfrågor"), True, "Lina")
+    create_official("Samuel", "Kraft", create_post(styrelsen, "Ledamot för Studiesocialt"), True, "kraft")
+    create_official("Hanna", "Bjarre", create_post(styrelsen, "Ledamot för Näringsliv- och kommunikation"), True, "Hanna")
 
-    create_official("Moa", "Engquist", create_post(create_committee("Jubileet", "jubileet", True), "Jubelgeneral", "Studiesocialt"), True, "Moa")
-    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna", "metadorerna"), "Sektionslokalsansvarig", "Studiesocialt"), True, "Johanna_N")
-    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet", "spexm"), "Spexmästare", "Studiesocialt"), True, "Johanna_S")
-    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet", "sanglederiet"), "Öfversångledare", "Studiesocialt"), False, "kraft")
-    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet", "medielabbet"), "Medielabbets Ordförande", "Studiesocialt"), True)
-    fotogruppsansvarig = create_post(create_committee("Fotogruppen", "fotogruppen"), "Fotogruppsansvarig", "Studiesocialt")
-    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden", "idrottsnamnden"), "Idrottsnämndsordförande", "Studiesocialt"), True, "Andreas")
-    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden", "qn"), "Qulturnämndsordförande", "Studiesocialt"), False, "Hoffe")
+    create_official("Moa", "Engquist", create_post(create_committee("Jubileet", "jubileet", True, studiesocialt), "Jubelgeneral"), True, "Moa")
+    create_official("Johanna", "Nilsen", create_post(create_committee("METAdorerna", "metadorerna", studiesocialt), "Sektionslokalsansvarig"), True, "Johanna_N")
+    create_official("Johanna", "Simfors", create_post(create_committee("Spexmästeriet", "spexm", studiesocialt), "Spexmästare"), True, "Johanna_S")
+    create_official("Samuel", "Kraft", create_post(create_committee("Sånglederiet", "sanglederiet", studiesocialt), "Öfversångledare"), False, "kraft")
+    create_official("Edvin", "Hedenström", create_post(create_committee("Medielabbet", "medielabbet", studiesocialt), "Medielabbets Ordförande"), True)
+    fotogruppsansvarig = create_post(create_committee("Fotogruppen", "fotogruppen", studiesocialt), "Fotogruppsansvarig")
+    create_official("Andreas", "Wingqvist", create_post(create_committee("Idrottsnämnden", "idrottsnamnden", studiesocialt), "Idrottsnämndsordförande"), True, "Andreas")
+    create_official("Martin", "Neihoff", create_post(create_committee("Qulturnämnden", "qn", studiesocialt), "Qulturnämndsordförande"), False, "Hoffe")
     
-    mtgn = create_committee("Mottagningen", "mtgn", True)
-    oph = create_post(mtgn, "Öfverphös", "Studiesocialt")
+    mtgn = create_committee("Mottagningen", "mtgn", True, studiesocialt)
+    oph = create_post(mtgn, "Öfverphös")
     create_official("Kajsa", "Saare", oph, False, "Kajsa")
     add_post_to_user(sandra, oph, False)
     create_official("Gabriella", "Dalman", oph, False)
     
-    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget", "matlaget"), "Mästerkocken", "Studiesocialt"), True, "Amanda_A")
-    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker", "medieteknik"), "Ljud- och ljustekniker", "Studiesocialt"), True, "Oskar")
+    create_official("Amanda", "Brundin", create_post(create_committee("Matlaget", "matlaget"), "Mästerkocken"), True, "Amanda_A")
+    create_official("Oskar", "Svanström", create_post(create_committee("Ljud- och ljustekniker", "medieteknik"), "Ljud- och ljustekniker"), True, "Oskar")
     
-    are = create_committee("spÅre", "medieteknik")
-    ursparare = create_post(are, "UrSpårare", "Studiesocialt")
+    are = create_committee("spÅre", "medieteknik", category=studiesocialt)
+    ursparare = create_post(are, "UrSpårare")
     create_official("John", "Brink", ursparare, True, "John")
     erik = create_official("Erik", "Meurk", ursparare, True, "Erik")
     simon = create_official("Simon", "Sundström", ursparare, True, "Simon")
 
-    add_post_to_user(erik, create_post(create_committee("Kommunikationsnämnden", "komn"), "Kommunikatör", "Näringsliv- och kommunikation"), True)
+    add_post_to_user(erik, create_post(create_committee("Kommunikationsnämnden", "komn", category=naringsliv), "Kommunikatör"), True)
 
-    nlgordf = create_post(create_committee("Näringslivsgruppen", "nlg"), "Näringslivsansvarig", "Näringsliv- och kommunikation")
+    nlgordf = create_post(create_committee("Näringslivsgruppen", "nlg", category=naringsliv), "Näringslivsansvarig")
     create_official("Johanna", "Iivanainen", nlgordf, True, "Johanna_I")
     create_official("Anna", "Gustavsson", nlgordf, True)
 
-    branchdagen = create_post(create_committee("Medias Branschdag", "mbd"), "Projektledare för Branschdagen", "Näringsliv- och kommunikation")
+    branchdagen = create_post(create_committee("Medias Branschdag", "mbd", category=naringsliv), "Projektledare för Branschdagen")
     rasmus = create_official("Rasmus", "Rudling", branchdagen, True, "Rasmus")
     ellaklara = create_official("Ella Klara", "Westerlund", branchdagen, True, "Ella_Klara")
 
-    joppe = create_official("Jesper", "Lundqvist", create_post(create_committee("Webmaster", "medieteknik"), "Webmaster", "Näringsliv- och kommunikation"), False)
+    joppe = create_official("Jesper", "Lundqvist", create_post(create_committee("Webmaster", "medieteknik", category=naringsliv), "Webmaster"), False)
     
-    studie = create_committee("Studienämnden", "studienamnden")
-    create_official("Sofia", "Lundin Ziegler", create_post(studie, "Studienämndsordförande", "Utbildning"), True, "Sofia_L")
-    create_official("Amanda", "Andrén", create_post(studie, "Programansvarig student", "Utbildning"), False, "Amanda_A")
-    create_official("Nina", "Nokelainen", create_post(studie, "Studerandeskyddsombud", "Utbildning"), True, "Nina")
-    create_official("Christoffer", "Vikström", create_post(studie, "Jämlikhets- och mångfaldsombud", "Utbildning"), True)
-    add_post_to_user(simon, create_post(create_committee("Internationell Samordnare", "medieteknik"), "Internationella nämnden", "Utbildning"), True)
+    studie = create_committee("Studienämnden", "studienamnden", category=utbildning)
+    create_official("Sofia", "Lundin Ziegler", create_post(studie, "Studienämndsordförande"), True, "Sofia_L")
+    create_official("Amanda", "Andrén", create_post(studie, "Programansvarig student"), False, "Amanda_A")
+    create_official("Nina", "Nokelainen", create_post(studie, "Studerandeskyddsombud"), True, "Nina")
+    create_official("Christoffer", "Vikström", create_post(studie, "Jämlikhets- och mångfaldsombud"), True)
+    add_post_to_user(simon, create_post(create_committee("Internationella nämnden", "medieteknik", category=utbildning), "Internationell Samordnare"), True)
     
-    val = create_committee("Valberedningen", "valberedningen")
-    create_official("Mimmi", "Andreasson", create_post(val, "Valberedningens Ordförande", "Valberedningen"), True, "Mimmi")
-    valberedare = create_post(val, "Valberedare", "Valberedningen")
+    val = create_committee("Valberedningen", "valberedningen", category=valberedningen)
+    create_official("Mimmi", "Andreasson", create_post(val, "Valberedningens Ordförande"), True, "Mimmi")
+    valberedare = create_post(val, "Valberedare")
     create_official("Anja", "Studic", valberedare, True)
     create_official("Nathalie", "Lock", valberedare, True, "Nathalie")
     create_official("Alex", "Modee", valberedare, True)
@@ -271,11 +291,11 @@ def route_create_all():
     create_official("Anna", "Eckernäs", valberedare, False)
     create_official("Saga", "Palmér", valberedare, False, "Saga")
 
-    revisor = create_post(create_committee("Revisorerna", "medieteknik"), "Revisor", "Revisorerna")
+    revisor = create_post(create_committee("Revisorerna", "medieteknik", category=revisorerna), "Revisor")
     kristina = create_official("Kristina", "Andersson", revisor, True)
     create_official("Mahmoud", "Sherzad", revisor, True, "Mood")
 
-    fanborg = create_post(create_committee("Fanborgen", "medieteknik"), "Fanbärare", "Fanborgen")
+    fanborg = create_post(create_committee("Fanborgen", "medieteknik", category=fanborgen), "Fanbärare")
     create_official("Sofia", "Blomgren", fanborg, True, "Sofia_B")
     create_official("Emil", "Erlandsson", fanborg, True), "Emil"
 
@@ -352,6 +372,7 @@ def route_create_all():
     committee1.header_image = "https://i.imgur.com/h6jxbaR.jpg"
     committee1.description = "Vi bygger sektionens nästa hemsida."
     committee1.instagram_url = "https://www.instagram.com/medieteknik_kth/"
+    committee1.category = naringsliv
 
     committee2 = Committee()
     committee2.name = "Mottagningen"
@@ -360,7 +381,6 @@ def route_create_all():
     post.name = "Projektledare för Hemsidan"
     post.committee = committee1
     post.is_official = True
-    post.category = "Näringsliv- och kommunikation"
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
     
     post2 = CommitteePost()
@@ -518,7 +538,7 @@ def route_create_all():
     create_page("Studievägledning", "studievagledning", "{\"ops\":[{\"insert\":\"Studiev\u00e4gledning\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"},{\"insert\":\"Lena Smedenborn \u00e4r studiev\u00e4gledare f\u00f6r studenter p\u00e5 civilingenj\u00f6rsprogrammet i medieteknik. Du kan v\u00e4nda dig till henne om du har fr\u00e5gor om bland annat studieplanering, kursval, studievanor och studieteknik eller \u00e5terupptag av studier efter studieuppeh\u00e5ll.\\nDrop-in tider:\\nTisdag & torsdag 12.30-14.30, bes\u00f6ksadress: Rum 1430, Lindstedtsv\u00e4gen 3, plan 4.\u00a0\\nE-post:\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"mailto:svl-media@kth.se\"},\"insert\":\"svl-media@kth.se\"},{\"insert\":\"\\n\"}]}")
     create_page("Samarbete", "samarbete", "{\"ops\":[{\"insert\":\"Samarbete\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"},{\"insert\":\"Sektionen f\u00f6r Medieteknik arbetar aktivt f\u00f6r att v\u00e4va samman medieteknikstudenter med n\u00e4ringslivet genom att skapa en n\u00e4rhet mellan medlemmarna och branschledande akt\u00f6rer. Vi \u00e4r ingenj\u00f6rer med en kreativ sida. P\u00e5 medieteknik \u00e5terfinns programmerare och entrepren\u00f6rer i samma individer vilket resulterar i att medietekniker ofta fungerar som en l\u00e4nk mellan aff\u00e4rsdelen och utvecklingsdelen p\u00e5 f\u00f6retag.\u00a0\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Vill ditt f\u00f6retag n\u00e5 ut till medietekniker?\"},{\"insert\":\"\u00a0Tveka inte att h\u00f6ra av dig till v\u00e5r N\u00e4ringslivsgrupp,\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"http://www.medieteknik.com/naringsliv/naringsliv@medieteknik.com%E2%80%9D\"},\"insert\":\"naringsliv@medieteknik.com\"},{\"insert\":\". Vi hj\u00e4lper er med allt fr\u00e5n marknadsf\u00f6ring till skr\u00e4ddarsydda l\u00f6sningar f\u00f6r att ditt f\u00f6retag ska synas mot v\u00e5ra studenter!\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Vill ditt f\u00f6retag medverka v\u00e5r branschdag?\"},{\"insert\":\"\u00a0Tveka inte att kontakta v\u00e5r Branschdagsgrupp,\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"http://www.medieteknik.com/naringsliv/branschdag@medieteknik.com%E2%80%9D\"},\"insert\":\"branschdag@medieteknik.com\"},{\"insert\":\". Vi anordnar en arbetsmarknadsm\u00e4ssa \u00e5rligen f\u00f6r att integrera f\u00f6retag och alumni med v\u00e5ra studenter! L\u00e4s mer p\u00e5\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"http://www.mediasbranschdag.com/\"},\"insert\":\"http://www.mediasbranschdag.com\"},{\"insert\":\".\\n\"}]}")
     create_page("Annonsering", "annonsering", "{\"ops\":[{\"insert\":\"Annonsering\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"},{\"insert\":\"Vi erbjuder tv\u00e5 typer av annonser, en banner och en nyhetsannons. Annonseringstiden \u00e4r 1 vecka f\u00f6r b\u00e5da typerna.\\nBanner\"},{\"attributes\":{\"header\":2},\"insert\":\"\\n\"},{\"insert\":\"En banner syns endast p\u00e5\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"http://www.medieteknik.com/\"},\"insert\":\"www.medieteknik.com\"},{\"insert\":\"s startsida som dessutom l\u00e4nkas till valfri url som ni v\u00e4ljer. Se placeringen av banners nedan:\\n\"},{\"attributes\":{\"height\":\"201\",\"width\":\"600\"},\"insert\":{\"image\":\"http://www.medieteknik.com/sites/default/files/styles/large/public/banner.png?itok=e9mPB-ym\"}},{\"insert\":\"\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Info:\"},{\"insert\":\"\u00a0Syns p\u00e5 startsidan, tillsammans med flera andra annonser i en slideshow.\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Dimensioner:\"},{\"insert\":\"\u00a01080x350\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Tid:\"},{\"insert\":\"\u00a07 dagar.\\nNyhetsannons\"},{\"attributes\":{\"header\":2},\"insert\":\"\\n\"},{\"insert\":\"En nyhetsannons syns i v\u00e5ra olika nyhetsfl\u00f6den. Dvs. p\u00e5 startsidan, under \\\"Nyheter & Event\\\" samt under de nyhetskategorier som er annons kategoriseras under. Annonsen \u00e4r dessutom klistrad h\u00f6gst upp i alla fl\u00f6den s\u00e5 att den ej efter en viss tid hamnar l\u00e4ngre ner i fl\u00f6det (den undg\u00e5r sorteringen p\u00e5 datum). Annonsen \u00e4r precis som en vanlig nyhet, dvs. att den f\u00e5r en egen nyhetssida d\u00e4r man kan l\u00e4sa hela annonsen. Exempel p\u00e5 nyhetsannons:\\n\"},{\"attributes\":{\"height\":\"297\",\"width\":\"600\"},\"insert\":{\"image\":\"http://www.medieteknik.com/sites/default/files/styles/large/public/nyhetsannons.png?itok=X9v0YMrD\"}},{\"insert\":\"\\nExempel p\u00e5 en nyhetsannons sida:\\n\"},{\"attributes\":{\"height\":\"958\",\"width\":\"600\"},\"insert\":{\"image\":\"http://www.medieteknik.com/sites/default/files/styles/large/public/annons-sida.png?itok=3uCHOGlL\"}},{\"insert\":\"\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Info:\"},{\"insert\":\"\u00a0Syns i olika nyhetsfl\u00f6den samt p\u00e5 egen sida.\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Bild:\u00a0\"},{\"insert\":\"700x350 (inget krav p\u00e5 bild)\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Obligatoriska f\u00e4lt:\u00a0\"},{\"insert\":\"Inledning (max 300 tecken), Br\u00f6dtext.\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Valfria f\u00e4lt:\"},{\"insert\":\"\u00a0Dokument, L\u00e4nk\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Tid:\"},{\"insert\":\"\u00a07 dagar.\\n\u00c4r du intresserad?\"},{\"attributes\":{\"header\":2},\"insert\":\"\\n\"},{\"insert\":\"Om du vill veta mer eller best\u00e4lla, kontakta v\u00e5r kommunikat\u00f6r via v\u00e5rt\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"http://www.medieteknik.com/kontakt/kontaktinformation\"},\"insert\":\"kontaktformul\u00e4r\"},{\"insert\":\"\u00a0eller via\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"mailto:naringsliv@medieteknik.com\"},\"insert\":\"naringsliv@medieteknik.com\"},{\"insert\":\"\\n\"}]}")
-    create_page("Styrelsen", "styrelsen", "{\"ops\":[{\"insert\":\"Styrelsen\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Styrelsen \u00e4r sektionens strategiska motor och h\u00f6gsta verkst\u00e4llande organ.\"},{\"insert\":\"I Styrelsen sitter Ordf\u00f6rande, Vice ordf\u00f6rande, Sekreterare och Kass\u00f6r, samt tre ledam\u00f6ter med olika fokusomr\u00e5den, f\u00f6r att utveckla sektionens verksamhet genom att lyssna till medlemmarna och jobba f\u00f6r sektionens b\u00e4sta.\\nStyrelsen tr\u00e4ffas regelbundet och samordnar sektionens verksamhet genom att \u00f6versiktligt hantera studiebevakningen, n\u00e4ringslivsfr\u00e5gor och f\u00f6reningsverksamheten genom alla n\u00e4mndordf\u00f6randen, som rapporterar inf\u00f6r styrelsem\u00f6ten. Beslut kring vad som ska diskuteras och avhandlas p\u00e5 sektionsm\u00f6ten tas ocks\u00e5 av Styrelsen som d\u00e4r igenom har det yttersta ansvaret och m\u00f6jligheten att p\u00e5verka sektionen. Sektionsm\u00f6ten \u00e4r de m\u00f6ten d\u00e4r alla som \u00e4r sektionsmedlemmar kan p\u00e5verka vad sektionen ska arbeta med och fokusera p\u00e5. Det g\u00f6r sektionsm\u00f6tena till sektionens h\u00f6gsta beslutande organ. P\u00e5verkan kan g\u00f6ras genom anpassning av styrdokument, utredningar och genom att utveckla handlingsplaner.\\nTveka inte att kontakta oss f\u00f6r fr\u00e5gor och funderingar! Vill du n\u00e5 oss alla kan du g\u00f6ra det p\u00e5\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"mailto:styrelsen@medieteknik.com\"},\"insert\":\"styrelsen@medieteknik.com\"},{\"insert\":\"\\n\"}]}", "/static/committee_banners/styrelsen.jpg")
+    create_page("Styrelsen", "{\"ops\":[{\"insert\":\"Styrelsen\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"},{\"attributes\":{\"bold\":true},\"insert\":\"Styrelsen \u00e4r sektionens strategiska motor och h\u00f6gsta verkst\u00e4llande organ.\"},{\"insert\":\"I Styrelsen sitter Ordf\u00f6rande, Vice ordf\u00f6rande, Sekreterare och Kass\u00f6r, samt tre ledam\u00f6ter med olika fokusomr\u00e5den, f\u00f6r att utveckla sektionens verksamhet genom att lyssna till medlemmarna och jobba f\u00f6r sektionens b\u00e4sta.\\nStyrelsen tr\u00e4ffas regelbundet och samordnar sektionens verksamhet genom att \u00f6versiktligt hantera studiebevakningen, n\u00e4ringslivsfr\u00e5gor och f\u00f6reningsverksamheten genom alla n\u00e4mndordf\u00f6randen, som rapporterar inf\u00f6r styrelsem\u00f6ten. Beslut kring vad som ska diskuteras och avhandlas p\u00e5 sektionsm\u00f6ten tas ocks\u00e5 av Styrelsen som d\u00e4r igenom har det yttersta ansvaret och m\u00f6jligheten att p\u00e5verka sektionen. Sektionsm\u00f6ten \u00e4r de m\u00f6ten d\u00e4r alla som \u00e4r sektionsmedlemmar kan p\u00e5verka vad sektionen ska arbeta med och fokusera p\u00e5. Det g\u00f6r sektionsm\u00f6tena till sektionens h\u00f6gsta beslutande organ. P\u00e5verkan kan g\u00f6ras genom anpassning av styrdokument, utredningar och genom att utveckla handlingsplaner.\\nTveka inte att kontakta oss f\u00f6r fr\u00e5gor och funderingar! Vill du n\u00e5 oss alla kan du g\u00f6ra det p\u00e5\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"mailto:styrelsen@medieteknik.com\"},\"insert\":\"styrelsen@medieteknik.com\"},{\"insert\":\"\\n\"}]}", "/static/committee_banners/styrelsen.jpg")
     create_page("Bokningar", "bokningar", "{\"ops\":[{\"insert\":\"Bokningar\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\"I kalendern nedan kan du se vilka datum som v\u00e5r sektionslokal META \u00e4r bokad eller ledig. META bokas vanligtvis hela kv\u00e4llar och syns i schemat som de bl\u00e5a bokningarna. M\u00f6tesrummet bokas vanligtvis timvis och syns i schemat som de gr\u00f6na bokningarna.\u00a0\"},{\"insert\":\"\\n\\n\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\"\u00c4r du intresserad av att boka META eller M\u00f6tesrummet?\"},{\"insert\":\"\\n\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\"G\u00e5 in p\u00e5\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"https://bokning.datasektionen.se/\"},\"insert\":\"https://bokning.datasektionen.se/\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\"\u00a0eller via den gamla l\u00e4nken\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"http://datasektionen.se/sektionen/lokalbokning\"},\"insert\":\"http://datasektionen.se/sektionen/lokalbokning\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\".\u00a0\"},{\"insert\":\"\\n\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\"Har du n\u00e5gra fr\u00e5gor om bokningen eller om META? Kontakta sektionslokalansvarig via\u00a0\"},{\"attributes\":{\"color\":\"#c4a616\",\"link\":\"mailto:lokalbokning@d.kth.se\"},\"insert\":\"lokalbokning@d.kth.se\"},{\"attributes\":{\"color\":\"#2b2b2b\"},\"insert\":\". Mailen g\u00e5r till b\u00e5de Konglig Lokalchef (Data) och Sektionslokalsansvarige (Media), men det kommer antagligen vara sektionslokalansvarig som svarar er.\u00a0\"},{\"insert\":\"\\n\\n\"},{\"attributes\":{\"height\":\"600\",\"width\":\"800\"},\"insert\":{\"video\":\"https://calendar.google.com/calendar/embed?title=Bokningschema%20f%C3%B6r%20META%20och%20M%C3%B6tesrummet&height=600&wkst=2&hl=sv&bgcolor=%23FFFFFF&src=6a5rem0bbkrh5rber7a2sdpp48%40group.calendar.google.com&color=%232952A3&src=k3dk0up940aaib3v44mc2eje90%40group.calendar.google.com&color=%230D7813&ctz=Europe%2FStockholm\"}},{\"insert\":\"\\n\"}]}")
 
     db.session.add(menu)
