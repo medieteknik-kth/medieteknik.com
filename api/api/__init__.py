@@ -296,7 +296,7 @@ def route_create_all():
 
     fanborg = create_post(create_committee("Fanborgen", "medieteknik", category=fanborgen), "Fanbärare")
     create_official("Sofia", "Blomgren", fanborg, True, "Sofia_B")
-    create_official("Emil", "Erlandsson", fanborg, True), "Emil"
+    create_official("Emil", "Erlandsson", fanborg, True, "Emil")
 
 
     joppe.email = "jeslundq@kth.se"
@@ -315,6 +315,7 @@ def route_create_all():
     mikaela.first_name = "Mikaela"
     mikaela.last_name = "Gärde"
     mikaela.frack_name = "Mickan"
+    mikaela.profile_picture = "/static/profiles/Mikaela.jpg"
     mikaela.kth_year = 2018
 
     rasmus.email = "rrudling@kth.se"
