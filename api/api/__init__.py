@@ -173,12 +173,13 @@ def route_create_all():
         db.session.add(committee)
         return committee
     
-    def create_post(committee, post_name, category):
+    def create_post(committee, post_name, category, email = ""):
         post = CommitteePost()
         post.name = post_name
         post.committee = committee
         post.is_official = True
         post.category = category
+        post.officials_email = email
         db.session.add(post)
         return post
 
@@ -209,7 +210,7 @@ def route_create_all():
     create_official("Amalia", "Berglöf", kbm, True, "Amalia")
 
     styrelsen = create_committee("Styrelsen", "styrelsen", True)
-    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "Styrelsen"), True, "Oliver")
+    create_official("Oliver", "Kamruzzaman", create_post(styrelsen, "Ordförande", "Styrelsen", "ordf@medieteknik.com"), True, "Oliver")
     create_official("My", "Andersson", create_post(styrelsen, "Vice Ordförande", "Styrelsen"), False, "My")
     sandra = create_official("Sandra", "Larsson", create_post(styrelsen, "Kassör", "Styrelsen"), True, "Sandra")
     jessie = create_official("Jessie", "Liu", create_post(styrelsen, "Sekreterare", "Styrelsen"), False, "Jessie")

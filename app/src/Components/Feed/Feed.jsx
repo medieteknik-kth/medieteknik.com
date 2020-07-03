@@ -3,7 +3,7 @@ import './Feed.css'
 import Api from '../../Utility/Api.js'
 import FeedCard, { feedTypes } from './FeedCard/FeedCard.jsx';
 import { LocaleText, translate } from '../../Contexts/LocaleContext';
-import Spinner from '../Common/Spinner/Spinner';
+import Spinner from '../Common/Spinner/Spinner.jsx';
 
 const Feed = (props) => {
 

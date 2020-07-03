@@ -35,6 +35,10 @@
         "committees-and-projects": {
             "se": "Nämnder och projekt",
             "en": "Committees and projects"
+        },
+        "officials": {
+            "se": "Funktionärer",
+            "en": "Officials"           
         }
     },
     "form": {
@@ -117,6 +121,12 @@
         "gallery_header": {
             "se": "Bildgalleri",
             "en": "Gallery"
+        }
+    },
+    "officials": {
+        "could_not_load": {
+            "se": "Kunde inte ladda funktionärer.",
+            "en": "Could not load officials."
         }
     },
     "footer": {

@@ -1,6 +1,3 @@
-.spinner-container {
-    margin-top: 145px;
-}
 
 .spinner,
 
@@ -11,7 +8,6 @@
 }
 
 .spinner {
-    margin: 60px auto;
     font-size: 10px;
     position: relative;
     border-top: 1.1em solid rgba(240,201,0, 0.2);
