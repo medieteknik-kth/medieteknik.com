@@ -47,7 +47,7 @@ const Feed = (props) => {
                         type={post.type}
                         path={`${post.type === feedTypes.POST ? '/posts/' : '/events/'}${post.id}`}
                         title={translate(post.title)}
-                        date={post.date}
+                        date={post.type === feedTypes.EVENT ? post.event_date : post.date}
                         location={post.location ?? null}
                         body={translate({ se: post.body.se.trunc(250), en: post.body.en ? post.body.en.trunc(250) : '' })}
                         headerImage={post.header_image}
