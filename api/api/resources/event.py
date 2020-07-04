@@ -206,7 +206,7 @@ def get_events():
 
 def add_event(request):
     params = json.loads(request.form.get('data'))
-    e = Event(title=params["title"], date=datetime.strptime(params["date"], ISO_DATE_DEF),
+    e = Event(title=params["title"], event_date=datetime.strptime(params["date"], ISO_DATE_DEF),
               body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
               body_en=params["body_en"], title_en=params["title_en"])
     if "header_image" in request.files:

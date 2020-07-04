@@ -24,6 +24,7 @@ class Event(db.Model):
     header_image = db.Column(db.String, default="static/posts/default.png") #can be changed if we get a default event picture
     tags = db.relationship("PostTag", secondary=events_tags)
     facebook_link = db.Column(db.String)
+    event_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     
 
@@ -43,5 +44,6 @@ class Event(db.Model):
             "header_image": self.header_image,
             "committee_id": self.committee_id,
             "tags": [t.to_dict() for t in self.tags],
-            "facebook_link": self.facebook_link
+            "facebook_link": self.facebook_link,
+            "event_date": self.event_date
         }
