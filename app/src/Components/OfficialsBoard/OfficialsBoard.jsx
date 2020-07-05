@@ -28,13 +28,7 @@ export default function OfficialsBoard() {
     });
   }, [operationalYear])
 
-  //TODO: Add backend for post categories (weigth, email etc)
-  const categoryTitles = []
-  officials.map((official) =>
-    !categoryTitles.includes(official.post.category)
-      ? categoryTitles.push(official.post.category)
-      : null
-  );
+  const categories = officials.map(official => official.post.committeeCategory).filter((value, index, self) => self.map(x => x.id).indexOf(value.id) == index)
 
   return (
     <div className='officials-board-container'>
@@ -52,17 +46,17 @@ export default function OfficialsBoard() {
           <div className='officials-center'>
             <Spinner/>
           </div> :
-          categoryTitles.length > 0 ? 
-            categoryTitles.map((title) => (
-              <div className='official-category' key={title}>
+          categories.length > 0 ? 
+            categories.map((category) => (
+              <div className='official-category' key={category.title}>
                 <div className='category-header'>
-                  <h2>{title}</h2>
-                  <p>medieteknik@medieteknik.com</p> {/*TODO: Add backend for post categories email*/}
+                  <h2>{category.title}</h2>
+                  <p>{category.email}</p>
                 </div>
 
                 <div className='officials-list'>
                   {officials
-                    .filter((official) => official.post.category === title)
+                    .filter((official) => official.post.committeeCategory.id === category.id)
                     .map((official) => (
                       <OfficialCard
                         key={`${official.post.name}_${official.user.id}`}
