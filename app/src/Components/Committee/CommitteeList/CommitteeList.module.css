@@ -1,16 +1,51 @@
 .committeeContainer {
     background-color: #f0f0f0;
-    text-align: center;
+}
+
+.spinner {
+    /* text-align: center; */
 }
 
 .committeeContainer h2 {
-    padding: 50px 0;
+    font-family: 'Roboto';
+    font-weight: 300;
+    padding-top: 50px;
+    margin-bottom: 40px;
+    text-align: center;
+    clear: both;
+    margin: 0 auto;
 }
 
 .CommitteeList {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    margin: 10px auto;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 225px 225px 225px 225px 225px; /*Make the grid smaller than the container */
+    column-gap: 0px;
+    row-gap: 30px;
+    margin: 20px 0;
+    justify-items: center;
 }
 
+@media (max-width: 1150px) {
+    .CommitteeList {
+        grid-template-columns: 225px 225px 225px 225px;
+    }
+}
+
+@media (max-width: 925px) {
+    .CommitteeList {
+        grid-template-columns: 225px 225px 225px;
+    }
+}
+
+@media (max-width: 700px) {
+    .CommitteeList {
+        grid-template-columns: 225px 225px;
+    }
+}
+
+@media (max-width: 450px) {
+    .CommitteeList {
+        grid-template-columns: 225px;
+    }
+}

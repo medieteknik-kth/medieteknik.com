@@ -5,28 +5,25 @@
     text-align: center;
     cursor: pointer;
     transition: all .31s ease-in-out;
-    width: 230px;
-    margin: 10px 22px;
-    width: 240px;
-    transition: 0.75s;
+    transition: 0.5s;
 }
 
-.CommitteeCard:hover{
-    /* border: 2px solid #f0c900; */
-    transform: scale(1.15);
-    /* letter-spacing: 2px; */
-    text-shadow:
-    0px 0px 1px #000;
+.CommitteeCard:hover {
+    transform: scale(1.12);
+}
+
+.CommitteeCard:hover:before {
+    opacity: 100%;
 }
 
 .CommitteeCard img {
     height: 100px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     width: auto;
 }
 
 .CommitteeCard p {
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     clear: both;
 }
 

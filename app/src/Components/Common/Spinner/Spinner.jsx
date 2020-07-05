@@ -1,11 +1,11 @@
 import React from 'react';
-import './Spinner.css';
+import classes from './Spinner.module.css';
 
 const Spinner = () => {
 
     return (
-        <div className='spinner-container'>
-            <div className='spinner'/>
+        <div className={classes.spinnerContainer}>
+            <div className={classes.spinner} />
         </div>
     )
 }

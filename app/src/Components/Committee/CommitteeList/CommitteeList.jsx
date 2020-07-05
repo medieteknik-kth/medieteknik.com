@@ -13,15 +13,18 @@ import classes from './CommitteeList.module.css';
 import CommitteeCard from './CommitteeCard/CommitteeCard';
 import CommitteePage from '../CommitteePage/CommitteePage';
 import { LocaleText } from '../../../Contexts/LocaleContext';
+import Spinner from '../../Common/Spinner/Spinner.jsx';
 
 export default function CommitteeList() {
   const [committees, setCommittees] = useState([]);
   const match = useRouteMatch();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     Api.Committees.GetAll().then((data) => {
       setCommittees(data);
     });
+    setIsLoading(false)
   }, []);
 
   return (
@@ -33,7 +36,7 @@ export default function CommitteeList() {
       <Route path={match.path}>
         <div className={classes.committeeContainer}>
           <h2><LocaleText phrase="common/committees-and-projects" /></h2>
-
+          { isLoading ? <Spinner /> :
           <div className={classes.CommitteeList}>
             {
                             Object.keys(committees).map((committeeKey) => (
@@ -48,7 +51,7 @@ export default function CommitteeList() {
                               </Link>
                             ))
                         }
-          </div>
+          </div>}
         </div>
 
       </Route>
