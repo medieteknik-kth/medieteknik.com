@@ -29,10 +29,10 @@ class Document extends Component {
     render() {
         return (
             <div>
-                 {/* <Button onClick={() => {
+                 <Button onClick={() => {
                      
                      this.setState({viewCardsview: !this.state.viewCardsview});
-                 }}>{this.state.viewCardsview ? 'Ladda upp dokument +' : 'Bläddra bland dokument'}</Button> */}
+                 }}>{this.state.viewCardsview ? 'Ladda upp dokument +' : 'Bläddra bland dokument'}</Button>
 
                 <h2 className={classes.secHeader}>{this.state.viewCardsview ? 'Dokument' : 'Ladda upp dokument'}</h2>
                 {

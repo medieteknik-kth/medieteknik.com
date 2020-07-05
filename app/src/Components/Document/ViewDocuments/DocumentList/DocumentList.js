@@ -49,18 +49,21 @@ const DocumentList = (props) => {
                             let docTypeString = document.doctags.map((tag) => tag.title).join(', ');
 
                             return (
-                                    <tr key={document.docId}>
-                                    <td><a href={API_BASE_URL + `documents/${document.filename}`}>{document.headingText}</a></td>
-                                    <td>{docTypeString}</td>
-                                    <td>{document.publisher}</td>
+                                <tr key={document.docId}>
+                                    <td><a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">{document.headingText}</a></td>
+                                    <td><a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">{docTypeString}</a></td>
+                                    <td><a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">{document.publisher}</a></td>
                                     <td>
-                                        {
-                                            document.publishDate.getFullYear() + "-" + 
-                                            ((document.publishDate.getMonth() + 1) < 10 ? `0${(document.publishDate.getMonth() + 1)}` : (document.publishDate.getMonth() + 1)) + "-" + 
-                                            (document.publishDate.getDate() < 10 ? `0${document.publishDate.getDate()}` : document.publishDate.getDate())
-                                        }
+                                        <a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">
+                                            {
+                                                document.publishDate.getFullYear() + "-" + 
+                                                ((document.publishDate.getMonth() + 1) < 10 ? `0${(document.publishDate.getMonth() + 1)}` : (document.publishDate.getMonth() + 1)) + "-" + 
+                                                (document.publishDate.getDate() < 10 ? `0${document.publishDate.getDate()}` : document.publishDate.getDate())
+                                            }
+                                        </a>
                                     </td>
-                                </tr>)
+                                </tr>
+                            )
                         })
                     }
                 </tbody>

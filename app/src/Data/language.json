@@ -35,6 +35,10 @@
         "committees-and-projects": {
             "se": "Nämnder och projekt",
             "en": "Committees and projects"
+        },
+        "officials": {
+            "se": "Funktionärer",
+            "en": "Officials"           
         }
     },
     "form": {
@@ -99,8 +103,8 @@
     },
     "feed": {
         "header": {
-            "se": "Inlägg & Event",
-            "en": "Posts & Events"
+            "se": "Aktuellt",
+            "en": "Feed"
         },
         "tags": {
             "se": "Taggar",
@@ -117,6 +121,12 @@
         "gallery_header": {
             "se": "Bildgalleri",
             "en": "Gallery"
+        }
+    },
+    "officials": {
+        "could_not_load": {
+            "se": "Kunde inte ladda funktionärer.",
+            "en": "Could not load officials."
         }
     },
     "footer": {

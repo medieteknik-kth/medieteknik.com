@@ -50,7 +50,7 @@ const Event = ({ }) => {
                         : <></>
                     }
                     <p className="event-description">
-                        {translate(event.description)}
+                        {translate(event.body)}
                     </p>
                     <div className="event-footer">
                         <div className="event-tags">

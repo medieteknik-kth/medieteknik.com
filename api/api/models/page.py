@@ -23,12 +23,14 @@ class Page(db.Model):
             title = current.title
             content_sv = current.content_sv
             content_en = current.content_en
+            image = current.image
             author = current.author.to_dict() if current.author != None else None
             updated = current.timestamp
         else:
             title = None
             content_sv = None
             content_en = None
+            image = None
             author = None
             updated = None
 
@@ -38,6 +40,7 @@ class Page(db.Model):
             "title": title,
             "content_sv": content_sv,
             "content_en": content_en,
+            "image": image,
             "author": author,
             "revisions": [revision.to_dict() for revision in self.revisions],
             "published": published,
@@ -53,6 +56,7 @@ class PageRevision(db.Model):
     title = db.Column(db.String)
     content_sv = db.Column(db.String)
     content_en = db.Column(db.String, default="{\"ops\":[{\"insert\":\"This page in unavaliable in English\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"}]}")
+    image = db.Column(db.String)
     page_id = db.Column(db.Integer, db.ForeignKey("page.id"))
     published = db.Column(db.Boolean, default=False)
 
@@ -63,6 +67,7 @@ class PageRevision(db.Model):
             "type": self.revision_type.name,
             "author": self.author.to_dict_without_terms() if self.author != None else None,
             "title": self.title,
+            "image": self.image,
             "content_sv": self.content_sv,
             "content_en": self.content_en,
             "published": self.published

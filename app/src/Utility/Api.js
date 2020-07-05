@@ -20,6 +20,18 @@ function GetApiObject(resource) {
         }
         return Promise.reject(response);
       });
+    },    
+    GetWithParameters(parameters, token = window.localStorage.getItem('user_token')) {
+      return fetch(`${API_BASE_URL}${resource}?${Object.entries(parameters).map(([key, val]) => `${key}=${val}`).join('&')}`, {
+        headers: {
+          token,
+        },
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      });
     },
     Update(id, data, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {

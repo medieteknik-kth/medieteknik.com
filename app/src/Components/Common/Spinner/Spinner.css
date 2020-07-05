@@ -1,0 +1,32 @@
+
+.spinner,
+
+.spinner:after {
+    border-radius: 50%;
+    width: 6em;
+    height: 6em;
+}
+
+.spinner {
+    font-size: 10px;
+    position: relative;
+    border-top: 1.1em solid rgba(240,201,0, 0.2);
+    border-right: 1.1em solid rgba(240,201,0, 0.2);
+    border-bottom: 1.1em solid rgba(240,201,0, 0.2);
+    border-left: 1.1em solid #f0c900;
+
+    animation-iteration-count: infinite;
+    animation-duration: 1.55s;
+    animation-timing-function: cubic-bezier(.7, .2, .25, .8);
+    animation-name: spinner;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(-260deg) scale(1);
+    }
+
+    100% {
+        transform: rotate(100deg) scale(1);
+    }
+}
