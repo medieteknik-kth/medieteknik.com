@@ -7,8 +7,6 @@ import EventCard from '../EventCard/EventCard';
 const CurrentEvents = (props) => {
     let eventsToShowList = props.eventsToShow;
 
-    // console.log(props.eventsToShow);
-
     if (!props.numberOfHostsSelected == 0) {
         eventsToShowList = eventsToShowList.filter(event => {
             return props.hostsShown[event.host]
