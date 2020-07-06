@@ -88,10 +88,7 @@
 }
 
 .buttonDropdown {
-  position: relative;
-  z-index: -1;
-  transition: transform .3s ease-in-out;
-  transform: translateY(-100%);
+  display: none;
   background-color: #f0f0f0;
   list-style: none;
 }
@@ -147,6 +144,14 @@
 
   .expandButton {
     display: none;
+  }
+
+  .buttonDropdown {
+    display: block;
+    position: relative;
+    z-index: -1;
+    transition: transform 0.2s ease-in-out;
+    transform: translateY(-100%);
   }
 
   .buttonDropdown.subMenuExpanded {
