@@ -126,7 +126,10 @@
   flex: 1;
 }
 
-.contentWithExpandedMenu::before {
+.content::before {
+  transition: opacity 0.3s ease-in-out;
+
+  opacity: 0;
   content:"";
   display: block;
   height: 100%;
@@ -135,6 +138,10 @@
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.4);
+}
+
+.contentWithExpandedMenu::before {
+  opacity: 1;
 }
 
 @media screen and (min-width: 1080px) {
