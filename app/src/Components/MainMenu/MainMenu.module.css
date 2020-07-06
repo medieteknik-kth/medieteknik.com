@@ -129,6 +129,7 @@
 .content::before {
   transition: opacity 0.3s ease-in-out;
 
+  pointer-events: none;
   opacity: 0;
   content:"";
   display: block;
@@ -141,6 +142,7 @@
 }
 
 .contentWithExpandedMenu::before {
+  display: block;
   opacity: 1;
 }
 
@@ -224,7 +226,7 @@
 
   .contentWithExpandedMenu::before {
     content:"";
-    display: block;
+    display: none;
     height: 100%;
     position: fixed;
     top: 0;
