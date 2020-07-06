@@ -1,8 +1,15 @@
 .secHeader {
     font-family: 'Roboto';
     font-weight: 300;
-    padding-top: 25px;
-    margin-bottom: 60px;
+    padding-top: 30px;
+    margin-bottom: 30px;
     text-align: center;
     clear: both;
+}
+
+
+.contentContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
 }

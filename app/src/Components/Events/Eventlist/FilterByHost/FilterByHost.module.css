@@ -1,0 +1,100 @@
+.filterByHostcontainer {
+    width: 175px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px 15px 0px 15px;
+    font-family: Roboto;
+    font-weight: 300;
+}
+
+.FilterByHost h4 {
+    font-family: Roboto;
+    font-weight: 300;
+    padding-left: 20px;
+    padding-bottom: 5px;
+}
+
+.container input {
+    padding-left: 100px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    text-decoration: none;
+    display: block;
+    
+}
+
+.container {
+    display: block;
+    position: relative;
+    padding-left: 23px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    user-select: none;
+    align-items: center;
+}
+
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.container input:checked ~ .checkmark {
+    background-color: #f0c900;
+}
+
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.container .checkmark:after {
+    position: absolute;
+    left: 5px;
+    top: 0px;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #eee;
+    margin-top: 0px;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkButtonClearCat {
+    width: 45%;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #ff7373;
+    /* margin: 0 auto; */
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    user-select: none;
+}
+
+.checkButtonClearCat:hover {
+    background-color: #ff3737;
+}
+
+.buttonContainer {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+}

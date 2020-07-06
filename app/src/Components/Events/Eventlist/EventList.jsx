@@ -4,7 +4,7 @@ import Button from '../../Document/ViewDocuments/Assets/ButtonRasmus';
 import classes from './EventList.module.css';
 
 // --- Components ---
-import ComingEvents from './ComingEvents/ComingEvents';
+import CurrentEvents from './CurrentEvents/CurrentEvents';
 import PreviousEvents from './PreviousEvents/PreviousEvents';
 import FilterByHost from './FilterByHost/FilterByHost';
 
@@ -42,6 +42,15 @@ import coverPhoto8 from './EventListAssets/Event8.jpg';
 
 const events = [
     {
+        "title": "Torsdagspub!",
+        "host": "Medias Klubbmästeri",
+        "hostLogo": mkmLogo,
+        "location": "META",
+        "coverPhoto": coverPhoto8,
+        "eventStart": new Date(2020, 5, 6, 17),
+        "eventEnd": new Date(2020, 5, 7, 1)
+    },
+    {
         "title": "Informationsmöte: SÖK MKM!",
         "host": "Medias Klubbmästeri",
         "hostLogo": mkmLogo,
@@ -74,7 +83,7 @@ const events = [
         "hostLogo": fotogruppenLogo,
         "location": "-",
         "coverPhoto": coverPhoto4,
-        "eventStart": new Date(2020, 6, 4),
+        "eventStart": new Date(2020, 6, 17),
         "eventEnd": new Date(2020, 8, 14)
     },
     {
@@ -83,8 +92,8 @@ const events = [
         "hostLogo": jubileetLogo,
         "location": "META",
         "coverPhoto": coverPhoto5,
-        "eventStart": new Date(2020, 6, 15, 17),
-        "eventEnd": new Date(2020, 6, 16, 1)
+        "eventStart": new Date(2020, 6, 17, 17),
+        "eventEnd": new Date(2020, 6, 18, 1)
     },
     {
         "title": "Sekonsmöte 4 | Chapter Meeng 4",
@@ -107,29 +116,127 @@ const events = [
 ];
 
 const EventList = (props) => {
-    const [viewComingEvents, setViewComingEvents] = useState(true);
+    const [viewCurrentEvents, setViewCurrentEvents] = useState(true);
+    const [allEvents, setAllEvents] = useState(events);
+    const [currentEventsList, setCurrentEventsList] = useState([]);
+    const [previousEventsList, setPreviousEventsList] = useState([]);
+    const [hostsList, setHostsList] = useState([]);
+    const [hostsShown, setHostsShown] = useState({});
+    const [numberOfHostsSelected, setNumberOfHostsSelected] = useState(0);
+
 
     useEffect(() => {
-        // Hämta event från backend
+        let hostsListTemp = [];
+        let hostsShownTemp = {}; 
+
+        let previousEventsListTemp = allEvents.filter(event => event.eventEnd < Date.now());
+        let currentEventsListTemp = allEvents.filter(event => event.eventEnd >= Date.now());
+
+        // console.log("Previous events:", previousEventsListTemp);
+        // console.log("Current events:", currentEventsListTemp);
+
+        currentEventsListTemp.forEach(event => {
+            if (!hostsListTemp.includes(event.host)) {
+                hostsListTemp.push(event.host)
+            }
+
+            hostsShownTemp[event.host] = false;
+        })
+
+        setHostsList(hostsListTemp);
+        setHostsShown(hostsShownTemp);
+        setPreviousEventsList(previousEventsListTemp);
+        setCurrentEventsList(currentEventsListTemp);
     }, [])
+
+
+    const hostsFilterChangeHandler = host => {
+        let hostsShownTemp = hostsShown;
+        let numberOfHostsSelectedTemp = numberOfHostsSelected;
+
+        if (hostsShownTemp[host]) {
+            numberOfHostsSelectedTemp -= 1
+        } else {
+            numberOfHostsSelectedTemp += 1
+        }
+
+        hostsShownTemp[host] = !hostsShownTemp[host];
+
+        setHostsShown(hostsShownTemp);
+        setNumberOfHostsSelected(numberOfHostsSelectedTemp);
+    }
+
+    const changeEventsToView = () => {
+        let hostsListTemp = [];
+        let hostsShownTemp = {};
+
+        if (viewCurrentEvents) {
+            previousEventsList.forEach(event => {
+                if (!hostsListTemp.includes(event.host)) {
+                    hostsListTemp.push(event.host)
+                }
+            })
+        } else {
+            currentEventsList.forEach(event => {
+                if (!hostsListTemp.includes(event.host)) {
+                    hostsListTemp.push(event.host)
+                }
+            })
+        }
+
+        hostsListTemp.forEach(host => {
+            hostsShownTemp[host] = false;
+        })
+
+        setNumberOfHostsSelected(0);
+        setHostsShown(hostsShownTemp);
+        setHostsList(hostsListTemp);
+        setViewCurrentEvents(!viewCurrentEvents);
+    }
+
+    const clearHostsFilterHandler = () => {
+        let hostsShownTemp = {};
+
+        setNumberOfHostsSelected(0);
+
+        hostsList.forEach(host => {
+            hostsShownTemp[host] = false;
+        })
+
+        setHostsShown(hostsShownTemp);
+    }
 
     return (
         <div>
-            <Button onClick={() => {
-                setViewComingEvents(!viewComingEvents);
-            }}>
-                {viewComingEvents ? 'Tidigare evenemang' : 'Kommande evenemang'}
+            <Button onClick={changeEventsToView}>
+                {viewCurrentEvents ? 'Tidigare evenemang' : 'Aktuella evenemang'}
             </Button>
 
-            <h2 className={classes.secHeader}>{viewComingEvents ? 'Kommande evenemang' : 'Tidigare evenemang'}</h2>
+            <h2 className={classes.secHeader}>{viewCurrentEvents ? 'Aktuella evenemang' : 'Tidigare evenemang'}</h2>
             
-            <FilterByHost />
+            <div className={classes.contentContainer}>
+                <FilterByHost 
+                    hosts = {hostsList}
+                    hostsShown = {hostsShown}
+                    hostsFilterChangeHandler = {hostsFilterChangeHandler}
+                    clearHostsFilterHandler = {clearHostsFilterHandler}
+                />
 
-            {
-                viewComingEvents ? 
-                <ComingEvents /> : 
-                <PreviousEvents />
-            }
+                {
+                    viewCurrentEvents ? 
+                    <CurrentEvents 
+                        eventsToShow = {currentEventsList} 
+                        numberOfHostsSelected = {numberOfHostsSelected}
+                        hostsShown = {hostsShown}
+                    /> : 
+
+                    <PreviousEvents 
+                        eventsToShow = {previousEventsList}
+                        numberOfHostsSelected = {numberOfHostsSelected}
+                        hostsShown = {hostsShown}
+                    />
+                }
+            </div>
         </div>
     )
 }
