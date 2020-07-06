@@ -47,7 +47,7 @@ const PageWithMainMenu = (props) => {
         { title_sv: 'Styrelsen', title_en: 'The Board', link: '/styrelsen' },
         { title_sv: 'Dokument', title_en: 'Documents', link: '/documents' },
         { title_sv: 'Sektionsmedlemmar', title_en: 'Chapter Members', link: '/medlemmar' },
-        { title_sv: 'Bokningar', title_en: 'Booking', link: '/bokningar' },
+        { title_sv: 'Lokalbokning', title_en: 'Booking', link: '/bokningar' },
       ],
     },
     {
@@ -173,7 +173,7 @@ const PageWithMainMenu = (props) => {
           {localeButton('')}
         </div>
       </div>
-      <div className={styles.content}>
+      <div className={`${styles.content} ${mainMenuExpanded ? styles.contentWithExpandedMenu : ''}`}>
         {props.children}
       </div>
     </div>
