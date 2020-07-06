@@ -15,6 +15,12 @@ h3 {
     height: 45px;
 }
 
+@media (max-width: 899px) {
+    .headerRow {
+        height: 140px;
+    }
+}
+
 .searchParameters {
     float: left;
 }
