@@ -88,7 +88,10 @@
 }
 
 .buttonDropdown {
-  display: none;
+  position: relative;
+  z-index: -1;
+  transition: transform .3s ease-in-out;
+  transform: translateY(-100%);
   background-color: #f0f0f0;
   list-style: none;
 }
@@ -146,11 +149,6 @@
     display: none;
   }
 
-  .buttonDropdown {
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
-    clip-path: inset(0px -10px -10px -10px);
-  }
-
   .buttonDropdown.subMenuExpanded {
     display: none;
   }
@@ -161,9 +159,11 @@
   }
 
   .button:hover .buttonDropdown {
-    display: block;
+    transform: translateY(0);
     background-color: white;
     color: black;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+    clip-path: inset(0px -10px -10px -10px);
   }
 
   .buttonTitle:hover {
@@ -179,7 +179,10 @@
     display: flex;
     flex-direction: row;
     width: unset;
+    height: 80px;
+    margin-left: 10px;
     margin-right: 50px;
+    background-color: white;
   }
 
   .mainMenu {
