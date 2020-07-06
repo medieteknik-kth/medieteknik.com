@@ -1,10 +1,15 @@
 
 .spinner,
-
 .spinner:after {
     border-radius: 50%;
     width: 6em;
     height: 6em;
+}
+
+.spinnerContainer {
+    width: 82px;
+    margin: 0 auto;
+    margin-top: 50px;
 }
 
 .spinner {
