@@ -10,6 +10,7 @@ class PageRevisionType(enum.Enum):
 class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.String, unique=True)
+    committee = db.relationship("Committee", back_populates="page", uselist=False)
     revisions = db.relationship("PageRevision", backref="page", order_by=lambda:PageRevision.timestamp.desc())
 
     def latest_published_revision(self):
@@ -18,6 +19,7 @@ class Page(db.Model):
     def to_dict(self):
         current = self.latest_published_revision()
         published = current != None
+        committee = self.committee.to_dict_without_page() if self.committee != None else None
 
         if published:
             title = current.title
@@ -37,6 +39,7 @@ class Page(db.Model):
         return {
             "id": self.id,
             "slug": self.slug,
+            "committee": committee,
             "title": title,
             "content_sv": content_sv,
             "content_en": content_en,
