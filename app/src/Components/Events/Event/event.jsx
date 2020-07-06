@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './event.css';
-import ProfileCard from '../Common/ProfileCard/ProfileCard';
+import ProfileCard from '../../Common/ProfileCard/ProfileCard';
 import { useParams, NavLink } from 'react-router-dom';
-import Api from '../../Utility/Api';
-import { LocaleText, translate, localeDate } from '../../Contexts/LocaleContext';
-import CommitteeCard from '../Common/CommitteeCard/CommitteeCard';
+import Api from '../../../Utility/Api';
+import { LocaleText, translate, localeDate } from '../../../Contexts/LocaleContext';
+import CommitteeCard from '../../Common/CommitteeCard/CommitteeCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarker, faClock } from '@fortawesome/free-solid-svg-icons';
 
