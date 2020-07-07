@@ -2,6 +2,7 @@ from api.db import db
 from sqlalchemy import and_
 
 from datetime import datetime
+import re
 
 class CommitteePost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -12,6 +13,13 @@ class CommitteePost(db.Model):
     is_official = db.Column(db.Boolean)
     terms = db.relationship("CommitteePostTerm", back_populates="post")
     weight = db.Column(db.Integer, default=1)
+
+    def soft_hyphenate(self, name):
+        words = ["ansvarig", "skyddsombud", "ordförande", "frågor", "ombud", "ledare"]
+        hyphenated = name
+        for word in words: 
+            hyphenated = hyphenated.replace(word, "&#173;" + word, 1)
+        return hyphenated
 
     def current_terms(self):
         date = datetime.now()
@@ -46,10 +54,10 @@ class CommitteePost(db.Model):
             "weight": self.weight
         }
     
-    def to_dict_without_terms(self):
+    def to_dict_without_terms(self, hyphenate=False):
         return {
             "id": self.id,
-            "name": self.name,
+            "name": self.soft_hyphenate(self.name) if hyphenate else self.name,
             "email": self.officials_email,
             "committeeId": self.committee_id,
             "committeeCategory": self.committee.category.to_dict(),
