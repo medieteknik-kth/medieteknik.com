@@ -5,7 +5,7 @@ from api.models.post_tag import PostTag
 
 
 #Association table for tags and events
-events_tags = db.Table('eventsTags', db.Model.metadata,
+events_tags = db.Table('event_Tags', db.Model.metadata,
     db.Column('event_id', db.Integer, db.ForeignKey('event.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('post_tag.id'))
 )
@@ -24,7 +24,8 @@ class Event(db.Model):
     header_image = db.Column(db.String, default="static/posts/default.png") #can be changed if we get a default event picture
     tags = db.relationship("PostTag", secondary=events_tags)
     facebook_link = db.Column(db.String)
-    event_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    event_date = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+    end_date = db.Column(db.DateTime, default=datetime.datetime.utcnow() + datetime.timedelta(hours=5))
 
     
 
@@ -45,5 +46,6 @@ class Event(db.Model):
             "committee_id": self.committee_id,
             "tags": [t.to_dict() for t in self.tags],
             "facebook_link": self.facebook_link,
-            "event_date": self.event_date
+            "event_date": self.event_date,
+            "end_date": self.end_date
         }
