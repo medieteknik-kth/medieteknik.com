@@ -9,3 +9,9 @@
 .PreviousEvents {
     margin-left: 30px;
 }
+
+@media (max-width: 730px) {
+    .PreviousEvents h4 {
+        display: none;
+    }
+}

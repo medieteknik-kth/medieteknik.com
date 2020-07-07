@@ -7,6 +7,7 @@ import classes from './EventList.module.css';
 import CurrentEvents from './CurrentEvents/CurrentEvents';
 import PreviousEvents from './PreviousEvents/PreviousEvents';
 import FilterByHost from './FilterByHost/FilterByHost';
+import FilterByHostButton from './FilterByHostButton/FilterByHostButton';
 
 // --- Committee logos --
 import fotogruppenLogo from '../../Committee/CommitteeAssets/fotogruppenLogo.png';
@@ -215,12 +216,26 @@ const EventList = (props) => {
             <h2 className={classes.secHeader}>{viewCurrentEvents ? 'Aktuella evenemang' : 'Tidigare evenemang'}</h2>
             
             <div className={classes.contentContainer}>
-                <FilterByHost 
+                <div className={classes.FilterBox}>
+                    <h4>Filtrera efter värd</h4>
+
+                    <FilterByHost 
+                        hosts = {hostsList}
+                        hostsShown = {hostsShown}
+                        hostsFilterChangeHandler = {hostsFilterChangeHandler}
+                        clearHostsFilterHandler = {clearHostsFilterHandler}
+                        // filterBoxClass = {classes.FilterBox}
+                    />
+                </div>
+
+                <FilterByHostButton 
                     hosts = {hostsList}
                     hostsShown = {hostsShown}
                     hostsFilterChangeHandler = {hostsFilterChangeHandler}
                     clearHostsFilterHandler = {clearHostsFilterHandler}
+                    filterButtonclass = {classes.FilterButton}
                 />
+                
 
                 {
                     viewCurrentEvents ? 
@@ -228,12 +243,14 @@ const EventList = (props) => {
                         eventsToShow = {currentEventsList} 
                         numberOfHostsSelected = {numberOfHostsSelected}
                         hostsShown = {hostsShown}
+                        eventDisplayClass = {classes.eventDisplay}
                     /> : 
 
                     <PreviousEvents 
                         eventsToShow = {previousEventsList}
                         numberOfHostsSelected = {numberOfHostsSelected}
                         hostsShown = {hostsShown}
+                        eventDisplayClass = {classes.eventDisplay}
                     />
                 }
             </div>

@@ -63,7 +63,7 @@ const EventCard = (props) => {
         datePresentation = "Imorgon";
     } else if (eventIsToday) {
         datePresentation = "Idag";
-    } else if (daysDifference < 7) {
+    } else if (0 < daysDifference && daysDifference < 7) {
         datePresentation = startDay
     }
 

@@ -14,7 +14,7 @@ const PreviousEvents = (props) => {
     }
 
     return (
-        <div className={classes.PreviousEvents}>
+        <div className={[classes.PreviousEvents, props.eventDisplayClass].join(" ")} >
             <h4>Denna vecka</h4>
 
             {

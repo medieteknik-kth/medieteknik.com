@@ -7,13 +7,6 @@
     font-weight: 300;
 }
 
-.FilterByHost h4 {
-    font-family: Roboto;
-    font-weight: 300;
-    padding-left: 20px;
-    padding-bottom: 5px;
-}
-
 .container input {
     padding-left: 100px;
     position: absolute;
@@ -23,7 +16,6 @@
     width: 0;
     text-decoration: none;
     display: block;
-    
 }
 
 .container {

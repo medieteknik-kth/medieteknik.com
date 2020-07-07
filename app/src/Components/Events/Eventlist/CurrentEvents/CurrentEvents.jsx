@@ -13,7 +13,6 @@ const CurrentEvents = (props) => {
         })
     }
 
-
     let eventsThisWeek = eventsToShowList.filter(event => {
         let timeDifference = event.eventStart - Date.now();
         let daysDifference = timeDifference / (1000 * 3600 * 24);
@@ -33,7 +32,7 @@ const CurrentEvents = (props) => {
     console.log(eventsThisWeek);
 
     return (
-        <div className={classes.CurrentEvents}>
+        <div className={[classes.CurrentEvents, props.eventDisplayClass].join(" ")}>
             <div className={classes.eventsThisWeek}>
                 <h4>Denna vecka</h4>
 

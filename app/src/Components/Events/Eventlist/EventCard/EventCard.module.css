@@ -75,3 +75,50 @@
     font-weight: 300;
 }
 
+@media (max-width: 450px) {
+    .EventCard {
+        width: 90%;
+        margin: 0 auto 20px auto;
+        height: 230px;
+        padding-bottom: 20px;
+        box-sizing: border-box;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .textInfoContainer {
+        justify-content: center;
+    }
+
+    .imageContainer {
+        float: none;
+        margin: 10px auto;
+    }
+
+    .infoContainer {
+        float: none;
+        margin: 10px auto;
+    }
+
+    .eventPresentationContainer {
+        display: inline;
+    }
+}
+
+@media (max-width: 430px) {
+    .EventCard {
+        width: 80%;
+    }
+}
+
+@media (max-width: 375px) {
+    .EventCard {
+        width: 70%;
+    }
+}
+
+@media (max-width: 330px) {
+    .EventCard {
+        width: 60%;
+    }
+}
