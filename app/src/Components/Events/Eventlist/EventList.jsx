@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../Document/ViewDocuments/Assets/ButtonRasmus';
 import classes from './EventList.module.css';
 
+
 // --- Components ---
 import CurrentEvents from './CurrentEvents/CurrentEvents';
 import PreviousEvents from './PreviousEvents/PreviousEvents';
@@ -39,6 +40,9 @@ import coverPhoto5 from './EventListAssets/Event5.jpg';
 import coverPhoto6 from './EventListAssets/Event6.jpg';
 import coverPhoto7 from './EventListAssets/Event7.jpg';
 import coverPhoto8 from './EventListAssets/Event8.jpg';
+
+const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
+
 
 
 const events = [
@@ -118,7 +122,7 @@ const events = [
 
 const EventList = (props) => {
     const [viewCurrentEvents, setViewCurrentEvents] = useState(true);
-    const [allEvents, setAllEvents] = useState(events);
+    const [allEvents, setAllEvents] = useState([]);
     const [currentEventsList, setCurrentEventsList] = useState([]);
     const [previousEventsList, setPreviousEventsList] = useState([]);
     const [hostsList, setHostsList] = useState([]);
@@ -127,6 +131,35 @@ const EventList = (props) => {
 
 
     useEffect(() => {
+        let allEventsTemp = [];
+
+        fetch(API_BASE_URL + 'events')
+            .then(response => response.json())
+            .then(jsonObject => {
+                jsonObject.map(event => {
+                    fetch(API_BASE_URL + event.header_image)
+                        .then(coverPhoto => {
+                            let eventObject = {
+                                "title": event.title.sv,
+                                "host": event.committee_id,
+                                "hostLogo": studienamndenLogo,
+                                "location": event.location,
+                                "coverPhoto": coverPhoto,
+                                "eventStart": new Date(event.date),
+                                "eventEnd": new Date(Date.now())
+                            }
+
+                            setAllEvents([...allEvents, eventObject])
+                        })
+                })
+            })
+            .then(() => {
+                
+            })
+    }, [])
+
+    useEffect(() => {
+        console.log(allEvents);
         let hostsListTemp = [];
         let hostsShownTemp = {}; 
 
@@ -148,7 +181,9 @@ const EventList = (props) => {
         setHostsShown(hostsShownTemp);
         setPreviousEventsList(previousEventsListTemp);
         setCurrentEventsList(currentEventsListTemp);
-    }, [])
+
+        console.log(previousEventsListTemp);
+    }, [allEvents])
 
 
     const hostsFilterChangeHandler = host => {

@@ -3,9 +3,6 @@ import React, { useState } from 'react';
 import classes from './FilterByHost.module.css';
 
 const FilterByHost = (props) => {
-
-    console.log(props.hostsShown);
-
     return (
         <div className={classes.FilterByHost} >
             <div className={classes.filterByHostcontainer}>

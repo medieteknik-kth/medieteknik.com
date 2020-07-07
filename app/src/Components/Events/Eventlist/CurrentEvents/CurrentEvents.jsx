@@ -29,8 +29,6 @@ const CurrentEvents = (props) => {
         return daysDifference > 7;
     })
 
-    console.log(eventsThisWeek);
-
     return (
         <div className={[classes.CurrentEvents, props.eventDisplayClass].join(" ")}>
             <div className={classes.eventsThisWeek}>
