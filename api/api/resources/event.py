@@ -149,13 +149,15 @@ class EventListResource(Resource):
             type: file
         - name: data
           in: body
-          description: The 'date' string is in ISO-8601 format. In JS, use Date.toISOString()
+          description: The 'date' string is in ISO-8601 format. In JS, use Date.toISOString(). The end date defaults to 5 hours after the start date, if no argument is given
           schema:
             type: object
             properties:
               committee_id:
                 type: integer
               date:
+                type: string
+              end_date:
                 type: string
               facebook_link:
                 type: string
@@ -206,7 +208,7 @@ def get_events():
 
 def add_event(request):
     params = json.loads(request.form.get('data'))
-    e = Event(title=params["title"], date=datetime.strptime(params["date"], ISO_DATE_DEF),
+    e = Event(title=params["title"], event_date=datetime.strptime(params["date"], ISO_DATE_DEF), end_date=params["end_time"],
               body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
               body_en=params["body_en"], title_en=params["title_en"])
     if "header_image" in request.files:
