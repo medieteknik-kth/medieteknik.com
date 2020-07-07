@@ -55,7 +55,7 @@ const events = [
         "host": "Medias Klubbmästeri",
         "hostLogo": mkmLogo,
         "location": "E33",
-        "coverPhoto": coverPhoto1,
+        "coverPhoto": coverPhoto2,
         "eventStart": new Date(2020, 6, 7, 12),
         "eventEnd": new Date(2020, 6, 7, 13)
     },
@@ -64,9 +64,9 @@ const events = [
         "host": "Medias Branschdag",
         "hostLogo": mbdLogo,
         "location": "Restaurang Q",
-        "coverPhoto": coverPhoto2,
-        "eventStart": new Date(2020, 6, 9, 18),
-        "eventEnd": new Date(2020, 6, 10, 1)
+        "coverPhoto": coverPhoto1,
+        "eventStart": new Date(2020, 6, 8, 18),
+        "eventEnd": new Date(2020, 6, 9, 1)
     },
     {
         "title": "Afterschool with MPYA! DATE TBA",

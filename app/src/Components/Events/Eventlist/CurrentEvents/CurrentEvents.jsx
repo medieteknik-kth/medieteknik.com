@@ -16,9 +16,7 @@ const CurrentEvents = (props) => {
 
     let eventsThisWeek = eventsToShowList.filter(event => {
         let timeDifference = event.eventStart - Date.now();
-
         let daysDifference = timeDifference / (1000 * 3600 * 24);
-
 
         return daysDifference <= 7;
     })

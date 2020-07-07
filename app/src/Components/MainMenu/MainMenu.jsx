@@ -48,6 +48,7 @@ const PageWithMainMenu = (props) => {
         { title_sv: 'Dokument', title_en: 'Documents', link: '/documents' },
         { title_sv: 'Sektionsmedlemmar', title_en: 'Chapter Members', link: '/medlemmar' },
         { title_sv: 'Lokalbokning', title_en: 'Booking', link: '/bokningar' },
+        { title_sv: 'Event', title_en: 'Event', link: '/eventList' },
       ],
     },
     {
