@@ -9,6 +9,7 @@ import { UserContext } from '../../Contexts/UserContext';
 import { LocaleContext } from '../../Contexts/LocaleContext';
 
 import './Page.css';
+import CommitteeMemberList from '../Committee/CommitteeMemberList/CommitteeMemberList';
 
 export default function Page() {
   const { pageSlug } = useParams();
@@ -59,12 +60,22 @@ export default function Page() {
           ? (
             <div>
               { page.image !== null ? <img src={page.image} alt={page.title} className="pageImage" /> : <div /> }
+              { page.committee !== null
+                ? (
+                  <div className="committeePageLogoContainer">
+                    <img className="committeePageLogo" alt={page.committee.name} src={page.committee.logo} />
+                  </div>
+                )
+                : <span /> }
               <div className="pageContent">
                 <BasePage
                   initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''}
                   isEditing={isEditing}
                   onChange={onChange}
                 />
+                {
+                  page.committee !== null ? <CommitteeMemberList posts={page.committee.posts} /> : <span />
+                }
               </div>
             </div>
           )

@@ -19,6 +19,8 @@ import listViewIcon from './Assets/list_view.png';
 import gridViewIconSelected from './Assets/grid_view_selected.png';
 import listViewIconSelected from './Assets/list_view_selected.png';
 
+import Spinner from '../../Common/Spinner/Spinner.jsx';
+
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
 class ViewDocuments extends Component {
@@ -42,7 +44,8 @@ class ViewDocuments extends Component {
             screenWidth: window.innerWidth,
 
             documentsFromServer: [],
-            categoriesFromServer: []
+            categoriesFromServer: [],
+            isLoading: true
         };
 
         fetch(API_BASE_URL + 'document_tags')
@@ -88,15 +91,18 @@ class ViewDocuments extends Component {
                                 filename: doc.filename
                             }
                             
-                            console.log('Hej1');
+                            
                             documentsFromServerTemp = [...documentsFromServerTemp, docObject];
                             documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
                             this.setState({documentsFromServer: documentsFromServerTemp});
                         })
                 })
+
+                this.setState({isLoading: false});
             });
         
-  
+        
+
         this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
         this.handleOrderChangeHeadDate = this.handleOrderChangeHeadDate.bind(this);
         this.handleOrderChangeHeadPublisher = this.handleOrderChangeHeadPublisher.bind(this);
@@ -289,8 +295,8 @@ class ViewDocuments extends Component {
                         </div>
                     </div>
                     
-                    {
-                        this.state.cardsViewSelected ?
+                    {this.state.isLoading ? <Spinner /> :
+                        (this.state.cardsViewSelected ?
                             <DocumentCards 
                                 documents={this.state.documentsFromServer}
                                 categoriesToShow={this.state.categoryTagsSelected}
@@ -301,7 +307,7 @@ class ViewDocuments extends Component {
                                 documents = {this.state.documentsFromServer}
                                 categoriesToShow = {this.state.categoryTagsSelected}
                                 zeroCategoriesSelected = {this.state.catsViewed === 0}
-                            />
+                            />)
                     }
                 </div>
             </div>

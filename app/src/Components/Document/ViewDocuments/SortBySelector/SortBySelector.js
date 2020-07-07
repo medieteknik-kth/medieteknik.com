@@ -12,7 +12,7 @@ const SortBySelector = (props) => {
     } else if (props.sortValue === "date") {
         dropdownTitle = 'Uppladdningsdatum';
     } else if (props.sortValue === "publisher") {
-        dropdownTitle = 'Uppladdat av';
+        dropdownTitle = 'Publicerat av';
     } else if (props.sortValue === "alphabetical") {
         dropdownTitle = 'Dokumentnamn';
     }

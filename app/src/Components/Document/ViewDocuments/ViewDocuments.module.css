@@ -15,6 +15,12 @@ h3 {
     height: 45px;
 }
 
+@media (max-width: 899px) {
+    .headerRow {
+        height: 140px;
+    }
+}
+
 .searchParameters {
     float: left;
 }
@@ -164,7 +170,7 @@ h3 {
     padding: 6px;
     position: absolute;
     z-index: 1;
-    top: 65px;
+    top: -38px;
     margin-left: -74px;
     transition: .2s;
     cursor: default;

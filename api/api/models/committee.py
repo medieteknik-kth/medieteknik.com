@@ -26,11 +26,11 @@ class Committee(db.Model):
     posts = db.relationship("CommitteePost", back_populates = "committee")
     events = db.relationship("Event", back_populates="committee")
     logo = db.Column(db.String)
-    header_image = db.Column(db.String)
     description = db.Column(db.String)
+    facebook_url = db.Column(db.String)
     instagram_url = db.Column(db.String)
     page_id = db.Column(db.Integer, db.ForeignKey("page.id"))
-    page = db.relationship("Page")
+    page = db.relationship("Page", back_populates="committee")
     category_id = db.Column(db.Integer, db.ForeignKey('CommitteeCategory.id'))
     category = db.relationship("CommitteeCategory")
 
@@ -48,9 +48,25 @@ class Committee(db.Model):
             "name": self.name,
             "posts": posts,
             "logo": self.logo,
-            "header_image": self.header_image,
             "description": self.description,
-            "instagram_url": self.instagram_url,
+            "facebookUrl": self.facebook_url,
+            "instagramUrl": self.instagram_url,
             "page": page,
             "events": events,
         }
+    
+    def to_dict_without_page(self):
+        posts = [post.to_dict() for post in self.posts]
+        events = [event.to_dict() for event in self.events]
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "posts": posts,
+            "logo": self.logo,
+            "description": self.description,
+            "facebookUrl": self.facebook_url,
+            "instagramUrl": self.instagram_url,
+            "events": events,
+        }
+
