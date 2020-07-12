@@ -75,5 +75,6 @@ export default {
   Users: GetApiObject('users'),
   Posts: GetApiObject('posts'),
   Events: GetApiObject('events'),
+  OperationalYears: GetApiObject('operational_years'),
   Images: GetImage,
 };
