@@ -18,7 +18,7 @@ class OperationalYearsResource(Resource):
                 description: OK
         """
 
-        terms = CommitteePostTerm.query.distinct(CommitteePostTerm.start_date, CommitteePostTerm.end_date).group_by(CommitteePostTerm.start_date, CommitteePostTerm.end_date).all()
+        terms = CommitteePostTerm.query.distinct(CommitteePostTerm.start_date, CommitteePostTerm.end_date).group_by(CommitteePostTerm.start_date, CommitteePostTerm.end_date, CommitteePostTerm.id).all()
         years = []
         start = (1, 1)
         end = (7, 1)
