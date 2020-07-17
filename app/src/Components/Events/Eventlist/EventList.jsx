@@ -131,8 +131,6 @@ const EventList = (props) => {
 
 
     useEffect(() => {
-        let allEventsTemp = [];
-
         fetch(API_BASE_URL + 'events')
             .then(response => response.json())
             .then(jsonObject => {
