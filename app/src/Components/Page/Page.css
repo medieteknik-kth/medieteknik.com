@@ -1,3 +1,23 @@
+.pageEditButton {
+    width: 45px;
+    height: 45px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    position: fixed;
+    background-color: white;
+    right: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pageEditButton:hover {
+    background-color: #f0f0f0;
+}
+
+.pageEditButton:active {
+    transform: scale(0.9);
+}
+
 .pageContainer {
     margin: 110px 10px 40px 10px;
     background-color: white;

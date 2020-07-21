@@ -28,10 +28,6 @@
             "se": "Hantera",
             "en": "Hantera"
         },
-        "page_not_found": {
-            "se": "Kunde inte hitta sida",
-            "en": "Could not find page"
-        },
         "committees-and-projects": {
             "se": "Nämnder och projekt",
             "en": "Committees and projects"
@@ -138,5 +134,19 @@
             "se": "Följ Medieteknik", 
             "en": "Follow Media Technology"
         }       
+    },
+    "page": {
+        "could_not_save": {
+            "se": "Kunde inte spara sida",
+            "en": "Could not save page"
+        },
+        "unauthorized": {
+            "se": "Du får inte redigera denna sida. Kontakta webmaster@medieteknik.com om något inte stämmer!",
+            "en": "You are not allowed to edit this page. Contact webmaster@medieteknik.com if something is not right!"
+        },
+        "page_not_found": {
+            "se": "Kunde inte hitta sida",
+            "en": "Could not find page"
+        }
     }
 }

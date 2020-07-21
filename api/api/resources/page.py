@@ -51,27 +51,37 @@ class PageResource(Resource):
                 description: Not authenticated
         """
 
-        ## TODO: Tillåt bara användare som får redigera att redigera sida
         page = Page.query.get(id)
-        keys = request.json.keys()
 
-        revision = PageRevision()
-        revision.revision_type = PageRevisionType.edited
-        
-        if "title" in keys:
-            revision.title = request.json["title"]
-        if "content_sv" in keys:
-            revision.content_sv = request.json["content_sv"]
-        if "content_en" in keys:
-            revision.content_en = request.json["content_en"]
-        if "published" in keys:
-            revision.published = request.json["published"]
+        if user.is_admin or page.is_editable_by(user):
+            revision = PageRevision()
+            revision.revision_type = PageRevisionType.edited
+            revision.author = user
+            
+            if not request.is_json:
+                return {
+                    "message": "Invalid request"
+                }, 400
 
-        page.revisions.append(revision)
+            keys = request.json.keys()
+            if "title" in keys:
+                revision.title = request.json["title"]
+            if "content_sv" in keys:
+                revision.content_sv = request.json["content_sv"]
+            if "content_en" in keys:
+                revision.content_en = request.json["content_en"]
+            if "published" in keys:
+                revision.published = request.json["published"]
 
-        db.session.add(revision)
-        db.session.commit()
-        return jsonify({"message": "OK"})
+            page.revisions.append(revision)
+
+            db.session.add(revision)
+            db.session.commit()
+            return jsonify({"message": "OK"})
+        else:
+            return {
+                "message": "Invalid user"
+            }, 401
     
     @requires_auth
     def delete(self, id):
