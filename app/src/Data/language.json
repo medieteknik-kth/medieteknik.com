@@ -38,7 +38,7 @@
         },
         "officials": {
             "se": "Funktionärer",
-            "en": "Officials"           
+            "en": "Officials"
         }
     },
     "form": {
@@ -52,19 +52,19 @@
         },
         "save": {
             "se": "Spara",
-            "en": "Save"            
+            "en": "Save"
         },
         "title": {
             "se": "Titel",
-            "en": "Title"            
+            "en": "Title"
         },
         "doc_type": {
             "se": "Dokumenttyp",
-            "en": "Document type"            
+            "en": "Document type"
         },
         "doc_upload": {
             "se": "Dokumentuppladdning",
-            "en": "Document upload"            
+            "en": "Document upload"
         }
     },
     "landing": {
@@ -115,6 +115,32 @@
                 "se": "Tillbaka till flödet",
                 "en": "Back to feed"
             }
+        },
+        "create_post": {
+            "header": {
+                "se": "Skapa inlägg",
+                "en": "Create post"
+            },
+            "title": {
+                "se": "Titel",
+                "en": "Title"
+            },
+            "body": {
+                "se": "Text",
+                "en": "Body"
+            },
+            "committee": {
+                "se": "Kopplat till nämnd",
+                "en": "Linked to committee"
+            },
+            "image": {
+                "se": "Bild",
+                "en": "Image"
+            },
+            "create": {
+                "se": "Skapa",
+                "en": "Create"
+            }
         }
     },
     "gallery": {
@@ -134,9 +160,9 @@
             "se": "Kontakt",
             "en": "Contact"
         },
-        "follow": { 
-            "se": "Följ Medieteknik", 
+        "follow": {
+            "se": "Följ Medieteknik",
             "en": "Follow Media Technology"
-        }       
+        }
     }
 }

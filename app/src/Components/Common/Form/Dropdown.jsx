@@ -1,7 +1,7 @@
 import React from 'react'
 import Select, { components } from 'react-select'
 
-const Dropdown = ({options, onChange, defaultValue}) => {
+const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
     const textStyle = {
         fontFamily: 'Roboto',
         fontWeight: 100,
@@ -73,7 +73,8 @@ const Dropdown = ({options, onChange, defaultValue}) => {
             onChange={onChange}
             defaultValue={defaultValue ?? options[0]}
             components={{ DropdownIndicator }}
-            options={options} />
+            options={options}
+            isLoading={isLoading} />
     );
 }
 

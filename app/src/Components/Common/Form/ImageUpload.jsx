@@ -41,7 +41,7 @@ class ImageUpload extends React.Component {
     }
 
     return (
-      <div>
+      <div className='image-upload'>
         <input type="file" onChange={this._handleImageChange} name={this.props.name} />
         {$imagePreview}
       </div>

@@ -1,0 +1,32 @@
+@import '../../Common/Variables.scss';
+
+.button {
+    cursor: pointer;
+    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    border: none;
+    background-color: $mustard-yellow;
+    color: #000;
+    border-radius: 40px;
+    padding: 0.8rem 4.5rem;
+    transition: background-color 0.2s ease-in-out;
+    outline: none;
+
+    &:hover {
+        background-color: inherit;
+        box-shadow:inset 0px 0px 0px 2px $mustard-yellow;
+    }
+
+    &.small {
+        padding: 0.6rem 1.5rem;    
+        text-transform: initial;
+        letter-spacing: initial;
+        background-color: inherit;
+        box-shadow:inset 0px 0px 0px 2px $mustard-yellow;
+
+        &:hover {
+            background-color: $mustard-yellow;
+        }
+    }
+}

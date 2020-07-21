@@ -1,0 +1,77 @@
+@import '../Common/Variables.scss';
+
+.create-post-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2em 5em 0 0;
+
+    @media screen and (max-width: $mobile-breakpoint) {
+        justify-content: center;
+        padding: 2em 0 0 0;
+    }
+}
+
+.create-post-container {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2em;
+
+    .create-post {
+        flex: 0.4;
+
+        h1 {
+            text-align: center;
+        }
+
+        h5 {
+            margin: 0.5em;
+        }
+
+        .post-extras {
+            display: flex;
+
+            .extras-select {
+                padding-right: 1em;
+                min-width: 18em;
+            }
+        }
+
+        .error-msg {
+            color: $error-color;
+            padding-top: 0.2em;
+        }
+
+        .create-button {
+            display: flex;
+            padding-top: 2em;
+        }
+
+        .quill {
+            .ql-toolbar,
+            .ql-container {
+                background-color: #fff;
+                border: none;
+            }
+
+            .ql-container {
+                height: 20vh;
+            }
+        }
+
+        @media screen and (max-width: $mobile-breakpoint) {
+            flex: 0.8;
+
+            .post-extras {
+                flex-direction: column;
+
+                .extras-select {
+                    padding-right: 0;
+                }
+            }
+
+            .create-button {
+                justify-content: center;
+            }
+        }
+    }
+}

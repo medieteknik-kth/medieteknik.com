@@ -25,6 +25,7 @@ import Gallery from './Components/Gallery/Gallery';
 import Album from './Components/Gallery/Album/Album';
 import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
+import CreatePost from './Components/CreatePost/CreatePost';
 
 export default function App() {
   return (
@@ -73,6 +74,9 @@ export default function App() {
             </Route>
             <Route path="/album/:id">
               <PageWithMainMenu><Album /></PageWithMainMenu>
+            </Route>
+            <Route path="/create-post">
+              <PageWithMainMenu><CreatePost /></PageWithMainMenu>
             </Route>
             <Route
               path="/:pageSlug"
