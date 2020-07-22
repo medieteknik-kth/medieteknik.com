@@ -41,6 +41,11 @@ function GetApiObject(resource) {
           token,
         },
         body: JSON.stringify(data),
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
       });
     },
     Create(data, token = window.localStorage.getItem('user_token')) {
@@ -52,6 +57,11 @@ function GetApiObject(resource) {
           token,
         },
         body: JSON.stringify(data),
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
       });
     },
   };
