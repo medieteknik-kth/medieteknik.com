@@ -43,13 +43,13 @@ const Feed = (props) => {
             <div className='feed-cards'>
                 { cont ? cont.map((post, i) =>
                     <FeedCard
-                        key={post.id, i}
+                        key={`${post.id}_${i}`}
                         type={post.type}
                         path={`${post.type === feedTypes.POST ? '/posts/' : '/events/'}${post.id}`}
                         title={translate(post.title)}
                         date={post.type === feedTypes.EVENT ? post.event_date : post.date}
                         location={post.location ?? null}
-                        body={translate({ se: post.body.se.trunc(250), en: post.body.en ? post.body.en.trunc(250) : '' })}
+                        body={translate({ se: post.body.se.replace(/<\/?[^>]+(>|$)/g, "").trunc(250), en: post.body.en ? post.body.en.replace(/<\/?[^>]+(>|$)/g, "").trunc(250) : '' })}
                         headerImage={post.header_image}
                         tags={post.tags} />
                 ) : <></> }

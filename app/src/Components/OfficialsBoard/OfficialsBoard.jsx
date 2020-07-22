@@ -41,7 +41,7 @@ export default function OfficialsBoard() {
     }
   }, [operationalYear])
 
-  const categories = officials.map(official => official.post.committeeCategory).filter((value, index, self) => self.map(x => x.id).indexOf(value.id) == index)
+  const categories = officials.map(official => official.post.committeeCategory).filter((value, index, self) => self.map(x => x.id).indexOf(value.id) === index)
 
   return (
     <div className='officials-board-container'>

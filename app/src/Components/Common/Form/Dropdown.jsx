@@ -13,7 +13,7 @@ const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
       ) => {
         return (
           <components.DropdownIndicator {...props}>
-            <img style={{width: '1.3rem', height: '1.3rem', paddingRight: '0.5rem'}} src='arrow-down.svg'/>
+            <img style={{width: '1.3rem', height: '1.3rem', paddingRight: '0.5rem'}} src='arrow-down.svg' alt=''/>
           </components.DropdownIndicator>
         );
     };

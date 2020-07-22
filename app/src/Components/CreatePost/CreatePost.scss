@@ -27,6 +27,19 @@
             margin: 0.5em;
         }
 
+        .title-input {
+            display: flex;
+        }
+
+        .body-input {
+            display: flex;
+            flex-direction: column;
+
+            > div {
+                margin-bottom: 1em;
+            }
+        }
+
         .post-extras {
             display: flex;
 
@@ -34,11 +47,18 @@
                 padding-right: 1em;
                 min-width: 18em;
             }
+
+            .en-switch-header {
+                padding-top: 0.5em;
+            }
+
+            .en-switch-container {
+                padding: 1em 0.5em;
+            }
         }
 
         .error-msg {
             color: $error-color;
-            padding-top: 0.2em;
         }
 
         .create-button {
@@ -58,8 +78,23 @@
             }
         }
 
+        .post-image-upload {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
         @media screen and (max-width: $mobile-breakpoint) {
             flex: 0.8;
+
+            .title-input {
+                flex-direction: column;
+                width: 100%;
+
+                > div {
+                    margin-bottom: 1em;
+                }
+            }
 
             .post-extras {
                 flex-direction: column;

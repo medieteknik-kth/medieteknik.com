@@ -129,6 +129,14 @@
                 "se": "Text",
                 "en": "Body"
             },
+            "body_en": {
+                "se": "Engelsk Text",
+                "en": "English Body"
+            },
+            "body_err": {
+                "se": "Du måste skriva en inläggstext",
+                "en": "You must to provide a body for the post"
+            },
             "committee": {
                 "se": "Kopplat till nämnd",
                 "en": "Linked to committee"
@@ -136,6 +144,10 @@
             "image": {
                 "se": "Bild",
                 "en": "Image"
+            },
+            "en_ver": {
+                "se": "Lägg till en engelsk version",
+                "en": "Add English version"
             },
             "create": {
                 "se": "Skapa",
