@@ -1,6 +1,8 @@
-from flask import jsonify, request
+from flask import jsonify, request, session
 from flask_restful import Resource
 
+from api.db import db
+from api.resources.authentication import requires_auth
 from api.models.user import User
 
 class UserResource(Resource):
@@ -8,25 +10,26 @@ class UserResource(Resource):
         user = User.query.get(id)
         return jsonify(user.to_dict())
 
-    def put(self, id):
-        user = User.query.get(id)
+    @requires_auth
+    def put(self, id, user):
+        userData = User.query.get(id)
         data = request.form
 
-        if user.kth_id == session["CAS_USERNAME"]:
+        if userData.id == user.id:
             if data.get("first_name"):
-                user.first_name = data.get("first_name")
+                userData.first_name = data.get("first_name")
             if data.get("last_name"):
-                user.last_name = data.get("last_name")
+                userData.last_name = data.get("last_name")
             if data.get("email"):
-                user.email = data.get("email")
+                userData.email = data.get("email")
             if data.get("kth_year"):
-                user.kth_year = data.get("kth_year")
+                userData.kth_year = data.get("kth_year")
             if data.get("frack_name"):
-                user.frack_name = data.get("frack_name")
+                userData.frack_name = data.get("frack_name")
             if data.get("linkedin"):
-                user.linkedin = data.get("linkedin")
+                userData.linkedin = data.get("linkedin")
             if data.get("facebook"):
-                user.facebook = data.get("facebook")
+                userData.facebook = data.get("facebook")
 
             local_path = ""
             if "profile_picture" in request.files:
@@ -39,7 +42,7 @@ class UserResource(Resource):
                     local_path = os.path.join(SAVE_FOLDER, filename)
                     image.save(local_path)
                     resize_image(local_path, filename)
-                    user.profile_picture = path
+                    userData.profile_picture = path
                 else:
                     return jsonify(success=False), 415
 
