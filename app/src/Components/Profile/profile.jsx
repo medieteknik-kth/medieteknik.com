@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import Api from '../../Utility/Api'
+import Api, { API_BASE_URL } from '../../Utility/Api'
 import { UserContext } from '../../Contexts/UserContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,21 +10,36 @@ import './profile.css'
 const Profile = (props) => {
     const { user } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false)
+    const [firstName, setFirstName] = useState(user.firstName)
+    const [lastName, setLastName] = useState(user.lastName)
+    const [frackName, setFrackName] = useState(user.frackName)
+    const [facebook, setFacebook] = useState(user.facebook)
+    const [linkedIn, setLinkedIn] = useState(user.linkedin)
+    const [alumni, setAlumni] = useState(user.alumni)
     console.log(user)
+
+    const onFormSubmit = () => {
+        let fd = new FormData()
+        fd.append('first_name', firstName)
+        fd.append('last_name', lastName)
+        fd.append('frack_name', frackName)
+        fd.append('linkedin', linkedIn)
+        fd.append('facebook', facebook)
+        Api.Users.Update(user.id, fd, window.localStorage.getItem('user_token'), false)
+    }
+
     return (
         user ?
             (<div className="profile-container">
                 <div className="info-container">
                     {isEditing ? <div>
-                        <form
-                            method="PUT"
-                            encType="multipart/form_data">
                             <div className="field">
                                 <input
                                     className="input-req"
                                     required
-                                    value={user.firstName}
+                                    value={firstName}
                                     pattern="[\p{L}\s-]{1,99}"
+                                    onChange={v => setFirstName(v)}
                                 />
                                 <label className="floating-label-req">Förnamn</label>
                                 <span className="focus-border" />
@@ -37,7 +52,8 @@ const Profile = (props) => {
                                     type="text"
                                     pattern="[\p{L}\s-]{1,99}"
                                     required
-                                    value={user.lastName}
+                                    value={lastName}
+                                    onChange={v => setLastName(v)}
                                 />
                                 <label className="floating-label-req">Efternamn</label>
                                 <span className="focus-border" />
@@ -49,7 +65,9 @@ const Profile = (props) => {
                                     type="text"
                                     className="input-not-req"
                                     placeholder=" "
-                                    value={user.frackName}
+                                    value={frackName}
+                                    placeholder="fracknamn"
+                                    onChange={v => setFrackName(v)}
                                 />
                                 <label className="floating-label-non-req">Fracknamn</label>
                                 <span className="focus-border" />
@@ -61,7 +79,9 @@ const Profile = (props) => {
                                     type="url"
                                     placeholder=" "
                                     className="inputURL"
-                                    value={user.linkedin}
+                                    value={facebook}
+                                    onChange={v => setFacebook(v)}
+                                    placeholder="länk till din facebook-profil"
                                 />
                                 <label className="URLfloating-label">Facebook-länk</label>
                                 <span className="focus-border" />
@@ -74,7 +94,9 @@ const Profile = (props) => {
                                     type="url"
                                     placeholder=" "
                                     className="inputURL"
-                                    value={user.linkedin}
+                                    value={linkedIn}
+                                    onChange={v => setLinkedIn(v)}
+                                    placeholder="länk till din linkedin-profil"
                                 />
                                 <label className="URLfloating-label">Linkedin-länk</label>
                                 <span className="focus-border" />
@@ -86,11 +108,10 @@ const Profile = (props) => {
                                 className="alumniCheckbox"
                                 type="checkbox"
                                 value="alumni"
-                                defaultChecked={user.alumni}
+                                defaultChecked={alumni}
                                 name="alumni"
                                 placeholder="Alumni"
                             />
-                        </form>
                     </div> : <div>
 
                             <h1>{user.firstName} {user.lastName}</h1>
@@ -108,7 +129,7 @@ const Profile = (props) => {
                         alt={`${user.firstName} ${user.lastName}`}
                     />
                 </div>
-                <button className="submitButton" onClick={() => setIsEditing(!isEditing)}>{isEditing ? "spara ändringar" : "Redigera profil"}</button>
+                <button className="submitButton" onClick={() => isEditing ? onFormSubmit() :setIsEditing(!isEditing)}>{isEditing ? "spara ändringar" : "Redigera profil"}</button>
             </div>)
             : (<></>)
     )

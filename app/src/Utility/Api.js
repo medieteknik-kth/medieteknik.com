@@ -33,14 +33,14 @@ function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    Update(id, data, token = window.localStorage.getItem('user_token')) {
+    Update(id, data, token = window.localStorage.getItem('user_token'), asJson = true) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': asJson ? 'application/json' : 'multipart/form-data',
           token,
         },
-        body: JSON.stringify(data),
+        body:  asJson ? JSON.stringify(data) : data,
       }).then((response) => {
         if (response.ok) {
           return response.json();
