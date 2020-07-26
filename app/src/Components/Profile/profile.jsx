@@ -39,7 +39,7 @@ const Profile = (props) => {
                                     required
                                     value={firstName}
                                     pattern="[\p{L}\s-]{1,99}"
-                                    onChange={v => setFirstName(v)}
+                                    onChange={v => setFirstName(v.target.value)}
                                 />
                                 <label className="floating-label-req">Förnamn</label>
                                 <span className="focus-border" />
@@ -53,7 +53,7 @@ const Profile = (props) => {
                                     pattern="[\p{L}\s-]{1,99}"
                                     required
                                     value={lastName}
-                                    onChange={v => setLastName(v)}
+                                    onChange={v => setLastName(v.target.value)}
                                 />
                                 <label className="floating-label-req">Efternamn</label>
                                 <span className="focus-border" />
@@ -67,7 +67,7 @@ const Profile = (props) => {
                                     placeholder=" "
                                     value={frackName}
                                     placeholder="fracknamn"
-                                    onChange={v => setFrackName(v)}
+                                    onChange={v => setFrackName(v.target.value)}
                                 />
                                 <label className="floating-label-non-req">Fracknamn</label>
                                 <span className="focus-border" />
@@ -80,7 +80,7 @@ const Profile = (props) => {
                                     placeholder=" "
                                     className="inputURL"
                                     value={facebook}
-                                    onChange={v => setFacebook(v)}
+                                    onChange={v => setFacebook(v.target.value)}
                                     placeholder="länk till din facebook-profil"
                                 />
                                 <label className="URLfloating-label">Facebook-länk</label>
@@ -95,7 +95,7 @@ const Profile = (props) => {
                                     placeholder=" "
                                     className="inputURL"
                                     value={linkedIn}
-                                    onChange={v => setLinkedIn(v)}
+                                    onChange={v => setLinkedIn(v.target.value)}
                                     placeholder="länk till din linkedin-profil"
                                 />
                                 <label className="URLfloating-label">Linkedin-länk</label>
@@ -111,6 +111,7 @@ const Profile = (props) => {
                                 defaultChecked={alumni}
                                 name="alumni"
                                 placeholder="Alumni"
+                                onChange={() => setAlumni(!alumni)}
                             />
                     </div> : <div>
 
