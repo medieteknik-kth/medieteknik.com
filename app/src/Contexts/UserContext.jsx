@@ -38,8 +38,25 @@ const UserProvider = (props) => {
     window.location.replace(`${API_BASE_URL}logout`);
   };
 
+  const updateUser = () => {
+    if (token != null) {
+      Api.Authenticate(token).then((response) => {
+        if (response.authenticated) {
+          window.localStorage.setItem('user_token', token);
+          setUser(response.user);
+
+        } else {
+          setUser(null);
+        }
+      }).catch((error) => {
+        console.error(error);
+        setUser(null);
+      });
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ user, setToken, logout }}>{props.children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, setToken, logout, updateUser }}>{props.children}</UserContext.Provider>
   );
 };
 
