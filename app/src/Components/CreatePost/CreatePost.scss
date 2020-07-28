@@ -109,4 +109,25 @@
             }
         }
     }
+
+    .event-date-time {
+        @media screen and (max-width: $mobile-breakpoint) {
+            flex-direction: column;
+        }
+
+        justify-content: space-between;
+
+        > div {
+            display: flex;
+        }
+    }
+
+    .event-date-time,
+    .date-time-container {
+        display: flex;
+    }
+
+    .date-picker {
+        padding-right: 1em;
+    }
 }

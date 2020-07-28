@@ -78,6 +78,9 @@ export default function App() {
             <Route path="/create-post">
               <PageWithMainMenu><CreatePost /></PageWithMainMenu>
             </Route>
+            <Route path="/create-event">
+              <PageWithMainMenu><CreatePost event /></PageWithMainMenu>
+            </Route>
             <Route
               path="/:pageSlug"
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}

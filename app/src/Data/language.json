@@ -149,6 +149,28 @@
                 "se": "Skapa",
                 "en": "Create"
             }
+        },
+        "create_event": {
+            "header": {
+                "se": "Skapa evenemang",
+                "en": "Create event"
+            },
+            "start": {
+                "se": "Start",
+                "en": "Start "
+            },
+            "end": {
+                "se": "Slut",
+                "en": "End "
+            },
+            "date": {
+                "se": "datum",
+                "en": "date"
+            },
+            "time": {
+                "se": "tid",
+                "en": "time"
+            }
         }
     },
     "gallery": {

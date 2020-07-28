@@ -15,8 +15,10 @@ import {
     translateToString,
 } from '../../Contexts/LocaleContext'
 import Switch from '../Common/Form/Switch'
+import TimePicker from '../Common/Form/TimePicker'
+import DatePicker from '../Common/Form/DatePicker'
 
-const CreatePost = () => {
+const CreatePost = ({ event }) => {
     const [committees, setCommittees] = useState([])
     const [title, setTitle] = useState('')
     const [enTitle, setEnTitle] = useState('')
@@ -28,6 +30,11 @@ const CreatePost = () => {
     const [redirect, setRedirect] = useState(false)
     const [useEn, setUseEn] = useState(false)
     const { lang } = useContext(LocaleContext)
+
+    const [startDate, setStartDate] = useState(new Date())
+    const [startTime, setStartTime] = useState(new Date())
+    const [endDate, setEndDate] = useState(new Date())
+    const [endTime, setEndTime] = useState(new Date())
 
     useEffect(() => {
         Api.Committees.GetAll().then((data) => {
@@ -63,14 +70,15 @@ const CreatePost = () => {
         })
 
     async function addPost() {
-
-        {/*TODO sync header image front- and back-end*/}
+        {
+            /*TODO sync header image front- and back-end*/
+        }
         const header_image = headerImage ? await toBase64(headerImage) : null
         if (checkEmptyQuillBody(body)) {
             triggerError()
             return
         }
-        const postData = {
+        var postData = {
             body,
             body_en: useEn ? enBody : body,
             committee_id: committeeId,
@@ -78,19 +86,54 @@ const CreatePost = () => {
             title_en: useEn ? enTitle : title,
             header_image,
         }
-        return Api.Post.Create(postData)
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.success) {
-                    console.log(res)
-                    setRedirect(true)
-                } else {
-                    triggerError()
-                }
-            })
-            .catch((res) => {
-                triggerError()
-            })
+        postData = event
+            ? {
+                  ...postData,
+                  ...{
+                      date: `${startDate.toLocaleDateString()} ${startTime.toLocaleTimeString(
+                          [],
+                          {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                          }
+                      )}`,
+                      end_date: `${endDate.toLocaleDateString()} ${endTime.toLocaleTimeString(
+                          [],
+                          {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                          }
+                      )}`,
+                  },
+              }
+            : postData
+        return event
+            ? Api.Events.Create(postData)
+                  .then((res) => res.json())
+                  .then((res) => {
+                      if (res.success) {
+                          console.log(res)
+                          setRedirect(true)
+                      } else {
+                          triggerError()
+                      }
+                  })
+                  .catch((res) => {
+                      triggerError()
+                  })
+            : Api.Post.Create(postData)
+                  .then((res) => res.json())
+                  .then((res) => {
+                      if (res.success) {
+                          console.log(res)
+                          setRedirect(true)
+                      } else {
+                          triggerError()
+                      }
+                  })
+                  .catch((res) => {
+                      triggerError()
+                  })
     }
 
     if (redirect) {
@@ -109,7 +152,11 @@ const CreatePost = () => {
             <div className='create-post-container'>
                 <div className='create-post'>
                     <h1>
-                        <LocaleText phrase='feed/create_post/header' />
+                        <LocaleText
+                            phrase={`feed/${
+                                event ? 'create_event' : 'create_post'
+                            }/header`}
+                        />
                     </h1>
                     <h5>
                         <LocaleText phrase='feed/create_post/title' />
@@ -192,6 +239,56 @@ const CreatePost = () => {
                             </>
                         )}
                     </div>
+                    {event && (
+                        <div className='event-date-time'>
+                            <div>
+                                <div>
+                                    <h5>
+                                        <LocaleText phrase='feed/create_event/start' />
+                                        <LocaleText phrase='feed/create_event/date' />
+                                    </h5>
+                                    <DatePicker
+                                        onChange={setStartDate}
+                                        value={startDate}
+                                    />
+                                </div>
+                                <div>
+                                    <h5>
+                                        <LocaleText phrase='feed/create_event/start' />
+                                        <LocaleText phrase='feed/create_event/time' />
+                                    </h5>
+
+                                    <TimePicker
+                                        onChange={setStartTime}
+                                        value={startTime}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <h5>
+                                        <LocaleText phrase='feed/create_event/end' />
+                                        <LocaleText phrase='feed/create_event/date' />
+                                    </h5>
+                                    <DatePicker
+                                        onChange={setEndDate}
+                                        value={endDate}
+                                    />
+                                </div>
+                                <div>
+                                    <h5>
+                                        <LocaleText phrase='feed/create_event/end' />
+                                        <LocaleText phrase='feed/create_event/time' />
+                                    </h5>
+
+                                    <TimePicker
+                                        onChange={setEndTime}
+                                        value={endTime}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     <div className='post-extras'>
                         <div className='extras-select'>
                             <h5>
@@ -220,7 +317,7 @@ const CreatePost = () => {
                                 <Switch
                                     checked={useEn}
                                     onClick={() => {
-                                        if(!useEn) scrollToTop()
+                                        if (!useEn) scrollToTop()
                                         setUseEn(!useEn)
                                     }}
                                 />
