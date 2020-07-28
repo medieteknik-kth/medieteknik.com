@@ -7,7 +7,7 @@ const TimePicker = ({ onChange, value }) => {
         <ReactTimePicker
             onChange={onChange}
             value={value}
-            format='HH:m'
+            format='HH:mm'
             clearIcon={null}
             className='time-picker'
         />

@@ -35,9 +35,6 @@
             display: flex;
             flex-direction: column;
 
-            > div {
-                margin-bottom: 1em;
-            }
         }
 
         .post-extras {
@@ -119,6 +116,7 @@
 
         > div {
             display: flex;
+            justify-content: space-between;
         }
     }
 

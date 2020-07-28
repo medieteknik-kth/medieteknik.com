@@ -35,6 +35,7 @@ const CreatePost = ({ event }) => {
     const [startTime, setStartTime] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
     const [endTime, setEndTime] = useState(new Date())
+    const [location, setLocation] = useState('')
 
     useEffect(() => {
         Api.Committees.GetAll().then((data) => {
@@ -90,6 +91,7 @@ const CreatePost = ({ event }) => {
             ? {
                   ...postData,
                   ...{
+                      location,
                       date: `${startDate.toLocaleDateString()} ${startTime.toLocaleTimeString(
                           [],
                           {
@@ -240,54 +242,72 @@ const CreatePost = ({ event }) => {
                         )}
                     </div>
                     {event && (
-                        <div className='event-date-time'>
-                            <div>
+                        <>
+                            <h5>
+                                <LocaleText phrase='feed/create_event/location' />
+                            </h5>
+                            <Input
+                                placeholder={translateToString({
+                                    se: 'Plats',
+                                    en: 'Location',
+                                    lang,
+                                })}
+                                onChange={(e) => setLocation(e.target.value)}
+                                hasError={hasError && location.length === 0}
+                                errorMsg={translate({
+                                    se: 'Du måste ange en plats',
+                                    en: 'You have to provide a location',
+                                })}
+                            />
+                            <div className='event-date-time'>
                                 <div>
-                                    <h5>
-                                        <LocaleText phrase='feed/create_event/start' />
-                                        <LocaleText phrase='feed/create_event/date' />
-                                    </h5>
-                                    <DatePicker
-                                        onChange={setStartDate}
-                                        value={startDate}
-                                    />
+                                    <div>
+                                        <h5>
+                                            <LocaleText phrase='feed/create_event/start' />
+                                            <LocaleText phrase='feed/create_event/date' />
+                                        </h5>
+                                        <DatePicker
+                                            onChange={setStartDate}
+                                            value={startDate}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h5>
+                                            <LocaleText phrase='feed/create_event/start' />
+                                            <LocaleText phrase='feed/create_event/time' />
+                                        </h5>
+
+                                        <TimePicker
+                                            onChange={setStartTime}
+                                            value={startTime}
+                                        />
+                                    </div>
                                 </div>
                                 <div>
-                                    <h5>
-                                        <LocaleText phrase='feed/create_event/start' />
-                                        <LocaleText phrase='feed/create_event/time' />
-                                    </h5>
+                                    <div>
+                                        <h5>
+                                            <LocaleText phrase='feed/create_event/end' />
+                                            <LocaleText phrase='feed/create_event/date' />
+                                        </h5>
+                                        <DatePicker
+                                            onChange={setEndDate}
+                                            value={endDate}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h5>
+                                            <LocaleText phrase='feed/create_event/end' />
+                                            <LocaleText phrase='feed/create_event/time' />
+                                        </h5>
 
-                                    <TimePicker
-                                        onChange={setStartTime}
-                                        value={startTime}
-                                    />
+                                        <TimePicker
+                                            onChange={setEndTime}
+                                            value={endTime}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <div>
-                                    <h5>
-                                        <LocaleText phrase='feed/create_event/end' />
-                                        <LocaleText phrase='feed/create_event/date' />
-                                    </h5>
-                                    <DatePicker
-                                        onChange={setEndDate}
-                                        value={endDate}
-                                    />
-                                </div>
-                                <div>
-                                    <h5>
-                                        <LocaleText phrase='feed/create_event/end' />
-                                        <LocaleText phrase='feed/create_event/time' />
-                                    </h5>
-
-                                    <TimePicker
-                                        onChange={setEndTime}
-                                        value={endTime}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        </>
                     )}
                     <div className='post-extras'>
                         <div className='extras-select'>

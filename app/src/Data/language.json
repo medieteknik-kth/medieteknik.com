@@ -155,6 +155,10 @@
                 "se": "Skapa evenemang",
                 "en": "Create event"
             },
+            "location": {
+                "se": "Plats",
+                "en": "Location"
+            },
             "start": {
                 "se": "Start",
                 "en": "Start "
