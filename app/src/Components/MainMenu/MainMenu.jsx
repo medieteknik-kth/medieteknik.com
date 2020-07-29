@@ -121,7 +121,7 @@ const PageWithMainMenu = (props) => {
         </a>
       )
       : (
-        <Link to="/">
+        <Link to="/user">
           <div className={`${styles.icon} ${additionalStyles}`}>
             <FontAwesomeIcon icon={faUser} size="lg" />
           </div>
