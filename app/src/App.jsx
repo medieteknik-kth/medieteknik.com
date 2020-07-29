@@ -81,6 +81,7 @@ export default function App() {
             </Route>
             <Route path="/create-event">
               <PageWithMainMenu><CreatePost event /></PageWithMainMenu>
+            </Route>
             <Route path="/user">
               <PageWithMainMenu><Profile/></PageWithMainMenu>
             </Route>
