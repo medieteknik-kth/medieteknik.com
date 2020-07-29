@@ -311,6 +311,7 @@ def route_create_all():
     joppe.profile_picture = "/static/profiles/Jesper.jpg"
     joppe.facebook = "https://www.facebook.com/jesperlndqvist"
     joppe.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
+    joppe.is_admin = True
 
     mikaela = User()
     mikaela.email = "migarde@kth.se"

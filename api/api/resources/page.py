@@ -70,6 +70,8 @@ class PageResource(Resource):
                 revision.content_sv = request.json["content_sv"]
             if "content_en" in keys:
                 revision.content_en = request.json["content_en"]
+            if "image" in keys:
+                revision.image = request.json["image"]
             if "published" in keys:
                 revision.published = request.json["published"]
 
@@ -172,6 +174,8 @@ class PageListResource(Resource):
             revision.content_sv = request.json["content_sv"]
         if "content_en" in keys:
             revision.content_en = request.json["content_en"]
+        if "image" in keys:
+            revision.image = request.json["image"]
         if "published" in keys:
             revision.published = request.json["published"]
 
