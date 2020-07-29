@@ -8,7 +8,7 @@ import { faFacebookF, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 import './profile.css'
 
 const Profile = (props) => {
-    const { user } = useContext(UserContext);
+    const { user, updateUser } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false)
     const [firstName, setFirstName] = useState(user.firstName)
     const [lastName, setLastName] = useState(user.lastName)
@@ -16,29 +16,33 @@ const Profile = (props) => {
     const [facebook, setFacebook] = useState(user.facebook)
     const [linkedIn, setLinkedIn] = useState(user.linkedin)
     const [alumni, setAlumni] = useState(user.alumni)
-    console.log(user)
 
     const onFormSubmit = () => {
         let fd = new FormData()
-        fd.append('first_name', firstName)
-        fd.append('last_name', lastName)
-        fd.append('frack_name', frackName)
-        fd.append('linkedin', linkedIn)
-        fd.append('facebook', facebook)
-        Api.Users.Update(user.id, fd, window.localStorage.getItem('user_token'), false)
+        if (firstName) fd.append('first_name', firstName)
+        if (lastName) fd.append('last_name', lastName)
+        if (frackName) fd.append('frack_name', frackName)
+        if (linkedIn) fd.append('linkedin', linkedIn)
+        if (facebook) fd.append('facebook', facebook)
+        Api.Users.Update(user.id, fd, window.localStorage.getItem('user_token'), false).then(() => {
+            // toggle editing to off
+            setIsEditing(false)
+            updateUser()
+        })
     }
 
     return (
-        user ?
-            (<div className="profile-container">
-                <div className="info-container">
-                    {isEditing ? <div>
+        <div>
+            {user ?
+                (<div className="profile-container">
+                    <div className="info-container">
+                        {isEditing ? <div>
                             <div className="field">
                                 <input
                                     className="input-req"
                                     required
                                     value={firstName}
-                                    pattern="[\p{L}\s-]{1,99}"
+                                    pattern="[a-zA-Z0-9\s]+"
                                     onChange={v => setFirstName(v.target.value)}
                                 />
                                 <label className="floating-label-req">Förnamn</label>
@@ -50,7 +54,7 @@ const Profile = (props) => {
                                 <input
                                     className="input-req"
                                     type="text"
-                                    pattern="[\p{L}\s-]{1,99}"
+                                    pattern="[a-zA-Z0-9\s]+"
                                     required
                                     value={lastName}
                                     onChange={v => setLastName(v.target.value)}
@@ -104,6 +108,8 @@ const Profile = (props) => {
                             <br />
                             <p>Alumni</p>
 
+                            {/*
+                            The endpoint doesn't allow updating alumni status, commenting this one out for now 
                             <input
                                 className="alumniCheckbox"
                                 type="checkbox"
@@ -112,27 +118,31 @@ const Profile = (props) => {
                                 name="alumni"
                                 placeholder="Alumni"
                                 onChange={() => setAlumni(!alumni)}
-                            />
-                    </div> : <div>
+                            /> */}
+                        </div> : <div>
 
-                            <h1>{user.firstName} {user.lastName}</h1>
-                            {user.frackName ? <p>Även känd som <b>{user.frackName}</b></p> : <></>}
-                            <div>
-                                {user.facebook ? <a href={user.facebook}><FontAwesomeIcon className="userCardIcon" icon={faFacebookF} color="white" size="lg" /></a> : <div />}
-                                {user.linkedin ? <a href={user.linkedin}><FontAwesomeIcon className="userCardIcon" icon={faLinkedinIn} color="white" size="lg" /></a> : <div />}
-                            </div>
-                        </div>}
-                </div>
-                <div className="picture-container">
-                    <img
-                        className="userImage"
-                        src={user.profilePicture}
-                        alt={`${user.firstName} ${user.lastName}`}
-                    />
-                </div>
-                <button className="submitButton" onClick={() => isEditing ? onFormSubmit() :setIsEditing(!isEditing)}>{isEditing ? "spara ändringar" : "Redigera profil"}</button>
-            </div>)
-            : (<></>)
+                                <h1>{user.firstName} {user.lastName}</h1>
+                                {user.frackName ? <p>Även känd som <b>{user.frackName}</b></p> : <></>}
+                                <div>
+                                    {user.facebook ? <a href={user.facebook}><FontAwesomeIcon className="userCardIcon" icon={faFacebookF} color="black" size="lg" /></a> : <div />}
+                                    {user.linkedin ? <a href={user.linkedin}><FontAwesomeIcon className="userCardIcon" icon={faLinkedinIn} color="black" size="lg" /></a> : <div />}
+                                </div>
+                            </div>}
+                    </div>
+                    <div className="picture-container">
+                        <img
+                            className="userImage"
+                            src={user.profilePicture}
+                            alt={`${user.firstName} ${user.lastName}`}
+                        />
+                    </div>
+                    <button className="submitButton" onClick={() => isEditing ? onFormSubmit() : setIsEditing(!isEditing)}>{isEditing ? "spara ändringar" : "Redigera profil"}</button>
+                </div>)
+                :
+                (<div>
+                    <p> No user logged in!</p>
+                </div>)}
+        </div>
     )
 }
 

@@ -20,7 +20,7 @@ function GetApiObject(resource) {
         }
         return Promise.reject(response);
       });
-    },    
+    },
     GetWithParameters(parameters, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}?${Object.entries(parameters).map(([key, val]) => `${key}=${val}`).join('&')}`, {
         headers: {
@@ -34,18 +34,19 @@ function GetApiObject(resource) {
       });
     },
     Update(id, data, token = window.localStorage.getItem('user_token'), asJson = true) {
-      return fetch(`${API_BASE_URL}${resource}/${id}`, {
+      return asJson ? fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
-          'Content-Type': asJson ? 'application/json' : 'multipart/form-data',
+          'Content-Type': 'application/json',
           token,
         },
-        body:  asJson ? JSON.stringify(data) : data,
-      }).then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(response);
+        body: JSON.stringify(data)
+      }) : fetch(`${API_BASE_URL}${resource}/${id}`, {
+        method: "PUT",
+        headers: {
+          token
+        },
+        body: data
       });
     },
     Create(data, token = window.localStorage.getItem('user_token')) {
@@ -57,11 +58,6 @@ function GetApiObject(resource) {
           token,
         },
         body: JSON.stringify(data),
-      }).then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(response);
       });
     },
   };
@@ -87,6 +83,5 @@ export default {
   Posts: GetApiObject('posts'),
   Post: GetApiObject('post'),
   Events: GetApiObject('events'),
-  OperationalYears: GetApiObject('operational_years'),
   Images: GetImage,
 };
