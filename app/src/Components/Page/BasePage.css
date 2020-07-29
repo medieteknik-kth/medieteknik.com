@@ -29,10 +29,12 @@
 
 .ql-editor h1 {
     font-size: 2.5rem !important;
+    text-align: center;
 }
 
 .ql-editor h2 {
     font-size: 2rem !important;
+    text-align: center;
 }
 
 .ql-editor h3 {
