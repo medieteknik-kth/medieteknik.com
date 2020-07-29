@@ -14,7 +14,7 @@ class UserResource(Resource):
     def put(self, id, user):
         userData = User.query.get(id)
         data = request.form
-
+    
         if userData.id == user.id:
             if data.get("first_name"):
                 userData.first_name = data.get("first_name")
@@ -45,7 +45,6 @@ class UserResource(Resource):
                     userData.profile_picture = path
                 else:
                     return jsonify(success=False), 415
-
             db.session.commit()
 
             if data.get("redirect"):
