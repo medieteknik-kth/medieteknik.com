@@ -49,6 +49,10 @@ export const translate = ({se, en}) => (
     </LocaleContext.Consumer>
 )
 
+export const translateToString = ({se, en, lang}) => {
+    return lang === 'se' ? se : (( en === '' || !en ) ? se : en )
+}
+
 // get locale corresponding to the chosen language
 // needed for dates to work correctly
 export const localeDate = (dateStr) => (

@@ -49,6 +49,7 @@ function GetApiObject(resource) {
       });
     },
     Create(data, token = window.localStorage.getItem('user_token')) {
+      console.log(token)
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -84,6 +85,7 @@ export default {
   }).then((response) => response.json()),
   Users: GetApiObject('users'),
   Posts: GetApiObject('posts'),
+  Post: GetApiObject('post'),
   Events: GetApiObject('events'),
   OperationalYears: GetApiObject('operational_years'),
   Images: GetImage,

@@ -37,7 +37,7 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen})
             onRequestClose={() => setModalOpen(false)}
             style={customStyles}
             ariaHideApp={false}>
-                <img src={image} style={{maxWidth: '100%', maxHeight: '800px'}} className='no-select'/>
+                <img src={image} style={{maxWidth: '100%', maxHeight: '800px'}} alt='' className='no-select'/>
                 <h5>{`${date.toISOString().split('T')[0]}, ${photographer}`}</h5>
                 <h3>{title}</h3>
         </Modal>

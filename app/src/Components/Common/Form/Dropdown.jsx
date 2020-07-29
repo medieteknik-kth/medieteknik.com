@@ -1,7 +1,7 @@
 import React from 'react'
 import Select, { components } from 'react-select'
 
-const Dropdown = ({options, onChange, defaultValue}) => {
+const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
     const textStyle = {
         fontFamily: 'Roboto',
         fontWeight: 100,
@@ -13,7 +13,7 @@ const Dropdown = ({options, onChange, defaultValue}) => {
       ) => {
         return (
           <components.DropdownIndicator {...props}>
-            <img style={{width: '1.3rem', height: '1.3rem', paddingRight: '0.5rem'}} src='arrow-down.svg'/>
+            <img style={{width: '1.3rem', height: '1.3rem', paddingRight: '0.5rem'}} src='arrow-down.svg' alt=''/>
           </components.DropdownIndicator>
         );
     };
@@ -73,7 +73,8 @@ const Dropdown = ({options, onChange, defaultValue}) => {
             onChange={onChange}
             defaultValue={defaultValue ?? options[0]}
             components={{ DropdownIndicator }}
-            options={options} />
+            options={options}
+            isLoading={isLoading} />
     );
 }
 

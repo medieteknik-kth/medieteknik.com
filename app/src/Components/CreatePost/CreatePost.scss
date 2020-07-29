@@ -1,0 +1,131 @@
+@import '../Common/Variables.scss';
+
+.create-post-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2em 5em 0 0;
+
+    @media screen and (max-width: $mobile-breakpoint) {
+        justify-content: center;
+        padding: 2em 0 0 0;
+    }
+}
+
+.create-post-container {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2em;
+
+    .create-post {
+        flex: 0.4;
+
+        h1 {
+            text-align: center;
+        }
+
+        h5 {
+            margin: 0.5em;
+        }
+
+        .title-input {
+            display: flex;
+        }
+
+        .body-input {
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .post-extras {
+            display: flex;
+
+            .extras-select {
+                padding-right: 1em;
+                min-width: 18em;
+            }
+
+            .en-switch-header {
+                padding-top: 0.5em;
+            }
+
+            .en-switch-container {
+                padding: 1em 0.5em;
+            }
+        }
+
+        .error-msg {
+            color: $error-color;
+        }
+
+        .create-button {
+            display: flex;
+            padding-top: 2em;
+        }
+
+        .quill {
+            .ql-toolbar,
+            .ql-container {
+                background-color: #fff;
+                border: none;
+            }
+
+            .ql-container {
+                height: 20vh;
+            }
+        }
+
+        .post-image-upload {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        @media screen and (max-width: $mobile-breakpoint) {
+            flex: 0.8;
+
+            .title-input {
+                flex-direction: column;
+                width: 100%;
+
+                > div {
+                    margin-bottom: 1em;
+                }
+            }
+
+            .post-extras {
+                flex-direction: column;
+
+                .extras-select {
+                    padding-right: 0;
+                }
+            }
+
+            .create-button {
+                justify-content: center;
+            }
+        }
+    }
+
+    .event-date-time {
+        @media screen and (max-width: $mobile-breakpoint) {
+            flex-direction: column;
+        }
+
+        justify-content: space-between;
+
+        > div {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    .event-date-time,
+    .date-time-container {
+        display: flex;
+    }
+
+    .date-picker {
+        padding-right: 1em;
+    }
+}
