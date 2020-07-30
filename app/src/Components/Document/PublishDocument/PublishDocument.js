@@ -6,14 +6,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import classes from './PublishDocument.module.css';
 import Api from '../../../Utility/Api';
 
-// Att göra:
-// - Kolla upp hur FormData fungerar
-// - Ladda upp dokument
-// - Dokumenttitel (Anta dokumentnamn först)
-// - Välj dokumenttyp
-// - Namn, efternamn och datum väljs automatiskt
-// - Fixa konstig loga
-// - Ladda upp knapp
+// --- Komponenter ---
+import Dropdown from '../../Common/Form/Dropdown';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -35,6 +29,7 @@ export default function PublishDocuments() {
     let fileUpload = null;
     const [categoriesList, setCategoriesList] = useState([]);
     const [categoriesToUse, setCategoriesToUse] = useState({});
+    const [docType, setDoctype] = useState("");
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
@@ -62,9 +57,7 @@ export default function PublishDocuments() {
         event.preventDefault();
         const formData = new FormData(formInput.current);
 
-        const tagsList = categoriesList
-            .filter(categoryObject => categoriesToUse[categoryObject.title])
-            .map(categoryObject => categoryObject.title)
+        const tagsList = docType
 
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({ 0: tagsList }))
@@ -120,13 +113,6 @@ export default function PublishDocuments() {
         document.getElementById('publishDocForm').reset();
     }
 
-    const categoriesFilterChangeHandler = (category) => {
-        setCategoriesToUse({
-            ...categoriesToUse,
-            [category]: !categoriesToUse[category], // brackets runt säger att det ska vara värdet av dena här variabeln
-        })
-    }
-
     return (
         <React.Fragment>
             <div className={classes.Publish}>
@@ -146,28 +132,9 @@ export default function PublishDocuments() {
                     </div>
 
                     <div>
-                        <label><strong>Dokumenttaggar</strong> </label>
-                        <div className={classes.categoriesTags}>
-                            {
-                                categoriesList.map(category => (
-                                    <label
-                                        className={classes.container}
-                                        key={category.title}
-                                    >
-                                        <input
-                                            name={category.title}
-                                            type="checkbox"
-
-                                            checked={categoriesToUse[category]}
-                                            onChange={() => categoriesFilterChangeHandler(category.title)}
-                                        />
-
-                                        <span className={classes.checkmark}></span>
-                                        {category.title}
-                                    </label>
-                                ))
-                            }
-                        </div>
+                        <label><strong>Dokumenttyp</strong> </label>
+                        
+                        <Dropdown options = {[{label: "Hej", value: "Hej"}]} onChange = {(option) => setDoctype(option.value)} />
 
                     </div>
 
