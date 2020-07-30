@@ -43,8 +43,6 @@ import coverPhoto8 from './EventListAssets/Event8.jpg';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
-
-
 const events = [
     {
         "title": "Torsdagspub!",
