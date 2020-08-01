@@ -3,13 +3,20 @@
     padding: 10px;
     width: 40%;
     clear: both;
-    border: 2px solid #f0c900;
     border-radius: 5px;
     font-family: sans-serif;
 }
 
-.Publish div {
-    margin-bottom: 10px;
+.Publish p {
+    margin-top: 10px;
+    font-weight: 300;
+    /* font-size: 12px; */
+    font-family: Roboto;
+}
+
+.Publish button {
+    display: block;
+    margin-top: 10px;
 }
 
 .categoriesTags {

@@ -28,25 +28,19 @@ export default function PublishDocuments() {
     const formInput = useRef(); //använd en ref för att hålla koll på form genom stateändringar
     let fileUpload = null;
     const [categoriesList, setCategoriesList] = useState([]);
-    const [categoriesToUse, setCategoriesToUse] = useState({});
-    const [docType, setDoctype] = useState("");
+    const [selectedDocType, setSelectedDoctype] = useState([]);
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
             .then(jsonObject => {
-                const tempCategoriesToUseArray = jsonObject.map( categoryObject => [categoryObject.title, false])
-                const tempCategoriesToUseObject = Object.fromEntries(tempCategoriesToUseArray);
-
-                setCategoriesList(jsonObject);
-                setCategoriesToUse(tempCategoriesToUseObject);
+                const tempCategoriesList = jsonObject.map( categoryObject => categoryObject.title)
+                setCategoriesList(tempCategoriesList);
             });
+            
     }, []);
 
     const publishDocumentApi = (formData) => {
-        console.log(`[Api.js] formData:`);
-        console.log(formData instanceof FormData);
-        console.log(API_BASE_URL + 'documents')
         return fetch(API_BASE_URL + 'documents', {
             method: 'POST',
             body: formData,
@@ -57,7 +51,7 @@ export default function PublishDocuments() {
         event.preventDefault();
         const formData = new FormData(formInput.current);
 
-        const tagsList = docType
+        const tagsList = selectedDocType
 
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({ 0: tagsList }))
@@ -124,36 +118,36 @@ export default function PublishDocuments() {
                     ref={formInput}
                     id = 'publishDocForm'
                 >
-                    <div>
-                        <label><strong>Dokumenttitel</strong> </label>
-                        <input
-                            name="title"
+                    <p>Dokumenttitel</p>
+                    <input
+                        name="title"
+                    />
+
+                    <p>Dokumenttyp</p>
+                    <div className={classes.DocTypeDropdown}>
+                        <Dropdown 
+                            options = {[
+                                {label: "Välj dokumenttyp", value:null},
+                                ...categoriesList.map(cat => ({label: cat, value: cat}))
+                            ]}
+                            // options = {[{label: "Hej", value: "Hej"}]}
+                            // options = {categoriesListForDropDown}
+                            onChange = {(option) => setSelectedDoctype(option.value)}
                         />
                     </div>
 
-                    <div>
-                        <label><strong>Dokumenttyp</strong> </label>
-                        
-                        <Dropdown options = {[{label: "Hej", value: "Hej"}]} onChange = {(option) => setDoctype(option.value)} />
+                    <p>Fil</p>
+                    <input
+                        type="file"
+                        name="file"
+                        ref={(ref) => fileUpload = ref}
+                    />
 
-                    </div>
-
-                    <div>
-                        <label><strong>Fil</strong> </label>
-                        <input
-                            type="file"
-                            name="file"
-                            ref={(ref) => fileUpload = ref}
-                        />
-                    </div>
-
-                    <div>
-                        <label><strong>Ditt namn</strong> </label>
-                        <input
-                            type="text"
-                            name="publisher"
-                        />
-                    </div>
+                    <p>Ditt namn</p>
+                    <input
+                        type="text"
+                        name="publisher"
+                    />
 
                     <button type="submit">Ladda upp</button>
                 </form>
