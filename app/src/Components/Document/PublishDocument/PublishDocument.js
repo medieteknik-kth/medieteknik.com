@@ -29,7 +29,6 @@ const categories = [
 
 export default function PublishDocuments() {
     const formInput = useRef(); //använd en ref för att hålla koll på form genom stateändringar
-    let fileUpload = null;
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedDocType, setSelectedDoctype] = useState([]);
     const [docTitle, setDocTitle] = useState("");
@@ -61,13 +60,15 @@ export default function PublishDocuments() {
 
         const tagsList = selectedDocType;
 
-        // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
+        // Skicka information till backend
         formData.append("tags", JSON.stringify({ 0: tagsList }))
-
         formData.append("thumbnail", docThumbnail);
+        formData.append("documentFile", docFile);
+        formData.append("documentAuthor", docAuthor);
+        formData.append("title", docTitle);
+        publishDocumentApi(formData);
 
-        publishDocumentApi(formData)
-
+        // setClearFormCounter gör så att den valda filen tas bort när man trycker på ladda upp
         setClearFormCounter(clearFormCounter + 1);
 
         document.getElementById('publishDocForm').reset();

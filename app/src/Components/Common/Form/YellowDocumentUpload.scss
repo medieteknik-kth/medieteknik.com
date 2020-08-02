@@ -6,7 +6,7 @@
     flex-direction: column;
     flex: 1;
     height: 270px;
-    width: 191px;
+    width: 193px;
 
     input {
         &[type='file'] {
@@ -22,6 +22,7 @@
         background-repeat: no-repeat;
         background-position-x: 50%;
         background-position-y: 50%;
+        transition: .2s;
 
         label {
             display: flex;
@@ -48,6 +49,10 @@
             }
         }
 
+    }
+
+    .document-upload-box:hover {
+        background-color: rgb(230, 230, 230);
     }
 
 }
