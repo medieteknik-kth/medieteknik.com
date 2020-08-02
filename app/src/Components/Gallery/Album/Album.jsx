@@ -67,7 +67,7 @@ const Album = () => {
             <div className='album-grid'>
                 {testData.images.map(image =>
                     <div key={image.src} className='album-cell no-select' onClick={() => viewImage({src: image.src, title: testData.title, date: image.date, photographer: image.photographer })}>
-                        <img src={image.src} className='responsive-image'/>
+                        <img src={image.src} className='responsive-image' alt='' />
                     </div>
                 )}
             </div>

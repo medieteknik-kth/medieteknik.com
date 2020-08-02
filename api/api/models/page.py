@@ -15,6 +15,16 @@ class Page(db.Model):
 
     def latest_published_revision(self):
         return next((revision for revision in self.revisions if revision.published), None)
+    
+    def is_editable_by(self, user):
+        if self.committee == None:
+            return False
+
+        for term in user.post_terms:
+            committee_id = term.post.committee_id
+            if self.committee.id == committee_id:
+                return True
+        return False
 
     def to_dict(self):
         current = self.latest_published_revision()

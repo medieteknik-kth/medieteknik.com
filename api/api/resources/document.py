@@ -47,7 +47,7 @@ def save_documents(request):
     #Ta filer från requesten
     files = request.files.getlist("file")
     # lista att hålla koll på DB_objekt med när de skapats
-    db_docs = [] 
+    db_docs = []
     tags = json.loads(request.form["tags"])
     thumbnail = request.form["thumbnail"].split(',')[1] #första delen av datan är en header, den slänger vi då den orsakar fel annars
     thumb_name = str(uuid.uuid4()) + ".png"

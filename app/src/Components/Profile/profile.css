@@ -1,0 +1,31 @@
+.profile-container {
+    display: grid;
+    justify-content: center;
+    justify-items: center;
+    grid-template-columns: 50% 50%;
+    margin: 2rem 0;
+}
+
+.info-container {
+    margin: 2rem;
+}
+.picture-container {
+    margin: 2rem;
+}
+
+.edit-button {
+    margin: 2rem;
+    background-color: white;
+    border: 1px solid lightgray;
+    cursor: pointer;
+}
+
+.submitButton {
+    padding: 10px;
+    border: 2px solid #f0c900;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    outline: none;
+}

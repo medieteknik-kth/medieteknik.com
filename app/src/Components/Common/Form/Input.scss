@@ -1,0 +1,75 @@
+@import '../Variables.scss';
+
+.input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+
+    .input {
+        font-family: 'Roboto';
+        font-weight: 100;
+        font-size: 1.2rem;
+        color: #909090;
+        border: 0;
+        padding: 1.2rem;
+        outline: none;
+        size: 50;
+        transition: background-position-y 0.3s;
+        flex: 1;
+
+        &.error {
+            background-image: url('./Assets/form-wronginput.png');
+            background-repeat: no-repeat;
+            background-size: 1.5rem;
+            background-position-x: 95%;
+            background-position-y: 1rem;
+            
+            width: inherit;
+        }
+
+        &::-webkit-input-placeholder {
+            font-style: italic;
+        }
+    }
+
+    .input-error-msg {
+        background-color: $error-color;
+        color: #fff;
+        font-size: 0.8rem;
+        padding: 0.5rem;
+        margin-left: 1.3rem;
+        font-family: 'Roboto';
+        font-weight: 100;
+        display: none;
+
+        &.display {
+            display: block;
+        }
+
+        &::before {
+            display: block;
+            position: absolute;
+            content: ' ';
+            background-image: url('./Assets/form-left-arrow.svg');
+            background-size: 0.8rem 0.8rem;
+            height: 0.8rem;
+            width: 0.8rem;
+            margin-left: -1.3rem;
+        }
+    }
+
+    @media screen and (max-width: $mobile-breakpoint) {
+
+        flex-direction: column;
+        align-items: initial;
+
+        .input-error-msg {
+            margin-left: 0;
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+}

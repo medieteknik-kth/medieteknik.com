@@ -26,6 +26,10 @@ class OfficialsResource(Resource):
           description: In format YYYY/YYYY (ex. 2019/2020)
           schema:
             type: string
+        - name: hyphenate
+          in: query
+          schema:
+            type: boolean
         responses:
             200:
                 description: OK
@@ -42,6 +46,7 @@ class OfficialsResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('atDate', type=lambda x: datetime.strptime(x,'%Y-%m-%d'))
         parser.add_argument('forOperationalYear', type=str)
+        parser.add_argument('hyphenate', type=bool)
         args = parser.parse_args()
         date = args.atDate
 
@@ -72,7 +77,7 @@ class OfficialsResource(Resource):
             data.append({
                 "startDate": term.start_date,
                 "endDate": term.end_date,
-                "post": term.post.to_dict_without_terms(),
+                "post": term.post.to_dict_without_terms(hyphenate=(True if args.hyphenate != None else False)),
                 "user": term.user.to_dict_without_terms()
             })
 

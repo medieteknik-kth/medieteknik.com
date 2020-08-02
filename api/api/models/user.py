@@ -17,6 +17,7 @@ class User(db.Model):
     facebook = db.Column(db.String, nullable=True)
     alumni = db.Column(db.Boolean, default=False)
     post_terms = db.relationship("CommitteePostTerm", back_populates="user")
+    is_admin = db.Column(db.Boolean, default=False)
 
     def to_dict(self):
         terms = []
@@ -37,7 +38,8 @@ class User(db.Model):
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
                 "committeePostTerms": terms,
-                "alumni": self.alumni
+                "alumni": self.alumni,
+                "isAdmin": self.is_admin
                 }
     
     def to_dict_without_terms(self):
@@ -51,5 +53,6 @@ class User(db.Model):
                 "kthYear": self.kth_year,
                 "linkedin": self.linkedin,
                 "facebook": self.facebook,
-                "alumni": self.alumni
+                "alumni": self.alumni,
+                "isAdmin": self.is_admin
                 }

@@ -1,17 +1,73 @@
+.pageEditButton {
+    width: 45px;
+    height: 45px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    position: fixed;
+    background-color: white;
+    right: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+
+.pageEditButton.pageEditImageButton {
+    position: absolute;
+    top: 20px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+}
+
+.pageEditButton.pageEditImageButton svg {
+    display: block;
+    margin: auto;
+}
+
+.pageEditButton.pageRemoveImageButton {
+    position: absolute;
+    top: 73px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+#imageHeaderUpload {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.pageEditButton:hover {
+    background-color: #f0f0f0;
+}
+
+.pageEditButton:active {
+    transform: scale(0.9);
+}
+
 .pageContainer {
+    position: relative;
     margin: 110px 10px 40px 10px;
     background-color: white;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
 }
 
 .pageContent {
     padding: 30px 30px 30px 30px;
 }
 .committeePageLogoContainer {
-    transform: translateY(-66%);
-    margin-bottom: -125px;
+    transform: translateY(-50%);
+    margin-bottom: -100px;
     width: 100px;
     height: 100px;
-    border: 3px solid lightgray;
+    border: 3px solid #f0c900;
     border-radius: 50%;
     padding: 25px;
     overflow: hidden;
@@ -35,4 +91,6 @@
 
 .pageImage {
     width: 100%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }

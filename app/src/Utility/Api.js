@@ -20,7 +20,7 @@ function GetApiObject(resource) {
         }
         return Promise.reject(response);
       });
-    },    
+    },
     GetWithParameters(parameters, token = window.localStorage.getItem('user_token')) {
       return fetch(`${API_BASE_URL}${resource}?${Object.entries(parameters).map(([key, val]) => `${key}=${val}`).join('&')}`, {
         headers: {
@@ -33,17 +33,24 @@ function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    Update(id, data, token = window.localStorage.getItem('user_token')) {
-      return fetch(`${API_BASE_URL}${resource}/${id}`, {
+    Update(id, data, token = window.localStorage.getItem('user_token'), asJson = true) {
+      return asJson ? fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json',
           token,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
+      }) : fetch(`${API_BASE_URL}${resource}/${id}`, {
+        method: "PUT",
+        headers: {
+          token
+        },
+        body: data
       });
     },
     Create(data, token = window.localStorage.getItem('user_token')) {
+      console.log(token)
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -74,6 +81,7 @@ export default {
   }).then((response) => response.json()),
   Users: GetApiObject('users'),
   Posts: GetApiObject('posts'),
+  Post: GetApiObject('post'),
   Events: GetApiObject('events'),
   Images: GetImage,
 };

@@ -6,7 +6,7 @@ const OfficialCard = ({ user, title, email }) => {
     <div className='official-card'>
       <div className='official-title-box'>
         <div className='official-title-header'>
-          <h4>{title}</h4> {/*TODO Fix hypenation for Chrome */}
+          <h4>{title}</h4>
         </div>
       </div>
       <div

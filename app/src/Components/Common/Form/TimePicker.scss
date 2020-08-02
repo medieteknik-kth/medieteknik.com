@@ -1,0 +1,31 @@
+@import '../../Common/Variables.scss';
+
+.react-time-picker__clock {
+    border: none !important;
+}
+
+.time-picker {
+
+    input, button {
+        &:focus {
+    
+            outline: none;
+        }
+    }
+    
+    button {
+        svg {
+            stroke: $mustard-yellow !important;
+        }
+    }
+    
+}
+
+.react-time-picker__wrapper {
+    font-family: 'Roboto';
+    padding: 0.8em;
+    border: none !important;
+    background-color: #fff;
+    font-weight: 300;
+}
+
