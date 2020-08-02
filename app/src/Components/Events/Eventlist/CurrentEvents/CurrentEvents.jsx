@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import classes from './CurrentEvents.module.css';
 
 import EventCard from '../EventCard/EventCard';
+import { Link } from 'react-router-dom';
 
 const CurrentEvents = (props) => {
     let eventsToShowList = props.eventsToShow;
@@ -37,7 +38,7 @@ const CurrentEvents = (props) => {
                 <div className = {classes.CurrentEventsContainer} >
                     {
                         eventsThisWeek.map(event => (
-                            <a href="#">
+                            <Link to={`/events/${event.id}`}>
                                 <EventCard 
                                     title = {event.title} 
                                     coverPhoto = {event.coverPhoto}
@@ -47,7 +48,7 @@ const CurrentEvents = (props) => {
                                     location = {event.location}
                                     host = {event.host}
                                 />
-                            </a>
+                            </Link>
                             
                         ))
                     }

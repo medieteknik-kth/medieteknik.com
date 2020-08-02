@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import classes from './PreviousEvents.module.css';
 
 import EventCard from '../EventCard/EventCard';
+import { Link } from 'react-router-dom';
 
 const PreviousEvents = (props) => {
     let eventsToShowList = props.eventsToShow;
@@ -19,7 +20,7 @@ const PreviousEvents = (props) => {
 
             {
                 eventsToShowList.map(event => (
-                    <a href="#">
+                    <Link to={`/events/${event.id}`}>
                         <EventCard 
                             title = {event.title} 
                             coverPhoto = {event.coverPhoto}
@@ -29,7 +30,7 @@ const PreviousEvents = (props) => {
                             location = {event.location}
                             host = {event.host}
                         />
-                    </a>
+                    </Link>
                     
                 ))
             }

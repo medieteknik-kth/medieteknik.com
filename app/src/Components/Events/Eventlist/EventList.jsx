@@ -132,21 +132,19 @@ const EventList = (props) => {
         fetch(API_BASE_URL + 'events')
             .then(response => response.json())
             .then(jsonObject => {
-                jsonObject.map(event => {
-                    fetch(API_BASE_URL + event.header_image)
-                        .then(coverPhoto => {
-                            let eventObject = {
-                                "title": event.title.sv,
-                                "host": event.committee_id,
-                                "hostLogo": studienamndenLogo,
-                                "location": event.location,
-                                "coverPhoto": coverPhoto,
-                                "eventStart": new Date(event.event_date),
-                                "eventEnd": new Date(event.end_date)
-                            }
+                jsonObject.forEach(event => {
+                    let eventObject = {
+                        "id": event.id,
+                        "title": event.title.sv,
+                        "host": event.committee.name,
+                        "hostLogo": event.committee.logo,
+                        "location": event.location,
+                        "coverPhoto": event.header_image,
+                        "eventStart": new Date(event.event_date),
+                        "eventEnd": new Date(event.end_date)
+                    }
 
-                            setAllEvents([...allEvents, eventObject])
-                        })
+                    setAllEvents([...allEvents, eventObject])
                 })
             })
     }, [])
