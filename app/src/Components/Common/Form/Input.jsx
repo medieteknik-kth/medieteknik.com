@@ -1,12 +1,11 @@
 import React from 'react'
-import './Input.css'
-import LeftArrow from './Assets/form-left-arrow.svg'
+import './Input.scss'
 
-const Input = ({onChange, errorMsg, hasError, inputStyle}) => {      
+const Input = ({onChange, errorMsg, hasError, inputStyle, name, placeholder}) => {      
     return (
-        <div className='input-container'>
-            <input className={`input ${hasError ? 'error' : ''}`} onChange={onChange} style={inputStyle}></input>
-            <div class={`input-error-msg ${hasError ? 'display': ''}`}>{errorMsg}</div>
+        <div className={`input-container`}>
+            <input placeholder={placeholder} name={name} className={`input ${hasError ? 'error' : ''}`} onChange={onChange} style={inputStyle}></input>
+            <div className={`input-error-msg ${hasError ? 'display': ''}`}>{errorMsg}</div>
         </div>
     );
 }

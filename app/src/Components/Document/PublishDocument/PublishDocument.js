@@ -8,6 +8,7 @@ import Api from '../../../Utility/Api';
 
 // --- Komponenter ---
 import Dropdown from '../../Common/Form/Dropdown';
+import Input from '../../Common/Form/Input';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -29,6 +30,7 @@ export default function PublishDocuments() {
     let fileUpload = null;
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedDocType, setSelectedDoctype] = useState([]);
+    const [docTitle, setDocTitle] = useState("");
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
@@ -119,8 +121,9 @@ export default function PublishDocuments() {
                     id = 'publishDocForm'
                 >
                     <p>Dokumenttitel</p>
-                    <input
-                        name="title"
+                    <Input
+                        placeholder = "Dokumenttitel"
+                        onChange = {e => setDocTitle(e.target.value)}
                     />
 
                     <p>Dokumenttyp</p>

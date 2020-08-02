@@ -42,7 +42,8 @@ def requires_auth(f):
                 "message": "Invalid user"
             }, 401
 
-        return f(user, *args, **kwargs)
+        kwargs["user"] = user
+        return f(*args, **kwargs)
 
     return decorated
 

@@ -18,6 +18,7 @@ from api.resources.post import PostResource, PostAddResouce, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
+from api.resources.operational_years import OperationalYearsResource
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
 
@@ -90,6 +91,8 @@ api.add_resource(PageListResource, "/pages")
 api.add_resource(PageResource, "/pages/<id>")
 
 api.add_resource(OfficialsResource, "/officials")
+api.add_resource(OperationalYearsResource, "/operational_years")
+
 api.add_resource(EventListResource, "/events")
 api.add_resource(EventResource, "/events/<id>")
 
@@ -308,6 +311,7 @@ def route_create_all():
     joppe.profile_picture = "/static/profiles/Jesper.jpg"
     joppe.facebook = "https://www.facebook.com/jesperlndqvist"
     joppe.linkedin = "https://www.linkedin.com/in/jesper-lundqvist-63a47a126/"
+    joppe.is_admin = True
 
     mikaela = User()
     mikaela.email = "migarde@kth.se"

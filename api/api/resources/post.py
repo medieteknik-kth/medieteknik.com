@@ -14,7 +14,10 @@ from api.resources.authentication import requires_auth
 
 import os
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import ImmutableMultiDict
 import uuid
+
+import base64
 
 SAVE_FOLDER = os.path.join(os.getcwd(), "api", "static", "posts")
 IMAGE_PATH = "static/posts/"
@@ -114,7 +117,7 @@ class PostResource(Resource):
 
 class PostAddResouce(Resource):
     @requires_auth
-    def post(self):
+    def post(self, resource):
         """
         Adds a new post.
         ---
@@ -158,12 +161,11 @@ class PostAddResouce(Resource):
                 description: Not authenticated
         """
         try:
-            data = request.form
-            user = User.query.filter_by(kth_id=session["CAS_USERNAME"]).first()
-            
-            if user:
+            data = request.json
+
+            if self.id:
                 post = Post()
-                post.user_id = user.id
+                post.user_id = self.id
                 
                 add_cols(data, post, request)
 
@@ -171,7 +173,7 @@ class PostAddResouce(Resource):
                 db.session.commit()
                 return make_response(jsonify(success=True, id=post.id))
             else:
-                raise Exception("user not found") 
+                raise Exception("user not found")
         except Exception as error:
             return make_response(jsonify(success=False, error=str(error)), 403)
         

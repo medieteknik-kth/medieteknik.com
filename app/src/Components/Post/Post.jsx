@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import './Post.css'
 import ProfileCard from '../Common/ProfileCard/ProfileCard';
 import { useParams, NavLink } from 'react-router-dom';
 import Api from '../../Utility/Api.js'
-import { LocaleText, translate } from '../../Contexts/LocaleContext';
+import { LocaleText, LocaleContext, translate, translateToString } from '../../Contexts/LocaleContext';
+import BasePage from '../Page/BasePage';
 
 const Post = (props) => {
 
     const { id } = useParams();
     const [post, setPost] = useState();
+    const { lang } = useContext(LocaleContext)
     
     useEffect(() => {
       Api.Posts.GetById(id)
@@ -40,7 +42,9 @@ const Post = (props) => {
               : <></>
             }
             <p className='post-body'>
-              {translate(post.body)}
+              <BasePage 
+                onChange={() => {}} 
+                initialContent={translateToString({...post.body, lang})} />
             </p>
             <div className='post-footer'>
               <div className='post-tags'>
