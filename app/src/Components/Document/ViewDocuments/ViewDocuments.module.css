@@ -163,7 +163,7 @@ h3 {
 }
 
 .tooltipGrid span {
-    opacity: 0%;
+    opacity: 0;
     background-color: #fff;
     text-align: center;
     border-radius: 3px;
@@ -189,7 +189,7 @@ h3 {
 }
 
 .tooltipGrid img:hover + span {
-    opacity: 100%;
+    opacity: 1;
 }
 
 .tooltipList {
@@ -197,7 +197,7 @@ h3 {
 }
 
 .tooltipList span {
-    opacity: 0%;
+    opacity: 0;
     background-color: #fff;
     text-align: center;
     border-radius: 3px;
@@ -223,7 +223,7 @@ h3 {
 }
 
 .tooltipList img:hover + span {
-    opacity: 100%;
+    opacity: 1;
 }
 
 /* ******* */

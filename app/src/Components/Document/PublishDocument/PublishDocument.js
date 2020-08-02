@@ -6,14 +6,11 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import classes from './PublishDocument.module.css';
 import Api from '../../../Utility/Api';
 
-// Att göra:
-// - Kolla upp hur FormData fungerar
-// - Ladda upp dokument
-// - Dokumenttitel (Anta dokumentnamn först)
-// - Välj dokumenttyp
-// - Namn, efternamn och datum väljs automatiskt
-// - Fixa konstig loga
-// - Ladda upp knapp
+// --- Komponenter ---
+import Dropdown from '../../Common/Form/Dropdown';
+import Input from '../../Common/Form/Input';
+import YellowDocumentUpload from '../../Common/Form/YellowDocumentUpload';
+
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -32,26 +29,25 @@ const categories = [
 
 export default function PublishDocuments() {
     const formInput = useRef(); //använd en ref för att hålla koll på form genom stateändringar
-    let fileUpload = null;
     const [categoriesList, setCategoriesList] = useState([]);
-    const [categoriesToUse, setCategoriesToUse] = useState({});
+    const [selectedDocType, setSelectedDoctype] = useState([]);
+    const [docTitle, setDocTitle] = useState("");
+    const [docAuthor, setDocAuthor] = useState("");
+    const [docFile, setDocFile] = useState(null);
+    const [docThumbnail, setDocThumbnail] = useState(null);
+    const [clearFormCounter, setClearFormCounter] = useState(0);
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
             .then(jsonObject => {
-                const tempCategoriesToUseArray = jsonObject.map( categoryObject => [categoryObject.title, false])
-                const tempCategoriesToUseObject = Object.fromEntries(tempCategoriesToUseArray);
-
-                setCategoriesList(jsonObject);
-                setCategoriesToUse(tempCategoriesToUseObject);
+                const tempCategoriesList = jsonObject.map( categoryObject => categoryObject.title)
+                setCategoriesList(tempCategoriesList);
             });
+            
     }, []);
 
     const publishDocumentApi = (formData) => {
-        console.log(`[Api.js] formData:`);
-        console.log(formData instanceof FormData);
-        console.log(API_BASE_URL + 'documents')
         return fetch(API_BASE_URL + 'documents', {
             method: 'POST',
             body: formData,
@@ -62,69 +58,20 @@ export default function PublishDocuments() {
         event.preventDefault();
         const formData = new FormData(formInput.current);
 
-        const tagsList = categoriesList
-            .filter(categoryObject => categoriesToUse[categoryObject.title])
-            .map(categoryObject => categoryObject.title)
+        const tagsList = selectedDocType;
 
-        // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
+        // Skicka information till backend
         formData.append("tags", JSON.stringify({ 0: tagsList }))
+        formData.append("thumbnail", docThumbnail);
+        formData.append("documentFile", docFile);
+        formData.append("documentAuthor", docAuthor);
+        formData.append("title", docTitle);
+        publishDocumentApi(formData);
 
-        // --- PDF-Thumbnail ---
-        let fileReader = new FileReader();
-
-        fileReader.readAsArrayBuffer(fileUpload.files[0])
-        
-        fileReader.onload = () => {
-            let typedArray = new Uint8Array(fileReader.result);
-            let pdfHandle = pdfjs.getDocument(typedArray);
-            
-            pdfHandle.promise
-                .then(pdf => {
-                    pdf.getPage(1).then(firstPage => {
-                        let thumbnailCanvas = document.createElement('canvas');
-                        let context = thumbnailCanvas.getContext("2d");
-                        let viewport = firstPage.getViewport(3); // getViewport(scale, angle)
-                        thumbnailCanvas.width = viewport.width;
-                        thumbnailCanvas.height = viewport.height;
-
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        }
-
-                        let renderPageTask = firstPage.render(renderContext);
-
-                        renderPageTask.promise
-                            .then(() => {
-                                const thumbnailImage = thumbnailCanvas.toDataURL();
-                                formData.append("thumbnail", thumbnailImage);
-                            })
-                            .then(() => publishDocumentApi(formData)
-                            .then((response) => response.json())
-                            .then((result) => {
-                                console.log('Success:', result);
-                                // console.log(formData.getAll("thumbnail")[0])
-                                console.log(formData.getAll("tags")[0])
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                            }));
-                    });
-                })
-                .catch(error => {
-                    console.log('Något gick fel! Nedan ser du vilket error som uppstod.')
-                    console.log(error)
-                })
-        }
+        // setClearFormCounter gör så att den valda filen tas bort när man trycker på ladda upp
+        setClearFormCounter(clearFormCounter + 1);
 
         document.getElementById('publishDocForm').reset();
-    }
-
-    const categoriesFilterChangeHandler = (category) => {
-        setCategoriesToUse({
-            ...categoriesToUse,
-            [category]: !categoriesToUse[category], // brackets runt säger att det ska vara värdet av dena här variabeln
-        })
     }
 
     return (
@@ -138,54 +85,41 @@ export default function PublishDocuments() {
                     ref={formInput}
                     id = 'publishDocForm'
                 >
-                    <div>
-                        <label><strong>Dokumenttitel</strong> </label>
-                        <input
-                            name="title"
-                        />
-                    </div>
+                    <div className={classes.formContainer}>
+                        <div className={classes.leftFormContainer}>
+                            <p>Dokumenttitel</p>
+                            <Input
+                                placeholder = "Dokumenttitel"
+                                onChange = {e => setDocTitle(e.target.value)}
+                            />
 
-                    <div>
-                        <label><strong>Dokumenttaggar</strong> </label>
-                        <div className={classes.categoriesTags}>
-                            {
-                                categoriesList.map(category => (
-                                    <label
-                                        className={classes.container}
-                                        key={category.title}
-                                    >
-                                        <input
-                                            name={category.title}
-                                            type="checkbox"
+                            <p>Dokumenttyp</p>
+                            <div className={classes.DocTypeDropdown}>
+                                <Dropdown 
+                                    options = {[
+                                        {label: "Välj dokumenttyp", value:null},
+                                        ...categoriesList.map(cat => ({label: cat, value: cat}))
+                                    ]}
+                                    onChange = {(option) => setSelectedDoctype(option.value)}
+                                />
+                            </div>
 
-                                            checked={categoriesToUse[category]}
-                                            onChange={() => categoriesFilterChangeHandler(category.title)}
-                                        />
-
-                                        <span className={classes.checkmark}></span>
-                                        {category.title}
-                                    </label>
-                                ))
-                            }
+                            <p>Ditt namn</p>
+                            <Input
+                                placeholder = "Ditt namn"
+                                onChange = {e => setDocAuthor(e.target.value)}
+                            />
                         </div>
 
-                    </div>
-
-                    <div>
-                        <label><strong>Fil</strong> </label>
-                        <input
-                            type="file"
-                            name="file"
-                            ref={(ref) => fileUpload = ref}
-                        />
-                    </div>
-
-                    <div>
-                        <label><strong>Ditt namn</strong> </label>
-                        <input
-                            type="text"
-                            name="publisher"
-                        />
+                        <div className={classes.rightFormContainer}>
+                            <YellowDocumentUpload
+                                onChange={(uploadedDocument, thumbnail) => {
+                                    setDocFile(uploadedDocument)
+                                    setDocThumbnail(thumbnail)
+                                }}
+                                clearFormCounter = {clearFormCounter}
+                            />
+                        </div>
                     </div>
 
                     <button type="submit">Ladda upp</button>
