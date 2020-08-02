@@ -35,6 +35,8 @@ export default function PublishDocuments() {
     const [docTitle, setDocTitle] = useState("");
     const [docAuthor, setDocAuthor] = useState("");
     const [docFile, setDocFile] = useState(null);
+    const [docThumbnail, setDocThumbnail] = useState(null);
+    const [clearFormCounter, setClearFormCounter] = useState(0);
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
@@ -57,58 +59,16 @@ export default function PublishDocuments() {
         event.preventDefault();
         const formData = new FormData(formInput.current);
 
-        const tagsList = selectedDocType
+        const tagsList = selectedDocType;
 
         // Här läggs taggarna in för det första (och enda) dokumentet som skickas med
         formData.append("tags", JSON.stringify({ 0: tagsList }))
 
-        // --- PDF-Thumbnail ---
-        let fileReader = new FileReader();
+        formData.append("thumbnail", docThumbnail);
 
-        fileReader.readAsArrayBuffer(fileUpload.files[0])
-        
-        fileReader.onload = () => {
-            let typedArray = new Uint8Array(fileReader.result);
-            let pdfHandle = pdfjs.getDocument(typedArray);
-            
-            pdfHandle.promise
-                .then(pdf => {
-                    pdf.getPage(1).then(firstPage => {
-                        let thumbnailCanvas = document.createElement('canvas');
-                        let context = thumbnailCanvas.getContext("2d");
-                        let viewport = firstPage.getViewport(3); // getViewport(scale, angle)
-                        thumbnailCanvas.width = viewport.width;
-                        thumbnailCanvas.height = viewport.height;
+        publishDocumentApi(formData)
 
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        }
-
-                        let renderPageTask = firstPage.render(renderContext);
-
-                        renderPageTask.promise
-                            .then(() => {
-                                const thumbnailImage = thumbnailCanvas.toDataURL();
-                                formData.append("thumbnail", thumbnailImage);
-                            })
-                            .then(() => publishDocumentApi(formData)
-                            .then((response) => response.json())
-                            .then((result) => {
-                                console.log('Success:', result);
-                                // console.log(formData.getAll("thumbnail")[0])
-                                console.log(formData.getAll("tags")[0])
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                            }));
-                    });
-                })
-                .catch(error => {
-                    console.log('Något gick fel! Nedan ser du vilket error som uppstod.')
-                    console.log(error)
-                })
-        }
+        setClearFormCounter(clearFormCounter + 1);
 
         document.getElementById('publishDocForm').reset();
     }
@@ -152,14 +112,12 @@ export default function PublishDocuments() {
 
                         <div className={classes.rightFormContainer}>
                             <YellowDocumentUpload
-                                onChange={(image) => setDocFile(image)}
+                                onChange={(uploadedDocument, thumbnail) => {
+                                    setDocFile(uploadedDocument)
+                                    setDocThumbnail(thumbnail)
+                                }}
+                                clearFormCounter = {clearFormCounter}
                             />
-                            {/* <p>Fil</p>
-                            <input
-                                type="file"
-                                name="file"
-                                ref={(ref) => fileUpload = ref}
-                            /> */}
                         </div>
                     </div>
 

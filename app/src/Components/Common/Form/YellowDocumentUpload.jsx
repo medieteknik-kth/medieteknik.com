@@ -6,9 +6,10 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // --- PDF-extra ---
 import { Document, Page, pdfjs } from 'react-pdf';
+import { useEffect } from 'react';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const YellowDocumentUpload = ({onChange}) => {
+const YellowDocumentUpload = props => {
   const [file, setFile] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
 
@@ -17,11 +18,12 @@ const YellowDocumentUpload = ({onChange}) => {
 
     const fileReader = new FileReader();
     const uploadedDocument = e.target.files[0];
+
+    e.target.value = "";
+
     fileReader.readAsArrayBuffer(uploadedDocument);
 
     fileReader.onloadend = () => {
-        console.log(fileReader.result);
-
         let typedArray = new Uint8Array(fileReader.result);
         let pdfHandle = pdfjs.getDocument(typedArray);
 
@@ -46,25 +48,22 @@ const YellowDocumentUpload = ({onChange}) => {
                                 .then(() => {
                                     const thumbnailImage = thumbnailCanvas.toDataURL();
                                     setPreviewUrl(thumbnailImage);
+                                    setFile(uploadedDocument);
+                                    props.onChange(uploadedDocument, thumbnailImage)
                                 })
                         })
                 })
-                .then(() => {
-                    setFile(uploadedDocument);
-                    onChange(uploadedDocument)
-                })
-                        
-
     }
-
-
-       
 };
 
   const _clearDocument = () => {
     setFile('');
     setPreviewUrl('');
   };
+
+    useEffect(() => {
+        _clearDocument()
+    }, [props.clearFormCounter])
 
   return (
     <div className='yellow-document-upload'>
@@ -90,6 +89,7 @@ const YellowDocumentUpload = ({onChange}) => {
           </label>
         )}
       </div>
+
       <input
         id='file-upload'
         type='file'
