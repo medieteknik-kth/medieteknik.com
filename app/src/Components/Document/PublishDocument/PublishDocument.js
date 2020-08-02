@@ -9,6 +9,8 @@ import Api from '../../../Utility/Api';
 // --- Komponenter ---
 import Dropdown from '../../Common/Form/Dropdown';
 import Input from '../../Common/Form/Input';
+import YellowDocumentUpload from '../../Common/Form/YellowDocumentUpload';
+
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -31,6 +33,8 @@ export default function PublishDocuments() {
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedDocType, setSelectedDoctype] = useState([]);
     const [docTitle, setDocTitle] = useState("");
+    const [docAuthor, setDocAuthor] = useState("");
+    const [docFile, setDocFile] = useState(null);
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
@@ -120,37 +124,44 @@ export default function PublishDocuments() {
                     ref={formInput}
                     id = 'publishDocForm'
                 >
-                    <p>Dokumenttitel</p>
-                    <Input
-                        placeholder = "Dokumenttitel"
-                        onChange = {e => setDocTitle(e.target.value)}
-                    />
+                    <div className={classes.formContainer}>
+                        <div className={classes.leftFormContainer}>
+                            <p>Dokumenttitel</p>
+                            <Input
+                                placeholder = "Dokumenttitel"
+                                onChange = {e => setDocTitle(e.target.value)}
+                            />
 
-                    <p>Dokumenttyp</p>
-                    <div className={classes.DocTypeDropdown}>
-                        <Dropdown 
-                            options = {[
-                                {label: "Välj dokumenttyp", value:null},
-                                ...categoriesList.map(cat => ({label: cat, value: cat}))
-                            ]}
-                            // options = {[{label: "Hej", value: "Hej"}]}
-                            // options = {categoriesListForDropDown}
-                            onChange = {(option) => setSelectedDoctype(option.value)}
-                        />
+                            <p>Dokumenttyp</p>
+                            <div className={classes.DocTypeDropdown}>
+                                <Dropdown 
+                                    options = {[
+                                        {label: "Välj dokumenttyp", value:null},
+                                        ...categoriesList.map(cat => ({label: cat, value: cat}))
+                                    ]}
+                                    onChange = {(option) => setSelectedDoctype(option.value)}
+                                />
+                            </div>
+
+                            <p>Ditt namn</p>
+                            <Input
+                                placeholder = "Ditt namn"
+                                onChange = {e => setDocAuthor(e.target.value)}
+                            />
+                        </div>
+
+                        <div className={classes.rightFormContainer}>
+                            <YellowDocumentUpload
+                                onChange={(image) => setDocFile(image)}
+                            />
+                            {/* <p>Fil</p>
+                            <input
+                                type="file"
+                                name="file"
+                                ref={(ref) => fileUpload = ref}
+                            /> */}
+                        </div>
                     </div>
-
-                    <p>Fil</p>
-                    <input
-                        type="file"
-                        name="file"
-                        ref={(ref) => fileUpload = ref}
-                    />
-
-                    <p>Ditt namn</p>
-                    <input
-                        type="text"
-                        name="publisher"
-                    />
 
                     <button type="submit">Ladda upp</button>
                 </form>
