@@ -141,16 +141,13 @@ const EventList = (props) => {
                                 "hostLogo": studienamndenLogo,
                                 "location": event.location,
                                 "coverPhoto": coverPhoto,
-                                "eventStart": new Date(event.date),
-                                "eventEnd": new Date(Date.now())
+                                "eventStart": new Date(event.event_date),
+                                "eventEnd": new Date(event.end_date)
                             }
 
                             setAllEvents([...allEvents, eventObject])
                         })
                 })
-            })
-            .then(() => {
-                
             })
     }, [])
 
