@@ -43,7 +43,7 @@ class Event(db.Model):
             },
             "location": self.location,
             "header_image": self.header_image,
-            "committee_id": self.committee_id,
+            "committee": self.committee.to_basic_dict(),
             "tags": [t.to_dict() for t in self.tags],
             "facebook_link": self.facebook_link,
             "event_date": self.event_date,

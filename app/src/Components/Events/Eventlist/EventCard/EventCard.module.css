@@ -1,0 +1,124 @@
+.EventCard {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 15px;
+    font-family: Roboto;
+    font-weight: 300;
+    margin-bottom: 15px;
+    transition: .3s;
+    transition: all .25s ease-in-out;
+    border: 3px solid transparent;
+    box-sizing: border-box;
+}
+
+.EventCard:hover {
+    transform: scale(1.01);
+    border: 3px solid #f0c900;
+}
+
+.eventPresentationContainer {
+    display: flex;
+    justify-content: left;
+}
+
+.imageContainer {
+    margin-top: 10px;
+    height: 84px;
+    width: 150px;
+    overflow: hidden;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    float: left;
+}
+
+.imageContainer img {
+    width: 105%;
+    object-fit: cover;
+}
+
+.infoContainer {
+    float: left;
+    height: 75px;
+    width: 220px;
+    margin-top: 10px;
+    margin-left: 8px;
+}
+
+.textInfoContainer {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.textInfoContainer img {
+    height: 20px;
+}
+
+.iconContainer {
+    width: 30px;
+    height: 20px;
+    margin-right: 5px;
+    text-align: center;
+}
+
+.textInfoContainer p {
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: .9rem;
+}
+
+.EventCard h5 {
+    font-family: Roboto;
+    font-weight: 300;
+}
+
+@media (max-width: 450px) {
+    .EventCard {
+        width: 90%;
+        margin: 0 auto 20px auto;
+        height: 230px;
+        padding-bottom: 20px;
+        box-sizing: border-box;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .textInfoContainer {
+        justify-content: center;
+    }
+
+    .imageContainer {
+        float: none;
+        margin: 10px auto;
+    }
+
+    .infoContainer {
+        float: none;
+        margin: 10px auto;
+    }
+
+    .eventPresentationContainer {
+        display: inline;
+    }
+}
+
+@media (max-width: 430px) {
+    .EventCard {
+        width: 80%;
+    }
+}
+
+@media (max-width: 375px) {
+    .EventCard {
+        width: 70%;
+    }
+}
+
+@media (max-width: 330px) {
+    .EventCard {
+        width: 60%;
+    }
+}
