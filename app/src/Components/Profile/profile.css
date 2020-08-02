@@ -4,20 +4,25 @@
     justify-items: center;
     grid-template-columns: 50% 50%;
     margin: 2rem 0;
+    font-family: sans-serif;
 }
 
 .info-container {
     margin: 2rem;
 }
-.picture-container {
+.pictureContainer {
     margin: 2rem;
 }
 
 .edit-button {
-    margin: 2rem;
+    padding: 10px;
+    border: 2px solid #f0c900;
     background-color: white;
-    border: 1px solid lightgray;
+    border-radius: 10px;
     cursor: pointer;
+    transition: 0.2s;
+    outline: none;
+    font-family: sans-serif;
 }
 
 .submitButton {
@@ -28,4 +33,11 @@
     cursor: pointer;
     transition: 0.2s;
     outline: none;
+    font-family: sans-serif;
 }
+
+.input-req, .input-not-req, .inputURL {
+    width: 80%;
+    margin-bottom: 1rem;
+}
+
