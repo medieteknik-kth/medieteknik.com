@@ -120,6 +120,8 @@ export default function PublishDocuments() {
                                 clearFormCounter = {clearFormCounter}
                             />
                         </div>
+
+                        
                     </div>
 
                     <button type="submit">Ladda upp</button>
