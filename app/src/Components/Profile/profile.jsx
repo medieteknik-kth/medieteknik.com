@@ -32,11 +32,12 @@ const Profile = (props) => {
     }
 
     return (
-        <div>
+        <div className="parent">
             {user ?
                 (<div className="profile-container">
                     <div className="info-container">
                         {isEditing ? <div>
+                            <h3>Redigera profil</h3>
                             <div className="field">
                                 <label className="floating-label-req">Förnamn</label>
                                 <input
