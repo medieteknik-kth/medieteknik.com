@@ -70,3 +70,13 @@ class Committee(db.Model):
             "events": events,
         }
 
+    def to_basic_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "logo": self.logo,
+            "description": self.description,
+            "facebookUrl": self.facebook_url,
+            "instagramUrl": self.instagram_url,
+        }
+
