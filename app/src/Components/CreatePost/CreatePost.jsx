@@ -62,19 +62,7 @@ const CreatePost = ({ event }) => {
         setHasError(true)
     }
 
-    const toBase64 = (file) =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onload = () => resolve(reader.result)
-            reader.onerror = (error) => reject(error)
-        })
-
     async function addPost() {
-        {
-            /*TODO sync header image front- and back-end*/
-        }
-        const header_image = headerImage ? await toBase64(headerImage) : null
         if (checkEmptyQuillBody(body)) {
             triggerError()
             return
@@ -85,55 +73,48 @@ const CreatePost = ({ event }) => {
             committee_id: committeeId,
             title,
             title_en: useEn ? enTitle : title,
-            header_image,
+            header_image: headerImage,
         }
         postData = event
             ? {
                   ...postData,
                   ...{
                       location,
-                      date: `${startDate.toLocaleDateString()} ${startTime.toLocaleTimeString(
-                          [],
-                          {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                          }
-                      )}`,
-                      end_date: `${endDate.toLocaleDateString()} ${endTime.toLocaleTimeString(
-                          [],
-                          {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                          }
-                      )}`,
+                      date: startDate.toISOString(),
+                      end_date: endDate.toISOString(),
+                      facebook_link: '',
+                      tags: []
                   },
               }
             : postData
+
+        
+        const formData = new FormData();
+        Object.keys(postData).forEach(key => formData.append(key, postData[key]));
+
         return event
-            ? Api.Events.Create(postData)
+            ? Api.Events.PostForm(formData)
                   .then((res) => res.json())
                   .then((res) => {
                       if (res.success) {
-                          console.log(res)
                           setRedirect(true)
                       } else {
                           triggerError()
                       }
                   })
-                  .catch((res) => {
+                  .catch(() => {
                       triggerError()
                   })
-            : Api.Post.Create(postData)
+            : Api.Post.PostForm(formData)
                   .then((res) => res.json())
                   .then((res) => {
                       if (res.success) {
-                          console.log(res)
                           setRedirect(true)
                       } else {
                           triggerError()
                       }
                   })
-                  .catch((res) => {
+                  .catch(() => {
                       triggerError()
                   })
     }

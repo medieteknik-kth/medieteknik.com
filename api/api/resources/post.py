@@ -117,7 +117,7 @@ class PostResource(Resource):
 
 class PostAddResouce(Resource):
     @requires_auth
-    def post(self, resource):
+    def post(self, user):
         """
         Adds a new post.
         ---
@@ -161,11 +161,11 @@ class PostAddResouce(Resource):
                 description: Not authenticated
         """
         try:
-            data = request.json
+            data = request.form
 
-            if self.id:
+            if user.id:
                 post = Post()
-                post.user_id = self.id
+                post.user_id = user.id
                 
                 add_cols(data, post, request)
 

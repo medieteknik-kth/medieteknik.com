@@ -21,7 +21,7 @@ const Feed = (props) => {
             // combine posts and events into array, sorted by date
             // this only works because javascript is a very wonky language
             // that doesn't care about types as long as both things are objects
-            let combo = [...posts, ...events].sort((a,b) => a.date - b.date)
+            let combo = [...posts, ...events].sort((a,b) => new Date(b.date) - new Date(a.date))
             setCont(combo)
             setIsLoading(false)
         });
