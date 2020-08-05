@@ -27,7 +27,7 @@ const categories = [
     "Övrigt"
 ];
 
-export default function PublishDocuments() {
+const PublishDocuments = (props) => {
     const formInput = useRef(); //använd en ref för att hålla koll på form genom stateändringar
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedDocType, setSelectedDoctype] = useState([]);
@@ -75,7 +75,7 @@ export default function PublishDocuments() {
     }
 
     return (
-        <React.Fragment>
+        <>
             <div className={classes.Publish}>
                 <form
                     method="post"
@@ -127,6 +127,8 @@ export default function PublishDocuments() {
                     <button type="submit">Ladda upp</button>
                 </form>
             </div>
-        </React.Fragment>
+        </>
     )
 }
+
+export default PublishDocuments;
