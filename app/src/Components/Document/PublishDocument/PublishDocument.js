@@ -1,10 +1,15 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 import classes from './PublishDocument.module.css';
 import Api from '../../../Utility/Api';
+
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../Contexts/LocaleContext';
 
 // --- Komponenter ---
 import Dropdown from '../../Common/Form/Dropdown';
@@ -36,6 +41,8 @@ const PublishDocuments = (props) => {
     const [docFile, setDocFile] = useState(null);
     const [docThumbnail, setDocThumbnail] = useState(null);
     const [clearFormCounter, setClearFormCounter] = useState(0);
+
+    const { lang } = useContext(LocaleContext);
 
     useEffect(() => {
         fetch(API_BASE_URL + 'document_tags')
@@ -87,26 +94,57 @@ const PublishDocuments = (props) => {
                 >
                     <div className={classes.formContainer}>
                         <div className={classes.leftFormContainer}>
-                            <p>Dokumenttitel</p>
+                            <p>
+                                {translateToString({
+                                    se: 'Dokumenttitel',
+                                    en: 'Document titel',
+                                    lang,
+                                })}
+                            </p>
                             <Input
-                                placeholder = "Dokumenttitel"
+                                placeholder = {translateToString({
+                                    se: 'Dokumenttitel',
+                                    en: 'Document titel',
+                                    lang,
+                                })}
                                 onChange = {e => setDocTitle(e.target.value)}
                             />
 
-                            <p>Dokumenttyp</p>
+                            <p>
+                                {translateToString({
+                                    se: 'Dokumenttyp',
+                                    en: 'Document type',
+                                    lang,
+                                })}
+                            </p>
                             <div className={classes.DocTypeDropdown}>
+                            
                                 <Dropdown 
                                     options = {[
-                                        {label: "Välj dokumenttyp", value:null},
+                                        {label: translateToString({
+                                            se: 'Välj dokumenttyp',
+                                            en: 'Choose document type',
+                                            lang,
+                                        }), value:null},
                                         ...categoriesList.map(cat => ({label: cat, value: cat}))
                                     ]}
                                     onChange = {(option) => setSelectedDoctype(option.value)}
                                 />
                             </div>
 
-                            <p>Ditt namn</p>
+                            <p>
+                                {translateToString({
+                                    se: 'Ditt namn',
+                                    en: 'Your name',
+                                    lang,
+                                })}
+                            </p>
                             <Input
-                                placeholder = "Ditt namn"
+                                placeholder = {translateToString({
+                                    se: 'Ditt namn',
+                                    en: 'Your name',
+                                    lang,
+                                })}
                                 onChange = {e => setDocAuthor(e.target.value)}
                             />
                         </div>
@@ -124,7 +162,13 @@ const PublishDocuments = (props) => {
                         
                     </div>
 
-                    <button type="submit">Ladda upp</button>
+                    <button type="submit">
+                        {translateToString({
+                            se: 'Ladda upp',
+                            en: 'Upload',
+                            lang,
+                        })}
+                    </button>
                 </form>
             </div>
         </>

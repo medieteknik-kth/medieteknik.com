@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 
 import classes from './ViewDocuments.module.css';
 import {quickSort} from '../../../Utility/SortDocuments.js';
@@ -20,6 +20,10 @@ import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../Contexts/LocaleContext'
 
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
@@ -40,6 +44,7 @@ const ViewDocuments = (props) => {
         const [categoriesFromServer, setCategoriesFromServer] = useState([])
         const [isLoading, setIsLoading] = useState(true)
 
+        const { lang } = useContext(LocaleContext)
 
         useEffect(() => {
             window.addEventListener('resize', handleResize);
@@ -201,7 +206,11 @@ const ViewDocuments = (props) => {
                             type="text"
                             onKeyUp={handleSearch}
                             name="name"
-                            placeholder="Sök efter dokument"
+                            placeholder={translateToString({
+                                se: 'Sök efter dokument',
+                                en: 'Search for document',
+                                lang,
+                            })}
                             ref = {searchInput}
                         />
 
@@ -221,7 +230,13 @@ const ViewDocuments = (props) => {
                                         }
                                     }}
                                 />
-                                <span>Gallerivy</span>
+                                <span>
+                                    {translateToString({
+                                        se: 'Gallerivy',
+                                        en: 'Gallery',
+                                        lang,
+                                    })}
+                                </span>
                             </div> : null}
                                     
                         {screenWidth >= 900 ?
@@ -236,7 +251,13 @@ const ViewDocuments = (props) => {
                                         }
                                     }}
                                 />
-                                <span>Listvy</span>
+                                <span>
+                                    {translateToString({
+                                        se: 'Listvy',
+                                        en: 'List',
+                                        lang,
+                                    })}
+                                </span>
                             </div> : null}
                     </div>
                 </div>

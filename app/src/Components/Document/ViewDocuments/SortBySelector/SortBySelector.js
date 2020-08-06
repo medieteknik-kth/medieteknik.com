@@ -1,20 +1,43 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../../Contexts/LocaleContext';
 
 import dropdownClasses from '../DropdownButtonStyle.module.css';
 import classes from './SortBySelector.module.css';
 import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 
 const SortBySelector = (props) => {
+    const { lang } = useContext(LocaleContext)
+
     let dropdownTitle = '';
 
     if (props.sortValue === "dateStart") {
-        dropdownTitle = 'Sortera efter';
+        dropdownTitle = translateToString({
+            se: 'Sortera efter',
+            en: 'Sort by',
+            lang,
+        });
     } else if (props.sortValue === "date") {
-        dropdownTitle = 'Uppladdningsdatum';
+        dropdownTitle = translateToString({
+            se: 'Uppladdningsdatum',
+            en: 'Publish date',
+            lang,
+        });
     } else if (props.sortValue === "publisher") {
-        dropdownTitle = 'Publicerat av';
+        dropdownTitle = translateToString({
+            se: 'Publicerat av',
+            en: 'Published by',
+            lang,
+        });
     } else if (props.sortValue === "alphabetical") {
-        dropdownTitle = 'Dokumentnamn';
+        dropdownTitle = translateToString({
+            se: 'Dokumentnamn',
+            en: 'Document name',
+            lang,
+        });
     }
 
     return (
@@ -26,15 +49,27 @@ const SortBySelector = (props) => {
 
             <div className = {dropdownClasses.dropdownContent}>
                 <p onClick = {() => props.sortByChangedHandler("alphabetical")}>
-                    Dokumentnamn
+                    {translateToString({
+                        se: 'Dokumentnamn',
+                        en: 'Document name',
+                        lang,
+                    })}
                 </p>
 
                 <p onClick = {() => props.sortByChangedHandler("publisher")}>
-                    Publicerat av
+                    {translateToString({
+                        se: 'Publicerat av',
+                        en: 'Published by',
+                        lang,
+                    })}
                 </p>
 
                 <p onClick = {() => props.sortByChangedHandler("date")}>
-                    Uppladdningsdatum
+                    {translateToString({
+                        se: 'Uppladdningsdatum',
+                        en: 'Publish date',
+                        lang,
+                    })}
                 </p>
             </div>
         </div>
