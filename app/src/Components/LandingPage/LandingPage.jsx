@@ -3,10 +3,14 @@ import React from 'react';
 import './LandingPage.css';
 
 import { LocaleText } from '../../Contexts/LocaleContext';
+import ErrorModal from '../Common/ErrorModal/ErrorModal';
+import { useState } from 'react';
 
 export default function LandingPage() {
+  const [error, setError] = useState(true)
   return (
     <div className="landing-page">
+      <ErrorModal modalOpen={error} setModalOpen={setError} message={"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
       <div className="landing-header">
         <h2 className="landing-text"><LocaleText phrase="landing/welcome"/></h2>
         <h1 className="medieteknik"><LocaleText phrase="common/media_technology"/></h1>
