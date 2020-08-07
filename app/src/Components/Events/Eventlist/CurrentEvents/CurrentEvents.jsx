@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import classes from './CurrentEvents.module.css';
+
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../../Contexts/LocaleContext';
 
 import EventCard from '../EventCard/EventCard';
 import { Link } from 'react-router-dom';
 
 const CurrentEvents = (props) => {
+    const { lang } = useContext(LocaleContext);
     let eventsToShowList = props.eventsToShow;
 
     if (!props.numberOfHostsSelected == 0) {
@@ -33,7 +39,13 @@ const CurrentEvents = (props) => {
     return (
         <div className={[classes.CurrentEvents, props.eventDisplayClass].join(" ")}>
             <div className={classes.eventsThisWeek}>
-                <h4>Denna vecka</h4>
+                <h4>
+                    {translateToString({
+                        se: 'Denna vecka',
+                        en: 'This week',
+                        lang,
+                    })}
+                </h4>
 
                 <div className = {classes.CurrentEventsContainer} >
                     {
@@ -49,14 +61,19 @@ const CurrentEvents = (props) => {
                                     host = {event.host}
                                 />
                             </Link>
-                            
                         ))
                     }
                 </div>
             </div>
 
             <div className={classes.eventsAfterThisWeek}>
-                <h4>Kommande</h4>
+                <h4>
+                    {translateToString({
+                        se: 'Kommande',
+                        en: 'Upcoming',
+                        lang,
+                    })}
+                </h4>
 
                 <div className = {classes.CurrentEventsContainer} >
                     {
@@ -72,7 +89,6 @@ const CurrentEvents = (props) => {
                                     host = {event.host}
                                 />
                             </a>
-                            
                         ))
                     }
                 </div>
