@@ -6,7 +6,7 @@ import {
     faExclamationTriangle,
     faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-import { LocaleText } from '../../../Contexts/LocaleContext'
+import { LocaleText, translate } from '../../../Contexts/LocaleContext'
 
 const ErrorModal = ({ message, modalOpen, setModalOpen }) => {
     const customStyles = {
@@ -18,7 +18,7 @@ const ErrorModal = ({ message, modalOpen, setModalOpen }) => {
             bottom: 'initial',
             left: 'initial',
             right: 'initial',
-            maxWidth: '500px'
+            maxWidth: '500px',
         },
         overlay: {
             zIndex: 2000,
@@ -50,11 +50,10 @@ const ErrorModal = ({ message, modalOpen, setModalOpen }) => {
                         <FontAwesomeIcon icon={faTimes} size='2x' />
                     </div>
                     <FontAwesomeIcon icon={faExclamationTriangle} size='4x' />
-                    <h4>
-                        <LocaleText phrase='error/oops' /></h4>
-                    <p>
-                        {message}
-                    </p>
+                    <h3>
+                        <LocaleText phrase='error/oops' />
+                    </h3>
+                    <p>{message.en ? translate(message) : message}</p>
                 </div>
                 <div
                     className='error-dismiss'
