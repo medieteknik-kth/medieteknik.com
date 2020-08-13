@@ -60,7 +60,7 @@ const Album = () => {
                 setModalOpen={setModalOpen} /> : <></>
         }
         <div className='album-header'>
-            <h1>{testData.title}</h1>
+            <h2>{testData.title}</h2>
             <h5>{testData.date.toLocaleDateString('sv-SE', {day: 'numeric', month: 'short', year: 'numeric'}).replace(/ /g, ' ')}</h5>
         </div>
         <div className='album-container'> 

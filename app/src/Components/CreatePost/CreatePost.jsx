@@ -153,13 +153,13 @@ const CreatePost = ({ event }) => {
             </div>
             <div className='create-post-container'>
                 <div className='create-post'>
-                    <h1>
+                    <h2>
                         <LocaleText
                             phrase={`feed/${
                                 event ? 'create_event' : 'create_post'
                             }/header`}
                         />
-                    </h1>
+                    </h2>
                     <h5>
                         <LocaleText phrase='feed/create_post/title' />
                     </h5>

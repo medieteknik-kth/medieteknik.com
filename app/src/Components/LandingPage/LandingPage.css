@@ -10,17 +10,24 @@
     padding-bottom: 10%;
 }
 
-.landing-header .landing-text {
+.landing-header .landing-text-h2 {
     color: white;
-    font-size: 1.56em;
     line-height: normal;
     text-transform: uppercase;
+    font-weight: 410;
+}
+
+.landing-header .landing-text-h3 {
+    color: white;
+    line-height: normal;
+    text-transform: uppercase;
+    font-weight: 400;
 }
 
 .landing-header .medieteknik {
     color: #EEC912;
-    font-size: 5em;
-    letter-spacing: 2px;
+    font-size: 5.5em;
+    letter-spacing: 3px;
     margin: 30px;
     line-height: normal;
     text-transform: uppercase;

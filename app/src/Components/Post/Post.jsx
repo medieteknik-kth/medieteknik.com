@@ -32,7 +32,7 @@ const Post = (props) => {
           </div>
           <div className='post-content'>
             <div className='post-header'>
-              <h1>{translate(post.title)}</h1>
+              <h2>{translate(post.title)}</h2>
               <h5>{post.date}</h5>
             </div>
             { post.header_image ? 
