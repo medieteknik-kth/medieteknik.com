@@ -21,6 +21,7 @@ from api.resources.officials import OfficialsResource
 from api.resources.operational_years import OperationalYearsResource
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
+from api.resources.me import MeCommitteeResource
 
 from api.resources.event import EventResource, EventListResource
 
@@ -100,6 +101,8 @@ api.add_resource(HealthResource, "/health")
 
 api.add_resource(AuthenticationResource, "/auth")
 api.add_resource(CASResource, "/cas")
+
+api.add_resource(MeCommitteeResource, "/me/committees")
 
 if app.debug:
     from api.models.user import User

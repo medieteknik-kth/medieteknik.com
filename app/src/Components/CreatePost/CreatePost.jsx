@@ -19,6 +19,7 @@ import TimePicker from '../Common/Form/TimePicker'
 import DatePicker from '../Common/Form/DatePicker'
 
 const CreatePost = ({ event }) => {
+    const [loadingCommittees, setLoadingCommittees] = useState(false)
     const [committees, setCommittees] = useState([])
     const [title, setTitle] = useState('')
     const [enTitle, setEnTitle] = useState('')
@@ -36,9 +37,11 @@ const CreatePost = ({ event }) => {
     const [endDate, setEndDate] = useState(new Date())
     const [endTime, setEndTime] = useState(new Date())
     const [location, setLocation] = useState('')
+    const [facebookLink, setFacebookLink] = useState('')
 
     useEffect(() => {
-        Api.Committees.GetAll().then((data) => {
+        setLoadingCommittees(true)
+        Api.Me.Committees.GetAll().then((data) => {
             setCommittees(
                 data.length > 0
                     ? data.map((committee) => {
@@ -46,7 +49,7 @@ const CreatePost = ({ event }) => {
                       })
                     : []
             )
-        })
+        }).finally(() => setLoadingCommittees(false))
     }, [])
 
     const scrollToTop = () => {
@@ -82,7 +85,7 @@ const CreatePost = ({ event }) => {
                       location,
                       date: startDate.toISOString(),
                       end_date: endDate.toISOString(),
-                      facebook_link: '',
+                      facebook_link: facebookLink,
                       tags: []
                   },
               }
@@ -240,6 +243,17 @@ const CreatePost = ({ event }) => {
                                     en: 'You have to provide a location',
                                 })}
                             />
+                            <h5>
+                                <LocaleText phrase='feed/create_event/facebook_link' />
+                            </h5>
+                            <Input
+                                placeholder={translateToString({
+                                    se: 'Facebook-länk till event',
+                                    en: 'Facebook link to the event',
+                                    lang,
+                                })}
+                                onChange={(e) => setFacebookLink(e.target.value)}
+                            />
                             <div className='event-date-time'>
                                 <div>
                                     <div>
@@ -306,7 +320,8 @@ const CreatePost = ({ event }) => {
                                     },
                                     ...committees,
                                 ]}
-                                isLoading={committees.length === 0}
+                                isLoading={loadingCommittees}
+                                isDisabled={committees.length === 0}
                                 onChange={(option) =>
                                     setCommitteeId(option.value)
                                 }

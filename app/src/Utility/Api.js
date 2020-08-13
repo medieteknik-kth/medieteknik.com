@@ -78,6 +78,9 @@ function GetImage(path) {
 export default {
   Officials: GetApiObject('officials'),
   Committees: GetApiObject('committees'),
+  Me: { 
+    Committees: GetApiObject('me/committees') 
+  },
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),
   Authenticate: (token) => fetch(`${API_BASE_URL}auth`, {
