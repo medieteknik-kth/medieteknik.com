@@ -17,7 +17,7 @@
         align-items: center;
 
         h3 {
-            padding-top: 1em;
+            padding-top: 0.5em;
         }
 
         p {
@@ -30,11 +30,19 @@
             fill: $error-color !important;
         }
 
+        img {
+            height: 6em;
+        }
+
         .error-cancel {
             position: absolute;
             top: 0.5em;
-            right: 0.8em;
+            right: 0.5em;
             cursor: pointer;
+
+            img {
+                height: 2em;
+            }
         }
     }
 

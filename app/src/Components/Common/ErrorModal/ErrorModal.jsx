@@ -1,12 +1,9 @@
 import React from 'react'
 import Modal from 'react-modal'
 import './ErrorModal.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faExclamationTriangle,
-    faTimes,
-} from '@fortawesome/free-solid-svg-icons'
 import { LocaleText, translate } from '../../../Contexts/LocaleContext'
+import AlertIcon from './alert.svg'
+import TimesCircleIcon from './times-circle.svg'
 
 const ErrorModal = ({ message, modalOpen, setModalOpen }) => {
     const customStyles = {
@@ -47,9 +44,9 @@ const ErrorModal = ({ message, modalOpen, setModalOpen }) => {
                         className='error-cancel'
                         onClick={() => setModalOpen(!modalOpen)}
                     >
-                        <FontAwesomeIcon icon={faTimes} size='2x' />
+                        <img src={TimesCircleIcon} alt='' />
                     </div>
-                    <FontAwesomeIcon icon={faExclamationTriangle} size='4x' />
+                    <img src={AlertIcon} alt='' />
                     <h3>
                         <LocaleText phrase='error/oops' />
                     </h3>
