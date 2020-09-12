@@ -159,6 +159,10 @@
                 "se": "Plats",
                 "en": "Location"
             },
+            "facebook_link": {
+                "se": "Facebook-länk",
+                "en": "Facebook link"
+            },
             "start": {
                 "se": "Start",
                 "en": "Start "
@@ -211,6 +215,16 @@
         "page_not_found": {
             "se": "Kunde inte hitta sida",
             "en": "Could not find page"
+        }
+    },
+    "error": {
+        "oops": {
+            "se": "Oj då!",
+            "en": "Oops!"
+        },
+        "dismiss": {
+            "se": "Avfärda",
+            "en": "Dismiss"
         }
     }
 }

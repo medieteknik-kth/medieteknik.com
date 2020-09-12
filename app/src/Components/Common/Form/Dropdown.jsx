@@ -1,7 +1,7 @@
 import React from 'react'
 import Select, { components } from 'react-select'
 
-const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
+const Dropdown = ({options, onChange, defaultValue, isLoading, isDisabled}) => {
     const textStyle = {
         fontFamily: 'Roboto',
         fontWeight: 100,
@@ -18,6 +18,10 @@ const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
         );
     };
     const dropdownStyles = {
+        container: (provided) => ({
+            ...provided,
+            pointerEvents: 'initial'
+        }),
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isFocused ? '#e5e5e5' : '#fff',
@@ -31,7 +35,8 @@ const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
             ...provided,
             borderRadius: 0,
             border: 0,
-            backgroundColor: '#fff',
+            backgroundColor: state.isDisabled ? '#ededed' : '#fff',
+            cursor: state.isDisabled ? 'not-allowed' : 'initial',
             ...textStyle,
             highlight: 'none',
             padding: '0.8rem',
@@ -74,7 +79,8 @@ const Dropdown = ({options, onChange, defaultValue, isLoading}) => {
             defaultValue={defaultValue ?? options[0]}
             components={{ DropdownIndicator }}
             options={options}
-            isLoading={isLoading} />
+            isLoading={isLoading}
+            isDisabled={isDisabled} />
     );
 }
 

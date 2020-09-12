@@ -5,7 +5,6 @@ import dropdownClasses from '../DropdownButtonStyle.module.css';
 import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
 
 const SortOrderSelector = (props) => {
-
     return (
         <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox].join(' ')}>

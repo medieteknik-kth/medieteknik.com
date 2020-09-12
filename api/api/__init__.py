@@ -21,6 +21,7 @@ from api.resources.officials import OfficialsResource
 from api.resources.operational_years import OperationalYearsResource
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
+from api.resources.me import MeCommitteeResource
 
 from api.resources.event import EventResource, EventListResource
 
@@ -101,6 +102,8 @@ api.add_resource(HealthResource, "/health")
 
 api.add_resource(AuthenticationResource, "/auth")
 api.add_resource(CASResource, "/cas")
+
+api.add_resource(MeCommitteeResource, "/me/committees")
 
 if app.debug:
     from api.models.user import User
@@ -495,7 +498,7 @@ def route_create_all():
     post.title_en = "Come to the thursday pub!"
     post.body = "En lite kortare text."
     post.body_en ="A bit shorter text."
-    post.header_image = "/static/posts/21af3945-035f-4195-8729-c815536c3312.png"
+    post.header_image = "static/posts/21af3945-035f-4195-8729-c815536c3312.png"
     post.user_id = joppe.id
     
     post_tag = PostTag()
@@ -567,6 +570,7 @@ def route_create_all():
     event1.location="Bergshamra"
     event1.committee=committee1
     event1.facebook_link = "https://www.facebook.com/events/284688576033658/"
+    event1.user_id = 1
 
     post_tag2 = PostTag()
     post_tag2.title = "fezt"

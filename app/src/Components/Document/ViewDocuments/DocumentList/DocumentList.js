@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../../Contexts/LocaleContext'
 
 import classes from './DocumentList.module.css';
 import { API_BASE_URL } from '../../../../Utility/Api';
 
 const DocumentList = (props) => {
+    const { lang } = useContext(LocaleContext)
+
     let documentsToRender = [];
 
     if (props.zeroCategoriesSelected) {
@@ -29,16 +36,33 @@ const DocumentList = (props) => {
                 <thead>
                     <tr>
                         <th className={classes.catParam}>
-                            Dokumentnamn
+                            {translateToString({
+                                se: 'Dokumentnamn',
+                                en: 'Document name',
+                                lang,
+                            })}
                         </th>
                         <th>
-                            Typ 
+                            {translateToString({
+                                se: 'Typ',
+                                en: 'Type',
+                                lang,
+                            })}
                         </th>
                         <th className={classes.catParam}>
-                            Publicerat av 
+                            {translateToString({
+                                se: 'Publicerat av',
+                                en: 'Published by',
+                                lang,
+                            })}
                         </th>
                         <th className={classes.catParam}>
-                            Publiceringssdatum
+                            
+                            {translateToString({
+                                se: 'Publiceringssdatum',
+                                en: 'Publish date',
+                                lang,
+                            })}
                         </th>
                     </tr>
                 </thead>
