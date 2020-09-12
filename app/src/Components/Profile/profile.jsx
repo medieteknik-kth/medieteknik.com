@@ -126,7 +126,7 @@ const Profile = (props) => {
                             /> */}
                         </div> : <div>
 
-                                <h1>{user.firstName} {user.lastName}</h1>
+                                <h2>{user.firstName} {user.lastName}</h2>
                                 {user.frackName ? <p>Även känd som <b>{user.frackName}</b></p> : <></>}
                                 <div>
                                     {user.facebook ? <a href={user.facebook}><FontAwesomeIcon className="userCardIcon" icon={faFacebookF} color="black" size="lg" /></a> : <div />}

@@ -8,9 +8,10 @@
     padding-bottom: 40px;
 }
 
-.feed-container h1 {
-    padding: 20px;
-    text-transform: uppercase;
+.feed-container h2 {
+    padding-top: 65px;
+    margin-bottom: 40px;
+    
 }
 
 .feed-cards {

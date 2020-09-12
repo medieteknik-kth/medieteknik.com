@@ -44,7 +44,7 @@ const Event = ({}) => {
                 </div>
                 <div className="event-content">
                     <div className="event-header">
-                        <h1>{translate(event.title)}</h1>
+                        <h2>{translate(event.title)}</h2>
                         <h5>{localeDate(event.date)}</h5>
                         <h5>
                             <FontAwesomeIcon icon={faClock} />{' '}

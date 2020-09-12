@@ -10,7 +10,7 @@
 }
 
 .feed-card-text {
-    padding: 20px;
+    padding: 30px;
     overflow: hidden;
 }
 
@@ -19,10 +19,14 @@
     line-height: 1.2em;
     min-height: 2.4em;
     padding-bottom: 5px;
+    
+
 }
 
 .feed-card-text p {
     font-size: 11pt;
+    
+    
 }
 
 .feed-tags {

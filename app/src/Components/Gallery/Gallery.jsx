@@ -164,9 +164,9 @@ const Gallery = () => {
 
     return (<div>
         <div className='gallery-header'>
-            <h1>
+            <h2>
                 <LocaleText phrase='gallery/gallery_header'/>
-            </h1>
+            </h2>
         </div>
         <div className='gallery-content'>
             {gallery.map((g, i) => {
