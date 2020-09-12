@@ -22,6 +22,8 @@ from api.resources.operational_years import OperationalYearsResource
 from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
 from api.resources.me import MeCommitteeResource
+from api.resources.test import TestResource
+from api.resources.album import AlbumListResource, AlbumResource
 
 from api.resources.event import EventResource, EventListResource
 
@@ -98,7 +100,11 @@ api.add_resource(OperationalYearsResource, "/operational_years")
 api.add_resource(EventListResource, "/events")
 api.add_resource(EventResource, "/events/<id>")
 
+api.add_resource(AlbumListResource, "/albums")
+api.add_resource(AlbumResource, "/albums/<id>")
+
 api.add_resource(HealthResource, "/health")
+api.add_resource(TestResource, "/test")
 
 api.add_resource(AuthenticationResource, "/auth")
 api.add_resource(CASResource, "/cas")
@@ -166,6 +172,8 @@ def route_create_all():
     from api.models.page import Page, PageRevision, PageRevisionType
     from api.models.post_tag import PostTag
     from api.models.menu import Menu, MenuItem
+    from api.models.image import Image
+    from api.models.album import Album
 
     from api.models.event import Event
 

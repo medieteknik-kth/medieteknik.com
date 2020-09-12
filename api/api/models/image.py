@@ -11,3 +11,13 @@ class Image(db.Model):
     date = db.Column(db.DateTime, default = datetime.datetime.now)
     needsCred = db.Column(db.Boolean)
     editingAllowed = db.Column(db.Boolean)
+
+    def to_dict(self):
+        return {
+            "id": self.imageId,
+            "url": self.url,
+            "photographer": self.photographer,
+            "date": self.date,
+            "needsCrediting": self.needsCred,
+            "editingAllowed": self.editingAllowed
+        }
