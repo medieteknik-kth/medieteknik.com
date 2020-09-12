@@ -28,6 +28,7 @@ import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
 import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
+import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
 
 export default function App() {
   return (
@@ -88,6 +89,9 @@ export default function App() {
             </Route>
             <Route path="/user">
               <PageWithMainMenu><Profile/></PageWithMainMenu>
+            </Route>
+            <Route path="/managecommittee/:id">
+              <PageWithMainMenu><ManageCommittee/></PageWithMainMenu>
             </Route>
             <Route
               path="/:pageSlug"

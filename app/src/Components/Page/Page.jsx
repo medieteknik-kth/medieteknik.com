@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Prompt } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSave, faEdit, faImage, faTrash,
+  faSave, faEdit, faImage, faTrash, faUserEdit,
 } from '@fortawesome/free-solid-svg-icons';
 import BasePage from './BasePage';
 import Api from '../../Utility/Api';
@@ -27,6 +27,8 @@ export default function Page() {
 
   const { user } = useContext(UserContext);
   const { lang } = useContext(LocaleContext);
+
+  const canEdit = user !== null && page !== null !== null && (user.isAdmin || (page.committee && user.committeePostTerms.include((term) => term.post.committeeId === page.committee.id)));
 
   const onBeforeUnload = (event) => {
     if (isEditing) {
@@ -137,7 +139,7 @@ export default function Page() {
       { isLoading ? <div style={{ marginTop: '150px' }}><Spinner /></div>
         : (
           <div>
-            { page !== null && user !== null
+            { page !== null && canEdit
               ? (
                 <button type="button" className="pageEditButton" onClick={didPressEditButton}>
                   <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
@@ -180,9 +182,7 @@ export default function Page() {
                         isEditing={isEditing}
                         onChange={onChange}
                       />
-                      {
-                  page.committee !== null ? <CommitteeMemberList posts={page.committee.posts} /> : <span />
-                }
+                      { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={isEditing} /> : <span /> }
                     </div>
                   </div>
                 )
