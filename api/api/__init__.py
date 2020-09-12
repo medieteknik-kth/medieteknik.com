@@ -9,7 +9,7 @@ from flasgger import Swagger
 from api.db import db
 
 from api.resources.user import UserResource, UserListResource
-from api.resources.committee import CommitteeResource, CommitteeListResource
+from api.resources.committee import CommitteeResource, CommitteeListResource, CommitteePostListWithCommitteeResource
 from api.resources.committee_post import CommitteePostResource, CommitteePostListResource
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.menu import MenuItemResource, MenuResource
@@ -67,6 +67,7 @@ api.add_resource(UserResource, "/users/<id>")
 
 api.add_resource(CommitteeListResource, "/committees")
 api.add_resource(CommitteeResource, "/committees/<id>")
+api.add_resource(CommitteePostListWithCommitteeResource, "/committees/<id>/posts")
 
 api.add_resource(CommitteePostListResource, "/committee_posts")
 api.add_resource(CommitteePostResource, "/committee_posts/<id>")
@@ -388,13 +389,20 @@ def route_create_all():
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
     
     post2 = CommitteePost()
+    post2.name = "Utvecklare"
     post2.committee = committee1
     post2.is_official = False
-    mikaela.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
+
+    post3 = CommitteePost()
+    post3.name = "Designer"
+    post3.committee = committee1
+    post3.is_official = False
+
+    mikaela.post_terms.append(post3.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     rasmus.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     mina.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     fredrik.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
-    jessie.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
+    jessie.post_terms.append(post3.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     kristina.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     albin.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))
     ellaklara.post_terms.append(post2.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31)))

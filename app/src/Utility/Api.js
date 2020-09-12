@@ -69,6 +69,7 @@ function GetImage(path) {
 
 export default {
   Officials: GetApiObject('officials'),
+  OperationalYears: GetApiObject('operational_years'),
   Committees: GetApiObject('committees'),
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),
@@ -84,4 +85,5 @@ export default {
   Post: GetApiObject('post'),
   Events: GetApiObject('events'),
   Images: GetImage,
+  CommitteePosts: (id) => GetApiObject(`committees/${id}/posts`),
 };
