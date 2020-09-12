@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 
 import classes from './EventCard.module.css';
+
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../../Contexts/LocaleContext';
 
 // --- Icons ---
 import dateAndTimeIcon from '../EventListAssets/dateTimeIcon.png';
@@ -23,6 +28,7 @@ const monthsList = [
 ];
 
 const EventCard = (props) => {
+    const { lang } = useContext(LocaleContext);
 
     // --- Event date info ---
     let startDate = props.eventStart.getDate();
@@ -58,11 +64,23 @@ const EventCard = (props) => {
     let eventIsToday = (todaysStartTime < props.eventStart.getTime() && props.eventStart.getTime() < todaysEndTime);
 
     if (eventWasYesterday) {
-        datePresentation = "Igår";
+        datePresentation = translateToString({
+            se: 'Igår',
+            en: 'Yesterday',
+            lang,
+        });
     } else if (eventIsTomorrow) {
-        datePresentation = "Imorgon";
+        datePresentation = translateToString({
+            se: 'Imorgon',
+            en: 'Tomorrow',
+            lang,
+        });
     } else if (eventIsToday) {
-        datePresentation = "Idag";
+        datePresentation = translateToString({
+            se: 'Idag',
+            en: 'Today',
+            lang,
+        });
     } else if (0 < daysDifference && daysDifference < 7) {
         datePresentation = startDay
     }
