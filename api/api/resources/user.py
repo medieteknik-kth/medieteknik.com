@@ -4,6 +4,7 @@ from flask_restful import Resource
 from api.db import db
 from api.resources.authentication import requires_auth
 from api.models.user import User
+from api.utility.storage import upload_profile_picture
 
 class UserResource(Resource):
     def get(self, id):
@@ -31,19 +32,11 @@ class UserResource(Resource):
             if data.get("facebook"):
                 userData.facebook = data.get("facebook")
 
-            local_path = ""
             if "profile_picture" in request.files:
                 image = request.files["profile_picture"]
-                ALLOWED_EXTENTIONS = ['.png', '.jpg', '.jpeg']
-                original_filename, extension = os.path.splitext(secure_filename(image.filename))
-                filename = str(uuid.uuid4()) + extension
-                if extension in ALLOWED_EXTENTIONS:
-                    path = os.path.join("/api/static/profiles/", filename)
-                    local_path = os.path.join(SAVE_FOLDER, filename)
-                    image.save(local_path)
-                    resize_image(local_path, filename)
-                    userData.profile_picture = path
-                else:
+                try:
+                    userData.profile_picture = upload_profile_picture(image)
+                except ValueError:
                     return jsonify(success=False), 415
             db.session.commit()
 

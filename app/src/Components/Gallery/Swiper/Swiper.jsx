@@ -44,10 +44,10 @@ const CustomBuildSwiper = (props) => {
                     props.images.map((image, key) => 
                         <div key={key} className='swiper-slide no-select'>
                             <img 
-                                src={image.src} 
+                                src={image.url} 
                                 alt='#' 
                                 className='img-fluid'  
-                                onClick={() => viewImage({src: image.src, title: props.title, date: image.date, photographer: image.photographer })} />
+                                onClick={() => viewImage({src: image.url, title: props.title, date: new Date(image.date), photographer: image.photographer })} />
                         </div>)
                 }
             </ReactIdSwiperCustom>

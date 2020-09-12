@@ -15,6 +15,16 @@ class Album(db.Model):
     albumId = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     creationDate = db.Column(db.DateTime, default=datetime.datetime.now)
-    lastEdit = db.Column(db.DateTime, defaukt=datetime.datetime.now)
+    lastEdit = db.Column(db.DateTime, default=datetime.datetime.now)
     receptionAppropriate = db.Column(db.Boolean)
     images = db.relationship("Image", secondary=imageAssociation)
+
+    def to_dict(self):
+        return {
+            "id": self.albumId,
+            "title": self.title,
+            "creationDate": self.creationDate,
+            "lastEdit": self.lastEdit,
+            "receptionAppropriate": self.receptionAppropriate,
+            "images": [image.to_dict() for image in self.images]
+        }
