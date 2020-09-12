@@ -1,0 +1,68 @@
+@import '../../Common/Variables.scss';
+
+.error-modal-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+
+    p {
+        font-family: 'Roboto';
+        font-weight: 300;
+    }
+
+    .error-modal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        h3 {
+            padding-top: 0.5em;
+        }
+
+        p {
+            padding: 0.5em;
+            width: 80%;
+            word-wrap: break-word;
+        }
+
+        path {
+            fill: $error-color !important;
+        }
+
+        img {
+            height: 6em;
+        }
+
+        .error-cancel {
+            position: absolute;
+            top: 0.5em;
+            right: 0.5em;
+            cursor: pointer;
+
+            img {
+                height: 2em;
+            }
+        }
+    }
+
+    .error-dismiss {
+        background-color: $error-color;
+        padding: 1em;
+        margin: 0 -2em -2em -2em;
+        color: #fff;
+        cursor: pointer;
+
+        p {
+            font-size: 1.4em;
+        }
+    }
+}
+
+
+@media screen and (max-width: $mobile-breakpoint) {
+    .ReactModal__Content {
+        right: 1em !important;
+        left: 1em !important;
+    }
+}
