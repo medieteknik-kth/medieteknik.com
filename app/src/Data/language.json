@@ -159,6 +159,10 @@
                 "se": "Plats",
                 "en": "Location"
             },
+            "facebook_link": {
+                "se": "Facebook-länk",
+                "en": "Facebook link"
+            },
             "start": {
                 "se": "Start",
                 "en": "Start "

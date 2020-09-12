@@ -50,7 +50,6 @@ function GetApiObject(resource) {
       });
     },
     Create(data, token = window.localStorage.getItem('user_token')) {
-      console.log(token)
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -58,6 +57,15 @@ function GetApiObject(resource) {
           token,
         },
         body: JSON.stringify(data),
+      });
+    },
+    PostForm(data, token = window.localStorage.getItem('user_token')) {
+      return fetch(API_BASE_URL + resource, {
+        method: "POST",
+        headers: {
+          token,
+        },
+        body: data,
       });
     },
   };
@@ -70,6 +78,9 @@ function GetImage(path) {
 export default {
   Officials: GetApiObject('officials'),
   Committees: GetApiObject('committees'),
+  Me: { 
+    Committees: GetApiObject('me/committees') 
+  },
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),
   Authenticate: (token) => fetch(`${API_BASE_URL}auth`, {

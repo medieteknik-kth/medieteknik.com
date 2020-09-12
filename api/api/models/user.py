@@ -16,7 +16,7 @@ class User(db.Model):
     linkedin = db.Column(db.String, nullable=True)
     facebook = db.Column(db.String, nullable=True)
     alumni = db.Column(db.Boolean, default=False)
-    post_terms = db.relationship("CommitteePostTerm", back_populates="user")
+    post_terms = db.relationship("CommitteePostTerm", back_populates="user", lazy='dynamic')
     is_admin = db.Column(db.Boolean, default=False)
 
     def to_dict(self):

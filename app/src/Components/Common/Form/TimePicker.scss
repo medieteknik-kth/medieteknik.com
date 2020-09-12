@@ -18,6 +18,10 @@
             stroke: $mustard-yellow !important;
         }
     }
+
+    .time-icon {
+        height: 1em;
+    }    
     
 }
 
@@ -29,3 +33,6 @@
     font-weight: 300;
 }
 
+.time-icon {
+    height: em;
+}

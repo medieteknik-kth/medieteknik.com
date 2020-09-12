@@ -19,6 +19,7 @@ import TimePicker from '../Common/Form/TimePicker'
 import DatePicker from '../Common/Form/DatePicker'
 
 const CreatePost = ({ event }) => {
+    const [loadingCommittees, setLoadingCommittees] = useState(false)
     const [committees, setCommittees] = useState([])
     const [title, setTitle] = useState('')
     const [enTitle, setEnTitle] = useState('')
@@ -36,9 +37,11 @@ const CreatePost = ({ event }) => {
     const [endDate, setEndDate] = useState(new Date())
     const [endTime, setEndTime] = useState(new Date())
     const [location, setLocation] = useState('')
+    const [facebookLink, setFacebookLink] = useState('')
 
     useEffect(() => {
-        Api.Committees.GetAll().then((data) => {
+        setLoadingCommittees(true)
+        Api.Me.Committees.GetAll().then((data) => {
             setCommittees(
                 data.length > 0
                     ? data.map((committee) => {
@@ -46,7 +49,7 @@ const CreatePost = ({ event }) => {
                       })
                     : []
             )
-        })
+        }).finally(() => setLoadingCommittees(false))
     }, [])
 
     const scrollToTop = () => {
@@ -62,19 +65,7 @@ const CreatePost = ({ event }) => {
         setHasError(true)
     }
 
-    const toBase64 = (file) =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onload = () => resolve(reader.result)
-            reader.onerror = (error) => reject(error)
-        })
-
     async function addPost() {
-        {
-            /*TODO sync header image front- and back-end*/
-        }
-        const header_image = headerImage ? await toBase64(headerImage) : null
         if (checkEmptyQuillBody(body)) {
             triggerError()
             return
@@ -85,55 +76,48 @@ const CreatePost = ({ event }) => {
             committee_id: committeeId,
             title,
             title_en: useEn ? enTitle : title,
-            header_image,
+            header_image: headerImage,
         }
         postData = event
             ? {
                   ...postData,
                   ...{
                       location,
-                      date: `${startDate.toLocaleDateString()} ${startTime.toLocaleTimeString(
-                          [],
-                          {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                          }
-                      )}`,
-                      end_date: `${endDate.toLocaleDateString()} ${endTime.toLocaleTimeString(
-                          [],
-                          {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                          }
-                      )}`,
+                      date: startDate.toISOString(),
+                      end_date: endDate.toISOString(),
+                      facebook_link: facebookLink,
+                      tags: []
                   },
               }
             : postData
+
+        
+        const formData = new FormData();
+        Object.keys(postData).forEach(key => formData.append(key, postData[key]));
+
         return event
-            ? Api.Events.Create(postData)
+            ? Api.Events.PostForm(formData)
                   .then((res) => res.json())
                   .then((res) => {
                       if (res.success) {
-                          console.log(res)
                           setRedirect(true)
                       } else {
                           triggerError()
                       }
                   })
-                  .catch((res) => {
+                  .catch(() => {
                       triggerError()
                   })
-            : Api.Post.Create(postData)
+            : Api.Post.PostForm(formData)
                   .then((res) => res.json())
                   .then((res) => {
                       if (res.success) {
-                          console.log(res)
                           setRedirect(true)
                       } else {
                           triggerError()
                       }
                   })
-                  .catch((res) => {
+                  .catch(() => {
                       triggerError()
                   })
     }
@@ -259,6 +243,17 @@ const CreatePost = ({ event }) => {
                                     en: 'You have to provide a location',
                                 })}
                             />
+                            <h5>
+                                <LocaleText phrase='feed/create_event/facebook_link' />
+                            </h5>
+                            <Input
+                                placeholder={translateToString({
+                                    se: 'Facebook-länk till event',
+                                    en: 'Facebook link to the event',
+                                    lang,
+                                })}
+                                onChange={(e) => setFacebookLink(e.target.value)}
+                            />
                             <div className='event-date-time'>
                                 <div>
                                     <div>
@@ -325,7 +320,8 @@ const CreatePost = ({ event }) => {
                                     },
                                     ...committees,
                                 ]}
-                                isLoading={committees.length === 0}
+                                isLoading={loadingCommittees}
+                                isDisabled={committees.length === 0}
                                 onChange={(option) =>
                                     setCommitteeId(option.value)
                                 }

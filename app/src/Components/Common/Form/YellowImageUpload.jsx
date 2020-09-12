@@ -26,6 +26,7 @@ const YellowImageUpload = ({onChange}) => {
   const _clearImage = () => {
     setFile('');
     setPreviewUrl('');
+    onChange(null);
   };
 
   return (
