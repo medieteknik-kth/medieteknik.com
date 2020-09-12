@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 
 import classes from './FilterByHost.module.css';
 
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../../Contexts/LocaleContext';
+
 const FilterByHost = (props) => {
+    const { lang } = useContext(LocaleContext);
+
     return (
         <div className={classes.FilterByHost} >
             <div className={classes.filterByHostcontainer}>
@@ -11,7 +18,11 @@ const FilterByHost = (props) => {
                         className={classes.checkButtonClearCat} 
                         onClick = {props.clearHostsFilterHandler}
                     >
-                        Rensa
+                        {translateToString({
+                            se: 'Rensa',
+                            en: 'Clear',
+                            lang,
+                        })}
                     </div>
                 </div>
 
