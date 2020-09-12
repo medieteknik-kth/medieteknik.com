@@ -38,7 +38,7 @@ const Feed = (props) => {
         };
 
     return (<div className='feed-container'>
-        <h1><LocaleText phrase='feed/header'/></h1>
+        <h2><LocaleText phrase='feed/header'/></h2>
         { isLoading ? <Spinner/> :
             <div className='feed-cards'>
                 { cont ? cont.map((post, i) =>
