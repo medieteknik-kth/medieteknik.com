@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, make_response
 from flask_restful import Resource
 from datetime import datetime
 import json
@@ -132,7 +132,7 @@ class EventListResource(Resource):
         events = get_events()
         return events
     @requires_auth
-    def post(self):
+    def post(self, user):
         """
         Creates a new event with an optional image.
         ---
@@ -187,8 +187,13 @@ class EventListResource(Resource):
             402:
                 description: Not authenticated
         """
-        add_event(request)
-        return jsonify(message="event added!")
+        try: 
+          if user.id:
+            add_event(request, user.id)
+        except Exception as error:
+          return make_response(jsonify(success=False, error=str(error)), 403)
+
+        return make_response(jsonify(success=True))
 
 
 
@@ -206,11 +211,11 @@ def get_events():
     return jsonify(data)
 
 
-def add_event(request):
-    params = json.loads(request.form.get('data'))
-    e = Event(title=params["title"], event_date=datetime.strptime(params["date"], ISO_DATE_DEF), end_date=params["end_time"],
+def add_event(request, user_id):
+    params = request.form
+    e = Event(title=params["title"], event_date=datetime.strptime(params["date"], ISO_DATE_DEF), end_date=datetime.strptime(params["end_date"], ISO_DATE_DEF),
               body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
-              body_en=params["body_en"], title_en=params["title_en"])
+              body_en=params["body_en"], title_en=params["title_en"], user_id=user_id)
     if "header_image" in request.files:
         image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
         e.header_image = image_name

@@ -1,54 +1,55 @@
-import React, { Component } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 
 import classes from './ViewDocuments.module.css';
 import {quickSort} from '../../../Utility/SortDocuments.js';
 
+
+// --- BILDER/IKONER ---
+import listViewIconSelected from './Assets/list_view_selected.png';
+import gridViewIconSelected from './Assets/grid_view_selected.png';
+import listViewIcon from './Assets/list_view.png';
+import gridViewIcon from './Assets/grid_view.png';
+import sampleThumbnail1 from '../Assets/testThumbnail1.png';
+import sampleThumbnail2 from '../Assets/testThumbnail2.png';
+
+// --- KOMPONENTER ---
+import Spinner from '../../Common/Spinner/Spinner.jsx';
+import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
+import SortBySelector from './SortBySelector/SortBySelector';
 import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 
-import sampleThumbnail1 from '../Assets/testThumbnail1.png';
-import sampleThumbnail2 from '../Assets/testThumbnail2.png';
-import SortBySelector from './SortBySelector/SortBySelector';
-import SortOrderSelector from './SortOrderSelector/SortOrderSelector';
-    
-import gridViewIcon from './Assets/grid_view.png';
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../Contexts/LocaleContext'
 
-import listViewIcon from './Assets/list_view.png';
-import gridViewIconSelected from './Assets/grid_view_selected.png';
-import listViewIconSelected from './Assets/list_view_selected.png';
-
-import Spinner from '../../Common/Spinner/Spinner.jsx';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
-class ViewDocuments extends Component {
-    constructor() {
-        super();
-        window.addEventListener('resize', this.handleResize);
+const ViewDocuments = (props) => {
+        // --- Refs ---
+        const searchInput = useRef(null);
 
-        this.state = {
-            categoriesShown: {},
-            categoryTagsSelected: [],
+        // --- States ---
+        const [categoriesShown, setCategoriesShown] = useState({})
+        const [categoryTagsSelected, setCategoryTagsSelected] = useState([])
+        const [sortValue, setSortValue] = useState('dateStart')
+        const [cardsViewSelected, setCardsViewSelected] = useState(true)
+        const [listViewSelected, setListViewSelected] = useState(false)
+        const [categoriesViewed, setCategoriesViewed] = useState(0)
+        const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+        const [documentsFromServer, setDocumentsFromServer] = useState([])
+        const [categoriesFromServer, setCategoriesFromServer] = useState([])
+        const [isLoading, setIsLoading] = useState(true)
 
-            sortValue: 'dateStart',
-            orderValue: 'rising',
+        const { lang } = useContext(LocaleContext)
 
-            cardsViewSelected: true,
-            listViewSelected: false,
+        useEffect(() => {
+            window.addEventListener('resize', handleResize);
 
-            query: '',
-
-            catsViewed: 0,
-            screenWidth: window.innerWidth,
-
-            documentsFromServer: [],
-            categoriesFromServer: [],
-            isLoading: true
-        };
-
-        fetch(API_BASE_URL + 'document_tags')
+            fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
             .then(jsonObject => {
                 let categoriesListTemp = [];
@@ -60,121 +61,83 @@ class ViewDocuments extends Component {
                 })
 
 
-                this.setState({
-                    categoriesFromServer: categoriesListTemp,
-                    categoriesShown: categoriesShownTemp
+                setCategoriesFromServer(categoriesListTemp);
+                setCategoriesShown(categoriesShownTemp);
+            });
+
+            let documentsFromServerTemp = [];
+
+            fetch(API_BASE_URL + 'documents')
+                .then(response => response.json())
+                .then(jsonObject => {
+                    jsonObject.documents.map(doc => {
+                        let publishYear = parseInt(doc.date.slice(0, 4));
+                        let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
+                        let publishDay = parseInt(doc.date.slice(8, 10));
+
+
+                        fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
+                            .then(thumbnail => {
+                                let docObject = {
+                                    docId: doc.itemId,
+                                    doctags: doc.tags,
+                                    headingText: doc.title,
+                                    publisher: '',
+                                    publishDate: new Date(publishYear, publishMonth, publishDay),
+                                    displayCard: true,
+                                    thumbnail: thumbnail,
+                                    filename: doc.filename
+                                }
+                                
+                                
+                                documentsFromServerTemp = [...documentsFromServerTemp, docObject];
+                                documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
+
+                                setDocumentsFromServer(documentsFromServerTemp);
+                            })
+                    })
+
+                    setIsLoading(false);
                 });
-            });
-
-        let documentsFromServerTemp = [];
-
-
-        fetch(API_BASE_URL + 'documents')
-            .then(response => response.json())
-            .then(jsonObject => {
-                jsonObject.documents.map(doc => {
-                    let publishYear = parseInt(doc.date.slice(0, 4));
-                    let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
-                    let publishDay = parseInt(doc.date.slice(8, 10));
-
-
-                    fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
-                        .then(thumbnail => {
-                            let docObject = {
-                                docId: doc.itemId,
-                                doctags: doc.tags,
-                                headingText: doc.title,
-                                publisher: '',
-                                publishDate: new Date(publishYear, publishMonth, publishDay),
-                                displayCard: true,
-                                thumbnail: thumbnail,
-                                filename: doc.filename
-                            }
-                            
-                            
-                            documentsFromServerTemp = [...documentsFromServerTemp, docObject];
-                            documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
-                            this.setState({documentsFromServer: documentsFromServerTemp});
-                        })
-                })
-
-                this.setState({isLoading: false});
-            });
+        }, [])
         
-        
-
-        this.handleOrderChangeHeadAlphabetical = this.handleOrderChangeHeadAlphabetical.bind(this);
-        this.handleOrderChangeHeadDate = this.handleOrderChangeHeadDate.bind(this);
-        this.handleOrderChangeHeadPublisher = this.handleOrderChangeHeadPublisher.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.clearCat = this.clearCat.bind(this);
-    }
-    
-    handleResize = () => {
-        this.setState({
-            screenWidth: window.innerWidth
-        })
+    const handleResize = () => {
+        setScreenWidth(window.innerWidth);
 
         if (window.innerWidth < 900) {
-            this.setState({
-                cardsViewSelected: true,
-                listViewSelected: false
-            })
+            setCardsViewSelected(true);
+            setListViewSelected(false);
         }
     }
 
-    categoriesFilterChangeHandler = (category) => {
-        const categoriesKeysList = Object.keys(this.state.categoriesShown);
+    const categoriesFilterChangeHandler = (category) => {
+        const categoriesKeysList = Object.keys(categoriesShown);
 
         let categoriesSelected = categoriesKeysList.filter(categoryKey => {
-            return this.state.categoriesShown[categoryKey]
+            return categoriesShown[categoryKey]
         })
 
-        if (!this.state.categoriesShown[category]) {
-            this.setState({catsViewed: this.state.catsViewed + 1});
+        if (!categoriesShown[category]) {
+            setCategoriesViewed(categoriesViewed + 1)
             categoriesSelected.push(category)
         } else {
-            this.setState({catsViewed: this.state.catsViewed - 1})
+            setCategoriesViewed(categoriesViewed - 1)
             categoriesSelected = categoriesSelected.filter(_category => _category !== category)
         }
         
-        this.setState({
-            categoriesShown: {
-                ...this.state.categoriesShown,
-                [category]: !this.state.categoriesShown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
-            },
-            categoryTagsSelected: categoriesSelected
-        })
+        setCategoriesShown({
+            ...categoriesShown,
+            [category]: !categoriesShown[category], // brackets runt säger att det ska vara värdet av dena här variabeln
+        });
+
+        setCategoryTagsSelected(categoriesSelected);
     }
 
-    handleOrderChangeHeadAlphabetical = () => {
-        if (this.state.sortValue !== 'alphabetical') {
-            this.setState({sortValue: "alphabetical"});
-            
-            this.setState({documentsFromServer: quickSort(this.state.documentsFromServer, "alphabetical", 'falling')});
-        }
-    }
-
-    handleOrderChangeHeadDate = () => {
-        if (this.state.sortValue !== 'date') {
-            this.setState({sortValue: "date"});
-            this.setState({documentsFromServer: quickSort(this.state.documentsFromServer, "date", 'falling')});
-        } 
-    }
-
-    handleOrderChangeHeadPublisher = () => {
-        if (this.state.sortValue !== 'publisher') {
-            this.setState({sortValue: "publisher"});
-            this.setState({documentsFromServer: quickSort(this.state.documentsFromServer, "publisher", 'rising')});
-        } 
-    }
-
-    handleSearch = () => {
-        let searchVal = this.search.value
+    const handleSearch = () => {
+        let searchVal = searchInput.current.value
         let filteredString = searchVal.toUpperCase()
-        this.setState({query: this.search.value})
-    
-        let tempSearchArray = this.state.documentsFromServer.filter(doc => {
+
+        let tempSearchArray = documentsFromServer.filter(doc => {
             let dateString = doc.publishDate.getFullYear() + "-" + 
             ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
             (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
@@ -188,131 +151,134 @@ class ViewDocuments extends Component {
             return(doc)
         })
 
-        this.setState({documentsFromServer: tempSearchArray})
+        setDocumentsFromServer(tempSearchArray);
     }
 
-
-    clearCat = () => {
+    const clearCategories = () => {
         let categoriesShownClearTemp = {};
 
-        this.state.categoriesFromServer.map(cat => {
+        categoriesFromServer.map(cat => {
             categoriesShownClearTemp[cat] = false;
         })
 
-        this.setState({
-            categoriesShown: categoriesShownClearTemp,
-            categoriesShownList: []
-        })
+        setCategoriesShown(categoriesShownClearTemp);
     }
 
-    clearCategoriesFilterHandler = () => {
-        this.setState({catsViewed: 0})
-        this.clearCat()
+    const clearCategoriesFilterHandler = () => {
+        setCategoriesViewed(0);
+        clearCategories();
     }
 
-    sortByChangedHandler = (sortType) => {
-        this.setState({sortValue: sortType})
+    const sortByChangedHandler = (sortType) => {
+        setSortValue(sortType);
 
         if (sortType === 'date') {
-            let sortedTempArr = quickSort(this.state.documentsFromServer, sortType, 'falling');
-            this.setState({documentsFromServer: sortedTempArr});
+            let sortedTempArr = quickSort(documentsFromServer, sortType, 'falling');
+            setDocumentsFromServer(sortedTempArr);
         } else {
-            let sortedTempArr = quickSort(this.state.documentsFromServer, sortType, 'rising');
-            this.setState({documentsFromServer: sortedTempArr});
+            let sortedTempArr = quickSort(documentsFromServer, sortType, 'rising');
+            setDocumentsFromServer(sortedTempArr);
         }
     }
 
-    
-    render() {
-        return (
-            <div className={classes.firstFlexContainer}>
-                <div className={classes.main}>
-                    <div className={classes.headerRow}>
-                        <div className={classes.searchParameters}>
-                            <SortBySelector
-                                sortByChangedHandler = {this.sortByChangedHandler}
-                                sortValue = {this.state.sortValue}
-                                addClass = {classes.sortByStyle}
-                            />
+    return (
+        <div className={classes.firstFlexContainer}>
+            <div className={classes.main}>
+                <div className={classes.headerRow}>
+                    <div className={classes.searchParameters}>
+                        <SortBySelector
+                            sortByChangedHandler = {sortByChangedHandler}
+                            sortValue = {sortValue}
+                            addClass = {classes.sortByStyle}
+                        />
 
-                            {/* <SortOrderSelector 
-                                sortOrderChangedHandler = {this.sortOrderChangedHandler}
-                                orderValue =  {this.state.orderValue}
-                                addClass = {classes.sortOrderStyle}
-                            /> */}
+                        <CategoriesFilter 
+                            categories = {categoriesFromServer} 
+                            categoriesToShow = {categoriesShown}
+                            categoriesFilterChangeHandler = {categoriesFilterChangeHandler}
+                            clearCategoriesFilterHandler = {clearCategoriesFilterHandler}
+                            addClass = {classes.dropdownFilterStyle}
+                            userIsFunkis = {props.userIsFunkis}
+                        />
 
-                            <CategoriesFilter 
-                                categories = {this.state.categoriesFromServer} 
-                                categoriesToShow = {this.state.categoriesShown}
-                                categoriesFilterChangeHandler = {this.categoriesFilterChangeHandler}
-                                clearCategoriesFilterHandler = {this.clearCategoriesFilterHandler}
-                                addClass = {classes.dropdownFilterStyle}
-                                userIsFunkis = {this.props.userIsFunkis}
-                            />
+                        <input
+                            className={classes.searchDoc}
+                            type="text"
+                            onKeyUp={handleSearch}
+                            name="name"
+                            placeholder={translateToString({
+                                se: 'Sök efter dokument',
+                                en: 'Search for document',
+                                lang,
+                            })}
+                            ref = {searchInput}
+                        />
 
-                            <input
-                                className={classes.searchDoc}
-                                type="text"
-                                onKeyUp={this.handleSearch}
-                                name="name"
-                                placeholder="Sök efter dokument"
-                                ref = {input => this.search = input}
-                            />
-
-                            
-                        </div>
-
-                        <div className={classes.viewSelected}>
-                            {this.state.screenWidth >= 900 ? 
-                                <div className={classes.tooltipGrid}>
-                                    <img 
-                                        src={this.state.cardsViewSelected ? gridViewIconSelected : gridViewIcon}
-                                        className={this.state.cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
-                                        onClick={() => {
-                                            if(!this.state.cardsViewSelected) {
-                                                this.setState({listViewSelected: !this.state.listViewSelected})
-                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                            }
-                                        }}
-                                    />
-                                    <span>Gallerivy</span>
-                                </div> : null}
-                                        
-                            {this.state.screenWidth >= 900 ?
-                                <div className={classes.tooltipList}>
-                                    <img 
-                                        src={this.state.listViewSelected ? listViewIconSelected : listViewIcon}
-                                        className={this.state.listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
-                                        onClick={() => {
-                                            if(!this.state.listViewSelected) {
-                                                this.setState({listViewSelected: !this.state.listViewSelected})
-                                                this.setState({cardsViewSelected: !this.state.cardsViewSelected})
-                                            }
-                                        }}
-                                    />
-                                    <span>Listvy</span>
-                                </div> : null}
-                        </div>
+                        
                     </div>
-                    
-                    {this.state.isLoading ? <Spinner /> :
-                        (this.state.cardsViewSelected ?
-                            <DocumentCards 
-                                documents={this.state.documentsFromServer}
-                                categoriesToShow={this.state.categoryTagsSelected}
-                                zeroCategoriesSelected = {this.state.catsViewed === 0}
-                            />
-                        :
-                            <DocumentList 
-                                documents = {this.state.documentsFromServer}
-                                categoriesToShow = {this.state.categoryTagsSelected}
-                                zeroCategoriesSelected = {this.state.catsViewed === 0}
-                            />)
-                    }
+
+                    <div className={classes.viewSelected}>
+                        {screenWidth >= 900 ? 
+                            <div className={classes.tooltipGrid}>
+                                <img 
+                                    src={cardsViewSelected ? gridViewIconSelected : gridViewIcon}
+                                    className={cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
+                                    onClick={() => {
+                                        if(!cardsViewSelected) {
+                                            setListViewSelected(!listViewSelected);
+                                            setCardsViewSelected(!cardsViewSelected);
+                                        }
+                                    }}
+                                />
+                                <span>
+                                    {translateToString({
+                                        se: 'Gallerivy',
+                                        en: 'Gallery',
+                                        lang,
+                                    })}
+                                </span>
+                            </div> : null}
+                                    
+                        {screenWidth >= 900 ?
+                            <div className={classes.tooltipList}>
+                                <img 
+                                    src={listViewSelected ? listViewIconSelected : listViewIcon}
+                                    className={listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
+                                    onClick={() => {
+                                        if(!listViewSelected) {
+                                            setListViewSelected(!listViewSelected);
+                                            setCardsViewSelected(!cardsViewSelected);
+                                        }
+                                    }}
+                                />
+                                <span>
+                                    {translateToString({
+                                        se: 'Listvy',
+                                        en: 'List',
+                                        lang,
+                                    })}
+                                </span>
+                            </div> : null}
+                    </div>
                 </div>
+                
+                {isLoading ? <Spinner /> :
+                    (cardsViewSelected ?
+                        <DocumentCards 
+                            documents={documentsFromServer}
+                            categoriesToShow={categoryTagsSelected}
+                            zeroCategoriesSelected = {categoriesViewed === 0}
+                        />
+                    :
+                        <DocumentList 
+                            documents = {documentsFromServer}
+                            categoriesToShow = {categoryTagsSelected}
+                            zeroCategoriesSelected = {categoriesViewed === 0}
+                        />)
+                }
             </div>
-          );
-    }
+        </div>
+    );
 }
 
 export default ViewDocuments;

@@ -32,3 +32,4 @@ class CommitteeListResource(Resource):
         committees = Committee.query.all()
         data = [committee.to_dict() for committee in committees]
         return jsonify(data)
+
