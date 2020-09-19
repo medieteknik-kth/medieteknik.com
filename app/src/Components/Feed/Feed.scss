@@ -15,9 +15,9 @@
 
 .feed-cards {
     display: grid;
-    grid-template-columns: repeat(2, 500px);
-    column-gap: 60px;
-    row-gap: 60px;
+    grid-template-columns: repeat(3, 400px);
+    column-gap: 30px;
+    row-gap: 30px;
 }
 
 @media (max-width: 800px) {
