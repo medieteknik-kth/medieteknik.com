@@ -1,11 +1,13 @@
 .Publish {
     margin: 5px auto;
     padding: 10px;
-    width: 550px;
     clear: both;
     border-radius: 5px;
     font-family: sans-serif;
+    /* background-color: gray; */
 }
+
+
 
 .Publish p {
     margin-top: 10px;
@@ -23,7 +25,6 @@
     padding: 10px;
     width: 175px;
     display: block;
-    margin-top: 20px;
     margin: 30px auto;
     transition: .25s;
     font-family: Roboto;
@@ -107,8 +108,11 @@
 }
 
 .formContainer {
+    margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* background-color: gray; */
 }
 
 .leftFormContainer {
@@ -117,4 +121,16 @@
 
 .rightFormContainer {
     margin-top: 10px;
+    margin-left: 20px;
+}
+
+@media (max-width: 531px) {
+    .Publish {
+        margin-top: -30px;
+    }
+
+    .rightFormContainer {
+        margin-top: 20px;
+        margin-left: 0;
+    }
 }

@@ -5,18 +5,22 @@
     border-radius: 8px;
     position: fixed;
     background-color: white;
+    top: 120px;
     right: 20px;
     cursor: pointer;
     transition: all 0.2s;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    z-index: 11;
 }
 
 .pageEditButton.pageEditImageButton {
     position: absolute;
     top: 20px;
+    left: 20px;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     display: flex;
     justify-content: center;
+    z-index: 10;
 }
 
 .pageEditButton.pageEditImageButton svg {
@@ -27,8 +31,9 @@
 .pageEditButton.pageRemoveImageButton {
     position: absolute;
     top: 73px;
+    left: 20px;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 10;
 }
 
 #imageHeaderUpload {
@@ -52,8 +57,10 @@
 
 .pageContainer {
     position: relative;
-    margin: 110px 10px 40px 10px;
+    margin: 100px 10px 40px 10px;
     background-color: white;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.16)
 }
 
 .pageContent {
@@ -71,6 +78,7 @@
     background-color: white;
     margin-left: auto;
     margin-right: auto;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
 }
 
 .committeePageLogo {
@@ -80,6 +88,10 @@
 }
 
 @media screen and (min-width: 970px) {
+    .pageEditButton {
+        top: 110px;
+    }
+
     .pageContainer {
         margin: 110px auto 40px auto;
         max-width: 950px;

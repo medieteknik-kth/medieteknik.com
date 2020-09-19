@@ -32,12 +32,14 @@ const Profile = (props) => {
     }
 
     return (
-        <div>
+        <div className="parent">
             {user ?
                 (<div className="profile-container">
                     <div className="info-container">
                         {isEditing ? <div>
+                            <h3>Redigera profil</h3>
                             <div className="field">
+                                <label className="floating-label-req">Förnamn</label>
                                 <input
                                     className="input-req"
                                     required
@@ -45,12 +47,14 @@ const Profile = (props) => {
                                     pattern="[a-zA-Z0-9\s]+"
                                     onChange={v => setFirstName(v.target.value)}
                                 />
-                                <label className="floating-label-req">Förnamn</label>
+
                                 <span className="focus-border" />
                             </div>
                             <div
                                 className="field"
                             >
+
+                                <label className="floating-label-req">Efternamn</label>
                                 <input
                                     className="input-req"
                                     type="text"
@@ -59,12 +63,13 @@ const Profile = (props) => {
                                     value={lastName}
                                     onChange={v => setLastName(v.target.value)}
                                 />
-                                <label className="floating-label-req">Efternamn</label>
                                 <span className="focus-border" />
                             </div>
                             <div
                                 className="field"
                             >
+                                <label className="floating-label-non-req">Fracknamn</label>
+
                                 <input
                                     type="text"
                                     className="input-not-req"
@@ -73,12 +78,12 @@ const Profile = (props) => {
                                     placeholder="fracknamn"
                                     onChange={v => setFrackName(v.target.value)}
                                 />
-                                <label className="floating-label-non-req">Fracknamn</label>
                                 <span className="focus-border" />
                             </div>
                             <div
                                 className="field"
                             >
+                                <label className="URLfloating-label">Facebook-länk</label>
                                 <input
                                     type="url"
                                     placeholder=" "
@@ -87,13 +92,14 @@ const Profile = (props) => {
                                     onChange={v => setFacebook(v.target.value)}
                                     placeholder="länk till din facebook-profil"
                                 />
-                                <label className="URLfloating-label">Facebook-länk</label>
+
                                 <span className="focus-border" />
                             </div>
 
                             <div
                                 className="field"
                             >
+                                <label className="URLfloating-label">Linkedin-länk</label>
                                 <input
                                     type="url"
                                     placeholder=" "
@@ -102,11 +108,10 @@ const Profile = (props) => {
                                     onChange={v => setLinkedIn(v.target.value)}
                                     placeholder="länk till din linkedin-profil"
                                 />
-                                <label className="URLfloating-label">Linkedin-länk</label>
+
                                 <span className="focus-border" />
                             </div>
                             <br />
-                            <p>Alumni</p>
 
                             {/*
                             The endpoint doesn't allow updating alumni status, commenting this one out for now 
@@ -121,7 +126,7 @@ const Profile = (props) => {
                             /> */}
                         </div> : <div>
 
-                                <h1>{user.firstName} {user.lastName}</h1>
+                                <h2>{user.firstName} {user.lastName}</h2>
                                 {user.frackName ? <p>Även känd som <b>{user.frackName}</b></p> : <></>}
                                 <div>
                                     {user.facebook ? <a href={user.facebook}><FontAwesomeIcon className="userCardIcon" icon={faFacebookF} color="black" size="lg" /></a> : <div />}

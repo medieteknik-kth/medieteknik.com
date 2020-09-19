@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import Button from '../../Document/ViewDocuments/Assets/ButtonRasmus';
 import classes from './EventList.module.css';
 
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../Contexts/LocaleContext';
 
 // --- Components ---
 import CurrentEvents from './CurrentEvents/CurrentEvents';
@@ -127,6 +131,9 @@ const EventList = (props) => {
     const [hostsShown, setHostsShown] = useState({});
     const [numberOfHostsSelected, setNumberOfHostsSelected] = useState(0);
 
+    const { lang } = useContext(LocaleContext);
+
+
 
     useEffect(() => {
         fetch(API_BASE_URL + 'events')
@@ -156,9 +163,6 @@ const EventList = (props) => {
 
         let previousEventsListTemp = allEvents.filter(event => event.eventEnd < Date.now());
         let currentEventsListTemp = allEvents.filter(event => event.eventEnd >= Date.now());
-
-        // console.log("Previous events:", previousEventsListTemp);
-        // console.log("Current events:", currentEventsListTemp);
 
         currentEventsListTemp.forEach(event => {
             if (!hostsListTemp.includes(event.host)) {
@@ -236,21 +240,48 @@ const EventList = (props) => {
     return (
         <div>
             <Button onClick={changeEventsToView}>
-                {viewCurrentEvents ? 'Tidigare evenemang' : 'Aktuella evenemang'}
+                {viewCurrentEvents ?
+                    translateToString({
+                        se: 'Tidigare evenemang',
+                        en: 'Earlier events',
+                        lang,
+                    })
+                    : translateToString({
+                        se: 'Aktuella evenemang',
+                        en: 'Current events',
+                        lang,
+                    })
+                }
             </Button>
 
-            <h2 className={classes.secHeader}>{viewCurrentEvents ? 'Aktuella evenemang' : 'Tidigare evenemang'}</h2>
+            <h2 className={classes.secHeader}>{viewCurrentEvents ?
+                translateToString({
+                    se: 'Aktuella evenemang',
+                    en: 'Current events',
+                    lang,
+                }) :
+                translateToString({
+                    se: 'Tidigare evenemang',
+                    en: 'Earlier events',
+                    lang,
+                })}
+            </h2>
             
             <div className={classes.contentContainer}>
                 <div className={classes.FilterBox}>
-                    <h4>Filtrera efter värd</h4>
+                    <h4>
+                        {translateToString({
+                            se: 'Filtrera efter värd',
+                            en: 'Filter by host',
+                            lang,
+                        })}
+                    </h4>
 
                     <FilterByHost 
                         hosts = {hostsList}
                         hostsShown = {hostsShown}
                         hostsFilterChangeHandler = {hostsFilterChangeHandler}
                         clearHostsFilterHandler = {clearHostsFilterHandler}
-                        // filterBoxClass = {classes.FilterBox}
                     />
                 </div>
 
@@ -261,7 +292,6 @@ const EventList = (props) => {
                     clearHostsFilterHandler = {clearHostsFilterHandler}
                     filterButtonclass = {classes.FilterButton}
                 />
-                
 
                 {
                     viewCurrentEvents ? 

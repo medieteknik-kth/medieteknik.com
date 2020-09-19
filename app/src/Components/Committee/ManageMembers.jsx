@@ -25,7 +25,7 @@ export default function ManageMembers() {
     <div>
       {committee != null ? (
         <div className="content" style={{ marginTop: '125px' }}>
-          <h1><LocaleText phrase="committee/manage/mng_members" /></h1>
+          <h2><LocaleText phrase="committee/manage/mng_members" /></h2>
           <h3>{committee.name}</h3>
           <table className="committeeMembersTable">
             <tr>

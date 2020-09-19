@@ -8,9 +8,9 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <div className="landing-header">
-        <h2 className="landing-text"><LocaleText phrase="landing/welcome"/></h2>
+        <h2 className="landing-text-h2"><LocaleText phrase="landing/welcome"/></h2>
         <h1 className="medieteknik"><LocaleText phrase="common/media_technology"/></h1>
-        <h3 className="landing-text"><LocaleText phrase="common/kth_full"/></h3>
+        <h3 className="landing-text-h3"><LocaleText phrase="common/kth_full"/></h3>
       </div>
       <div className="landing-info">
         <h3><LocaleText phrase="landing/what_is"/></h3>

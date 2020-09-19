@@ -27,7 +27,7 @@ const Playground = (props) => {
             <div className='ply-cont'>
                 <div className='playground-cont'>
                     <div className='playground'>
-                        <h1>Playground</h1>
+                        <h2>Playground</h2>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div className='upload-doc'>
                                 <FormTitle><LocaleText phrase='form/title'/></FormTitle>

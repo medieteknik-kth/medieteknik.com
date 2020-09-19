@@ -38,6 +38,7 @@ class CommitteePost(db.Model):
         terms = []
         for term in self.current_terms():
             terms.append({
+                "id": term.id,
                 "startDate": term.start_date,
                 "endDate": term.end_date,
                 "user": term.user.to_dict_without_terms()
@@ -62,6 +63,29 @@ class CommitteePost(db.Model):
             "committeeId": self.committee_id,
             "committeeCategory": self.committee.category.to_dict(),
             "isOfficial": self.is_official,
+            "weight": self.weight
+        }
+
+    def to_dict_with_all_terms(self):
+        terms = []
+        current_terms = self.current_terms()
+        for term in self.terms:
+            terms.append({
+                "id": term.id,
+                "startDate": term.start_date,
+                "endDate": term.end_date,
+                "user": term.user.to_dict_without_terms(),
+                "current": term in current_terms
+            })
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.officials_email,
+            "committeeId": self.committee_id,
+            "committeeCategory": self.committee.category.to_dict(),
+            "isOfficial": self.is_official,
+            "terms": terms,
             "weight": self.weight
         }
 
