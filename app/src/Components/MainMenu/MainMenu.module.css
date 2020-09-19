@@ -163,10 +163,6 @@
     transform: translateY(-100%);
   }
 
-  .buttonDropdown.subMenuExpanded {
-    display: none;
-  }
-
   .subMenuExpanded > a > .buttonTitle {
     color: unset;
     box-shadow: none;
