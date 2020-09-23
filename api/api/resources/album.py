@@ -39,6 +39,8 @@ class AlbumListResource(Resource):
                 album.images.append(image)
                 db.session.add(image)
         
+        ## TODO: Details for each photo
+
         db.session.add(album)
         db.session.commit()
 
