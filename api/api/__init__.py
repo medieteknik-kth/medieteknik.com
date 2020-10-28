@@ -104,7 +104,6 @@ api.add_resource(AlbumListResource, "/albums")
 api.add_resource(AlbumResource, "/albums/<id>")
 
 api.add_resource(HealthResource, "/health")
-api.add_resource(TestResource, "/test")
 
 api.add_resource(AuthenticationResource, "/auth")
 api.add_resource(CASResource, "/cas")
@@ -112,6 +111,8 @@ api.add_resource(CASResource, "/cas")
 api.add_resource(MeCommitteeResource, "/me/committees")
 
 if app.debug:
+    api.add_resource(TestResource, "/test")
+
     from api.models.user import User
 
     local_cas = Blueprint("cas", __name__)
