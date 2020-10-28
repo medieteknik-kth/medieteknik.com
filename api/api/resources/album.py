@@ -10,7 +10,6 @@ from api.resources.authentication import requires_auth
 from datetime import datetime
 
 class AlbumListResource(Resource):
-    @requires_auth
     def post(self):
         data = request.form
 

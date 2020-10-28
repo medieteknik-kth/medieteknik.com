@@ -4,13 +4,20 @@ import uuid
 import os
 
 def upload_blob(bucket_name, source_file, destination_blob_name):
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
+    if os.environ.get('FLASK_ENV') == "development":
+        save_folder = os.path.join(os.getcwd(), "api", "static")
+        filename = os.path.join(save_folder, destination_blob_name)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        source_file.save(filename)
+        return "http://localhost:5000/static/" + destination_blob_name
+    else:
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
 
-    blob.upload_from_file(source_file)
-    blob.make_public()
-    return blob.public_url
+        blob.upload_from_file(source_file)
+        blob.make_public()
+        return blob.public_url
 
 def upload_file(source_file, destination_directory = "", allowed_extensions = []):
     filename = uuid
