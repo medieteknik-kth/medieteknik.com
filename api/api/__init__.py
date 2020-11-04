@@ -25,6 +25,7 @@ from api.resources.me import MeCommitteeResource
 from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
+from api.resources.video_playlist import VideoPlaylistResource, VideoPlaylistListResource
 
 from api.resources.event import EventResource, EventListResource
 
@@ -108,6 +109,9 @@ api.add_resource(VideoResource, "/video/<id>")
 api.add_resource(VideoListResource, "/video")
 api.add_resource(VideoUploadTestResource, "/video_upload")
 
+api.add_resource(VideoPlaylistResource, "/video_playlist/<id>")
+api.add_resource(VideoPlaylistListResource, "/video_playlist")
+
 api.add_resource(HealthResource, "/health")
 
 api.add_resource(AuthenticationResource, "/auth")
@@ -181,6 +185,7 @@ def route_create_all():
     from api.models.image import Image
     from api.models.album import Album
     from api.models.video import Video
+    from api.models.video_playlist import VideoPlaylist
 
     from api.models.event import Event
 
@@ -599,7 +604,12 @@ def route_create_all():
     video.mux_playback_id = "fCYPrJn9xscSHKpAmjReeiEDm201n13f253tSPYol5Kw"
     video.requires_login = False
 
+    playlist = VideoPlaylist()
+    playlist.title = "Spellista"
+    playlist.videos.append(video)
+
     db.session.add(video)
+    db.session.add(playlist)
 
     db.session.add(event1)
     db.session.commit()

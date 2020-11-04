@@ -1,6 +1,7 @@
 from flask import make_response, request, flash, redirect, jsonify
 from flask_restful import Resource
 import requests
+import os
 
 from api.models.video import Video
 from api.db import db
