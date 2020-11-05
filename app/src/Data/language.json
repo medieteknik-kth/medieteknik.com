@@ -185,6 +185,14 @@
         "gallery_header": {
             "se": "Bildgalleri",
             "en": "Gallery"
+        },
+        "gallery_upload": {
+            "se": "Skapa album",
+            "en": "Create Album"
+        },
+        "select_images": {
+            "se": "Välj bilder",
+            "en": "Add images"
         }
     },
     "officials": {
