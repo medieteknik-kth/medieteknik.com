@@ -33,7 +33,17 @@
     text-align: center;
     border: none;
     background-color: inherit;
-    margin-bottom: 5rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.desc-input {
+    margin-bottom: 2rem;
+    text-align: center;
+    border:none;
+    background-color: inherit;
+    width: 50%;
+    display: block;
 }
 
 .upload-button {

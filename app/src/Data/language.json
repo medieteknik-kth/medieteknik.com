@@ -193,6 +193,14 @@
         "select_images": {
             "se": "Välj bilder",
             "en": "Add images"
+        },
+        "title_placeholder": {
+            "se": "Albumtitel",
+            "en": "Album name"
+        },
+        "desc_placeholder": {
+            "se": "Beskrivning",
+            "en": "Description"
         }
     },
     "officials": {
