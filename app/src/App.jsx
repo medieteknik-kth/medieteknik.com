@@ -79,6 +79,9 @@ export default function App() {
             <Route path="/gallery">
               <PageWithMainMenu><Gallery /></PageWithMainMenu>
             </Route>
+            <Route path="/albumupload">
+              <PageWithMainMenu><AlbumUpload /></PageWithMainMenu>
+            </Route>
             <Route path="/album/:id">
               <PageWithMainMenu><Album /></PageWithMainMenu>
             </Route>
@@ -89,20 +92,18 @@ export default function App() {
               <PageWithMainMenu><CreatePost event /></PageWithMainMenu>
             </Route>
             <Route path="/user">
-              <PageWithMainMenu><Profile/></PageWithMainMenu>
+              <PageWithMainMenu><Profile /></PageWithMainMenu>
             </Route>
             <Route path="/managecommittee/:id">
-              <PageWithMainMenu><ManageCommittee/></PageWithMainMenu>
+              <PageWithMainMenu><ManageCommittee /></PageWithMainMenu>
             </Route>
-            <Route path="/albumupload">
-              <PageWithMainMenu><AlbumUpload/></PageWithMainMenu>
-            </Route>
+
             <Route
               path="/:pageSlug"
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
             />
           </Switch>
-          <Footer/>
+          <Footer />
         </UserProvider>
       </LocaleProvider>
     </Router>

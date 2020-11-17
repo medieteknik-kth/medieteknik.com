@@ -29,13 +29,9 @@
     overflow: hidden;
 }
 .upload-container {
-    display: flex;
-    flex-grow: 1;
-    min-height: calc(100vh - 90px);
-    background-color: #f0f0f0;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 40px;
+    margin: 0 auto;
+    max-width: 1500px;
+    padding: 0 1rem;
 }
 
 .title-input {
@@ -144,4 +140,9 @@
 .date-includer {
     margin-left: 1rem;
     display: flex;
+    flex-direction: row;
+}
+
+.form-container {
+    margin-bottom: 5rem;
 }

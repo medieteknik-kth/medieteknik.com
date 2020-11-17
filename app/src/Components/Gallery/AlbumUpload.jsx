@@ -7,6 +7,7 @@ import Button from '../Common/Button/Button'
 import DatePicker from '../Common/Form/DatePicker';
 import Input from '../Common/Form/Input';
 import Switch from '../Common/Form/Switch';
+import {Redirect} from 'react-router-dom'
 
 import Api from '../../Utility/Api'
 import './AlbumUpload.css'
@@ -17,7 +18,10 @@ const AlbumUpload = () => {
     const [title, setTitle] = useState(null)
     const [includeDate, setIncludeDate] = useState(false)
     const [photographer, setPhotographer] = useState(null)
+    const [redirect, setRedirect] = useState(false);
+    const [albumId, setAlbumId] = useState(null);
     const [date, setDate] = useState(new Date());
+    const [receptionAppropriate, setReceptionAppropriate] = useState(false);
     const { lang } = useContext(LocaleContext);
 
     const handleFileChange = (files) => {
@@ -32,8 +36,38 @@ const AlbumUpload = () => {
         setPreviewURLs(previewURLs.filter(url => !(url === previewToRemove)))
     }
 
+    const uploadAlbum = () => {
+        const body = {
+            name: title,
+            receptionAppropriate,
+        }
+
+        const formData = new FormData();
+        Object.keys(body).map(key => formData.append(key, body[key]));
+        if (includeDate) {
+            formData.append("creationDate", date.toISOString())
+        }
+        //append images 
+        for (let image of images) {
+            formData.append("photos", image);
+        }
+        Api.Albums.PostForm(formData)
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    setAlbumId(res.id)
+                    setRedirect(true)
+                }
+            })
+    }
+
+    if (redirect) {
+        return <Redirect to={`/album/${albumId}`}/>
+    }
+
     return (
         <div className="upload-container">
+            <div className="form-container">
             <form encType="multipart/form-data" action="">
                 <h2>Ladda upp bilder</h2>
                 <div className="info-container">
@@ -45,10 +79,14 @@ const AlbumUpload = () => {
                     </div>
                 </div>
                 <div className="date-container info-container">
-                    <DatePicker onChange={setDate} value={date} className="date-picker"/>
+                    <DatePicker onChange={setDate} value={date} className="date-picker" />
                     <div className="date-includer">
                         <input type="checkbox" defaultChecked={!includeDate} onChange={e => setIncludeDate(!e.target.checked)}></input>
                         <p>Jag vill inte välja datum för detta album</p>
+                    </div>
+                    <div className="date-includer">
+                        <input type="checkbox" defaultChecked={receptionAppropriate} onChange={e => setReceptionAppropriate(e.target.checked)}></input>
+                        <p>Albumet är mottagningsvänligt</p>
                     </div>
                 </div>
                 <div className="preview-container">
@@ -69,8 +107,12 @@ const AlbumUpload = () => {
                     }
 
                 </div>
+                
             </form>
-            <Button>Ladda upp album</Button>
+            </div>
+            <div style={{width: "20rem", float: "center"}}>
+                    <Button onClick={() => uploadAlbum()}>Ladda upp album</Button>
+                </div>
         </div >
     )
 }

@@ -1,5 +1,5 @@
 from flask import make_response, request, jsonify
-from flask_restful import Resource
+from flask_restful import Resource, inputs
 
 from api.models.image import Image
 from api.models.album import Album
@@ -8,7 +8,7 @@ from api.db import db
 from api.resources.authentication import requires_auth
 
 from datetime import datetime
-
+ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 class AlbumListResource(Resource):
     def post(self):
         data = request.form
@@ -22,11 +22,13 @@ class AlbumListResource(Resource):
         album.title = album_name
 
         creationDate = data.get("creationDate")
+        
         if creationDate:
+            creationDate = datetime.strptime(creationDate, ISO_DATE_DEF)
             album.creationDate = creationDate
             album.lastEdit = creationDate
         
-        receptionAppropriate = data.get("receptionAppropriate")
+        receptionAppropriate = inputs.boolean(data.get("receptionAppropriate"))
         if receptionAppropriate:
             album.receptionAppropriate = receptionAppropriate
 
@@ -42,8 +44,7 @@ class AlbumListResource(Resource):
 
         db.session.add(album)
         db.session.commit()
-
-        return jsonify(success=True)
+        return jsonify(success=True, id=album.albumId)
 
     def get(self):
         albums = Album.query.all()
