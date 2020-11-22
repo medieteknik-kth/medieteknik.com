@@ -28,6 +28,7 @@ $borderRadius: 2px;
     background-color: #ccc;
 }
 
+
 .lightStyling input:checked ~ .checkmark {
     background-color: #f0c900;
 }
@@ -60,6 +61,7 @@ $borderRadius: 2px;
     background-color: #eee;
     margin-top: 0px;
     border-radius: $borderRadius;
+    border:1px solid #b7b6b6;
 }
 
 .checkmark:after {

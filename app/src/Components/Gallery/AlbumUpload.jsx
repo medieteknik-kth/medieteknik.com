@@ -6,7 +6,7 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Button from '../Common/Button/Button'
 import DatePicker from '../Common/Form/DatePicker';
 import Input from '../Common/Form/Input';
-import Switch from '../Common/Form/Switch';
+import Checkbox from '../Common/Checkbox/checkbox';
 import { Redirect } from 'react-router-dom'
 
 import Api from '../../Utility/Api'
@@ -87,23 +87,11 @@ const AlbumUpload = () => {
                         </div>
                     </div>
                     <div className="date-container info-container">
-                        <DatePicker onChange={setDate} value={date} className="date-picker" />
-                        <div className="date-includer">
-                            <input type="checkbox" defaultChecked={!includeDate} onChange={e => setIncludeDate(!e.target.checked)}></input>
-                            <LocaleText phrase="gallery/upload_date" />
+                        <div class="date-picker-container">
+                            <p><LocaleText phrase="feed/create_event/date" /></p>
+                            <DatePicker onChange={setDate} value={date} className="date-picker" />
                         </div>
-                        <div className="date-includer">
-                            <input type="checkbox" defaultChecked={receptionAppropriate} onChange={e => setReceptionAppropriate(e.target.checked)}></input>
-                            <LocaleText phrase="gallery/upload_reception" />
-                        </div>
-                        <div className="date-includer">
-                            <input type="checkbox" defaultChecked={needsCred} onChange={e => setNeedsCred(e.target.checked)}></input>
-                            <LocaleText phrase="gallery/upload_credit" />
-                        </div>
-                        <div className="date-includer">
-                            <input type="checkbox" defaultChecked={editingAllowed} onChange={e => setEditingAllowed(e.target.checked)}></input>
-                            <LocaleText phrase="gallery/upload_edit" />
-                        </div>
+
                     </div>
                     <div className="preview-container">
                         {previewURLs &&
@@ -123,12 +111,27 @@ const AlbumUpload = () => {
                         }
 
                     </div>
+                    <div className="info-container">
+                        <div className="date-includer">
+                            <Checkbox name={(<p><LocaleText phrase="gallery/upload_date" /></p>)} checkboxHandler={() => setIncludeDate(!includeDate)} isChecked={!includeDate} colorTheme="light" />
 
+                        </div>
+                        <div className="date-includer">
+                            <Checkbox name={(<p><LocaleText phrase="gallery/upload_reception" /></p>)} checkboxHandler={() => setReceptionAppropriate(!receptionAppropriate)} isChecked={receptionAppropriate} colorTheme="light" />
+                        </div>
+                        <div className="date-includer">
+                            <Checkbox name={(<p><LocaleText phrase="gallery/upload_credit" /></p>)} checkboxHandler={() => setNeedsCred(!needsCred)} isChecked={needsCred} colorTheme="light" />
+                        </div>
+                        <div className="date-includer">
+                            <Checkbox name={(<p><LocaleText phrase="gallery/upload_edit" /></p>)} checkboxHandler={() => setEditingAllowed(!editingAllowed)} isChecked={editingAllowed} colorTheme="light" />
+                        </div>
+                    </div>
                 </form>
+                <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+                    <Button onClick={() => uploadAlbum()}><p><LocaleText phrase="gallery/upload_upload" /></p></Button>
+                </div>
             </div>
-            <div style={{ width: "20rem", float: "center" }}>
-                <Button onClick={() => uploadAlbum()}><LocaleText phrase="gallery/upload_upload"/></Button>
-            </div>
+
         </div >
     )
 }

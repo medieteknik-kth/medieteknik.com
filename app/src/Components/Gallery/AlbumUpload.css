@@ -1,22 +1,23 @@
 .preview-img {
-    max-width: 20rem;
-    max-height: 20rem;
+    height: 15rem;
+    max-width: 22.5rem;
+    object-fit: contain;
     display: block;
+    background-color: black;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 .previews {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin-left: 10%;
-    margin-right: 10%;
 }
 
 
 .preview {
     /* width: 10rem;
     height: 10rem; */
-    padding-left: 1rem;
-    padding-right: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
     display: inline-block;
     position: relative;
     margin-bottom: 2rem;
@@ -30,8 +31,12 @@
 }
 .upload-container {
     margin: 0 auto;
+    margin-top: 5rem;
     max-width: 1500px;
     padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    clear:both;
 }
 
 .title-input {
@@ -100,7 +105,11 @@
     background-position-x: 50%;
     background-position-y: 50%;
     transition: .2s;
+    max-width: 15rem;
     min-width: 10rem;
+    margin-bottom: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
 }
 
 .yellow-image-upload input[type=file] {
@@ -122,7 +131,7 @@
 .cancel-img-upload {
     position: absolute;
     cursor: pointer;
-    right: 10%;
+    right: 0.3em;
     top: 0.1em;
     z-index: 1;
 }
@@ -145,4 +154,14 @@
 
 .form-container {
     margin-bottom: 5rem;
+}
+.date-picker-container {
+    display: block;
+    text-align: center;
+}
+
+.preview-container {
+    width:100%;
+    margin-left: 4%;
+    margin-right: 4%;
 }
