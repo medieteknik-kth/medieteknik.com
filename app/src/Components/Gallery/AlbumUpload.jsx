@@ -7,7 +7,7 @@ import Button from '../Common/Button/Button'
 import DatePicker from '../Common/Form/DatePicker';
 import Input from '../Common/Form/Input';
 import Switch from '../Common/Form/Switch';
-import {Redirect} from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 import Api from '../../Utility/Api'
 import './AlbumUpload.css'
@@ -16,7 +16,7 @@ const AlbumUpload = () => {
     const [images, setImages] = useState([]);
     const [previewURLs, setPreviewURLs] = useState([])
     const [title, setTitle] = useState(null)
-    const [includeDate, setIncludeDate] = useState(false)
+    const [includeDate, setIncludeDate] = useState(true)
     const [photographer, setPhotographer] = useState(null)
     const [redirect, setRedirect] = useState(false);
     const [albumId, setAlbumId] = useState(null);
@@ -49,9 +49,10 @@ const AlbumUpload = () => {
         const formData = new FormData();
         Object.keys(body).map(key => formData.append(key, body[key]));
         if (includeDate) {
-            formData.append("creationDate", date.toISOString())
+            formData.append("albumDate", date.toISOString())
+            console.log(date.toISOString())
         }
-        if(photographer) {
+        if (photographer) {
             formData.append("photographer", photographer)
         }
         //append images 
@@ -69,65 +70,65 @@ const AlbumUpload = () => {
     }
 
     if (redirect) {
-        return <Redirect to={`/album/${albumId}`}/>
+        return <Redirect to={`/album/${albumId}`} />
     }
 
     return (
         <div className="upload-container">
             <div className="form-container">
-            <form encType="multipart/form-data" action="">
-                <h2>Ladda upp bilder</h2>
-                <div className="info-container">
-                    <div className="input-container">
-                        <Input placeholder="Namn på album" onChange={e => setTitle(e.target.value)} />
-                    </div>
-                    <div className="input-container">
-                        <Input placeholder="Namn på fotograf" onChange={e => setPhotographer(e.target.value)} />
-                    </div>
-                </div>
-                <div className="date-container info-container">
-                    <DatePicker onChange={setDate} value={date} className="date-picker" />
-                    <div className="date-includer">
-                        <input type="checkbox" defaultChecked={!includeDate} onChange={e => setIncludeDate(!e.target.checked)}></input>
-                        <p>Jag vill inte välja datum för detta album</p>
-                    </div>
-                    <div className="date-includer">
-                        <input type="checkbox" defaultChecked={receptionAppropriate} onChange={e => setReceptionAppropriate(e.target.checked)}></input>
-                        <p>Albumet är mottagningsvänligt</p>
-                    </div>
-                    <div className="date-includer">
-                        <input type="checkbox" defaultChecked={needsCred} onChange={e => setNeedsCred(e.target.checked)}></input>
-                        <p>Fotografen måste få cred</p>
-                    </div>
-                    <div className="date-includer">
-                        <input type="checkbox" defaultChecked={editingAllowed} onChange={e => setEditingAllowed(e.target.checked)}></input>
-                        <p>Bilderna får användas av andra</p>
-                    </div>
-                </div>
-                <div className="preview-container">
-                    {previewURLs &&
-                        <div className="previews">
-                            {
-                                previewURLs.map(preview => (<div className="preview" key={preview.url} >
-
-                                    <img className="preview-img" src={preview.url} />
-                                    <FontAwesomeIcon className="cancel-img-upload" onClick={(e) => { e.preventDefault(); removeImage(preview.title, preview) }} size="2x" icon={faTimes} color="#f0c900" />
-                                </div>))
-                            }
-                            <div className="yellow-image-upload">
-                                <label htmlFor="files" ><FontAwesomeIcon size="2x" icon={faPlus} color="#f0c900" /></label>
-                                <input type="file" name="files" accept="image/png, image/jpeg" onChange={e => handleFileChange(e.target.files)} multiple id="files" style={{ visibility: "hidden" }}></input>
-                            </div>
+                <form encType="multipart/form-data" action="">
+                    <h2>Ladda upp bilder</h2>
+                    <div className="info-container">
+                        <div className="input-container">
+                            <Input placeholder="Namn på album" onChange={e => setTitle(e.target.value)} />
                         </div>
-                    }
+                        <div className="input-container">
+                            <Input placeholder="Namn på fotograf" onChange={e => setPhotographer(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="date-container info-container">
+                        <DatePicker onChange={setDate} value={date} className="date-picker" />
+                        <div className="date-includer">
+                            <input type="checkbox" defaultChecked={!includeDate} onChange={e => setIncludeDate(!e.target.checked)}></input>
+                            <LocaleText phrase="gallery/upload_date" />
+                        </div>
+                        <div className="date-includer">
+                            <input type="checkbox" defaultChecked={receptionAppropriate} onChange={e => setReceptionAppropriate(e.target.checked)}></input>
+                            <LocaleText phrase="gallery/upload_reception" />
+                        </div>
+                        <div className="date-includer">
+                            <input type="checkbox" defaultChecked={needsCred} onChange={e => setNeedsCred(e.target.checked)}></input>
+                            <LocaleText phrase="gallery/upload_credit" />
+                        </div>
+                        <div className="date-includer">
+                            <input type="checkbox" defaultChecked={editingAllowed} onChange={e => setEditingAllowed(e.target.checked)}></input>
+                            <LocaleText phrase="gallery/upload_edit" />
+                        </div>
+                    </div>
+                    <div className="preview-container">
+                        {previewURLs &&
+                            <div className="previews">
+                                {
+                                    previewURLs.map(preview => (<div className="preview" key={preview.url} >
 
-                </div>
-                
-            </form>
+                                        <img className="preview-img" src={preview.url} />
+                                        <FontAwesomeIcon className="cancel-img-upload" onClick={(e) => { e.preventDefault(); removeImage(preview.title, preview) }} size="2x" icon={faTimes} color="#f0c900" />
+                                    </div>))
+                                }
+                                <div className="yellow-image-upload">
+                                    <label htmlFor="files" ><FontAwesomeIcon size="2x" icon={faPlus} color="#f0c900" /></label>
+                                    <input type="file" name="files" accept="image/png, image/jpeg" onChange={e => handleFileChange(e.target.files)} multiple id="files" style={{ visibility: "hidden" }}></input>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                </form>
             </div>
-            <div style={{width: "20rem", float: "center"}}>
-                    <Button onClick={() => uploadAlbum()}>Ladda upp album</Button>
-                </div>
+            <div style={{ width: "20rem", float: "center" }}>
+                <Button onClick={() => uploadAlbum()}><LocaleText phrase="gallery/upload_upload"/></Button>
+            </div>
         </div >
     )
 }

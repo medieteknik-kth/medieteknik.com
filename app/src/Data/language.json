@@ -201,6 +201,26 @@
         "desc_placeholder": {
             "se": "Beskrivning",
             "en": "Description"
+        },
+        "upload_reception": {
+            "se": "Albumet är mottagningsvänligt",
+            "en": "The images in this album can be shown during the reception"
+        },
+        "upload_credit": {
+            "se": "Fotografen måste få cred för bilden",
+            "en": "Credit must be given to the photographer(s)"
+        },
+        "upload_date": {
+            "se":"Jag vill inte välja datum för detta album",
+            "en": "I don't want to select a date for this album"
+        },
+        "upload_edit": {
+            "se":"Bilderna får användas och redigeras fritt av andra",
+            "en": "The images can be freely used and/or edited by others"
+        },
+        "upload_upload": {
+            "se":"Skapa album",
+            "en": "Create Album"
         }
     },
     "officials": {

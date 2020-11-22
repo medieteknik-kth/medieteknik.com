@@ -21,12 +21,11 @@ class AlbumListResource(Resource):
         album = Album()
         album.title = album_name
 
-        creationDate = data.get("creationDate")
+        albumDate = data.get("albumDate")
         
-        if creationDate:
-            creationDate = datetime.strptime(creationDate, ISO_DATE_DEF)
-            album.creationDate = creationDate
-            album.lastEdit = creationDate
+        if albumDate:
+            albumDate = datetime.strptime(albumDate, ISO_DATE_DEF)
+            album.date = albumDate
         
         receptionAppropriate = inputs.boolean(data.get("receptionAppropriate"))
         if receptionAppropriate:
@@ -44,8 +43,8 @@ class AlbumListResource(Resource):
                 image.url = upload_album_photo(photo, album.title)
                 if photographer:
                     image.photographer = photographer
-                if creationDate:
-                    image.date = creationDate
+                if albumDate:
+                    image.date = albumDate
                 image.needsCred = needsCred
                 image.editingAllowed = editingAllowed 
                 album.images.append(image)
