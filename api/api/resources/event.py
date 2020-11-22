@@ -1,5 +1,6 @@
 from flask import jsonify, request, make_response
 from flask_restful import Resource
+from sqlalchemy import or_, and_
 from datetime import datetime
 import json
 import os
@@ -189,11 +190,11 @@ class EventListResource(Resource):
         """
         try: 
           if user.id:
-            add_event(request, user.id)
+            event = add_event(request, user.id)
         except Exception as error:
           return make_response(jsonify(success=False, error=str(error)), 403)
 
-        return make_response(jsonify(success=True))
+        return make_response(jsonify(success=True, id=event.id))
 
 
 
@@ -201,12 +202,13 @@ def get_events():
      #get query string params
     user_query = request.args.to_dict()
     #if the user supplied a query, filter
+
     if user_query:
-        
         q = Event.query.filter_by(**user_query)
     else:
         #if user did not provide filter, just send all events
-        q = Event.query.all()
+        scheduled_condition = [Event.scheduled_date <= datetime.now(), Event.scheduled_date == None]
+        q = Event.query.filter(and_(Event.draft == False, or_(*scheduled_condition)))
     data = [Event.to_dict(res) for res in q]
     return jsonify(data)
 
@@ -216,6 +218,10 @@ def add_event(request, user_id):
     e = Event(title=params["title"], event_date=datetime.strptime(params["date"], ISO_DATE_DEF), end_date=datetime.strptime(params["end_date"], ISO_DATE_DEF),
               body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
               body_en=params["body_en"], title_en=params["title_en"], user_id=user_id)
+
+    add_attr(e, params, "scheduled_date")
+    add_attr(e, params, "draft")
+
     if "header_image" in request.files:
         image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
         e.header_image = image_name
@@ -226,6 +232,7 @@ def add_event(request, user_id):
             e.tags.append(tag)
     db.session.add(e)
     db.session.commit()
+    return e
 
 def delete_event(id):
     Event.query.filter(Event.eventId == id).delete()
@@ -242,9 +249,15 @@ def update_event(request,id):
     e.location = params["location"]
     e.committee_id = params["comittee_id"]
     e.facebook_link = params["facebook_link"]
+    add_attr(e, params, "scheduled_date")
+    add_attr(e, params, "draft")
     if params["tags"]:
         #tag the event
         tags = PostTag.query.filter(PostTag.id.in_(params["tags"])).all()
         for tag in tags:
             e.tags.append(tag)
     db.session.commit()
+
+def add_attr(event, params, attr):
+  if params.get(attr):
+    setattr(event, attr, params.get(attr))

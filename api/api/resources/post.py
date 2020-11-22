@@ -1,5 +1,6 @@
 from flask import jsonify, session, request, make_response
 from flask_restful import Resource
+from sqlalchemy import or_, and_
 from datetime import datetime
 import json
 
@@ -74,6 +75,11 @@ class PostResource(Resource):
                 type: string
               body_en:
                 type: string
+              scheduled_date:
+                type: string
+                format: date-time
+              draft:
+                type: boolean
               tags:
                 type: array
                 items:
@@ -148,6 +154,11 @@ class PostAddResouce(Resource):
                 type: string
               body_en:
                 type: string
+              scheduled_date:
+                type: string
+                format: date-time
+              draft:
+                type: boolean
               tags:
                 type: array
                 items:
@@ -187,13 +198,15 @@ class PostListResource(Resource):
         responses:
             200:
                 description: OK
-        """   
-        posts = Post.query.all()
+        """
+        scheduled_condition = [Post.scheduled_date <= datetime.now(), Post.scheduled_date == None]
+        posts = Post.query.filter(and_(Post.draft == False, or_(*scheduled_condition)))
+
         data = [post.to_dict() for post in posts]
         return jsonify(data)
 
 def add_cols(data, post, request):
-    dynamic_cols = ["committee_id", "title", "body", "title_en", "body_en"]
+    dynamic_cols = ["committee_id", "title", "body", "title_en", "body_en", "scheduled_date", "draft"]
 
     for col in dynamic_cols: 
         if data.get(col):
