@@ -10,7 +10,7 @@ const Checkbox = ({name, isChecked, checkboxHandler, colorTheme}) => {
     } else if (colorTheme == 'light') {
         searchClass = classes.lightStyling;
     }
-
+    // console.log()
     return (
         <label 
             className = {searchClass} 

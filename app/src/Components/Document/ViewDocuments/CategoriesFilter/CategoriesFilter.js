@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 
 import {
@@ -15,6 +15,9 @@ import Checkbox from '../../../Common/Checkbox/checkbox';
 
 const CategoriesFilter = (props) => {
     const { lang } = useContext(LocaleContext);
+
+    console.log(props.categoriesToShow)
+    console.log(props.categories)
     return (
         <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox, classes.filterClass, props.addClass].join(' ')}>
@@ -44,7 +47,7 @@ const CategoriesFilter = (props) => {
                     props.categories.map(category => (
                         <Checkbox 
                             name = {category}
-                            checked = {props.categoriesToShow[category]}
+                            isChecked = {props.categoriesToShow[category]}
                             checkboxHandler = {props.categoriesFilterChangeHandler}
                             colorTheme = 'light'
                         />

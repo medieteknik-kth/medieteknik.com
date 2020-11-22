@@ -61,7 +61,6 @@ const ViewDocuments = (props) => {
                     categoriesShownTemp[categoryObject.title] = false;
                 })
 
-
                 setCategoriesFromServer(categoriesListTemp);
                 setCategoriesShown(categoriesShownTemp);
             });
@@ -160,10 +159,11 @@ const ViewDocuments = (props) => {
     const clearCategories = () => {
         let categoriesShownClearTemp = {};
 
-        categoriesFromServer.map(cat => {
+        categoriesFromServer.forEach(cat => {
             categoriesShownClearTemp[cat] = false;
         })
 
+        console.log(categoriesShownClearTemp)
         setCategoriesShown(categoriesShownClearTemp);
     }
 
