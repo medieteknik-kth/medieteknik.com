@@ -15,11 +15,7 @@ h3 {
     height: 45px;
 }
 
-@media (max-width: 899px) {
-    .headerRow {
-        height: 140px;
-    }
-}
+
 
 .searchParameters {
     float: left;
@@ -99,23 +95,8 @@ h3 {
     cursor: pointer;
 }
 
-.searchDoc {
-    font-family: 'Roboto';
-    font-weight: 300;
-    font-size: 15px;
-    color: #909090;
-    border: 0;
-    padding: 11px 10px 11px 40px;
-    outline: none;
-    background-image: url('./Assets/search.png');
-    background-position: 7px 6px;
-    background-size: 25px;
-    background-repeat: no-repeat;
-    float: left;
-}
-
 .createCardsViewLogo {
-    border: 1.25px solid #909090;
+    border: 2px solid #909090;
     background-color: #f0f0f0;
     border-radius: 1px;
     height: 27px;
@@ -125,7 +106,7 @@ h3 {
 }
 
 .createCardsViewLogoSelected {
-    border: 1.25px solid #f0c900;
+    border: 2px solid #f0c900;
     background-color: #f0f0f0;
     border-radius: 1px;
     height: 27px;
@@ -134,7 +115,7 @@ h3 {
 }
 
 .createListViewLogo {
-    border: 1.25px solid #909090;
+    border: 2px solid #909090;
     background-color: #f0f0f0;
     border-radius: 1px;
     height: 27px;
@@ -145,7 +126,7 @@ h3 {
 
 .createListViewLogoSelected {
     height: 27px;
-    border: 1.25px solid #f0c900;
+    border: 2px solid #f0c900;
     border-radius: 1px;
     background-color: #f0f0f0;
     height: 27px;
@@ -259,6 +240,10 @@ h3 {
 /* RESPONSIVE */
 
 @media (max-width: 899px) {
+    .headerRow {
+        height: 140px;
+    }
+
     .searchParameters {
         width: 100%;
     }
@@ -283,7 +268,7 @@ h3 {
         width: 225px;
     }
 
-    .searchDoc {
+    .headerRow input {
         display: block;
         padding-right: 40px;
         float: initial;

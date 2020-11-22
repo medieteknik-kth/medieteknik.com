@@ -10,10 +10,11 @@ import {
 import dropdownClasses from '../DropdownButtonStyle.module.css';
 import classes from './CategoriesFilter.module.css';
 import EmptyArrowDown from '../../Assets/Arrows/Empty-arrow-down.svg';
+import Checkbox from '../../../Common/Checkbox/checkbox';
+
 
 const CategoriesFilter = (props) => {
     const { lang } = useContext(LocaleContext);
-
     return (
         <div className={[dropdownClasses.sortByStyledBoxContainer, dropdownClasses.dropdown, props.addClass].join(' ')}>
             <div className={[dropdownClasses.sortByStyledBox, classes.filterClass, props.addClass].join(' ')}>
@@ -41,22 +42,12 @@ const CategoriesFilter = (props) => {
                 
                 {
                     props.categories.map(category => (
-                        <label 
-                            className = {classes.container} 
-                            key = {category}
-                        >
-                            <input
-                                name={category}
-                                type="checkbox"
-                                
-                                checked={props.categoriesToShow[category]}
-                                onChange={() => props.categoriesFilterChangeHandler(category)}
-                            />
-                            
-                            <span className={classes.checkmark}></span>
-                            {category}
-                            <br />
-                        </label>
+                        <Checkbox 
+                            name = {category}
+                            checked = {props.categoriesToShow[category]}
+                            checkboxHandler = {props.categoriesFilterChangeHandler}
+                            colorTheme = 'light'
+                        />
                     ))
                 }
             </div>

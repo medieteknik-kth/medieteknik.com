@@ -1,6 +1,5 @@
 .DocumentCards {
     display: grid;
-    justify-content: center;
     grid-template-columns: 244px 244px 244px 244px; /*Make the grid smaller than the container */
     grid-gap: 50px;
     /* padding: 10px; */
@@ -12,14 +11,15 @@
 
 @media (max-width: 1320px) {
     .DocumentCards {
-        width: 100%;
+        width: 80%;
         grid-template-columns: 244px 244px 244px;
     }
 }
 
 @media (max-width: 899px) {
     .DocumentCards {
-        width: 100%;
+        justify-content: center;
+        width: 80%;
         grid-template-columns: 244px 244px;
     }
 }
