@@ -136,7 +136,7 @@ const CreatePost = ({ event }) => {
                       if (res.success) {
                           setRedirect(true)
                       } else {
-                          triggerError(res.message, false)
+                          triggerError(res.message ?? 'Something went wrong.', false)
                       }
                   })
                   .catch(() => {
@@ -148,7 +148,7 @@ const CreatePost = ({ event }) => {
                       if (res.success) {
                           setRedirect(true)
                       } else {
-                          triggerError(res.message, false)
+                          triggerError(res.message ?? 'Something went wrong.', false)
                       }
                   })
                   .catch(() => {
@@ -409,7 +409,7 @@ const CreatePost = ({ event }) => {
                         </div>
                     </div>
                     <div className="publish-container">
-                        <Button onClick={addPost}>
+                        <Button onClick={() => addPost()}>
                             <LocaleText phrase="feed/create_post/publish" />
                         </Button>
                         <Button onClick={() => addPost(true)} color="#9e9e9e">
