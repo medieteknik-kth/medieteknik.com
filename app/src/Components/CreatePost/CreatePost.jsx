@@ -17,11 +17,11 @@ import {
 import Switch from '../Common/Form/Switch'
 import TimePicker from '../Common/Form/TimePicker'
 import DatePicker from '../Common/Form/DatePicker'
+import Checkbox from '../Common/Checkbox/checkbox'
 
 const CreatePost = ({ event }) => {
     const [loadingCommittees, setLoadingCommittees] = useState(false)
     const [committees, setCommittees] = useState([])
-    const [draft, setDraft] = useState(false)
     const [scheduled, setScheduled] = useState(false)
     const [scheduledDate, setScheduledDate] = useState(new Date())
     const [scheduledTime, setScheduledTime] = useState(new Date())
@@ -32,6 +32,7 @@ const CreatePost = ({ event }) => {
     const [committeeId, setCommitteeId] = useState(null)
     const [headerImage, setHeaderImage] = useState(null)
     const [hasError, setHasError] = useState(false)
+    const [errMsg, setErrMsg] = useState(false)
     const [redirect, setRedirect] = useState(false)
     const [useEn, setUseEn] = useState(false)
     const { lang } = useContext(LocaleContext)
@@ -69,29 +70,25 @@ const CreatePost = ({ event }) => {
         return str === '<p><br></p>' || str === ''
     }
 
-    const triggerError = () => {
-        scrollToTop()
+    const triggerError = (message, scroll = true) => {
+        if (scroll) scrollToTop()
+        setErrMsg(message)
         setHasError(true)
     }
 
     const combineDateAndTime = (date, time) => {
-        const timeString = time.getHours() + ':' + time.getMinutes() + ':00';
-    
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1; // Jan is 0, dec is 11
-        var day = date.getDate();
-        var dateString = '' + year + '-' + month + '-' + day;
-        var combined = new Date(dateString + ' ' + timeString);
-    
-        return combined;
-    };
+        const timeString = time.getHours() + ':' + time.getMinutes() + ':00'
 
-    const addDraft = () => {
-        setDraft(true)
-        addPost()
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1 // Jan is 0, dec is 11
+        var day = date.getDate()
+        var dateString = '' + year + '-' + month + '-' + day
+        var combined = new Date(dateString + ' ' + timeString)
+
+        return combined
     }
 
-    async function addPost() {
+    async function addPost(draft=false) {
         if (checkEmptyQuillBody(body)) {
             triggerError()
             return
@@ -103,7 +100,9 @@ const CreatePost = ({ event }) => {
             title,
             title_en: useEn ? enTitle : title,
             header_image: headerImage,
-            scheduled_date: scheduled? combineDateAndTime(scheduledDate, scheduledTime).toISOString() : '',
+            scheduled_date: scheduled
+                ? combineDateAndTime(scheduledDate, scheduledTime).toISOString()
+                : '',
             draft,
         }
         postData = event
@@ -111,8 +110,14 @@ const CreatePost = ({ event }) => {
                   ...postData,
                   ...{
                       location,
-                      event_date: combineDateAndTime(startDate, startTime).toISOString(),
-                      end_date: combineDateAndTime(endDate, endTime).toISOString(),
+                      event_date: combineDateAndTime(
+                          startDate,
+                          startTime
+                      ).toISOString(),
+                      end_date: combineDateAndTime(
+                          endDate,
+                          endTime
+                      ).toISOString(),
                       facebook_link: facebookLink,
                       tags: [],
                   },
@@ -131,7 +136,7 @@ const CreatePost = ({ event }) => {
                       if (res.success) {
                           setRedirect(true)
                       } else {
-                          triggerError()
+                          triggerError(res.message, false)
                       }
                   })
                   .catch(() => {
@@ -143,7 +148,7 @@ const CreatePost = ({ event }) => {
                       if (res.success) {
                           setRedirect(true)
                       } else {
-                          triggerError()
+                          triggerError(res.message, false)
                       }
                   })
                   .catch(() => {
@@ -371,15 +376,17 @@ const CreatePost = ({ event }) => {
                             </div>
                             <h5 className="scheduled-header">
                                 <LocaleText phrase="feed/create_post/schedule" />
-                            <input
-                                className="alumniCheckbox"
-                                type="checkbox"
-                                value="alumni"
-                                checked={scheduled}
-                                name="alumni"
-                                placeholder="Alumni"
-                            /></h5>
-                            <div style={{display: 'flex'}}>
+                                <div>
+                                    <Checkbox
+                                        isChecked={scheduled}
+                                        checkboxHandler={() =>
+                                            setScheduled(!scheduled)
+                                        }
+                                        colorTheme="light"
+                                    />
+                                </div>
+                            </h5>
+                            <div className='schedule'>
                                 <DatePicker
                                     onChange={setScheduledDate}
                                     value={scheduledDate}
@@ -405,9 +412,12 @@ const CreatePost = ({ event }) => {
                         <Button onClick={addPost}>
                             <LocaleText phrase="feed/create_post/publish" />
                         </Button>
-                        <Button onClick={addDraft} color='#9e9e9e'>
+                        <Button onClick={() => addPost(true)} color="#9e9e9e">
                             <LocaleText phrase="feed/create_post/draft" />
                         </Button>
+                    </div>
+                    <div className="error-msg">
+                        <p>{hasError && errMsg}</p>
                     </div>
                 </div>
             </div>

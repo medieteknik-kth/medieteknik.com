@@ -202,7 +202,6 @@ class PostListResource(Resource):
         """
         scheduled_condition = [Post.scheduled_date <= datetime.now(), Post.scheduled_date == None]
         posts = Post.query.filter(and_(Post.draft == False, or_(*scheduled_condition)))
-        posts = Post.query.all()
         data = [post.to_dict() for post in posts]
         return jsonify(data)
 

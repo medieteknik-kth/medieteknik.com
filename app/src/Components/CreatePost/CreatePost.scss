@@ -55,7 +55,16 @@
 
             .scheduled-header {
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
+
+                > div {
+                    padding-top: 0.1em;
+                    padding-left: 0.5em;
+                }
+            }
+
+            .schedule {
+                display: flex;
             }
         }
 
