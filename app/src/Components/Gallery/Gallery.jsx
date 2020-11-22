@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import './Gallery.css';
+import classes from './Gallery.module.scss';
 import AlbumPreview from './AlbumPreview/AlbumPreview';
+
+import SideMenu from '../Common/SideMenu/sideMenu';
+
 import { LocaleText } from '../../Contexts/LocaleContext';
 
 import Api from '../../Utility/Api';
@@ -16,20 +19,24 @@ const Gallery = () => {
   }, []);
 
   return (
-    (albums == null ? <div />
-      : (
-        <div>
-          <div className="gallery-header">
-            <h2>
-              <LocaleText phrase="gallery/gallery_header" />
-            </h2>
-          </div>
-          <div className="gallery-content">
-            {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
-          </div>
+        <div className={classes.Gallery}>
+            <SideMenu />
+            {(albums == null ? <div /> : 
+                (
+                    <div>
+                        <div className={classes.galleryHeader}>
+                            <h2>
+                                <LocaleText phrase="gallery/gallery_header" />
+                            </h2>
+                        </div>
+                        <div className={classes.galleryContent}>
+                            {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
+                        </div>
+                    </div>
+                ))
+            }
         </div>
-      ))
-  );
+    )
 };
 
 export default Gallery;

@@ -1,18 +1,25 @@
-.gallery-header {
+.Gallery {
+    display: flex;
+    width: 80%;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.galleryHeader {
     text-align: center;
     text-transform: uppercase;
     padding: 2em;
 }
 
-.gallery-content {
+.galleryContent {
     padding-left: 5%;
 }
 
 @media (max-width: 800px) {
-    .gallery-header {
+    .galleryHeader {
         padding: 0.5em 0 0 0;
     }
-    .gallery-content {
+    .galleryContent {
         padding-left: 0;
         padding: 0 1em 0 1em;
     }
