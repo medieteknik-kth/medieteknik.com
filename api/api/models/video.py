@@ -18,6 +18,7 @@ class Video(db.Model):
             "id": self.id,
             "title": self.title,
             "url": "https://stream.mux.com/" + self.mux_playback_id + ".m3u8",
+            "thumbnail": "https://image.mux.com/" + self.mux_playback_id + "/thumbnail.jpg",
             "uploadedAt": self.uploaded_at,
             "requiresLogin": self.requires_login,
             "playlists": [playlist.id for playlist in self.playlists]

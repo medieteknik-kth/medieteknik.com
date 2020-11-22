@@ -600,8 +600,8 @@ def route_create_all():
 
     video = Video()
     video.title = "Test Video"
-    video.mux_asset_id = "K3yVgsacW0041kgr5UncgHnZhBBPsgnU01Rhi1BRcCZqk"
-    video.mux_playback_id = "fCYPrJn9xscSHKpAmjReeiEDm201n13f253tSPYol5Kw"
+    video.mux_asset_id = "028OTp9YD3StzkPhwy401iH7Ov8we3isEzriJjdPGHycQ"
+    video.mux_playback_id = "92HqFH2vPq888Dj1e3Lk4nO2FgRCtbr1TGR02bk029oJI"
     video.requires_login = False
 
     playlist = VideoPlaylist()
