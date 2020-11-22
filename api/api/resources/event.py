@@ -12,6 +12,8 @@ from api.db import db
 from api.models.event import Event
 from api.models.post_tag import PostTag
 
+from api.resources.common import parseBoolean
+
 SAVE_FOLDER = os.path.join(os.getcwd(), "api", "static", "events")
 PATH = "static/events/"
 ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -219,8 +221,7 @@ def add_event(request, user_id):
               body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
               body_en=params["body_en"], title_en=params["title_en"], user_id=user_id)
 
-    add_attr(e, params, "scheduled_date")
-    add_attr(e, params, "draft")
+    add_cols(params, e)
 
     if "header_image" in request.files:
         image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
@@ -258,6 +259,18 @@ def update_event(request,id):
             e.tags.append(tag)
     db.session.commit()
 
-def add_attr(event, params, attr):
-  if params.get(attr):
-    setattr(event, attr, params.get(attr))
+def add_cols(data, event):
+    date_cols = ["scheduled_date"]
+    boolean_cols = ["draft"]
+
+    for col in dynamic_cols: 
+        if data.get(col):
+            setattr(event, col, data.get(col))
+
+    for col in boolean_cols: 
+      if data.get(col):
+          setattr(post, col, parseBoolean(data.get(col)))
+
+    for col in boolean_cols: 
+      if data.get(col):
+          setattr(event, col, bool(data.get(col)))

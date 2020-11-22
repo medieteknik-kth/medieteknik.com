@@ -52,15 +52,28 @@
             .en-switch-container {
                 padding: 1em 0.5em;
             }
+
+            .scheduled-header {
+                display: flex;
+                align-items: center;
+            }
         }
 
         .error-msg {
             color: $error-color;
         }
 
-        .create-button {
+        .publish-container {
             display: flex;
             padding-top: 2em;
+            justify-content: space-between;
+
+            @media screen and (max-width: $mobile-breakpoint) {
+                > div {
+                    margin-bottom: 0.5em;
+                }
+                flex-direction: column;
+            }
         }
 
         .quill {

@@ -5,14 +5,13 @@
 }
 
 .date-picker {
-
-    input, button {
+    input,
+    button {
         &:focus {
-    
             outline: none;
         }
     }
-    
+
     button {
         svg {
             stroke: $mustard-yellow !important;
@@ -22,8 +21,13 @@
     .date-icon {
         margin-top: 1px;
         height: 1em;
-    }    
+    }
 
+    &.disabled {
+        .react-date-picker__wrapper {
+            opacity: 0.4;
+        }
+    }
 }
 
 .react-date-picker__wrapper {

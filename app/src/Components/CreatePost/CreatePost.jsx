@@ -21,6 +21,10 @@ import DatePicker from '../Common/Form/DatePicker'
 const CreatePost = ({ event }) => {
     const [loadingCommittees, setLoadingCommittees] = useState(false)
     const [committees, setCommittees] = useState([])
+    const [draft, setDraft] = useState(false)
+    const [scheduled, setScheduled] = useState(false)
+    const [scheduledDate, setScheduledDate] = useState(new Date())
+    const [scheduledTime, setScheduledTime] = useState(new Date())
     const [title, setTitle] = useState('')
     const [enTitle, setEnTitle] = useState('')
     const [body, setBody] = useState('')
@@ -41,15 +45,20 @@ const CreatePost = ({ event }) => {
 
     useEffect(() => {
         setLoadingCommittees(true)
-        Api.Me.Committees.GetAll().then((data) => {
-            setCommittees(
-                data.length > 0
-                    ? data.map((committee) => {
-                          return { label: committee.name, value: committee.id }
-                      })
-                    : []
-            )
-        }).finally(() => setLoadingCommittees(false))
+        Api.Me.Committees.GetAll()
+            .then((data) => {
+                setCommittees(
+                    data.length > 0
+                        ? data.map((committee) => {
+                              return {
+                                  label: committee.name,
+                                  value: committee.id,
+                              }
+                          })
+                        : []
+                )
+            })
+            .finally(() => setLoadingCommittees(false))
     }, [])
 
     const scrollToTop = () => {
@@ -65,6 +74,23 @@ const CreatePost = ({ event }) => {
         setHasError(true)
     }
 
+    const combineDateAndTime = (date, time) => {
+        const timeString = time.getHours() + ':' + time.getMinutes() + ':00';
+    
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1; // Jan is 0, dec is 11
+        var day = date.getDate();
+        var dateString = '' + year + '-' + month + '-' + day;
+        var combined = new Date(dateString + ' ' + timeString);
+    
+        return combined;
+    };
+
+    const addDraft = () => {
+        setDraft(true)
+        addPost()
+    }
+
     async function addPost() {
         if (checkEmptyQuillBody(body)) {
             triggerError()
@@ -77,23 +103,26 @@ const CreatePost = ({ event }) => {
             title,
             title_en: useEn ? enTitle : title,
             header_image: headerImage,
+            scheduled_date: scheduled? combineDateAndTime(scheduledDate, scheduledTime).toISOString() : '',
+            draft,
         }
         postData = event
             ? {
                   ...postData,
                   ...{
                       location,
-                      date: startDate.toISOString(),
-                      end_date: endDate.toISOString(),
+                      event_date: combineDateAndTime(startDate, startTime).toISOString(),
+                      end_date: combineDateAndTime(endDate, endTime).toISOString(),
                       facebook_link: facebookLink,
-                      tags: []
+                      tags: [],
                   },
               }
             : postData
 
-        
-        const formData = new FormData();
-        Object.keys(postData).forEach(key => formData.append(key, postData[key]));
+        const formData = new FormData()
+        Object.keys(postData).forEach((key) =>
+            formData.append(key, postData[key])
+        )
 
         return event
             ? Api.Events.PostForm(formData)
@@ -123,20 +152,20 @@ const CreatePost = ({ event }) => {
     }
 
     if (redirect) {
-        return <Redirect to='/feed' />
+        return <Redirect to="/feed" />
     }
 
     return (
         <>
-            <div className='create-post-header'>
-                <NavLink to='/feed'>
+            <div className="create-post-header">
+                <NavLink to="/feed">
                     <Button small>
-                        <LocaleText phrase='feed/header' />
+                        <LocaleText phrase="feed/header" />
                     </Button>
                 </NavLink>
             </div>
-            <div className='create-post-container'>
-                <div className='create-post'>
+            <div className="create-post-container">
+                <div className="create-post">
                     <h2>
                         <LocaleText
                             phrase={`feed/${
@@ -145,9 +174,9 @@ const CreatePost = ({ event }) => {
                         />
                     </h2>
                     <h5>
-                        <LocaleText phrase='feed/create_post/title' />
+                        <LocaleText phrase="feed/create_post/title" />
                     </h5>
-                    <div className='title-input'>
+                    <div className="title-input">
                         <Input
                             placeholder={translateToString({
                                 se: 'Titel',
@@ -181,9 +210,9 @@ const CreatePost = ({ event }) => {
                             />
                         )}
                     </div>
-                    <div className='body-input'>
+                    <div className="body-input">
                         <h5>
-                            <LocaleText phrase='feed/create_post/body' />
+                            <LocaleText phrase="feed/create_post/body" />
                         </h5>
                         <ReactQuill
                             placeholder={translateToString({
@@ -191,20 +220,20 @@ const CreatePost = ({ event }) => {
                                 en: 'Body',
                                 lang,
                             })}
-                            theme='snow'
+                            theme="snow"
                             onChange={(val) => setBody(val)}
                         />
                         {hasError && checkEmptyQuillBody(body) && (
-                            <div className='error-msg'>
+                            <div className="error-msg">
                                 <p>
-                                    <LocaleText phrase='feed/create_post/body_err' />
+                                    <LocaleText phrase="feed/create_post/body_err" />
                                 </p>
                             </div>
                         )}
                         {useEn && (
                             <>
                                 <h5>
-                                    <LocaleText phrase='feed/create_post/body_en' />
+                                    <LocaleText phrase="feed/create_post/body_en" />
                                 </h5>
                                 <ReactQuill
                                     placeholder={translateToString({
@@ -212,13 +241,13 @@ const CreatePost = ({ event }) => {
                                         en: 'English body',
                                         lang,
                                     })}
-                                    theme='snow'
+                                    theme="snow"
                                     onChange={(val) => setEnBody(val)}
                                 />
                                 {hasError && checkEmptyQuillBody(enBody) && (
-                                    <div className='error-msg'>
+                                    <div className="error-msg">
                                         <p>
-                                            <LocaleText phrase='feed/create_post/body_err' />
+                                            <LocaleText phrase="feed/create_post/body_err" />
                                         </p>
                                     </div>
                                 )}{' '}
@@ -228,7 +257,7 @@ const CreatePost = ({ event }) => {
                     {event && (
                         <>
                             <h5>
-                                <LocaleText phrase='feed/create_event/location' />
+                                <LocaleText phrase="feed/create_event/location" />
                             </h5>
                             <Input
                                 placeholder={translateToString({
@@ -244,7 +273,7 @@ const CreatePost = ({ event }) => {
                                 })}
                             />
                             <h5>
-                                <LocaleText phrase='feed/create_event/facebook_link' />
+                                <LocaleText phrase="feed/create_event/facebook_link" />
                             </h5>
                             <Input
                                 placeholder={translateToString({
@@ -252,14 +281,16 @@ const CreatePost = ({ event }) => {
                                     en: 'Facebook link to the event',
                                     lang,
                                 })}
-                                onChange={(e) => setFacebookLink(e.target.value)}
+                                onChange={(e) =>
+                                    setFacebookLink(e.target.value)
+                                }
                             />
-                            <div className='event-date-time'>
+                            <div className="event-date-time">
                                 <div>
                                     <div>
                                         <h5>
-                                            <LocaleText phrase='feed/create_event/start' />
-                                            <LocaleText phrase='feed/create_event/date' />
+                                            <LocaleText phrase="feed/create_event/start" />
+                                            <LocaleText phrase="feed/create_event/date" />
                                         </h5>
                                         <DatePicker
                                             onChange={setStartDate}
@@ -268,8 +299,8 @@ const CreatePost = ({ event }) => {
                                     </div>
                                     <div>
                                         <h5>
-                                            <LocaleText phrase='feed/create_event/start' />
-                                            <LocaleText phrase='feed/create_event/time' />
+                                            <LocaleText phrase="feed/create_event/start" />
+                                            <LocaleText phrase="feed/create_event/time" />
                                         </h5>
 
                                         <TimePicker
@@ -281,8 +312,8 @@ const CreatePost = ({ event }) => {
                                 <div>
                                     <div>
                                         <h5>
-                                            <LocaleText phrase='feed/create_event/end' />
-                                            <LocaleText phrase='feed/create_event/date' />
+                                            <LocaleText phrase="feed/create_event/end" />
+                                            <LocaleText phrase="feed/create_event/date" />
                                         </h5>
                                         <DatePicker
                                             onChange={setEndDate}
@@ -291,8 +322,8 @@ const CreatePost = ({ event }) => {
                                     </div>
                                     <div>
                                         <h5>
-                                            <LocaleText phrase='feed/create_event/end' />
-                                            <LocaleText phrase='feed/create_event/time' />
+                                            <LocaleText phrase="feed/create_event/end" />
+                                            <LocaleText phrase="feed/create_event/time" />
                                         </h5>
 
                                         <TimePicker
@@ -304,10 +335,10 @@ const CreatePost = ({ event }) => {
                             </div>
                         </>
                     )}
-                    <div className='post-extras'>
-                        <div className='extras-select'>
+                    <div className="post-extras">
+                        <div className="extras-select">
                             <h5>
-                                <LocaleText phrase='feed/create_post/committee' />
+                                <LocaleText phrase="feed/create_post/committee" />
                             </h5>
                             <Dropdown
                                 options={[
@@ -326,10 +357,10 @@ const CreatePost = ({ event }) => {
                                     setCommitteeId(option.value)
                                 }
                             />
-                            <h5 className='en-switch-header'>
-                                <LocaleText phrase='feed/create_post/en_ver' />
+                            <h5 className="en-switch-header">
+                                <LocaleText phrase="feed/create_post/en_ver" />
                             </h5>
-                            <div className='en-switch-container'>
+                            <div className="en-switch-container">
                                 <Switch
                                     checked={useEn}
                                     onClick={() => {
@@ -338,19 +369,44 @@ const CreatePost = ({ event }) => {
                                     }}
                                 />
                             </div>
+                            <h5 className="scheduled-header">
+                                <LocaleText phrase="feed/create_post/schedule" />
+                            <input
+                                className="alumniCheckbox"
+                                type="checkbox"
+                                value="alumni"
+                                checked={scheduled}
+                                name="alumni"
+                                placeholder="Alumni"
+                            /></h5>
+                            <div style={{display: 'flex'}}>
+                                <DatePicker
+                                    onChange={setScheduledDate}
+                                    value={scheduledDate}
+                                    disabled={!scheduled}
+                                />
+                                <TimePicker
+                                    onChange={setScheduledTime}
+                                    value={scheduledTime}
+                                    disabled={!scheduled}
+                                />
+                            </div>
                         </div>
-                        <div className='post-image-upload'>
+                        <div className="post-image-upload">
                             <h5>
-                                <LocaleText phrase='feed/create_post/image' />
+                                <LocaleText phrase="feed/create_post/image" />
                             </h5>
                             <YellowImageUpload
                                 onChange={(image) => setHeaderImage(image)}
                             />
                         </div>
                     </div>
-                    <div className='create-button'>
+                    <div className="publish-container">
                         <Button onClick={addPost}>
-                            <LocaleText phrase='feed/create_post/create' />
+                            <LocaleText phrase="feed/create_post/publish" />
+                        </Button>
+                        <Button onClick={addDraft} color='#9e9e9e'>
+                            <LocaleText phrase="feed/create_post/draft" />
                         </Button>
                     </div>
                 </div>
