@@ -32,11 +32,22 @@ class AlbumListResource(Resource):
         if receptionAppropriate:
             album.receptionAppropriate = receptionAppropriate
 
+        #data to add to the image
+        photographer = data.get("photographer")
+        needsCred = inputs.boolean(data.get("needsCred"))
+        editingAllowed = inputs.boolean(data.get("editingAllowed"))
+
         photos = request.files.getlist("photos")
         if photos:
             for photo in photos:
                 image = Image()
                 image.url = upload_album_photo(photo, album.title)
+                if photographer:
+                    image.photographer = photographer
+                if creationDate:
+                    image.date = creationDate
+                image.needsCred = needsCred
+                image.editingAllowed = editingAllowed 
                 album.images.append(image)
                 db.session.add(image)
         

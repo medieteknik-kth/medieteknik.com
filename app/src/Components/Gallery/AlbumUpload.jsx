@@ -21,6 +21,8 @@ const AlbumUpload = () => {
     const [redirect, setRedirect] = useState(false);
     const [albumId, setAlbumId] = useState(null);
     const [date, setDate] = useState(new Date());
+    const [needsCred, setNeedsCred] = useState(true);
+    const [editingAllowed, setEditingAllowed] = useState(false);
     const [receptionAppropriate, setReceptionAppropriate] = useState(false);
     const { lang } = useContext(LocaleContext);
 
@@ -40,12 +42,17 @@ const AlbumUpload = () => {
         const body = {
             name: title,
             receptionAppropriate,
+            needsCred,
+            editingAllowed
         }
 
         const formData = new FormData();
         Object.keys(body).map(key => formData.append(key, body[key]));
         if (includeDate) {
             formData.append("creationDate", date.toISOString())
+        }
+        if(photographer) {
+            formData.append("photographer", photographer)
         }
         //append images 
         for (let image of images) {
@@ -87,6 +94,14 @@ const AlbumUpload = () => {
                     <div className="date-includer">
                         <input type="checkbox" defaultChecked={receptionAppropriate} onChange={e => setReceptionAppropriate(e.target.checked)}></input>
                         <p>Albumet är mottagningsvänligt</p>
+                    </div>
+                    <div className="date-includer">
+                        <input type="checkbox" defaultChecked={needsCred} onChange={e => setNeedsCred(e.target.checked)}></input>
+                        <p>Fotografen måste få cred</p>
+                    </div>
+                    <div className="date-includer">
+                        <input type="checkbox" defaultChecked={editingAllowed} onChange={e => setEditingAllowed(e.target.checked)}></input>
+                        <p>Bilderna får användas av andra</p>
                     </div>
                 </div>
                 <div className="preview-container">
