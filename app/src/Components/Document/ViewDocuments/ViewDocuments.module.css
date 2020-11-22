@@ -115,7 +115,7 @@ h3 {
 }
 
 .createCardsViewLogo {
-    border: 1.25px solid #909090;
+    border: 2px solid #909090;
     background-color: #f0f0f0;
     border-radius: 1px;
     height: 27px;
@@ -125,7 +125,7 @@ h3 {
 }
 
 .createCardsViewLogoSelected {
-    border: 1.25px solid #f0c900;
+    border: 2px solid #f0c900;
     background-color: #f0f0f0;
     border-radius: 1px;
     height: 27px;
@@ -134,7 +134,7 @@ h3 {
 }
 
 .createListViewLogo {
-    border: 1.25px solid #909090;
+    border: 2px solid #909090;
     background-color: #f0f0f0;
     border-radius: 1px;
     height: 27px;
@@ -145,7 +145,7 @@ h3 {
 
 .createListViewLogoSelected {
     height: 27px;
-    border: 1.25px solid #f0c900;
+    border: 2px solid #f0c900;
     border-radius: 1px;
     background-color: #f0f0f0;
     height: 27px;
