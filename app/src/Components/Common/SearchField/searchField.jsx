@@ -1,6 +1,4 @@
 import React, { useRef, useContext } from 'react';
-import Radium, {Style} from 'radium';
-
 
 import classes from './searchField.module.scss';
 
@@ -38,4 +36,4 @@ const SearchField = (props) => {
     )
 }
 
-export default Radium(SearchField);
+export default SearchField;
