@@ -21,7 +21,13 @@
 
     .time-icon {
         height: 1em;
-    }    
+    }   
+    
+    &.disabled {
+        .react-time-picker__wrapper {
+            opacity: 0.4;
+        }
+    }
     
 }
 

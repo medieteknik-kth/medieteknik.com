@@ -145,9 +145,17 @@
                 "se": "Lägg till en engelsk version",
                 "en": "Add English version"
             },
-            "create": {
-                "se": "Skapa",
-                "en": "Create"
+            "publish": {
+                "se": "Publicera",
+                "en": "Publish"
+            },
+            "schedule": {
+                "se": "Schemalägg",
+                "en": "Schedule"
+            },
+            "draft": {
+                "se": "Spara utkast",
+                "en": "Save draft"
             }
         },
         "create_event": {

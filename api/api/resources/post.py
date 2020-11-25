@@ -1,5 +1,6 @@
 from flask import jsonify, session, request, make_response
 from flask_restful import Resource
+from sqlalchemy import or_, and_, cast
 from datetime import datetime
 import json
 
@@ -19,9 +20,12 @@ import uuid
 
 import base64
 
+from api.resources.common import parseBoolean
+
 SAVE_FOLDER = os.path.join(os.getcwd(), "api", "static", "posts")
 IMAGE_PATH = "static/posts/"
 IMAGE_COL = "header_image"
+ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 class PostResource(Resource):
     def get(self, id):
@@ -74,6 +78,11 @@ class PostResource(Resource):
                 type: string
               body_en:
                 type: string
+              scheduled_date:
+                type: string
+                format: date-time
+              draft:
+                type: boolean
               tags:
                 type: array
                 items:
@@ -148,6 +157,11 @@ class PostAddResouce(Resource):
                 type: string
               body_en:
                 type: string
+              scheduled_date:
+                type: string
+                format: date-time
+              draft:
+                type: boolean
               tags:
                 type: array
                 items:
@@ -166,9 +180,7 @@ class PostAddResouce(Resource):
             if user.id:
                 post = Post()
                 post.user_id = user.id
-                
                 add_cols(data, post, request)
-
                 db.session.add(post)
                 db.session.commit()
                 return make_response(jsonify(success=True, id=post.id))
@@ -187,17 +199,32 @@ class PostListResource(Resource):
         responses:
             200:
                 description: OK
-        """   
-        posts = Post.query.all()
+        """
+        scheduled_condition = [Post.scheduled_date <= datetime.now(), Post.scheduled_date == None]
+        posts = Post.query.filter(and_(Post.draft == False, or_(*scheduled_condition)))
         data = [post.to_dict() for post in posts]
         return jsonify(data)
 
+def parseBoolean(string):
+    d = {'true': True, 'false': False}
+    return d.get(string, string)
+
 def add_cols(data, post, request):
     dynamic_cols = ["committee_id", "title", "body", "title_en", "body_en"]
+    date_cols = ["scheduled_date"]
+    boolean_cols = ["draft"]
 
     for col in dynamic_cols: 
         if data.get(col):
             setattr(post, col, data.get(col))
+
+    for col in date_cols: 
+      if data.get(col):
+          setattr(post, col, datetime.strptime(data.get(col), ISO_DATE_DEF))
+
+    for col in boolean_cols: 
+      if data.get(col):
+          setattr(post, col, parseBoolean(data.get(col)))
 
     if IMAGE_COL in request.files:
         image = request.files[IMAGE_COL]
