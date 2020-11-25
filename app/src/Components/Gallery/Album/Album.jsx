@@ -40,7 +40,7 @@ const Album = () => {
           ) : <></>}
         <div className="album-header">
           <h2>{data.title}</h2>
-          <h5>{new Date(data.creationDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, ' ')}</h5>
+          <h5>{data.date ? new Date(data.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, ' ') : <></>}</h5>
         </div>
         <div className="album-container">
           <div className="album-grid">
