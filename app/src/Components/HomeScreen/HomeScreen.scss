@@ -1,0 +1,85 @@
+
+
+@import '../Common/Variables.scss';
+
+.home-screen {
+    position: relative;
+
+    display: flex;
+    justify-content: stretch;
+    flex-direction: column;
+    align-items: stretch;
+
+    text-align: center;
+    background-position: bottom;
+    background-size: cover;
+    background-attachment: fixed;
+
+    min-height: -webkit-fill-available;
+    min-height: calc(100vh - 80px);
+
+    background-image: url('header.jpg');
+
+    overflow: hidden;
+
+    .home-screen-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-top: 1em;
+    }
+
+    .home-screen-scroll-button {
+        margin: auto;
+        margin-bottom: 35px;
+        margin-top: 10px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .home-screen-content {
+        justify-content: center;
+    }
+
+    .home-header {
+        padding-top: 15%;
+        text-align: center;
+        padding-bottom: 10%;
+
+        h2,
+        h3 {
+            color: #fff;
+            line-height: normal;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            color: $mustard-yellow;
+            font-size: 5.5em;
+            letter-spacing: 3px;
+            margin: 30px;
+            line-height: normal;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-weight: 410;
+        }
+
+        h3 {
+            font-weight: 400;
+        }
+
+        @media (max-width: 800px) {
+            h3 {
+                font-size: 1.3em;
+                word-wrap: break-word;
+            }
+        
+            h1 {
+                font-size: 2.5em;
+                margin: 10px;
+            }
+        }
+    }
+}

@@ -1,0 +1,52 @@
+@import '../Common/Variables.scss';
+
+.landing-info {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    background-color: white;
+    padding: 2em 1em 2% 1em;
+    text-align: center;
+
+    
+    & > h3 > span {
+        font-weight: 400;
+        border-bottom: solid 3px $mustard-yellow;
+        text-transform: uppercase;
+    }
+
+    .landing-grid {
+
+        h4 {
+            margin-bottom: 1.5em;
+            span {
+                background: $mustard-yellow;
+                padding: 0.3em 1.8em;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            text-align: justify;
+            font-weight: 350;
+        }
+    }
+
+    .landing-instagram {
+        padding: 2em;
+    }
+
+    .landing-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10%;
+        padding: 2em 20%;
+
+        @media (max-width: 800px) {
+            grid-template-columns: 1fr;
+            grid-gap: 2em;
+            padding: 2em 2em;
+        }
+    }
+}

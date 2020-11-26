@@ -1,30 +1,35 @@
 import React from 'react';
 
-import './LandingPage.css';
+import './LandingPage.scss';
 
 import { LocaleText } from '../../Contexts/LocaleContext';
+import HomeScreen from '../HomeScreen/HomeScreen';
+import Feed from '../Feed/Feed';
+import InstagramFeed from '../InstagramFeed/InstagramFeed';
 
 export default function LandingPage() {
   return (
-    <div className="landing-page">
-      <div className="landing-header">
-        <h2 className="landing-text-h2"><LocaleText phrase="landing/welcome"/></h2>
-        <h1 className="medieteknik"><LocaleText phrase="common/media_technology"/></h1>
-        <h3 className="landing-text-h3"><LocaleText phrase="common/kth_full"/></h3>
-      </div>
-      <div className="landing-info">
-        <h3><LocaleText phrase="landing/what_is"/></h3>
+    <div className="landing-page" >
+      <HomeScreen/>
+      <div className="landing-info" id="landing-info">
+        <h3><span><LocaleText phrase="landing/what_is"/></span></h3>
           <div className="landing-grid">
-            <div className="grid_item">
-              <h4><LocaleText phrase="landing/the_chapter"/></h4>
+            <div>
+              <h4><span><LocaleText phrase="landing/the_chapter"/></span></h4>
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
-            <div className="grid-item">
-              <h4><LocaleText phrase="landing/the_program"/></h4>
+            <div>
+              <h4><span><LocaleText phrase="landing/the_program"/></span></h4>
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
           </div>
       </div>
+      
+      <Feed/>
+          <div className="landing-info">
+            <h3><span><LocaleText phrase="landing/on_instagram"/></span></h3>
+            <InstagramFeed/>
+          </div>
     </div>
   );
 }
