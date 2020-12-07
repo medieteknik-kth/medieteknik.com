@@ -6,7 +6,9 @@ import { LocaleText } from '../../Contexts/LocaleContext';
 import HomeScreen from '../HomeScreen/HomeScreen';
 import Feed from '../Feed/Feed';
 
+
 export default function LandingPage() {
+
   return (
     <div className="landing-page" >
       <HomeScreen/>
