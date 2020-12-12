@@ -1,0 +1,71 @@
+$borderRadius: 2px;
+
+.darkStyling, .lightStyling {
+    display: block;
+    position: relative;
+    padding-left: 23px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    user-select: none;
+    align-items: center;
+    border-radius: $borderRadius;
+}
+
+.darkStyling input, .lightStyling input {
+    padding-left: 100px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    text-decoration: none;
+    display: block;
+    border-radius: $borderRadius;
+}
+
+.darkStyling:hover input ~ .checkmark, .lightStyling:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+
+.lightStyling input:checked ~ .checkmark {
+    background-color: #f0c900;
+}
+
+.darkStyling input:checked ~ .checkmark {
+    background-color:#2d2d2d;
+}
+
+.darkStyling input:checked ~ .checkmark:after, .lightStyling input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.darkStyling .checkmark:after, .lightStyling .checkmark:after {
+    position: absolute;
+    left: 5px;
+    top: 0px;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #eee;
+    margin-top: 0px;
+    border-radius: $borderRadius;
+    border:1px solid #b7b6b6;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}

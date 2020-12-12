@@ -28,6 +28,7 @@ import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
 import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
+import AlbumUpload from './Components/Gallery/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
 
 export default function App() {
@@ -78,6 +79,9 @@ export default function App() {
             <Route path="/gallery">
               <PageWithMainMenu><Gallery /></PageWithMainMenu>
             </Route>
+            <Route path="/albumupload">
+              <PageWithMainMenu><AlbumUpload /></PageWithMainMenu>
+            </Route>
             <Route path="/album/:id">
               <PageWithMainMenu><Album /></PageWithMainMenu>
             </Route>
@@ -88,17 +92,18 @@ export default function App() {
               <PageWithMainMenu><CreatePost event /></PageWithMainMenu>
             </Route>
             <Route path="/user">
-              <PageWithMainMenu><Profile/></PageWithMainMenu>
+              <PageWithMainMenu><Profile /></PageWithMainMenu>
             </Route>
             <Route path="/managecommittee/:id">
-              <PageWithMainMenu><ManageCommittee/></PageWithMainMenu>
+              <PageWithMainMenu><ManageCommittee /></PageWithMainMenu>
             </Route>
+
             <Route
               path="/:pageSlug"
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
             />
           </Switch>
-          <Footer/>
+          <Footer />
         </UserProvider>
       </LocaleProvider>
     </Router>

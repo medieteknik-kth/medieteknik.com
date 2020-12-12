@@ -18,6 +18,8 @@ class Event(db.Model):
     title = db.Column(db.String, nullable=False)
     title_en = db.Column(db.String, nullable=True)
     date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    scheduled_date = db.Column(db.DateTime, default=None, nullable=True)
+    draft = db.Column(db.Boolean, default=False)
     body = db.Column(db.Text, nullable=False)
     body_en = db.Column(db.Text, nullable=True)
     location = db.Column(db.String)
@@ -42,6 +44,8 @@ class Event(db.Model):
                 "en": self.title_en
             },
             "date": self.date,
+            "scheduled_date": self.scheduled_date,
+            "draft": self.draft,
             "body": {
                 "se": self.body,
                 "en": self.body_en
