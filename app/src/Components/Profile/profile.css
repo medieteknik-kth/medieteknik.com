@@ -49,7 +49,7 @@
     
 }
 
-label {
+.floating-label-req, .URLfloating-label {
     color: #606060;
     font-weight: lighter;
     font-family: 'Roboto';

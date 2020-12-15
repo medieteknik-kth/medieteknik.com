@@ -5,7 +5,7 @@ import classes from './searchField.module.scss';
 import {
     LocaleContext,
     translateToString,
-} from '../../../Contexts/LocaleContext'
+} from '../../../Contexts/LocaleContext';
 
 const SearchField = (props) => {
     const searchInput = useRef(null);
@@ -20,19 +20,20 @@ const SearchField = (props) => {
     }
 
     return (
-        <input
-            className={searchClass}
-            type="text"
-            ref = {searchInput}
-            onKeyUp={() => props.handleSearch(searchInput.current.value)}
-            name="name"
-            placeholder={translateToString({
-                se: props.swedishPlaceholder,
-                en: props.englishPlaceholder,
-                lang,
-            })}
-            
-        />
+        <>
+            <input
+                className={searchClass}
+                type="text"
+                ref = {searchInput}
+                onKeyUp={() => props.handleSearch(searchInput.current.value)}
+                name="name"
+                placeholder={translateToString({
+                    se: props.swedishPlaceholder,
+                    en: props.englishPlaceholder,
+                    lang,
+                })}
+            />
+        </>
     )
 }
 
