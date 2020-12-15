@@ -79,6 +79,14 @@
         "the_program": {
             "se": "Utbildningen",
             "en": "The Program"
+        },
+        "read_more": {
+            "se": "Läs mer",
+            "en": "Read more"
+        },
+        "on_instagram": {
+            "se": "Medieteknik på Instagram",
+            "en": "Media Technnology on Instagram"
         }
     },
     "committee": {

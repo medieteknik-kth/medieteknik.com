@@ -38,7 +38,7 @@ const Feed = (props) => {
         };
 
     return (<div className='feed-container'>
-        <h2><LocaleText phrase='feed/header'/></h2>
+        {props.landingTitle ? <h3 className='landing-title'><span><LocaleText phrase='feed/header'/></span></h3> : <h2><LocaleText phrase='feed/header'/></h2>}
         { isLoading ? <Spinner/> :
             <div className='feed-cards'>
                 { cont ? cont.map((post, i) =>

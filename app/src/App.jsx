@@ -38,7 +38,7 @@ export default function App() {
         <UserProvider>
           <Switch>
             <Route exact path="/">
-              <PageWithMainMenu><LandingPage /></PageWithMainMenu>
+              <PageWithMainMenu transparent><LandingPage /></PageWithMainMenu>
             </Route>
             <Route exact path="/login">
               <PageWithMainMenu><Login /></PageWithMainMenu>
