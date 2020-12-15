@@ -14,16 +14,16 @@
     background-attachment: fixed;
 
     height: -webkit-fill-available;
-    height: calc(100vh - 80px);
+    height: calc(100vh);
 
     overflow: hidden;
 
     img {
-        height: calc(100vh - 80px);
+        height: calc(100vh);
 
         display: block;
         width: 100vw;
-        height: calc(100vh - 80px);
+        height: calc(100vh);
         object-fit: cover;
     }
 }
@@ -42,7 +42,7 @@
     background-attachment: fixed;
 
     min-height: -webkit-fill-available;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh);
 
     overflow: hidden;
 
@@ -61,7 +61,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 80px);
+            height: calc(100vh);
         }
     }
 

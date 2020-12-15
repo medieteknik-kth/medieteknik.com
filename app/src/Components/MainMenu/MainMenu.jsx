@@ -1,4 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, {
+  useState, useContext, useRef, useEffect,
+} from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -12,9 +14,10 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const PageWithMainMenu = (props) => {
+const PageWithMainMenu = ({ children, transparent }) => {
   const [mainMenuExpanded, setMainMenuExpanded] = useState(false);
   const [expandedSubMenu, setExpandedSubMenu] = useState(null);
+  const [hasScolled, setHasScrolled] = useState(false);
 
   const [hasCapturedToken, setHasCapturedToken] = useState(false);
   const { user, setToken } = useContext(UserContext);
@@ -22,12 +25,28 @@ const PageWithMainMenu = (props) => {
   const query = useQuery();
   const location = useLocation();
 
+  const menuBarRef = useRef();
+  menuBarRef.current = hasScolled;
+
   const token = query.get('token');
   if (token && !hasCapturedToken) {
     window.history.replaceState({}, document.title, location.pathname);
     setToken(token);
     setHasCapturedToken(true);
   }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 0;
+      if (menuBarRef.current !== scrolled) {
+        setHasScrolled(scrolled);
+      }
+    };
+    document.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const menus = [
     {
@@ -136,7 +155,7 @@ const PageWithMainMenu = (props) => {
   );
   return (
     <div className={styles.container}>
-      <div className={styles.mainMenu}>
+      <div className={`${styles.mainMenu} ${transparent && !hasScolled ? styles.transparent : ''}`}>
         <div className={styles.logoContainer}>
           <Link
             to="/"
@@ -174,8 +193,8 @@ const PageWithMainMenu = (props) => {
           {localeButton('')}
         </div>
       </div>
-      <div className={`${styles.content} ${mainMenuExpanded ? styles.contentWithExpandedMenu : ''}`}>
-        {props.children}
+      <div className={`${styles.content} ${transparent ? styles.transparent : ''} ${mainMenuExpanded ? styles.contentWithExpandedMenu : ''}`}>
+        {children}
       </div>
     </div>
   );

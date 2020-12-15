@@ -3,6 +3,7 @@ import './HomeScreen.scss'
 
 import ReactIdSwiperCustom from 'react-id-swiper/lib/ReactIdSwiper.custom'
 import { Swiper, Pagination, Autoplay } from 'swiper/js/swiper.esm'
+import smoothscroll from 'smoothscroll-polyfill'
 import 'swiper/css/swiper.min.css'
 
 import { LocaleText } from '../../Contexts/LocaleContext'
@@ -34,6 +35,7 @@ const HomeScreen = () => {
     //Takes for granted that the header album has id 1
     useEffect(() => {
         Api.Albums.GetById(1).then((r) => setHeaderImages(r.images))
+        smoothscroll.polyfill();
     }, [])
 
     return (
