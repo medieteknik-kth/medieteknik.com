@@ -15,37 +15,38 @@
     margin-bottom: 50px;
 }
 
-ul {
-    list-style: none;
-}
+// Gör om till klasser istället för att välja alla ul och li
+// ul {
+//     list-style: none;
+// }
 
-li:not(:first-child) {
-    padding-top: 7px;
-}
+// li:not(:first-child) {
+//     padding-top: 7px;
+// }
 
-li {
-    display: flex;
-    align-items: center;
-}
+// li {
+//     display: flex;
+//     align-items: center;
+// }
 
-li img {
-    height: 20px;
-    padding-right: 10px;
-}
+// li img {
+//     height: 20px;
+//     padding-right: 10px;
+// }
 
-h4 {
-    padding-top: 25px;
-}
+// h4 {
+//     padding-top: 25px;
+// }
 
 
 
-.scrollableList li {
-    color: #232323;
-    font-weight: 300;
-}
+// .scrollableList li {
+//     color: #232323;
+//     font-weight: 300;
+// }
 
-li:hover {
-    cursor: pointer;
-    font-weight: 400;
-}
+// li:hover {
+//     cursor: pointer;
+//     font-weight: 400;
+// }
 
