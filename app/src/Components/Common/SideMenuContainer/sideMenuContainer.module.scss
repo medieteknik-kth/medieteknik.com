@@ -1,0 +1,50 @@
+.SideMenuContainer {
+    font-family: '';
+    box-sizing: border-box;
+    background-color: #fff;
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+    0 0px 23.6px -10px rgba(0, 0, 0, 0.048),
+    0 0px 25.1px -10px rgba(0, 0, 0, 0.044),
+    0 0px 27.1px -10px rgba(0, 0, 0, 0.058),
+    0 0px 58px -10px rgba(0, 0, 0, 0.13)
+    ;
+
+    margin-bottom: 50px;
+}
+
+.SideMenuContainer ul {
+    list-style: none;
+}
+
+.SideMenuContainer li:not(:first-child) {
+    padding-top: 7px;
+}
+
+.SideMenuContainer li {
+    display: flex;
+    align-items: center;
+}
+
+.SideMenuContainer li img {
+    height: 20px;
+    padding-right: 10px;
+}
+
+.SideMenuContainer h4 {
+    padding-top: 25px;
+}
+
+
+.scrollableList li {
+    color: #232323;
+    font-weight: 300;
+}
+
+.SideMenuContainer li:hover {
+    cursor: pointer;
+    font-weight: 400;
+}
+

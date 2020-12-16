@@ -1,20 +1,21 @@
 import React, { useContext, useState, useEffect } from 'react';
 
 import classes from './sideMenu.module.scss';
-import SearchField from '../SearchField/searchField';
+import SearchField from '../../Common/SearchField/searchField';
 
 import fireIcon from '../../../Resources/Icons/fire.svg';
 import albumIcon from '../../../Resources/Icons/album.svg';
-import Checkbox from '../Checkbox/checkbox';
+import Checkbox from '../../Common/Checkbox/checkbox';
+import SideMenuContainer from '../../Common/SideMenuContainer/sideMenuContainer';
 
-import { committees } from '../utility';
+import { committees } from '../../Common/utility';
 
 import {
     LocaleContext,
     translateToString,
 } from '../../../Contexts/LocaleContext';
 
-import ScrollableContainer from '../ScrollableContainer/scrollableContainer';
+import ScrollableContainer from '../../Common/ScrollableContainer/scrollableContainer';
 
 const SideMenu = (props) => {
     const { lang } = useContext(LocaleContext);
@@ -93,7 +94,7 @@ const SideMenu = (props) => {
     } 
 
     return (
-        <div className={classes.SideMenu}>
+        <SideMenuContainer>
             <SearchField 
                 swedishPlaceholder = "Sök efter innehåll"
                 englishPlaceholder = "Search for content"
@@ -201,7 +202,7 @@ const SideMenu = (props) => {
                     ))}
                 </ul>
             </ScrollableContainer>
-        </div>
+        </SideMenuContainer>
     )
 }
 

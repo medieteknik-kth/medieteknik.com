@@ -612,6 +612,19 @@ def route_create_all():
     db.session.add(playlist)
 
     db.session.add(event1)
+
+    album = Album()
+    album.title = "Homepage Slideshow"
+    
+    landing_image1 = Image()
+    landing_image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+    landing_image2 = Image()
+    landing_image2.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+
+    album.images.append(landing_image1)
+    album.images.append(landing_image2)
+    db.session.add(album)
+
     db.session.commit()
 
     return "klar"
