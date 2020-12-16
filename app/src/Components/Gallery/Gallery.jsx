@@ -20,21 +20,17 @@ const Gallery = () => {
 
   return (
         <div className={classes.Gallery}>
-            <SideMenu />
-            {(albums == null ? <div /> : 
-                (
-                    <div>
-                        <div className={classes.galleryHeader}>
-                            <h2>
-                                <LocaleText phrase="gallery/gallery_header" />
-                            </h2>
-                        </div>
+            <h2><LocaleText phrase="gallery/gallery_header" /></h2>
+            <div className={classes.galleryContainer}>
+                <SideMenu />
+                {(albums == null ? <div /> : 
+                    (
                         <div className={classes.galleryContent}>
                             {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
                         </div>
-                    </div>
-                ))
-            }
+                    ))
+                }
+            </div>
         </div>
     )
 };

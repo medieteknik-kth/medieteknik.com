@@ -16,7 +16,6 @@ h3 {
 }
 
 
-
 .searchParameters {
     float: left;
 }
@@ -143,7 +142,7 @@ h3 {
     position: relative;
 }
 
-.tooltipGrid span {
+.tooltipGrid span, .tooltipList span {
     opacity: 0;
     background-color: #fff;
     text-align: center;
@@ -151,11 +150,18 @@ h3 {
     padding: 6px;
     position: absolute;
     z-index: 1;
-    top: -38px;
-    margin-left: -74px;
+    top: -43px;
     transition: .2s;
     cursor: default;
     user-select: none;
+}
+
+.tooltipGrid span {
+    margin-left: -74px;
+}
+
+.tooltipList span {
+    margin-left: -46px;
 }
 
 .tooltipGrid span::after {
@@ -177,20 +183,7 @@ h3 {
     position: relative;
 }
 
-.tooltipList span {
-    opacity: 0;
-    background-color: #fff;
-    text-align: center;
-    border-radius: 3px;
-    padding: 6px;
-    position: absolute;
-    z-index: 1;
-    top: -38px;
-    margin-left: -46px;
-    transition: .2s;
-    cursor: default;
-    user-select: none;
-}
+
 
 .tooltipList span::after {
     content: "";

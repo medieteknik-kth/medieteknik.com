@@ -30,6 +30,7 @@ import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
 import AlbumUpload from './Components/Gallery/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
+import AdminTools from './Components/AdminTools/adminTools';
 
 export default function App() {
   return (
@@ -97,6 +98,10 @@ export default function App() {
             <Route path="/managecommittee/:id">
               <PageWithMainMenu><ManageCommittee /></PageWithMainMenu>
             </Route>
+            <Route path="/admin-tools">
+              <PageWithMainMenu><AdminTools /></PageWithMainMenu>
+            </Route>
+            
 
             <Route
               path="/:pageSlug"
