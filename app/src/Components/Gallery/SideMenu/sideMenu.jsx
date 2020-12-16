@@ -6,6 +6,7 @@ import SearchField from '../../Common/SearchField/searchField';
 import fireIcon from '../../../Resources/Icons/fire.svg';
 import albumIcon from '../../../Resources/Icons/album.svg';
 import Checkbox from '../../Common/Checkbox/checkbox';
+import SideMenuContainer from '../../Common/SideMenuContainer/sideMenuContainer';
 
 import { committees } from '../../Common/utility';
 
@@ -93,7 +94,7 @@ const SideMenu = (props) => {
     } 
 
     return (
-        <div className={classes.SideMenu}>
+        <SideMenuContainer>
             <SearchField 
                 swedishPlaceholder = "Sök efter innehåll"
                 englishPlaceholder = "Search for content"
@@ -201,7 +202,7 @@ const SideMenu = (props) => {
                     ))}
                 </ul>
             </ScrollableContainer>
-        </div>
+        </SideMenuContainer>
     )
 }
 
