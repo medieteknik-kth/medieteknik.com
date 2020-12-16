@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import classes from './Gallery.module.scss';
 import AlbumPreview from './AlbumPreview/AlbumPreview';
 
-import SideMenu from '../Common/SideMenu/sideMenu';
+import SideMenu from './SideMenu/sideMenu';
 
 import { LocaleText } from '../../Contexts/LocaleContext';
 
