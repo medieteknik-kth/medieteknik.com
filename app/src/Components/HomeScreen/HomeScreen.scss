@@ -1,6 +1,6 @@
 @import '../Common/Variables.scss';
 
-$homeScreenHeight: calc(100vh);
+$homeScreenHeight: 100vh;
 $homeScreenHeightMobile: calc(100vh - 80px);
 
 .hs-swiper {
@@ -72,6 +72,13 @@ $homeScreenHeightMobile: calc(100vh - 80px);
     overflow: hidden;
 
     background-color: #2d2d2d;
+
+    .swiper-container {
+        min-height: $homeScreenHeight;
+        @media screen and (max-width: 1080px) {
+            min-height: $homeScreenHeightMobile;
+        }
+    }
 
     .swiper-pagination-bullet,
     .swiper-pagination-bullet-active {
