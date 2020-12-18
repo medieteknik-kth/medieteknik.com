@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './buttons.module.scss';
+import classes from './iconButtons.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 

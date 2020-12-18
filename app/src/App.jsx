@@ -28,7 +28,7 @@ import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
 import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
-import AlbumUpload from './Components/Gallery/AlbumUpload';
+import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
 import AdminTools from './Components/AdminTools/adminTools';
 
@@ -77,7 +77,7 @@ export default function App() {
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
             </Route>
-            <Route path="/gallery">
+            <Route path="/media-gallery">
               <PageWithMainMenu><Gallery /></PageWithMainMenu>
             </Route>
             <Route path="/albumupload">

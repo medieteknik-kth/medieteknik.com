@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react';
 
 import classes from './table.module.scss';
 
-import DeleteButton from '../Buttons/deleteButton';
-import EditButton from '../Buttons/editButton';
+import DeleteButton from '../Buttons/IconButtons/deleteButton';
+import EditButton from '../Buttons/IconButtons/editButton';
 
 import {
     LocaleContext,
