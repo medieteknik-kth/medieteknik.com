@@ -1,15 +1,15 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { LocaleContext, LocaleText, translateToString } from '../../Contexts/LocaleContext';
+import { LocaleContext, LocaleText, translateToString } from '../../../Contexts/LocaleContext';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import Button from '../Common/Button/Button'
-import DatePicker from '../Common/Form/DatePicker';
-import Input from '../Common/Form/Input';
-import Checkbox from '../Common/Checkbox/checkbox';
+import Button from '../../Common/Button/Button'
+import DatePicker from '../../Common/Form/DatePicker';
+import Input from '../../Common/Form/Input';
+import Checkbox from '../../Common/Checkbox/checkbox';
 import { Redirect } from 'react-router-dom'
 
-import Api from '../../Utility/Api'
+import Api from '../../../Utility/Api'
 import './AlbumUpload.css'
 
 const AlbumUpload = () => {
@@ -77,7 +77,6 @@ const AlbumUpload = () => {
         <div className="upload-container">
             <div className="form-container">
                 <form encType="multipart/form-data" action="">
-                    <h2>Ladda upp bilder</h2>
                     <div className="info-container">
                         <div className="input-container">
                             <Input placeholder="Namn på album" onChange={e => setTitle(e.target.value)} />

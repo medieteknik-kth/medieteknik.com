@@ -68,7 +68,7 @@ const PageWithMainMenu = ({ children, transparent }) => {
         { title_sv: 'Sektionsmedlemmar', title_en: 'Chapter Members', link: '/medlemmar' },
         { title_sv: 'Lokalbokning', title_en: 'Booking', link: '/bokningar' },
         { title_sv: 'Event', title_en: 'Event', link: '/eventList' },
-        { title_sv: 'Galleri', title_en: 'Gallery', link: '/gallery' },
+        { title_sv: 'Mediagalleri', title_en: 'Media Gallery', link: '/media-gallery' },
       ],
     },
     {

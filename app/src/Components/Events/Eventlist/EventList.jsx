@@ -242,12 +242,12 @@ const EventList = (props) => {
             <Button onClick={changeEventsToView}>
                 {viewCurrentEvents ?
                     translateToString({
-                        se: 'Tidigare evenemang',
+                        se: 'Tidigare event',
                         en: 'Earlier events',
                         lang,
                     })
                     : translateToString({
-                        se: 'Aktuella evenemang',
+                        se: 'Aktuella event',
                         en: 'Current events',
                         lang,
                     })
@@ -256,12 +256,12 @@ const EventList = (props) => {
 
             <h2 className={classes.secHeader}>{viewCurrentEvents ?
                 translateToString({
-                    se: 'Aktuella evenemang',
+                    se: 'Aktuella event',
                     en: 'Current events',
                     lang,
                 }) :
                 translateToString({
-                    se: 'Tidigare evenemang',
+                    se: 'Tidigare event',
                     en: 'Earlier events',
                     lang,
                 })}

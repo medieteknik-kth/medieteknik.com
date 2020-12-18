@@ -21,7 +21,7 @@ h2 {
   font-weight: 350;
   letter-spacing: 2px;
   text-align: center;
-  padding-top: 5px;
+  padding-top: 35px;
 }
 
 h3 {
@@ -48,7 +48,7 @@ h6 {
   font-weight: 400;
 }
 
-p, li, span {
+p, li, span, th, td {
   font-family: Roboto, sans-serif;
   font-size: 1em;
   line-height: 1.5;
