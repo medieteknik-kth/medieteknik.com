@@ -118,10 +118,3 @@
 .removeUserButton:active {
   transform: scale(0.9);
 }
-
-@media only screen and (min-device-width: 260px) and (max-device-width: 480px) {
-  .userCard {
-    width: 100px;
-    height: 100px;
-  }
-}
