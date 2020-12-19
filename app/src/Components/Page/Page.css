@@ -75,8 +75,8 @@
     padding: 30px 30px 30px 30px;
 }
 .committeePageLogoContainer {
-    transform: translateY(-50%);
-    margin-bottom: -80px;
+    transform: translateY(-30%);
+    margin-bottom: -40px;
     width: 100px;
     height: 100px;
     border: 3px solid #f0c900;
