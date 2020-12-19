@@ -133,21 +133,9 @@ const PageWithMainMenu = ({ children, transparent }) => {
   );
 
   const loginButton = (additionalStyles) => (
-    user === null
-      ? (
-        <a href={`${API_BASE_URL}cas?origin=${window.location.href}`}>
-          <div className={`${styles.icon} ${additionalStyles}`}>
-            <FontAwesomeIcon icon={faUser} size="lg" />
-          </div>
-        </a>
-      )
-      : (
-        <Link to="/user">
-          <div className={`${styles.icon} ${additionalStyles}`}>
-            <FontAwesomeIcon icon={faUser} size="lg" />
-          </div>
-        </Link>
-      )
+    <Link to="/login" className={`${styles.icon} ${additionalStyles}`}>
+      <FontAwesomeIcon icon={faUser} size="lg" />
+    </Link>
   );
 
   const localeButton = (additionalStyles) => (lang === 'se'

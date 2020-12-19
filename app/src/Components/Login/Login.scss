@@ -1,0 +1,53 @@
+.loginPage {
+    margin-top: 120px;
+    margin-bottom: 40px;
+}
+
+.loginMethodList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loginMethodList > p {
+    margin-top: 20px;
+}
+
+.loginMethodContainer {
+    width: 200px;
+    height: 75px;
+    background-color: white;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.16);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 100%;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.loginMethodContainer.disabled {
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+}
+
+button.loginMethodContainer:hover {
+    color: #545454;
+}
+
+.loginMethodContainer > img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.loginMethodContainer > div {
+    object-fit: contain;
+    padding-left: 10px;
+    text-align: left;
+}
+
+.loginMethodContainer p.subtitle {
+    font-size: 12px;
+}
