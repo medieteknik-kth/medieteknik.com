@@ -43,7 +43,7 @@ const Feed = (props) => {
 
     return (<div className='feed-container'>
         {props.landingTitle ? <h3 className='landing-title'><span><LocaleText phrase='feed/header'/></span></h3> : <h1><LocaleText phrase='feed/header'/></h1>}
-        <Button onClick={() => history.push("/eventList")}>Kommande event</Button>
+        {!props.landingTitle ? <Button onClick={() => history.push("/eventList")}>Kommande event</Button> : <span />}
         { isLoading ? <Spinner/> :
             <div className='feed-cards'>
                 { cont ? cont.map((post, i) =>

@@ -43,9 +43,9 @@ const FeedCard = (props) => {
                     <div
                         className="feed-card-img"
                         style={{
-                            backgroundImage: `url('${Api.Images(
+                            backgroundImage: `url('${
                                 props.headerImage
-                            )}')`,
+                            }')`,
                         }}
                     />
                     <div className="feed-card-text">

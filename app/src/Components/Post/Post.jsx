@@ -28,7 +28,7 @@ const Post = (props) => {
       <div className="post-content">
         {post.header_image ? (
           <div className="img-container">
-            <img src={Api.Images(post.header_image)} />
+            <img src={post.header_image} alt={translate(post.title)} />
           </div>
         ) : (
           <></>
