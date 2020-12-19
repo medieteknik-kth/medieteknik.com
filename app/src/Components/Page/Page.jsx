@@ -55,8 +55,6 @@ export default function Page() {
     };
   }, [isEditing]);
 
-  const noContent = (notFound ? <div className="pageContent"><NotFound /></div> : <div />);
-
   const onChange = (newContent) => {
     setContent(newContent);
   };
@@ -139,17 +137,10 @@ export default function Page() {
       { isLoading ? <div style={{ marginTop: '150px' }}><Spinner /></div>
         : (
           <div>
-            { page !== null && canEdit
-              ? (
-                <button type="button" className="pageEditButton" onClick={didPressEditButton}>
-                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
-                </button>
-              )
-              : <div />}
-            { page !== null && page.committee !== null && !hasImage ? <div style={{ marginTop: '200px' }} /> : <div />}
-            <div className="pageContainer">
-              { page !== null
-                ? (
+            { page !== null ? (
+              <div>
+                <h1 className="pageTitle">{page.title}</h1>
+                <div className="pageContainer">
                   <div>
                     {isEditing
                       ? (
@@ -185,9 +176,18 @@ export default function Page() {
                       { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={isEditing} /> : <span /> }
                     </div>
                   </div>
-                )
-                : noContent}
-            </div>
+                </div>
+              </div>
+            ) : <NotFound />}
+            { page !== null && canEdit
+              ? (
+                <button type="button" className="pageEditButton" onClick={didPressEditButton}>
+                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
+                </button>
+              )
+              : <div />}
+            { page !== null && page.committee !== null && !hasImage ? <div style={{ marginTop: '200px' }} /> : <div />}
+
           </div>
         )}
     </div>
