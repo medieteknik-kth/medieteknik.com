@@ -38,7 +38,7 @@ const AlbumVideoModal = ({title, date, videoUrl, modalOpen, setModalOpen}) => {
             onRequestClose={() => setModalOpen(false)}
             style={customStyles}
             ariaHideApp={false}>
-                <VideoPlayer style={{maxWidth: '100%', maxHeight: '800px'}} videoUrl={videoUrl} />
+                <VideoPlayer videoUrl={videoUrl} />
                 <h5>{`${date.toISOString().split('T')[0]}`}</h5>
                 <h3>{title}</h3>
         </Modal>
