@@ -26,7 +26,7 @@ const ViewGallery = () => {
             {(albums == null ? <div /> : 
                 (
                     <div className={classes.galleryContent}>
-                        {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
+                        {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} videos={album.videos} />)}
                     </div>
                 ))
             }

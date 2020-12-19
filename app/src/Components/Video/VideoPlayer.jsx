@@ -4,9 +4,10 @@ import Hls from 'hls.js';
 import './VideoPlayer.scss';
 import 'video.js/dist/video-js.css';
 
-export default function VideoPlayer({ video, handleClose }) {
-  const [minimized, setMinimized] = useState(false);
+export default function VideoPlayer({ videoUrl }) {
   const playerRef = useRef();
+
+  console.log(videoUrl);
 
   useEffect(() => {
     const player = videojs(playerRef.current, {
@@ -16,10 +17,10 @@ export default function VideoPlayer({ video, handleClose }) {
       preload: 'auto',
     }, () => {
       if (player.canPlayType('application/vnd.apple.mpegurl')) {
-        player.src(video.url);
+        player.src(videoUrl);
       } else if (Hls.isSupported()) {
         const hls = new Hls();
-        hls.loadSource(video.url);
+        hls.loadSource(videoUrl);
         hls.attachMedia(player);
       }
     });
@@ -29,16 +30,7 @@ export default function VideoPlayer({ video, handleClose }) {
     };
   }, []);
 
-  const minimize = (e) => {
-    console.log(e.target.tagName);
-    if (e.target.tagName !== 'VIDEO') {
-      setMinimized(true);
-    }
-  };
-
   return (
-    <div className={`videoPlayerContainer ${minimized ? 'minimized' : ''}`} onClick={minimize}>
-      <video ref={playerRef} className="video-js vjs-medieteknik" />
-    </div>
+    <video ref={playerRef} className="video-js vjs-medieteknik" style={{width: '300px', height: '300px'}} />
   );
 }

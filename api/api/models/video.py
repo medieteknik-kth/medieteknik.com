@@ -1,7 +1,7 @@
 from api.db import db
 import datetime
 
-from api.models.video_playlist import video_playlist_table
+from api.models.album import video_playlist_table
 
 class Video(db.Model):
     __tablename__ = 'video'
@@ -11,7 +11,7 @@ class Video(db.Model):
     mux_playback_id = db.Column(db.String)
     uploaded_at = db.Column(db.DateTime, default=datetime.datetime.now)
     requires_login = db.Column(db.Boolean, default=False)
-    playlists = db.relationship("VideoPlaylist", secondary=video_playlist_table)
+    albums = db.relationship("Album", secondary=video_playlist_table)
 
     def to_dict(self):
         return {
@@ -21,5 +21,5 @@ class Video(db.Model):
             "thumbnail": "https://image.mux.com/" + self.mux_playback_id + "/thumbnail.jpg",
             "uploadedAt": self.uploaded_at,
             "requiresLogin": self.requires_login,
-            "playlists": [playlist.id for playlist in self.playlists]
+            "albums": [album.albumId for album in self.albums]
         }

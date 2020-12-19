@@ -7,7 +7,7 @@ const AlbumPreview = (props) => {
         <NavLink to='/album/1'>
             <h3>{props.title}</h3>
         </NavLink>
-        <CustomBuildSwiper title={props.title} images={props.images}/>
+        <CustomBuildSwiper title={props.title} images={props.images} videos={props.videos}/>
     </div>);
 }
 

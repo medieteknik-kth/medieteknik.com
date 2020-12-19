@@ -26,10 +26,21 @@
     margin: 1rem;
     cursor: pointer;
     user-select: none;
+    position: relative;
 }
 
 .album-cell img {
     display: block;
+}
+
+.album-video-play-icon {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media screen and (min-width: 600px){
