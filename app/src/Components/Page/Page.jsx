@@ -14,6 +14,7 @@ import Spinner from '../Common/Spinner/Spinner';
 
 import './Page.css';
 import CommitteeMemberList from '../Committee/CommitteeMemberList/CommitteeMemberList';
+import Article from '../Common/Article/Article';
 
 export default function Page() {
   const { pageSlug } = useParams();
@@ -139,8 +140,11 @@ export default function Page() {
           <div>
             { page !== null ? (
               <div>
-                <h1 className="pageTitle">{page.title}</h1>
-                <div className="pageContainer">
+                <Article
+                  title={page.title}
+                  linkPath={page.committee !== null ? '/committees' : undefined}
+                  backLabelPhrase={page.committee !== null ? 'committee/back-to-all' : undefined}
+                >
                   <div>
                     {isEditing
                       ? (
@@ -159,7 +163,7 @@ export default function Page() {
                         </div>
                       )
                       : <span /> }
-                    { hasImage ? <img src={newHeader == null ? page.image : newHeader} alt={page.title} className="pageImage" /> : <div /> }
+                    { hasImage ? <div className="pageImageContainer"><img src={newHeader == null ? page.image : newHeader} alt={page.title} className="pageImage" /></div> : <div /> }
                     { page.committee !== null
                       ? (
                         <div className="committeePageLogoContainer">
@@ -167,16 +171,14 @@ export default function Page() {
                         </div>
                       )
                       : <span /> }
-                    <div className="pageContent">
-                      <BasePage
-                        initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''}
-                        isEditing={isEditing}
-                        onChange={onChange}
-                      />
-                      { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={isEditing} /> : <span /> }
-                    </div>
+                    <BasePage
+                      initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''}
+                      isEditing={isEditing}
+                      onChange={onChange}
+                    />
+                    { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={isEditing} /> : <span /> }
                   </div>
-                </div>
+                </Article>
               </div>
             ) : <NotFound />}
             { page !== null && canEdit

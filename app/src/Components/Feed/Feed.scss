@@ -1,34 +1,13 @@
-.feed-container {
-    display: flex;
-    flex-grow: 1;
-    min-height: calc(100vh - 90px);
-    background-color: #f0f0f0;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 40px;
-}
-
-.feed-container h2 {
-    padding-top: 65px;
-    margin-bottom: 40px;
-    
-}
-
 .feed-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 400px);
-    column-gap: 30px;
-    row-gap: 30px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 -10px 30px;
 }
 
 @media (max-width: 800px) {
-    
     .feed-cards {
-        grid-template-columns: 1fr;
-        row-gap: 20px;
-    }
-
-    .feed-container {
-        padding-bottom: 20px;
+        flex-direction: column;
     }
 }

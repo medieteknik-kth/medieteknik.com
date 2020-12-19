@@ -60,7 +60,7 @@
     margin: 0 10px 40px 10px;
     background-color: white;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    border: 1px solid rgba(0,0,0,0.16)
+    border: 1px solid rgba(0,0,0,0.16);
 }
 
 .pageTitle {
@@ -76,7 +76,7 @@
 }
 .committeePageLogoContainer {
     transform: translateY(-50%);
-    margin-bottom: -100px;
+    margin-bottom: -80px;
     width: 100px;
     height: 100px;
     border: 3px solid #f0c900;
@@ -104,6 +104,12 @@
         margin: 0 auto 40px auto;
         max-width: 950px;
     }
+}
+
+.pageImageContainer {
+    margin-top: -20px;
+    margin-left: -20px;
+    margin-right: -20px;
 }
 
 .pageImage {
