@@ -4,7 +4,7 @@ $homeScreenHeight: 100vh;
 $homeScreenHeightMobile: calc(100vh - 80px);
 
 .hs-swiper {
-    position: fixed;
+    // position: fixed;
 
     display: flex;
     justify-content: stretch;
@@ -46,7 +46,7 @@ $homeScreenHeightMobile: calc(100vh - 80px);
     left:0;
     bottom: 0;
     right: 0;
-    background:rgba(0,0,0,0.5);
+    // background:rgba(0,0,0,0.5);
     z-index: 10;
 }
 
