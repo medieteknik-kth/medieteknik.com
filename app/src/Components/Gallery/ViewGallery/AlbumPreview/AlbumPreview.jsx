@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomBuildSwiper from '../Swiper/Swiper';
+import CustomBuildSwiper from '../../Swiper/Swiper';
 import { NavLink } from 'react-router-dom';
 
 const AlbumPreview = (props) => {

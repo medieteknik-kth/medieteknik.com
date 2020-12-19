@@ -1,0 +1,35 @@
+.darkStyling, .lightStyling {
+    font-family: 'Roboto';
+    font-weight: 300;
+    font-size: 15px;
+    border: 0;
+    padding: 11px 40px 11px 11px;
+    outline: none;
+    background-position: 95% 6px;
+    background-size: 25px;
+    background-repeat: no-repeat;
+    float: left;
+    border-radius: 1px;
+}
+
+.lightStyling {
+    background-color: #fff;
+    background-image: url('./yellowSearch.png');
+    color: #2d2d2d;
+}
+
+.lightStyling::placeholder {
+    color: #afafaf;
+    opacity: 1; /* Firefox */
+}
+
+.darkStyling {
+    background-color: #d3d3d3;
+    background-image: url('./darkSearch.png');
+    color: #2d2d2d;
+}
+
+.darkStyling::placeholder {
+    color: #2d2d2d;
+    opacity: 1; /* Firefox */
+}

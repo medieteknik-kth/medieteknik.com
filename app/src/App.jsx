@@ -28,7 +28,9 @@ import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
 import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
-import Video from './Components/Video/Video';
+import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
+import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
+import AdminTools from './Components/AdminTools/adminTools';
 
 export default function App() {
   return (
@@ -37,7 +39,7 @@ export default function App() {
         <UserProvider>
           <Switch>
             <Route exact path="/">
-              <PageWithMainMenu><LandingPage /></PageWithMainMenu>
+              <PageWithMainMenu transparent><LandingPage /></PageWithMainMenu>
             </Route>
             <Route exact path="/login">
               <PageWithMainMenu><Login /></PageWithMainMenu>
@@ -75,8 +77,11 @@ export default function App() {
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
             </Route>
-            <Route path="/gallery">
+            <Route path="/media-gallery">
               <PageWithMainMenu><Gallery /></PageWithMainMenu>
+            </Route>
+            <Route path="/albumupload">
+              <PageWithMainMenu><AlbumUpload /></PageWithMainMenu>
             </Route>
             <Route path="/album/:id">
               <PageWithMainMenu><Album /></PageWithMainMenu>
@@ -90,15 +95,20 @@ export default function App() {
             <Route path="/user">
               <PageWithMainMenu><Profile /></PageWithMainMenu>
             </Route>
-            <Route path="/video/:id">
-              <PageWithMainMenu><Video /></PageWithMainMenu>
+            <Route path="/managecommittee/:id">
+              <PageWithMainMenu><ManageCommittee /></PageWithMainMenu>
             </Route>
+            <Route path="/admin-tools">
+              <PageWithMainMenu><AdminTools /></PageWithMainMenu>
+            </Route>
+            
+
             <Route
               path="/:pageSlug"
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
             />
           </Switch>
-          <Footer/>
+          <Footer />
         </UserProvider>
       </LocaleProvider>
     </Router>

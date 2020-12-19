@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Feed.css'
+import './Feed.scss'
 import Api from '../../Utility/Api.js'
 import FeedCard, { feedTypes } from './FeedCard/FeedCard.jsx';
 import { LocaleText, translate } from '../../Contexts/LocaleContext';
@@ -38,7 +38,7 @@ const Feed = (props) => {
         };
 
     return (<div className='feed-container'>
-        <h2><LocaleText phrase='feed/header'/></h2>
+        {props.landingTitle ? <h3 className='landing-title'><span><LocaleText phrase='feed/header'/></span></h3> : <h1><LocaleText phrase='feed/header'/></h1>}
         { isLoading ? <Spinner/> :
             <div className='feed-cards'>
                 { cont ? cont.map((post, i) =>
@@ -51,7 +51,8 @@ const Feed = (props) => {
                         location={post.location ?? null}
                         body={translate({ se: post.body.se.replace(/<\/?[^>]+(>|$)/g, "").trunc(250), en: post.body.en ? post.body.en.replace(/<\/?[^>]+(>|$)/g, "").trunc(250) : '' })}
                         headerImage={post.header_image}
-                        tags={post.tags} />
+                        tags={post.tags}
+                        committee={post.committee} />
                 ) : <></> }
             </div> 
         }

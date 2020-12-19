@@ -35,6 +35,10 @@
         "officials": {
             "se": "Funktionärer",
             "en": "Officials"
+        },
+        "back": {
+            "se": "Tillbaka",
+            "en": "Back"
         }
     },
     "form": {
@@ -79,6 +83,14 @@
         "the_program": {
             "se": "Utbildningen",
             "en": "The Program"
+        },
+        "read_more": {
+            "se": "Läs mer",
+            "en": "Read more"
+        },
+        "on_instagram": {
+            "se": "Medieteknik på Instagram",
+            "en": "Media Technnology on Instagram"
         }
     },
     "committee": {
@@ -95,6 +107,10 @@
                 "se": "Lägg till medlem",
                 "en": "Add member"
             }
+        },
+        "back-to-all": {
+            "se": "Alla nämnder",
+            "en": "All committees"
         }
     },
     "feed": {
@@ -105,6 +121,10 @@
         "tags": {
             "se": "Taggar",
             "en": "Tags"
+        },
+        "published": {
+            "se": "Publicerad",
+            "en": "Published"
         },
         "post": {
             "go_back": {
@@ -145,9 +165,17 @@
                 "se": "Lägg till en engelsk version",
                 "en": "Add English version"
             },
-            "create": {
-                "se": "Skapa",
-                "en": "Create"
+            "publish": {
+                "se": "Publicera",
+                "en": "Publish"
+            },
+            "schedule": {
+                "se": "Schemalägg",
+                "en": "Schedule"
+            },
+            "draft": {
+                "se": "Spara utkast",
+                "en": "Save draft"
             }
         },
         "create_event": {
@@ -185,6 +213,42 @@
         "gallery_header": {
             "se": "Bildgalleri",
             "en": "Gallery"
+        },
+        "gallery_upload": {
+            "se": "Skapa album",
+            "en": "Create Album"
+        },
+        "select_images": {
+            "se": "Välj bilder",
+            "en": "Add images"
+        },
+        "title_placeholder": {
+            "se": "Albumtitel",
+            "en": "Album name"
+        },
+        "desc_placeholder": {
+            "se": "Beskrivning",
+            "en": "Description"
+        },
+        "upload_reception": {
+            "se": "Albumet är mottagningsvänligt",
+            "en": "The images in this album can be shown during the reception"
+        },
+        "upload_credit": {
+            "se": "Fotografen måste få cred för bilden",
+            "en": "Credit must be given to the photographer(s)"
+        },
+        "upload_date": {
+            "se":"Jag vill inte välja datum för detta album",
+            "en": "I don't want to select a date for this album"
+        },
+        "upload_edit": {
+            "se":"Bilderna får användas och redigeras fritt av andra",
+            "en": "The images can be freely used and/or edited by others"
+        },
+        "upload_upload": {
+            "se":"Skapa album",
+            "en": "Create Album"
         }
     },
     "officials": {

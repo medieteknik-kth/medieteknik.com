@@ -33,6 +33,8 @@ class Post(db.Model):
     title = db.Column(db.String, nullable=False)
     title_en = db.Column(db.String, nullable=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    scheduled_date = db.Column(db.DateTime, default=None, nullable=True)
+    draft = db.Column(db.Boolean, default=False)
     header_image = db.Column(db.String, default="static/posts/default.png")
     body = db.Column(db.String, nullable=False)
     body_en = db.Column(db.String, nullable=True)
@@ -46,6 +48,7 @@ class Post(db.Model):
 
 
     def to_dict(self):
+        
         return {
             "id": self.id,
             "title": {
@@ -53,6 +56,8 @@ class Post(db.Model):
                 "en": self.title_en
             },
             "date": self.date,
+            "scheduled_date": self.scheduled_date,
+            "draft": self.draft,
             "header_image": self.header_image,
             "body": {
                 "se": self.body,

@@ -1,5 +1,5 @@
 from flask import make_response, request, jsonify
-from flask_restful import Resource
+from flask_restful import Resource, inputs
 
 from api.models.image import Image
 from api.models.album import Album
@@ -8,7 +8,7 @@ from api.db import db
 from api.resources.authentication import requires_auth
 
 from datetime import datetime
-
+ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 class AlbumListResource(Resource):
     def post(self):
         data = request.form
@@ -21,20 +21,32 @@ class AlbumListResource(Resource):
         album = Album()
         album.title = album_name
 
-        creationDate = data.get("creationDate")
-        if creationDate:
-            album.creationDate = creationDate
-            album.lastEdit = creationDate
+        albumDate = data.get("albumDate")
         
-        receptionAppropriate = data.get("receptionAppropriate")
+        if albumDate:
+            albumDate = datetime.strptime(albumDate, ISO_DATE_DEF)
+            album.date = albumDate
+        
+        receptionAppropriate = inputs.boolean(data.get("receptionAppropriate"))
         if receptionAppropriate:
             album.receptionAppropriate = receptionAppropriate
+
+        #data to add to the image
+        photographer = data.get("photographer")
+        needsCred = inputs.boolean(data.get("needsCred"))
+        editingAllowed = inputs.boolean(data.get("editingAllowed"))
 
         photos = request.files.getlist("photos")
         if photos:
             for photo in photos:
                 image = Image()
                 image.url = upload_album_photo(photo, album.title)
+                if photographer:
+                    image.photographer = photographer
+                if albumDate:
+                    image.date = albumDate
+                image.needsCred = needsCred
+                image.editingAllowed = editingAllowed 
                 album.images.append(image)
                 db.session.add(image)
         
@@ -42,8 +54,7 @@ class AlbumListResource(Resource):
 
         db.session.add(album)
         db.session.commit()
-
-        return jsonify(success=True)
+        return jsonify(success=True, id=album.albumId)
 
     def get(self):
         albums = Album.query.all()

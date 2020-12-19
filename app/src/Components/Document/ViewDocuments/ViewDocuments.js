@@ -19,6 +19,7 @@ import SortBySelector from './SortBySelector/SortBySelector';
 import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
+import SearchField from '../../Common/SearchField/searchField';
 
 import {
     LocaleContext,
@@ -60,7 +61,6 @@ const ViewDocuments = (props) => {
                     categoriesShownTemp[categoryObject.title] = false;
                 })
 
-
                 setCategoriesFromServer(categoriesListTemp);
                 setCategoriesShown(categoriesShownTemp);
             });
@@ -75,7 +75,6 @@ const ViewDocuments = (props) => {
                         let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
                         let publishDay = parseInt(doc.date.slice(8, 10));
 
-
                         fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
                             .then(thumbnail => {
                                 let docObject = {
@@ -88,7 +87,6 @@ const ViewDocuments = (props) => {
                                     thumbnail: thumbnail,
                                     filename: doc.filename
                                 }
-                                
                                 
                                 documentsFromServerTemp = [...documentsFromServerTemp, docObject];
                                 documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
@@ -133,34 +131,39 @@ const ViewDocuments = (props) => {
         setCategoryTagsSelected(categoriesSelected);
     }
 
-    const handleSearch = () => {
-        let searchVal = searchInput.current.value
-        let filteredString = searchVal.toUpperCase()
+    const handleSearch = (newSearchString) => {
+        console.log(newSearchString)
 
-        let tempSearchArray = documentsFromServer.filter(doc => {
-            let dateString = doc.publishDate.getFullYear() + "-" + 
-            ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
-            (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
-
-            if(doc.headingText.toUpperCase().indexOf(filteredString) > -1 || doc.publisher.toUpperCase().indexOf(filteredString) > -1 || dateString.indexOf(filteredString) > -1) {
-                doc.displayCard = true
-            } else {
-                doc.displayCard = false
-            }
-            
-            return(doc)
-        })
-
-        setDocumentsFromServer(tempSearchArray);
+        if (typeof newSearchString == 'string') {
+            let searchVal = newSearchString;
+            let filteredString = searchVal.toUpperCase()
+    
+            let tempSearchArray = documentsFromServer.filter(doc => {
+                let dateString = doc.publishDate.getFullYear() + "-" + 
+                ((doc.publishDate.getMonth() + 1) < 10 ? `0${(doc.publishDate.getMonth() + 1)}` : (doc.publishDate.getMonth() + 1)) + "-" + 
+                (doc.publishDate.getDate() < 10 ? `0${doc.publishDate.getDate()}` : doc.publishDate.getDate())
+    
+                if(doc.headingText.toUpperCase().indexOf(filteredString) > -1 || doc.publisher.toUpperCase().indexOf(filteredString) > -1 || dateString.indexOf(filteredString) > -1) {
+                    doc.displayCard = true
+                } else {
+                    doc.displayCard = false
+                }
+                
+                return(doc)
+            })
+    
+            setDocumentsFromServer(tempSearchArray);
+        }
     }
 
     const clearCategories = () => {
         let categoriesShownClearTemp = {};
 
-        categoriesFromServer.map(cat => {
+        categoriesFromServer.forEach(cat => {
             categoriesShownClearTemp[cat] = false;
         })
 
+        console.log(categoriesShownClearTemp)
         setCategoriesShown(categoriesShownClearTemp);
     }
 
@@ -200,21 +203,13 @@ const ViewDocuments = (props) => {
                             addClass = {classes.dropdownFilterStyle}
                             userIsFunkis = {props.userIsFunkis}
                         />
-
-                        <input
-                            className={classes.searchDoc}
-                            type="text"
-                            onKeyUp={handleSearch}
-                            name="name"
-                            placeholder={translateToString({
-                                se: 'Sök efter dokument',
-                                en: 'Search for document',
-                                lang,
-                            })}
-                            ref = {searchInput}
-                        />
-
                         
+                        <SearchField 
+                            handleSearch = {handleSearch}
+                            swedishPlaceholder = 'Sök efter dokument'
+                            englishPlaceholder = 'Search for document'
+                            colorTheme = 'light'
+                        />
                     </div>
 
                     <div className={classes.viewSelected}>

@@ -1,0 +1,17 @@
+.feed-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 -10px 30px;
+}
+
+.feed-container > h1 {
+    margin-top: 120px;
+}
+
+@media (max-width: 800px) {
+    .feed-cards {
+        flex-direction: column;
+    }
+}
