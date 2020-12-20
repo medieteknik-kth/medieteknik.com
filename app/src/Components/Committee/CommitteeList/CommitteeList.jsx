@@ -15,9 +15,9 @@ export default function CommitteeList() {
 
   useEffect(() => {
     Api.Committees.GetAll().then((data) => {
+      setIsLoading(false);
       setCommittees(data.filter((committee) => committee.page !== null));
     });
-    setIsLoading(false);
   }, []);
 
   return (

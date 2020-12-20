@@ -1,7 +1,10 @@
 @import '../Common/Variables.scss';
 
+$homeScreenHeight: 100vh;
+$homeScreenHeightMobile: calc(100vh - 80px);
+
 .hs-swiper {
-    position: fixed;
+    // position: fixed;
 
     display: flex;
     justify-content: stretch;
@@ -14,18 +17,37 @@
     background-attachment: fixed;
 
     height: -webkit-fill-available;
-    height: calc(100vh);
+    height: $homeScreenHeight;
+
+    @media screen and (max-width: 1080px) {
+        height: $homeScreenHeightMobile;
+    }
 
     overflow: hidden;
 
     img {
-        height: calc(100vh);
-
         display: block;
         width: 100vw;
-        height: calc(100vh);
+        height: $homeScreenHeight;
         object-fit: cover;
+
+        @media screen and (max-width: 1080px) {
+            height: $homeScreenHeightMobile;
+        }
     }
+}
+
+.hs-swiper:after {
+    content: '\A';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+    bottom: 0;
+    right: 0;
+    // background:rgba(0,0,0,0.5);
+    z-index: 10;
 }
 
 .home-screen {
@@ -42,7 +64,10 @@
     background-attachment: fixed;
 
     min-height: -webkit-fill-available;
-    min-height: calc(100vh);
+    min-height: $homeScreenHeight;
+    @media screen and (max-width: 1080px) {
+        min-height: $homeScreenHeightMobile;
+    }
 
     overflow: hidden;
 
@@ -63,7 +88,11 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            height: calc(100vh);
+            height: $homeScreenHeight;
+
+            @media screen and (max-width: 1080px) {
+                height: $homeScreenHeightMobile;
+            }
         }
     }
 
@@ -92,6 +121,8 @@
         padding-top: 15%;
         text-align: center;
         padding-bottom: 10%;
+        padding-left: 20px;
+        padding-right: 20px;
 
         h2,
         h3 {
@@ -107,6 +138,7 @@
             margin: 30px;
             line-height: normal;
             text-transform: uppercase;
+            font-weight: 500;
         }
 
         h2 {
@@ -117,7 +149,7 @@
             font-weight: 400;
         }
 
-        @media (max-width: 800px) {
+        @media (max-width: 800px) and (min-width: 350px) {
             h3 {
                 font-size: 1.3em;
                 word-wrap: break-word;
@@ -125,6 +157,18 @@
 
             h1 {
                 font-size: 2.5em;
+                margin: 10px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            h3 {
+                font-size: 1em;
+                word-wrap: break-word;
+            }
+
+            h1 {
+                font-size: 2em;
                 margin: 10px;
             }
         }

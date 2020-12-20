@@ -27,9 +27,7 @@ const ProfileCard = (props) => {
             <img src={user.profilePicture}/>
             <div className='profile-details'>
                 <h4 className='profile-name'>{user.firstName + ' ' + user.lastName}</h4>
-                <NavLink to={`/committees/${committee.id}`}>
-                    <h5 className='profile-title'>{committee.name}</h5>
-                </NavLink>
+                <h5 className='profile-title'>{committee.name}</h5>
             </div>
         </div>
     );

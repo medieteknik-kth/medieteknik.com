@@ -1,6 +1,6 @@
 @import '../../Common/Variables.scss';
 
-$br: 7px;
+$br: 0px;
 
 .feed-card-pre {
     padding: 0 1em;
@@ -26,6 +26,15 @@ $br: 7px;
 .feed-card {
     background-color: #fff;
     border-radius: $br;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.16);
+    margin: 0 10px 20px;
+    width: 400px;
+
+    @media (max-width: 800px) {
+        align-self: stretch;
+        width: auto;
+    }
 
     .feed-card-img {
         min-width: 100%;

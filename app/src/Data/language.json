@@ -35,6 +35,10 @@
         "officials": {
             "se": "Funktionärer",
             "en": "Officials"
+        },
+        "back": {
+            "se": "Tillbaka",
+            "en": "Back"
         }
     },
     "form": {
@@ -103,6 +107,10 @@
                 "se": "Lägg till medlem",
                 "en": "Add member"
             }
+        },
+        "back-to-all": {
+            "se": "Alla nämnder",
+            "en": "All committees"
         }
     },
     "feed": {
@@ -113,6 +121,10 @@
         "tags": {
             "se": "Taggar",
             "en": "Tags"
+        },
+        "published": {
+            "se": "Publicerad",
+            "en": "Published"
         },
         "post": {
             "go_back": {

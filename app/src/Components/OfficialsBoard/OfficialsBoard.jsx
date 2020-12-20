@@ -47,7 +47,7 @@ export default function OfficialsBoard() {
     <div className='officials-board-container'>
       <div className='officials-board'>
         <div className='officials-header'>
-        <h2><LocaleText phrase='common/officials'/></h2>
+        <h1><LocaleText phrase='common/officials'/></h1>
           { loadingYears ? 
             <div className='officials-center'>
                 <Spinner/>
