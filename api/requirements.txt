@@ -9,3 +9,4 @@ itsdangerous==1.1.0
 flasgger==0.9.4
 google-cloud-storage==1.31.0
 CacheControl==0.12.6
+python-slugify==4.0.1
