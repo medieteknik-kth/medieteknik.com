@@ -27,7 +27,7 @@ class PostTagResource(Resource):
 
 
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
         """
         Edits a post tag.
         ---

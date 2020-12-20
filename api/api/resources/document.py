@@ -21,14 +21,14 @@ class DocumentResource(Resource):
 
 class DocumentListResource(Resource):
     @requires_auth
-    def post(self):
+    def post(self, user):
         if request.files is None:
             return jsonify(message="no files attached"), 422
         else:
             save_documents(request)
             return jsonify(message="file uploaded!")
 
-    def get(self):
+    def get(self, user):
         tags = request.args.get('tags')
         if tags is not None:
             tags = tags.split(",")
