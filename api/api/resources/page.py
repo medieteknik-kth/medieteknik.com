@@ -133,7 +133,7 @@ class PageListResource(Resource):
         return jsonify(data)
     
     @requires_auth
-    def put(self, user, user):
+    def put(self, user):
         """
         Creates a new page with optional content.
         ---
