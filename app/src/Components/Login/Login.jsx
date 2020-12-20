@@ -19,8 +19,8 @@ export default function Login() {
     setToken(tokenId);
   };
 
-  const googleFailure = () => {
-    alert('he gick åt helvete');
+  const googleFailure = (res) => {
+    console.error(res);
   };
 
   const { signIn } = useGoogleLogin({
