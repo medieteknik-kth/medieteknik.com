@@ -8,3 +8,4 @@ git+git://github.com/cameronbwhite/Flask-CAS.git@54a2e4e7140a4918929c601614278ea
 itsdangerous==1.1.0
 flasgger==0.9.4
 google-cloud-storage==1.31.0
+CacheControl==0.12.6
