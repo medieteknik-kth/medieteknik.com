@@ -30,22 +30,22 @@ const FeedCard = (props) => {
         <NavLink to={props.path}>
             <div className="feed-card-pre">
                 <p className="feed-card-title">{getPreCard().title}</p>
-                <div className="feed-card-tag">
+                {/* <div className="feed-card-tag">
                     <FontAwesomeIcon
                         icon={getPreCard().icon}
                         color={'#f0c900'}
                         size="lg"
                     />
-                </div>
+                </div> */}
             </div>
             <div className="feed-card-container">
                 <div className="feed-card">
                     <div
                         className="feed-card-img"
                         style={{
-                            backgroundImage: `url('${Api.Images(
+                            backgroundImage: `url('${
                                 props.headerImage
-                            )}')`,
+                            }')`,
                         }}
                     />
                     <div className="feed-card-text">
