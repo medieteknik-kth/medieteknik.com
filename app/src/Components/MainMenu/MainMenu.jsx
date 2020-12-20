@@ -65,10 +65,8 @@ const PageWithMainMenu = ({ children, transparent }) => {
         { title_sv: 'Nämnder och projekt', title_en: 'Committees', link: '/committees' },
         { title_sv: 'Styrelsen', title_en: 'The Board', link: '/styrelsen' },
         { title_sv: 'Dokument', title_en: 'Documents', link: '/documents' },
-        { title_sv: 'Sektionsmedlemmar', title_en: 'Chapter Members', link: '/medlemmar' },
-        { title_sv: 'Lokalbokning', title_en: 'Booking', link: '/bokningar' },
-        { title_sv: 'Event', title_en: 'Event', link: '/eventList' },
-        { title_sv: 'Galleri', title_en: 'Gallery', link: '/gallery' },
+        { title_sv: 'Mediagalleri', title_en: 'Media Gallery', link: '/media-gallery' },
+        { title_sv: 'Grafisk Identitet', title_en: 'Visual Identity', link: '/visualidentity' },
       ],
     },
     {
@@ -133,21 +131,9 @@ const PageWithMainMenu = ({ children, transparent }) => {
   );
 
   const loginButton = (additionalStyles) => (
-    user === null
-      ? (
-        <a href={`${API_BASE_URL}cas?origin=${window.location.href}`}>
-          <div className={`${styles.icon} ${additionalStyles}`}>
-            <FontAwesomeIcon icon={faUser} size="lg" />
-          </div>
-        </a>
-      )
-      : (
-        <Link to="/user">
-          <div className={`${styles.icon} ${additionalStyles}`}>
-            <FontAwesomeIcon icon={faUser} size="lg" />
-          </div>
-        </Link>
-      )
+    <Link to="/login" className={`${styles.icon} ${additionalStyles}`}>
+      <FontAwesomeIcon icon={faUser} size="lg" />
+    </Link>
   );
 
   const localeButton = (additionalStyles) => (lang === 'se'

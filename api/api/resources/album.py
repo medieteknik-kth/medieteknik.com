@@ -10,6 +10,7 @@ from api.resources.authentication import requires_auth
 from datetime import datetime
 ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 class AlbumListResource(Resource):
+    @requires_auth
     def post(self):
         data = request.form
 

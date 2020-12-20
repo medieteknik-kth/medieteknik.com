@@ -11,6 +11,8 @@ import base64
 from api.db import db
 from api.models.document import Document, Tag, DocumentTags
 
+from api.resources.authentication import requires_auth
+
 class DocumentResource(Resource):
     def get(self, id):
         
@@ -18,6 +20,7 @@ class DocumentResource(Resource):
         return jsonify(document.to_dict())
 
 class DocumentListResource(Resource):
+    @requires_auth
     def post(self):
         if request.files is None:
             return jsonify(message="no files attached"), 422

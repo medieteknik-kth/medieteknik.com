@@ -94,7 +94,7 @@ const SideMenu = (props) => {
     } 
 
     return (
-        <SideMenuContainer>
+        <SideMenuContainer extraClass={classes.sideMenu}>
             <SearchField 
                 swedishPlaceholder = "Sök efter innehåll"
                 englishPlaceholder = "Search for content"

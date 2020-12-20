@@ -35,6 +35,10 @@
         "officials": {
             "se": "Funktionärer",
             "en": "Officials"
+        },
+        "back": {
+            "se": "Tillbaka",
+            "en": "Back"
         }
     },
     "form": {
@@ -61,6 +65,28 @@
         "doc_upload": {
             "se": "Dokumentuppladdning",
             "en": "Document upload"
+        }
+    },
+    "login": {
+        "header": {
+            "se": "Logga in",
+            "en": "Log in"
+        },
+        "disabled": {
+            "se": "Inte tillgänglig",
+            "en": "Not avaliable"
+        },
+        "kth-disabled-message": {
+            "se": "Tyvärr är inlogg med KTH inte tillgänglig just nu. Är du funktionär kan du logga in med ditt funktionärskonto för att redigera din nämnd.",
+            "en": "Unfortunately, it is not possible to login with KTH right now. If you are an official, you can login with your officials email to edit your committee."
+        },
+        "logged-in": {
+            "se": "Inloggad",
+            "en": "Logged in"
+        },
+        "logout": {
+            "se": "Logga ut",
+            "en": "Log out"
         }
     },
     "landing": {
@@ -103,6 +129,10 @@
                 "se": "Lägg till medlem",
                 "en": "Add member"
             }
+        },
+        "back-to-all": {
+            "se": "Alla nämnder",
+            "en": "All committees"
         }
     },
     "feed": {
@@ -113,6 +143,10 @@
         "tags": {
             "se": "Taggar",
             "en": "Tags"
+        },
+        "published": {
+            "se": "Publicerad",
+            "en": "Published"
         },
         "post": {
             "go_back": {

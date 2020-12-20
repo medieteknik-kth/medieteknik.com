@@ -1,0 +1,30 @@
+.Gallery {
+    display: flex;
+    flex-direction: column;
+}
+
+.Gallery h3 {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+.galleryContent {
+
+}
+
+.galleryContainer {
+    display: flex;
+    width: 80%;
+    margin: 30px auto 40px auto;
+    // overflow: hidden;
+}
+
+@media (max-width: 800px) {
+    .galleryHeader {
+        padding: 0.5em 0 0 0;
+    }
+    .galleryContent {
+        padding-left: 0;
+        padding: 0 1em 0 1em;
+    }
+}

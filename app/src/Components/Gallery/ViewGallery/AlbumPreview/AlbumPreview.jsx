@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomBuildSwiper from '../Swiper/Swiper';
+import CustomBuildSwiper from '../../Swiper/Swiper';
 import { NavLink } from 'react-router-dom';
 
 const AlbumPreview = (props) => {
@@ -7,7 +7,11 @@ const AlbumPreview = (props) => {
         <NavLink to='/album/1'>
             <h3>{props.title}</h3>
         </NavLink>
-        <CustomBuildSwiper title={props.title} images={props.images}/>
+        
+        <CustomBuildSwiper 
+            title={props.title} 
+            images={props.images}
+        />
     </div>);
 }
 

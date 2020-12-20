@@ -17,7 +17,7 @@ const Document = props => {
     const [viewDocuments, setViewDocuments] = useState(true);
     const [propUserIsFunkis, setPropUserIsFunkis] = useState(true);
 
-    const { lang } = useContext(LocaleContext)
+    const { lang } = useContext(LocaleContext);
     translateToString({
         se: 'Dokument',
         en: 'Document',

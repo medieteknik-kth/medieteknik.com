@@ -1,40 +1,62 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import classes from './Gallery.module.scss';
-import AlbumPreview from './AlbumPreview/AlbumPreview';
 
-import SideMenu from './SideMenu/sideMenu';
+import {
+    LocaleContext,
+    translateToString,
+} from '../../Contexts/LocaleContext';
 
-import { LocaleText } from '../../Contexts/LocaleContext';
-
-import Api from '../../Utility/Api';
-
+import SwitchButton from '../Common/Buttons/RoundedTextButton/RoundedTextButton';
+import AlbumUpload from './AlbumUpload/AlbumUpload';
+import ViewGallery from './ViewGallery/ViewGallery';
 
 const Gallery = () => {
-  const [albums, setAlbums] = useState(null);
+    
+    const [viewGallery, setViewGallery] = useState(true);
+    const { lang } = useContext(LocaleContext);
 
-  useEffect(() => {
-    Api.Albums.GetAll().then((albums) => {
-        setAlbums(albums);
-    });
-  }, []);
 
-  return (
+    return (
         <div className={classes.Gallery}>
-            <SideMenu />
-            {(albums == null ? <div /> : 
-                (
-                    <div>
-                        <div className={classes.galleryHeader}>
-                            <h2>
-                                <LocaleText phrase="gallery/gallery_header" />
-                            </h2>
-                        </div>
-                        <div className={classes.galleryContent}>
-                            {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
-                        </div>
-                    </div>
-                ))
-            }
+            <SwitchButton 
+                onClick={() => {
+                    setViewGallery(!viewGallery);
+                }}
+            >
+                {
+                    viewGallery ? 
+                        translateToString({
+                            se: 'Ladda upp +',
+                            en: 'Upload +',
+                            lang,
+                        }) 
+                    : 
+                        translateToString({
+                            se: 'Bläddra',
+                            en: 'Browse',
+                            lang,
+                        })
+                }
+            </SwitchButton>
+
+            <h2>
+                {
+                    viewGallery ?
+                        translateToString({
+                            se: 'Mediagalleri',
+                            en: 'Media Gallery',
+                            lang,
+                        }) 
+                    : 
+                        translateToString({
+                            se: 'Ladda upp bilder & filmer',
+                            en: 'Upload images & videos',
+                            lang,
+                        })
+                }
+            </h2>
+            
+            {viewGallery ? <ViewGallery /> : <AlbumUpload />}
         </div>
     )
 };
