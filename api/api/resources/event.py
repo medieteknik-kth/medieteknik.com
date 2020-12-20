@@ -37,7 +37,7 @@ class EventResource(Resource):
       event = Event.query.get(id)
       return jsonify(event.to_dict())
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
       """
       Delete the event with the given ID
       ---
@@ -56,7 +56,7 @@ class EventResource(Resource):
       return jsonify(message="event deleted!")
 
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
       """
       Update an event
       ---

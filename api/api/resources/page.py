@@ -86,7 +86,7 @@ class PageResource(Resource):
             }, 401
     
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
         """
         Deletes a page with id.
         ---
