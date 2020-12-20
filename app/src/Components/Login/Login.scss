@@ -1,6 +1,21 @@
 .loginPage {
     margin-top: 120px;
     margin-bottom: 40px;
+    text-align: center;
+}
+
+.logoutButton {
+    padding-bottom: 3px;
+    font-size: 16px;
+    border-bottom: 2px solid #f0c900;
+    font-family: Roboto, sans-serif;
+    transition: color 0.2s ease-in-out;
+    color: black;
+    cursor: pointer;
+}
+
+.logoutButton:hover {
+    color: #545454;
 }
 
 .loginMethodList {
