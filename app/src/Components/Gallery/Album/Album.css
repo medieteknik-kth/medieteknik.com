@@ -30,6 +30,11 @@
 
 .album-cell img {
     display: block;
+    max-height: 226px;
+}
+
+.album-cell:hover {
+    opacity: 0.75;
 }
 
 @media screen and (min-width: 600px){
