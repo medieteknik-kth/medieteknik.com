@@ -1,45 +1,61 @@
 import React from 'react';
 import Modal from 'react-modal';
 
-const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen}) => {
-    
-    const customStyles = {
-        content: {
-            padding: 'none',
-            border: 'none',
-            borderRadius: 0,
-            top: 'initial',
-            bottom: 'initial',
-            left: 'initial',
-            right: 'initial',
-            color: '#fff',
-            background: 'none',
+import classes from './AlbumModal.module.scss';
 
-        },
-        overlay: {
-            zIndex: 2000,
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-            }
-    }
+import PreviousImageButton from '../../Common/Buttons/PreviousButton/PreviousButton';
+import NextImageButton from '../../Common/Buttons/NextButton/NextButton';
+import ExitButton from '../../Common/Buttons/ExitButton/ExitButton';
 
+const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, imageId, viewPreviousImage, viewNextImage}) => {
     return(
         <Modal
             isOpen={modalOpen}
             onRequestClose={() => setModalOpen(false)}
-            style={customStyles}
-            ariaHideApp={false}>
-                <img src={image} style={{maxWidth: '100%', maxHeight: '800px'}} alt='' className='no-select'/>
-                <h5>{`${date.toISOString().split('T')[0]}, ${photographer}`}</h5>
-                <h3>{title}</h3>
+            className={classes.modal}
+            overlayClassName={classes.overlay}
+            ariaHideApp={false}
+        >
+            <div className={classes.imageContainer}>
+
+                <div onClick = {() => viewPreviousImage(imageId)}>
+                    <PreviousImageButton 
+                        extraClass={classes.leftButton}
+                    />
+                </div>
+                
+
+                <div>
+                    <img 
+                        // ref={imageRef} 
+                        src={image} 
+                        style={{
+                            maxWidth: `${window.innerWidth * 0.85}px`, 
+                            maxHeight: `${window.innerHeight * 0.85}px`
+                        }} 
+                        alt='' 
+                        className='no-select'
+                    />
+
+                    <h5>{`${date.toISOString().split('T')[0]}, ${photographer}`}</h5>
+                    <h3>{title}</h3>
+                </div>
+                
+                <div onClick = {() => viewNextImage(imageId)}>
+                    <NextImageButton 
+                        extraClass={classes.leftButton}
+                    />
+                </div>
+                
+            </div>
+            
+            <div onClick = {() => setModalOpen(false)}>
+                <ExitButton 
+                    extraClass = {classes.exitButton}
+                />
+            </div>
+            
+            
         </Modal>
     );
 }

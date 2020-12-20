@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './roundedButton.module.scss';
+import classes from './RoundedTextButton.module.scss';
 
 const RoundedButton = (props) => {
     return (
