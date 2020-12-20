@@ -301,6 +301,10 @@
         "page_not_found": {
             "se": "Kunde inte hitta sida",
             "en": "Could not find page"
+        },
+        "create-page": {
+            "se": "Skapa sidan",
+            "en": "Create page"
         }
     },
     "error": {

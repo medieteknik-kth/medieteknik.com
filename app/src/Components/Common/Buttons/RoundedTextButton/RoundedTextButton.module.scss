@@ -1,18 +1,20 @@
 .RoundedButton {
     cursor: pointer;
-    font-size: 11px;
+    font-size: 0.6rem;
     font-family: Roboto, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
-    border: 1px solid #f0c900;
+    border: 2px solid #f0c900;
     color: #000;
-    border-radius: 40px;
-    padding: 5px 15px;
+    border-radius: 2px;
+    padding: 4px 15px;
     outline: none;
     transition: .25s;
+    background-color: #fff;
+    font-weight: 500;
 }
 
 .RoundedButton:hover {
     background-color: #f0c900;
-    color: #fff;
+    transform: scale(1.07);
 }

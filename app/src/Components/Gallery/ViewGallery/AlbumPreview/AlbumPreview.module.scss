@@ -9,3 +9,10 @@
 .albumHeader:hover {
     font-weight: 500;
 }
+
+.albumHeaderContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
