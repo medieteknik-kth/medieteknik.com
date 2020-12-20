@@ -27,6 +27,7 @@ export default function Login() {
     clientId: '881584931454-ankmp9jr660l8c1u91cbueb4eaqeddbt.apps.googleusercontent.com',
     onSuccess: googleSuccess,
     onFailure: googleFailure,
+    hostedDomain: 'medieteknik.com',
     cookiePolicy: 'single_host_origin',
   });
 
