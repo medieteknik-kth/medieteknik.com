@@ -65,6 +65,7 @@ export default function Page() {
       setIsLoading(true);
       const dataToSend = {
         published: true,
+        title: page.title,
       };
 
       if (content != null) {

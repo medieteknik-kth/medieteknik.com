@@ -6,6 +6,8 @@ from flask_restful import Resource
 from api.models.page import Page, PageRevision, PageRevisionType
 from api.resources.authentication import requires_auth
 
+from slugify import slugify
+
 class PageResource(Resource):
     def get(self, id):
         if id.isnumeric():
@@ -133,7 +135,7 @@ class PageListResource(Resource):
         return jsonify(data)
     
     @requires_auth
-    def put(self, user):
+    def post(self, user):
         """
         Creates a new page with optional content.
         ---
@@ -170,6 +172,7 @@ class PageListResource(Resource):
         
         if "title" in keys:
             revision.title = request.json["title"]
+            page.slug = slugify(request.json["title"])
         if "content_sv" in keys:
             revision.content_sv = request.json["content_sv"]
         if "content_en" in keys:
