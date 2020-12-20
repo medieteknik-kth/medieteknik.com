@@ -6,11 +6,14 @@ from api.db import db
 from api.models.video import Video
 from api.models.video_playlist import VideoPlaylist
 
+from api.resources.authentication import requires_auth
+
 class VideoPlaylistResource(Resource):
     def get(self, id):
         playlist = VideoPlaylist.query.get_or_404(id)
         return jsonify(playlist.to_dict())
 
+    @requires_auth
     def delete(self, id):
         playlist = VideoPlaylist.query.get_or_404(id)
         db.session.delete(playlist)
@@ -18,6 +21,7 @@ class VideoPlaylistResource(Resource):
 
         return make_response(jsonify(success=True))
     
+    @requires_auth
     def patch(self, id):
         playlist = VideoPlaylist.query.get_or_404(id)
         data = request.json
@@ -43,6 +47,7 @@ class VideoPlaylistResource(Resource):
         return make_response(jsonify(success=True))
 
 class VideoPlaylistListResource(Resource):
+    @requires_auth
     def post(self):
         title = request.form.get("title")
 

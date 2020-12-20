@@ -29,7 +29,7 @@ export default function Page() {
   const { user } = useContext(UserContext);
   const { lang } = useContext(LocaleContext);
 
-  const canEdit = user !== null && page !== null !== null && (user.isAdmin || (page.committee && user.committeePostTerms.include((term) => term.post.committeeId === page.committee.id)));
+  const canEdit = user !== null && page !== null !== null && (user.currentTerms[0].user.isAdmin || (user.committeeId === page.committee.id && user.isOfficial));
 
   const onBeforeUnload = (event) => {
     if (isEditing) {
@@ -176,7 +176,7 @@ export default function Page() {
                       isEditing={isEditing}
                       onChange={onChange}
                     />
-                    { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={isEditing} /> : <span /> }
+                    { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={false} /> : <span /> }
                   </div>
                 </Article>
               </div>

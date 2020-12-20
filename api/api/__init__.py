@@ -19,13 +19,13 @@ from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagL
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
 from api.resources.operational_years import OperationalYearsResource
-from api.resources.authentication import AuthenticationResource, CASResource
 from api.resources.health import HealthResource
 from api.resources.me import MeCommitteeResource
 from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
 from api.resources.video_playlist import VideoPlaylistResource, VideoPlaylistListResource
+from api.resources.authentication import AuthenticationResource
 
 from api.resources.event import EventResource, EventListResource
 
@@ -114,47 +114,8 @@ api.add_resource(VideoPlaylistListResource, "/video_playlist")
 
 api.add_resource(HealthResource, "/health")
 
-api.add_resource(AuthenticationResource, "/auth")
-api.add_resource(CASResource, "/cas")
-
 api.add_resource(MeCommitteeResource, "/me/committees")
-
-if app.debug:
-    api.add_resource(TestResource, "/test")
-
-    from api.models.user import User
-
-    local_cas = Blueprint("cas", __name__)
-    @local_cas.route("/login", methods=["GET", "POST"])
-    def login():
-        if request.method == 'POST':
-            if User.query.filter_by(kth_id=request.form["username"]).first() != None:
-                session["CAS_USERNAME"] = request.form["username"]
-
-                return redirect(url_for(app.config['CAS_AFTER_LOGIN']))
-            else:
-                return "Ogiltigt användarnamn. Användarnamnet behöver vara ett giltigt KTH-ID (ex. u1xxxxxx)."
-        else:
-            return "<form method='POST'><input placeholder='användarnamn' name='username'></input><input type='submit' /></form>"
-
-    @local_cas.route('/logout')
-    def logout():
-        if "CAS_USERNAME" in session:
-            session.pop("CAS_USERNAME")
-
-        if request.args.get('service'):
-            return redirect(request.args.get('service'))
-
-        return jsonify(success=True)
-    
-    app.register_blueprint(local_cas)
-else:
-    CAS(app)
-
-@app.route("/authtest")
-@login_required
-def auth_test():
-    return "Du är inloggad som " + str(session["CAS_USERNAME"])
+api.add_resource(AuthenticationResource, "/auth")
     
 @app.route('/get_image')
 def get_image():
@@ -298,7 +259,9 @@ def route_create_all():
     rasmus = create_official("Rasmus", "Rudling", branchdagen, True, "Rasmus")
     ellaklara = create_official("Ella Klara", "Westerlund", branchdagen, True, "Ella_Klara")
 
-    joppe = create_official("Jesper", "Lundqvist", create_post(create_committee("Webmaster", "medieteknik", category=naringsliv), "Webmaster"), False)
+    webmaster = create_post(create_committee("Webmaster", "medieteknik", category=naringsliv), "Webmaster")
+    webmaster.officials_email = "webmaster@medieteknik.com"
+    joppe = create_official("Jesper", "Lundqvist", webmaster, False)
     
     studie = create_committee("Studienämnden", "studienamnden", category=utbildning)
     create_official("Sofia", "Lundin Ziegler", create_post(studie, "Studienämndsordförande"), True, "Sofia_L")
@@ -409,6 +372,7 @@ def route_create_all():
     post.name = "Projektledare för Hemsidan"
     post.committee = committee1
     post.is_official = True
+    post.officials_email = "projekthemsidan@medieteknik.com"
     term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
     
     post2 = CommitteePost()

@@ -10,6 +10,7 @@ class CommitteeResource(Resource):
         committee = Committee.query.get(id)
         return jsonify(committee.to_dict())
 
+    @requires_auth
     def put(self):
         committee = Committee()
         keys = request.form.keys()

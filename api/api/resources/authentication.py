@@ -6,20 +6,31 @@ from functools import wraps
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
+import cachecontrol
+import cachecontrol
+import google.auth.transport.requests
+import requests
+from google.oauth2 import id_token
+
 from api.models.user import User
+from api.models.committee_post import CommitteePost
 
 import os
 
 secret = os.getenv("SECRET_KEY", "2kfueoVmpd0FBVFCJD0V")
 
 def check_token(token):
-    s = Serializer(secret)
-    try:
-        data = s.loads(token)
-    except:
+    session = requests.session()
+    cached_session = cachecontrol.CacheControl(session)
+    request = google.auth.transport.requests.Request(session=cached_session)
+
+    id_info = id_token.verify_token(token, request, '881584931454-ankmp9jr660l8c1u91cbueb4eaqeddbt.apps.googleusercontent.com')
+
+    if id_info['iss'] != 'accounts.google.com':
         return None
-    
-    return data["kth_id"]
+
+    userid = id_info['email']
+    return userid
 
 def requires_auth(f):
     @wraps(f)
@@ -30,19 +41,20 @@ def requires_auth(f):
                 "message": "Missing token"
             }, 400
         
-        kth_id = check_token(token)
-        if not kth_id:
+        user_id = check_token(token)
+        if not user_id:
             return {
                 "message": "Invalid token"
             }, 401
         
-        user = User.query.filter_by(kth_id=kth_id).first()
-        if not user:
+        user = User.query.filter_by(kth_id=user_id).first()
+        official = CommitteePost.query.filter_by(officials_email=user_id).first()
+        if not user and not official:
             return {
                 "message": "Invalid user"
             }, 401
-
-        kwargs["user"] = user
+        
+        kwargs["user"] = user if user else official.current_terms()[0].user
         return f(*args, **kwargs)
 
     return decorated
@@ -51,16 +63,22 @@ class AuthenticationResource(Resource):
     def post(self):
         if "token" in request.form.keys():
             token = request.form["token"]
-            kth_id = check_token(token)
+            user_id = check_token(token)
 
-            if not kth_id:
+            if not user_id:
                 return {
                     "authenticated": False,
                     "message": "Invalid token"
                 }, 400
 
-            current_user = User.query.filter_by(kth_id=kth_id).first()
-            if not current_user:
+            user = User.query.filter_by(kth_id=user_id).first()
+            official = CommitteePost.query.filter_by(officials_email=user_id).first()
+            if not user and not official:
+                return {
+                    "message": "Invalid user"
+                }, 401
+
+            if not user and not official:
                 return {
                     "authenticated": False,
                     "message": "Invalid user"
@@ -68,7 +86,7 @@ class AuthenticationResource(Resource):
             else:
                 response = {
                     "authenticated": True,
-                    "user": current_user.to_dict()
+                    "user": (user if user else official).to_dict()
                 }
 
                 return jsonify(response)
@@ -76,27 +94,3 @@ class AuthenticationResource(Resource):
             return {
                 "message": "Missing token"
             }, 400
-
-
-class CASResource(Resource):
-    def get(self):
-        if "origin" in request.args.keys():
-            session["origin"] = request.args["origin"]
-
-        if "CAS_USERNAME" not in session:
-            return redirect(url_for("cas.login"))
-        
-        if "origin" in session and "CAS_USERNAME" in session:
-            user = User.query.filter_by(kth_id=session["CAS_USERNAME"]).first()
-            
-            if not user:
-                origin = session.pop("origin")
-                return redirect(origin)
-            else:
-                s = Serializer(secret, expires_in = 3600)
-                data = s.dumps({ 'kth_id': user.kth_id })
-                token = data.decode('utf-8')
-                origin = session.pop("origin")
-                return redirect(origin + "?token=" + token)
-        
-        return "Invalid request", 400
