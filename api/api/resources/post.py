@@ -47,7 +47,7 @@ class PostResource(Resource):
         return jsonify(post.to_dict())
 
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
         """
         Edits a post by id.
         ---

@@ -11,7 +11,7 @@ TOKEN_ID = os.getenv("MUX_TOKEN_ID")
 SECRET = os.getenv("MUX_SECRET")
 class VideoListResource(Resource):
     @requires_auth
-    def post(self):
+    def post(self, user):
         video_title = request.form.get("title")
 
         if not video_title:
@@ -78,7 +78,7 @@ class VideoResource(Resource):
         # return make_response(html % (playback_id))
     
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
         video = Video.query.get_or_404(id)
         url = "https://api.mux.com/video/v1/assets/" + video.mux_asset_id
         r = requests.delete(url, auth=(TOKEN_ID, SECRET))
@@ -92,7 +92,7 @@ class VideoResource(Resource):
         return make_response(jsonify(success=True))
     
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
         video = Video.query.get_or_404(id)
 
         new_video_title = request.form.get("title")

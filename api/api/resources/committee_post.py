@@ -12,14 +12,14 @@ class CommitteePostResource(Resource):
         return jsonify(committee_post.to_dict())
 
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
         post = CommitteePost.query.filter_by(id=id).first_or_404()
         db.session.delete(post)
         db.session.commit()
         return jsonify({"message": "ok"})
 
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
         post = CommitteePost.query.filter_by(id=id).first_or_404()
         keys = request.form.keys()
 

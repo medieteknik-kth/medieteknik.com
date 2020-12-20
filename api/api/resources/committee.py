@@ -11,7 +11,7 @@ class CommitteeResource(Resource):
         return jsonify(committee.to_dict())
 
     @requires_auth
-    def put(self):
+    def put(self, user):
         committee = Committee()
         keys = request.form.keys()
         
@@ -39,16 +39,16 @@ class CommitteePostListWithCommitteeResource(Resource):
         return jsonify(data)
     
     @requires_auth
-    def post(self, id):
+    def post(self, id, user):
         committee = Committee.query.get(id)
         return jsonify({"message": "success"})
 
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
         committee = Committee.query.get(id)
         return jsonify({"message": "success"})
 
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
         committee = Committee.query.get(id)
         return jsonify({"message": "success"})

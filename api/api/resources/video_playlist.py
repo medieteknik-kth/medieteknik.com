@@ -14,7 +14,7 @@ class VideoPlaylistResource(Resource):
         return jsonify(playlist.to_dict())
 
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
         playlist = VideoPlaylist.query.get_or_404(id)
         db.session.delete(playlist)
         db.session.commit()
@@ -22,7 +22,7 @@ class VideoPlaylistResource(Resource):
         return make_response(jsonify(success=True))
     
     @requires_auth
-    def patch(self, id):
+    def patch(self, id, user):
         playlist = VideoPlaylist.query.get_or_404(id)
         data = request.json
 
@@ -48,7 +48,7 @@ class VideoPlaylistResource(Resource):
 
 class VideoPlaylistListResource(Resource):
     @requires_auth
-    def post(self):
+    def post(self, user):
         title = request.form.get("title")
 
         if not title:
