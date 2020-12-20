@@ -22,8 +22,8 @@ const Gallery = () => {
                 onClick={() => {
                     setViewGallery(!viewGallery);
                 }}
-            >
-                {
+                extraClass={classes.switchButton}
+                text = {
                     viewGallery ? 
                         translateToString({
                             se: 'Ladda upp +',
@@ -37,7 +37,7 @@ const Gallery = () => {
                             lang,
                         })
                 }
-            </SwitchButton>
+            />
 
             <h2>
                 {

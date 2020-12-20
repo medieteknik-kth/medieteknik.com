@@ -1,9 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './Album.css';
 import { useParams } from 'react-router-dom';
 import AlbumModal from '../AlbumModal/AlbumModal';
 import Api from '../../../Utility/Api';
 
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../Contexts/LocaleContext';
+
+import PreviousPageButton from '../../Common/Buttons/PreviousPageButton/PreviousPageButton';
 
 const Album = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -11,6 +17,7 @@ const Album = () => {
     const [currentImageId, setCurrentImageId] = useState(1);
     const [album, setAlbum] = useState(null);
     const { id } = useParams();
+    const { lang } = useContext(LocaleContext);
     
 
     const changeImage = useCallback(event => {
@@ -69,26 +76,39 @@ const Album = () => {
                 />
             ) : <></>}
 
+
+
             <div className="album-header">
-            <h2>{album.title}</h2>
-            <h5>{album.date ? new Date(album.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, ' ') : <></>}</h5>
+                <h2>{album.title}</h2>
+                <h5>{album.date ? new Date(album.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, ' ') : <></>}</h5>
             </div>
+
+            
             <div className="album-container">
-            <div className="album-grid">
-                {album.images.map((image, key) => (
-                    <div
-                        key={image.url}
-                        className="album-cell no-select"
-                        onClick={() => {
-                            console.log(key)
-                            setCurrentImageId(key);
-                            viewImage(key);
-                        }}
-                    >
-                    <img src={image.url} className="responsive-image" alt="" />
+                <PreviousPageButton 
+                    linkPath = '/media-gallery'
+                    text = {translateToString({
+                        se: "Tillbaka till mediagalleri",
+                        en: "Back to media gallery",
+                        lang
+                    })}
+                    extraStyle = {{"margin":"0 0 10px 20px"}}
+                />
+                <div className="album-grid">
+                    {album.images.map((image, key) => (
+                        <div
+                            key={image.url}
+                            className="album-cell no-select"
+                            onClick={() => {
+                                console.log(key)
+                                setCurrentImageId(key);
+                                viewImage(key);
+                            }}
+                        >
+                        <img src={image.url} className="responsive-image" alt="" />
+                    </div>
+                    ))}
                 </div>
-                ))}
-            </div>
             </div>
         </>
         )

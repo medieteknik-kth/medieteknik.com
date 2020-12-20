@@ -24,6 +24,7 @@
 
 .album-cell {
     margin: 1rem;
+    margin-top: 0.5rem;
     cursor: pointer;
     user-select: none;
 }
@@ -36,6 +37,11 @@
 .album-cell:hover {
     opacity: 0.75;
 }
+
+album-back-btn {
+    background-color: red;
+}
+
 
 @media screen and (min-width: 600px){
     .album-grid {
