@@ -33,7 +33,7 @@ const CustomBuildSwiper = ({images, title}) => {
     }, [currentImageId])
 
     useEffect(() => {
-        setSwiperWidth(window.innerWidth * 0.8 * 0.75);
+        setSwiperWidth(window.innerWidth * 0.8 * 0.8);
         window.addEventListener('keydown', changeImage);
         return () => window.removeEventListener('keydown', changeImage);
     }, [currentImageId])
