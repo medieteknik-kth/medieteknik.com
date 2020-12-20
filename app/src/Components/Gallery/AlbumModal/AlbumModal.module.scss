@@ -1,0 +1,73 @@
+.modal {
+    padding: none;
+    border: none;
+    border-radius: 0;
+    top: initial;
+    bottom: initial;
+    left: initial;
+    right: initial;
+    color: #fff;
+    background: none;
+    outline: none;
+}
+
+.modal:hover {
+    cursor: default;
+}
+
+.overlay {
+    z-index: 2000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay:hover {
+    cursor: pointer;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.leftButton, .rightButton {
+    font-size: 50px !important;
+    // position: absolute;
+    margin-bottom: 60px;
+    width: 55px !important;
+    height: 55px !important;
+    transition: .25s !important;
+    background-color: #fff !important;
+}
+
+.leftButton:hover, .rightButton:hover {
+    background-color: #b6b6b6 !important;
+    color: #2d2d2d !important;
+}
+
+.exitButton {
+    font-size: 45px !important;
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 55px !important;
+    height: 55px !important;
+    transition: .25s !important;
+    background-color: #2d2d2d !important;
+    color: #f0c900 !important;
+    border: 3px solid #f0c900 !important;
+}
+
+.exitButton:hover {
+    background-color: #464646 !important;
+    transform: scale(1.07);
+}

@@ -1,5 +1,6 @@
-.swiper-container{
-    width: 100%;
+.swiper-container {
+    width: 900px;
+    margin-left: 0;
 }
 
 .swiper-wrapper {
@@ -16,6 +17,10 @@
     width: auto;
 }
 
+.img-fluid:hover {
+    opacity: 0.75;
+}
+
 .swiper-slide {
     height:auto !important;
     cursor: pointer;
@@ -29,6 +34,11 @@
     transform: translateY(-41%);
     z-index: 9999;
     color: #fff;
+    transition: .3s;
+}
+
+.swiper-button-prev:hover, .swiper-button-next:hover {
+    background: rgba(100, 100, 100, 0.75);
 }
 
 .swiper-button-prev {

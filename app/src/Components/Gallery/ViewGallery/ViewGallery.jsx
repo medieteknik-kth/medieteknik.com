@@ -23,12 +23,18 @@ const ViewGallery = () => {
     return (
         <div className={classes.galleryContainer}>
             <SideMenu />
-            {(albums == null ? <div /> : 
-                (
+            {
+                albums == null ? <div /> : (
                     <div className={classes.galleryContent}>
-                        {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
+                        {albums.map((album, index) => (
+                            <AlbumPreview 
+                                key={index} 
+                                title={album.title} 
+                                images={album.images} 
+                            />
+                        ))}
                     </div>
-                ))
+                )
             }
         </div>
     )

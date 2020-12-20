@@ -6,7 +6,7 @@ import {
     translateToString,
 } from '../../Contexts/LocaleContext';
 
-import SwitchButton from '../Common/Buttons/TextButtons/RoundedButton/roundedButton';
+import SwitchButton from '../Common/Buttons/RoundedTextButton/RoundedTextButton';
 import AlbumUpload from './AlbumUpload/AlbumUpload';
 import ViewGallery from './ViewGallery/ViewGallery';
 
@@ -43,8 +43,8 @@ const Gallery = () => {
                 {
                     viewGallery ?
                         translateToString({
-                            se: 'Galleri',
-                            en: 'Gallery',
+                            se: 'Mediagalleri',
+                            en: 'Media Gallery',
                             lang,
                         }) 
                     : 

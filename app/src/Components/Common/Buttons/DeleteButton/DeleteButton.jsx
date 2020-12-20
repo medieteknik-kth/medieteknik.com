@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './iconButtons.module.scss';
+import classes from './DeleteButton.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
