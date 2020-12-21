@@ -30,37 +30,40 @@ const Document = props => {
             { user !== null && user.isOfficial ?
                 <Button onClick={() => {
                     setViewDocuments(!viewDocuments);
-                }}>{viewDocuments ?
-                    translateToString({
-                        se: 'Ladda upp dokument +',
-                        en: 'Publish document +',
-                        lang,
-                    }) : 
-                    translateToString({
-                        se: 'Bläddra bland dokument',
-                        en: 'Browse documents',
-                        lang,
-                    })
-                }</Button>
+                }}>
+                    {viewDocuments ?
+                        translateToString({
+                            se: 'Ladda upp dokument +',
+                            en: 'Publish document +',
+                            lang,
+                        }) :
+                        translateToString({
+                            se: 'Bläddra bland dokument',
+                            en: 'Browse documents',
+                            lang,
+                        })
+                    }
+                </Button>
+            }
 
-                <h2 className={classes.secHeader}>{viewDocuments ?
-                    translateToString({
-                        se: 'Dokument',
-                        en: 'Document',
-                        lang,
-                    }) : 
-                    translateToString({
-                        se: 'Ladda upp dokument',
-                        en: 'Publish document',
-                        lang,
-                    })
-                }</h2>
-                {
-                    viewDocuments ? 
-                    <ViewDocuments userIsFunkis = {propUserIsFunkis} /> : 
+            <h2 className={classes.secHeader}>{viewDocuments ?
+                translateToString({
+                    se: 'Dokument',
+                    en: 'Document',
+                    lang,
+                }) :
+                translateToString({
+                    se: 'Ladda upp dokument',
+                    en: 'Publish document',
+                    lang,
+                })
+            }</h2>
+            {
+                viewDocuments ?
+                    <ViewDocuments userIsFunkis={propUserIsFunkis} /> :
                     <PublishDocument />
-                }
-            </div>
+            }
+        </div>
     )
 }
 
