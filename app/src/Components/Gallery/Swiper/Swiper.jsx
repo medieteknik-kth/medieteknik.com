@@ -5,12 +5,16 @@ import ReactIdSwiperCustom from 'react-id-swiper/lib/ReactIdSwiper.custom';
 import { Swiper, Navigation, Pagination } from 'swiper/js/swiper.esm';
 import useWindowDimensions from '../../../Hooks/useWindowDimensions'
 import AlbumModal from '../AlbumModal/AlbumModal';
- 
-const CustomBuildSwiper = ({images, title}) => {
+import AlbumVideoModal from '../AlbumModal/AlbumVideoModal';
+
+const CustomBuildSwiper = ({images, videos, title}) => {
     const [swiperWidth, setSwiperWidth] = useState(300);
     const [modalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
-    const [currentImageId, setCurrentImageId] = useState(1);
+    const [currentImageId, setCurrentImageId] = useState(0);
+    const [currentVideo, setCurrentVideo] = useState(null);
+    const [currentVideoId, setCurrentVideoId] = useState(0);
+    const [isVideo, setIsVideo] = useState(false);
 
     const params = {
         Swiper,
@@ -55,50 +59,84 @@ const CustomBuildSwiper = ({images, title}) => {
     }
 
     const viewImage = (imageId) => {
-        const tempImage = images[imageId]
-        setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer})
+        const tempImage = images[imageId];
+        setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer});
         setModalOpen(true);
+        setIsVideo(false);
     }
+
+    const viewVideo = (videoId) => {
+        const tempVideo = videos[videoId];
+        setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+        setModalOpen(true);
+        setIsVideo(true);
+    };
+
+    const mediaModal = (isVideo ? (
+        <AlbumVideoModal
+            title={currentVideo.title}
+            videoUrl={currentVideo.src}
+            date={new Date(currentVideo.date)}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+        />) : (
+        <AlbumModal 
+            image={currentImage.src} 
+            title={currentImage.title}
+            date={currentImage.date}
+            photographer={currentImage.photographer}
+            imageId={currentImageId}
+            viewPreviousImage={viewPreviousImage}
+            viewNextImage={viewNextImage}
+            modalOpen={modalOpen} 
+            setModalOpen={setModalOpen} 
+        />)
+    );
+        
  
     return(
         <>
-            { currentImage ? 
-                <AlbumModal 
-                    image={currentImage.src} 
-                    title={currentImage.title}
-                    date={currentImage.date}
-                    photographer={currentImage.photographer}
-                    imageId={currentImageId}
-                    viewPreviousImage={viewPreviousImage}
-                    viewNextImage={viewNextImage}
-                    modalOpen={modalOpen} 
-                    setModalOpen={setModalOpen} /> 
-                : <></>
-            }
+            { currentImage ? mediaModal : null }
             <div style={{"width": `${swiperWidth}px`}} className="">
                 <ReactIdSwiperCustom {...params} >
-                    {  
-                        images.map((image, key) => {
-                            return (<div key={key} className='swiper-slide no-select'>
-                                <img 
-                                    src={image.url} 
-                                    alt='#' 
-                                    className='img-fluid'  
+                    {
+                        videos.map((video, key) => (
+                            <div key={key} className="swiper-slide no-select">
+                                <img
+                                    src={video.thumbnail}
+                                    alt="#"
+                                    className="img-fluid"
                                     onClick={() => {
-                                        setCurrentImageId(key);
-                                        viewImage(key);
+                                        setCurrentVideoId(key);
+                                        viewVideo(key);
                                     }}
                                 />
-                            </div>)
-                        }
-                            
-                        )
+                            </div>
+                        ))
+                    }
+
+                    {  
+                        images.map((image, key) => {
+                            return (
+                                <div key={key} className='swiper-slide no-select'>
+                                    <img 
+                                        src={image.url} 
+                                        alt='#' 
+                                        className='img-fluid'  
+                                        onClick={() => {
+                                            setCurrentImageId(key);
+                                            viewImage(key);
+                                        }}
+                                    />
+                                </div>
+                            )
+                        })
                     }
                 </ReactIdSwiperCustom>
             </div>
-            
         </>
     )
 }
  
+
 export default CustomBuildSwiper;

@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './Album.css';
 import { useParams } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPlayCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import AlbumModal from '../AlbumModal/AlbumModal';
+import AlbumVideoModal from '../AlbumModal/AlbumVideoModal';
 import Api from '../../../Utility/Api';
 
 import {
@@ -14,10 +19,14 @@ import PreviousPageButton from '../../Common/Buttons/PreviousPageButton/Previous
 const Album = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
-    const [currentImageId, setCurrentImageId] = useState(1);
+    const [currentImageId, setCurrentImageId] = useState(0);
+    const [currentVideo, setCurrentVideo] = useState(null);
+    const [currentVideoId, setCurrentVideoId] = useState(0);
+
     const [album, setAlbum] = useState(null);
     const { id } = useParams();
     const { lang } = useContext(LocaleContext);
+    const [isVideo, setIsVideo] = useState(false);
     
 
     const changeImage = useCallback(event => {
@@ -56,33 +65,46 @@ const Album = () => {
         const tempImage = album.images[imageId];
         setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer})
         setModalOpen(true);
+        setIsVideo(false);
     }
+
+    const viewVideo = (videoId) => {
+        const tempVideo = album.videos[videoId];
+        setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+        setModalOpen(true);
+        setIsVideo(true);
+    };
+
+    const mediaModal = (isVideo ? (
+        <AlbumVideoModal
+            title={currentVideo.title}
+            videoUrl={currentVideo.src}
+            date={new Date(currentVideo.date)}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+        />) : (
+        <AlbumModal 
+            image={currentImage.src} 
+            title={currentImage.title}
+            date={currentImage.date}
+            photographer={currentImage.photographer}
+            imageId={currentImageId}
+            viewPreviousImage={viewPreviousImage}
+            viewNextImage={viewNextImage}
+            modalOpen={modalOpen} 
+            setModalOpen={setModalOpen} 
+        />)
+    );
 
     return (
         album == null ? <div /> : (
         <>
-            { currentImage
-            ? (
-                <AlbumModal
-                    image={currentImage.src}
-                    title={currentImage.title}
-                    date={new Date(currentImage.date)}
-                    photographer={currentImage.photographer}
-                    imageId={currentImageId}
-                    viewPreviousImage={viewPreviousImage}
-                    viewNextImage={viewNextImage}
-                    modalOpen={modalOpen}
-                    setModalOpen={setModalOpen}
-                />
-            ) : <></>}
-
-
-
+            { currentImage ? mediaModal : null }
+  
             <div className="album-header">
                 <h2>{album.title}</h2>
                 <h5>{album.date ? new Date(album.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, ' ') : <></>}</h5>
             </div>
-
             
             <div className="album-container">
                 <PreviousPageButton 
@@ -95,6 +117,22 @@ const Album = () => {
                     extraStyle = {{"margin":"0 0 10px 20px"}}
                 />
                 <div className="album-grid">
+                    {album.videos.map((video, key) => (
+                        <div
+                            key={video.id}
+                            className="album-cell no-select"
+                            onClick={() => {
+                                setCurrentVideoId(key);
+                                viewVideo(key);
+                            }}
+                        >
+                            <div className="album-video-play-icon">
+                                <FontAwesomeIcon icon={faPlayCircle} color="white" size="3x" />
+                            </div>
+                            <img src={video.thumbnail} className="responsive-image" alt="" />
+                        </div>
+                    ))}
+
                     {album.images.map((image, key) => (
                         <div
                             key={image.url}
@@ -113,6 +151,6 @@ const Album = () => {
         </>
         )
     );
-};
+}
 
 export default Album;

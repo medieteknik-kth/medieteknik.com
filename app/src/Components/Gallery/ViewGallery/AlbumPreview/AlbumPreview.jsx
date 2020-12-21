@@ -37,8 +37,9 @@ const AlbumPreview = (props) => {
         
         
         <CustomBuildSwiper 
-            title={props.title} 
             images={props.images}
+            videos={props.videos}
+            title={props.title} 
         />
     </div>);
 }
