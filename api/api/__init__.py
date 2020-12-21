@@ -23,7 +23,6 @@ from api.resources.me import MeCommitteeResource
 from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
-from api.resources.video_playlist import VideoPlaylistResource, VideoPlaylistListResource
 from api.resources.authentication import AuthenticationResource
 
 from api.resources.event import EventResource, EventListResource
@@ -105,9 +104,6 @@ api.add_resource(VideoResource, "/video/<id>")
 api.add_resource(VideoListResource, "/video")
 api.add_resource(VideoUploadTestResource, "/video_upload")
 
-api.add_resource(VideoPlaylistResource, "/video_playlist/<id>")
-api.add_resource(VideoPlaylistListResource, "/video_playlist")
-
 api.add_resource(HealthResource, "/health")
 
 api.add_resource(MeCommitteeResource, "/me/committees")
@@ -141,7 +137,6 @@ def route_create_all():
     from api.models.image import Image
     from api.models.album import Album
     from api.models.video import Video
-    from api.models.video_playlist import VideoPlaylist
 
     from api.models.event import Event
 
@@ -548,22 +543,42 @@ def route_create_all():
     event1.tags.append(post_tag2)
 
     video = Video()
-    video.title = "Test Video"
-    video.mux_asset_id = "K3yVgsacW0041kgr5UncgHnZhBBPsgnU01Rhi1BRcCZqk"
-    video.mux_playback_id = "fCYPrJn9xscSHKpAmjReeiEDm201n13f253tSPYol5Kw"
+    video.title = "ÖPH19 nØg 2020"
+    video.mux_asset_id = "dUL5m2XRKGPMTR00QO8Zb01K301TzLK2rG3sRoIL1wE01iM"
+    video.mux_playback_id = "PBWvfG00TEdPoObmNUQE9Rtyp3uYvdMFA02bW01AkjvVyY"
     video.requires_login = False
 
-    playlist = VideoPlaylist()
-    playlist.title = "Spellista"
-    playlist.videos.append(video)
+    video2 = Video()
+    video2.title = "ÖPH19 nØg 2020"
+    video2.mux_asset_id = "dUL5m2XRKGPMTR00QO8Zb01K301TzLK2rG3sRoIL1wE01iM"
+    video2.mux_playback_id = "PBWvfG00TEdPoObmNUQE9Rtyp3uYvdMFA02bW01AkjvVyY"
+    video2.requires_login = False
+
+    image1 = Image()
+    image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+    image2 = Image()
+    image2.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+    image3 = Image()
+    image3.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+    image4 = Image()
+    image4.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+
+    album1 = Album()
+    album1.title = "Album"
+    album1.videos.append(video)
+    album1.videos.append(video2)
+    album1.images.append(image1)
+    album1.images.append(image2)
+    album1.images.append(image3)
+    album1.images.append(image4)
 
     db.session.add(video)
-    db.session.add(playlist)
+    db.session.add(album1)
 
     db.session.add(event1)
 
-    album = Album()
-    album.title = "Homepage Slideshow"
+    album2 = Album()
+    album2.title = "Homepage Slideshow"
     
     landing_image1 = Image()
     landing_image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
@@ -574,11 +589,11 @@ def route_create_all():
     landing_image4 = Image()
     landing_image4.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
 
-    album.images.append(landing_image1)
-    album.images.append(landing_image2)
-    album.images.append(landing_image3)
-    album.images.append(landing_image4)
-    db.session.add(album)
+    album2.images.append(landing_image1)
+    album2.images.append(landing_image2)
+    album2.images.append(landing_image3)
+    album2.images.append(landing_image4)
+    db.session.add(album2)
 
     db.session.commit()
 

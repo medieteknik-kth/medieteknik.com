@@ -17,6 +17,7 @@ const ViewGallery = () => {
     useEffect(() => {
         Api.Albums.GetAll().then((albums) => {
             setAlbums(albums);
+            console.log(albums);
         });
     }, []);
 
@@ -28,9 +29,11 @@ const ViewGallery = () => {
                     <div className={classes.galleryContent}>
                         {albums.map((album, index) => (
                             <AlbumPreview 
-                                key={index} 
+                                key={index}
                                 title={album.title} 
                                 images={album.images} 
+                                videos={album.videos}
+                                id={album.id}
                             />
                         ))}
                     </div>

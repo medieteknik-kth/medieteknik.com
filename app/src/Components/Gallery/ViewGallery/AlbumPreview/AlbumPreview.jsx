@@ -1,16 +1,45 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+
+import classes from './AlbumPreview.module.scss';
+
+import {
+    LocaleContext,
+    translateToString,
+} from '../../../../Contexts/LocaleContext';
+
 import CustomBuildSwiper from '../../Swiper/Swiper';
 import { NavLink } from 'react-router-dom';
+import TextButton from '../../../Common/Buttons/RoundedTextButton/RoundedTextButton';
 
 const AlbumPreview = (props) => {
+    const { lang } = useContext(LocaleContext);
+    const history = useHistory();
+
     return (<div style={{paddingBottom: '2em'}}>
-        <NavLink to='/album/1'>
-            <h3>{props.title}</h3>
-        </NavLink>
+        <div className={classes.albumHeaderContainer}>
+            <NavLink to={`/album/${props.id}`}>
+                <span className={classes.albumHeader}>
+                    {props.title}
+                </span>
+            </NavLink>
+
+            <TextButton 
+                text = {translateToString({
+                    se: 'Öppna album',
+                    en: 'Open album',
+                    lang,
+                })}
+                onClick = {() => history.push(`album/${props.id}`)}
+                extraStyle = {{"height":"1.5rem"}}
+            />
+        </div>
+        
         
         <CustomBuildSwiper 
-            title={props.title} 
             images={props.images}
+            videos={props.videos}
+            title={props.title} 
         />
     </div>);
 }
