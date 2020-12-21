@@ -31,6 +31,7 @@ const AlbumPreview = (props) => {
                     lang,
                 })}
                 onClick = {() => history.push(`album/${props.id}`)}
+                extraStyle = {{"height":"1.5rem"}}
             />
         </div>
         
