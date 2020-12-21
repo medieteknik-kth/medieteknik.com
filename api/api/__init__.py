@@ -548,17 +548,37 @@ def route_create_all():
     video.mux_playback_id = "PBWvfG00TEdPoObmNUQE9Rtyp3uYvdMFA02bW01AkjvVyY"
     video.requires_login = False
 
-    album = Album()
-    album.title = "Album"
-    album.videos.append(video)
+    video2 = Video()
+    video2.title = "ÖPH19 nØg 2020"
+    video2.mux_asset_id = "dUL5m2XRKGPMTR00QO8Zb01K301TzLK2rG3sRoIL1wE01iM"
+    video2.mux_playback_id = "PBWvfG00TEdPoObmNUQE9Rtyp3uYvdMFA02bW01AkjvVyY"
+    video2.requires_login = False
+
+    image1 = Image()
+    image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+    image2 = Image()
+    image2.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+    image3 = Image()
+    image3.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+    image4 = Image()
+    image4.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+
+    album1 = Album()
+    album1.title = "Album"
+    album1.videos.append(video)
+    album1.videos.append(video2)
+    album1.images.append(image1)
+    album1.images.append(image2)
+    album1.images.append(image3)
+    album1.images.append(image4)
 
     db.session.add(video)
-    db.session.add(album)
+    db.session.add(album1)
 
     db.session.add(event1)
 
-    album = Album()
-    album.title = "Homepage Slideshow"
+    album2 = Album()
+    album2.title = "Homepage Slideshow"
     
     landing_image1 = Image()
     landing_image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
@@ -569,11 +589,11 @@ def route_create_all():
     landing_image4 = Image()
     landing_image4.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
 
-    album.images.append(landing_image1)
-    album.images.append(landing_image2)
-    album.images.append(landing_image3)
-    album.images.append(landing_image4)
-    db.session.add(album)
+    album2.images.append(landing_image1)
+    album2.images.append(landing_image2)
+    album2.images.append(landing_image3)
+    album2.images.append(landing_image4)
+    db.session.add(album2)
 
     db.session.commit()
 

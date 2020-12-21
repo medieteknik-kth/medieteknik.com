@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const CustomBuildSwiper = ({images, videos, title}) => {
-    const [swiperWidth, setSwiperWidth] = useState(300);
+    // const [swiperWidth, setSwiperWidth] = useState(300);
     const [modalOpen, setModalOpen] = useState(false);
     const [currentImageId, setCurrentImageId] = useState(0);
     const [currentImage, setCurrentImage] = useState(null);
@@ -44,7 +44,7 @@ const CustomBuildSwiper = ({images, videos, title}) => {
     }, [currentImageId])
 
     useEffect(() => {
-        setSwiperWidth(window.innerWidth * 0.8 * 0.8);
+        // setSwiperWidth(window.innerWidth * 0.8 * 0.8);
         window.addEventListener('keydown', changeImage);
             
         return () => window.removeEventListener('keydown', changeImage);
@@ -106,56 +106,54 @@ const CustomBuildSwiper = ({images, videos, title}) => {
     return(
         <>
             { currentImage || currentVideo ? modal() : null }
-            <div style={{"width": `${swiperWidth}px`}} className="">
-                <ReactIdSwiperCustom {...params} >
-                    {videos !== undefined ? 
-                        videos.map((video, key) => (
-                            <div 
-                                key={video.id} 
-                                className="swiper-slide no-select"
-                                onClick={() => {
-                                    setCurrentVideoId(key);
-                                    viewVideo(key);
-                                    console.log("Hej13");
-                                    console.log(video)
-                                    console.log(video.uploadedAt)
-                                }}
-                            >
-                                <div className="album-video-play-icon">
-                                    <FontAwesomeIcon 
-                                        icon={faPlayCircle} 
-                                        color="white" 
-                                        size="3x" 
-                                    />
-                                </div>
-                                <img
-                                    src={video.thumbnail}
-                                    alt="#"
-                                    className="img-fluid"
+            <ReactIdSwiperCustom {...params} >
+                {videos !== undefined ? 
+                    videos.map((video, key) => (
+                        <div 
+                            key={video.id} 
+                            className="swiper-slide no-select"
+                            onClick={() => {
+                                setCurrentVideoId(key);
+                                viewVideo(key);
+                                console.log("Hej13");
+                                console.log(video)
+                                console.log(video.uploadedAt)
+                            }}
+                        >
+                            <div className="album-video-play-icon">
+                                <FontAwesomeIcon 
+                                    icon={faPlayCircle} 
+                                    color="white" 
+                                    size="3x" 
                                 />
                             </div>
-                        ))  : null
-                    }
+                            <img
+                                src={video.thumbnail}
+                                alt="#"
+                                className="img-fluid"
+                            />
+                        </div>
+                    ))  : null
+                }
 
-                    {images !== undefined ? 
-                        images.map((image, key) => {
-                            return (
-                                <div key={key} className='swiper-slide no-select'>
-                                    <img 
-                                        src={image.url} 
-                                        alt='#' 
-                                        className='img-fluid'  
-                                        onClick={() => {
-                                            setCurrentImageId(key);
-                                            viewImage(key);
-                                        }}
-                                    />
-                                </div>
-                            )
-                        }) : null
-                    }
-                </ReactIdSwiperCustom>
-            </div>
+                {images !== undefined ? 
+                    images.map((image, key) => {
+                        return (
+                            <div key={key} className='swiper-slide no-select'>
+                                <img 
+                                    src={image.url} 
+                                    alt='#' 
+                                    className='img-fluid'  
+                                    onClick={() => {
+                                        setCurrentImageId(key);
+                                        viewImage(key);
+                                    }}
+                                />
+                            </div>
+                        )
+                    }) : null
+                }
+            </ReactIdSwiperCustom>
         </>
     )
 }
