@@ -22,12 +22,10 @@ const Album = () => {
     const [currentImageId, setCurrentImageId] = useState(0);
     const [currentVideo, setCurrentVideo] = useState(null);
     const [currentVideoId, setCurrentVideoId] = useState(0);
-
     const [album, setAlbum] = useState(null);
     const { id } = useParams();
     const { lang } = useContext(LocaleContext);
     const [isVideo, setIsVideo] = useState(false);
-    const [mediaModal, setMediaModal] = useState(null);
     
 
     const changeImage = useCallback(event => {

@@ -37,32 +37,71 @@ const CustomBuildSwiper = ({images, videos, title}) => {
 
     const changeImage = useCallback(event => {
         if (event.key === 'ArrowLeft') {
-            viewPreviousImage(currentImageId);
+            if (isVideo) {
+                viewPreviousImage(currentVideoId, 'video');
+            } else {
+                console.log(currentImageId);
+                viewPreviousImage(currentImageId, 'img');
+            }
+            
         } else if (event.key === 'ArrowRight') {
-            viewNextImage(currentImageId);
+            if (isVideo) {
+                viewNextImage(currentVideoId, 'video');
+            } else {
+                viewNextImage(currentImageId, 'img');
+            }
         }
     }, [currentImageId])
 
     useEffect(() => {
-        // setSwiperWidth(window.innerWidth * 0.8 * 0.8);
         window.addEventListener('keydown', changeImage);
             
         return () => window.removeEventListener('keydown', changeImage);
     }, [currentImageId])
 
-    const viewPreviousImage = (imageId) => {
-        if (imageId > 0) {
-            setCurrentImageId(imageId - 1);
-            const tempImage = images[imageId - 1]
-            setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer})
+    const viewPreviousImage = (mediaId, mediaType) => {
+        if (mediaType === 'img') {
+            if (mediaId > 0) {
+                setCurrentImageId(mediaId - 1);
+                const tempImage = images[mediaId - 1];
+                setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer});
+                setIsVideo(false);
+            } else if (videos.length > 0) {
+                setCurrentVideoId(videos.length - 1);
+                const tempVideo = videos[videos.length - 1];
+                setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+                setIsVideo(true);
+            }
+        } else if (mediaType === 'video') {
+            if (mediaId > 0) {
+                setCurrentVideoId(mediaId - 1);
+                const tempVideo = videos[mediaId - 1];
+                setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+                setIsVideo(true);
+            }
         }
     }
 
-    const viewNextImage = (imageId) => {
-        if (imageId < images.length - 1) {
-            setCurrentImageId(imageId + 1);
-            const tempImage = images[imageId + 1]
-            setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer})
+    const viewNextImage = (mediaId, mediaType) => {
+        if (mediaType === 'img') {
+            if (mediaId < images.length - 1) {
+                setCurrentImageId(mediaId + 1);
+                const tempImage = images[mediaId + 1];
+                setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer});
+                setIsVideo(false);
+            }
+        } else if (mediaType === 'video') {
+            if (mediaId < videos.length - 1) {
+                setCurrentVideoId(mediaId + 1);
+                const tempVideo = videos[mediaId + 1];
+                setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+                setIsVideo(true);
+            } else if (images.length > 0) {
+                setCurrentImageId(0);
+                const tempImage = images[0];
+                setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer});
+                setIsVideo(false);
+            }
         }
     }
 
@@ -75,7 +114,6 @@ const CustomBuildSwiper = ({images, videos, title}) => {
 
     const viewVideo = (videoId) => {
         const tempVideo = videos[videoId];
-        console.log(tempVideo.uploadedAt);
         setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
         setModalOpen(true);
         setIsVideo(true);
@@ -86,8 +124,13 @@ const CustomBuildSwiper = ({images, videos, title}) => {
             title={currentVideo.title}
             videoUrl={currentVideo.src}
             date={new Date(currentVideo.date)}
-            modalOpen={modalOpen}
-            setModalOpen={setModalOpen}
+            videoId = {currentVideoId}
+            numberOfImages = {images.length}
+            numberOfVideos = {videos.length}
+            viewPreviousImage={viewPreviousImage}
+            viewNextImage={viewNextImage}
+            modalOpen={modalOpen} 
+            setModalOpen={setModalOpen} 
         />
     ) : (
         <AlbumModal 
@@ -96,13 +139,15 @@ const CustomBuildSwiper = ({images, videos, title}) => {
             date={new Date(currentImage.date)}
             photographer={currentImage.photographer}
             imageId={currentImageId}
+            numberOfImages = {images.length}
+            numberOfVideos = {videos.length}
             viewPreviousImage={viewPreviousImage}
             viewNextImage={viewNextImage}
             modalOpen={modalOpen} 
             setModalOpen={setModalOpen} 
         />
     ))
-        
+
     return(
         <>
             { currentImage || currentVideo ? modal() : null }
@@ -115,9 +160,6 @@ const CustomBuildSwiper = ({images, videos, title}) => {
                             onClick={() => {
                                 setCurrentVideoId(key);
                                 viewVideo(key);
-                                console.log("Hej13");
-                                console.log(video)
-                                console.log(video.uploadedAt)
                             }}
                         >
                             <div className="album-video-play-icon">
@@ -136,7 +178,7 @@ const CustomBuildSwiper = ({images, videos, title}) => {
                     ))  : null
                 }
 
-                {images !== undefined ? 
+                {images !== undefined && images !== null ? 
                     images.map((image, key) => {
                         return (
                             <div key={key} className='swiper-slide no-select'>

@@ -40,18 +40,27 @@
 }
 
 .leftButton, .rightButton {
-    font-size: 4vw !important;
-    // position: absolute;
+    font-size: 3vw !important;
     margin-bottom: 60px;
-    width: 5vw !important;
-    height: 5vw !important;
+    width: 4vw !important;
+    height: 4vw !important;
     transition: .25s !important;
     background-color: #fff !important;
 }
 
-.leftButton:hover, .rightButton:hover {
-    background-color: #b6b6b6 !important;
-    color: #2d2d2d !important;
+.leftButton {
+    margin-right: 15px;
+}
+
+.rightButton {
+    margin-left: 15px;
+}
+
+.rightButtonContainer, .leftButtonContainer {
+    cursor: pointer;
+    height: 100vh;
+    display: flex;
+    align-items: center;
 }
 
 .exitButton {

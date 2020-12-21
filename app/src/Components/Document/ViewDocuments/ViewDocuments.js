@@ -136,7 +136,7 @@ const ViewDocuments = (props) => {
 
         if (typeof newSearchString == 'string') {
             let searchVal = newSearchString;
-            let filteredString = searchVal.toUpperCase()
+            let filteredString = searchVal.toUpperCase();
     
             let tempSearchArray = documentsFromServer.filter(doc => {
                 let dateString = doc.publishDate.getFullYear() + "-" + 
