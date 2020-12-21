@@ -4,10 +4,8 @@ import Hls from 'hls.js';
 import './VideoPlayer.scss';
 import 'video.js/dist/video-js.css';
 
-export default function VideoPlayer({ videoUrl }) {
+export default function VideoPlayer({ videoUrl, extraStyle }) {
   const playerRef = useRef();
-
-  console.log(videoUrl);
 
   useEffect(() => {
     const player = videojs(playerRef.current, {
@@ -19,6 +17,7 @@ export default function VideoPlayer({ videoUrl }) {
       controlBar: {
         pictureInPictureToggle: false,
       },
+      fill: true
     }, () => {
       if (player.canPlayType('application/vnd.apple.mpegurl')) {
         player.src(videoUrl);
@@ -35,6 +34,12 @@ export default function VideoPlayer({ videoUrl }) {
   }, []);
 
   return (
-    <video ref={playerRef} className="video-js vjs-medieteknik vjs-big-play-centered vjs-16-9" />
+      <div style={extraStyle}>
+        <video 
+            ref={playerRef} 
+            className="video-js vjs-medieteknik vjs-big-play-centered vjs-16-9" 
+        />
+      </div>
+    
   );
 }

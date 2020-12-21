@@ -28,8 +28,8 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, 
                     <img 
                         src={image} 
                         style={{
-                            maxWidth: `${window.innerWidth * 0.85}px`, 
-                            maxHeight: `${window.innerHeight * 0.85}px`
+                            maxWidth: "75vw", 
+                            maxHeight: "85vh"
                         }} 
                         alt='' 
                         className='no-select'

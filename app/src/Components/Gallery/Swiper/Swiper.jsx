@@ -17,8 +17,8 @@ const CustomBuildSwiper = ({images, videos, title}) => {
     const [swiperWidth, setSwiperWidth] = useState(300);
     const [modalOpen, setModalOpen] = useState(false);
     const [currentImageId, setCurrentImageId] = useState(0);
-    const [currentImage, setCurrentImage] = useState(images !== undefined ? images[0] : undefined);
-    const [currentVideo, setCurrentVideo] = useState(videos !== undefined ? videos[0] : undefined);
+    const [currentImage, setCurrentImage] = useState(null);
+    const [currentVideo, setCurrentVideo] = useState(null);
     const [currentVideoId, setCurrentVideoId] = useState(0);
     const [isVideo, setIsVideo] = useState(false);
     const [mediaModal, setMediaModal] = useState(null);
@@ -71,40 +71,41 @@ const CustomBuildSwiper = ({images, videos, title}) => {
         setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer});
         setModalOpen(true);
         setIsVideo(false);
-        setMediaModal(
-            <AlbumModal 
-                image={tempImage !== undefined && tempImage !== null ? tempImage.src : undefined} 
-                title={tempImage !== undefined && tempImage !== null ? tempImage.title : undefined}
-                date={tempImage !== undefined && tempImage !== null ? new Date(tempImage.date) : undefined}
-                photographer={tempImage !== undefined && tempImage !== null ? tempImage.photographer : undefined}
-                imageId={tempImage !== undefined && tempImage !== null ? currentImageId : undefined}
-                viewPreviousImage={viewPreviousImage}
-                viewNextImage={viewNextImage}
-                modalOpen={modalOpen} 
-                setModalOpen={setModalOpen} 
-            />
-        );
     }
 
     const viewVideo = (videoId) => {
         const tempVideo = videos[videoId];
+        console.log(tempVideo.uploadedAt);
         setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
         setModalOpen(true);
         setIsVideo(true);
-        setMediaModal(
-            <AlbumVideoModal
-                title={tempVideo !== undefined && tempVideo !== null ? tempVideo.title : undefined}
-                videoUrl={tempVideo !== undefined && tempVideo !== null ? tempVideo.src : undefined}
-                date={tempVideo !== undefined && tempVideo !== null ? new Date(tempVideo.uploadedAt) : undefined}
-                modalOpen={modalOpen}
-                setModalOpen={setModalOpen}
-            />
-        );
     };
+    
+    const modal = () => (isVideo ? (
+        <AlbumVideoModal
+            title={currentVideo.title}
+            videoUrl={currentVideo.src}
+            date={new Date(currentVideo.date)}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+        />
+    ) : (
+        <AlbumModal 
+            image={currentImage.src} 
+            title={currentImage.title}
+            date={new Date(currentImage.date)}
+            photographer={currentImage.photographer}
+            imageId={currentImageId}
+            viewPreviousImage={viewPreviousImage}
+            viewNextImage={viewNextImage}
+            modalOpen={modalOpen} 
+            setModalOpen={setModalOpen} 
+        />
+    ))
         
     return(
         <>
-            { currentImage || currentVideo ? mediaModal : null }
+            { currentImage || currentVideo ? modal() : null }
             <div style={{"width": `${swiperWidth}px`}} className="">
                 <ReactIdSwiperCustom {...params} >
                     {videos !== undefined ? 
@@ -115,7 +116,9 @@ const CustomBuildSwiper = ({images, videos, title}) => {
                                 onClick={() => {
                                     setCurrentVideoId(key);
                                     viewVideo(key);
-                                    console.log("Hej1");
+                                    console.log("Hej13");
+                                    console.log(video)
+                                    console.log(video.uploadedAt)
                                 }}
                             >
                                 <div className="album-video-play-icon">

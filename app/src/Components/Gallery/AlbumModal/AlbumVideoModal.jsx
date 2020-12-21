@@ -5,7 +5,6 @@ import VideoPlayer from '../../Video/VideoPlayer';
 import classes from './AlbumModal.module.scss';
 
 const AlbumVideoModal = ({title, date, videoUrl, modalOpen, setModalOpen}) => {
-    console.log("Hej3")
     return(
         <Modal
             isOpen={modalOpen}
@@ -14,10 +13,14 @@ const AlbumVideoModal = ({title, date, videoUrl, modalOpen, setModalOpen}) => {
             overlayClassName={classes.overlay}
             ariaHideApp={false}
         >
-                <VideoPlayer videoUrl={videoUrl} />
-                {console.log(date)}
-                <h5>{`${date.toISOString().split('T')[0]}`}</h5>
-                <h3>{title}</h3>
+            <VideoPlayer 
+                videoUrl={videoUrl}
+                extraStyle = {{
+                    width: "75vw"
+                }}
+            />
+            <h5>{`${date.toISOString().split('T')[0]}`}</h5>
+            <h3>{title}</h3>
         </Modal>
     );
 }
