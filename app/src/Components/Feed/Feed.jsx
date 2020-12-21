@@ -5,7 +5,7 @@ import FeedCard, { feedTypes } from './FeedCard/FeedCard.jsx';
 import { LocaleText, translate } from '../../Contexts/LocaleContext';
 import Spinner from '../Common/Spinner/Spinner.jsx';
 import Button from '../Document/ViewDocuments/Assets/ButtonRasmus';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const Feed = (props) => {
 
@@ -45,8 +45,9 @@ const Feed = (props) => {
         {props.landingTitle ? <h3 className='landing-title'><span><LocaleText phrase='feed/header'/></span></h3> : <h1><LocaleText phrase='feed/header'/></h1>}
         {!props.landingTitle ? <Button onClick={() => history.push("/eventList")}>Kommande event</Button> : <span />}
         { isLoading ? <Spinner/> :
+        <div>
             <div className='feed-cards'>
-                { cont ? cont.map((post, i) =>
+                { cont ? cont.slice(0, props.landingTitle ? 6 : cont.length).map((post, i) =>
                     <FeedCard
                         key={`${post.id}_${i}`}
                         type={post.type}
@@ -54,12 +55,16 @@ const Feed = (props) => {
                         title={translate(post.title)}
                         date={post.type === feedTypes.EVENT ? post.event_date : post.date}
                         location={post.location ?? null}
-                        body={translate({ se: post.body.se.replace(/<\/?[^>]+(>|$)/g, "").trunc(250), en: post.body.en ? post.body.en.replace(/<\/?[^>]+(>|$)/g, "").trunc(250) : '' })}
+                        body={post.body}
                         headerImage={post.header_image}
                         tags={post.tags}
                         committee={post.committee} />
                 ) : <></> }
-            </div> 
+            </div>
+            <div className="show-more">
+                {props.landingTitle ? <Link to="/feed" className="link"><LocaleText phrase="landing/show_more" /></Link> : <span />}
+            </div>
+        </div>
         }
     </div>);
 }

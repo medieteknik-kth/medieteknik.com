@@ -93,6 +93,7 @@ const CreatePost = ({ event }) => {
             triggerError()
             return
         }
+        
         var postData = {
             body,
             body_en: useEn ? enBody : body,
@@ -226,7 +227,7 @@ const CreatePost = ({ event }) => {
                                 lang,
                             })}
                             theme="snow"
-                            onChange={(val) => setBody(val)}
+                            onChange={(_content, _delta, _source, editor) => setBody(JSON.stringify(editor.getContents()))}
                         />
                         {hasError && checkEmptyQuillBody(body) && (
                             <div className="error-msg">

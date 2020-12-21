@@ -103,14 +103,25 @@ $homeScreenHeightMobile: calc(100vh - 80px);
         bottom: 0;
         width: 100%;
         z-index: 99;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 25px;
+        margin-top: 10px;
     }
 
     .home-screen-scroll-button {
-        margin-bottom: 25px;
-        margin-top: 10px;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
         display: block;
+    }
+
+    .home-screen-scroll-button > svg {
+        transition: color 0.2s ease-in-out;
+        color: white;
+    }
+
+    .home-screen-scroll-button:hover > svg {
+        color: #f0c900;
     }
 
     .home-screen-content {

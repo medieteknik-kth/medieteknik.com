@@ -392,7 +392,7 @@ def route_create_all():
     page.slug = "hemsideprojektet"
     page_revision1 = PageRevision()
     page_revision1.image = "https://i.imgur.com/tcfosOQ.jpg"
-    page_revision1.title = "Hemsideprojektet"
+    page_revision1.title_sv = "Hemsideprojektet"
     page_revision1.content_sv = "{\"ops\":[{\"insert\":\"Sektionens hemsida b\u00f6rjar bli gammal. Vi kommer ge hemsidan, och sektionen, en v\u00e4lbeh\u00f6vd makeover s\u00e5 att vi som pluggar medieteknik kan f\u00e5 mer nytta av hemsidan. Den nya hemsidan kommer samla all information om allt som h\u00e4nder p\u00e5 sektionen. Alla event, alla ans\u00f6kningsperioder, ska l\u00e4tt g\u00e5 att hitta p\u00e5 den nya sidan.\\nDen kommer naturligtvis ocks\u00e5 vara v\u00e4ldigt snygg, kolla bara runt hur det ser ut hittills! Vi \u00e4r ju trots allt medietekniker, vi gillar snygga saker, s\u00e5 d\u00e5 ska v\u00e5r sektion s\u00e5 klart vara den snyggaste p\u00e5 KTH.\\n\"},{\"attributes\":{\"link\":\"https://github.com/medieteknik-kth/medieteknik.com\"},\"insert\":\"All v\u00e5r kod finns p\u00e5 Github!\"},{\"insert\":\"\\n\"}]}"
     page_revision1.author = joppe
     page_revision1.revision_type = PageRevisionType.created
@@ -452,11 +452,7 @@ def route_create_all():
     post.title = "Folk söker folk"
     post.title_en = "People are looking for people"
     post.user_id = mikaela.id
-    post.body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque finibus, ante at tristique accumsan, tellus nulla consequat nisl, quis mollis quam arcu vel urna. Proin eleifend augue ante, malesuada porta libero ullamcorper vel. Mauris quis diam augue. Integer consectetur justo lorem, vitae consectetur lectus laoreet ac. Sed vel accumsan nulla, et laoreet justo. Sed porttitor dui nec nisi aliquam, elementum sagittis velit molestie. Nam rhoncus nibh neque, eget scelerisque quam sollicitudin ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus eget dictum diam. Phasellus gravida dui et nunc finibus, ut feugiat nisi pulvinar. Nulla egestas, lorem vitae elementum sodales, diam mauris dictum sapien, in luctus velit lorem nec ante. \
-    Proin facilisis augue nibh, vitae placerat metus rhoncus at. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisi a mauris elementum imperdiet ac in velit. Curabitur scelerisque, justo id molestie molestie, augue elit elementum orci, vitae fringilla turpis magna vitae nisl. Vestibulum id suscipit felis, vel bibendum tortor. Mauris porta tortor lorem, eget feugiat enim bibendum laoreet. Cras lacinia at massa sed scelerisque. Curabitur porta tristique suscipit. Etiam interdum lacus id cursus porttitor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. \
-    Morbi sed metus aliquam, sollicitudin arcu sed, feugiat nunc. Duis libero nisi, ornare ac finibus eu, placerat vitae elit. Nulla convallis feugiat placerat. Sed fringilla, arcu sit amet condimentum gravida, tortor lorem aliquet nulla, id sagittis elit erat at libero. Suspendisse laoreet orci vitae risus pretium, in auctor neque mattis. Aliquam erat volutpat. Vivamus in lacus in arcu eleifend molestie. Sed elit dui, malesuada nec erat vel, commodo porta metus. In tempor iaculis tortor, sed finibus risus dignissim ac. Etiam tortor diam, euismod vel arcu ac, convallis finibus nulla. Morbi orci turpis, dapibus et bibendum a, pretium id velit. Curabitur molestie purus vel ex porttitor finibus. Nunc sodales facilisis orci, quis facilisis nisl malesuada quis. \
-    Sed bibendum pharetra vehicula. In erat eros, facilisis sed viverra vulputate, mollis a odio. Donec tempor purus fermentum neque ullamcorper, non consequat nisl pellentesque. Nulla velit odio, gravida ac ex et, sollicitudin rhoncus libero. Nam ultricies eleifend eros. Nunc rhoncus tellus at augue semper ullamcorper. Nullam malesuada tellus ac lorem molestie tristique. Ut mattis eros in neque molestie, a rhoncus felis rhoncus. Vestibulum erat velit, convallis sit amet mattis eget, faucibus ac mauris. Integer imperdiet diam at quam tristique, ut dapibus dui hendrerit. Aenean commodo vitae enim ac blandit."
-    post.body_en ="Lorem ipsum in English."
+    post.body = "{\"ops\":[{\"insert\":\"Sektionen f\u00f6r Medieteknik finns till f\u00f6r studenter vid medieteknikprogrammet p\u00e5 KTH. Dess fr\u00e4msta syfte \u00e4r att uppfylla studenternas behov under studietiden, p\u00e5verka v\u00e5r utbildning, se till att finnas f\u00f6r dig som student och sedan minska tr\u00f6skeln ut i arbetslivet.\\nArbetet p\u00e5 sektionen sker utefter de fyra grundstenarna,\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"\u00f6ppenhet\"},{\"insert\":\",\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"samh\u00f6righet\"},{\"insert\":\",\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"erk\u00e4nnande\"},{\"insert\":\"\u00a0och\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"utveckling\"},{\"insert\":\"\u00a0f\u00f6r att skapa en milj\u00f6 d\u00e4r m\u00e4nniskor trivs och utvecklas. N\u00e4ra anknytning till mediebranschen och dess akt\u00f6rer ska dels hj\u00e4lpa studenterna under studietiden men ocks\u00e5 ge dem m\u00f6jligheter till f\u00f6retagskontakter och ett n\u00e4tverk som f\u00f6renklar steget ut i n\u00e4ringslivet.\\nV\u00e4lkommen!\\n\"}]}"
     post.committee_id = 1
 
     
@@ -470,8 +466,7 @@ def route_create_all():
     post = Post()
     post.title = "Kom på torsdagspub!"
     post.title_en = "Come to the thursday pub!"
-    post.body = "En lite kortare text."
-    post.body_en ="A bit shorter text."
+    post.body = "{\"ops\":[{\"insert\":\"Sektionen f\u00f6r Medieteknik finns till f\u00f6r studenter vid medieteknikprogrammet p\u00e5 KTH. Dess fr\u00e4msta syfte \u00e4r att uppfylla studenternas behov under studietiden, p\u00e5verka v\u00e5r utbildning, se till att finnas f\u00f6r dig som student och sedan minska tr\u00f6skeln ut i arbetslivet.\\nArbetet p\u00e5 sektionen sker utefter de fyra grundstenarna,\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"\u00f6ppenhet\"},{\"insert\":\",\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"samh\u00f6righet\"},{\"insert\":\",\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"erk\u00e4nnande\"},{\"insert\":\"\u00a0och\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"utveckling\"},{\"insert\":\"\u00a0f\u00f6r att skapa en milj\u00f6 d\u00e4r m\u00e4nniskor trivs och utvecklas. N\u00e4ra anknytning till mediebranschen och dess akt\u00f6rer ska dels hj\u00e4lpa studenterna under studietiden men ocks\u00e5 ge dem m\u00f6jligheter till f\u00f6retagskontakter och ett n\u00e4tverk som f\u00f6renklar steget ut i n\u00e4ringslivet.\\nV\u00e4lkommen!\\n\"}]}"
     post.header_image = "static/posts/21af3945-035f-4195-8729-c815536c3312.png"
     post.user_id = joppe.id
     
@@ -499,7 +494,7 @@ def route_create_all():
         page = Page()
         page.slug = slug
         rev = PageRevision()
-        rev.title = name
+        rev.title_sv = name
         rev.content_sv = content
 
         if image != None:
@@ -529,8 +524,7 @@ def route_create_all():
     event1 = Event()
     event1.title= "Camping"
     event1.title_en = "Camping"
-    event1.body="Vi ska sova utomhus! Häng med, det kommer bli skitkul :))))))"
-    event1.body_en="Ah, the great outdoors! We will be braving the wilderness of Bergshamra, showing that humanity can overcome any hurdle! To sleep outside is to be one with nature, to embrace your connection to the planet which birthed us all. This text is gonan be pretty long, so don't read it all."
+    event1.body = "{\"ops\":[{\"insert\":\"Sektionen f\u00f6r Medieteknik finns till f\u00f6r studenter vid medieteknikprogrammet p\u00e5 KTH. Dess fr\u00e4msta syfte \u00e4r att uppfylla studenternas behov under studietiden, p\u00e5verka v\u00e5r utbildning, se till att finnas f\u00f6r dig som student och sedan minska tr\u00f6skeln ut i arbetslivet.\\nArbetet p\u00e5 sektionen sker utefter de fyra grundstenarna,\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"\u00f6ppenhet\"},{\"insert\":\",\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"samh\u00f6righet\"},{\"insert\":\",\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"erk\u00e4nnande\"},{\"insert\":\"\u00a0och\u00a0\"},{\"attributes\":{\"bold\":true},\"insert\":\"utveckling\"},{\"insert\":\"\u00a0f\u00f6r att skapa en milj\u00f6 d\u00e4r m\u00e4nniskor trivs och utvecklas. N\u00e4ra anknytning till mediebranschen och dess akt\u00f6rer ska dels hj\u00e4lpa studenterna under studietiden men ocks\u00e5 ge dem m\u00f6jligheter till f\u00f6retagskontakter och ett n\u00e4tverk som f\u00f6renklar steget ut i n\u00e4ringslivet.\\nV\u00e4lkommen!\\n\"}]}"
     event1.location="Bergshamra"
     event1.committee=committee1
     event1.facebook_link = "https://www.facebook.com/events/284688576033658/"

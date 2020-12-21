@@ -36,10 +36,10 @@ const Post = (props) => {
         <p className="post-body">
           <BasePage
             onChange={() => {}}
-            initialContent={translateToString({
+            initialContent={JSON.parse(translateToString({
               ...post.body,
               lang,
-            })}
+            }))}
           />
         </p>
         <div className="post-footer">

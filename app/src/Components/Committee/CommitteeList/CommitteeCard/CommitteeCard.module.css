@@ -9,7 +9,7 @@
 }
 
 .CommitteeCard:hover {
-    transform: scale(1.12);
+    transform: scale(1.05);
 }
 
 .CommitteeCard:hover:before {
@@ -23,7 +23,10 @@
 }
 
 .CommitteeCard p {
-    /* text-transform: uppercase; */
     clear: both;
+}
+
+.CommitteeCard:hover p {
+    font-weight: 500;
 }
 

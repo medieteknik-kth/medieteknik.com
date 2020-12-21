@@ -29,6 +29,14 @@
   font-style: normal;
 }
 
+.userCard.small .userCardTitle {
+  font-size: 1rem;
+}
+
+.userCard.small .userCardSubtitle {
+  font-size: 0.8rem;
+}
+
 .text-bg {
   background-color: #242424;
 }
@@ -45,6 +53,12 @@
   height: 250px;
   margin: 10px;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4);
+}
+
+.userCard.small {
+  width: 200px;
+  height: 200px;
+  margin: 10px;
 }
 
 .userImage {
@@ -80,9 +94,15 @@
   flex-direction: column;
   background-color: rgba(0, 0, 0, 0.6);
   border-top: 1px solid #f0c900;
-  padding: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   padding-top: 5px;
+  padding-bottom: 5px;
   height: 70px;
+}
+
+.userCard.small .userCardContent {
+  height: 50px;
 }
 
 .userCardBannerSubheader {

@@ -59,10 +59,10 @@ const Event = ({}) => {
         <p className="event-description">
           <BasePage
             onChange={() => {}}
-            initialContent={translateToString({
+            initialContent={JSON.parse(translateToString({
               ...event.body,
               lang,
-            })}
+            }))}
           />
         </p>
         <div className="event-footer">

@@ -66,16 +66,21 @@ class PageResource(Resource):
                 }, 400
 
             keys = request.json.keys()
-            if "title" in keys:
-                revision.title = request.json["title"]
+            if "title_sv" in keys:
+                revision.title_sv = request.json["title_sv"]
+            if "title_en" in keys:
+                revision.title_en = request.json["title_en"]
             if "content_sv" in keys:
                 revision.content_sv = request.json["content_sv"]
             if "content_en" in keys:
                 revision.content_en = request.json["content_en"]
             if "image" in keys:
-                revision.image = request.json["image"]
+                pass
+                # revision.image = upload_base64_image(request.json["image"])
             if "published" in keys:
                 revision.published = request.json["published"]
+            if "slug" in keys:
+                page.slug = slugify(request.json["slug"])
 
             page.revisions.append(revision)
 
@@ -170,15 +175,20 @@ class PageListResource(Resource):
 
         keys = request.json.keys()
         
-        if "title" in keys:
-            revision.title = request.json["title"]
-            page.slug = slugify(request.json["title"])
+        if "title_sv" in keys:
+            revision.title_sv = request.json["title_sv"]
+            page.slug = slugify(request.json["title_sv"])
+        if "title_en" in keys:
+            revision.title_en = request.json["title_en"]
+            if "title_sv" not in keys:
+                page.slug = slugify(request.json["title_en"])
         if "content_sv" in keys:
             revision.content_sv = request.json["content_sv"]
         if "content_en" in keys:
             revision.content_en = request.json["content_en"]
         if "image" in keys:
-            revision.image = request.json["image"]
+            pass
+            # revision.image = upload_base64_image(request.json["image"])
         if "published" in keys:
             revision.published = request.json["published"]
 

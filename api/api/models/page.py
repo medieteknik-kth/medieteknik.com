@@ -32,14 +32,16 @@ class Page(db.Model):
         committee = self.committee.to_dict_without_page() if self.committee != None else None
 
         if published:
-            title = current.title
+            title_sv = current.title_sv
+            title_en = current.title_en
             content_sv = current.content_sv
             content_en = current.content_en
             image = current.image
             author = current.author.to_dict() if current.author != None else None
             updated = current.timestamp
         else:
-            title = None
+            title_sv = None
+            title_en = None
             content_sv = None
             content_en = None
             image = None
@@ -50,7 +52,8 @@ class Page(db.Model):
             "id": self.id,
             "slug": self.slug,
             "committee": committee,
-            "title": title,
+            "title_sv": title_sv,
+            "title_en": title_en,
             "content_sv": content_sv,
             "content_en": content_en,
             "image": image,
@@ -66,7 +69,8 @@ class PageRevision(db.Model):
     revision_type = db.Column(db.Enum(PageRevisionType))
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User")
-    title = db.Column(db.String)
+    title_sv = db.Column(db.String)
+    title_en = db.Column(db.String)
     content_sv = db.Column(db.String)
     content_en = db.Column(db.String, default="{\"ops\":[{\"insert\":\"This page in unavaliable in English\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"}]}")
     image = db.Column(db.String)
@@ -79,7 +83,8 @@ class PageRevision(db.Model):
             "timestamp": self.timestamp,
             "type": self.revision_type.name,
             "author": self.author.to_dict_without_terms() if self.author != None else None,
-            "title": self.title,
+            "title_sv": self.title_sv,
+            "title_en": self.title_en,
             "image": self.image,
             "content_sv": self.content_sv,
             "content_en": self.content_en,

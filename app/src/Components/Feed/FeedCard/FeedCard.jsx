@@ -24,7 +24,10 @@ const FeedCard = (props) => {
                 break
         }
     }
-    console.log(props)
+    
+    const bodyObj = JSON.parse(props.body.se);
+    console.log(bodyObj);
+    const bodyText = bodyObj.ops.reduce((a, val) => a + val.insert, []).slice(0, 250);
 
     return (
         <NavLink to={props.path}>
@@ -75,7 +78,7 @@ const FeedCard = (props) => {
                                 </p>
                             </div>
                         ) : (
-                            <p className="feed-card-desc">{props.body}</p>
+                            <p className="feed-card-desc">{bodyText}</p>
                         )}
                         {props.type === feedTypes.POST ? (
                             <h6 className="feed-rb">-</h6>
