@@ -15,6 +15,10 @@ export default function VideoPlayer({ videoUrl }) {
       autoplay: true,
       muted: true,
       preload: 'auto',
+      fluid: true,
+      controlBar: {
+        pictureInPictureToggle: false,
+      },
     }, () => {
       if (player.canPlayType('application/vnd.apple.mpegurl')) {
         player.src(videoUrl);
@@ -31,6 +35,6 @@ export default function VideoPlayer({ videoUrl }) {
   }, []);
 
   return (
-    <video ref={playerRef} className="video-js vjs-medieteknik" style={{width: '300px', height: '300px'}} />
+    <video ref={playerRef} className="video-js vjs-medieteknik vjs-big-play-centered vjs-16-9" />
   );
 }
