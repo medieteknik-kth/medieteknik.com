@@ -16,6 +16,7 @@ import PublishDocument from './PublishDocument/PublishDocument.js';
 const Document = props => {
     const [viewDocuments, setViewDocuments] = useState(true);
     const [propUserIsFunkis, setPropUserIsFunkis] = useState(true);
+    const { user } = useContext(UserContext);
 
     const { lang } = useContext(LocaleContext);
     translateToString({
@@ -26,9 +27,10 @@ const Document = props => {
 
     return (
         <div>
-                 <Button onClick={() => {
-                     setViewDocuments(!viewDocuments);
-                 }}>{viewDocuments ? 
+            { user !== null && user.isOfficial ?
+                <Button onClick={() => {
+                    setViewDocuments(!viewDocuments);
+                }}>{viewDocuments ?
                     translateToString({
                         se: 'Ladda upp dokument +',
                         en: 'Publish document +',

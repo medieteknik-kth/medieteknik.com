@@ -1,15 +1,10 @@
 import React, { useContext } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useGoogleLogin } from 'react-google-login';
 import { LocaleText } from '../../Contexts/LocaleContext';
 import { UserContext } from '../../Contexts/UserContext';
 import LoggedInPage from './LoggedInPage';
 
 import './Login.scss';
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 export default function Login() {
   const { user, setToken } = useContext(UserContext);
@@ -29,6 +24,7 @@ export default function Login() {
     onFailure: googleFailure,
     hostedDomain: 'medieteknik.com',
     cookiePolicy: 'single_host_origin',
+    accessType: 'offline',
   });
 
   const loginMethods = [
