@@ -6,6 +6,7 @@ import {
     LocaleContext,
     translateToString,
 } from '../../Contexts/LocaleContext'
+import { UserContext } from '../../Contexts/UserContext';
 
 
 // --- KOMPONENTER ---
@@ -44,6 +45,7 @@ const Document = props => {
                         })
                     }
                 </Button>
+                : <span />
             }
 
             <h2 className={classes.secHeader}>{viewDocuments ?
