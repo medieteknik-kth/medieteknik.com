@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useGoogleLogin } from 'react-google-login';
-import { LocaleText } from '../../Contexts/LocaleContext';
+import { LocaleText, translate } from '../../Contexts/LocaleContext';
 import { UserContext } from '../../Contexts/UserContext';
 import LoggedInPage from './LoggedInPage';
 
@@ -15,7 +15,10 @@ export default function Login() {
   };
 
   const googleFailure = (res) => {
-    console.error(res);
+    const { error } = res;
+    if (error !== 'popup_closed_by_user') {
+      alert(translate({ se: 'Kunde inte logga in.', en: 'Could not log in.' }));
+    }
   };
 
   const { signIn } = useGoogleLogin({
@@ -24,7 +27,6 @@ export default function Login() {
     onFailure: googleFailure,
     hostedDomain: 'medieteknik.com',
     cookiePolicy: 'single_host_origin',
-    accessType: 'offline',
   });
 
   const loginMethods = [

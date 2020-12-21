@@ -9,7 +9,7 @@ const UserProvider = (props) => {
   const [token, setToken] = useState(null);
 
   const storedToken = window.localStorage.getItem('googleToken');
-  if (storedToken != null) {
+  if (storedToken != null && token == null) {
     if (storedToken !== token) {
       setToken(storedToken);
     }
