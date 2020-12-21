@@ -17,7 +17,7 @@ const ViewGallery = () => {
     useEffect(() => {
         Api.Albums.GetAll().then((albums) => {
             setAlbums(albums);
-            console.log(albums)
+            console.log(albums);
         });
     }, []);
 
@@ -32,6 +32,7 @@ const ViewGallery = () => {
                                 key={index}
                                 title={album.title} 
                                 images={album.images} 
+                                videos={album.videos}
                                 id={album.id}
                             />
                         ))}

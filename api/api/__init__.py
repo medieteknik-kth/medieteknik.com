@@ -23,7 +23,7 @@ from api.resources.me import MeCommitteeResource
 from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
-# from api.resources.video_playlist import VideoPlaylistResource, VideoPlaylistListResource
+from api.resources.authentication import AuthenticationResource
 
 from api.resources.event import EventResource, EventListResource
 

@@ -54,6 +54,10 @@ album-back-btn {
     align-items: center;
 }
 
+.album-video-play-icon:hover + img {
+    opacity: 0.75;
+}
+
 @media screen and (min-width: 600px){
     .album-grid {
         display: flex;

@@ -28,7 +28,7 @@ class DocumentListResource(Resource):
             save_documents(request)
             return jsonify(message="file uploaded!")
 
-    def get(self, user):
+    def get(self):
         tags = request.args.get('tags')
         if tags is not None:
             tags = tags.split(",")

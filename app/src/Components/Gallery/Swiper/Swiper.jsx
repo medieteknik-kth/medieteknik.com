@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import 'swiper/css/swiper.min.css'
 import './Swiper.css'
+import '../Album/Album.css';
+
 import ReactIdSwiperCustom from 'react-id-swiper/lib/ReactIdSwiper.custom';
 import { Swiper, Navigation, Pagination } from 'swiper/js/swiper.esm';
 import useWindowDimensions from '../../../Hooks/useWindowDimensions'
 import AlbumModal from '../AlbumModal/AlbumModal';
 import AlbumVideoModal from '../AlbumModal/AlbumVideoModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPlayCircle,
+} from '@fortawesome/free-solid-svg-icons';
 
 const CustomBuildSwiper = ({images, videos, title}) => {
     const [swiperWidth, setSwiperWidth] = useState(300);
     const [modalOpen, setModalOpen] = useState(false);
-    const [currentImage, setCurrentImage] = useState(null);
     const [currentImageId, setCurrentImageId] = useState(0);
-    const [currentVideo, setCurrentVideo] = useState(null);
+    const [currentImage, setCurrentImage] = useState(images !== undefined ? images[0] : undefined);
+    const [currentVideo, setCurrentVideo] = useState(videos !== undefined ? videos[0] : undefined);
     const [currentVideoId, setCurrentVideoId] = useState(0);
     const [isVideo, setIsVideo] = useState(false);
+    const [mediaModal, setMediaModal] = useState(null);
 
     const params = {
         Swiper,
@@ -39,6 +46,7 @@ const CustomBuildSwiper = ({images, videos, title}) => {
     useEffect(() => {
         setSwiperWidth(window.innerWidth * 0.8 * 0.8);
         window.addEventListener('keydown', changeImage);
+            
         return () => window.removeEventListener('keydown', changeImage);
     }, [currentImageId])
 
@@ -63,6 +71,19 @@ const CustomBuildSwiper = ({images, videos, title}) => {
         setCurrentImage({src: tempImage.url, title: title, date: new Date(tempImage.date), photographer: tempImage.photographer});
         setModalOpen(true);
         setIsVideo(false);
+        setMediaModal(
+            <AlbumModal 
+                image={tempImage !== undefined && tempImage !== null ? tempImage.src : undefined} 
+                title={tempImage !== undefined && tempImage !== null ? tempImage.title : undefined}
+                date={tempImage !== undefined && tempImage !== null ? new Date(tempImage.date) : undefined}
+                photographer={tempImage !== undefined && tempImage !== null ? tempImage.photographer : undefined}
+                imageId={tempImage !== undefined && tempImage !== null ? currentImageId : undefined}
+                viewPreviousImage={viewPreviousImage}
+                viewNextImage={viewNextImage}
+                modalOpen={modalOpen} 
+                setModalOpen={setModalOpen} 
+            />
+        );
     }
 
     const viewVideo = (videoId) => {
@@ -70,52 +91,50 @@ const CustomBuildSwiper = ({images, videos, title}) => {
         setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
         setModalOpen(true);
         setIsVideo(true);
+        setMediaModal(
+            <AlbumVideoModal
+                title={tempVideo !== undefined && tempVideo !== null ? tempVideo.title : undefined}
+                videoUrl={tempVideo !== undefined && tempVideo !== null ? tempVideo.src : undefined}
+                date={tempVideo !== undefined && tempVideo !== null ? new Date(tempVideo.uploadedAt) : undefined}
+                modalOpen={modalOpen}
+                setModalOpen={setModalOpen}
+            />
+        );
     };
-
-    const mediaModal = (isVideo ? (
-        <AlbumVideoModal
-            title={currentVideo.title}
-            videoUrl={currentVideo.src}
-            date={new Date(currentVideo.date)}
-            modalOpen={modalOpen}
-            setModalOpen={setModalOpen}
-        />) : (
-        <AlbumModal 
-            image={currentImage.src} 
-            title={currentImage.title}
-            date={currentImage.date}
-            photographer={currentImage.photographer}
-            imageId={currentImageId}
-            viewPreviousImage={viewPreviousImage}
-            viewNextImage={viewNextImage}
-            modalOpen={modalOpen} 
-            setModalOpen={setModalOpen} 
-        />)
-    );
         
- 
     return(
         <>
-            { currentImage ? mediaModal : null }
+            { currentImage || currentVideo ? mediaModal : null }
             <div style={{"width": `${swiperWidth}px`}} className="">
                 <ReactIdSwiperCustom {...params} >
-                    {
+                    {videos !== undefined ? 
                         videos.map((video, key) => (
-                            <div key={key} className="swiper-slide no-select">
+                            <div 
+                                key={video.id} 
+                                className="swiper-slide no-select"
+                                onClick={() => {
+                                    setCurrentVideoId(key);
+                                    viewVideo(key);
+                                    console.log("Hej1");
+                                }}
+                            >
+                                <div className="album-video-play-icon">
+                                    <FontAwesomeIcon 
+                                        icon={faPlayCircle} 
+                                        color="white" 
+                                        size="3x" 
+                                    />
+                                </div>
                                 <img
                                     src={video.thumbnail}
                                     alt="#"
                                     className="img-fluid"
-                                    onClick={() => {
-                                        setCurrentVideoId(key);
-                                        viewVideo(key);
-                                    }}
                                 />
                             </div>
-                        ))
+                        ))  : null
                     }
 
-                    {  
+                    {images !== undefined ? 
                         images.map((image, key) => {
                             return (
                                 <div key={key} className='swiper-slide no-select'>
@@ -130,7 +149,7 @@ const CustomBuildSwiper = ({images, videos, title}) => {
                                     />
                                 </div>
                             )
-                        })
+                        }) : null
                     }
                 </ReactIdSwiperCustom>
             </div>

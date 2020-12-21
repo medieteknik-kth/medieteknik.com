@@ -27,6 +27,7 @@ const Album = () => {
     const { id } = useParams();
     const { lang } = useContext(LocaleContext);
     const [isVideo, setIsVideo] = useState(false);
+    const [mediaModal, setMediaModal] = useState(null);
     
 
     const changeImage = useCallback(event => {
@@ -66,6 +67,19 @@ const Album = () => {
         setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer})
         setModalOpen(true);
         setIsVideo(false);
+        // setMediaModal(
+        //     <AlbumModal 
+        //         image={tempImage !== undefined && tempImage !== null ? tempImage.src : undefined} 
+        //         title={tempImage !== undefined && tempImage !== null ? tempImage.title : undefined}
+        //         date={tempImage !== undefined && tempImage !== null ? new Date(tempImage.date) : undefined}
+        //         photographer={tempImage !== undefined && tempImage !== null ? tempImage.photographer : undefined}
+        //         imageId={tempImage !== undefined && tempImage !== null ? currentImageId : undefined}
+        //         viewPreviousImage={viewPreviousImage}
+        //         viewNextImage={viewNextImage}
+        //         modalOpen={modalOpen} 
+        //         setModalOpen={setModalOpen} 
+        //     />
+        // );
     }
 
     const viewVideo = (videoId) => {
@@ -73,33 +87,43 @@ const Album = () => {
         setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
         setModalOpen(true);
         setIsVideo(true);
+        // setMediaModal(
+        //     <AlbumVideoModal
+        //         title={tempVideo !== undefined && tempVideo !== null ? tempVideo.title : undefined}
+        //         videoUrl={tempVideo !== undefined && tempVideo !== null ? tempVideo.src : undefined}
+        //         date={tempVideo !== undefined && tempVideo !== null ? new Date(tempVideo.uploadedAt) : undefined}
+        //         modalOpen={modalOpen}
+        //         setModalOpen={setModalOpen}
+        //     />
+        // );
     };
 
-    const mediaModal = (isVideo ? (
+    const modal = () => (isVideo ? (
         <AlbumVideoModal
-            title={currentVideo.title}
-            videoUrl={currentVideo.src}
-            date={new Date(currentVideo.date)}
+            title={currentVideo !== undefined && currentVideo !== null ? currentVideo.title : undefined}
+            videoUrl={currentVideo !== undefined && currentVideo !== null ? currentVideo.src : undefined}
+            date={currentVideo !== undefined && currentVideo !== null ? new Date(currentVideo.uploadedAt) : undefined}
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}
-        />) : (
+        />
+    ) : (
         <AlbumModal 
-            image={currentImage.src} 
-            title={currentImage.title}
-            date={currentImage.date}
-            photographer={currentImage.photographer}
-            imageId={currentImageId}
+            image={currentImage !== undefined && currentImage !== null ? currentImage.src : undefined} 
+            title={currentImage !== undefined && currentImage !== null ? currentImage.title : undefined}
+            date={currentImage !== undefined && currentImage !== null ? new Date(currentImage.date) : undefined}
+            photographer={currentImage !== undefined && currentImage !== null ? currentImage.photographer : undefined}
+            imageId={currentImage !== undefined && currentImage !== null ? currentImageId : undefined}
             viewPreviousImage={viewPreviousImage}
             viewNextImage={viewNextImage}
             modalOpen={modalOpen} 
             setModalOpen={setModalOpen} 
-        />)
-    );
+        />
+    ))
 
     return (
         album == null ? <div /> : (
         <>
-            { currentImage ? mediaModal : null }
+            { currentImage ? modal : null }
   
             <div className="album-header">
                 <h2>{album.title}</h2>
@@ -124,12 +148,21 @@ const Album = () => {
                             onClick={() => {
                                 setCurrentVideoId(key);
                                 viewVideo(key);
+                                console.log("Hej2");
                             }}
                         >
                             <div className="album-video-play-icon">
-                                <FontAwesomeIcon icon={faPlayCircle} color="white" size="3x" />
+                                <FontAwesomeIcon 
+                                    icon={faPlayCircle} 
+                                    color="white" 
+                                    size="3x" 
+                                />
                             </div>
-                            <img src={video.thumbnail} className="responsive-image" alt="" />
+                            <img 
+                                src={video.thumbnail} 
+                                className="responsive-image" 
+                                alt="" 
+                            />
                         </div>
                     ))}
 

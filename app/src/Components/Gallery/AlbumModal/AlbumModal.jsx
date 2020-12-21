@@ -23,11 +23,9 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, 
                         extraClass={classes.leftButton}
                     />
                 </div>
-                
 
                 <div>
                     <img 
-                        // ref={imageRef} 
                         src={image} 
                         style={{
                             maxWidth: `${window.innerWidth * 0.85}px`, 
@@ -36,7 +34,6 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, 
                         alt='' 
                         className='no-select'
                     />
-
                     <h5>{`${date.toISOString().split('T')[0]}, ${photographer}`}</h5>
                     <h3>{title}</h3>
                 </div>
