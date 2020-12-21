@@ -98,4 +98,6 @@ export default {
   Images: GetImage,
   CommitteePosts: (id) => GetApiObject(`committees/${id}/posts`),
   Albums: GetApiObject('albums'),
+  Videos: GetApiObject('video'),
+  Playlists: GetApiObject('video_playlist'),
 };

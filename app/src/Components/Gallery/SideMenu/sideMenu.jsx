@@ -94,7 +94,7 @@ const SideMenu = (props) => {
     } 
 
     return (
-        <SideMenuContainer extraClass={classes.sideMenu}>
+        <SideMenuContainer>
             <SearchField 
                 swedishPlaceholder = "Sök efter innehåll"
                 englishPlaceholder = "Search for content"
@@ -102,7 +102,7 @@ const SideMenu = (props) => {
                 handleSearch = {handleContentSearch}
             />
 
-            <ul style={{"marginTop":"20px"}}>
+            {/* <ul style={{"marginTop":"20px"}}>
                 <li>
                     <img src={fireIcon} /> 
                     {translateToString({
@@ -120,7 +120,7 @@ const SideMenu = (props) => {
                         lang
                     })}
                 </li>
-            </ul>
+            </ul> */}
 
             <h4>
                 {translateToString({
@@ -154,7 +154,7 @@ const SideMenu = (props) => {
                 />
             </div>
 
-            <h4>
+            {/* <h4>
                 {translateToString({
                     se: "Spellistor",
                     en: "Playlists",
@@ -201,7 +201,7 @@ const SideMenu = (props) => {
                         />
                     ))}
                 </ul>
-            </ScrollableContainer>
+            </ScrollableContainer> */}
         </SideMenuContainer>
     )
 }

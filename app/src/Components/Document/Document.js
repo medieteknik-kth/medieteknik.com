@@ -14,7 +14,7 @@ import ViewDocuments from './ViewDocuments/ViewDocuments.js';
 import PublishDocument from './PublishDocument/PublishDocument.js';
 
 const Document = props => {
-    const [viewDocuments, setViewDocuments] = useState(true);
+    const [viewDocuments, setViewDocuments] = useState(false);
     const [propUserIsFunkis, setPropUserIsFunkis] = useState(true);
 
     const { lang } = useContext(LocaleContext);
