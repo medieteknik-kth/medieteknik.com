@@ -147,7 +147,7 @@ export default function Page() {
                   backLabelPhrase={page.committee !== null ? 'committee/back-to-all' : undefined}
                 >
                   <div>
-                    {isEditing
+                    {/* {isEditing
                       ? (
                         <div>
                           <input id="imageHeaderUpload" type="file" onChange={didSelectNewImage} />
@@ -163,7 +163,7 @@ export default function Page() {
                             : <div />}
                         </div>
                       )
-                      : <span /> }
+                      : <span /> } */}
                     { hasImage ? <div className="pageImageContainer"><img src={newHeader == null ? page.image : newHeader} alt={page.title} className="pageImage" /></div> : <div /> }
                     { page.committee !== null
                       ? (
