@@ -55,7 +55,6 @@ const ViewDocuments = (props) => {
             .then(jsonObject => {
                 let categoriesListTemp = [];
                 let categoriesShownTemp = {};
-
                 jsonObject.map(categoryObject => {
                     categoriesListTemp = [...categoriesListTemp, categoryObject.title];
                     categoriesShownTemp[categoryObject.title] = false;
