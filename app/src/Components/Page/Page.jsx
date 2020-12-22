@@ -9,7 +9,7 @@ import BasePage from './BasePage';
 import Api from '../../Utility/Api';
 import NotFound from '../NotFound/NotFound';
 import { UserContext } from '../../Contexts/UserContext';
-import { LocaleContext, translate } from '../../Contexts/LocaleContext';
+import { LocaleContext, translate, translateToString } from '../../Contexts/LocaleContext';
 import Spinner from '../Common/Spinner/Spinner';
 
 import './Page.css';
@@ -66,6 +66,7 @@ export default function Page() {
       const dataToSend = {
         published: true,
         title_sv: page.title_sv,
+        title_en: page.title_en,
       };
 
       if (content != null) {
@@ -142,7 +143,7 @@ export default function Page() {
             { page !== null ? (
               <div>
                 <Article
-                  title={translate({se: page.title_sv, en: page.title_en})}
+                  title={translate({ se: page.title_sv, en: page.title_en })}
                   linkPath={page.committee !== null ? '/committees' : undefined}
                   backLabelPhrase={page.committee !== null ? 'committee/back-to-all' : undefined}
                 >
@@ -173,7 +174,7 @@ export default function Page() {
                       )
                       : <span /> }
                     <BasePage
-                      initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''}
+                      initialContent={page !== null ? JSON.parse(translateToString({se: page.content_sv, en: page.content_en, lang})) : ''}
                       isEditing={isEditing}
                       onChange={onChange}
                     />
