@@ -7,6 +7,7 @@ import fireIcon from '../../../Resources/Icons/fire.svg';
 import albumIcon from '../../../Resources/Icons/album.svg';
 import Checkbox from '../../Common/Checkbox/checkbox';
 import SideMenuContainer from '../../Common/SideMenuContainer/sideMenuContainer';
+import ClearButton from '../../Common/Buttons/RedTextButton/RedTextButton';
 
 import { committees } from '../../Common/utility';
 
@@ -17,15 +18,16 @@ import {
 
 import ScrollableContainer from '../../Common/ScrollableContainer/scrollableContainer';
 
-const SideMenu = (props) => {
+const SideMenu = ({
+        chosenMediaHandler, 
+        mediasSelected,
+        numberOfMediasViewed, 
+        handleSearch,
+        clearMediaTypesHandler
+    }) => {
+
     const { lang } = useContext(LocaleContext);
 
-    const [mediasSelected, setMediasSelected] = useState({
-        "images": true,
-        "videos": true
-    })
-    const [mediasViewed, setMediasViewed] = useState(2);
-    
     const [committeesSelected, setCommitteesSelected] = useState({});
     const [committeesViewed, setCommitteesViewed] = useState(0);
 
@@ -60,25 +62,6 @@ const SideMenu = (props) => {
         setCommitteesSelected(tempCommitteesSelected);
     }, []);
 
-
-    const handleContentSearch = (searchInput) => {
-        console.log(searchInput)
-    }
-
-    const chosenMediaHandler = (clickedMediaType) => {
-        const tempMediasSelected = {...mediasSelected};
-
-        if (tempMediasSelected[clickedMediaType]) {
-            tempMediasSelected[clickedMediaType] = false;
-            setMediasViewed(mediasViewed - 1);
-        } else {
-            tempMediasSelected[clickedMediaType] = true;
-            setMediasViewed(mediasViewed + 1);
-        }
-
-        setMediasSelected(tempMediasSelected);
-    }
-
     const chosenCommitteesHandler = (clickedCommittee) => {
         const tempCommitteesSelected = {...committeesSelected};
 
@@ -94,12 +77,14 @@ const SideMenu = (props) => {
     } 
 
     return (
-        <SideMenuContainer>
+        <SideMenuContainer
+            extraClass = {classes.sideMenu}
+        >
             <SearchField 
-                swedishPlaceholder = "Sök efter innehåll"
-                englishPlaceholder = "Search for content"
+                swedishPlaceholder = "Sök efter album"
+                englishPlaceholder = "Search for album"
                 colorTheme = "dark"
-                handleSearch = {handleContentSearch}
+                handleSearch = {handleSearch}
             />
 
             {/* <ul style={{"marginTop":"20px"}}>
@@ -151,6 +136,16 @@ const SideMenu = (props) => {
                     isChecked = {mediasSelected["videos"]}
                     checkboxHandler = {() => chosenMediaHandler("videos")}
                     colorTheme = "light"
+                />
+
+                <ClearButton 
+                    onClick={clearMediaTypesHandler}
+                    text = {translateToString({
+                        se: "Rensa",
+                        en: "Clear",
+                        lang
+                    })}
+                    extraStyle = {{"marginTop": "5px"}}
                 />
             </div>
 

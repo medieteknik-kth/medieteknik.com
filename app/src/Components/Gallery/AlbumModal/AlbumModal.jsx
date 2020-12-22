@@ -7,7 +7,19 @@ import PreviousImageButton from '../../Common/Buttons/PreviousButton/PreviousBut
 import NextImageButton from '../../Common/Buttons/NextButton/NextButton';
 import ExitButton from '../../Common/Buttons/ExitButton/ExitButton';
 
-const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, imageId, viewPreviousImage, viewNextImage}) => {
+const AlbumModal = ({
+    title, 
+    date,
+    photographer,
+    image,
+    modalOpen, 
+    setModalOpen, 
+    imageId, 
+    viewPreviousImage, 
+    viewNextImage,
+    numberOfImages,
+    numberOfVideos}) => {
+
     return(
         <Modal
             isOpen={modalOpen}
@@ -17,12 +29,23 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, 
             ariaHideApp={false}
         >
             <div className={classes.imageContainer}>
+                <div 
+                    onClick={event => {
+                        let isPartOfButton = document.getElementsByClassName(classes.leftButton)[0].contains(event.target);
 
-                <div onClick = {() => viewPreviousImage(imageId)}>
+                        if (!isPartOfButton) {
+                            setModalOpen(false);
+                        }
+                    }}
+                    className = {classes.leftButtonContainer}
+                >
                     <PreviousImageButton 
                         extraClass={classes.leftButton}
-                    />
+                        disabled = {imageId === 0 && numberOfVideos === 0}
+                        onClick = {() => viewPreviousImage(imageId, 'img')}
+                    />    
                 </div>
+                
 
                 <div>
                     <img 
@@ -38,12 +61,22 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, 
                     <h3>{title}</h3>
                 </div>
                 
-                <div onClick = {() => viewNextImage(imageId)}>
+                <div 
+                    onClick={event => {
+                        let isPartOfButton = document.getElementsByClassName(classes.rightButton)[0].contains(event.target);
+
+                        if (!isPartOfButton) {
+                            setModalOpen(false);
+                        }
+                    }}
+                    className = {classes.rightButtonContainer}
+                >
                     <NextImageButton 
-                        extraClass={classes.leftButton}
+                        extraClass={classes.rightButton}
+                        disabled = {imageId === numberOfImages - 1}
+                        onClick = {() => viewNextImage(imageId, 'img')}
                     />
                 </div>
-                
             </div>
             
             <div onClick = {() => setModalOpen(false)}>
@@ -51,8 +84,6 @@ const AlbumModal = ({title, date, photographer, image, modalOpen, setModalOpen, 
                     extraClass = {classes.exitButton}
                 />
             </div>
-            
-            
         </Modal>
     );
 }

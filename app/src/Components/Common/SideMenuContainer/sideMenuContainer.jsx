@@ -5,7 +5,7 @@ const SideMenuContainer = ({ children, extraClass }) => {
 
     let sideMenuContainerClasses = [classes.SideMenuContainer];
 
-    if (extraClass != undefined) {
+    if (extraClass !== undefined) {
         sideMenuContainerClasses.push(extraClass);
     }
 

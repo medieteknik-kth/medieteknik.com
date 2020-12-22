@@ -1,5 +1,5 @@
 .swiper-container {
-    width: 64vw;
+    width: 42%;
     margin-left: 0;
 }
 
@@ -48,3 +48,16 @@
 .swiper-button-next {
     right: 0;
 }
+
+
+/* @media (max-width: 1300px) {
+    .swiper-container {
+        width: 56vw;
+    }
+}
+
+@media (max-width: 1200px) {
+    .swiper-container {
+        width: 56vw;
+    }
+} */

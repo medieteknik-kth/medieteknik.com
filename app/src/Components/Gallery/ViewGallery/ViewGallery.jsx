@@ -13,6 +13,12 @@ import Api from '../../../Utility/Api';
 const ViewGallery = () => {
     const [albums, setAlbums] = useState(null);
     const { lang } = useContext(LocaleContext);
+    const [mediasSelected, setMediasSelected] = useState({
+        "images": false,
+        "videos": false
+    });
+    const [numberOfMediasViewed, setNumberOfMediasViewed] = useState(0);
+    const [searchInput, setSearchInput] = useState("");
 
     useEffect(() => {
         Api.Albums.GetAll().then((albums) => {
@@ -21,21 +27,72 @@ const ViewGallery = () => {
         });
     }, []);
 
+    const chosenMediaHandler = (clickedMediaType) => {
+        const tempMediasSelected = {...mediasSelected};
+
+        if (tempMediasSelected[clickedMediaType]) {
+            tempMediasSelected[clickedMediaType] = false;
+            setNumberOfMediasViewed(numberOfMediasViewed - 1);
+        } else {
+            tempMediasSelected[clickedMediaType] = true;
+            setNumberOfMediasViewed(numberOfMediasViewed + 1);
+        }
+
+        setMediasSelected(tempMediasSelected);
+    }
+
+    const handleSearch = (searchString) => {
+        setSearchInput(searchString.toUpperCase());
+    }
+
+    const clearMediaTypesHandler = () => {
+        setMediasSelected({
+            "images": false,
+            "videos": false
+        });
+        setNumberOfMediasViewed(0);
+    }
+
+    let viewImages, viewVideos;
+
+    if (mediasSelected['images'] || numberOfMediasViewed === 0) {
+        viewImages = true;
+    }
+
+    if (mediasSelected['videos'] || numberOfMediasViewed === 0) {
+        viewVideos = true;
+    }
+
     return (
         <div className={classes.galleryContainer}>
-            <SideMenu />
+            <SideMenu 
+                mediasSelected = {mediasSelected}
+                numberOfMediasViewed = {mediasSelected}
+                chosenMediaHandler = {chosenMediaHandler}
+                handleSearch = {handleSearch}
+                clearMediaTypesHandler = {clearMediaTypesHandler}
+            />
             {
                 albums == null ? <div /> : (
                     <div className={classes.galleryContent}>
-                        {albums.map((album, index) => (
-                            <AlbumPreview 
-                                key={index}
-                                title={album.title} 
-                                images={album.images} 
-                                videos={album.videos}
-                                id={album.id}
-                            />
-                        ))}
+                        {albums.map((album, index) => {
+                            let tempImages = viewImages ? album.images : [];
+                            let tempVideos = viewVideos ? album.videos : [];
+                            let albumName = album.title.toUpperCase();
+                            let inSearchResult = albumName.includes(searchInput);
+
+                            if ((tempImages.length > 0 || tempVideos.length > 0) && inSearchResult) {
+                                return (
+                                    <AlbumPreview 
+                                        key={index}
+                                        title={album.title} 
+                                        images={tempImages} 
+                                        videos={tempVideos}
+                                        id={album.id}
+                                    />
+                                )
+                            }
+                        })}
                     </div>
                 )
             }

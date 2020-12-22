@@ -9,14 +9,13 @@
 }
 
 .galleryContent {
-
+    width: 100%;
 }
 
 .galleryContainer {
     display: flex;
     width: 80%;
     margin: 30px auto 40px auto;
-    // overflow: hidden;
 }
 
 @media (max-width: 800px) {
