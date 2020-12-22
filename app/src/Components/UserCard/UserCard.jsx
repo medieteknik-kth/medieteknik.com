@@ -7,12 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 
 export default function UserCard({
-  user, subtitle, email, canEdit, didRemove,
+  user, subtitle, email, canEdit, didRemove, small,
 }) {
   const [activeUser, setActiveUser] = useState(user);
 
   return (
-    <div className="userCard">
+    <div className={`userCard ${small ? 'small' : ''}`}>
       {canEdit
         ? (
           <button type="button" className="removeUserButton" onClick={() => { didRemove(); }}>
@@ -38,10 +38,6 @@ export default function UserCard({
               <div className="userCardBannerSubheader">
                 <div className="userCardSubtitle">{email || activeUser.email}</div>
               </div>
-            </div>
-            <div>
-              { activeUser.facebook ? <a href={activeUser.facebook}><FontAwesomeIcon className="userCardIcon" icon={faFacebookF} color="white" size="lg" /></a> : <div />}
-              { activeUser.linkedin ? <a href={activeUser.linkedin}><FontAwesomeIcon className="userCardIcon" icon={faLinkedinIn} color="white" size="lg" /></a> : <div />}
             </div>
           </div>
         </div>

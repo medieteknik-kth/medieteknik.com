@@ -110,6 +110,10 @@
             "se": "Läs mer",
             "en": "Read more"
         },
+        "show_more": {
+            "se": "Visa mer",
+            "en": "Show more"
+        },
         "on_instagram": {
             "se": "Medieteknik på Instagram",
             "en": "Media Technnology on Instagram"
@@ -287,7 +291,11 @@
         "follow": {
             "se": "Följ Medieteknik",
             "en": "Follow Media Technology"
-        }       
+        },
+        "copyright": {
+            "se": "Skapad av och för Sektionen för Medieteknik.",
+            "en": "Created by and for the Chapter for Media Technology."
+        }
     },
     "page": {
         "could_not_save": {

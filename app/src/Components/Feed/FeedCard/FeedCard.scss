@@ -33,7 +33,8 @@ $br: 0px;
 
     @media (max-width: 800px) {
         align-self: stretch;
-        width: auto;
+        width: 100%;
+        margin: 0 0 20px;
     }
 
     .feed-card-img {
@@ -90,14 +91,6 @@ $br: 0px;
 }
 
 @media (max-width: 800px) {
-
-    .feed-card-pre {
-        padding: 0 1.8em;
-    }
-    
-    .feed-card-container {
-        padding: 0 1.5em;
-    }
 
     .feed-card-text p {
         font-size: 10pt;

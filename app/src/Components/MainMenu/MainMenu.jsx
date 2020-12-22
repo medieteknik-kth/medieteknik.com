@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 
-import styles from './MainMenu.module.css';
+import styles from './MainMenu.module.scss';
 import { API_BASE_URL } from '../../Utility/Api';
 import { UserContext } from '../../Contexts/UserContext';
 import { LocaleContext } from '../../Contexts/LocaleContext';
@@ -63,10 +63,10 @@ const PageWithMainMenu = ({ children, transparent }) => {
       link: '/',
       subMenus: [
         { title_sv: 'Nämnder och projekt', title_en: 'Committees', link: '/committees' },
+        { title_sv: 'Mediagalleri', title_en: 'Media Gallery', link: '/media-gallery' },
         { title_sv: 'Styrelsen', title_en: 'The Board', link: '/styrelsen' },
         { title_sv: 'Dokument', title_en: 'Documents', link: '/documents' },
-        { title_sv: 'Mediagalleri', title_en: 'Media Gallery', link: '/media-gallery' },
-        { title_sv: 'Grafisk Identitet', title_en: 'Visual Identity', link: '/visualidentity' },
+        { title_sv: 'Grafisk Identitet', title_en: 'Visual Identity', link: '/grafiskidentitet' },
       ],
     },
     {
@@ -76,7 +76,6 @@ const PageWithMainMenu = ({ children, transparent }) => {
       link: '/',
       subMenus: [
         { title_sv: 'Vad är Medieteknik?', title_en: 'Media Technology', link: '/medieteknik' },
-        { title_sv: 'Antagning', title_en: 'Admissions', link: '/antagning' },
         { title_sv: 'Kurser', title_en: 'Courses', link: '/kurser' },
         { title_sv: 'Masterprogram', title_en: 'Master Programmes', link: '/masterprogram' },
         { title_sv: 'Studievägledning', title_en: 'Study Counciling', link: '/studievagledning' },
@@ -98,37 +97,45 @@ const PageWithMainMenu = ({ children, transparent }) => {
     },
   ];
 
-  const menuFrom = (menu) => (
-    <div className={`${styles.button} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
-      <Link to={menu.link}>
-        <div
-          className={styles.buttonTitle}
-          onClick={(e) => {
-            if (menu.subMenus.length > 0) {
-              e.preventDefault();
-              setExpandedSubMenu(expandedSubMenu !== menu.id ? menu.id : null);
-            } else {
-              setMainMenuExpanded(false);
-            }
-          }}
-        >
-          {lang === 'se' ? menu.title_sv : menu.title_en}
-        </div>
-      </Link>
-      {menu.subMenus.length !== 0
-        ? (
-          <ul className={`${styles.buttonDropdown} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
-            {menu.subMenus.map((subMenu) => (
-              <Link to={subMenu.link} onClick={() => { setMainMenuExpanded(false); }}>
-                <li className={styles.buttonDropdownItem}>{lang === 'se' ? subMenu.title_sv : subMenu.title_en}</li>
-              </Link>
-            ))}
-          </ul>
-        )
-        : <div />}
+  const menuFrom = (menu) => {
+    // TODO: Implementera denna i fler fall?
+    // const isActive = menu.subMenus.length === 0 ? location.pathname.startsWith(menu.link) : menu.subMenus.some((subMenu) => location.pathname.startsWith(subMenu.link));
+    const isActive = false;
 
-    </div>
-  );
+    return (
+      <div className={`${styles.button} ${isActive ? styles.active : ''} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
+        <Link to={menu.link}>
+          <div
+            className={styles.buttonTitle}
+            onClick={(e) => {
+              if (menu.subMenus.length > 0) {
+                e.preventDefault();
+                setExpandedSubMenu(expandedSubMenu !== menu.id ? menu.id : null);
+              } else {
+                setMainMenuExpanded(false);
+              }
+            }}
+          >
+            {lang === 'se' ? menu.title_sv : menu.title_en}
+          </div>
+        </Link>
+        {menu.subMenus.length !== 0
+          ? (
+            <div className={styles.buttonsDropdownContainer}>
+              <ul className={`${styles.buttonDropdown} ${expandedSubMenu === menu.id ? styles.subMenuExpanded : ''}`}>
+                {menu.subMenus.map((subMenu) => (
+                  <Link to={subMenu.link} onClick={() => { setMainMenuExpanded(false); }}>
+                    <li className={styles.buttonDropdownItem}>{lang === 'se' ? subMenu.title_sv : subMenu.title_en}</li>
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          )
+          : <div />}
+
+      </div>
+    );
+  };
 
   const loginButton = (additionalStyles) => (
     <Link to="/login" className={`${styles.icon} ${additionalStyles}`}>
@@ -154,9 +161,9 @@ const PageWithMainMenu = ({ children, transparent }) => {
           </Link>
         </div>
         <div className={styles.iconContainer}>
-          <div className={`${styles.icon} ${styles.responsiveIcon}`}>
+          {/* <div className={`${styles.icon} ${styles.responsiveIcon}`}>
             <FontAwesomeIcon icon={faSearch} size="lg" />
-          </div>
+          </div> */}
           {loginButton(styles.responsiveIcon)}
           {localeButton(styles.responsiveIcon)}
           <div
@@ -173,9 +180,9 @@ const PageWithMainMenu = ({ children, transparent }) => {
         </div>
         <div className={`${styles.buttonsContainer} ${mainMenuExpanded ? styles.menuExpanded : ''}`}>
           {menus.map((menu) => menuFrom(menu))}
-          <div className={styles.icon}>
+          {/* <div className={styles.icon}>
             <FontAwesomeIcon icon={faSearch} size="lg" />
-          </div>
+          </div> */}
           {loginButton('')}
           {localeButton('')}
         </div>

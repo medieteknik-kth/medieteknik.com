@@ -59,6 +59,17 @@ a {
   color: inherit;
 }
 
+a.link {
+  transition: border 0.2s ease-in-out;
+  border-bottom: solid 0px #f0c900;
+  font-family: Roboto, sans-serif;
+  font-weight: 500;
+}
+
+a.link:hover {
+  border-bottom: solid 3px #f0c900;
+}
+
 @media (max-width: 850px) {
   h1 {
     font-size: 2rem;

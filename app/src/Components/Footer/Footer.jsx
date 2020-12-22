@@ -2,7 +2,7 @@ import React from 'react';
 import './Footer.css'
 import { LocaleText, translate } from '../../Contexts/LocaleContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faLinkedinIn, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faFacebookF, faLinkedinIn, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = (props) => {
 
@@ -17,19 +17,6 @@ const Footer = (props) => {
                 {
                     desc: 'Kurser',
                     href: '/kurser'
-                },
-            ]
-        },
-        {
-            title: translate({ se: 'Länkar', en: 'Links'}),
-            links: [
-                {
-                    desc: translate({ se: 'Samarbete', en: 'Partner with us'}),
-                    href: '/samarbete'
-                },
-                {
-                    desc: translate({ se: 'Annonsering', en: 'Advertising'}),
-                    href: '/annonsering'
                 },
             ]
         }
@@ -78,10 +65,14 @@ const Footer = (props) => {
                         <a href='https://www.linkedin.com/company/sektionen-f%C3%B6r-medieteknik-%C2%A0kth/' target='_blank' rel='noopener noreferrer'>
                             <FontAwesomeIcon className='footer-icon' icon={faLinkedinIn} color="white" size="lg" />
                         </a>
+                        <a href='https://www.youtube.com/channel/UCfd-63pepDHT9uZku8KbQTA' target='_blank' rel='noopener noreferrer'>
+                            <FontAwesomeIcon className='footer-icon' icon={faYoutube} color="white" size="lg" />
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+        <p className='copyright'>© {new Date().getFullYear()} Sektionen för Medieteknik.</p>
     </div>);
 }
 

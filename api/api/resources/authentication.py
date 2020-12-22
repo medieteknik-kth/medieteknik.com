@@ -7,7 +7,6 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 import cachecontrol
-import cachecontrol
 import google.auth.transport.requests
 import requests
 from google.oauth2 import id_token
@@ -24,7 +23,10 @@ def check_token(token):
     cached_session = cachecontrol.CacheControl(session)
     request = google.auth.transport.requests.Request(session=cached_session)
 
-    id_info = id_token.verify_token(token, request, '881584931454-ankmp9jr660l8c1u91cbueb4eaqeddbt.apps.googleusercontent.com')
+    try:
+        id_info = id_token.verify_token(token, request, '881584931454-ankmp9jr660l8c1u91cbueb4eaqeddbt.apps.googleusercontent.com')
+    except:
+        return None
 
     if id_info['iss'] != 'accounts.google.com':
         return None

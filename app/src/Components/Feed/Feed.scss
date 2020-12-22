@@ -3,7 +3,18 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 0 -10px 30px;
+}
+
+.feed-container {
+    margin: 20px;
+
+    .show-more {
+        text-align: center;
+        
+        a {
+            font-size: 18px;
+        }
+    }
 }
 
 .feed-container > h1 {

@@ -6,6 +6,7 @@ import {
     LocaleContext,
     translateToString,
 } from '../../Contexts/LocaleContext'
+import { UserContext } from '../../Contexts/UserContext';
 
 
 // --- KOMPONENTER ---
@@ -17,6 +18,7 @@ import SwitchButton from '../Common/Buttons/RoundedTextButton/RoundedTextButton'
 const Document = props => {
     const [viewDocuments, setViewDocuments] = useState(true);
     const [propUserIsFunkis, setPropUserIsFunkis] = useState(true);
+    const { user } = useContext(UserContext);
 
     const { lang } = useContext(LocaleContext);
     translateToString({
@@ -44,21 +46,21 @@ const Document = props => {
                 extraClass = {classes.switchButton}
             />
 
-                <h2 className={classes.secHeader}>{viewDocuments ?
-                    translateToString({
-                        se: 'Dokument',
-                        en: 'Document',
-                        lang,
-                    }) : 
-                    translateToString({
-                        se: 'Ladda upp dokument',
-                        en: 'Publish document',
-                        lang,
-                    })
-                }</h2>
-                {
-                    viewDocuments ? 
-                    <ViewDocuments userIsFunkis = {propUserIsFunkis} /> : 
+            <h2 className={classes.secHeader}>{viewDocuments ?
+                translateToString({
+                    se: 'Dokument',
+                    en: 'Document',
+                    lang,
+                }) :
+                translateToString({
+                    se: 'Ladda upp dokument',
+                    en: 'Publish document',
+                    lang,
+                })
+            }</h2>
+            {
+                viewDocuments ?
+                    <ViewDocuments userIsFunkis={propUserIsFunkis} /> :
                     <PublishDocument />
                 }
         </>
