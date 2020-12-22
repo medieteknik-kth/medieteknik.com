@@ -11,7 +11,7 @@ export default function VideoPlayer({ videoUrl, extraStyle }) {
     const player = videojs(playerRef.current, {
       controls: true,
       autoplay: true,
-      muted: true,
+      muted: false,
       preload: 'auto',
       fluid: true,
       controlBar: {
