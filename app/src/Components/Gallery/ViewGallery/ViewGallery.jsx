@@ -5,13 +5,17 @@ import {
     translateToString,
 } from '../../../Contexts/LocaleContext';
 
-import SideMenu from '../SideMenu/sideMenu';
+
+// --- Components ---
+import SideMenu from '../SideMenu/SideMenu';
 import AlbumPreview from './AlbumPreview/AlbumPreview';
+import FilterButton from '../../Common/Buttons/FilterButton/FilterButton';
 
 import Api from '../../../Utility/Api';
 
 const ViewGallery = () => {
     const [albums, setAlbums] = useState(null);
+    const [showFilter, setShowFilter] = useState(false);
     const { lang } = useContext(LocaleContext);
     const [mediasSelected, setMediasSelected] = useState({
         "images": false,
@@ -53,6 +57,13 @@ const ViewGallery = () => {
         setNumberOfMediasViewed(0);
     }
 
+    const closeFilterHandler = () => {
+        setShowFilter(false);
+    }
+
+
+    // ---
+
     let viewImages, viewVideos;
 
     if (mediasSelected['images'] || numberOfMediasViewed === 0) {
@@ -65,13 +76,22 @@ const ViewGallery = () => {
 
     return (
         <div className={classes.galleryContainer}>
+            <FilterButton 
+                colorTheme = "light"
+                onClick = {() => setShowFilter(true)}
+                extraClasses = {[classes.filterButton]}
+            />
+
             <SideMenu 
                 mediasSelected = {mediasSelected}
                 numberOfMediasViewed = {mediasSelected}
                 chosenMediaHandler = {chosenMediaHandler}
                 handleSearch = {handleSearch}
                 clearMediaTypesHandler = {clearMediaTypesHandler}
+                showFilter = {showFilter}
+                closeFilterHandler = {closeFilterHandler}
             />
+
             {
                 albums == null ? <div /> : (
                     <div className={classes.galleryContent}>

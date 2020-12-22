@@ -53,7 +53,7 @@ const AlbumVideoModal = ({
                     <VideoPlayer 
                         videoUrl={videoUrl}
                         extraStyle = {{
-                            width: "65vw"
+                            width: "75vw"
                         }}
                     />
                     <h5>{`${date.toISOString().split('T')[0]}`}</h5>

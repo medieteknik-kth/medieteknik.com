@@ -8,6 +8,8 @@ import {
 } from '../../Contexts/LocaleContext'
 import { UserContext } from '../../Contexts/UserContext';
 
+import { UserContext } from '../../Contexts/UserContext';
+
 
 // --- KOMPONENTER ---
 import Button from './ViewDocuments/Assets/ButtonRasmus';
@@ -29,22 +31,26 @@ const Document = props => {
 
     return (
         <>
-            <SwitchButton 
-                text = {viewDocuments ? 
-                    translateToString({
-                        se: 'Ladda upp dokument +',
-                        en: 'Publish document +',
-                        lang,
-                    }) : 
-                    translateToString({
-                        se: 'Bläddra bland dokument',
-                        en: 'Browse documents',
-                        lang,
-                    })
-                } 
-                onClick = {() => setViewDocuments(!viewDocuments)}
-                extraClass = {classes.switchButton}
-            />
+        {
+            user !== null ?
+                <SwitchButton 
+                    text = {viewDocuments ? 
+                        translateToString({
+                            se: 'Ladda upp dokument +',
+                            en: 'Publish document +',
+                            lang,
+                        }) : 
+                        translateToString({
+                            se: 'Bläddra bland dokument',
+                            en: 'Browse documents',
+                            lang,
+                        })
+                    } 
+                    onClick = {() => setViewDocuments(!viewDocuments)}
+                    extraClass = {classes.switchButton}
+                />
+            : <span />
+        }
 
             <h2 className={classes.secHeader}>{viewDocuments ?
                 translateToString({

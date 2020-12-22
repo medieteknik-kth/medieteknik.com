@@ -27,7 +27,7 @@ const CustomBuildSwiper = ({images, videos, title}) => {
         Swiper,
         modules: [Navigation, Pagination],
         slidesPerView: 'auto',
-        spaceBetween: 30,
+        spaceBetween: 20,
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
@@ -51,7 +51,7 @@ const CustomBuildSwiper = ({images, videos, title}) => {
                 viewNextImage(currentImageId, 'img');
             }
         }
-    }, [currentImageId])
+    }, [currentImageId]);
 
     useEffect(() => {
         window.addEventListener('keydown', changeImage);
