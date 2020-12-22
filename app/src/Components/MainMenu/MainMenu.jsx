@@ -148,8 +148,17 @@ const PageWithMainMenu = (props) => {
           </Link>
         </div>
         <div className={styles.iconContainer}>
-          <div className={`${styles.icon} ${styles.responsiveIcon}`}>
+        <div className={`${styles.icon} ${styles.responsiveIcon}`}>
+        <Link
+            to="/search"
+            onClick={() => {
+              setMainMenuExpanded(false);
+            }}
+          >
+          
             <FontAwesomeIcon icon={faSearch} size="lg" />
+          
+          </Link>
           </div>
           {loginButton(styles.responsiveIcon)}
           {localeButton(styles.responsiveIcon)}

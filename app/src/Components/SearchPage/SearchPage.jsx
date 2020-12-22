@@ -8,7 +8,7 @@ import {
     translate,
 } from '../../Contexts/LocaleContext'
 
-import { LocaleText, translate } from '../../Contexts/LocaleContext';
+
 
 //--Komponenter--
 import SearchField from '../Common/SearchField/searchField';
