@@ -46,7 +46,7 @@ class Committee(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "posts": posts,
+            "posts": sorted(posts, key=lambda p: p["weight"]),
             "logo": self.logo,
             "description": self.description,
             "facebookUrl": self.facebook_url,
@@ -62,7 +62,7 @@ class Committee(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "posts": posts,
+            "posts": sorted(posts, key=lambda p: p["weight"]),
             "logo": self.logo,
             "description": self.description,
             "facebookUrl": self.facebook_url,
