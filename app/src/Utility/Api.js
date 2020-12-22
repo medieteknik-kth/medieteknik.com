@@ -68,6 +68,19 @@ function GetApiObject(resource) {
         body: data,
       });
     },
+    Delete(id, token = window.localStorage.getItem('googleToken')) {
+      return fetch(`${API_BASE_URL}${resource}/${id}`, {
+        method: "DELETE",
+        headers: {
+          token,
+        },
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      });
+    }
   };
 }
 

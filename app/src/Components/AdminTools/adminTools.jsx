@@ -3,81 +3,80 @@ import classes from './adminTools.module.scss';
 
 import SideMenuContainer from '../Common/SideMenuContainer/sideMenuContainer';
 import SearchField from '../Common/SearchField/searchField';
-import Table from '../Common/Table/table';
+import AdminTable from './AdminTable/AdminTable';
+
+import Api from '../../Utility/Api';
 
 import {
-    LocaleContext,
-    translateToString,
+  LocaleContext,
+  translateToString,
 } from '../../Contexts/LocaleContext';
 
 const AdminTools = () => {
-    const { lang } = useContext(LocaleContext);
+  const { lang } = useContext(LocaleContext);
 
-    const handleToolsSearch = (searchInput) => {
-        console.log(searchInput);
-    }
+  const handleToolsSearch = (searchInput) => {
+    console.log(searchInput);
+  };
 
-    return (
-        <div className={classes.AdminTools}>
-            <h2>
-                
-                {translateToString({
-                            se: "Admin Verktyg",
-                            en: "Admin Tools",
-                            lang
-                        })}
-            </h2>
+  return (
+    <div className={classes.AdminTools}>
+      <h2>
 
-            <div className={classes.adminContainer}>
-                <SideMenuContainer extraClass={classes.sideMenu}>
-                    <SearchField 
-                        swedishPlaceholder = "Sök"
-                        englishPlaceholder = "Search"
-                        colorTheme = "dark"
-                        handleSearch = {handleToolsSearch}
-                    />
+        {translateToString({
+          se: 'Hantera',
+          en: 'Manage',
+          lang,
+        })}
+      </h2>
 
-                    <h4 style = {{"paddingTop":"20px"}}>
-                        {translateToString({
-                            se: "Startsida",
-                            en: "Start page",
-                            lang
-                        })}
-                    </h4>
-                    <ul style={{"marginTop":"0px"}}>
-                        <li>Bildspel</li>
-                        <li>Sektionen</li>
-                        <li>Utbildningen</li>
-                    </ul>
+      <div className={classes.adminContainer}>
+        <SideMenuContainer extraClass={classes.sideMenu}>
+          <SearchField
+            swedishPlaceholder="Sök"
+            englishPlaceholder="Search"
+            colorTheme="dark"
+            handleSearch={handleToolsSearch}
+          />
 
-                    <h4 style = {{"paddingTop":"20px"}}>
-                        {translateToString({
-                            se: "Innehåll",
-                            en: "Content",
-                            lang
-                        })}
-                    </h4>
-                        <ul style={{"marginTop":"0px"}}>
-                            <li>Inlägg</li>
-                            <li>Event</li>
-                            <li>Dokument</li>
-                            <li>Media</li>
-                            <li>Nämnder</li>
-                            <li>Funktionärer</li>
-                        </ul>
-                </SideMenuContainer>
+          <h4 style={{ paddingTop: '20px' }}>
+            {translateToString({
+              se: 'Startsida',
+              en: 'Start page',
+              lang,
+            })}
+          </h4>
+          <ul style={{ marginTop: '0px' }}>
+            <li>Bildspel</li>
+            <li>Sektionen</li>
+            <li>Utbildningen</li>
+          </ul>
 
-                <div className={classes.adminContent}>
-                    <Table 
-                        allowRowDelete = {true}
-                        allowRowEdit = {true}
-                    />
-                </div>
-            </div>
-            
+          <h4 style={{ paddingTop: '20px' }}>
+            {translateToString({
+              se: 'Innehåll',
+              en: 'Content',
+              lang,
+            })}
+          </h4>
+          <ul style={{ marginTop: '0px' }}>
+            <li>Inlägg</li>
+            <li>Event</li>
+            <li>Dokument</li>
+            <li>Media</li>
+            <li>Nämnder</li>
+            <li>Funktionärer</li>
+          </ul>
+        </SideMenuContainer>
+
+        <div className={classes.adminContent}>
+          <AdminTable endpoint={Api.Committees} fields={['name']} />
         </div>
-        
-    )
-}
+      </div>
+
+    </div>
+
+  );
+};
 
 export default AdminTools;

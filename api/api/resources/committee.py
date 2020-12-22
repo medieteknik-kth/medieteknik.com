@@ -5,6 +5,8 @@ from api.models.committee import Committee
 from api.models.committee_post import CommitteePost, CommitteePostTerm
 from api.resources.authentication import requires_auth
 
+from api.db import db
+
 class CommitteeResource(Resource):
     def get(self, id):
         committee = Committee.query.get(id)
@@ -23,8 +25,16 @@ class CommitteeResource(Resource):
         else:
             return jsonify({"message": "missing id"}), 400
 
-    def post(self):
+    @requires_auth
+    def post(self, user):
         pass
+
+    @requires_auth
+    def delete(self, id, user):
+        committee = Committee.query.get_or_404(id)
+        db.session.delete(committee)
+        db.session.commit()
+        return jsonify({"message": "ok"})
 
 class CommitteeListResource(Resource):
     def get(self):
