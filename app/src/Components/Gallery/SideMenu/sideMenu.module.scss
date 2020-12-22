@@ -2,9 +2,18 @@
     margin-top: 5px;
 }
 
+.sideMenu, .sideMenuModal  {
+    width: 250px;
+    height: 230px !important;
+}
+
 .sideMenu {
-    // height: 190px;
+    transition: .3s;
     margin-top: 5px;
-    // width: 40% !important;
-    width: 350px !important;
+}
+
+@media (max-width: 950px) {
+    .sideMenu {
+        display: none !important;
+    }
 }

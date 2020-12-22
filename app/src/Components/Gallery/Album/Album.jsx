@@ -17,6 +17,8 @@ import {
 import PreviousPageButton from '../../Common/Buttons/PreviousPageButton/PreviousPageButton';
 
 const Album = () => {
+    const [images, setImages] = useState([]);
+    const [videos, setVideos] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
     const [currentImageId, setCurrentImageId] = useState(0);
@@ -30,45 +32,87 @@ const Album = () => {
 
     const changeImage = useCallback(event => {
         if (event.key === 'ArrowLeft') {
-            viewPreviousImage(currentImageId);
+            if (isVideo) {
+                viewPreviousImage(currentVideoId, 'video');
+            } else {
+                viewPreviousImage(currentImageId, 'img');
+            }
+            
         } else if (event.key === 'ArrowRight') {
-            viewNextImage(currentImageId);
+            if (isVideo) {
+                viewNextImage(currentVideoId, 'video');
+            } else {
+                viewNextImage(currentImageId, 'img');
+            }
         }
-    }, [currentImageId])
+    }, [currentImageId]);
 
     useEffect(() => {
         Api.Albums.GetById(id).then((album) => {
             setAlbum(album);
+            setVideos(album.videos !== null ? album.videos : []);
+            setImages(album.images !== null ? album.images : []);
         });
         window.addEventListener('keydown', changeImage);
         return () => window.removeEventListener('keydown', changeImage);
     }, [currentImageId])
 
-    const viewPreviousImage = (imageId) => {
-        if (imageId > 0) {
-            setCurrentImageId(imageId - 1);
-            const tempImage = album.images[imageId - 1]
-            setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer})
+
+    const viewPreviousImage = (mediaId, mediaType) => {
+        if (mediaType === 'img') {
+            if (mediaId > 0) {
+                setCurrentImageId(mediaId - 1);
+                const tempImage = images[mediaId - 1];
+                setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer});
+                setIsVideo(false);
+            } else if (videos.length > 0) {
+                setCurrentVideoId(videos.length - 1);
+                const tempVideo = videos[videos.length - 1];
+                setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+                setIsVideo(true);
+            }
+        } else if (mediaType === 'video') {
+            if (mediaId > 0) {
+                setCurrentVideoId(mediaId - 1);
+                const tempVideo = videos[mediaId - 1];
+                setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+                setIsVideo(true);
+            }
         }
     }
 
-    const viewNextImage = (imageId) => {
-        if (imageId < album.images.length - 1) {
-            setCurrentImageId(imageId + 1);
-            const tempImage = album.images[imageId + 1]
-            setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer})
+    const viewNextImage = (mediaId, mediaType) => {
+        if (mediaType === 'img') {
+            if (mediaId < images.length - 1) {
+                setCurrentImageId(mediaId + 1);
+                const tempImage = images[mediaId + 1];
+                setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer});
+                setIsVideo(false);
+            }
+        } else if (mediaType === 'video') {
+            if (mediaId < videos.length - 1) {
+                setCurrentVideoId(mediaId + 1);
+                const tempVideo = videos[mediaId + 1];
+                setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
+                setIsVideo(true);
+            } else if (images.length > 0) {
+                setCurrentImageId(0);
+                const tempImage = images[0];
+                setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer});
+                setIsVideo(false);
+            }
         }
     }
 
     const viewImage = (imageId) => {
-        const tempImage = album.images[imageId];
+        const tempImage = images[imageId];
         setCurrentImage({src: tempImage.url, title: tempImage.title, date: new Date(tempImage.date), photographer: tempImage.photographer})
         setModalOpen(true);
         setIsVideo(false);
     }
 
     const viewVideo = (videoId) => {
-        const tempVideo = album.videos[videoId];
+        const tempVideo = videos[videoId];
         setCurrentVideo({src: tempVideo.url, title: tempVideo.title, date: new Date(tempVideo.uploadedAt)});
         setModalOpen(true);
         setIsVideo(true);
@@ -79,8 +123,13 @@ const Album = () => {
             title={currentVideo.title}
             videoUrl={currentVideo.src}
             date={new Date(currentVideo.date)}
-            modalOpen={modalOpen}
-            setModalOpen={setModalOpen}
+            videoId = {currentVideoId}
+            numberOfImages = {images.length}
+            numberOfVideos = {videos.length}
+            viewPreviousImage={viewPreviousImage}
+            viewNextImage={viewNextImage}
+            modalOpen={modalOpen} 
+            setModalOpen={setModalOpen} 
         />
     ) : (
         <AlbumModal 
@@ -89,6 +138,8 @@ const Album = () => {
             date={new Date(currentImage.date)}
             photographer={currentImage.photographer}
             imageId={currentImageId}
+            numberOfImages = {images.length}
+            numberOfVideos = {videos.length}
             viewPreviousImage={viewPreviousImage}
             viewNextImage={viewNextImage}
             modalOpen={modalOpen} 

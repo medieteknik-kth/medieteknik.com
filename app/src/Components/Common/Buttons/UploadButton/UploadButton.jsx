@@ -1,9 +1,9 @@
 import React from 'react';
-import classes from './FilterButton.module.scss';
+import classes from './UploadButton.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
-const FilterButton = ({colorTheme, onClick, extraClasses}) => {
+const UploadButton = ({colorTheme, onClick, extraClasses}) => {
     let buttonClasses;
 
     if (extraClasses !== undefined) {
@@ -20,9 +20,9 @@ const FilterButton = ({colorTheme, onClick, extraClasses}) => {
 
     return (
         <div className={buttonClasses.join(" ")} onClick={onClick} >
-            <FontAwesomeIcon icon={faFilter} />
+            <FontAwesomeIcon icon={faUpload} />
         </div>
     )
 }
 
-export default FilterButton;
+export default UploadButton;

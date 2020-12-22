@@ -35,7 +35,6 @@ const AlbumPreview = (props) => {
             />
         </div>
         
-        
         <CustomBuildSwiper 
             images={props.images}
             videos={props.videos}
