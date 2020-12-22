@@ -75,24 +75,21 @@ const ViewDocuments = (props) => {
                         let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
                         let publishDay = parseInt(doc.date.slice(8, 10));
 
-                        fetch(doc.thumbnail)
-                            .then(thumbnail => {
-                                let docObject = {
-                                    docId: doc.itemId,
-                                    doctags: doc.tags,
-                                    headingText: doc.title,
-                                    publisher: '',
-                                    publishDate: new Date(publishYear, publishMonth, publishDay),
-                                    displayCard: true,
-                                    thumbnail: thumbnail,
-                                    filename: doc.filename
-                                }
-                                
-                                documentsFromServerTemp = [...documentsFromServerTemp, docObject];
-                                documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
+                        let docObject = {
+                            docId: doc.itemId,
+                            doctags: doc.tags,
+                            headingText: doc.title,
+                            publisher: '',
+                            publishDate: new Date(publishYear, publishMonth, publishDay),
+                            displayCard: true,
+                            thumbnail: doc.thumbnail,
+                            filename: doc.filename
+                        }
+                        
+                        documentsFromServerTemp = [...documentsFromServerTemp, docObject];
+                        documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
 
-                                setDocumentsFromServer(documentsFromServerTemp);
-                            })
+                        setDocumentsFromServer(documentsFromServerTemp);
                     })
 
                     setIsLoading(false);

@@ -419,10 +419,10 @@ if app.debug:
         db.session.add(page)
 
         doc = Document()
-        doc.title = "SM#4 Handlingar"
-        doc.fileName = "sm4.pdf"
+        doc.title = "Stadgar"
+        doc.fileName = "https://storage.googleapis.com/medieteknik-static/documents/2019-02-19%20Stadgar.pdf"
         doc.uploadedBy = "Oliver Kamruzzaman"
-        doc.thumbnail = "sm4.png"
+        doc.thumbnail = "https://storage.googleapis.com/medieteknik-static/document_thumbnails/stadgar.png"
 
         doc2 = Document()
         doc2.title = "Beta-SM Handlingar"
