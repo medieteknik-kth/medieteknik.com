@@ -8,9 +8,6 @@ import {
 } from '../../Contexts/LocaleContext'
 import { UserContext } from '../../Contexts/UserContext';
 
-import { UserContext } from '../../Contexts/UserContext';
-
-
 // --- KOMPONENTER ---
 import Button from './ViewDocuments/Assets/ButtonRasmus';
 import ViewDocuments from './ViewDocuments/ViewDocuments.js';

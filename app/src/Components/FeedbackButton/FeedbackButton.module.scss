@@ -4,7 +4,7 @@
     right: 20px;
     z-index: 1000;
     background-color: white;
-    color: black;
+    color: #545454;
     border: 1px solid rgba(0,0,0,0.16);
     box-shadow: 0 0 10px rgba(0,0,0,0.16);
     padding: 7px;
@@ -20,6 +20,6 @@
 }
 
 .feedbackButton:active {
-    color: black;
+    color: #545454;
     transform: scale(0.95);
 }
