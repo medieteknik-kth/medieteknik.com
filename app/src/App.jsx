@@ -31,6 +31,7 @@ import Profile from './Components/Profile/profile';
 import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
 import AdminTools from './Components/AdminTools/adminTools';
+import FeedbackButton from './Components/FeedbackButton/FeedbackButton';
 
 export default function App() {
   return (
@@ -95,19 +96,15 @@ export default function App() {
             <Route path="/user">
               <PageWithMainMenu><Profile /></PageWithMainMenu>
             </Route>
-            <Route path="/managecommittee/:id">
-              <PageWithMainMenu><ManageCommittee /></PageWithMainMenu>
-            </Route>
-            <Route path="/admin-tools">
+            <Route path="/admin">
               <PageWithMainMenu><AdminTools /></PageWithMainMenu>
             </Route>
-            
-
             <Route
               path="/:pageSlug"
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
             />
           </Switch>
+          <FeedbackButton />
           <Footer />
         </UserProvider>
       </LocaleProvider>
