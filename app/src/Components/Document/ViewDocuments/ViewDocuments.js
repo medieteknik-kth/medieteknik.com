@@ -75,7 +75,7 @@ const ViewDocuments = (props) => {
                         let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
                         let publishDay = parseInt(doc.date.slice(8, 10));
 
-                        fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
+                        fetch(doc.thumbnail)
                             .then(thumbnail => {
                                 let docObject = {
                                     docId: doc.itemId,

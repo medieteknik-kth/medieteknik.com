@@ -74,11 +74,11 @@ const DocumentList = (props) => {
 
                             return (
                                 <tr key={document.docId}>
-                                    <td><a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">{document.headingText}</a></td>
-                                    <td><a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">{docTypeString}</a></td>
-                                    <td><a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">{document.publisher}</a></td>
+                                    <td><a href={document.filename} target="_blank">{document.headingText}</a></td>
+                                    <td><a href={document.filename} target="_blank">{docTypeString}</a></td>
+                                    <td><a href={document.filename} target="_blank">{document.publisher}</a></td>
                                     <td>
-                                        <a href={API_BASE_URL + `documents/${document.filename}`} target="_blank">
+                                        <a href={document.filename} target="_blank">
                                             {
                                                 document.publishDate.getFullYear() + "-" + 
                                                 ((document.publishDate.getMonth() + 1) < 10 ? `0${(document.publishDate.getMonth() + 1)}` : (document.publishDate.getMonth() + 1)) + "-" + 
