@@ -13,12 +13,28 @@ export default function CommitteeList() {
   const [committees, setCommittees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    Api.Committees.GetAll().then((data) => {
-      setIsLoading(false);
-      setCommittees(data.filter((committee) => committee.page !== null));
-    });
-  }, []);
+    
+    useEffect(() => {
+        Api.Committees.GetAll().then((data) => {
+            setIsLoading(false);
+
+            let tempCommittees = data.filter(committee => committee.page !== null);
+            tempCommittees.sort((firstCommittee, secondCommittee) => {
+                let firstCommitteeWeight = firstCommittee.posts[0].weight;
+                let secondCommitteeWeight = secondCommittee.posts[0].weight;
+                
+                if (firstCommitteeWeight < secondCommitteeWeight) {
+                    return -1;
+                } else if (firstCommitteeWeight > secondCommitteeWeight) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+
+            setCommittees(tempCommittees);
+        });
+    }, []);
 
   return (
     <div className={classes.committeeContainer}>
@@ -28,7 +44,6 @@ export default function CommitteeList() {
           <div className={classes.CommitteeList}>
             {
                 Object.keys(committees).map((committee) => {
-                    console.log(committees[committee].posts[0].weight);
                     return(
                         <Link to={`/${committees[committee].page.slug}`}>
                     

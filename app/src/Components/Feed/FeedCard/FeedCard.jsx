@@ -29,7 +29,6 @@ const FeedCard = (props) => {
     }
     
     const bodyObj = JSON.parse(props.body.se);
-    console.log(bodyObj);
     const bodyText = bodyObj.ops.reduce((a, val) => a + val.insert, []).slice(0, 250);
 
     return (
