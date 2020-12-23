@@ -27,18 +27,23 @@ export default function CommitteeList() {
         : (
           <div className={classes.CommitteeList}>
             {
-                            Object.keys(committees).map((committeeKey) => (
-                              <Link to={`/${committees[committeeKey].page.slug}`}>
-                                <CommitteeCard
-                                  key={committees[committeeKey].id}
-                                  committeeName={committees[committeeKey].name}
-                                  committeeLogo={committees[committeeKey].logo}
-                                  committeeText={committees[committeeKey].text}
-                                  committeeLink={committees[committeeKey].pageLink}
-                                />
-                              </Link>
-                            ))
-                        }
+                Object.keys(committees).map((committee) => {
+                    console.log(committees[committee].posts[0].weight);
+                    return(
+                        <Link to={`/${committees[committee].page.slug}`}>
+                    
+                        <CommitteeCard
+                            key={committees[committee].id}
+                            committeeName={committees[committee].name}
+                            committeeLogo={committees[committee].logo}
+                            committeeText={committees[committee].text}
+                            committeeLink={committees[committee].pageLink}
+                        />
+                    </Link>
+                    )
+                    
+                })
+            }
           </div>
         )}
     </div>

@@ -28,6 +28,7 @@
     cursor: pointer;
     user-select: none;
     position: relative;
+    height:fit-content;
 }
 
 .album-cell img {
@@ -52,6 +53,7 @@ album-back-btn {
     display: flex;
     justify-content: center;
     align-items: center;
+    background:rgba(0, 0, 0, 0.4);
 }
 
 .album-video-play-icon:hover + img {
