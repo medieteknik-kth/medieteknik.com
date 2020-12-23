@@ -29,7 +29,6 @@ export default function Page() {
   const { user } = useContext(UserContext);
   const { lang } = useContext(LocaleContext);
 
-  console.log(page);
   const canEdit = user !== null && page !== null && (user.currentTerms[0].user.isAdmin || (page.committee !== null && user.committeeId === page.committee.id));
 
   const onBeforeUnload = (event) => {
@@ -169,8 +168,8 @@ export default function Page() {
                     { hasImage ? <div className="pageImageContainer"><img src={newHeader == null ? page.image : newHeader} alt={page.title} className="pageImage" /></div> : <div /> }
                     { page.committee !== null
                       ? (
-                        <div className="committeePageLogoContainer">
-                          <img className={`committeePageLogo${page.committee.name === 'Jubileet' ? ' jubilee' : ''}`} alt={page.committee.name} src={page.committee.logo} />
+                        <div className={`committeePageLogoContainer ${page.committee.name === 'Jubileet' ? ' jubilee' : ''}`}>
+                          <img className="committeePageLogo" alt={page.committee.name} src={page.committee.logo} />
                         </div>
                       )
                       : <span /> }
