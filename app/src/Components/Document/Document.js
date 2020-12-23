@@ -29,7 +29,7 @@ const Document = props => {
     return (
         <>
         {
-            user !== null ?
+            false ?
                 <SwitchButton 
                     text = {viewDocuments ? 
                         translateToString({

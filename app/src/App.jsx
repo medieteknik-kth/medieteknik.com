@@ -72,7 +72,7 @@ export default function App() {
             <Route path="/events/:id">
               <PageWithMainMenu><Event /></PageWithMainMenu>
             </Route>
-            <Route path="/eventList">
+            <Route path="/eventlist">
               <PageWithMainMenu><EventList /></PageWithMainMenu>
             </Route>
             <Route path="/playground">
@@ -90,9 +90,9 @@ export default function App() {
             <Route path="/create-post">
               <PageWithMainMenu><CreatePost /></PageWithMainMenu>
             </Route>
-            <Route path="/create-event">
+            {/* <Route path="/create-event">
               <PageWithMainMenu><CreatePost event /></PageWithMainMenu>
-            </Route>
+            </Route> */}
             <Route path="/user">
               <PageWithMainMenu><Profile /></PageWithMainMenu>
             </Route>

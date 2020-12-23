@@ -12,6 +12,7 @@ from api.models.post_tag import PostTag
 from api.models.user import User
 from api.models.committee import Committee
 from api.resources.authentication import requires_auth
+from api.utility.storage import upload_image
 
 import os
 from werkzeug.utils import secure_filename
@@ -228,7 +229,7 @@ def add_cols(data, post, request):
 
     if IMAGE_COL in request.files:
         image = request.files[IMAGE_COL]
-        post.header_image = save_image(image, IMAGE_PATH)
+        post.header_image = upload_image(image)
     
     if data.get("tags"):
         tags = json.loads(data["tags"])
