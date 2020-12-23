@@ -30,6 +30,7 @@ import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
 import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
+import SearchPage from './Components/SearchPage/SearchPage'
 import AdminTools from './Components/AdminTools/adminTools';
 import FeedbackButton from './Components/FeedbackButton/FeedbackButton';
 
@@ -98,6 +99,9 @@ export default function App() {
             </Route>
             <Route path="/admin">
               <PageWithMainMenu><AdminTools /></PageWithMainMenu>
+            </Route>
+            <Route path="/search">
+              <PageWithMainMenu><SearchPage /></PageWithMainMenu>
             </Route>
             <Route
               path="/:pageSlug"
