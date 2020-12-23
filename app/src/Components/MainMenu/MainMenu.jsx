@@ -161,17 +161,15 @@ const PageWithMainMenu = ({ children, transparent }) => {
           </Link>
         </div>
         <div className={styles.iconContainer}>
-        <div className={`${styles.icon} ${styles.responsiveIcon}`}>
-        <Link
-            to="/search"
-            onClick={() => {
-              setMainMenuExpanded(false);
-            }}
-          >
-          
-            <FontAwesomeIcon icon={faSearch} size="lg" />
-          
-          </Link>
+          <div className={`${styles.icon} ${styles.responsiveIcon}`}>
+            <Link
+              to="/search"
+              onClick={() => {
+                setMainMenuExpanded(false);
+              }}
+            >
+              <FontAwesomeIcon icon={faSearch} size="lg" />
+            </Link>
           </div>
           {loginButton(styles.responsiveIcon)}
           {localeButton(styles.responsiveIcon)}
@@ -189,9 +187,9 @@ const PageWithMainMenu = ({ children, transparent }) => {
         </div>
         <div className={`${styles.buttonsContainer} ${mainMenuExpanded ? styles.menuExpanded : ''}`}>
           {menus.map((menu) => menuFrom(menu))}
-          {/* <div className={styles.icon}>
+          <Link to="/search" className={`${styles.icon}`}>
             <FontAwesomeIcon icon={faSearch} size="lg" />
-          </div> */}
+          </Link>
           {loginButton('')}
           {localeButton('')}
         </div>
