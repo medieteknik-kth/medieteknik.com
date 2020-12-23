@@ -94,6 +94,10 @@
     object-fit: contain;
 }
 
+.committeePageLogoContainer.jubilee {
+    background-color: black;
+}
+
 @media screen and (min-width: 500px) {
     .committeePageLogoContainer {
         margin-top: 0;

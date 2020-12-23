@@ -248,7 +248,7 @@ const CreatePost = ({ event }) => {
                                         lang,
                                     })}
                                     theme="snow"
-                                    onChange={(val) => setEnBody(val)}
+                                    onChange={(_content, _delta, _source, editor) => setEnBody(JSON.stringify(editor.getContents()))}
                                 />
                                 {hasError && checkEmptyQuillBody(enBody) && (
                                     <div className="error-msg">
