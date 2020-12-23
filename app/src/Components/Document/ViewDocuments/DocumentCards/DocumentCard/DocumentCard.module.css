@@ -8,6 +8,7 @@
     transition: all .25s ease-in-out;
     width: 210px;
     margin-top: 5px;
+    margin-bottom: 20px;
     height: 311px;
     overflow: hidden;
 }

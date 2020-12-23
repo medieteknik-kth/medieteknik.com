@@ -20,6 +20,7 @@ import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 import SearchField from '../../Common/SearchField/searchField';
+import DocumentSideMenu from './SideMenu/DocumentSideMenu';
 
 import {
     LocaleContext,
@@ -43,9 +44,16 @@ const ViewDocuments = (props) => {
         const [screenWidth, setScreenWidth] = useState(window.innerWidth)
         const [documentsFromServer, setDocumentsFromServer] = useState([])
         const [categoriesFromServer, setCategoriesFromServer] = useState([])
-        const [isLoading, setIsLoading] = useState(true)
+        const [isLoading, setIsLoading] = useState(true);
 
         const { lang } = useContext(LocaleContext)
+
+        // ---
+        const [showFilter, setShowFilter] = useState(false);
+
+        const closeFilterHandler = () => {
+            setShowFilter(false);
+        }
 
         useEffect(() => {
             window.addEventListener('resize', handleResize);
@@ -129,8 +137,6 @@ const ViewDocuments = (props) => {
     }
 
     const handleSearch = (newSearchString) => {
-        console.log(newSearchString)
-
         if (typeof newSearchString == 'string') {
             let searchVal = newSearchString;
             let filteredString = searchVal.toUpperCase();
@@ -182,10 +188,15 @@ const ViewDocuments = (props) => {
     }
 
     return (
-        <div className={classes.firstFlexContainer}>
-            <div className={classes.main}>
+        <div className={classes.main}>
+            <DocumentSideMenu 
+                handleSearch = {handleSearch}
+                closeFilterHandler = {closeFilterHandler}
+                showFilter = {showFilter}
+            />
+            <div className={classes.documentsContainer}>
                 <div className={classes.headerRow}>
-                    <div className={classes.searchParameters}>
+                    {/* <div className={classes.searchParameters}>
                         <SortBySelector
                             sortByChangedHandler = {sortByChangedHandler}
                             sortValue = {sortValue}
@@ -199,15 +210,8 @@ const ViewDocuments = (props) => {
                             clearCategoriesFilterHandler = {clearCategoriesFilterHandler}
                             addClass = {classes.dropdownFilterStyle}
                             userIsFunkis = {props.userIsFunkis}
-                        />
-                        
-                        <SearchField 
-                            handleSearch = {handleSearch}
-                            swedishPlaceholder = 'Sök efter dokument'
-                            englishPlaceholder = 'Search for document'
-                            colorTheme = 'light'
-                        />
-                    </div>
+                        />                    
+                    </div> */}
 
                     <div className={classes.viewSelected}>
                         {screenWidth >= 900 ? 
@@ -257,7 +261,14 @@ const ViewDocuments = (props) => {
                 {isLoading ? <Spinner /> :
                     (cardsViewSelected ?
                         <DocumentCards 
-                            documents={documentsFromServer}
+                            // documents={[...documentsFromServer, ...documentsFromServer]}
+                            documents={[
+                                documentsFromServer[0], 
+                                documentsFromServer[0], 
+                                documentsFromServer[0],
+                                documentsFromServer[0],
+                                documentsFromServer[0]
+                            ]}
                             categoriesToShow={categoryTagsSelected}
                             zeroCategoriesSelected = {categoriesViewed === 0}
                         />

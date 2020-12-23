@@ -74,7 +74,7 @@ const SideMenu = ({
     
 
     return (
-        <div>
+        <>
             <SideMenuContainer extraClasses = {[classes.sideMenu]}>
                 <SideMenuContent 
                     chosenMediaHandler = {chosenMediaHandler}
@@ -98,7 +98,7 @@ const SideMenu = ({
                     clearMediaTypesHandler = {clearMediaTypesHandler}
                 />
             </SideMenuModalContainer>
-        </div>
+        </>
     )
 }
 

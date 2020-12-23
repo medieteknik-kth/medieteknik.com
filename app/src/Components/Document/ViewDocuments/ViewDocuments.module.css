@@ -7,12 +7,24 @@ h3 {
     margin-left: 0;
 }
 
-
-.headerRow {
+.main {
+    display: flex;
     width: 80%;
     margin: 0 auto;
-    padding-bottom: 30px;
+    justify-content: space-between;
+}
+
+.documentsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+
+
+.headerRow {
+    padding-bottom: 15px;
     height: 45px;
+    width: 100%;
 }
 
 
@@ -24,15 +36,8 @@ h3 {
     padding: 10px 0px;
 }
 
-.firstFlexContainer {
-    display: flex;
-    font-family: sans-serif;
-    clear: both;
-}
 
-.main {
-    flex: 91%;
-}
+
 
 .categoriesList {
     padding: 10px 20px;
