@@ -28,10 +28,6 @@ $br: 0px;
     margin: 0 10px 20px;
 }
 
-.feed-card-container-all:hover {
-    // opacity: 0.8;
-}
-
 .feed-card-container-all:hover .feed-card {
     background-color: rgb(247, 247, 247);
 }
@@ -42,6 +38,7 @@ $br: 0px;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.16);
     width: 400px;
+    transition: background-color 0.15s ease-in-out;
 
     @media (max-width: 800px) {
         align-self: stretch;
