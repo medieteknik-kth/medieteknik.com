@@ -2,14 +2,14 @@ export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api
 
 function GetApiObject(resource) {
   return {
-    GetAll(token = window.localStorage.getItem('user_token')) {
+    GetAll(token = window.localStorage.getItem('googleToken')) {
       return fetch(API_BASE_URL + resource, {
         headers: {
           token,
         },
       }).then((response) => response.json());
     },
-    GetById(id, token = window.localStorage.getItem('user_token')) {
+    GetById(id, token = window.localStorage.getItem('googleToken')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         headers: {
           token,
@@ -21,7 +21,7 @@ function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    GetWithParameters(parameters, token = window.localStorage.getItem('user_token')) {
+    GetWithParameters(parameters, token = window.localStorage.getItem('googleToken')) {
       return fetch(`${API_BASE_URL}${resource}?${Object.entries(parameters).map(([key, val]) => `${key}=${val}`).join('&')}`, {
         headers: {
           token,
@@ -33,7 +33,7 @@ function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    Update(id, data, token = window.localStorage.getItem('user_token'), asJson = true) {
+    Update(id, data, token = window.localStorage.getItem('googleToken'), asJson = true) {
       return asJson ? fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
@@ -49,7 +49,7 @@ function GetApiObject(resource) {
         body: data
       });
     },
-    Create(data, token = window.localStorage.getItem('user_token')) {
+    Create(data, token = window.localStorage.getItem('googleToken')) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -59,7 +59,7 @@ function GetApiObject(resource) {
         body: JSON.stringify(data),
       });
     },
-    PostForm(data, token = window.localStorage.getItem('user_token')) {
+    PostForm(data, token = window.localStorage.getItem('googleToken')) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -98,4 +98,6 @@ export default {
   Images: GetImage,
   CommitteePosts: (id) => GetApiObject(`committees/${id}/posts`),
   Albums: GetApiObject('albums'),
+  Videos: GetApiObject('video'),
+  Playlists: GetApiObject('video_playlist'),
 };

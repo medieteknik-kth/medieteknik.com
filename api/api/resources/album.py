@@ -10,7 +10,8 @@ from api.resources.authentication import requires_auth
 from datetime import datetime
 ISO_DATE_DEF = "%Y-%m-%dT%H:%M:%S.%fZ"
 class AlbumListResource(Resource):
-    def post(self):
+    @requires_auth
+    def post(self, user):
         data = request.form
 
         album_name = data.get("name")
@@ -67,7 +68,7 @@ class AlbumResource(Resource):
         return jsonify(album.to_dict())
     
     @requires_auth
-    def put(self, id):
+    def put(self, id, user):
         album = Album.query.get_or_404(id)
         keys = request.form.keys()
 
@@ -92,7 +93,7 @@ class AlbumResource(Resource):
         return jsonify({"message": "ok"})
 
     @requires_auth
-    def delete(self, id):
+    def delete(self, id, user):
         album = Album.query.get_or_404(id)
         db.session.delete(album)
         db.session.commit()

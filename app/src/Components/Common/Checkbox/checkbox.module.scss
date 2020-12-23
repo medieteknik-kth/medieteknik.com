@@ -1,27 +1,25 @@
-$borderRadius: 2px;
+$borderRadius: 1px;
+
+.darkStyling:not(:first-child), .lightStyling:not(:first-child) {
+    margin-top: 10px;
+}
 
 .darkStyling, .lightStyling {
-    display: block;
     position: relative;
-    padding-left: 23px;
-    margin-bottom: 10px;
     cursor: pointer;
-    font-size: 15px;
     user-select: none;
     align-items: center;
     border-radius: $borderRadius;
+    align-items: center;
+}
+
+.darkStyling:hover .text, .lightStyling:hover .text {
+    font-weight: 400;
 }
 
 .darkStyling input, .lightStyling input {
-    padding-left: 100px;
-    position: absolute;
     opacity: 0;
     cursor: pointer;
-    height: 0;
-    width: 0;
-    text-decoration: none;
-    display: block;
-    border-radius: $borderRadius;
 }
 
 .darkStyling:hover input ~ .checkmark, .lightStyling:hover input ~ .checkmark {
@@ -44,11 +42,11 @@ $borderRadius: 2px;
 .darkStyling .checkmark:after, .lightStyling .checkmark:after {
     position: absolute;
     left: 5px;
-    top: 0px;
+    top: 1px;
     width: 4px;
-    height: 10px;
+    height: 9px;
     border: solid white;
-    border-width: 0 2px 2px 0;
+    border-width: 0 3px 3px 0;
     transform: rotate(45deg);
 }
 
@@ -56,16 +54,20 @@ $borderRadius: 2px;
     position: absolute;
     top: 0;
     left: 0;
-    height: 16px;
-    width: 16px;
+    height: 17px;
+    width: 17px;
     background-color: #eee;
     margin-top: 0px;
     border-radius: $borderRadius;
-    border:1px solid #b7b6b6;
+    margin-right: 20px;
 }
 
 .checkmark:after {
     content: "";
     position: absolute;
     display: none;
+}
+
+.text {
+    margin-left: 15px;
 }

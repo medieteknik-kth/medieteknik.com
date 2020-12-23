@@ -8,6 +8,9 @@
     "@fortawesome/free-solid-svg-icons": "5.11.2",
     "@fortawesome/react-fontawesome": "0.1.7",
     "@react-pdf/renderer": "^1.6.8",
+    "@use-it/event-listener": "^0.1.6",
+    "aos": "^2.3.4",
+    "hls.js": "^0.14.17",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",
     "pdfjs-dist": "^2.3.200",
@@ -15,6 +18,7 @@
     "react-autosuggest": "^10.0.0",
     "react-date-picker": "^8.0.1",
     "react-dom": "^16.9.0",
+    "react-google-login": "^5.1.25",
     "react-id-swiper": "^3.0.0",
     "react-modal": "^3.11.2",
     "react-pdf": "^4.1.0",
@@ -23,7 +27,9 @@
     "react-scripts": "^3.4.1",
     "react-select": "^3.1.0",
     "react-time-picker": "^4.0.1",
-    "swiper": "^5.4.1"
+    "smoothscroll-polyfill": "^0.4.4",
+    "swiper": "^5.4.1",
+    "video.js": "^7.10.2"
   },
   "scripts": {
     "start": "react-scripts start",

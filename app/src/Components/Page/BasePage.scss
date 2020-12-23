@@ -1,3 +1,7 @@
+.base-page.editorIsEditing .ql-toolbar.ql-snow {
+    display: block;
+}
+
 .base-page {
     .ql-editor {
         padding-bottom: 0 !important;
@@ -17,15 +21,24 @@
         display: none;
     }
 
-    .editorIsEditing > .ql-toolbar.ql-snow {
-        display: block;
-    }
-
     .ql-editor p {
         margin-top: 1em !important;
         margin-bottom: 1em !important;
-        margin-left: 15px !important;
-        margin-right: 15px !important;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+
+    .ql-editor a {
+        transition: border 0.2s ease-in-out;
+        border-bottom: solid 0px #f0c900;
+        font-family: Roboto, sans-serif;
+        font-weight: 500;
+        color: black !important;
+        text-decoration: none;
+    }
+    
+    .ql-editor a:hover {
+        border-bottom: solid 3px #f0c900;
     }
 
     .ql-editor h1 {

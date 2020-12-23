@@ -1,4 +1,5 @@
 .footer {
+    position: relative;
     display: flex;
     background-color: #2d2d2d;
     color: #fff;
@@ -9,8 +10,9 @@
 
 .footer-cont {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     column-gap: 8em;
+    margin-bottom: 40px;
 }
 
 .footer-cell {
@@ -47,6 +49,15 @@
 
 .footer-icon:hover {
     color: #f0c900;
+}
+
+.footer > p.copyright {
+    position: absolute;
+    bottom: 20px;
+    font-family: Roboto, sans-serif;
+    font-size: 10px;
+    font-style: italic;
+    padding: 2em;
 }
 
 @media (max-width: 1500px) {

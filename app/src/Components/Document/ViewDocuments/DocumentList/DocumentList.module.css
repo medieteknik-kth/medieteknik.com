@@ -18,7 +18,7 @@
     width: 100%;
 }
 
-.DocumentList tr td{
+.DocumentList tr td {
     border-bottom: 5px solid #f0f0f0;
     border-top: 5px solid #f0f0f0;
     border-left: 0;
@@ -46,5 +46,5 @@
 
 .DocumentList td a { 
     display: block; 
-    padding: 15px; 
+    padding: 7px 15px; 
  }

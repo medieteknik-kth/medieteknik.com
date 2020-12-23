@@ -28,9 +28,11 @@ import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
 import CreatePost from './Components/CreatePost/CreatePost';
 import Profile from './Components/Profile/profile';
-import AlbumUpload from './Components/Gallery/AlbumUpload';
+import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
 import SearchPage from './Components/SearchPage/SearchPage'
+import AdminTools from './Components/AdminTools/adminTools';
+import FeedbackButton from './Components/FeedbackButton/FeedbackButton';
 
 export default function App() {
   return (
@@ -39,7 +41,7 @@ export default function App() {
         <UserProvider>
           <Switch>
             <Route exact path="/">
-              <PageWithMainMenu><LandingPage /></PageWithMainMenu>
+              <PageWithMainMenu transparent><LandingPage /></PageWithMainMenu>
             </Route>
             <Route exact path="/login">
               <PageWithMainMenu><Login /></PageWithMainMenu>
@@ -71,13 +73,13 @@ export default function App() {
             <Route path="/events/:id">
               <PageWithMainMenu><Event /></PageWithMainMenu>
             </Route>
-            <Route path="/eventList">
+            <Route path="/eventlist">
               <PageWithMainMenu><EventList /></PageWithMainMenu>
             </Route>
             <Route path="/playground">
               <PageWithMainMenu><Playground /></PageWithMainMenu>
             </Route>
-            <Route path="/gallery">
+            <Route path="/media-gallery">
               <PageWithMainMenu><Gallery /></PageWithMainMenu>
             </Route>
             <Route path="/albumupload">
@@ -89,14 +91,14 @@ export default function App() {
             <Route path="/create-post">
               <PageWithMainMenu><CreatePost /></PageWithMainMenu>
             </Route>
-            <Route path="/create-event">
+            {/* <Route path="/create-event">
               <PageWithMainMenu><CreatePost event /></PageWithMainMenu>
-            </Route>
+            </Route> */}
             <Route path="/user">
               <PageWithMainMenu><Profile /></PageWithMainMenu>
             </Route>
-            <Route path="/managecommittee/:id">
-              <PageWithMainMenu><ManageCommittee /></PageWithMainMenu>
+            <Route path="/admin">
+              <PageWithMainMenu><AdminTools /></PageWithMainMenu>
             </Route>
             <Route path="/search">
               <PageWithMainMenu><SearchPage /></PageWithMainMenu>
@@ -106,6 +108,7 @@ export default function App() {
               render={(props) => <PageWithMainMenu><Page key={props.location.pathname} /></PageWithMainMenu>}
             />
           </Switch>
+          <FeedbackButton />
           <Footer />
         </UserProvider>
       </LocaleProvider>

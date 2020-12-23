@@ -1,36 +1,37 @@
 .profile-card {
     display: flex;
-    height: 150px;
+    height: 80px;
 }
 
 .profile-card::before {
     content: " ";
     display: block;
     float: left;
-    height: 100%;
+    height: 80px;
     border-left: 10px solid #f0c900;
 }
 
 .profile-card img {
-    height: inherit;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
 }
 
 .profile-details {
     text-transform: uppercase;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
 }
 
 .profile-details .profile-name {
     font-weight: normal;
+    font-size: 20px;
 }
 
 .profile-details .profile-title {
     color: #b7b6b6;
     font-weight: normal;
-}
-
-@media (max-width: 850px) {
-    .profile-card {
-        height: 75px;
-    }
+    font-size: 14px;
 }

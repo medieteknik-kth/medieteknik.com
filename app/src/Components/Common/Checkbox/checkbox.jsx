@@ -5,12 +5,13 @@ import classes from './checkbox.module.scss';
 const Checkbox = ({name, isChecked, checkboxHandler, colorTheme}) => {
     let searchClass;
 
+
     if (colorTheme == 'dark') {
         searchClass = classes.darkStyling;
     } else if (colorTheme == 'light') {
         searchClass = classes.lightStyling;
     }
-    // console.log()
+
     return (
         <label 
             className = {searchClass} 
@@ -24,7 +25,7 @@ const Checkbox = ({name, isChecked, checkboxHandler, colorTheme}) => {
             />
 
             <span className={classes.checkmark}></span>
-            {name}
+            <span className={classes.text}>{name}</span>
             <br />
         </label>
     )

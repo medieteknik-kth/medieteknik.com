@@ -1,6 +1,6 @@
 @import '../../Common/Variables.scss';
 
-$br: 7px;
+$br: 0px;
 
 .feed-card-pre {
     padding: 0 1em;
@@ -23,9 +23,27 @@ $br: 7px;
     }
 }
 
+.feed-card-container-all {
+    cursor: pointer;
+    margin: 0 10px 20px;
+}
+
+.feed-card-container-all:hover .feed-card {
+    background-color: rgb(247, 247, 247);
+}
+
 .feed-card {
     background-color: #fff;
     border-radius: $br;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.16);
+    width: 400px;
+    transition: background-color 0.15s ease-in-out;
+
+    @media (max-width: 800px) {
+        align-self: stretch;
+        width: 100%;
+    }
 
     .feed-card-img {
         min-width: 100%;
@@ -81,14 +99,6 @@ $br: 7px;
 }
 
 @media (max-width: 800px) {
-
-    .feed-card-pre {
-        padding: 0 1.8em;
-    }
-    
-    .feed-card-container {
-        padding: 0 1.5em;
-    }
 
     .feed-card-text p {
         font-size: 10pt;

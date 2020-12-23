@@ -24,12 +24,40 @@
 
 .album-cell {
     margin: 1rem;
+    margin-top: 0.5rem;
     cursor: pointer;
     user-select: none;
+    position: relative;
+    height:fit-content;
 }
 
 .album-cell img {
     display: block;
+    max-height: 226px;
+}
+
+.album-cell:hover {
+    opacity: 0.75;
+}
+
+album-back-btn {
+    background-color: red;
+}
+
+
+.album-video-play-icon {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:rgba(0, 0, 0, 0.4);
+}
+
+.album-video-play-icon:hover + img {
+    opacity: 0.75;
 }
 
 @media screen and (min-width: 600px){

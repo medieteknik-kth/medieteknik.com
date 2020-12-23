@@ -10,7 +10,8 @@ from api.resources.authentication import requires_auth
 TOKEN_ID = os.getenv("MUX_TOKEN_ID")
 SECRET = os.getenv("MUX_SECRET")
 class VideoListResource(Resource):
-    def post(self):
+    @requires_auth
+    def post(self, user):
         video_title = request.form.get("title")
 
         if not video_title:
@@ -76,7 +77,8 @@ class VideoResource(Resource):
         # html = """<video id="myVideo" controls></video><script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script><script>(function(){var playbackId="%s"; var url="https://stream.mux.com/"+playbackId+".m3u8"; var video=document.getElementById("myVideo"); if (video.canPlayType('application/vnd.apple.mpegurl')){video.src=url;}else if (Hls.isSupported()){hls=new Hls(); hls.loadSource(url); hls.attachMedia(video);}})();</script>"""
         # return make_response(html % (playback_id))
     
-    def delete(self, id):
+    @requires_auth
+    def delete(self, id, user):
         video = Video.query.get_or_404(id)
         url = "https://api.mux.com/video/v1/assets/" + video.mux_asset_id
         r = requests.delete(url, auth=(TOKEN_ID, SECRET))
@@ -89,7 +91,8 @@ class VideoResource(Resource):
 
         return make_response(jsonify(success=True))
     
-    def put(self, id):
+    @requires_auth
+    def put(self, id, user):
         video = Video.query.get_or_404(id)
 
         new_video_title = request.form.get("title")

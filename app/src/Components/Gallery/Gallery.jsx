@@ -1,35 +1,69 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import './Gallery.css';
-import AlbumPreview from './AlbumPreview/AlbumPreview';
-import { LocaleText } from '../../Contexts/LocaleContext';
+import React, { useEffect, useState, useContext } from 'react';
+import classes from './Gallery.module.scss';
 
-import Api from '../../Utility/Api';
+import {
+    LocaleContext,
+    translateToString,
+} from '../../Contexts/LocaleContext';
 
+import { UserContext } from '../../Contexts/UserContext';
+
+import SwitchButton from '../Common/Buttons/RoundedTextButton/RoundedTextButton';
+import AlbumUpload from './AlbumUpload/AlbumUpload';
+import ViewGallery from './ViewGallery/ViewGallery';
 
 const Gallery = () => {
-  const [albums, setAlbums] = useState(null);
+    
+    const [viewGallery, setViewGallery] = useState(true);
+    const { lang } = useContext(LocaleContext);
+    const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    Api.Albums.GetAll().then((albums) => {
-        setAlbums(albums);
-    });
-  }, []);
 
-  return (
-    (albums == null ? <div />
-      : (
-        <div>
-          <div className="gallery-header">
+    return (
+        <div className={classes.Gallery}>
+        { user !== null ?
+            <SwitchButton 
+                onClick={() => {
+                    setViewGallery(!viewGallery);
+                }}
+                extraClass={classes.switchButton}
+                text = {
+                    viewGallery ? 
+                        translateToString({
+                            se: 'Ladda upp +',
+                            en: 'Upload +',
+                            lang,
+                        }) 
+                    : 
+                        translateToString({
+                            se: 'Bläddra',
+                            en: 'Browse',
+                            lang,
+                        })
+                }
+            />
+        : <span /> }
+
             <h2>
-              <LocaleText phrase="gallery/gallery_header" />
+                {
+                    viewGallery ?
+                        translateToString({
+                            se: 'Mediagalleri',
+                            en: 'Media Gallery',
+                            lang,
+                        }) 
+                    : 
+                        translateToString({
+                            se: 'Ladda upp bilder & filmer',
+                            en: 'Upload images & videos',
+                            lang,
+                        })
+                }
             </h2>
-          </div>
-          <div className="gallery-content">
-            {albums.map((album, index) => <AlbumPreview key={index} title={album.title} images={album.images} />)}
-          </div>
+            
+            {viewGallery ? <ViewGallery /> : <AlbumUpload />}
         </div>
-      ))
-  );
+    )
 };
 
 export default Gallery;

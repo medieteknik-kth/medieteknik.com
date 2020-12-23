@@ -35,6 +35,10 @@
         "officials": {
             "se": "Funktionärer",
             "en": "Officials"
+        },
+        "back": {
+            "se": "Tillbaka",
+            "en": "Back"
         }
     },
     "form": {
@@ -63,6 +67,28 @@
             "en": "Document upload"
         }
     },
+    "login": {
+        "header": {
+            "se": "Logga in",
+            "en": "Log in"
+        },
+        "disabled": {
+            "se": "Inte tillgänglig",
+            "en": "Not avaliable"
+        },
+        "kth-disabled-message": {
+            "se": "Tyvärr är inlogg med KTH inte tillgänglig just nu. Är du funktionär kan du logga in med ditt funktionärskonto för att redigera din nämnd.",
+            "en": "Unfortunately, it is not possible to login with KTH right now. If you are an official, you can login with your officials email to edit your committee."
+        },
+        "logged-in": {
+            "se": "Inloggad",
+            "en": "Logged in"
+        },
+        "logout": {
+            "se": "Logga ut",
+            "en": "Log out"
+        }
+    },
     "landing": {
         "welcome": {
             "se": "Välkommen till",
@@ -79,6 +105,26 @@
         "the_program": {
             "se": "Utbildningen",
             "en": "The Program"
+        },
+        "read_more": {
+            "se": "Läs mer",
+            "en": "Read more"
+        },
+        "show_more": {
+            "se": "Visa mer",
+            "en": "Show more"
+        },
+        "on_instagram": {
+            "se": "Medieteknik på Instagram",
+            "en": "Media Technnology on Instagram"
+        },
+        "about_chapter": {
+            "se": "Sektionen för Medieteknik finns till för studenter vid medieteknikprogrammet på KTH. Dess främsta syfte är att uppfylla studenternas behov under studietiden, påverka vår utbildning, se till att finnas för dig som student och sedan minska tröskeln ut i arbetslivet.",
+            "en": "The Chapter for Media Technology is for students at the media technology program at KTH. Its purpose is to satisfy the needs of the students during their time at KTH, practice student influnce, make sure to be there for you as a student and make it easier to find work afterwards."
+        },
+        "about_education": {
+            "se": "Civilingenjörsutbildningen inom Medieteknik på KTH passar dig som på kreativa sätt vill utforma teknik för mänsklig kommunikation. Efter utbildningen kan du driva utveckling inom allt från film och spelupplevelser till nyhetsindustrin och framtidens sociala medier.",
+            "en": "The Master of Science in Engineering in Media Technology at KTH is suits you you wants to creativly build technology for human communication. After the education, you can develop everything from movie and video game experiences to news and the future of social media."
         }
     },
     "committee": {
@@ -95,6 +141,10 @@
                 "se": "Lägg till medlem",
                 "en": "Add member"
             }
+        },
+        "back-to-all": {
+            "se": "Alla nämnder",
+            "en": "All committees"
         }
     },
     "feed": {
@@ -105,6 +155,10 @@
         "tags": {
             "se": "Taggar",
             "en": "Tags"
+        },
+        "published": {
+            "se": "Publicerad",
+            "en": "Published"
         },
         "post": {
             "go_back": {
@@ -245,7 +299,11 @@
         "follow": {
             "se": "Följ Medieteknik",
             "en": "Follow Media Technology"
-        }       
+        },
+        "copyright": {
+            "se": "Skapad av och för Sektionen för Medieteknik.",
+            "en": "Created by and for the Chapter for Media Technology."
+        }
     },
     "page": {
         "could_not_save": {
@@ -259,6 +317,10 @@
         "page_not_found": {
             "se": "Kunde inte hitta sida",
             "en": "Could not find page"
+        },
+        "create-page": {
+            "se": "Skapa sidan",
+            "en": "Create page"
         }
     },
     "error": {

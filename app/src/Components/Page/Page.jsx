@@ -9,11 +9,12 @@ import BasePage from './BasePage';
 import Api from '../../Utility/Api';
 import NotFound from '../NotFound/NotFound';
 import { UserContext } from '../../Contexts/UserContext';
-import { LocaleContext } from '../../Contexts/LocaleContext';
+import { LocaleContext, translate, translateToString } from '../../Contexts/LocaleContext';
 import Spinner from '../Common/Spinner/Spinner';
 
 import './Page.css';
 import CommitteeMemberList from '../Committee/CommitteeMemberList/CommitteeMemberList';
+import Article from '../Common/Article/Article';
 
 export default function Page() {
   const { pageSlug } = useParams();
@@ -28,7 +29,7 @@ export default function Page() {
   const { user } = useContext(UserContext);
   const { lang } = useContext(LocaleContext);
 
-  const canEdit = user !== null && page !== null !== null && (user.isAdmin || (page.committee && user.committeePostTerms.include((term) => term.post.committeeId === page.committee.id)));
+  const canEdit = user !== null && page !== null && (user.currentTerms[0].user.isAdmin || (page.committee !== null && user.committeeId === page.committee.id));
 
   const onBeforeUnload = (event) => {
     if (isEditing) {
@@ -55,8 +56,6 @@ export default function Page() {
     };
   }, [isEditing]);
 
-  const noContent = (notFound ? <div className="pageContent"><NotFound /></div> : <div />);
-
   const onChange = (newContent) => {
     setContent(newContent);
   };
@@ -66,6 +65,8 @@ export default function Page() {
       setIsLoading(true);
       const dataToSend = {
         published: true,
+        title_sv: page.title_sv,
+        title_en: page.title_en,
       };
 
       if (content != null) {
@@ -139,19 +140,15 @@ export default function Page() {
       { isLoading ? <div style={{ marginTop: '150px' }}><Spinner /></div>
         : (
           <div>
-            { page !== null && canEdit
-              ? (
-                <button type="button" className="pageEditButton" onClick={didPressEditButton}>
-                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
-                </button>
-              )
-              : <div />}
-            { page !== null && page.committee !== null && !hasImage ? <div style={{ marginTop: '200px' }} /> : <div />}
-            <div className="pageContainer">
-              { page !== null
-                ? (
+            { page !== null ? (
+              <div>
+                <Article
+                  title={translate({ se: page.title_sv, en: page.title_en })}
+                  linkPath={page.committee !== null ? '/committees' : undefined}
+                  backLabelPhrase={page.committee !== null ? 'committee/back-to-all' : undefined}
+                >
                   <div>
-                    {isEditing
+                    {/* {isEditing
                       ? (
                         <div>
                           <input id="imageHeaderUpload" type="file" onChange={didSelectNewImage} />
@@ -167,27 +164,34 @@ export default function Page() {
                             : <div />}
                         </div>
                       )
-                      : <span /> }
-                    { hasImage ? <img src={newHeader == null ? page.image : newHeader} alt={page.title} className="pageImage" /> : <div /> }
+                      : <span /> } */}
+                    { hasImage ? <div className="pageImageContainer"><img src={newHeader == null ? page.image : newHeader} alt={page.title} className="pageImage" /></div> : <div /> }
                     { page.committee !== null
                       ? (
-                        <div className="committeePageLogoContainer">
+                        <div className={`committeePageLogoContainer ${page.committee.name === 'Jubileet' ? ' jubilee' : ''}`}>
                           <img className="committeePageLogo" alt={page.committee.name} src={page.committee.logo} />
                         </div>
                       )
                       : <span /> }
-                    <div className="pageContent">
-                      <BasePage
-                        initialContent={page !== null ? JSON.parse(lang === 'se' ? page.content_sv : page.content_en) : ''}
-                        isEditing={isEditing}
-                        onChange={onChange}
-                      />
-                      { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={isEditing} /> : <span /> }
-                    </div>
+                    <BasePage
+                      initialContent={page !== null ? JSON.parse(translateToString({ se: page.content_sv, en: page.content_en, lang })) : ''}
+                      isEditing={isEditing}
+                      onChange={onChange}
+                    />
+                    { page.committee !== null ? <CommitteeMemberList committee={page.committee} posts={page.committee.posts} isEditing={false} /> : <span /> }
                   </div>
-                )
-                : noContent}
-            </div>
+                </Article>
+              </div>
+            ) : <NotFound />}
+            { page !== null && canEdit
+              ? (
+                <button type="button" className="pageEditButton" onClick={didPressEditButton}>
+                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} color="black" size="lg" />
+                </button>
+              )
+              : <div />}
+            { page !== null && page.committee !== null && !hasImage ? <div style={{ marginTop: '200px' }} /> : <div />}
+
           </div>
         )}
     </div>

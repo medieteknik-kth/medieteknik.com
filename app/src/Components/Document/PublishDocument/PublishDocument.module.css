@@ -4,9 +4,7 @@
     clear: both;
     border-radius: 5px;
     font-family: sans-serif;
-    /* background-color: gray; */
 }
-
 
 
 .Publish p {
@@ -117,6 +115,14 @@
 
 .leftFormContainer {
     width: 300px;
+}
+
+.leftFormContainer div {
+    margin-left: 0;
+}
+
+.leftFormContainer p {
+    margin-left: 19px;
 }
 
 .rightFormContainer {

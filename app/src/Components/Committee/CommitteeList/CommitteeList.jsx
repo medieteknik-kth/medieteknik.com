@@ -13,12 +13,28 @@ export default function CommitteeList() {
   const [committees, setCommittees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    Api.Committees.GetAll().then((data) => {
-      setCommittees(data.filter((committee) => committee.page !== null));
-    });
-    setIsLoading(false);
-  }, []);
+    
+    useEffect(() => {
+        Api.Committees.GetAll().then((data) => {
+            setIsLoading(false);
+
+            let tempCommittees = data.filter(committee => committee.page !== null);
+            tempCommittees.sort((firstCommittee, secondCommittee) => {
+                let firstCommitteeWeight = firstCommittee.posts[0].weight;
+                let secondCommitteeWeight = secondCommittee.posts[0].weight;
+                
+                if (firstCommitteeWeight < secondCommitteeWeight) {
+                    return -1;
+                } else if (firstCommitteeWeight > secondCommitteeWeight) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+
+            setCommittees(tempCommittees);
+        });
+    }, []);
 
   return (
     <div className={classes.committeeContainer}>
@@ -27,18 +43,22 @@ export default function CommitteeList() {
         : (
           <div className={classes.CommitteeList}>
             {
-                            Object.keys(committees).map((committeeKey) => (
-                              <Link to={`/${committees[committeeKey].page.slug}`}>
-                                <CommitteeCard
-                                  key={committees[committeeKey].id}
-                                  committeeName={committees[committeeKey].name}
-                                  committeeLogo={committees[committeeKey].logo}
-                                  committeeText={committees[committeeKey].text}
-                                  committeeLink={committees[committeeKey].pageLink}
-                                />
-                              </Link>
-                            ))
-                        }
+                Object.keys(committees).map((committee) => {
+                    return(
+                        <Link to={`/${committees[committee].page.slug}`}>
+                    
+                        <CommitteeCard
+                            key={committees[committee].id}
+                            committeeName={committees[committee].name}
+                            committeeLogo={committees[committee].logo}
+                            committeeText={committees[committee].text}
+                            committeeLink={committees[committee].pageLink}
+                        />
+                    </Link>
+                    )
+                    
+                })
+            }
           </div>
         )}
     </div>

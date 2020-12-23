@@ -77,13 +77,13 @@ const CreatePost = ({ event }) => {
     }
 
     const combineDateAndTime = (date, time) => {
-        const timeString = time.getHours() + ':' + time.getMinutes() + ':00'
+        const timeString = time.toTimeString().slice(0,8);
 
         var year = date.getFullYear()
         var month = date.getMonth() + 1 // Jan is 0, dec is 11
         var day = date.getDate()
         var dateString = '' + year + '-' + month + '-' + day
-        var combined = new Date(dateString + ' ' + timeString)
+        var combined = new Date(dateString + 'T' + timeString)
 
         return combined
     }
@@ -93,6 +93,7 @@ const CreatePost = ({ event }) => {
             triggerError()
             return
         }
+        
         var postData = {
             body,
             body_en: useEn ? enBody : body,
@@ -226,7 +227,7 @@ const CreatePost = ({ event }) => {
                                 lang,
                             })}
                             theme="snow"
-                            onChange={(val) => setBody(val)}
+                            onChange={(_content, _delta, _source, editor) => setBody(JSON.stringify(editor.getContents()))}
                         />
                         {hasError && checkEmptyQuillBody(body) && (
                             <div className="error-msg">
@@ -247,7 +248,7 @@ const CreatePost = ({ event }) => {
                                         lang,
                                     })}
                                     theme="snow"
-                                    onChange={(val) => setEnBody(val)}
+                                    onChange={(_content, _delta, _source, editor) => setEnBody(JSON.stringify(editor.getContents()))}
                                 />
                                 {hasError && checkEmptyQuillBody(enBody) && (
                                     <div className="error-msg">

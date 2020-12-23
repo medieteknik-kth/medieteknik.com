@@ -1,0 +1,77 @@
+.SideMenuContainer {
+    box-sizing: border-box;
+    background-color: #fff;
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    position: absolute;
+    z-index: 10001;
+    top: 50%;
+    bottom: 50%;
+    left: 50%;
+    right: 50%;
+    transform: translateX(-500%);
+    transition: .35s;
+}
+
+.backdrop {
+    position:fixed;
+    padding:0;
+    margin:0;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background:rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    backdrop-filter: blur(3px);
+    display: none;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.backdrop:hover {
+    backdrop-filter: blur(1px);
+    background:rgba(0, 0, 0, 0.8);
+}
+
+.showMenu {
+    transform: translateX(0%);
+    display: flex;
+}
+
+
+.SideMenuContainer ul {
+    list-style: none;
+}
+
+.SideMenuContainer li:not(:first-child) {
+    padding-top: 7px;
+}
+
+.SideMenuContainer li {
+    display: flex;
+    align-items: center;
+}
+
+.SideMenuContainer li img {
+    height: 20px;
+    padding-right: 10px;
+}
+
+.SideMenuContainer h4 {
+    padding-top: 25px;
+}
+
+
+.scrollableList li {
+    color: #232323;
+    font-weight: 300;
+}
+
+.SideMenuContainer li:hover {
+    cursor: pointer;
+    font-weight: 400;
+}
+

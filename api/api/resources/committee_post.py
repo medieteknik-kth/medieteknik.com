@@ -4,19 +4,22 @@ from api.db import db
 
 from api.models.committee_post import CommitteePost
 
+from api.resources.authentication import requires_auth
 
 class CommitteePostResource(Resource):
     def get(self, id):
         committee_post = CommitteePost.query.get(id)
         return jsonify(committee_post.to_dict())
 
-    def delete(self, id):
+    @requires_auth
+    def delete(self, id, user):
         post = CommitteePost.query.filter_by(id=id).first_or_404()
         db.session.delete(post)
         db.session.commit()
         return jsonify({"message": "ok"})
 
-    def put(self, id):
+    @requires_auth
+    def put(self, id, user):
         post = CommitteePost.query.filter_by(id=id).first_or_404()
         keys = request.form.keys()
 

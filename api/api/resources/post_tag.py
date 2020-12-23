@@ -4,6 +4,8 @@ from flask_restful import Resource
 from api.db import db
 from api.models.post_tag import PostTag
 
+from api.resources.authentication import requires_auth
+
 class PostTagResource(Resource):
     def get(self, id):
         """
@@ -24,7 +26,8 @@ class PostTagResource(Resource):
         return jsonify(tag.to_dict())
 
 
-    def put(self, id):
+    @requires_auth
+    def put(self, id, user):
         """
         Edits a post tag.
         ---

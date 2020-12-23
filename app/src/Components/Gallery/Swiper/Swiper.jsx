@@ -1,58 +1,73 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import 'swiper/css/swiper.min.css'
 import './Swiper.css'
-import ReactIdSwiperCustom from 'react-id-swiper/lib/ReactIdSwiper.custom';
-import { Swiper, Navigation } from 'swiper/js/swiper.esm';
-import useWindowDimensions from '../../../Hooks/useWindowDimensions'
-import AlbumModal from '../AlbumModal/AlbumModal';
- 
-const CustomBuildSwiper = (props) => {
-    
-    const [modalOpen, setModalOpen] = useState(false);
-    const [currentImage, setCurrentImage] = useState(null);
+import '../Album/Album.css';
 
+import ReactIdSwiperCustom from 'react-id-swiper/lib/ReactIdSwiper.custom';
+import { Swiper, Navigation, Pagination } from 'swiper/js/swiper.esm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPlayCircle,
+} from '@fortawesome/free-solid-svg-icons';
+
+const CustomBuildSwiper = ({albumId, images, videos, viewImage, viewVideo}) => {
     const params = {
         Swiper,
-        modules: [Navigation],
+        modules: [Navigation, Pagination],
         slidesPerView: 'auto',
-        spaceBetween: 30,
-            navigation: {
+        spaceBetween: 20,
+        navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
         },
+        pagination: {},
     }
+    
 
-    const viewImage = (image) => {
-        setCurrentImage(image)
-        setModalOpen(true)
-    }
- 
     return(
         <>
-            { currentImage ? 
-                <AlbumModal 
-                    image={currentImage.src} 
-                    title={currentImage.title}
-                    date={currentImage.date}
-                    photographer={currentImage.photographer}
-                    modalOpen={modalOpen} 
-                    setModalOpen={setModalOpen} /> 
-                : <></>
-            }
             <ReactIdSwiperCustom {...params} >
-                {  
-                    props.images.map((image, key) => 
-                        <div key={key} className='swiper-slide no-select'>
-                            <img 
-                                src={image.url} 
-                                alt='#' 
-                                className='img-fluid'  
-                                onClick={() => viewImage({src: image.url, title: props.title, date: new Date(image.date), photographer: image.photographer })} />
-                        </div>)
+                {videos !== undefined ? 
+                    videos.map((video, key) => (
+                        <div 
+                            key={video.id} 
+                            className="swiper-slide no-select"
+                            onClick={() => viewVideo(key, albumId)}
+                        >
+                            <div className="album-video-play-icon" style={{"height":"200px"}}>
+                                <FontAwesomeIcon 
+                                    icon={faPlayCircle} 
+                                    color="#f0c900" 
+                                    size="4x" 
+                                />
+                            </div>
+                            <img
+                                src={video.thumbnail}
+                                alt="#"
+                                className="img-fluid"
+                            />
+                        </div>
+                    ))  : null
+                }
+
+                {images !== undefined && images !== null ? 
+                    images.map((image, key) => {
+                        return (
+                            <div key={key} className='swiper-slide no-select'>
+                                <img 
+                                    src={image.url} 
+                                    alt='#' 
+                                    className='img-fluid'  
+                                    onClick={() => viewImage(key, albumId)}
+                                />
+                            </div>
+                        )
+                    }) : null
                 }
             </ReactIdSwiperCustom>
         </>
     )
 }
  
+
 export default CustomBuildSwiper;

@@ -34,7 +34,7 @@ export default function CommitteeMemberList(props) {
       <div
         className={styles.memberList}
       >
-        {others.map((post) => (post.currentTerms.filter((term) => !termsToRemove.includes(term)).map((term) => <UserCard key={term.user.id} user={term.user} subtitle={post.name} email={post.email} canEdit={isEditing} didRemove={() => { removeTerm(term); }} />)))}
+        {others.map((post) => (post.currentTerms.filter((term) => !termsToRemove.includes(term)).map((term) => <UserCard small key={term.user.id} user={term.user} subtitle={post.name} email={post.email} canEdit={isEditing} didRemove={() => { removeTerm(term); }} />)))}
       </div>
     </div>
   );
