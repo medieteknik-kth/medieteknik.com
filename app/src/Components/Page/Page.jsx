@@ -29,7 +29,7 @@ export default function Page() {
   const { user } = useContext(UserContext);
   const { lang } = useContext(LocaleContext);
 
-  const canEdit = user !== null && page !== null !== null && (user.currentTerms[0].user.isAdmin || (user.committeeId === page.committee.id && user.isOfficial));
+  const canEdit = user !== null && page !== null !== null && (user.currentTerms[0].user.isAdmin || (page.committee !== null && user.committeeId === page.committee.id));
 
   const onBeforeUnload = (event) => {
     if (isEditing) {

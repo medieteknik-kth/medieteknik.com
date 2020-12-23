@@ -8,6 +8,7 @@ import {
 import AlbumModal from '../AlbumModal/AlbumModal';
 import AlbumVideoModal from '../AlbumModal/AlbumVideoModal';
 import Api from '../../../Utility/Api';
+import useEventListener from "@use-it/event-listener";
 
 import {
     LocaleContext,
@@ -31,6 +32,7 @@ const Album = () => {
     
 
     const changeImage = useCallback(event => {
+        
         if (event.key === 'ArrowLeft') {
             if (isVideo) {
                 viewPreviousImage(currentVideoId, 'video');
@@ -45,7 +47,9 @@ const Album = () => {
                 viewNextImage(currentImageId, 'img');
             }
         }
-    }, [currentImageId]);
+    }, [currentImageId, currentVideoId, modalOpen, isVideo]);
+
+    useEventListener('keydown', changeImage);
 
     useEffect(() => {
         Api.Albums.GetById(id).then((album) => {
@@ -53,10 +57,7 @@ const Album = () => {
             setVideos(album.videos !== null ? album.videos : []);
             setImages(album.images !== null ? album.images : []);
         });
-        window.addEventListener('keydown', changeImage);
-        return () => window.removeEventListener('keydown', changeImage);
-    }, [currentImageId])
-
+    }, [])
 
     const viewPreviousImage = (mediaId, mediaType) => {
         if (mediaType === 'img') {
@@ -175,14 +176,13 @@ const Album = () => {
                             onClick={() => {
                                 setCurrentVideoId(key);
                                 viewVideo(key);
-                                console.log("Hej2");
                             }}
                         >
                             <div className="album-video-play-icon">
                                 <FontAwesomeIcon 
                                     icon={faPlayCircle} 
-                                    color="white" 
-                                    size="3x" 
+                                    color="#f0c900" 
+                                    size="4x" 
                                 />
                             </div>
                             <img 
@@ -198,7 +198,6 @@ const Album = () => {
                             key={image.url}
                             className="album-cell no-select"
                             onClick={() => {
-                                console.log(key)
                                 setCurrentImageId(key);
                                 viewImage(key);
                             }}

@@ -1,15 +1,17 @@
 .CommitteeCard {
     padding: 10px 10px 5px 10px;
     border: 2px solid transparent;
-    border-radius: 10px;
     text-align: center;
     cursor: pointer;
     transition: all .31s ease-in-out;
-    transition: 0.5s;
 }
 
 .CommitteeCard:hover {
     transform: scale(1.05);
+}
+
+.CommitteeCard:hover p {
+    font-weight: 500;
 }
 
 .CommitteeCard:hover:before {
@@ -26,7 +28,5 @@
     clear: both;
 }
 
-.CommitteeCard:hover p {
-    font-weight: 500;
-}
+
 

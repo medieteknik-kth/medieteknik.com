@@ -538,30 +538,39 @@ if app.debug:
         event1.tags.append(post_tag2)
 
         video = Video()
-        video.title = "ÖPH19 nØg 2020"
+        video.title = "#1 ÖPH19 nØg 2020"
         video.mux_asset_id = "dUL5m2XRKGPMTR00QO8Zb01K301TzLK2rG3sRoIL1wE01iM"
         video.mux_playback_id = "PBWvfG00TEdPoObmNUQE9Rtyp3uYvdMFA02bW01AkjvVyY"
         video.requires_login = False
 
         video2 = Video()
-        video2.title = "ÖPH19 nØg 2020"
+        video2.title = "#2 ÖPH19 nØg 2020"
         video2.mux_asset_id = "dUL5m2XRKGPMTR00QO8Zb01K301TzLK2rG3sRoIL1wE01iM"
         video2.mux_playback_id = "PBWvfG00TEdPoObmNUQE9Rtyp3uYvdMFA02bW01AkjvVyY"
         video2.requires_login = False
 
+        video3 = Video()
+        video3.title = "#3 Medias Julhörna"
+        video3.mux_asset_id = "rvNZRKvVhBCBqm5eEsq0000629XBiVpWVfR1RA5NN4zQU"
+        video3.mux_playback_id = "4nIy4XPqRh01B27DXFoVe8RvqmbwGHaoK017n5lVJJdsA"
+        video3.requires_login = False
+
         image1 = Image()
-        image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+        image1.url = "https://storage.googleapis.com/medieteknik-static/test/9804d088-c331-4154-9f6e-6c480357d1e0-1.jpg"
         image2 = Image()
-        image2.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+        image2.url = "https://storage.googleapis.com/medieteknik-static/test/623911aa-c719-4167-a1cc-ca1f0884a784-1.jpg"
         image3 = Image()
-        image3.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+        image3.url = "https://storage.googleapis.com/medieteknik-static/test/9804d088-c331-4154-9f6e-6c480357d1e0-2.jpg"
         image4 = Image()
-        image4.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
+        image4.url = "https://storage.googleapis.com/medieteknik-static/test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
+        image5 = Image()
+        image5.url = "https://storage.googleapis.com/medieteknik-static/test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
 
         album1 = Album()
         album1.title = "Album"
         album1.videos.append(video)
         album1.videos.append(video2)
+        album1.videos.append(video3)
         album1.images.append(image1)
         album1.images.append(image2)
         album1.images.append(image3)
@@ -575,19 +584,11 @@ if app.debug:
         album2 = Album()
         album2.title = "Homepage Slideshow"
         
-        landing_image1 = Image()
-        landing_image1.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
-        landing_image2 = Image()
-        landing_image2.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
-        landing_image3 = Image()
-        landing_image3.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/623911aa-c719-4167-a1cc-ca1f0884a784.jpg"
-        landing_image4 = Image()
-        landing_image4.url = "https://storage.googleapis.com/medieteknik-static/albums/Test/9804d088-c331-4154-9f6e-6c480357d1e0.jpg"
-
-        album2.images.append(landing_image1)
-        album2.images.append(landing_image2)
-        album2.images.append(landing_image3)
-        album2.images.append(landing_image4)
+        album2.images.append(image1)
+        album2.images.append(image2)
+        album2.images.append(image3)
+        album2.images.append(image4)
+        album2.images.append(image5)
         db.session.add(album2)
 
         db.session.commit()

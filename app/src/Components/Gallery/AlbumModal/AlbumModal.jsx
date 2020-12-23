@@ -18,8 +18,10 @@ const AlbumModal = ({
     viewPreviousImage, 
     viewNextImage,
     numberOfImages,
-    numberOfVideos}) => {
-
+    numberOfVideos,
+    albumId
+    }) => {
+    
     return(
         <Modal
             isOpen={modalOpen}
@@ -42,7 +44,7 @@ const AlbumModal = ({
                     <PreviousImageButton 
                         extraClass={classes.leftButton}
                         disabled = {imageId === 0 && numberOfVideos === 0}
-                        onClick = {() => viewPreviousImage(imageId, 'img')}
+                        onClick = {() => viewPreviousImage(imageId, 'img', albumId)}
                     />    
                 </div>
                 
@@ -74,7 +76,7 @@ const AlbumModal = ({
                     <NextImageButton 
                         extraClass={classes.rightButton}
                         disabled = {imageId === numberOfImages - 1}
-                        onClick = {() => viewNextImage(imageId, 'img')}
+                        onClick = {() => viewNextImage(imageId, 'img', albumId)}
                     />
                 </div>
             </div>
