@@ -1,16 +1,35 @@
 .CommitteeCard {
     padding: 10px 10px 5px 10px;
     border: 2px solid transparent;
-    border-radius: 10px;
+    border-radius: 3px;
     text-align: center;
     cursor: pointer;
     transition: all .31s ease-in-out;
-    transition: 0.5s;
+    transition: 0.35s;
+    cursor: pointer;
+    border: 3px solid transparent;
 }
 
+/* .CommitteeCard:hover {
+    box-shadow:
+    0 0px 23.6px -10px rgba(0, 0, 0, 0.048),
+    0 0px 25.1px -10px rgba(0, 0, 0, 0.044),
+    0 0px 27.1px -10px rgba(0, 0, 0, 0.058),
+    0 0px 58px -10px rgba(0, 0, 0, 0.13);
+} */
+
 .CommitteeCard:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 3px solid #f0c900;
+}
+
+/* .CommitteeCard:hover {
     transform: scale(1.05);
 }
+
+.CommitteeCard:hover p {
+    font-weight: 500;
+} */
 
 .CommitteeCard:hover:before {
     opacity: 100%;
@@ -26,7 +45,5 @@
     clear: both;
 }
 
-.CommitteeCard:hover p {
-    font-weight: 500;
-}
+
 
