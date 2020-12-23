@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from 'react-modal';
 import VideoPlayer from '../../Video/VideoPlayer';
 
@@ -19,7 +19,8 @@ const AlbumVideoModal = ({
     viewNextImage,
     numberOfImages,
     numberOfVideos,
-    albumId
+    albumId,
+    pauseVideo
     }) => {
 
     return(
@@ -44,9 +45,7 @@ const AlbumVideoModal = ({
                     <PreviousImageButton 
                         extraClass={classes.leftButton}
                         disabled = {videoId === 0}
-                        onClick = {event => {
-                            viewPreviousImage(videoId, 'video', albumId);
-                        }}
+                        onClick = {() => viewPreviousImage(videoId, 'video', albumId)}
                     />
                 </div>
 
@@ -56,6 +55,7 @@ const AlbumVideoModal = ({
                         extraStyle = {{
                             width: "75vw"
                         }}
+                        pauseVideo = {pauseVideo}
                     />
                     <h5>{`${date.toISOString().split('T')[0]}`}</h5>
                     <h3>{title}</h3>

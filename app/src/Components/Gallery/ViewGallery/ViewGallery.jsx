@@ -42,14 +42,13 @@ const ViewGallery = () => {
             } else {
                 viewPreviousImage(currentImageId, 'img', currentAlbumId);
             }
-            
         } else if (event.key === 'ArrowRight') {
             if (isVideo) {
                 viewNextImage(currentVideoId, 'video', currentAlbumId);
             } else {
                 viewNextImage(currentImageId, 'img', currentAlbumId);
             }
-        }
+        } 
     }, [currentImageId, currentVideoId, modalOpen, isVideo]);
 
     useEventListener('keydown', changeImage);

@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import videojs from 'video.js';
 import Hls from 'hls.js';
 import './VideoPlayer.scss';
 import 'video.js/dist/video-js.css';
+import useEventListener from "@use-it/event-listener";
 
 export default function VideoPlayer({ videoUrl, extraStyle }) {
     const [player, setPlayer] = useState(null);
@@ -50,7 +51,22 @@ export default function VideoPlayer({ videoUrl, extraStyle }) {
         }
     }, [videoUrl]);
 
-  return (
+    const pauseOrPlay = useCallback(event => {
+        if (event.code === 'Space') {
+            if (player !== null && player !== undefined) {
+                if (player.paused()) {
+                    player.play();
+                } else {
+                    player.pause();
+                }
+            }
+        }
+    }, [player]);
+
+    useEventListener('keydown', pauseOrPlay);
+
+
+    return (
       <div style={extraStyle}>
         <video
             ref={playerRef} 

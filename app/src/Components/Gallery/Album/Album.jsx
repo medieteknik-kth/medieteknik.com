@@ -32,6 +32,7 @@ const Album = () => {
     
 
     const changeImage = useCallback(event => {
+        
         if (event.key === 'ArrowLeft') {
             if (isVideo) {
                 viewPreviousImage(currentVideoId, 'video');
