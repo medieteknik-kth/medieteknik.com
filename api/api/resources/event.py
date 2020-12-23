@@ -7,6 +7,7 @@ import os
 
 from api.function_library.image_functions import save_image
 from api.resources.authentication import requires_auth
+from api.utility.storage import upload_image
 
 from api.db import db
 from api.models.event import Event
@@ -217,14 +218,14 @@ def get_events():
 
 def add_event(request, user_id):
     params = request.form
-    e = Event(title=params["title"], event_date=datetime.strptime(params["date"], ISO_DATE_DEF), end_date=datetime.strptime(params["end_date"], ISO_DATE_DEF),
+    e = Event(title=params["title"], event_date=datetime.strptime(params["event_date"], ISO_DATE_DEF), end_date=datetime.strptime(params["end_date"], ISO_DATE_DEF),
               body=params["body"], location=params["location"], committee_id=params["committee_id"], facebook_link=params["facebook_link"],
               body_en=params["body_en"], title_en=params["title_en"], user_id=user_id)
 
     add_cols(params, e)
 
     if "header_image" in request.files:
-        image_name = save_image(request.files["header_image"], PATH, SAVE_FOLDER)
+        image_name = upload_image(request.files["header_image"])
         e.header_image = image_name
     if params["tags"]:
         #tag the event

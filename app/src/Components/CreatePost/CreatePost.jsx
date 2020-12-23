@@ -77,13 +77,13 @@ const CreatePost = ({ event }) => {
     }
 
     const combineDateAndTime = (date, time) => {
-        const timeString = time.getHours() + ':' + time.getMinutes() + ':00'
+        const timeString = time.toTimeString().slice(0,8);
 
         var year = date.getFullYear()
         var month = date.getMonth() + 1 // Jan is 0, dec is 11
         var day = date.getDate()
         var dateString = '' + year + '-' + month + '-' + day
-        var combined = new Date(dateString + ' ' + timeString)
+        var combined = new Date(dateString + 'T' + timeString)
 
         return combined
     }

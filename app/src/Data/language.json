@@ -117,6 +117,14 @@
         "on_instagram": {
             "se": "Medieteknik på Instagram",
             "en": "Media Technnology on Instagram"
+        },
+        "about_chapter": {
+            "se": "Sektionen för Medieteknik finns till för studenter vid medieteknikprogrammet på KTH. Dess främsta syfte är att uppfylla studenternas behov under studietiden, påverka vår utbildning, se till att finnas för dig som student och sedan minska tröskeln ut i arbetslivet.",
+            "en": "The Chapter for Media Technology is for students at the media technology program at KTH. Its purpose is to satisfy the needs of the students during their time at KTH, practice student influnce, make sure to be there for you as a student and make it easier to find work afterwards."
+        },
+        "about_education": {
+            "se": "Civilingenjörsutbildningen inom Medieteknik på KTH passar dig som på kreativa sätt vill utforma teknik för mänsklig kommunikation. Efter utbildningen kan du driva utveckling inom allt från film och spelupplevelser till nyhetsindustrin och framtidens sociala medier.",
+            "en": "The Master of Science in Engineering in Media Technology at KTH is suits you you wants to creativly build technology for human communication. After the education, you can develop everything from movie and video game experiences to news and the future of social media."
         }
     },
     "committee": {

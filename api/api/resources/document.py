@@ -11,6 +11,8 @@ import base64
 from api.db import db
 from api.models.document import Document, Tag, DocumentTags
 
+from api.utility.storage import upload_document, upload_document_thumbnail
+
 from api.resources.authentication import requires_auth
 
 class DocumentResource(Resource):
@@ -57,10 +59,11 @@ def save_documents(request):
     # thumbnail skickas in som en base64-kodad sträng, vi måste dekoda den för att spara ned ordentligt
     with open(os.path.join(THUMBNAIL_FOLDER, thumb_name), 'wb') as fh:
         fh.write(base64.b64decode(thumbnail))
+        thumb_name = upload_document_thumbnail(fh)
     for doc in files:
         file_ext = os.path.splitext(doc.filename)[1]
         fileName = str(uuid.uuid4())
-        d = Document(title=request.form["title"], fileName = fileName + file_ext, thumbnail=thumb_name)
+        d = Document(title=request.form["title"], fileName=upload_document(doc), thumbnail=thumb_name)
         db.session.add(d)
         db_docs.append(d)
         doc.save(os.path.join(SAVE_FOLDER, d.fileName)) #skapar en mapp att spara uppladdade filer i när appen upprättas
