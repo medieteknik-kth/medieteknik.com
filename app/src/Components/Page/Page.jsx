@@ -169,12 +169,12 @@ export default function Page() {
                     { page.committee !== null
                       ? (
                         <div className="committeePageLogoContainer">
-                          <img className="committeePageLogo" alt={page.committee.name} src={page.committee.logo} />
+                          <img className={`committeePageLogo${page.committee.name === 'Jubileet' ? ' jubilee' : ''}`} alt={page.committee.name} src={page.committee.logo} />
                         </div>
                       )
                       : <span /> }
                     <BasePage
-                      initialContent={page !== null ? JSON.parse(translateToString({se: page.content_sv, en: page.content_en, lang})) : ''}
+                      initialContent={page !== null ? JSON.parse(translateToString({ se: page.content_sv, en: page.content_en, lang })) : ''}
                       isEditing={isEditing}
                       onChange={onChange}
                     />
