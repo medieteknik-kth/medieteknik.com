@@ -2,13 +2,24 @@ import React from 'react';
 import classes from './DocumentSideMenu.module.scss';
 
 import SideMenuContainer from '../../../Common/SideMenuContainer/sideMenuContainer';
-import SideMenuModalContainer from '../../../Common/SideMenuModalContainer/sideMenuModalContainer';
+import SideMenuModalContainer from '../../../Common/SideMenuContainer/sideMenuModalContainer';
 import SideMenuContent from './DocumentSideMenuContent';
 
 const DocumentSideMenu = ({
         handleSearch,
         closeFilterHandler,
-        showFilter
+        showFilter,
+        screenWidth,
+        cardsViewSelected,
+        listViewSelected,
+        setListViewSelected,
+        setCardsViewSelected,
+        sortByChangedHandler,
+        sortValue,
+        categoriesFromServer,
+        categoriesShown,
+        categoriesFilterChangeHandler,
+        clearCategoriesFilterHandler,
     }) => {
 
     return (
@@ -16,6 +27,17 @@ const DocumentSideMenu = ({
             <SideMenuContainer extraClasses = {[classes.sideMenu]}>
                 <SideMenuContent 
                     handleSearch = {handleSearch}
+                    screenWidth={screenWidth}
+                    cardsViewSelected={cardsViewSelected}
+                    listViewSelected={listViewSelected}
+                    setListViewSelected={setListViewSelected}
+                    setCardsViewSelected={setCardsViewSelected}
+                    sortByChangedHandler={sortByChangedHandler}
+                    sortValue={sortValue}
+                    categoriesFromServer={categoriesFromServer}
+                    categoriesShown={categoriesShown}
+                    categoriesFilterChangeHandler={categoriesFilterChangeHandler}
+                    clearCategoriesFilterHandler={clearCategoriesFilterHandler}
                 />
             </SideMenuContainer>
 
@@ -26,6 +48,17 @@ const DocumentSideMenu = ({
             >
                 <SideMenuContent 
                     handleSearch = {handleSearch}
+                    screenWidth={screenWidth}
+                    cardsViewSelected={cardsViewSelected}
+                    listViewSelected={listViewSelected}
+                    setListViewSelected={setListViewSelected}
+                    setCardsViewSelected={setCardsViewSelected}
+                    sortByChangedHandler={sortByChangedHandler}
+                    sortValue={sortValue}
+                    categoriesFromServer={categoriesFromServer}
+                    categoriesShown={categoriesShown}
+                    categoriesFilterChangeHandler={categoriesFilterChangeHandler}
+                    clearCategoriesFilterHandler={clearCategoriesFilterHandler}
                 />
             </SideMenuModalContainer>
         </>

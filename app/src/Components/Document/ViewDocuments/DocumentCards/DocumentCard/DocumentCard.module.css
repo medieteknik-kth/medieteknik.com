@@ -7,8 +7,7 @@
     background-color: white;
     transition: all .25s ease-in-out;
     width: 210px;
-    margin-top: 5px;
-    margin-bottom: 20px;
+    margin: 5px 20px 20px 0;
     height: 311px;
     overflow: hidden;
 }
