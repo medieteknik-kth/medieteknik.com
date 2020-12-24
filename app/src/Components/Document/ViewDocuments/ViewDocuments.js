@@ -216,7 +216,16 @@ const ViewDocuments = (props) => {
                 {isLoading ? <Spinner /> :
                     (cardsViewSelected ?
                         <DocumentCards 
-                            documents={documentsFromServer}
+                            // documents={documentsFromServer}
+                            documents={[
+                                documentsFromServer[0], 
+                                documentsFromServer[0], 
+                                documentsFromServer[0],
+                                documentsFromServer[0],
+                                documentsFromServer[0],
+                                documentsFromServer[0],  
+                                documentsFromServer[0]
+                            ]}
                             categoriesToShow={categoryTagsSelected}
                             zeroCategoriesSelected = {categoriesViewed === 0}
                         />

@@ -14,19 +14,25 @@
 .documentsContainer {
     display: flex;
     flex-direction: column;
-    width: 793px;
+    width: 772px;
     margin-left: 30px;
 }
 
 @media (max-width: 1250px) {
     .documentsContainer {
-        width: 529px;
+        width: 508px;
+    }
+}
+
+@media (max-width: 950px) {
+    .documentsContainer {
+        margin-left: 0;
     }
 }
 
 @media (max-width: 600px) {
     .documentsContainer {
-        width: 264px;
+        width: 244px;
     }
 }
 
@@ -109,13 +115,6 @@
 .rightHeader img {
     cursor: pointer;
 }
-
-
-
-
-
-
-
 
 .sortOrderStyle {
     width: 110px;

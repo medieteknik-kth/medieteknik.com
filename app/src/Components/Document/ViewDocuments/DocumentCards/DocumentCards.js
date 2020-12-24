@@ -27,7 +27,7 @@ const DocumentCards = (props) => {
         <div className={classes.DocumentCards}>
             {
                 documentsToRender.map(doc => (
-                    <a href={doc.filename} target="_blank">
+                    <a href={doc.filename} target="_blank" className={classes.DocumentCardLink}>
                         <DocumentCard
                             doctypeId = {doc.itemId}
                             doctype = {doc.doctags}
