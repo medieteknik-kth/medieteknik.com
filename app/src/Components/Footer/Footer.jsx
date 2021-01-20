@@ -3,6 +3,7 @@ import './Footer.css'
 import { LocaleText, translate } from '../../Contexts/LocaleContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faLinkedinIn, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { Link } from 'react-router-dom';
 
 const Footer = (props) => {
 
@@ -72,7 +73,7 @@ const Footer = (props) => {
                 </div>
             </div>
         </div>
-        <p className='copyright'>© {new Date().getFullYear()} Sektionen för Medieteknik.</p>
+        <p className='copyright'>© {new Date().getFullYear()} Sektionen för Medieteknik. <Link to="/credits">{translate({se: "Denna hemsida är byggd av studenter vid Medieteknikprogrammet.", en: "This website is built by students at the Media Technology programme."})}</Link>.</p>
     </div>);
 }
 

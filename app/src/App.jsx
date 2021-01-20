@@ -32,6 +32,7 @@ import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
 import ManageCommittee from './Components/ManageCommittee/ManageCommittee';
 import AdminTools from './Components/AdminTools/adminTools';
 import FeedbackButton from './Components/FeedbackButton/FeedbackButton';
+import Credits from './Components/Credits/Credits';
 
 export default function App() {
   return (
@@ -98,6 +99,9 @@ export default function App() {
             </Route>
             <Route path="/admin">
               <PageWithMainMenu><AdminTools /></PageWithMainMenu>
+            </Route>
+            <Route path="/credits">
+              <PageWithMainMenu><Credits /></PageWithMainMenu>
             </Route>
             <Route
               path="/:pageSlug"
