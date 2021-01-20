@@ -3,7 +3,7 @@ import classes from './FilterButton.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
-const FilterButton = ({colorTheme, onClick, extraClasses}) => {
+const FilterButton = ({colorTheme, onClick, extraClasses, extraStyle}) => {
     let buttonClasses;
 
     if (extraClasses !== undefined) {
@@ -19,7 +19,7 @@ const FilterButton = ({colorTheme, onClick, extraClasses}) => {
 
 
     return (
-        <div className={buttonClasses.join(" ")} onClick={onClick} >
+        <div className={buttonClasses.join(" ")} onClick={onClick} style={extraStyle}>
             <FontAwesomeIcon icon={faFilter} />
         </div>
     )

@@ -7,11 +7,10 @@
     background-color: white;
     transition: all .25s ease-in-out;
     width: 210px;
-    margin-top: 5px;
     height: 311px;
     overflow: hidden;
+    margin-top: 5px;
 }
-
 
 .docCards img {
     transform: scale(1.15);

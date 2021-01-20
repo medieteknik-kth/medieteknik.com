@@ -5,7 +5,7 @@ import classes from './SideMenu.module.scss';
 
 
 import SideMenuContainer from '../../Common/SideMenuContainer/sideMenuContainer';
-import SideMenuModalContainer from '../../Common/SideMenuModalContainer/sideMenuModalContainer';
+import SideMenuModalContainer from '../../Common/SideMenuContainer/sideMenuModalContainer';
 
 import SideMenuContent from './SideMenuContent';
 
@@ -74,7 +74,7 @@ const SideMenu = ({
     
 
     return (
-        <div>
+        <>
             <SideMenuContainer extraClasses = {[classes.sideMenu]}>
                 <SideMenuContent 
                     chosenMediaHandler = {chosenMediaHandler}
@@ -98,7 +98,7 @@ const SideMenu = ({
                     clearMediaTypesHandler = {clearMediaTypesHandler}
                 />
             </SideMenuModalContainer>
-        </div>
+        </>
     )
 }
 

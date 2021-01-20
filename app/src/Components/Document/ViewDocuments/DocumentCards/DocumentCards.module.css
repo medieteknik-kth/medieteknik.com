@@ -1,32 +1,36 @@
 .DocumentCards {
-    display: grid;
-    grid-template-columns: 244px 244px 244px 244px; /*Make the grid smaller than the container */
-    grid-gap: 50px;
-    /* padding: 10px; */
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 50px;
+    display: flex;
+    width: 100%;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
-@media (max-width: 1320px) {
-    .DocumentCards {
-        width: 80%;
-        grid-template-columns: 244px 244px 244px;
+.DocumentCardLink {
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.DocumentCardLink:nth-child(3n) {
+    margin-right: 0px;
+}
+
+@media (max-width: 1250px) {
+    .DocumentCardLink:nth-child(3n) {
+        margin-right: 20px;
+    }
+
+    .DocumentCardLink:nth-child(2n){
+        margin-right: 0px;
     }
 }
 
-@media (max-width: 899px) {
-    .DocumentCards {
-        justify-content: center;
-        width: 80%;
-        grid-template-columns: 244px 244px;
+@media (max-width: 600px) {
+    .DocumentCardLink:nth-child(2n){
+        margin-right: 20px;
     }
-}
 
-@media (max-width: 599px) {
-    .DocumentCards {
-        width: 100%;
-        grid-template-columns: 244px;
+    .DocumentCardLink {
+        margin-right: 0px;
     }
 }

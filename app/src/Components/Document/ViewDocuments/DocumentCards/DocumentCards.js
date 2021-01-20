@@ -3,8 +3,6 @@ import React from 'react';
 import DocumentCard from './DocumentCard/DocumentCard';
 import classes from './DocumentCards.module.css';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
-
 const DocumentCards = (props) => {
     let documentsToRender = [];
 
@@ -29,7 +27,7 @@ const DocumentCards = (props) => {
         <div className={classes.DocumentCards}>
             {
                 documentsToRender.map(doc => (
-                    <a href={doc.filename} target="_blank">
+                    <a href={doc.filename} target="_blank" className={classes.DocumentCardLink}>
                         <DocumentCard
                             doctypeId = {doc.itemId}
                             doctype = {doc.doctags}
