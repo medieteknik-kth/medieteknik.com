@@ -7,6 +7,7 @@ import { faMarker, faPizzaSlice } from '@fortawesome/free-solid-svg-icons'
 import Api from '../../../Utility/Api.js'
 import CalendarIcon from '../../Common/Form/Assets/form-date.png'
 import LocationIcon from '../../Common/Form/Assets/form-location.svg'
+import { useHistory } from 'react-router-dom';
 
 export const feedTypes = {
     POST: 'post',
@@ -14,6 +15,8 @@ export const feedTypes = {
 }
 
 const FeedCard = (props) => {
+    const history = useHistory();
+    
     const getPreCard = () => {
         switch (props.type) {
             case feedTypes.EVENT:
@@ -26,11 +29,10 @@ const FeedCard = (props) => {
     }
     
     const bodyObj = JSON.parse(props.body.se);
-    console.log(bodyObj);
     const bodyText = bodyObj.ops.reduce((a, val) => a + val.insert, []).slice(0, 250);
 
     return (
-        <NavLink to={props.path}>
+        <div onClick={() => history.push(props.path)} className="feed-card-container-all">
             <div className="feed-card-pre">
                 <p className="feed-card-title">{getPreCard().title}</p>
                 {/* <div className="feed-card-tag">
@@ -88,7 +90,7 @@ const FeedCard = (props) => {
                     </div>
                 </div>
             </div>
-        </NavLink>
+        </div>
     )
 }
 

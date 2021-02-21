@@ -6,6 +6,8 @@ import {
     translateToString,
 } from '../../Contexts/LocaleContext';
 
+import { UserContext } from '../../Contexts/UserContext';
+
 import SwitchButton from '../Common/Buttons/RoundedTextButton/RoundedTextButton';
 import AlbumUpload from './AlbumUpload/AlbumUpload';
 import ViewGallery from './ViewGallery/ViewGallery';
@@ -14,10 +16,12 @@ const Gallery = () => {
     
     const [viewGallery, setViewGallery] = useState(true);
     const { lang } = useContext(LocaleContext);
+    const { user } = useContext(UserContext);
 
 
     return (
         <div className={classes.Gallery}>
+        { user !== null ?
             <SwitchButton 
                 onClick={() => {
                     setViewGallery(!viewGallery);
@@ -38,6 +42,7 @@ const Gallery = () => {
                         })
                 }
             />
+        : <span /> }
 
             <h2>
                 {

@@ -1,0 +1,19 @@
+.mediaType {
+    margin-top: 5px;
+}
+
+.sideMenu, .sideMenuModal  {
+    width: 250px;
+    height: 230px !important;
+}
+
+.sideMenu {
+    transition: .3s;
+    margin-top: 5px;
+}
+
+@media (max-width: 950px) {
+    .sideMenu {
+        display: none !important;
+    }
+}

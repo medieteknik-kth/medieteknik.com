@@ -32,6 +32,7 @@ const SearchField = (props) => {
                     en: props.englishPlaceholder,
                     lang,
                 })}
+                style={props.extraStyle}
             />
         </>
     )

@@ -1,85 +1,33 @@
-import React, { useContext, useState, useEffect } from 'react';
-
-import classes from './sideMenu.module.scss';
-import SearchField from '../../Common/SearchField/searchField';
-
-import fireIcon from '../../../Resources/Icons/fire.svg';
-import albumIcon from '../../../Resources/Icons/album.svg';
-import Checkbox from '../../Common/Checkbox/checkbox';
-import SideMenuContainer from '../../Common/SideMenuContainer/sideMenuContainer';
-import ClearButton from '../../Common/Buttons/RedTextButton/RedTextButton';
-
-import { committees } from '../../Common/utility';
+import React, { useContext } from 'react';
+import classes from './SideMenu.module.scss';
 
 import {
     LocaleContext,
     translateToString,
 } from '../../../Contexts/LocaleContext';
 
-import ScrollableContainer from '../../Common/ScrollableContainer/scrollableContainer';
+import fireIcon from '../../../Resources/Icons/fire.svg';
+import albumIcon from '../../../Resources/Icons/album.svg';
 
-const SideMenu = ({
+// --- Components ---
+import ClearButton from '../../Common/Buttons/RedTextButton/RedTextButton';
+import SearchField from '../../Common/SearchField/searchField';
+import ScrollableContainer from '../../Common/ScrollableContainer/scrollableContainer';
+import Checkbox from '../../Common/Checkbox/checkbox';
+
+
+
+const SideMenuContent = ({
         chosenMediaHandler, 
         mediasSelected,
         numberOfMediasViewed, 
         handleSearch,
         clearMediaTypesHandler
     }) => {
-
     const { lang } = useContext(LocaleContext);
 
-    const [committeesSelected, setCommitteesSelected] = useState({});
-    const [committeesViewed, setCommitteesViewed] = useState(0);
-
-    const [playllists, setPlaylists] = useState([
-        "Haloweengasquen 2020",
-        "nØg 2019",
-        "Frackgasquen 2019",
-        "Bossegasquen 2018",
-        "MVA 2019",
-        "Gasque #1",
-        "Gasque #2",
-        "Gasque #3",
-        "Gasque #4",
-        "Gasque #6",
-        "Gasque #4",
-        "Gasque #4",
-        "Gasque #4"
-    ]);
-
-    const [receptions, setReceptions] = useState([
-        "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2014", "2013", "2012", "2011", "2010", 
-        "2009", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000"
-    ]);
-
-    useEffect(() => {
-        let tempCommitteesSelected = {};
-
-        committees.forEach(committee => {
-            tempCommitteesSelected[committee] = false;
-        });
-
-        setCommitteesSelected(tempCommitteesSelected);
-    }, []);
-
-    const chosenCommitteesHandler = (clickedCommittee) => {
-        const tempCommitteesSelected = {...committeesSelected};
-
-        if (tempCommitteesSelected[clickedCommittee]) {
-            tempCommitteesSelected[clickedCommittee] = false;
-            setCommitteesViewed(committeesViewed - 1);
-        } else {
-            tempCommitteesSelected[clickedCommittee] = true;
-            setCommitteesViewed(committeesViewed + 1);
-        }
-
-        setCommitteesSelected(tempCommitteesSelected);
-    } 
-
     return (
-        <SideMenuContainer
-            extraClass = {classes.sideMenu}
-        >
+        <>
             <SearchField 
                 swedishPlaceholder = "Sök efter album"
                 englishPlaceholder = "Search for album"
@@ -197,8 +145,8 @@ const SideMenu = ({
                     ))}
                 </ul>
             </ScrollableContainer> */}
-        </SideMenuContainer>
+        </>
     )
 }
 
-export default SideMenu;
+export default SideMenuContent;

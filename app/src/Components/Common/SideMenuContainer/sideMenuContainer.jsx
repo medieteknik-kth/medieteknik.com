@@ -1,13 +1,16 @@
 import React from 'react';
 import classes from './sideMenuContainer.module.scss';
 
-const SideMenuContainer = ({ children, extraClass }) => {
+const SideMenuContainer = ({ children, extraClasses }) => {
+    let sideMenuContainerClasses;
 
-    let sideMenuContainerClasses = [classes.SideMenuContainer];
-
-    if (extraClass !== undefined) {
-        sideMenuContainerClasses.push(extraClass);
+    if (extraClasses !== undefined) {
+        sideMenuContainerClasses = [classes.SideMenuContainer, ...extraClasses];
+    } else {
+        sideMenuContainerClasses = [classes.SideMenuContainer];
     }
+
+     
 
     sideMenuContainerClasses = sideMenuContainerClasses.join(" ");
 

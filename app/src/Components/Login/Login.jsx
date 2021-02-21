@@ -16,9 +16,7 @@ export default function Login() {
 
   const googleFailure = (res) => {
     const { error } = res;
-    if (error !== 'popup_closed_by_user') {
-      alert(translate({ se: 'Kunde inte logga in.', en: 'Could not log in.' }));
-    }
+    console.error(error);
   };
 
   const { signIn } = useGoogleLogin({

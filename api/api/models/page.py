@@ -72,7 +72,7 @@ class PageRevision(db.Model):
     title_sv = db.Column(db.String)
     title_en = db.Column(db.String)
     content_sv = db.Column(db.String)
-    content_en = db.Column(db.String, default="{\"ops\":[{\"insert\":\"This page in unavaliable in English\"},{\"attributes\":{\"header\":1},\"insert\":\"\\n\"}]}")
+    content_en = db.Column(db.String)
     image = db.Column(db.String)
     page_id = db.Column(db.Integer, db.ForeignKey("page.id"))
     published = db.Column(db.Boolean, default=False)

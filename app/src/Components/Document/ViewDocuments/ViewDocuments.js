@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 
 import classes from './ViewDocuments.module.css';
 import {quickSort} from '../../../Utility/SortDocuments.js';
 
 
 // --- BILDER/IKONER ---
-import listViewIconSelected from './Assets/list_view_selected.png';
-import gridViewIconSelected from './Assets/grid_view_selected.png';
-import listViewIcon from './Assets/list_view.png';
-import gridViewIcon from './Assets/grid_view.png';
+
 import sampleThumbnail1 from '../Assets/testThumbnail1.png';
 import sampleThumbnail2 from '../Assets/testThumbnail2.png';
 
@@ -20,11 +17,17 @@ import DocumentCards from './DocumentCards/DocumentCards';
 import DocumentList from './DocumentList/DocumentList';
 import CategoriesFilter from './CategoriesFilter/CategoriesFilter';
 import SearchField from '../../Common/SearchField/searchField';
+import DocumentSideMenu from './SideMenu/DocumentSideMenu';
+
+import FilterButton from '../../Common/Buttons/FilterButton/FilterButton';
 
 import {
     LocaleContext,
     translateToString,
-} from '../../../Contexts/LocaleContext'
+} from '../../../Contexts/LocaleContext';
+
+import useEventListener from "@use-it/event-listener";
+
 
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
@@ -40,16 +43,21 @@ const ViewDocuments = (props) => {
         const [cardsViewSelected, setCardsViewSelected] = useState(true)
         const [listViewSelected, setListViewSelected] = useState(false)
         const [categoriesViewed, setCategoriesViewed] = useState(0)
-        const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+        const [screenWidth, setScreenWidth] = useState(window.innerWidth);
         const [documentsFromServer, setDocumentsFromServer] = useState([])
         const [categoriesFromServer, setCategoriesFromServer] = useState([])
-        const [isLoading, setIsLoading] = useState(true)
+        const [isLoading, setIsLoading] = useState(true);
 
-        const { lang } = useContext(LocaleContext)
+        const { lang } = useContext(LocaleContext);
+
+        // ---
+        const [showFilter, setShowFilter] = useState(false);
+
+        const closeFilterHandler = () => {
+            setShowFilter(false);
+        }
 
         useEffect(() => {
-            window.addEventListener('resize', handleResize);
-
             fetch(API_BASE_URL + 'document_tags')
             .then(response => response.json())
             .then(jsonObject => {
@@ -75,24 +83,21 @@ const ViewDocuments = (props) => {
                         let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
                         let publishDay = parseInt(doc.date.slice(8, 10));
 
-                        fetch(API_BASE_URL + `thumbnails/${doc.thumbnail}`)
-                            .then(thumbnail => {
-                                let docObject = {
-                                    docId: doc.itemId,
-                                    doctags: doc.tags,
-                                    headingText: doc.title,
-                                    publisher: '',
-                                    publishDate: new Date(publishYear, publishMonth, publishDay),
-                                    displayCard: true,
-                                    thumbnail: thumbnail,
-                                    filename: doc.filename
-                                }
-                                
-                                documentsFromServerTemp = [...documentsFromServerTemp, docObject];
-                                documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
+                        let docObject = {
+                            docId: doc.itemId,
+                            doctags: doc.tags,
+                            headingText: doc.title,
+                            publisher: '',
+                            publishDate: new Date(publishYear, publishMonth, publishDay),
+                            displayCard: true,
+                            thumbnail: doc.thumbnail,
+                            filename: doc.filename
+                        }
+                        
+                        documentsFromServerTemp = [...documentsFromServerTemp, docObject];
+                        documentsFromServerTemp = quickSort(documentsFromServerTemp, 'date', 'falling');
 
-                                setDocumentsFromServer(documentsFromServerTemp);
-                            })
+                        setDocumentsFromServer(documentsFromServerTemp);
                     })
 
                     setIsLoading(false);
@@ -107,6 +112,8 @@ const ViewDocuments = (props) => {
             setListViewSelected(false);
         }
     }
+
+    useEventListener('resize', handleResize);
 
     const categoriesFilterChangeHandler = (category) => {
         const categoriesKeysList = Object.keys(categoriesShown);
@@ -132,8 +139,6 @@ const ViewDocuments = (props) => {
     }
 
     const handleSearch = (newSearchString) => {
-        console.log(newSearchString)
-
         if (typeof newSearchString == 'string') {
             let searchVal = newSearchString;
             let filteredString = searchVal.toUpperCase();
@@ -163,7 +168,6 @@ const ViewDocuments = (props) => {
             categoriesShownClearTemp[cat] = false;
         })
 
-        console.log(categoriesShownClearTemp)
         setCategoriesShown(categoriesShownClearTemp);
     }
 
@@ -185,78 +189,30 @@ const ViewDocuments = (props) => {
     }
 
     return (
-        <div className={classes.firstFlexContainer}>
-            <div className={classes.main}>
-                <div className={classes.headerRow}>
-                    <div className={classes.searchParameters}>
-                        <SortBySelector
-                            sortByChangedHandler = {sortByChangedHandler}
-                            sortValue = {sortValue}
-                            addClass = {classes.sortByStyle}
-                        />
-
-                        <CategoriesFilter 
-                            categories = {categoriesFromServer} 
-                            categoriesToShow = {categoriesShown}
-                            categoriesFilterChangeHandler = {categoriesFilterChangeHandler}
-                            clearCategoriesFilterHandler = {clearCategoriesFilterHandler}
-                            addClass = {classes.dropdownFilterStyle}
-                            userIsFunkis = {props.userIsFunkis}
-                        />
-                        
-                        <SearchField 
-                            handleSearch = {handleSearch}
-                            swedishPlaceholder = 'Sök efter dokument'
-                            englishPlaceholder = 'Search for document'
-                            colorTheme = 'light'
-                        />
-                    </div>
-
-                    <div className={classes.viewSelected}>
-                        {screenWidth >= 900 ? 
-                            <div className={classes.tooltipGrid}>
-                                <img 
-                                    src={cardsViewSelected ? gridViewIconSelected : gridViewIcon}
-                                    className={cardsViewSelected ? classes.createCardsViewLogoSelected : classes.createCardsViewLogo}
-                                    onClick={() => {
-                                        if(!cardsViewSelected) {
-                                            setListViewSelected(!listViewSelected);
-                                            setCardsViewSelected(!cardsViewSelected);
-                                        }
-                                    }}
-                                />
-                                <span>
-                                    {translateToString({
-                                        se: 'Gallerivy',
-                                        en: 'Gallery',
-                                        lang,
-                                    })}
-                                </span>
-                            </div> : null}
-                                    
-                        {screenWidth >= 900 ?
-                            <div className={classes.tooltipList}>
-                                <img 
-                                    src={listViewSelected ? listViewIconSelected : listViewIcon}
-                                    className={listViewSelected ? classes.createListViewLogoSelected : classes.createListViewLogo}
-                                    onClick={() => {
-                                        if(!listViewSelected) {
-                                            setListViewSelected(!listViewSelected);
-                                            setCardsViewSelected(!cardsViewSelected);
-                                        }
-                                    }}
-                                />
-                                <span>
-                                    {translateToString({
-                                        se: 'Listvy',
-                                        en: 'List',
-                                        lang,
-                                    })}
-                                </span>
-                            </div> : null}
-                    </div>
-                </div>
-                
+        <div className={classes.main}>
+            <DocumentSideMenu 
+                handleSearch = {handleSearch}
+                closeFilterHandler = {closeFilterHandler}
+                showFilter = {showFilter}
+                screenWidth={screenWidth}
+                cardsViewSelected={cardsViewSelected}
+                listViewSelected={listViewSelected}
+                setListViewSelected={setListViewSelected}
+                setCardsViewSelected={setCardsViewSelected}
+                sortByChangedHandler={sortByChangedHandler}
+                sortValue={sortValue}
+                categoriesFromServer={categoriesFromServer}
+                categoriesShown={categoriesShown}
+                categoriesFilterChangeHandler={categoriesFilterChangeHandler}
+                clearCategoriesFilterHandler={clearCategoriesFilterHandler}
+            />
+            <div className={classes.documentsContainer}>
+                <FilterButton 
+                    colorTheme = 'light'
+                    extraStyle={{"marginBottom":"10px"}}
+                    extraClasses = {[classes.filterButton]}
+                    onClick={() => setShowFilter(true)}
+                />
                 {isLoading ? <Spinner /> :
                     (cardsViewSelected ?
                         <DocumentCards 

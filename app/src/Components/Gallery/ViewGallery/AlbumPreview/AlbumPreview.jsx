@@ -35,11 +35,13 @@ const AlbumPreview = (props) => {
             />
         </div>
         
-        
         <CustomBuildSwiper 
             images={props.images}
             videos={props.videos}
-            title={props.title} 
+            title={props.title}
+            viewImage = {props.viewImage}
+            viewVideo = {props.viewVideo}
+            albumId = {props.id}
         />
     </div>);
 }
