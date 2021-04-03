@@ -3,8 +3,7 @@ Flask-SQLAlchemy==2.4.1
 Flask-Cors==3.0.8
 Flask-RESTful==0.3.7
 gunicorn==19.9.0
-Pillow==8.0.1
-git+git://github.com/cameronbwhite/Flask-CAS.git@54a2e4e7140a4918929c601614278ea25c26546b#egg=Flask-CAS
+Pillow>=8.1.1
 itsdangerous==1.1.0
 flasgger==0.9.4
 google-cloud-storage==1.31.0
