@@ -139,7 +139,7 @@ const EventList = (props) => {
         fetch(API_BASE_URL + 'events')
             .then(response => response.json())
             .then(jsonObject => {
-                jsonObject.forEach(event => {
+                jsonObject.data.forEach(event => {
                     let eventObject = {
                         "id": event.id,
                         "title": event.title.sv,

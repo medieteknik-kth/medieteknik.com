@@ -1,15 +1,22 @@
 export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://127.0.0.1:5000/';
 
-function GetApiObject(resource) {
+export function GetApiObject(resource) {
   return {
-    GetAll(token = window.localStorage.getItem('googleToken')) {
+    GetAllWithFullObject(token = window.localStorage.getItem('authtoken')) {
       return fetch(API_BASE_URL + resource, {
         headers: {
           token,
         },
       }).then((response) => response.json());
     },
-    GetById(id, token = window.localStorage.getItem('googleToken')) {
+    GetAll(token = window.localStorage.getItem('authtoken')) {
+      return fetch(API_BASE_URL + resource, {
+        headers: {
+          token,
+        },
+      }).then((response) => response.json().then((data) => Promise.resolve(data.data)));
+    },
+    GetById(id, token = window.localStorage.getItem('authtoken')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         headers: {
           token,
@@ -21,7 +28,7 @@ function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    GetWithParameters(parameters, token = window.localStorage.getItem('googleToken')) {
+    GetWithParameters(parameters, token = window.localStorage.getItem('authtoken')) {
       return fetch(`${API_BASE_URL}${resource}?${Object.entries(parameters).map(([key, val]) => `${key}=${val}`).join('&')}`, {
         headers: {
           token,
@@ -33,7 +40,7 @@ function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    Update(id, data, token = window.localStorage.getItem('googleToken'), asJson = true) {
+    Update(id, data, token = window.localStorage.getItem('authtoken'), asJson = true) {
       return asJson ? fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
@@ -49,7 +56,7 @@ function GetApiObject(resource) {
         body: data
       });
     },
-    Create(data, token = window.localStorage.getItem('googleToken')) {
+    Create(data, token = window.localStorage.getItem('authtoken')) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -59,7 +66,7 @@ function GetApiObject(resource) {
         body: JSON.stringify(data),
       });
     },
-    PostForm(data, token = window.localStorage.getItem('googleToken')) {
+    PostForm(data, token = window.localStorage.getItem('authtoken')) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
@@ -68,7 +75,7 @@ function GetApiObject(resource) {
         body: data,
       });
     },
-    Delete(id, token = window.localStorage.getItem('googleToken')) {
+    Delete(id, token = window.localStorage.getItem('authtoken')) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "DELETE",
         headers: {
@@ -92,8 +99,8 @@ export default {
   Officials: GetApiObject('officials'),
   OperationalYears: GetApiObject('operational_years'),
   Committees: GetApiObject('committees'),
-  Me: { 
-    Committees: GetApiObject('me/committees') 
+  Me: {
+    Committees: GetApiObject('me/committees')
   },
   Pages: GetApiObject('pages'),
   Documents: GetApiObject('documents'),
@@ -106,7 +113,6 @@ export default {
   }).then((response) => response.json()),
   Users: GetApiObject('users'),
   Posts: GetApiObject('posts'),
-  Post: GetApiObject('post'),
   Events: GetApiObject('events'),
   Images: GetImage,
   CommitteePosts: (id) => GetApiObject(`committees/${id}/posts`),

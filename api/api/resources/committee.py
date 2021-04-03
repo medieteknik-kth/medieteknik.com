@@ -38,9 +38,11 @@ class CommitteeResource(Resource):
 
 class CommitteeListResource(Resource):
     def get(self):
-        committees = Committee.query.all()
-        data = [committee.to_dict() for committee in committees]
-        return jsonify(data)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        committees = Committee.query.paginate(page=page, per_page=per_page)
+        data = [committee.to_dict() for committee in committees.items]
+        return jsonify({"data": data, "totalCount": committees.total})
 
 class CommitteePostListWithCommitteeResource(Resource):
     def get(self, id):

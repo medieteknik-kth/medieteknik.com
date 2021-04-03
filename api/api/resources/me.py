@@ -27,5 +27,7 @@ class MeCommitteeResource(Resource):
             404:
                 description: Invalid user
         """
-        user_committees = [term.post.committee.to_dict() for term in user.post_terms.filter(and_(CommitteePostTerm.start_date < datetime.now(), datetime.now() < CommitteePostTerm.end_date))]
-        return jsonify(user_committees)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        user_committees = [term.post.committee.to_basic_dict() for term in user.post_terms.filter(and_(CommitteePostTerm.start_date < datetime.now(), datetime.now() < CommitteePostTerm.end_date))]
+        return jsonify({"data": user_committees, "totalCount": len(user_committees)})

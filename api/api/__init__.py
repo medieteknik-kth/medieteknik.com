@@ -1,7 +1,6 @@
 from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for,send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_cas import CAS, login_required
 from flask_restful import Api
 
 from flasgger import Swagger
@@ -13,7 +12,7 @@ from api.resources.committee import CommitteeResource, CommitteeListResource, Co
 from api.resources.committee_post import CommitteePostResource, CommitteePostListResource
 from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
 from api.resources.search import SearchResource
-from api.resources.post import PostResource, PostAddResouce, PostListResource
+from api.resources.post import PostResource, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
 from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
@@ -23,7 +22,7 @@ from api.resources.me import MeCommitteeResource
 from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
-from api.resources.authentication import AuthenticationResource
+from api.resources.authentication import AuthenticationResource, oidc
 
 from api.resources.event import EventResource, EventListResource
 
@@ -34,11 +33,9 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///medieteknikdev.db')
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "2kfueoVmpd0FBVFCJD0V")
-app.config['CAS_SERVER'] = os.getenv("CAS_SERVER", "/")
-app.config['CAS_LOGIN_ROUTE'] = os.getenv("CAS_LOGIN_ROUTE", "/login")
-app.config['CAS_LOGOUT_ROUTE'] = os.getenv("CAS_LOGOUT_ROUTE", "/logout")
-app.config['CAS_VALIDATE_ROUTE'] = os.getenv("CAS_VALIDATE_ROUTE", "/p3/serviceValidate")
-app.config['CAS_AFTER_LOGIN'] = os.getenv("CAS_AFTER_LOGIN", "casresource")
+app.config['OIDC_CLIENT_SECRETS'] = "./api/client_secrets.json"
+app.config['OIDC_CALLBACK_ROUTE'] = "/oidc"
+# app.config['OIDC_RESOURCE_SERVER_ONLY'] = True
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
@@ -64,6 +61,7 @@ db.init_app(app)
 CORS(app)
 api = Api(app)
 swagger = Swagger(app)
+oidc.init_app(app)
 
 api.add_resource(UserListResource, "/users")
 api.add_resource(UserResource, "/users/<id>")
@@ -82,7 +80,6 @@ api.add_resource(SearchResource, "/search/<search_term>")
 
 api.add_resource(PostListResource, "/posts")
 api.add_resource(PostResource, "/posts/<id>")
-api.add_resource(PostAddResouce, "/post")
 
 api.add_resource(PostTagListResource, "/post_tags")
 api.add_resource(PostTagResource, "/post_tags/<id>")
@@ -138,8 +135,8 @@ if app.debug:
         from api.models.image import Image
         from api.models.album import Album
         from api.models.video import Video
-
         from api.models.event import Event
+        from api.models.announcement import Announcement
 
         db.drop_all()
         db.create_all()
@@ -364,7 +361,7 @@ if app.debug:
         post.committee = committee1
         post.is_official = True
         post.officials_email = "projekthemsidan@medieteknik.com"
-        term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2020, 12, 31))
+        term1 = post.new_term(datetime.datetime(2019, 7, 1), datetime.datetime(2021, 12, 31))
         
         post2 = CommitteePost()
         post2.name = "Utvecklare"
@@ -590,6 +587,10 @@ if app.debug:
         album2.images.append(image4)
         album2.images.append(image5)
         db.session.add(album2)
+
+        announcement = Announcement()
+        announcement.message = "Hejsan!"
+        db.session.add(announcement)
 
         db.session.commit()
 

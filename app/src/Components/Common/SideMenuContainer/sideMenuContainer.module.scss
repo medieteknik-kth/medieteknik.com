@@ -8,11 +8,8 @@
 }
 
 .SideMenuContainer {
-    box-shadow:
-    0 0px 23.6px -10px rgba(0, 0, 0, 0.048),
-    0 0px 25.1px -10px rgba(0, 0, 0, 0.044),
-    0 0px 27.1px -10px rgba(0, 0, 0, 0.058),
-    0 0px 58px -10px rgba(0, 0, 0, 0.13);
+    box-shadow: 0 0 10px rgba(0,0,0,0.16);
+    border: 1px solid rgba(0,0,0,0.16);
 }
 
 .SideMenuModalContainer {

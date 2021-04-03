@@ -135,10 +135,12 @@ class PageListResource(Resource):
             200:
                 description: OK
         """
-        pages = Page.query.all()
-        data = [page.to_dict() for page in pages]
-        return jsonify(data)
-    
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        pages = Page.query.paginate(page=page, per_page=per_page)
+        data = [page.to_dict() for page in pages.items]
+        return jsonify({"data": data, "totalCount": pages.total})
+
     @requires_auth
     def post(self, user):
         """

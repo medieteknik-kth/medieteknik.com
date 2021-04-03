@@ -1,82 +1,67 @@
-import React, { useContext } from 'react';
-import classes from './adminTools.module.scss';
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import { PostCreate, PostList, PostEdit } from './PostAdmin';
 
-import SideMenuContainer from '../Common/SideMenuContainer/sideMenuContainer';
-import SearchField from '../Common/SearchField/searchField';
-import AdminTable from './AdminTable/AdminTable';
+import { GetApiObject } from '../../Utility/Api';
 
-import Api from '../../Utility/Api';
+const medieteknikApiDataProvider = (type, resource, params) => {
+  if (type === 'GET_ONE') {
+    return GetApiObject(resource).GetById(params.id).then((data) => Promise.resolve({ data }));
+  }
 
-import {
-  LocaleContext,
-  translateToString,
-} from '../../Contexts/LocaleContext';
+  if (type === 'GET_LIST') {
+    let url;
+    if (resource === 'pages') {
+      url = `${resource}?showUnpublished=true&page=${params.pagination.page}&perPage=${params.pagination.perPage}`;
+    } else {
+      url = `${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}`;
+    }
 
-const AdminTools = () => {
-  const { lang } = useContext(LocaleContext);
+    return GetApiObject(url).GetAllWithFullObject().then((data) => Promise.resolve({
+      data: data.data,
+      total: data.totalCount,
+    }));
+  }
 
-  const handleToolsSearch = (searchInput) => {
-    console.log(searchInput);
-  };
+  if (type === 'CREATE') {
+    return GetApiObject(resource).Create(params.data).then((data) => Promise.resolve({
+      data: { id: data.id },
+    }));
+  }
 
-  return (
-    <div className={classes.AdminTools}>
-      <h2>
+  if (type === 'UPDATE') {
+    return GetApiObject(resource).Update(params.id, params.data).then((data) => Promise.resolve({
+      data: { id: data.id },
+    }));
+  }
 
-        {translateToString({
-          se: 'Hantera',
-          en: 'Manage',
-          lang,
-        })}
-      </h2>
+  if (type === 'DELETE') {
+    return GetApiObject(resource).Delete(params.id).then((data) => Promise.resolve({
+      data: { id: data.id },
+    }));
+  }
 
-      <div className={classes.adminContainer}>
-        <SideMenuContainer extraClass={classes.sideMenu}>
-          <SearchField
-            swedishPlaceholder="Sök"
-            englishPlaceholder="Search"
-            colorTheme="dark"
-            handleSearch={handleToolsSearch}
-          />
+  if (type === 'UPDATE_MANY') {
+    return Promise.all(params.ids.map((id) => GetApiObject(resource).Update(id, params.data)));
+  }
 
-          <h4 style={{ paddingTop: '20px' }}>
-            {translateToString({
-              se: 'Startsida',
-              en: 'Start page',
-              lang,
-            })}
-          </h4>
-          <ul style={{ marginTop: '0px' }}>
-            <li>Bildspel</li>
-            <li>Sektionen</li>
-            <li>Utbildningen</li>
-          </ul>
+  if (type === 'DELETE_MANY') {
+    return Promise.all(params.ids.map((id) => GetApiObject(resource).Delete(id))).then((values) => ({ data: values.map((obj) => obj.id) }));
+  }
 
-          <h4 style={{ paddingTop: '20px' }}>
-            {translateToString({
-              se: 'Innehåll',
-              en: 'Content',
-              lang,
-            })}
-          </h4>
-          <ul style={{ marginTop: '0px' }}>
-            <li>Inlägg</li>
-            <li>Event</li>
-            <li>Dokument</li>
-            <li>Media</li>
-            <li>Nämnder</li>
-            <li>Funktionärer</li>
-          </ul>
-        </SideMenuContainer>
+  if (type === 'GET_MANY') {
+    return Promise.all(params.ids.map((id) => GetApiObject(resource).GetById(id))).then((values) => ({ data: values }));
+  }
 
-        <div className={classes.adminContent}>
-          <AdminTable endpoint={Api.Committees} fields={['name']} />
-        </div>
-      </div>
-
-    </div>
-
-  );
+  return Promise.reject();
 };
 
-export default AdminTools;
+export default function AdminTools() {
+  return (
+    <Admin dataProvider={medieteknikApiDataProvider} disableTelemetry>
+      <Resource name="posts" create={PostCreate} list={PostList} edit={PostEdit} />
+      <Resource name="post_tags" />
+      <Resource name="committees" />
+    </Admin>
+  );
+}

@@ -1,7 +1,7 @@
 from flask import jsonify, session, request, redirect, url_for
 from flask_restful import Resource
-from flask_cas import login_required
 from functools import wraps
+from flask_oidc import OpenIDConnect
 
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
@@ -17,6 +17,7 @@ from api.models.committee_post import CommitteePost
 import os
 
 secret = os.getenv("SECRET_KEY", "2kfueoVmpd0FBVFCJD0V")
+oidc = OpenIDConnect()
 
 def check_token(token):
     session = requests.session()

@@ -206,14 +206,17 @@ def get_events():
     user_query = request.args.to_dict()
     #if the user supplied a query, filter
 
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('perPage', 20, type=int)
+
     if user_query:
-        q = Event.query.filter_by(**user_query)
+        q = Event.query.filter_by(**user_query).paginate(page=page, per_page=per_page)
     else:
         #if user did not provide filter, just send all events
         scheduled_condition = [Event.scheduled_date <= datetime.now(), Event.scheduled_date == None]
-        q = Event.query.filter(and_(Event.draft == False, or_(*scheduled_condition)))
-    data = [Event.to_dict(res) for res in q]
-    return jsonify(data)
+        q = Event.query.filter(and_(Event.draft == False, or_(*scheduled_condition))).paginate(page=page, per_page=per_page)
+    data = [Event.to_dict(res) for res in q.items]
+    return jsonify({"data": data, "totalCount": q.total})
 
 
 def add_event(request, user_id):

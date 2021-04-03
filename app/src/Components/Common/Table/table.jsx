@@ -34,9 +34,9 @@ const Table = ({ allowRowDelete, deleteRowHandler, allowRowEdit, editRowHandler,
                                     <td>{ value }</td>
                                 ))
                             }
-                            { allowRowDelete ? <td><DeleteButton deleteHandler={() => {deleteRowHandler(tableRow)}} /></td> : null }
+                            { allowRowDelete ? <td className={classes.tableButton}><DeleteButton deleteHandler={() => {deleteRowHandler(tableRow)}} /></td> : null }
 
-                            { allowRowEdit ? <td style={{"paddingLeft":"0"}}><EditButton editHandler={editRowHandler} /></td> : null }
+                            { allowRowEdit ? <td className={classes.tableButton}><EditButton editHandler={editRowHandler} /></td> : null }
                         </tr>
                     ))
                 }

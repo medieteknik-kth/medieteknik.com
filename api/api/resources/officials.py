@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import Resource, reqparse
 from sqlalchemy import and_, or_, desc
 
@@ -39,9 +39,8 @@ class OfficialsResource(Resource):
                 description: Not authenticated
         """
 
-        # users = User.query.all()
-        # data = [user.to_dict() for user in users]
-        # return jsonify(data)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
 
         parser = reqparse.RequestParser()
         parser.add_argument('atDate', type=lambda x: datetime.strptime(x,'%Y-%m-%d'))
@@ -63,7 +62,7 @@ class OfficialsResource(Resource):
                     and_(CommitteePostTerm.start_date >= start_date_year, CommitteePostTerm.start_date <= end_date_year),
                     and_(CommitteePostTerm.end_date >= start_date_year, CommitteePostTerm.end_date <= end_date_year),
                     and_(CommitteePostTerm.start_date <= start_date_year, CommitteePostTerm.end_date >= end_date_year)
-                )).join(CommitteePost).join(Committee).join(CommitteeCategory).order_by(desc(CommitteeCategory.weight), desc(CommitteePost.weight)).all()
+                )).join(CommitteePost).join(Committee).join(CommitteeCategory).order_by(desc(CommitteeCategory.weight), desc(CommitteePost.weight)).paginate(page=page, per_page=per_page)
             else:
                 return jsonify({"message": "Invalid input"})
         else:
@@ -71,9 +70,9 @@ class OfficialsResource(Resource):
                 date = datetime.now()
 
 
-            terms = CommitteePostTerm.query.filter(CommitteePostTerm.post.has(CommitteePost.is_official == True)).filter(and_(CommitteePostTerm.start_date <= date, CommitteePostTerm.end_date >= date)).join(CommitteePost).join(Committee).join(CommitteeCategory).order_by(desc(CommitteeCategory.weight), desc(CommitteePost.weight)).all()
+            terms = CommitteePostTerm.query.filter(CommitteePostTerm.post.has(CommitteePost.is_official == True)).filter(and_(CommitteePostTerm.start_date <= date, CommitteePostTerm.end_date >= date)).join(CommitteePost).join(Committee).join(CommitteeCategory).order_by(desc(CommitteeCategory.weight), desc(CommitteePost.weight)).paginate(page=page, per_page=per_page)
         data = []
-        for term in terms:
+        for term in terms.items:
             data.append({
                 "startDate": term.start_date,
                 "endDate": term.end_date,
@@ -81,4 +80,4 @@ class OfficialsResource(Resource):
                 "user": term.user.to_dict_without_terms()
             })
 
-        return jsonify(data)
+        return jsonify({"data": data, "totalCount": terms.total})

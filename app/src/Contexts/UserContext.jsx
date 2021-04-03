@@ -8,7 +8,7 @@ const UserProvider = (props) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  const storedToken = window.localStorage.getItem('googleToken');
+  const storedToken = window.localStorage.getItem('authtoken');
   if (storedToken != null && token == null) {
     if (storedToken !== token) {
       setToken(storedToken);
@@ -16,14 +16,14 @@ const UserProvider = (props) => {
   }
 
   const logout = () => {
-    window.localStorage.removeItem('googleToken');
+    window.localStorage.removeItem('authtoken');
     setToken(null);
     setUser(null);
   };
 
   useEffect(() => {
     if (token != null) {
-      window.localStorage.setItem('googleToken', token);
+      window.localStorage.setItem('authtoken', token);
       Api.Authenticate(token).then((response) => {
         if (response.authenticated) {
           if (user == null || user.id !== response.user.id) {

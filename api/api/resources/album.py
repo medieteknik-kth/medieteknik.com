@@ -58,9 +58,11 @@ class AlbumListResource(Resource):
         return jsonify(success=True, id=album.albumId)
 
     def get(self):
-        albums = Album.query.all()
-        data = [album.to_dict() for album in albums]
-        return jsonify(data)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        albums = Album.query.paginate(page=page, per_page=per_page)
+        data = [album.to_dict() for album in albums.items]
+        return jsonify({"data": data, "totalCount": albums.total})
 
 class AlbumResource(Resource):
     def get(self, id):
