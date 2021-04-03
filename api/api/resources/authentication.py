@@ -1,6 +1,5 @@
 from flask import jsonify, session, request, redirect, url_for
 from flask_restful import Resource
-from flask_cas import login_required
 from functools import wraps
 
 from itsdangerous import (TimedJSONWebSignatureSerializer
