@@ -105,7 +105,12 @@ class PostTagListResource(Resource):
         responses:
             200:
                 description: OK
-        """   
-        tags = PostTag.query.all()
-        data = [tag.to_dict() for tag in tags]
-        return jsonify(data)
+        """
+
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+
+        tags = PostTag.query.paginate(page=page, per_page=per_page)
+        data = [tag.to_dict() for tag in tags.items]
+        total_count = tags.total
+        return jsonify({"data": data, "totalCount": total_count})

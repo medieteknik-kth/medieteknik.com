@@ -64,7 +64,7 @@ const ViewDocuments = (props) => {
                 let categoriesListTemp = [];
                 let categoriesShownTemp = {};
 
-                jsonObject.map(categoryObject => {
+                jsonObject.data.map(categoryObject => {
                     categoriesListTemp = [...categoriesListTemp, categoryObject.title];
                     categoriesShownTemp[categoryObject.title] = false;
                 })
@@ -78,7 +78,7 @@ const ViewDocuments = (props) => {
             fetch(API_BASE_URL + 'documents')
                 .then(response => response.json())
                 .then(jsonObject => {
-                    jsonObject.documents.map(doc => {
+                    jsonObject.data.documents.map(doc => {
                         let publishYear = parseInt(doc.date.slice(0, 4));
                         let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
                         let publishDay = parseInt(doc.date.slice(8, 10));

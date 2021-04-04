@@ -32,11 +32,17 @@ class DocumentListResource(Resource):
 
     def get(self):
         tags = request.args.get('tags')
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
         if tags is not None:
             tags = tags.split(",")
 
-        documents = get_documents(tags)
-        return jsonify({"documents": documents})
+        if tags is not None:
+            q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags)).paginate(page=page, per_page=per_page)
+        else:
+            q = Document.query.paginate(page=page, per_page=per_page)
+        documents = [Document.to_dict(res) for res in q.items]
+        return jsonify({"data": {"documents": documents}, "totalCount": q.total})
 
 class DocumentTagResource(Resource):
     def get(self):
@@ -81,18 +87,12 @@ def save_documents(request):
             db.session.add(dt)
 
     db.session.commit()
-#Hämta dokument från databasen
-#tags borde finnas i databasen så det inte blir knas
-def get_documents(tags: list):
-    if tags is not None:
-        q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags)).all()
-    else:
-        q = Document.query.all()
-    return [Document.to_dict(res) for res in q]
 
 def get_tags():
-    q = Tag.query.all()
-    return [res.to_dict() for res in q]
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('perPage', 20, type=int)
+    q = Tag.query.paginate(page=page, per_page=per_page)
+    return {"data": [res.to_dict() for res in q.items], "totalCount": q.total}
 
 def add_tag(title):
     t = Tag()

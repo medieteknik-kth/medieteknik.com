@@ -34,3 +34,13 @@
     border-top: 10px solid #f0f0f0;
     
 }
+
+.tableButton {
+    width: 30px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.tableButton:last-of-type {
+    padding-right: 20px !important;
+}

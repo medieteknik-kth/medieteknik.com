@@ -78,5 +78,6 @@ class Committee(db.Model):
             "description": self.description,
             "facebookUrl": self.facebook_url,
             "instagramUrl": self.instagram_url,
+            "pageSlug": self.page.slug if self.page else None
         }
 

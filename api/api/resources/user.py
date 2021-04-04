@@ -49,9 +49,11 @@ class UserResource(Resource):
 
 class UserListResource(Resource):
     def get(self):
-        users = User.query.all()
-        data = [user.to_dict() for user in users]
-        return jsonify(data)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        users = User.query.paginate(page=page, per_page=per_page)
+        data = [user.to_dict() for user in users.items]
+        return jsonify({"data": data, "totalCount": users.total})
 
 def resize_image(file_path, filename):
     im = Image.open(file_path)

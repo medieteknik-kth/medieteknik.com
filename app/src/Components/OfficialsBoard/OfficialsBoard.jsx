@@ -18,7 +18,7 @@ export default function OfficialsBoard() {
 
   useEffect(() => {
     setLoadingYears(true)
-    Api.OperationalYears.GetAll().then((data) => {
+    Api.OperationalYears.GetAllWithFullObject().then((data) => {
       setOperationalYears(data.years)
       setOperationalYear(data.current)
       setLoadingYears(false)
@@ -31,7 +31,7 @@ export default function OfficialsBoard() {
     setLoadingOfficials(true)
     if(operationalYear !== '') {
       Api.Officials.GetWithParameters({'forOperationalYear' : operationalYear, 'hyphenate': true}).then((res) => {
-      setOfficials(res)
+      setOfficials(res.data)
       setLoadingOfficials(false)
       }).catch(err => {
         setLoadingOfficials(false)

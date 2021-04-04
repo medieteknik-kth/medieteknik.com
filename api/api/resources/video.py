@@ -65,9 +65,13 @@ class VideoListResource(Resource):
         return make_response(jsonify(success=True, id=video.id, data=video.to_dict()))
 
     def get(self):
-        videos = Video.query.all()
-        data = [video.to_dict() for video in videos]
-        return jsonify(data)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        videos = Video.query.paginate(page=page, per_page=per_page)
+        data = [video.to_dict() for video in videos.items]
+        return jsonify({"data": data, "totalCount": videos.total})
+
+        
 
 class VideoResource(Resource):
     def get(self, id):
