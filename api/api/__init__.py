@@ -136,7 +136,6 @@ if app.debug:
         from api.models.album import Album
         from api.models.video import Video
         from api.models.event import Event
-        from api.models.announcement import Announcement
 
         db.drop_all()
         db.create_all()
@@ -587,10 +586,6 @@ if app.debug:
         album2.images.append(image4)
         album2.images.append(image5)
         db.session.add(album2)
-
-        announcement = Announcement()
-        announcement.message = "Hejsan!"
-        db.session.add(announcement)
 
         db.session.commit()
 
