@@ -4,7 +4,29 @@ import { PostCreate, PostList, PostEdit } from './PostAdmin';
 
 import { GetApiObject } from '../../Utility/Api';
 
-const medieteknikApiDataProvider = (type, resource, params) => {
+const toBase64 = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = (error) => reject(error);
+});
+
+const encodeParams = async (params) => {
+  const inputData = {};
+  await Promise.all(Object.keys(params.data).map(async (key) => {
+    const obj = params.data[key];
+    if (typeof obj === 'object' && 'rawFile' in obj) {
+      const val = await toBase64(obj.rawFile);
+      inputData[key] = val;
+    } else {
+      inputData[key] = obj;
+    }
+  }));
+
+  return inputData;
+};
+
+const medieteknikApiDataProvider = async (type, resource, params) => {
   if (type === 'GET_ONE') {
     return GetApiObject(resource).GetById(params.id).then((data) => Promise.resolve({ data }));
   }
@@ -24,25 +46,25 @@ const medieteknikApiDataProvider = (type, resource, params) => {
   }
 
   if (type === 'CREATE') {
-    return GetApiObject(resource).Create(params.data).then((data) => Promise.resolve({
+    const inputData = await encodeParams(params);
+    const data = await GetApiObject(resource).Create(inputData);
+    return {
       data: { id: data.id },
-    }));
+    };
   }
 
   if (type === 'UPDATE') {
-    return GetApiObject(resource).Update(params.id, params.data).then((data) => Promise.resolve({
+    const inputData = await encodeParams(params);
+    const data = await GetApiObject(resource).Update(params.id, inputData);
+    return {
       data: { id: data.id },
-    }));
+    };
   }
 
   if (type === 'DELETE') {
     return GetApiObject(resource).Delete(params.id).then((data) => Promise.resolve({
       data: { id: data.id },
     }));
-  }
-
-  if (type === 'UPDATE_MANY') {
-    return Promise.all(params.ids.map((id) => GetApiObject(resource).Update(id, params.data)));
   }
 
   if (type === 'DELETE_MANY') {
@@ -59,7 +81,7 @@ const medieteknikApiDataProvider = (type, resource, params) => {
 export default function AdminTools() {
   return (
     <Admin dataProvider={medieteknikApiDataProvider} disableTelemetry>
-      <Resource name="posts" create={PostCreate} list={PostList} edit={PostEdit} />
+      <Resource name="posts" create={PostCreate} list={PostList} /* edit={PostEdit} */ />
       <Resource name="post_tags" />
       <Resource name="committees" />
     </Admin>

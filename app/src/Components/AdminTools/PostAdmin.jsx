@@ -18,6 +18,7 @@ import {
   SelectInput,
   required,
   ImageField,
+  DateField,
 } from 'react-admin';
 import DeltaEditor from './DeltaEditor';
 
@@ -57,7 +58,9 @@ export function PostList(props) {
   return (
     <List {...props}>
       <Datagrid rowClick="edit">
-        <TextField source="title.se" label="Rubrik" />
+        <TextField source="title.se" label="Rubrik (se)" />
+        <TextField source="title.se" label="Rubrik (en)" />
+        <DateField source="date" showTime label="Skapad" />
       </Datagrid>
     </List>
   );
@@ -68,10 +71,13 @@ export function PostEdit(props) {
     <Edit {...props}>
       <SimpleForm>
         <TranslatableInputs locales={['se', 'en']} defaultLocale="se">
-          <TextInput source="title" />
-          <DeltaEditor source="body" />
+          <TextInput source="title" validate={[required()]} />
+          <DeltaEditor source="body" validate={[required()]} />
         </TranslatableInputs>
-        <ImageInput source="headerImage" label="Omslagsbild" />
+        <ImageField source="header_image" label="Nuvarande omslagsbild" />
+        <ImageInput source="header_image" label="Ny omslagsbild" accept="image/*">
+          <ImageField source="src" />
+        </ImageInput>
         <ReferenceInput source="committee_id" reference="committees">
           <SelectInput source="committee" optionValue="id" optionText="name" />
         </ReferenceInput>

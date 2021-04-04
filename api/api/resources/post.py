@@ -12,14 +12,12 @@ from api.models.post_tag import PostTag
 from api.models.user import User
 from api.models.committee import Committee
 from api.resources.authentication import requires_auth
-from api.utility.storage import upload_image
+from api.utility.storage import upload_b64_image
 
 import os
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import ImmutableMultiDict
 import uuid
-
-import base64
 
 from api.resources.common import parseBoolean
 
@@ -109,14 +107,30 @@ class PostResource(Resource):
         data = request.json
 
         if user.is_admin or post_user or committee_member:
-            title = data.get("title", {'se': post.title, 'en': post.title_en})
-            body = data.get("body", {'se': post.body, 'en': post.body_en})
-            
-            post.title = title.get('se', post.title)
-            post.title_en = title.get('en', post.title_en)
-
-            post.body = body.get('se', post.body)
-            post.body_en = body.get('en', post.body_en)
+            if data.get("title"):
+              title = data.get("title")
+              if title.get('se'):
+                post.title = title.get('se')
+              if title.get('en'):
+                post.title_en = title.get('en')
+            if data.get("body"):
+              body = data.get("body")
+              if body.get('se'):
+                post.body = body.get('se')
+              if title.get('en'):
+                post.body_en = body.get('en')
+            if data.get('date'):
+              post.date = data.get('date')
+            if data.get('scheduled_date'):
+              post.scheduled_date = data.get('scheduled_date')
+            if data.get('draft'):
+              post.draft = data.get('draft')
+            if data.get('header_image'):
+              post.header_image = upload_b64_image(data.get('header_image'))
+            if data.get('committee_id'):
+              post.committee_id = data.get('committee_id')
+            if data.get('tags'):
+              post.tags = data.get('tags')
             
             db.session.commit()
             return make_response(jsonify(success=True))
@@ -241,7 +255,7 @@ class PostListResource(Resource):
             if data.get('draft'):
               post.draft = data.get('draft')
             if data.get('header_image'):
-              post.header_image = data.get('header_image')
+              post.header_image = upload_b64_image(data.get('header_image'))
             if data.get('committee_id'):
               post.committee_id = data.get('committee_id')
             if data.get('tags'):
