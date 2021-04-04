@@ -28,7 +28,7 @@ import Page from './Components/Page/Page';
 import Spinner from './Components/Common/Spinner/Spinner';
 import Profile from './Components/Profile/profile';
 import AlbumUpload from './Components/Gallery/AlbumUpload/AlbumUpload';
-import AdminTools from './Components/AdminTools/AdminTools';
+import AdminTools from './Components/AdminTools/Admin';
 import Credits from './Components/Credits/Credits';
 
 export default function App() {
