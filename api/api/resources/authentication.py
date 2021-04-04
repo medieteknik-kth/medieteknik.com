@@ -17,7 +17,7 @@ from api.models.committee_post import CommitteePost
 import os
 
 secret = os.getenv("SECRET_KEY", "2kfueoVmpd0FBVFCJD0V")
-oidc = OpenIDConnect()
+# oidc = OpenIDConnect()
 
 def check_token(token):
     session = requests.session()
