@@ -41,7 +41,7 @@ class CommitteeListResource(Resource):
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('perPage', 20, type=int)
         committees = Committee.query.paginate(page=page, per_page=per_page)
-        data = [committee.to_dict() for committee in committees.items]
+        data = [committee.to_basic_dict() for committee in committees.items]
         return jsonify({"data": data, "totalCount": committees.total})
 
 class CommitteePostListWithCommitteeResource(Resource):
