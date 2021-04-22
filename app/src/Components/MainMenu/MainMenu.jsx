@@ -9,6 +9,7 @@ import styles from './MainMenu.module.scss';
 import { API_BASE_URL } from '../../Utility/Api';
 import { UserContext } from '../../Contexts/UserContext';
 import { LocaleContext } from '../../Contexts/LocaleContext';
+import AnnouncementBanner from "../AnnouncementBanner/AnnouncementBanner";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -149,42 +150,45 @@ const PageWithMainMenu = ({ children, transparent }) => {
   );
   return (
     <div className={styles.container}>
-      <div className={`${styles.mainMenu} ${transparent && !hasScolled ? styles.transparent : ''}`}>
-        <div className={styles.logoContainer}>
-          <Link
-            to="/"
-            onClick={() => {
-              setMainMenuExpanded(false);
-            }}
-          >
-            <img src="/logo.png" alt="Medieteknik Logo" className={styles.logo} />
-          </Link>
-        </div>
-        <div className={styles.iconContainer}>
-          {/* <div className={`${styles.icon} ${styles.responsiveIcon}`}>
-            <FontAwesomeIcon icon={faSearch} size="lg" />
-          </div> */}
-          {loginButton(styles.responsiveIcon)}
-          {localeButton(styles.responsiveIcon)}
-          <div
-            className={styles.expandButton}
-            onClick={() => {
-              setMainMenuExpanded(!mainMenuExpanded);
-              if (!mainMenuExpanded) {
-                setExpandedSubMenu(null);
-              }
-            }}
-          >
-            <FontAwesomeIcon icon={faBars} size="2x" />
+      <div className={styles.menuContainer}>
+        <AnnouncementBanner />
+        <div className={`${styles.mainMenu} ${transparent && !hasScolled ? styles.transparent : ''}`}>
+          <div className={styles.logoContainer}>
+            <Link
+              to="/"
+              onClick={() => {
+                setMainMenuExpanded(false);
+              }}
+            >
+              <img src="/logo.png" alt="Medieteknik Logo" className={styles.logo} />
+            </Link>
           </div>
-        </div>
-        <div className={`${styles.buttonsContainer} ${mainMenuExpanded ? styles.menuExpanded : ''}`}>
-          {menus.map((menu) => menuFrom(menu))}
-          {/* <div className={styles.icon}>
-            <FontAwesomeIcon icon={faSearch} size="lg" />
-          </div> */}
-          {loginButton('')}
-          {localeButton('')}
+          <div className={styles.iconContainer}>
+            {/* <div className={`${styles.icon} ${styles.responsiveIcon}`}>
+              <FontAwesomeIcon icon={faSearch} size="lg" />
+            </div> */}
+            {loginButton(styles.responsiveIcon)}
+            {localeButton(styles.responsiveIcon)}
+            <div
+              className={styles.expandButton}
+              onClick={() => {
+                setMainMenuExpanded(!mainMenuExpanded);
+                if (!mainMenuExpanded) {
+                  setExpandedSubMenu(null);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faBars} size="2x" />
+            </div>
+          </div>
+          <div className={`${styles.buttonsContainer} ${mainMenuExpanded ? styles.menuExpanded : ''}`}>
+            {menus.map((menu) => menuFrom(menu))}
+            {/* <div className={styles.icon}>
+              <FontAwesomeIcon icon={faSearch} size="lg" />
+            </div> */}
+            {loginButton('')}
+            {localeButton('')}
+          </div>
         </div>
       </div>
       <div className={`${styles.content} ${transparent ? styles.transparent : ''} ${mainMenuExpanded ? styles.contentWithExpandedMenu : ''}`}>
