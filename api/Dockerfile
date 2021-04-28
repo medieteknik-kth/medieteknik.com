@@ -1,5 +1,8 @@
 FROM python:3
 
+RUN apt-get update
+RUN apt-get install poppler-utils -y
+
 EXPOSE 80
 
 RUN mkdir -p /usr/src/api
