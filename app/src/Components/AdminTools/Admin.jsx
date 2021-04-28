@@ -1,7 +1,7 @@
 import React from 'react';
 import { Admin, Resource } from 'react-admin';
 import { PostCreate, PostList, PostEdit } from './PostAdmin';
-
+import { DocumentCreate, DocumentList, DocumentEdit } from './DocumentAdmin';
 import { GetApiObject } from '../../Utility/Api';
 
 const toBase64 = (file) => new Promise((resolve, reject) => {
@@ -81,9 +81,11 @@ const medieteknikApiDataProvider = async (type, resource, params) => {
 export default function AdminTools() {
   return (
     <Admin dataProvider={medieteknikApiDataProvider} disableTelemetry>
-      <Resource name="posts" create={PostCreate} list={PostList} /* edit={PostEdit} */ />
+      <Resource name="posts" create={PostCreate} list={PostList} edit={PostEdit} />
       <Resource name="post_tags" />
       <Resource name="committees" />
+      <Resource name="documents" create={DocumentCreate} list={DocumentList} edit={DocumentEdit} />
+      <Resource name="document_tags" />
     </Admin>
   );
 }

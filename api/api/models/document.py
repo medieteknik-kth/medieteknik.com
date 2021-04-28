@@ -1,29 +1,43 @@
 from api.db import db
 import datetime
 
+
 class Document(db.Model):
     __tablename__ = "documents"
-    itemId = db.Column(db.Integer, primary_key = True)
+    itemId = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
+    title_en = db.Column(db.String)
     tags = db.relationship("DocumentTags")
-    date = db.Column(db.DateTime, default=datetime.datetime.now)
-    uploadedBy = db.Column(db.String)
+    date = db.Column(db.Date)
     fileName = db.Column(db.String)
-    thumbnail = db.Column(db.String, default="parrot.gif")
+    thumbnail = db.Column(db.String)
 
     def to_dict(self):
-        return {"itemId": self.itemId, "title": self.title, "tags": [res.serialize() for res in self.tags], "filename": self.fileName, "date": str(self.date), "thumbnail":self.thumbnail}
+        return {
+            "id": self.itemId,
+            "title": {"se": self.title, "en": self.title_en},
+            "tags": [res.serialize() for res in self.tags],
+            "filename": self.fileName,
+            "date": self.date.strftime("%Y-%m-%d"),
+            "thumbnail": self.thumbnail
+        }
+
 
 class Tag(db.Model):
     __tablename__ = "tags"
-    tagId = db.Column(db.Integer, primary_key = True)
+    tagId = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
+    title_en = db.Column(db.String)
 
     def to_dict(self):
-        return {"tagId": self.tagId, "title": self.title}
+        return {
+            "id": self.tagId,
+            "title": {"se": self.title, "en": self.title_en}
+        }
 
     def __repr__(self):
         return "Tag with title %s and id %s" % (self.title, self.tagId)
+
 
 class DocumentTags(db.Model):
     id = db.Column(db.Integer, primary_key=True)

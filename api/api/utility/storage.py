@@ -5,6 +5,7 @@ import os
 import tempfile
 from api.utility.base64 import parse_b64
 import shutil
+from pdf2image import convert_from_bytes
 
 def upload_blob(bucket_name, source_file, destination_blob_name):
     if os.environ.get('FLASK_ENV') == "development":
@@ -51,7 +52,7 @@ def upload_file(source_file, destination_directory = "", allowed_extensions = []
         destination = filename if not destination_directory else destination_directory + "/" + filename
         return upload_blob("medieteknik-static", source_file, destination)
     else:
-        raise ValueError("Invalid extension")
+        raise ValueError("Invalid extension \"" + extension + "\"")
 
 def upload_profile_picture(source):
     return upload_file(source, "profiles", [".png", ".jpg", ".jpeg"])
@@ -75,3 +76,12 @@ def upload_b64_image(data):
     data, ext, mimetype = parse_b64(data)
     filename = str(uuid.uuid4()) + ext
     return upload_blob_data("medieteknik-static", data, mimetype, "images/" + filename)
+
+def upload_b64_document(data, name, date):
+    data, ext, mimetype = parse_b64(data)
+    filename = name + ext
+
+    thumbnails = convert_from_bytes(data, dpi=72, fmt="png", single_file=True, size=(300, None))
+    thumbnail_filename = upload_blob("medieteknik-static", thumbnails[0], "document_thumbnails/" + str(uuid.uuid4()) + ".png")
+    document_filename = upload_blob_data("medieteknik-static", data, mimetype, "documents/" + str(date.year) + "/" + str(date.month) + "/" + str(date.day) + "/" + filename)
+    return document_filename, thumbnail_filename

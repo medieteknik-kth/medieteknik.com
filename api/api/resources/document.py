@@ -1,34 +1,80 @@
 from flask import jsonify, request
 from flask_restful import Resource, reqparse
 
-from werkzeug.utils import secure_filename
 import sys
 import uuid
 import json
 import os
 import base64
+from datetime import datetime
 
 from api.db import db
 from api.models.document import Document, Tag, DocumentTags
 
-from api.utility.storage import upload_document, upload_document_thumbnail
+from api.utility.storage import upload_b64_document
 
 from api.resources.authentication import requires_auth
 
+
 class DocumentResource(Resource):
     def get(self, id):
-        
-        document = Document.query.get(id)
+        document = Document.query.get_or_404(id)
         return jsonify(document.to_dict())
 
+    def put(self, id):
+        pass
+
+    @requires_auth
+    def delete(self, user, id):
+        document = Document.query.get_or_404(id)
+        db.session.delete(document)
+        db.session.commit()
+        return jsonify({"message": "ok"})
+
+
 class DocumentListResource(Resource):
+    """
+        Example JSON data:
+        {
+            "title": {
+                "se": "Stadgar",
+                "en": "Statues"
+            },
+            "date": "2020-01-01",
+            "tags": [1, 2],
+            "file": "Base64 encoded date of the file to upload"
+        }
+    """
     @requires_auth
     def post(self, user):
-        if request.files is None:
-            return jsonify(message="no files attached"), 422
-        else:
-            save_documents(request)
-            return jsonify(message="file uploaded!")
+        data = request.json
+
+        document = Document()
+
+        if data.get("title"):
+            title = data.get("title")
+            if title.get('se'):
+                document.title = title.get('se')
+            if title.get('en'):
+                document.title_en = title.get('en')
+        if data.get('date'):
+            document.date = datetime.strptime(data.get('date'), "%Y-%m-%d")
+        if data.get('tags'):
+            tag_ids = data.get('tags')
+            tags = []
+            for tag_id in tag_ids:
+                tag = DocumentTags.query.get_or_404(tag_id)
+                tags.append(tag)
+            document.tags = tags
+        if data.get('file'):
+            file = data.get('file')
+            filename, thumbnail = upload_b64_document(file, document.title or str(uuid.uuid4()), document.date or datetime.now())
+            document.fileName = filename
+            document.thumbnail = thumbnail
+
+        db.session.add(document)
+        db.session.commit()
+        return jsonify({"success": True, "id": document.itemId})
 
     def get(self):
         tags = request.args.get('tags')
@@ -42,71 +88,17 @@ class DocumentListResource(Resource):
         else:
             q = Document.query.paginate(page=page, per_page=per_page)
         documents = [Document.to_dict(res) for res in q.items]
-        return jsonify({"data": {"documents": documents}, "totalCount": q.total})
+        return jsonify({"data": documents, "totalCount": q.total})
+
 
 class DocumentTagResource(Resource):
+    def get(self, id):
+        tag = Tag.query.get_or_404(id)
+        return jsonify(tag.to_dict())
+
+class DocumentTagListResource(Resource):
     def get(self):
-        res = get_tags()
-        return jsonify(res)
-
-
-SAVE_FOLDER = os.path.join(os.getcwd(), "static", "documents")
-THUMBNAIL_FOLDER = os.path.join(os.getcwd(), "static", "thumbnails")
-
-#spara dokument i databas
-def save_documents(request):
-    #Ta filer från requesten
-    files = request.files.getlist("file")
-    # lista att hålla koll på DB_objekt med när de skapats
-    db_docs = []
-    tags = json.loads(request.form["tags"])
-    thumbnail = request.form["thumbnail"].split(',')[1] #första delen av datan är en header, den slänger vi då den orsakar fel annars
-    thumb_name = str(uuid.uuid4()) + ".png"
-    # thumbnail skickas in som en base64-kodad sträng, vi måste dekoda den för att spara ned ordentligt
-    with open(os.path.join(THUMBNAIL_FOLDER, thumb_name), 'wb') as fh:
-        fh.write(base64.b64decode(thumbnail))
-        thumb_name = upload_document_thumbnail(fh)
-    for doc in files:
-        file_ext = os.path.splitext(doc.filename)[1]
-        fileName = str(uuid.uuid4())
-        d = Document(title=request.form["title"], fileName=upload_document(doc), thumbnail=thumb_name)
-        db.session.add(d)
-        db_docs.append(d)
-        doc.save(os.path.join(SAVE_FOLDER, d.fileName)) #skapar en mapp att spara uppladdade filer i när appen upprättas
-    db.session.commit()
-
-    #tagga dokumenten ordentligt
-    for idx, docobj in enumerate(db_docs):
-        tag_arr: list = tags[str(idx)]
-        print(tag_arr, file=sys.stderr)
-        print(docobj.itemId, file=sys.stderr)
-        for t in tag_arr:
-            dt = DocumentTags()
-            dt.itemId = docobj.itemId
-            dt.tagId = t
-            db.session.add(dt)
-
-    db.session.commit()
-
-def get_tags():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('perPage', 20, type=int)
-    q = Tag.query.paginate(page=page, per_page=per_page)
-    return {"data": [res.to_dict() for res in q.items], "totalCount": q.total}
-
-def add_tag(title):
-    t = Tag()
-    t.title = title
-
-    db.session.add(t)
-    db.session.commit()
-
-def add_tag_to_document(docId: str, tagId: str):
-    t = Tag.query.filter(Tag.tagId == tagId)
-    d = Document.query.filter(Document.itemId == docId)
-    dt = DocumentTags()
-    dt.itemId = d.itemId
-    dt.tagId = t.tagId
-
-    db.session.add(dt)
-    db.session.commit()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('perPage', 20, type=int)
+        q = Tag.query.paginate(page=page, per_page=per_page)
+        return {"data": [res.to_dict() for res in q.items], "totalCount": q.total}

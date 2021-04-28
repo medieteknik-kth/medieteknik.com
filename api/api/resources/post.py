@@ -162,7 +162,7 @@ class PostListResource(Resource):
         data = []
         total_count = 0
 
-        ## TODO: Only if logged in
+        ## TODO: Only show unpublished if logged in
         if show_unpublished:
           posts = Post.query.order_by(Post.date.desc()).paginate(page=page, per_page=per_page)
           data = [post.to_dict() for post in posts.items]

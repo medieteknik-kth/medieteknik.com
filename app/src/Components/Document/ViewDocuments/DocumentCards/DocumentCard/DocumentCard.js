@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import classes from './DocumentCard.module.css';
 import DocumentPreview from './DocumentPreview/DocumentPreview';
+import {LocaleContext, translateToString} from "../../../../../Contexts/LocaleContext";
 
-const documentCard = (props) => {
-    let docTypeString = props.doctype.map((tag) => tag.title).join(', ');
+export default function DocumentCard(props) {
+    const { lang } = useContext(LocaleContext);
+
+    let docTypeString = props.doctype.map((tag) => translateToString({...tag.title, lang})).join(', ');
 
     return (
         <div className={classes.cardContainer}>
@@ -13,7 +16,7 @@ const documentCard = (props) => {
                 <div className={classes.textContent}>
                     
                     <h4>{props.headingText}</h4>
-                    <p>{props.publishDate} | {props.publisher}</p>
+                    <p>{props.publishDate}</p>
                 </div>
                 <DocumentPreview thumbnail={props.thumbnail} className={classes.thumbnail} />
             </div>
@@ -21,7 +24,5 @@ const documentCard = (props) => {
         
     );
 }
-
-export default documentCard;
 
 

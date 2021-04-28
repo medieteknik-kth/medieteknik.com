@@ -10,3 +10,4 @@ google-cloud-storage==1.31.0
 CacheControl==0.12.6
 python-slugify==4.0.1
 flask-oidc==1.4.0
+pdf2image==1.14.0

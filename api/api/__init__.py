@@ -10,7 +10,7 @@ from api.db import db
 from api.resources.user import UserResource, UserListResource
 from api.resources.committee import CommitteeResource, CommitteeListResource, CommitteePostListWithCommitteeResource
 from api.resources.committee_post import CommitteePostResource, CommitteePostListResource
-from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource
+from api.resources.document import DocumentResource, DocumentListResource, DocumentTagResource, DocumentTagListResource
 from api.resources.search import SearchResource
 from api.resources.post import PostResource, PostListResource
 from api.resources.post_tag import PostTagResource, PostTagAddResource, PostTagListResource
@@ -74,7 +74,9 @@ api.add_resource(CommitteePostListResource, "/committee_posts")
 api.add_resource(CommitteePostResource, "/committee_posts/<id>")
 
 api.add_resource(DocumentListResource, "/documents")
-api.add_resource(DocumentTagResource, "/document_tags")
+api.add_resource(DocumentResource, "/documents/<id>")
+api.add_resource(DocumentTagListResource, "/document_tags")
+api.add_resource(DocumentTagResource, "/document_tags/<id>")
 
 api.add_resource(SearchResource, "/search/<search_term>")
 

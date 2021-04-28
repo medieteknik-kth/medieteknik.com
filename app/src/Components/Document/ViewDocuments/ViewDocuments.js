@@ -65,8 +65,8 @@ const ViewDocuments = (props) => {
                 let categoriesShownTemp = {};
 
                 jsonObject.data.map(categoryObject => {
-                    categoriesListTemp = [...categoriesListTemp, categoryObject.title];
-                    categoriesShownTemp[categoryObject.title] = false;
+                    categoriesListTemp = [...categoriesListTemp, translateToString({...categoryObject.title, lang})];
+                    categoriesShownTemp[translateToString({...categoryObject.title, lang})] = false;
                 })
 
                 setCategoriesFromServer(categoriesListTemp);
@@ -78,15 +78,15 @@ const ViewDocuments = (props) => {
             fetch(API_BASE_URL + 'documents')
                 .then(response => response.json())
                 .then(jsonObject => {
-                    jsonObject.data.documents.map(doc => {
+                    jsonObject.data.map(doc => {
                         let publishYear = parseInt(doc.date.slice(0, 4));
                         let publishMonth = parseInt(doc.date.slice(5, 7)) - 1;
                         let publishDay = parseInt(doc.date.slice(8, 10));
 
                         let docObject = {
-                            docId: doc.itemId,
+                            docId: doc.id,
                             doctags: doc.tags,
-                            headingText: doc.title,
+                            headingText: translateToString({...doc.title, lang}),
                             publisher: '',
                             publishDate: new Date(publishYear, publishMonth, publishDay),
                             displayCard: true,
