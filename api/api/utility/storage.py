@@ -81,7 +81,9 @@ def upload_b64_document(data, name, date):
     data, ext, mimetype = parse_b64(data)
     filename = name + ext
 
-    thumbnails = convert_from_bytes(data, dpi=72, fmt="png", single_file=True, size=(300, None))
-    thumbnail_filename = upload_blob("medieteknik-static", thumbnails[0], "document_thumbnails/" + str(uuid.uuid4()) + ".png")
+    with tempfile.TemporaryDirectory() as path:
+        images_from_path = convert_from_bytes(data, dpi=72, fmt="png", single_file=True, size=(300, None), output_folder=path)
+        thumbnail_filename = upload_blob("medieteknik-static", images_from_path[0], "document_thumbnails/" + str(uuid.uuid4()) + ".png")
+
     document_filename = upload_blob_data("medieteknik-static", data, mimetype, "documents/" + str(date.year) + "/" + str(date.month) + "/" + str(date.day) + "/" + filename)
     return document_filename, thumbnail_filename
