@@ -22,7 +22,11 @@ def upload_blob(bucket_name, source_file, destination_blob_name):
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(destination_blob_name)
 
-        blob.upload_from_file(source_file)
+        if isinstance(source_file, str):
+            blob.upload_from_filename(source_file)
+        else:
+            blob.upload_from_file(source_file)
+
         blob.make_public()
         return blob.public_url
 
@@ -83,7 +87,7 @@ def upload_b64_document(data, name, date):
 
     with tempfile.TemporaryDirectory() as path:
         images_from_path = convert_from_bytes(data, dpi=72, fmt="png", single_file=True, size=(300, None), output_folder=path)
-        thumbnail_filename = upload_blob("medieteknik-static", images_from_path[0], "document_thumbnails/" + str(uuid.uuid4()) + ".png")
+        thumbnail_filename = upload_blob("medieteknik-static", images_from_path[0].filename, "document_thumbnails/" + str(uuid.uuid4()) + ".png")
 
     document_filename = upload_blob_data("medieteknik-static", data, mimetype, "documents/" + str(date.year) + "/" + str(date.month) + "/" + str(date.day) + "/" + filename)
     return document_filename, thumbnail_filename
