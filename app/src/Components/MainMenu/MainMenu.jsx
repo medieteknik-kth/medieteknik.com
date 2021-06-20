@@ -151,7 +151,7 @@ const PageWithMainMenu = ({ children, transparent }) => {
   return (
     <div className={styles.container}>
       <div className={styles.menuContainer}>
-        <AnnouncementBanner />
+        {/* <AnnouncementBanner /> */}
         <div className={`${styles.mainMenu} ${transparent && !hasScolled ? styles.transparent : ''}`}>
           <div className={styles.logoContainer}>
             <Link
