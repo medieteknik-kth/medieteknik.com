@@ -79,7 +79,7 @@ class DocumentListResource(Resource):
     def get(self):
         tags = request.args.get('tags')
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('perPage', 20, type=int)
+        per_page = request.args.get('perPage', 30, type=int)
         if tags is not None:
             tags = tags.split(",")
 
