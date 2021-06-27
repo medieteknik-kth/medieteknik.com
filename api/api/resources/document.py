@@ -119,7 +119,7 @@ class DocumentListResource(Resource):
         if per_page is not None:
             paginated_query = q.paginate(page=page, per_page=per_page)
             documents = [Document.to_dict(res) for res in paginated_query.items]
-            count = q.total
+            count = paginated_query.total
         else:
             documents = [Document.to_dict(res) for res in q.all()]
             count = q.count()
