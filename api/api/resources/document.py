@@ -21,8 +21,33 @@ class DocumentResource(Resource):
         document = Document.query.get_or_404(id)
         return jsonify(document.to_dict())
 
-    def put(self, id):
-        pass
+    @requires_auth
+    def put(self, user, id):
+        data = request.json
+
+        document = Document.query.get_or_404(id)
+
+        if data.get("title"):
+            title = data.get("title")
+            if title.get('se'):
+                document.title = title.get('se')
+            if title.get('en'):
+                document.title_en = title.get('en')
+        if data.get('date'):
+            document.date = datetime.strptime(data.get('date'), "%Y-%m-%d")
+        if data.get('tags'):
+            tag_ids = data.get('tags')
+            tags = []
+            for tag_id in tag_ids:
+                tag = Tag.query.get_or_404(tag_id)
+                documentTag = DocumentTags()
+                documentTag.tagId = tag.tagId
+                documentTag.itemId = document.itemId
+                tags.append(documentTag)
+            document.tags = tags
+
+        db.session.commit()
+        return jsonify(document.to_dict())
 
     @requires_auth
     def delete(self, user, id):
@@ -63,8 +88,11 @@ class DocumentListResource(Resource):
             tag_ids = data.get('tags')
             tags = []
             for tag_id in tag_ids:
-                tag = DocumentTags.query.get_or_404(tag_id)
-                tags.append(tag)
+                tag = Tag.query.get_or_404(tag_id)
+                documentTag = DocumentTags()
+                documentTag.tagId = tag.tagId
+                documentTag.itemId = document.itemId
+                tags.append(documentTag)
             document.tags = tags
         if data.get('file'):
             file = data.get('file')
@@ -74,21 +102,29 @@ class DocumentListResource(Resource):
 
         db.session.add(document)
         db.session.commit()
-        return jsonify({"success": True, "id": document.itemId})
+        return jsonify(document.to_dict())
 
     def get(self):
         tags = request.args.get('tags')
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('perPage', 30, type=int)
+        per_page = request.args.get('perPage', None, type=int)
         if tags is not None:
             tags = tags.split(",")
 
         if tags is not None:
-            q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags)).paginate(page=page, per_page=per_page)
+            q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags))
         else:
-            q = Document.query.paginate(page=page, per_page=per_page)
-        documents = [Document.to_dict(res) for res in q.items]
-        return jsonify({"data": documents, "totalCount": q.total})
+            q = Document.query
+
+        if per_page is not None:
+            paginated_query = q.paginate(page=page, per_page=per_page)
+            documents = [Document.to_dict(res) for res in paginated_query.items]
+            count = q.total
+        else:
+            documents = [Document.to_dict(res) for res in q.all()]
+            count = q.count()
+
+        return jsonify({"data": documents, "totalCount": count})
 
 
 class DocumentTagResource(Resource):

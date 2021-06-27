@@ -85,7 +85,7 @@ const ViewDocuments = (props) => {
 
                         let docObject = {
                             docId: doc.id,
-                            doctags: doc.tags,
+                            doctags: doc.fullTags,
                             headingText: translateToString({...doc.title, lang}),
                             publisher: '',
                             publishDate: new Date(publishYear, publishMonth, publishDay),

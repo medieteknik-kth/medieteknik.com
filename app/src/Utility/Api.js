@@ -1,26 +1,20 @@
-export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://127.0.0.1:5000/';
+export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.medieteknik.com/' : 'http://localhost:5000/';
 
 export function GetApiObject(resource) {
   return {
-    GetAllWithFullObject(token = window.localStorage.getItem('authtoken')) {
+    GetAllWithFullObject() {
       return fetch(API_BASE_URL + resource, {
-        headers: {
-          token,
-        },
+        credentials: 'include'
       }).then((response) => response.json());
     },
-    GetAll(token = window.localStorage.getItem('authtoken')) {
+    GetAll() {
       return fetch(API_BASE_URL + resource, {
-        headers: {
-          token,
-        },
+        credentials: 'include'
       }).then((response) => response.json().then((data) => Promise.resolve(data.data)));
     },
-    GetById(id, token = window.localStorage.getItem('authtoken')) {
+    GetById(id) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
-        headers: {
-          token,
-        },
+        credentials: 'include'
       }).then((response) => {
         if (response.ok) {
           return response.json();
@@ -28,11 +22,9 @@ export function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    GetWithParameters(parameters, token = window.localStorage.getItem('authtoken')) {
+    GetWithParameters(parameters) {
       return fetch(`${API_BASE_URL}${resource}?${Object.entries(parameters).map(([key, val]) => `${key}=${val}`).join('&')}`, {
-        headers: {
-          token,
-        },
+        credentials: 'include'
       }).then((response) => {
         if (response.ok) {
           return response.json();
@@ -40,47 +32,46 @@ export function GetApiObject(resource) {
         return Promise.reject(response);
       });
     },
-    Update(id, data, token = window.localStorage.getItem('authtoken'), asJson = true) {
+    Update(id, data, asJson = true) {
       return asJson ? fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json',
-          token,
         },
+        credentials: 'include',
         body: JSON.stringify(data)
       }) : fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "PUT",
-        headers: {
-          token
-        },
+        credentials: 'include',
         body: data
       });
     },
-    Create(data, token = window.localStorage.getItem('authtoken')) {
+    Create(data) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          token,
         },
+        credentials: 'include',
         body: JSON.stringify(data),
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
       });
     },
-    PostForm(data, token = window.localStorage.getItem('authtoken')) {
+    PostForm(data) {
       return fetch(API_BASE_URL + resource, {
         method: "POST",
-        headers: {
-          token,
-        },
+        credentials: 'include',
         body: data,
       });
     },
-    Delete(id, token = window.localStorage.getItem('authtoken')) {
+    Delete(id) {
       return fetch(`${API_BASE_URL}${resource}/${id}`, {
         method: "DELETE",
-        headers: {
-          token,
-        },
+        credentials: 'include',
       }).then((response) => {
         if (response.ok) {
           return response.json();

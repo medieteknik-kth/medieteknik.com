@@ -263,7 +263,7 @@ class PostListResource(Resource):
 
             db.session.add(post)
             db.session.commit()
-            return make_response(jsonify(success=True, id=post.id))
+            return jsonify(post.to_dict())
         else:
             return make_response(jsonify(success=False, error=str(error)), 403)
 

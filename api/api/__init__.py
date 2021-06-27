@@ -1,6 +1,8 @@
-from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for,send_from_directory
+import logging
+
+from flask import Flask, session, jsonify, request, redirect, Blueprint, send_file, url_for,send_from_directory, make_response, g
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_restful import Api
 
 from flasgger import Swagger
@@ -18,24 +20,35 @@ from api.resources.page import PageResource, PageListResource
 from api.resources.officials import OfficialsResource
 from api.resources.operational_years import OperationalYearsResource
 from api.resources.health import HealthResource
-from api.resources.me import MeCommitteeResource
+from api.resources.me import MeResource, MeCommitteeResource
 from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
-from api.resources.authentication import AuthenticationResource#, oidc
+from api.resources.authentication import AuthenticationResource, oidc
 
 from api.resources.event import EventResource, EventListResource
 
 import os
 import datetime
 
+logging.basicConfig(level=logging.DEBUG)
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///medieteknikdev.db')
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "2kfueoVmpd0FBVFCJD0V")
-# app.config['OIDC_CLIENT_SECRETS'] = "./api/client_secrets.json"
-# app.config['OIDC_CALLBACK_ROUTE'] = "/oidc"
-# app.config['OIDC_RESOURCE_SERVER_ONLY'] = True
+app.config['OIDC_CLIENT_SECRETS'] = {
+ "web": {
+    "client_id": os.getenv("KTH_CLIENT_ID", "blablabla"),
+    "client_secret": os.getenv("KTH_CLIENT_SECRET", "blablabla"),
+    "auth_uri": "https://login.ug.kth.se/adfs/oauth2/authorize",
+    "token_uri": "https://login.ug.kth.se/adfs/oauth2/token",
+    "userinfo_uri": "https://login.ug.kth.se/adfs/userinfo",
+    "issuer": "https://login.ug.kth.se/adfs",
+    "redirect_uris": ["http://localhost:5000/oidc", "https://api.medieteknik.com/oidc"]
+ }
+}
+app.config['OIDC_CALLBACK_ROUTE'] = "/oidc"
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
@@ -58,10 +71,10 @@ app.config['SWAGGER'] = {
 }
 
 db.init_app(app)
-CORS(app)
+CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 api = Api(app)
 swagger = Swagger(app)
-# oidc.init_app(app)
+oidc.init_app(app)
 
 api.add_resource(UserListResource, "/users")
 api.add_resource(UserResource, "/users/<id>")
@@ -105,9 +118,10 @@ api.add_resource(VideoUploadTestResource, "/video_upload")
 
 api.add_resource(HealthResource, "/health")
 
+api.add_resource(MeResource, "/me")
 api.add_resource(MeCommitteeResource, "/me/committees")
 api.add_resource(AuthenticationResource, "/auth")
-    
+
 @app.route('/get_image')
 def get_image():
     return send_file(request.args.get('path'), mimetype='image/png')
@@ -123,6 +137,17 @@ def send_thumbnail(filename):
     print(filename)
     THUMBNAIL_FOLDER = os.path.join(os.getcwd(), "static", "thumbnails")
     return send_from_directory(THUMBNAIL_FOLDER, filename)
+
+@app.route("/login")
+@oidc.require_login
+def login_route():
+    redirect_target = request.args.get('redirect') or "/"
+    return redirect(redirect_target)
+
+@app.route("/logout")
+def logout_route():
+    oidc.logout()
+    return "ok"
 
 if app.debug:
     @app.route("/create_all")
@@ -421,12 +446,14 @@ if app.debug:
         doc.fileName = "https://storage.googleapis.com/medieteknik-static/documents/2019-02-19%20Stadgar.pdf"
         doc.uploadedBy = "Oliver Kamruzzaman"
         doc.thumbnail = "https://storage.googleapis.com/medieteknik-static/document_thumbnails/stadgar.png"
+        doc.date = datetime.datetime(2021, 6, 27)
 
         doc2 = Document()
         doc2.title = "Beta-SM Handlingar"
         doc2.fileName = "beta-sm.pdf"
         doc2.uploadedBy = "Oliver Kamruzzaman"
         doc2.thumbnail = "beta-sm.png"
+        doc2.date = datetime.datetime(2021, 6, 27)
 
         tag = Tag()
         tag.title = "Handlingar"

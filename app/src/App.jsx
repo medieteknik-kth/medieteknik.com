@@ -40,9 +40,6 @@ export default function App() {
             <Route exact path="/">
               <PageWithMainMenu transparent><LandingPage /></PageWithMainMenu>
             </Route>
-            <Route exact path="/login">
-              <PageWithMainMenu><Login /></PageWithMainMenu>
-            </Route>
             <Route path="/officials">
               <PageWithMainMenu><OfficialsBoard /></PageWithMainMenu>
             </Route>
@@ -79,16 +76,10 @@ export default function App() {
             <Route path="/media-gallery">
               <PageWithMainMenu><Gallery /></PageWithMainMenu>
             </Route>
-            <Route path="/albumupload">
-              <PageWithMainMenu><AlbumUpload /></PageWithMainMenu>
-            </Route>
             <Route path="/album/:id">
               <PageWithMainMenu><Album /></PageWithMainMenu>
             </Route>
             <Route path="/user">
-              <PageWithMainMenu><Profile /></PageWithMainMenu>
-            </Route>
-            <Route path="/admin">
               <PageWithMainMenu><AdminTools /></PageWithMainMenu>
             </Route>
             <Route path="/credits">

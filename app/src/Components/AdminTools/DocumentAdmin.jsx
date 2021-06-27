@@ -12,7 +12,7 @@ import {
   DateInput,
   TranslatableInputs,
   FileInput,
-  FileField, SelectArrayInput, ReferenceArrayInput
+  FileField, SelectArrayInput, ReferenceArrayInput, ImageField
 } from 'react-admin';
 import DeltaEditor from "./DeltaEditor";
 
@@ -51,6 +51,14 @@ export function DocumentEdit(props) {
   return (
     <Edit {...props}>
       <SimpleForm>
+        <TranslatableInputs locales={['se', 'en']} defaultLocale="se">
+          <TextInput source="title" validate={[required()]} />
+        </TranslatableInputs>
+        <DateInput source="date" label="Datum" validate={[required()]} />
+        <ReferenceArrayInput source="tags" reference="document_tags">
+          <SelectArrayInput optionValue="id" optionText="title.se" />
+        </ReferenceArrayInput>
+        <ImageField source="thumbnail" />
       </SimpleForm>
     </Edit>
   );

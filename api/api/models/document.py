@@ -8,7 +8,7 @@ class Document(db.Model):
     title = db.Column(db.String)
     title_en = db.Column(db.String)
     tags = db.relationship("DocumentTags")
-    date = db.Column(db.Date)
+    date = db.Column(db.Date, nullable=False)
     fileName = db.Column(db.String)
     thumbnail = db.Column(db.String)
 
@@ -16,9 +16,10 @@ class Document(db.Model):
         return {
             "id": self.itemId,
             "title": {"se": self.title, "en": self.title_en},
-            "tags": [res.serialize() for res in self.tags],
+            "tags": [res.tagId for res in self.tags],
+            "fullTags": [res.serialize() for res in self.tags],
             "filename": self.fileName,
-            "date": self.date.strftime("%Y-%m-%d"),
+            "date": self.date.strftime("%Y-%m-%d") if self.date is not None else None,
             "thumbnail": self.thumbnail
         }
 

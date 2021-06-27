@@ -21,7 +21,7 @@ const DocumentList = (props) => {
             .filter(_document => {
                 let renderDocument = false;
                 _document.doctags.forEach(documentTag => {
-                    if (props.categoriesToShow.includes(documentTag.title.toString().trim())) {
+                    if (props.categoriesToShow.includes(translateToString({...documentTag.title, lang}).toString().trim())) {
                         renderDocument = true;
                     }
                 })
@@ -70,7 +70,7 @@ const DocumentList = (props) => {
                 <tbody>
                     {
                         documentsToRender.map(document => {
-                            let docTypeString = document.doctags.map((tag) => tag.title).join(', ');
+                            let docTypeString = document.doctags.map((tag) => translateToString({...tag.title, lang})).join(', ');
 
                             return (
                                 <tr key={document.docId}>

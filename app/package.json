@@ -13,6 +13,7 @@
     "hls.js": "^0.14.17",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",
+    "oidc-client": "^1.11.5",
     "pdfjs-dist": "^2.3.200",
     "ra-data-json-server": "^3.12.4",
     "ra-input-rich-text": "^3.12.0",

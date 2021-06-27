@@ -1,11 +1,16 @@
-
-from flask import jsonify, request
+from flask import jsonify, request, jsonify
 from flask_restful import Resource
 from sqlalchemy import and_
 
 from api.models.committee_post import CommitteePostTerm
 from api.resources.authentication import requires_auth
 from datetime import datetime
+
+class MeResource(Resource):
+    @requires_auth
+    def get(self, user):
+        return jsonify(user.to_dict())
+
 
 class MeCommitteeResource(Resource):
     @requires_auth

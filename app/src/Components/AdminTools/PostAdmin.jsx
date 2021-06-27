@@ -24,7 +24,7 @@ import DeltaEditor from './DeltaEditor';
 
 export function PostCreate(props) {
   return (
-    <Create {...props}>
+    <Create {...props} redirect={false}>
       <SimpleForm>
         <TranslatableInputs locales={['se', 'en']} defaultLocale="se">
           <TextInput source="title" validate={[required()]} />
@@ -36,9 +36,6 @@ export function PostCreate(props) {
         <ReferenceInput source="committee_id" reference="committees">
           <SelectInput source="committee" optionValue="id" optionText="name" />
         </ReferenceInput>
-        <ReferenceArrayInput source="tags" reference="post_tags">
-          <SelectArrayInput optionValue="id" optionText="title" />
-        </ReferenceArrayInput>
         <BooleanInput source="scheduled" label="Schemalägg publicering" />
         <FormDataConsumer>
           {({ formData, ...rest }) => formData.scheduled && (
@@ -81,9 +78,6 @@ export function PostEdit(props) {
         <ReferenceInput source="committee_id" reference="committees">
           <SelectInput source="committee" optionValue="id" optionText="name" />
         </ReferenceInput>
-        <ReferenceArrayInput source="tags" reference="post_tags">
-          <SelectArrayInput optionValue="id" optionText="title" />
-        </ReferenceArrayInput>
         <BooleanInput source="scheduled" label="Schemalägg publicering" />
         <FormDataConsumer>
           {({ formData, ...rest }) => formData.scheduled && (

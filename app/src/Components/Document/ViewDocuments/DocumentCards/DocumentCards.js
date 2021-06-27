@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 
 import DocumentCard from './DocumentCard/DocumentCard';
 import classes from './DocumentCards.module.css';
+import {LocaleContext, translateToString} from "../../../../Contexts/LocaleContext";
 
 const DocumentCards = (props) => {
+    const { lang } = useContext(LocaleContext);
     let documentsToRender = [];
 
     if (props.zeroCategoriesSelected) {
@@ -14,7 +16,7 @@ const DocumentCards = (props) => {
             .filter(_document => {
                 let renderDocument = false;
                 _document.doctags.forEach(documentTag => {
-                    if (props.categoriesToShow.includes(documentTag.title.toString().trim())) {
+                    if (props.categoriesToShow.includes(translateToString({...documentTag.title, lang}).toString().trim())) {
                         renderDocument = true;
                     }
                 })

@@ -139,7 +139,7 @@ const PageWithMainMenu = ({ children, transparent }) => {
   };
 
   const loginButton = (additionalStyles) => (
-    <Link to="/login" className={`${styles.icon} ${additionalStyles}`}>
+    <Link to="/user" className={`${styles.icon} ${additionalStyles}`}>
       <FontAwesomeIcon icon={faUser} size="lg" />
     </Link>
   );
