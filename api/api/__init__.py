@@ -49,8 +49,6 @@ app.config['OIDC_CLIENT_SECRETS'] = {
  }
 }
 app.config['OIDC_CALLBACK_ROUTE'] = "/oidc"
-app.config['SERVER_NAME'] = "localhost" if app.debug else "api.medieteknik.com"
-app.config['PREFERRED_URL_SCHEME'] = "http" if app.debug else "https"
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
 
@@ -71,6 +69,16 @@ app.config['SWAGGER'] = {
         },
     }
 }
+
+# This is a fix so that url_for works with Google Cloud Run
+if not app.debug:
+    class ReverseProxied(object):
+        def __init__(self, app):
+            self.app = app
+        def __call__(self, environ, start_response):
+            environ['wsgi.url_scheme'] = 'https'
+            return self.app(environ, start_response)
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 db.init_app(app)
 CORS(app, origins=["http://localhost:3000", "https://www.medieteknik.com"], supports_credentials=True)
