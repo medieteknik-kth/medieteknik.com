@@ -49,7 +49,7 @@ app.config['OIDC_CLIENT_SECRETS'] = {
  }
 }
 app.config['OIDC_CALLBACK_ROUTE'] = "/oidc"
-app.config['PREFERRED_URL_SCHEME'] = "localhost" if app.debug else "api.medieteknik.com"
+app.config['SERVER_NAME'] = "localhost" if app.debug else "api.medieteknik.com"
 app.config['PREFERRED_URL_SCHEME'] = "http" if app.debug else "https"
 os.makedirs(os.path.join(os.getcwd(), "static", "profiles"), exist_ok=True)
 os.makedirs(os.path.join(os.getcwd(), "static", "posts"), exist_ok=True)
