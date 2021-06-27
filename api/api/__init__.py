@@ -71,7 +71,7 @@ app.config['SWAGGER'] = {
 }
 
 db.init_app(app)
-CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+CORS(app, origins=["http://localhost:3000", "https://www.medieteknik.com"], supports_credentials=True)
 api = Api(app)
 swagger = Swagger(app)
 oidc.init_app(app)
