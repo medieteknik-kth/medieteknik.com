@@ -2,6 +2,9 @@ from api.db import db
 import datetime
 import enum
 
+from api.utility.receptionmode import RECEPTION_MODE
+
+
 class PageRevisionType(enum.Enum):
     created = 0
     removed = 1
@@ -85,7 +88,7 @@ class PageRevision(db.Model):
             "author": self.author.to_dict_without_terms() if self.author != None else None,
             "title_sv": self.title_sv,
             "title_en": self.title_en,
-            "image": self.image,
+            "image": self.image if not RECEPTION_MODE else None,
             "content_sv": self.content_sv,
             "content_en": self.content_en,
             "published": self.published

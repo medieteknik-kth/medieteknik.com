@@ -2,6 +2,8 @@ from api.db import db
 
 from api.models.committee_post import CommitteePost
 from api.models.event import Event
+from api.utility.receptionmode import RECEPTION_MODE
+
 
 class CommitteeCategory(db.Model):
     __tablename__ = 'CommitteeCategory'
@@ -49,8 +51,8 @@ class Committee(db.Model):
             "posts": sorted(posts, key=lambda p: p["weight"], reverse=True),
             "logo": self.logo,
             "description": self.description,
-            "facebookUrl": self.facebook_url,
-            "instagramUrl": self.instagram_url,
+            "facebookUrl": self.facebook_url if not RECEPTION_MODE else None,
+            "instagramUrl": self.instagram_url if not RECEPTION_MODE else None,
             "page": page,
             "events": events,
         }
@@ -65,8 +67,8 @@ class Committee(db.Model):
             "posts": sorted(posts, key=lambda p: p["weight"], reverse=True),
             "logo": self.logo,
             "description": self.description,
-            "facebookUrl": self.facebook_url,
-            "instagramUrl": self.instagram_url,
+            "facebookUrl": self.facebook_url if not RECEPTION_MODE else None,
+            "instagramUrl": self.instagram_url if not RECEPTION_MODE else None,
             "events": events,
         }
 
@@ -76,8 +78,8 @@ class Committee(db.Model):
             "name": self.name,
             "logo": self.logo,
             "description": self.description,
-            "facebookUrl": self.facebook_url,
-            "instagramUrl": self.instagram_url,
+            "facebookUrl": self.facebook_url if not RECEPTION_MODE else None,
+            "instagramUrl": self.instagram_url if not RECEPTION_MODE else None,
             "pageSlug": self.page.slug if self.page else None
         }
 

@@ -1,6 +1,7 @@
 from api.db import db
 
 from api.models.committee import Committee
+from api.utility.receptionmode import RECEPTION_MODE
 
 
 class User(db.Model):
@@ -30,13 +31,13 @@ class User(db.Model):
         return {"id": self.id,
                 "email": self.email,
                 "kthId": self.kth_id,
-                "profilePicture": self.profile_picture,
-                "firstName": self.first_name,
-                "lastName": self.last_name,
+                "profilePicture": self.profile_picture if not RECEPTION_MODE else "/static/profiles/default.png",
+                "firstName": self.first_name if not RECEPTION_MODE else self.frack_name,
+                "lastName": self.last_name if not RECEPTION_MODE else "",
                 "frackName": self.frack_name,
                 "kthYear": self.kth_year,
-                "linkedin": self.linkedin,
-                "facebook": self.facebook,
+                "linkedin": self.linkedin if not RECEPTION_MODE else None,
+                "facebook": self.facebook if not RECEPTION_MODE else None,
                 "committeePostTerms": terms,
                 "alumni": self.alumni,
                 "isAdmin": self.is_admin
@@ -46,13 +47,13 @@ class User(db.Model):
         return {"id": self.id,
                 "email": self.email,
                 "kthId": self.kth_id,
-                "profilePicture": self.profile_picture,
-                "firstName": self.first_name,
-                "lastName": self.last_name,
+                "profilePicture": self.profile_picture if not RECEPTION_MODE else "/static/profiles/default.png",
+                "firstName": self.first_name if not RECEPTION_MODE else self.frack_name,
+                "lastName": self.last_name if not RECEPTION_MODE else "",
                 "frackName": self.frack_name,
                 "kthYear": self.kth_year,
-                "linkedin": self.linkedin,
-                "facebook": self.facebook,
+                "linkedin": self.linkedin if not RECEPTION_MODE else None,
+                "facebook": self.facebook if not RECEPTION_MODE else None,
                 "alumni": self.alumni,
                 "isAdmin": self.is_admin
                 }

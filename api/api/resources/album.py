@@ -3,6 +3,7 @@ from flask_restful import Resource, inputs
 
 from api.models.image import Image
 from api.models.album import Album
+from api.utility.receptionmode import RECEPTION_MODE
 from api.utility.storage import upload_album_photo
 from api.db import db
 from api.resources.authentication import requires_auth
@@ -58,6 +59,9 @@ class AlbumListResource(Resource):
         return jsonify(success=True, id=album.albumId)
 
     def get(self):
+        if RECEPTION_MODE:
+            return []
+
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('perPage', 20, type=int)
         albums = Album.query.paginate(page=page, per_page=per_page)
@@ -66,6 +70,9 @@ class AlbumListResource(Resource):
 
 class AlbumResource(Resource):
     def get(self, id):
+        if RECEPTION_MODE:
+            return "Not found", 404
+
         album = Album.query.get_or_404(id)
         return jsonify(album.to_dict())
     

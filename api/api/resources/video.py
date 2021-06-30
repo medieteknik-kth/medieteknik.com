@@ -6,6 +6,7 @@ import os
 from api.models.video import Video
 from api.db import db
 from api.resources.authentication import requires_auth
+from api.utility.receptionmode import RECEPTION_MODE
 
 TOKEN_ID = os.getenv("MUX_TOKEN_ID")
 SECRET = os.getenv("MUX_SECRET")
@@ -65,6 +66,9 @@ class VideoListResource(Resource):
         return make_response(jsonify(success=True, id=video.id, data=video.to_dict()))
 
     def get(self):
+        if RECEPTION_MODE:
+            return []
+
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('perPage', 20, type=int)
         videos = Video.query.paginate(page=page, per_page=per_page)
@@ -75,6 +79,9 @@ class VideoListResource(Resource):
 
 class VideoResource(Resource):
     def get(self, id):
+        if RECEPTION_MODE:
+            return "Not found", 404
+
         video = Video.query.get_or_404(id)
         return jsonify(video.to_dict())
         # playback_id = video.mux_playback_id
