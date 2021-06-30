@@ -59,7 +59,7 @@ class Page(db.Model):
             "title_en": title_en,
             "content_sv": content_sv,
             "content_en": content_en,
-            "image": image,
+            "image": image if not RECEPTION_MODE else None,
             "author": author,
             "revisions": [revision.to_dict() for revision in self.revisions],
             "published": published,
