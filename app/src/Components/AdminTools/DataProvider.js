@@ -23,6 +23,7 @@ const encodeParams = async (params) => {
 };
 
 export default async (type, resource, params) => {
+  console.log(params);
   if (type === 'GET_ONE') {
     if (resource === 'me') {
       const response = await fetch(`${API_BASE_URL}me`, { credentials: 'include' });
@@ -34,11 +35,13 @@ export default async (type, resource, params) => {
   }
 
   if (type === 'GET_LIST') {
+    let filters = new URLSearchParams(params.filter).toString();
+
     let url;
     if (resource === 'pages') {
-      url = `${resource}?showUnpublished=true&page=${params.pagination.page}&perPage=${params.pagination.perPage}`;
+      url = `${resource}?showUnpublished=true&page=${params.pagination.page}&perPage=${params.pagination.perPage}&sortBy=${params.sort.field}&orderBy=${params.sort.order}&${filters}`;
     } else {
-      url = `${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}`;
+      url = `${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}&sortBy=${params.sort.field}&orderBy=${params.sort.order}&${filters}`;
     }
 
     return GetApiObject(url).GetAllWithFullObject().then((data) => Promise.resolve({

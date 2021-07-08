@@ -59,7 +59,14 @@ class CommitteePostListResource(Resource):
     def get(self):
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('perPage', 20, type=int)
-        committee_posts = CommitteePost.query.paginate(page=page, per_page=per_page)
+        is_official = request.args.get('isOfficial', False, type=bool)
+
+        if is_official:
+            q = CommitteePost.query.join(CommitteePostTerm).filter(CommitteePostTerm.post.has(CommitteePost.is_official == True))
+        else:
+            q = CommitteePost.query
+
+        committee_posts = q.paginate(page=page, per_page=per_page)
         data = [committee_post.to_dict() for committee_post in committee_posts.items]
         return jsonify({"data": data, "totalCount": committee_posts.total})
 

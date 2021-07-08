@@ -23,7 +23,7 @@ export const OfficialsFilter = (props) => (
 export function OfficialCreate(props) {
   return (<Create {...props}>
     <SimpleForm>
-      <ReferenceInput label="Post" source="post.id" reference="committee_posts" validate={[required()]} perPage={10000}>
+      <ReferenceInput label="Post" source="post.id" reference="committee_posts" validate={[required()]} perPage={10000} filter={{ isOfficial: true }}>
         <SelectInput source="postId" optionText="name" />
       </ReferenceInput>
       <ReferenceInput label="Person" source="user.id" reference="users" validate={[required()]} perPage={10000}>
