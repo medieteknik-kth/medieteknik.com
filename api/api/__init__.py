@@ -25,6 +25,7 @@ from api.resources.test import TestResource
 from api.resources.album import AlbumListResource, AlbumResource
 from api.resources.video import VideoResource, VideoListResource, VideoUploadTestResource
 from api.resources.authentication import AuthenticationResource, oidc
+from api.resources.committee_post_term import CommitteePostTermResource, CommitteePostTermListResource
 
 from api.resources.event import EventResource, EventListResource
 
@@ -95,6 +96,8 @@ api.add_resource(CommitteePostListWithCommitteeResource, "/committees/<id>/posts
 
 api.add_resource(CommitteePostListResource, "/committee_posts")
 api.add_resource(CommitteePostResource, "/committee_posts/<id>")
+api.add_resource(CommitteePostTermResource, "/committee_post_terms/<id>")
+api.add_resource(CommitteePostTermListResource, "/committee_post_terms")
 
 api.add_resource(DocumentListResource, "/documents")
 api.add_resource(DocumentResource, "/documents/<id>")

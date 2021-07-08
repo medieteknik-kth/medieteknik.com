@@ -98,3 +98,13 @@ class CommitteePostTerm(db.Model):
     end_date = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="post_terms")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "startDate": self.start_date.strftime("%Y-%m-%d"),
+            "endDate": self.end_date.strftime("%Y-%m-%d"),
+            "post": self.post.to_dict_without_terms(),
+            "user": self.user.to_dict_without_terms(),
+            "isCurrent": self.start_date < datetime.now() < self.end_date
+        }

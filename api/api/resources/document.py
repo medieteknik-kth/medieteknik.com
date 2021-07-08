@@ -8,6 +8,8 @@ import os
 import base64
 from datetime import datetime
 
+from sqlalchemy import desc
+
 from api.db import db
 from api.models.document import Document, Tag, DocumentTags
 
@@ -108,13 +110,14 @@ class DocumentListResource(Resource):
         tags = request.args.get('tags')
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('perPage', None, type=int)
+
         if tags is not None:
             tags = tags.split(",")
 
         if tags is not None:
-            q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags))
+            q = Document.query.join(DocumentTags).join(Tag).filter(Tag.tagId.in_(tags)).order_by(desc(Document.date))
         else:
-            q = Document.query
+            q = Document.query.order_by(desc(Document.date))
 
         if per_page is not None:
             paginated_query = q.paginate(page=page, per_page=per_page)

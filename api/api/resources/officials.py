@@ -74,6 +74,7 @@ class OfficialsResource(Resource):
         data = []
         for term in terms.items:
             data.append({
+                "id": term.id,
                 "startDate": term.start_date,
                 "endDate": term.end_date,
                 "post": term.post.to_dict_without_terms(hyphenate=(True if args.hyphenate != None else False)),

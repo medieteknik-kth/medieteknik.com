@@ -2,9 +2,11 @@ from flask import jsonify, request
 from flask_restful import Resource
 from api.db import db
 
-from api.models.committee_post import CommitteePost
+from api.models.committee_post import CommitteePost, CommitteePostTerm
 
 from api.resources.authentication import requires_auth
+import datetime
+
 
 class CommitteePostResource(Resource):
     def get(self, id):
@@ -35,6 +37,22 @@ class CommitteePostResource(Resource):
 
         db.session.commit()
         return jsonify({"message": "ok"})
+
+    @requires_auth
+    def post(self, id, user):
+        data = request.json
+
+        if data.get("userId") and data.get("startDate") and data.get("endDate"):
+            post = CommitteePostTerm()
+            post.post_id = id
+            post.user_id = data.get("userId")
+            post.start_date = datetime.strptime(data.get('startDate'), "%Y-%m-%d")
+            post.end_date = datetime.strptime(data.get('endDate'), "%Y-%m-%d")
+            db.session.add(post)
+            db.session.commit()
+            return jsonify(post.to_dict())
+        else:
+            return {"message": "Invalid request"}, 400
 
 
 class CommitteePostListResource(Resource):
