@@ -18,8 +18,8 @@ def requires_auth(f):
                "message": "Requires authentication"
             }, 403
 
-        kth_id = oidc.user_getfield("kthid")
-        user = User.query.filter_by(kth_id=kth_id).first()
+        email = oidc.user_getfield("username") + "@kth.se"
+        user = User.query.filter_by(email=email).first()
         if not user:
             return {
                 "message": "Invalid user"
