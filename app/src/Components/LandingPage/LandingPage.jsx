@@ -45,7 +45,6 @@ export default function LandingPage() {
       <div className="landing-feed">
         <Feed landingTitle />
       </div>
-      <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=2&bgcolor=%23ffffff&ctz=Europe%2FStockholm&title=Sektionen%20f%C3%B6r%20Medieteknik&src=Y182cm1jMHRvcDRyYzRkZDM1bW10Yjl2Z21uMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23F6BF26" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     </div>
   );
 }
