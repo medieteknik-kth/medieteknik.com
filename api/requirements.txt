@@ -12,3 +12,5 @@ python-slugify==4.0.1
 pdf2image==1.14.0
 Flask-OIDC==1.0.3
 jinja2==2.10
+MarkupSafe==2.0
+werkzeug==0.14
