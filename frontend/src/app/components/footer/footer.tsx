@@ -52,7 +52,7 @@ const FooterElements = [
 
 export default function Footer() {
   return (
-    <div className='w-full h-96 text-sm bg-stone-900 text-white flex flex-col items-center justify-between'>
+    <div className='w-full h-80 text-sm bg-stone-900 text-white flex flex-col items-center justify-between'>
       <div className='w-full'>
         <ul className='flex justify-center mt-8'>
           {FooterElements.map((element, index) => {
