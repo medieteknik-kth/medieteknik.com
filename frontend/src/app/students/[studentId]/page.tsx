@@ -1,9 +1,7 @@
-import { useRouter } from "next/router";
-
 export default function UserPage({ 
-    params 
+  params 
 }: {
-    params: { studentId: string }
+  params: { studentId: string }
 }) {
-    return <p>Hello Student: { params.studentId } 👋</p>
+  return <p>Hello Student: { params.studentId } 👋</p>
 }

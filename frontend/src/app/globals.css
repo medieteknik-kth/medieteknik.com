@@ -21,3 +21,8 @@ body {
   background: white;
   font-family: 'Roberto', sans-serif;
 }
+
+img {
+  width: auto;
+  height: auto;
+}
