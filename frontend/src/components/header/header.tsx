@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Logo from '/public/images/logo.png';
 import DropdownMenu from '../menu/dropdown';
+import LoginSection from './loginSection';
 import { DropdownBlueprint } from '../menu/dropdown';
 
 const HeaderNavElements: DropdownBlueprint[] = [
@@ -72,6 +73,7 @@ const HeaderNavElements: DropdownBlueprint[] = [
 ]
 
 export default function Header () {
+
   return (
     <header className='w-full bg-transparent text-white fixed'>
       <div className='w-full h-20 flex justify-between'>
@@ -93,12 +95,7 @@ export default function Header () {
             })}
             
           </ul>
-          <div className='w-1/4 h-full flex justify-end items-center mx-8'>
-            <a href='/login' className='h-full flex items-center'>
-              <p className='mr-4 text-sm font-semibold tracking-wide'>&nbsp;&nbsp; LOGGA IN</p>
-              <svg className='w-10' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-            </a>
-          </div>
+          <LoginSection />
         </div>
       </div>
     </header>

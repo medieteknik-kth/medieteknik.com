@@ -1,9 +1,10 @@
 import Image from 'next/image'
-import Header from './components/header/header'
-import Footer from './components/footer/footer'
+import Header from '@/components/header/header'
+import Footer from '@/components/footer/footer'
 import Background from '/public/images/bg.jpg'
-
-export default function Home() {
+import { useTranslation } from '../i18n'
+export default async function Home({ params: { language } }: { params: { language: string } }) {
+  const { t } = await useTranslation(language, 'home')
   return (
     <main>
       <Header />
@@ -13,8 +14,8 @@ export default function Home() {
         </div>
         <div className='w-full h-full z-10 flex justify-center'>
           <div className='w-1/2 h-full flex flex-col items-center justify-center'>
-            <h1 className='text-7xl text-yellow-400 font-semibold tracking-wide p-8'>MEDIETEKNIK</h1>
-            <h2 className='text-2xl text-white tracking-widest'>KUNGLIGA TEKNISKA HÖGSKOLAN</h2>
+            <h1 className='text-7xl text-yellow-400 font-semibold tracking-wide p-8 uppercase'>{t('title')}</h1>
+            <h2 className='text-2xl text-white tracking-widest uppercase'>{t('school')}</h2>
           </div>
         </div>
       </div>
