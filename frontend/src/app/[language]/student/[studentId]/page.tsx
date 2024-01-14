@@ -1,6 +1,16 @@
+import Header from '@/components/header/Header'
+import Footer from '@/components/footer/Footer'
+
 export default function UserPage( 
-  { params }: 
-  { params: { studentId: string }}
+  { params: { studentId, language } }: 
+  { params: { studentId: string, language: string }}
 ) {
-  return <p>Hello Student: { params.studentId } 👋</p>
+  return (
+  <div>
+    <Header params={{ language }} />
+    <p>Hello Student: { studentId } 👋</p>
+    <Footer params={{ language }}/>
+  </div>
+  
+  )
 }

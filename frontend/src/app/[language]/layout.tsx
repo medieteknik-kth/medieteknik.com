@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { CookiesProvider } from 'next-client-cookies/server';
 import { supportedLanguages } from '../i18n/settings'
 import { dir } from 'i18next'
-
 
 export async function generateStaticParams() {
   return supportedLanguages.map((language) => ({ language }))
@@ -23,7 +23,11 @@ export default function RootLayout({
   return (
     <html lang={language} dir={dir(language)}>
       <head />
-      <body>{children}</body>
+      <body>
+        <CookiesProvider>
+          {children}
+        </CookiesProvider>
+      </body>
     </html>
   )
 }

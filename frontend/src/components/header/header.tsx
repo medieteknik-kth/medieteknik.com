@@ -1,101 +1,42 @@
 import React from 'react';
 import Image from 'next/image';
 import Logo from '/public/images/logo.png';
-import DropdownMenu from '../menu/dropdown';
-import LoginSection from './loginSection';
-import { DropdownBlueprint } from '../menu/dropdown';
+import { NavItem } from './Navigation';
+import LoginSection from './LoginSection';
+import { useTranslation } from '@/app/i18n'
 
-const HeaderNavElements: DropdownBlueprint[] = [
-  {
-    title: 'AKTUELLT',
-    navmenu: [
-      {
-        title: 'Nyheter',
-        url: '/nyheter'
-      },
-      {
-        title: 'Event',
-        url: '/event'
-      },
-      {
-        title: 'Podcast',
-        url: '/podcast'
-      }
-    ]
-  },
-  {
-    title: 'SEKTIONEN',
-    navmenu: [
-      {
-        title: 'Styrelsen',
-        url: '/styrelsen'
-      },
-      {
-        title: 'Kommittéer',
-        url: '/kommittéer'
-      },
-      {
-        title: 'Stadgar',
-        url: '/stadgar'
-      },
-      {
-        title: 'Dokument',
-        url: '/dokument'
-      }
-    ]
-  },
-  {
-    title: 'UTBILDNING',
-    navmenu: [
-      {
-        title: 'Vad är Medieteknik?',
-        url: '/vad-ar-medieteknik'
-      },
-      {
-        title: 'Kurser',
-        url: '/kurser'
-      }
-    ]
-  },
-  {
-    title: 'KONTAKT',
-    navmenu: [
-      {
-        title: 'Kontakta oss',
-        url: '/kontakta-oss'
-      },
-      {
-        title: 'Företag',
-        url: '/foretag'
-      }
-    ]
-  }
-]
+type HeaderElement = {
+  title: string,
+  link: string
+}
 
-export default function Header () {
+const listStyle = 'w-40 h-full flex justify-center items-center border-b-2 border-transparent hover:bg-stone-800/20 hover:border-yellow-500'
+
+export default async function Header ({ params: { language } }: { params: { language: string } }) {
+  const { t } = await useTranslation(language, 'header')
+  const headerElements: HeaderElement[] = t('navs', { returnObjects: true }); 
 
   return (
     <header className='w-full bg-transparent text-white fixed'>
       <div className='w-full h-20 flex justify-between'>
-        <div className='w-1/12 h-full flex justify-center items-center ml-8'>
+        <div className='w-[10%] h-full flex justify-center items-center ml-8'>
           <a href='/' className='w-96 flex justify-around items-center'>
             <Image src={Logo.src} alt='Medieteknik Logo' width='46' height='46' />
-            <h1 className='text-xl font-bold'>Medieteknik</h1>
+            <h1 className='text-xl font-bold'>{t('title')}</h1>
           </a>
         </div>
 
         <div className='w-1/2 h-full flex justify-end items-center'>
-          <ul className='w-1/2 h-full flex justify-between items-center text-sm tracking-wide'>
-            {HeaderNavElements.map((element, index) => {
+          <ul className='w-full h-full flex justify-evenly items-center'>
+            {headerElements.map((element: HeaderElement, index: number) => {
               return (
-                <li key={index} className='w-full h-full'>
-                  <DropdownMenu params={element} />
+                <li key={index} className={listStyle}>
+                  <NavItem title={element.title} metadata={{ link: element.link }} />
                 </li>
               )
             })}
-            
           </ul>
-          <LoginSection />
+          <LoginSection params={{ language }}/>
         </div>
       </div>
     </header>

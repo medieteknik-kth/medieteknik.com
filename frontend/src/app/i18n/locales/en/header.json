@@ -1,0 +1,33 @@
+{
+    "title": "Media Technology",
+    "navs": [
+        {
+            "title": "News",
+            "link": "/news"
+        },
+        {
+            "title": "Section",
+            "link": "/section"
+        },
+        {
+            "title": "Education",
+            "link": "/education"
+        },
+        {
+            "title": "Contact",
+            "link": "/contact"
+        }
+    ],
+    "toggleLanguage": "Select Language",
+    "settings": [
+        {
+            "title": "Theme"
+        },
+        {
+            "title": "Language"
+        },
+        {
+            "title": "Options"
+        }
+    ]
+}

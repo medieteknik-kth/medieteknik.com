@@ -1,0 +1,48 @@
+{
+    "elements": [
+        {
+            "title": "About Media Technology",
+            "children": [
+                {
+                    "title": "About the programme",
+                    "url": "/programme"
+                },
+                {
+                    "title": "About the section",
+                    "url": "/section"
+                },
+                {
+                    "title": "Courses",
+                    "url": "/courses"
+                }
+            ]
+        },
+        {
+            "title": "About Us",
+            "children": [
+                {
+                    "title": "Contact",
+                    "url": "/contact"
+                },
+                {
+                    "title": "Company",
+                    "url": "/company"
+                }
+            ]
+        },
+        {
+            "title": "Social Media",
+            "children": [
+                {
+                    "title": "Facebook",
+                    "url": "https://www.facebook.com/medieteknik"
+                },
+                {
+                    "title": "Instagram",
+                    "url": "https://www.instagram.com/medieteknik/"
+                }
+            ]
+        }
+    ],
+    "copyright": "© 2024 Sektionen för Medieteknik. This site is maintained by students studying in the Media Technology programme at KTH Royal Institute of Technology in Stockholm, Sweden."
+}

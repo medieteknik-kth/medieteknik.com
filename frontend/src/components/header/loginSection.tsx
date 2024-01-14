@@ -1,63 +1,128 @@
 'use client'
+import '/node_modules/flag-icons/css/flag-icons.min.css';
+import Link from 'next/link'
 import React from 'react'
+import { NavItem, BaseNavItem, AllowedEventTypes } from './Navigation';
 import { useState } from 'react'
+import { UserCircleIcon, EllipsisVerticalIcon, SunIcon, MoonIcon, LanguageIcon, Cog6ToothIcon } from '@heroicons/react/24/outline'
+import { useTranslation } from '@/app/i18n/client';
 
-// 'Språk',
-//  'Tema',
-//  'Inställningar'
-const Settings =
-[
-  'Språk',
-  'Tema',
-  'Inställningar'
-]
 
-const SettingsElements = [{
-  name: 'Språk',
-  link: '/language'
-},
-{
-  name: 'Tema',
-  link: '/theme'
-},
-{
-  name: 'Inställningar',
-  link: '/settings'
-}]
+function Settings({ params: { language } }: { params: { language: string } }) {
+  const { t } = useTranslation(language, 'header')
+  const settingElements: {title: string}[] = t('settings', { returnObjects: true })
 
-export default function LoginSection() {
-  const [open, setOpen] = useState(false)
+  const SettingElements: BaseNavItem[] = [
+    {
+      title: (settingElements[0].title),
+      metadata: {
+        icon: SunIcon
+      }
+    },
+    {
+      title: (settingElements[1].title),
+      metadata: {
+        icon: LanguageIcon
+      },
+      event: {
+        type: AllowedEventTypes.click,
+        callback: () => toggleLanguage()
+      }
+    },
+    {
+      title: (settingElements[2].title),
+      metadata: {
+        link: '/settings',
+        icon: Cog6ToothIcon
+      }
+    }
+  ]
 
-  const toggleOpen = () => {
-    setOpen(!open)
+  const [showSettings, setShowSettings] = useState(false)
+  const [showLanguage, setShowLanguage] = useState(false)
+
+  function toggleSettings(): void {
+    setShowSettings(!showSettings)
   }
 
-  const close = () => {
-    setOpen(false)
+  function toggleLanguage(): void {
+    setShowLanguage(!showLanguage)
   }
 
   return (
-    <div className='w-1/4 h-full flex justify-end items-center mx-8'>
-      <div onMouseDown={toggleOpen} onMouseLeave={close}>
-      <svg className='w-8 mx-4 hover:cursor-pointer' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 12H12.01M12 6H12.01M12 18H12.01M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12ZM13 18C13 18.5523 12.5523 19 12 19C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17C12.5523 17 13 17.4477 13 18ZM13 6C13 6.55228 12.5523 7 12 7C11.4477 7 11 6.55228 11 6C11 5.44772 11.4477 5 12 5C12.5523 5 13 5.44772 13 6Z' stroke='#ffffff' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'/>
-      </svg>
-        {open && (
-          <div className='w-60 h-64 bg-stone-900 text-white absolute top-14 right-20'>
-            {Settings.map((element, index) => (
-              <div key={index} className='w-full h-16 pl-4 flex items-center justify-start hover:bg-stone-800'>
-                {element}
-              </div>
-            ))}
+    <div>
+      <EllipsisVerticalIcon className='w-9 mx-8 hover:cursor-pointer' onMouseDown={toggleSettings}/>
+      {showSettings &&
+        (
+          <div className={`w-1/12 h-[12rem] absolute flex flex-col top-16 bg-stone-800`}>
+            <ul className='w-full h-full'>
+              {SettingElements.map((element: BaseNavItem, index: number) => {
+                return (
+                  <li key={index} className='h-1/3 flex items-center cursor-pointer'>
+                    <NavItem title={element.title} metadata={element.metadata} event={element.event} />
+                  </li>
+                )
+              })}
+            </ul>
           </div>
-        )}
-      </div>
-      <a href='/login' className='h-full flex items-center'>
-        <p className='mr-4 text-sm font-semibold tracking-wide'>&nbsp;&nbsp; LOGGA IN</p>
-        <svg className='w-10' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path d='M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z' stroke='#ffffff' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'/>
-        </svg>
-      </a>
+        )
+      }
+      {showLanguage && (
+        <div 
+        className='w-full h-dvh absolute top-0 left-0 flex items-center bg-black/50' 
+        onMouseDown={toggleLanguage}>
+          <ul 
+          className='w-1/12 h-1/6 m-auto bg-stone-800 z-10' 
+          onMouseDown={(event) => {event.stopPropagation()}}>
+            <li className='w-full h-1/3 flex justify-center items-center border-b-2 border-black/50'>
+              <h2 className='font-bold'>{t('toggleLanguage')}</h2>
+            </li>
+            <li className='w-full h-1/3'>
+              <Link href='/en' className='w-full h-full'>
+                <p className='w-full h-full flex justify-start items-center'><span className='fi fi-gb mx-8'></span>English</p>
+              </Link>
+            </li>
+            <li className='w-full h-1/3'>
+              <Link href='/sv' className='w-full h-full'>
+                <p className='w-full h-full flex justify-start items-center'><span className='fi fi-se mx-8'></span>Svenska</p>
+              </Link>
+            
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function LoggedIn({ params: { language } }: { params: { language: string } }): JSX.Element {
+  return (
+    <div>
+      {//TODO: Implement 
+      }
+    </div>
+  )
+}
+
+function Guest({ params: { language } }: { params: { language: string } }): JSX.Element {
+
+  return (
+    <div className='w-full h-full flex justify-end items-center'>
+      <Settings params={{language}} />
+      <Link href={'/login'} className='w-1/2 h-full flex justify-end items-center'>
+        <p className='mr-4'>Login</p>
+        <UserCircleIcon className='w-9' />
+      </Link>
+    </div>
+    
+  )
+}
+
+export default function LoginSection({ params: { language } }: { params: { language: string } }) {
+  const loggedIn: boolean = false
+  return (
+    <div className='w-1/4 h-full flex justify-end items-center mx-8'>
+      {loggedIn ? <LoggedIn params={{language}} /> : <Guest params={{language}} />}
     </div>
   )
 }

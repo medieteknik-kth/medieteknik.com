@@ -1,0 +1,33 @@
+{
+    "title": "Medieteknik",
+    "navs": [
+        {
+            "title": "Nyheter",
+            "link": "/news"
+        },
+        {
+            "title": "Sektionen",
+            "link": "/section"
+        },
+        {
+            "title": "Utbildning",
+            "link": "/education"
+        },
+        {
+            "title": "Kontakt",
+            "link": "/contact"
+        }
+    ],
+    "toggleLanguage": "Byt Språk",
+    "settings": [
+        {
+            "title": "Tema"
+        },
+        {
+            "title": "Språk"
+        },
+        {
+            "title": "Inställningar"
+        }
+    ]
+}

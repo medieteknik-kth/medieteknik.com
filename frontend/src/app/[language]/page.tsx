@@ -1,13 +1,14 @@
 import Image from 'next/image'
-import Header from '@/components/header/header'
-import Footer from '@/components/footer/footer'
+import Header from '@/components/header/Header'
+import Footer from '@/components/footer/Footer'
 import Background from '/public/images/bg.jpg'
-import { useTranslation } from '../i18n'
+import { useTranslation } from '@/app/i18n'
+
 export default async function Home({ params: { language } }: { params: { language: string } }) {
   const { t } = await useTranslation(language, 'home')
   return (
     <main>
-      <Header />
+      <Header params={{ language }} />
       <div className='w-full h-[1024px]'>
         <div className='w-full h-full absolute -z-10 top-0'>
           <Image src={Background.src} alt='bg' fill />
@@ -19,7 +20,7 @@ export default async function Home({ params: { language } }: { params: { languag
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer params={{ language }} />
     </main>
   )
 }
