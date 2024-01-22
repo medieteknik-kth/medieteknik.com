@@ -6,6 +6,7 @@ import { useCookies } from 'next-client-cookies'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { getOptions, supportedLanguages, cookieName } from './settings'
+import { CookieConsent, ClientCookieConsent  } from '@/utility/CookieConsent'
 
 const isRunningOnServer = typeof window === 'undefined'
 
@@ -18,6 +19,7 @@ i18next
     lng: undefined,
     detection: {
       order: ['path', 'htmlTag', 'cookie', 'navigator'],
+      caches: [],
     },
     preload: isRunningOnServer ? supportedLanguages : [],
   });
@@ -34,17 +36,21 @@ export function useTranslation(language: string, namespace: string, options: {ke
 
     useEffect(() => {
       if(activeLanguage === language) return;
-      setActiveLanguage(language);
+      setActiveLanguage(language)
     }, [language, i18n.resolvedLanguage]);
 
     useEffect(() => {
       if(!language || i18n.resolvedLanguage === language) return;
-      i18n.changeLanguage(language);
+      i18n.changeLanguage(language)
     }, [language, i18n.resolvedLanguage]);
 
     useEffect(() => {
+      const clientCookieConsent = new ClientCookieConsent(window)
+      if(clientCookieConsent.isConsentLevelSufficient(CookieConsent.NONE)) return;
       if(cookies.get(cookieName) === language) return;
-      cookies.set(cookieName, language, { path: '/' });
+
+      cookies.set(cookieName, language, { path: '/' })
+      
     }, [language, cookies.get(cookieName)]);
   }
 

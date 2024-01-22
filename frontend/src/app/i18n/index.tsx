@@ -6,6 +6,7 @@ import { getOptions } from './settings';
 const initI18n = async (language: string, namespace: string) => {
   const i18n = createInstance();
   const options = getOptions(language, namespace);
+
   await i18n
     .use(initReactI18next)
     .use(resourcesToBackend((lng: string, ns: string) => import(`./locales/${lng}/${ns}.json`)))

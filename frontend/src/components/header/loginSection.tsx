@@ -78,13 +78,23 @@ function Settings({ params: { language } }: { params: { language: string } }) {
               <h2 className='font-bold'>{t('toggleLanguage')}</h2>
             </li>
             <li className='w-full h-1/3'>
-              <Link href='/en' className='w-full h-full'>
-                <p className='w-full h-full flex justify-start items-center'><span className='fi fi-gb mx-8'></span>English</p>
+              <Link href='/en' className='w-full h-full' passHref legacyBehavior={true}>
+                <a onClick={(e) => {
+                    e.preventDefault
+                    window.location.href = '/en';
+                }}>
+                  <p className='w-full h-full flex justify-start items-center'><span className='fi fi-gb mx-8'></span>English</p>
+                </a>
               </Link>
             </li>
             <li className='w-full h-1/3'>
-              <Link href='/sv' className='w-full h-full'>
-                <p className='w-full h-full flex justify-start items-center'><span className='fi fi-se mx-8'></span>Svenska</p>
+              <Link href='/sv' className='w-full h-full' passHref legacyBehavior={true}>
+                <a onClick={(e) => {
+                  e.preventDefault()
+                  window.location.href = '/sv';
+                }}>
+                  <p className='w-full h-full flex justify-start items-center'><span className='fi fi-se mx-8'></span>Svenska</p>
+                </a>
               </Link>
             
             </li>

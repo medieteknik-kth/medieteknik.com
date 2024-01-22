@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useCookies } from 'next-client-cookies';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: 'http://localhost:8000',
 });
 
 /**
@@ -24,11 +24,16 @@ export const getStudent = async (id: number): Promise<any> => {
     return response.data;
 }
 
-/**
- * Retrieves all supported languages from the backend
- * @returns  {Promise<string[]>} A promise that resolves to an array of strings
- */
-export const getAllLanguages = async (): Promise<string[]> => {
-    const response = await api.get('/language');
+export const getStudentPreferences = async (id: number): Promise<any> => {
+    const cookies = useCookies();
+
+    const studentData = cookies.get('student');
+    if (studentData) {
+        return studentData;
+    }
+
+    const response = await api.get(`/student/${id}/preferences`);
+
+    cookies.set('student', cookies.get('student') + response.data, { expires: 7 });
     return response.data;
 }
