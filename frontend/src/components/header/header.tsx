@@ -4,6 +4,9 @@ import Logo from '/public/images/logo.png';
 import { NavItem } from './Navigation';
 import LoginSection from './LoginSection';
 import { useTranslation } from '@/app/i18n'
+import { Bars3CenterLeftIcon } from '@heroicons/react/24/outline';
+
+import Link from 'next/link';
 
 type HeaderElement = {
   title: string,
@@ -17,16 +20,25 @@ export default async function Header ({ params: { language } }: { params: { lang
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true }); 
 
   return (
-    <header className='w-full bg-transparent text-white fixed'>
+    <header className='w-screen text-white fixed bg-transparent'>
       <div className='w-full h-20 flex justify-between'>
-        <div className='w-[10%] h-full flex justify-center items-center ml-8'>
-          <a href='/' className='w-96 flex justify-around items-center'>
-            <Image src={Logo.src} alt='Medieteknik Logo' width='46' height='46' />
-            <h1 className='text-xl font-bold'>{t('title')}</h1>
-          </a>
+        <div className='w-20 sm:w-1/2 h-full flex justify-between md:justify-start items-center ml-8'>
+          <Link href='/' className='w-full flex justify-center sm:justify-start items-center'>
+            <Image src={Logo.src} alt='Medieteknik Logo' width='46' height='46' />  
+            <h1 className='ml-8 text-xl font-bold hidden sm:block'>{t('title')}</h1>
+          </Link>
         </div>
-
-        <div className='w-1/2 h-full flex justify-end items-center'>
+        <div className=' hidden xs:grid place-items-center sm:hidden'>
+          <h1 className='text-xl font-bold'>{t('title')}</h1>
+        </div>
+        <div className='w-20 sm:w-48 h-full grid place-items-center mr-8'>
+          <div className='w-full h-1/2 flex justify-center items-center py-6 border-2 border-white/10 rounded-3xl mr-8 hover:cursor-pointer bg-white/5'>
+            <p className='mr-6 hidden sm:block'>{t('menu')}</p>
+            <Bars3CenterLeftIcon className='w-9 h-9 rotate-180' />
+          </div>
+          
+        </div>
+        {/*<div className='w-1/4 h-full flex justify-end items-center'>
           <ul className='w-full h-full flex justify-evenly items-center'>
             {headerElements.map((element: HeaderElement, index: number) => {
               return (
@@ -37,7 +49,7 @@ export default async function Header ({ params: { language } }: { params: { lang
             })}
           </ul>
           <LoginSection params={{ language }}/>
-        </div>
+        </div>*/}
       </div>
     </header>
     )

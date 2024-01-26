@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { CookiesProvider } from 'next-client-cookies/server';
 import { supportedLanguages } from '../i18n/settings'
@@ -12,6 +12,11 @@ export async function generateStaticParams() {
 export const metadata: Metadata = {
   title: 'Medieteknik | KTH',
   description: 'Medieteknik Site',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
