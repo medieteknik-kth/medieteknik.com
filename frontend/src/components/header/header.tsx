@@ -1,10 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import Logo from '/public/images/logo.png';
-import { NavItem } from './Navigation';
-import LoginSection from './LoginSection';
 import { useTranslation } from '@/app/i18n'
-import { Bars3CenterLeftIcon } from '@heroicons/react/24/outline';
+import { Bars3CenterLeftIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import NavigationMenu from './Navigation';
 
 import Link from 'next/link';
 
@@ -20,23 +19,33 @@ export default async function Header ({ params: { language } }: { params: { lang
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true }); 
 
   return (
-    <header className='w-screen text-white fixed bg-transparent'>
-      <div className='w-full h-20 flex justify-between'>
-        <div className='w-20 sm:w-1/2 h-full flex justify-between md:justify-start items-center ml-8'>
-          <Link href='/' className='w-full flex justify-center sm:justify-start items-center'>
-            <Image src={Logo.src} alt='Medieteknik Logo' width='46' height='46' />  
-            <h1 className='ml-8 text-xl font-bold hidden sm:block'>{t('title')}</h1>
+    <header className='w-full h-24 text-white fixed bg-transparent border-b-2 border-white/20'>
+      <div className='w-full h-full flex justify-between'>
+        <div className='w-fit h-full flex justify-between md:justify-start items-center'>
+          <Link href='/' 
+          className='w-full px-4 flex justify-center sm:justify-start items-center' 
+          aria-label='Home Icon' title='KTH | Medieteknik'>
+            <Image src={Logo.src} alt='Medieteknik Logo' width='46' height='46' /> 
           </Link>
         </div>
-        <div className=' hidden xs:grid place-items-center sm:hidden'>
-          <h1 className='text-xl font-bold'>{t('title')}</h1>
-        </div>
-        <div className='w-20 sm:w-48 h-full grid place-items-center mr-8'>
-          <div className='w-full h-1/2 flex justify-center items-center py-6 border-2 border-white/10 rounded-3xl mr-8 hover:cursor-pointer bg-white/5'>
-            <p className='mr-6 hidden sm:block'>{t('menu')}</p>
-            <Bars3CenterLeftIcon className='w-9 h-9 rotate-180' />
+        
+        <div className='w-1/2 h-full flex items-center justify-end'>
+          <div className='w-2/3 h-full'>
+            
           </div>
-          
+
+
+          <div className='w-1/3 h-full px-4 flex items-center justify-between border-l-2 border-black hover:bg-black/20 hover:cursor-pointer'>
+            <div className='flex flex-col'>
+              <p className='mr-3 uppercase max-w-80 tracking-widest truncate'>Viggo Halvarsson Skoog Andersson</p>
+              <p className='uppercase text-xs tracking-wider leading-tight'>Valberedare</p>
+            </div>
+            <UserCircleIcon className='w-10 h-10' />
+          </div>
+        </div>
+   
+        {/*<div className='w-20 sm:w-48 h-full grid place-items-center mr-8'>
+          <NavigationMenu params={{ language }} />
         </div>
         {/*<div className='w-1/4 h-full flex justify-end items-center'>
           <ul className='w-full h-full flex justify-evenly items-center'>

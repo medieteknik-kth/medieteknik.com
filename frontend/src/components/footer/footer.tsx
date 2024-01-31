@@ -15,7 +15,7 @@ export default async function Footer({ params: { language } }: { params: { langu
   const footerElements: FooterElement[] = t('elements', { returnObjects: true } );
 
   return (
-    <footer className='w-full h-[512px] sm:h-80 text-sm bg-stone-900 text-white flex flex-col items-center justify-between'>
+    <footer className='w-screen h-[512px] sm:h-80 text-sm bg-stone-900 text-white flex flex-col items-center justify-between'>
       <div className='w-full flex justify-center'>
         <ul className='w-full sm:w-1/2 flex justify-evenly items-center sm:items-baseline flex-col sm:flex-row mt-8'>
           {footerElements.map((element: FooterElement, index: number) => {

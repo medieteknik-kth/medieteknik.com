@@ -20,6 +20,7 @@ body {
   color: black;
   background: white;
   font-family: 'Roberto', sans-serif;
+  overflow-x: hidden;
 }
 
 img {
