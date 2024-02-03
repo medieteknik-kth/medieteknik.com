@@ -3,20 +3,32 @@
     "menu": "Meny",
     "navs": [
         {
-            "title": "Sektionen",
-            "link": "/section"
+            "title": "Aktuellt",
+            "link": "/happenings"
         },
         {
-            "title": "Aktuellt",
-            "link": "/news"
+            "title": "Sektionen",
+            "link": "/chapter"
         },
         {
             "title": "Utbildning",
             "link": "/education"
         },
         {
+            "title": "JML",
+            "link": "/equality"
+        },
+        {
+            "title": "Nyheter",
+            "link": "/news"
+        },
+        {
             "title": "Kontakt",
             "link": "/contact"
+        },
+        {
+            "title": "English",
+            "link": "/en"
         }
     ],
     "toggleLanguage": "Byt Språk",

@@ -3,20 +3,32 @@
     "menu": "Menu",
     "navs": [
         {
-            "title": "Section",
-            "link": "/section"
+            "title": "Happenings",
+            "link": "/happenings"
         },
         {
-            "title": "News",
-            "link": "/news"
+            "title": "Chapter",
+            "link": "/chapter"
         },
         {
             "title": "Education",
             "link": "/education"
         },
         {
+            "title": "Equality",
+            "link": "/equality"
+        },
+        {
+            "title": "News",
+            "link": "/news"
+        },
+        {
             "title": "Contact",
             "link": "/contact"
+        },
+        {
+            "title": "Svenska",
+            "link": "/sv"
         }
     ],
     "toggleLanguage": "Select Language",
