@@ -9,13 +9,13 @@ export default async function Home({ params: { language } }: { params: { languag
   return (
     <main>
       <Header params={{ language }} />
-      <div className='w-screen h-screen'>
-        <div className='w-full h-screen absolute flex justify-center items-center -z-10 top-0'>
+      <div className='w-screen h-screen min-h-[1080px]'>
+        <div className='w-full h-screen min-h-[1080px] absolute flex justify-center items-center -z-10 top-0'>
           <Image 
           src={Background} 
           alt='bg' 
           sizes='(min-height: 1080px) 100vw' 
-          className='w-full h-screen object-cover' 
+          className='w-full h-screen min-h-[1080px] object-cover' 
           priority
           placeholder='blur'
           blurDataURL={Background.src}/>
@@ -27,7 +27,7 @@ export default async function Home({ params: { language } }: { params: { languag
           </div>
         </div>
       </div>
-      <section id='international' className='w-screen h-screen bg-black'>
+      <section id='international' className='w-screen h-[1080px] bg-black'>
 
       </section>
       <Footer params={{ language }} />

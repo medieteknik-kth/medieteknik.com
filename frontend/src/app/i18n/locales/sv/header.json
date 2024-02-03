@@ -3,12 +3,12 @@
     "menu": "Meny",
     "navs": [
         {
-            "title": "Nyheter",
-            "link": "/news"
-        },
-        {
             "title": "Sektionen",
             "link": "/section"
+        },
+        {
+            "title": "Aktuellt",
+            "link": "/news"
         },
         {
             "title": "Utbildning",

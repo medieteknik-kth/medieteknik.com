@@ -3,12 +3,12 @@
     "menu": "Menu",
     "navs": [
         {
-            "title": "News",
-            "link": "/news"
-        },
-        {
             "title": "Section",
             "link": "/section"
+        },
+        {
+            "title": "News",
+            "link": "/news"
         },
         {
             "title": "Education",
