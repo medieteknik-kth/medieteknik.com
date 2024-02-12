@@ -6,7 +6,7 @@ import { useCookies } from 'next-client-cookies'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { getOptions, supportedLanguages, cookieName } from './settings'
-import { CookieConsent, ClientCookieConsent  } from '@/utility/CookieConsent'
+import { CookieConsent, ClientCookieConsent  } from '@/utility/CookieManager'
 
 const isRunningOnServer = typeof window === 'undefined'
 
@@ -46,7 +46,7 @@ export function useTranslation(language: string, namespace: string, options: {ke
 
     useEffect(() => {
       const clientCookieConsent = new ClientCookieConsent(window)
-      if(clientCookieConsent.isConsentLevelSufficient(CookieConsent.NONE)) return;
+      if(!clientCookieConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) return;
       if(cookies.get(cookieName) === language) return;
 
       cookies.set(cookieName, language, { path: '/' })

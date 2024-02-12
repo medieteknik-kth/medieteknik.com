@@ -1,6 +1,4 @@
 {
-    "title": "Medieteknik",
-    "menu": "Meny",
     "navs": [
         {
             "title": "Aktuellt",
@@ -29,18 +27,6 @@
         {
             "title": "English",
             "link": "/en"
-        }
-    ],
-    "toggleLanguage": "Byt Språk",
-    "settings": [
-        {
-            "title": "Tema"
-        },
-        {
-            "title": "Språk"
-        },
-        {
-            "title": "Inställningar"
         }
     ]
 }

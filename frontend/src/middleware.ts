@@ -3,7 +3,7 @@ import acceptLanguage from 'accept-language';
 import { fallbackLanguage, supportedLanguages, cookieName } from './app/i18n/settings';
 import { NextRequest } from 'next/server';
 import { getCookies } from 'next-client-cookies/server';
-import { CookieConsent, ServerCookieConsent  } from './utility/CookieConsent';
+import { CookieConsent, ServerCookieConsent  } from './utility/CookieManager';
 
 acceptLanguage.languages(supportedLanguages);
 
@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   if(!supportedLanguages.some((locale) => request.nextUrl.pathname.startsWith(`/${locale}`)) 
     && !request.nextUrl.pathname.startsWith('/_next')) {
     const response = NextResponse.redirect(new URL(`/${language}${request.nextUrl.pathname}`, request.nextUrl))
-    if(serverConsent.isConsentLevelSufficient(CookieConsent.ALLOWED)) {
+    if(serverConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
       response.cookies.set(cookieName, language, { path: '/' })
     }
 
@@ -38,7 +38,7 @@ export function middleware(request: NextRequest) {
     const language = supportedLanguages.find((locale) => refererUrl.pathname.startsWith(`/${locale}`))
     const response = NextResponse.next()
     if(language) {
-      if(serverConsent.isConsentLevelSufficient(CookieConsent.ALLOWED)) {
+      if(serverConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
         response.cookies.set(cookieName, language, { path: '/' })
       }
     }

@@ -1,6 +1,4 @@
 {
-    "title": "Media Technology",
-    "menu": "Menu",
     "navs": [
         {
             "title": "Happenings",
@@ -29,18 +27,6 @@
         {
             "title": "Svenska",
             "link": "/sv"
-        }
-    ],
-    "toggleLanguage": "Select Language",
-    "settings": [
-        {
-            "title": "Theme"
-        },
-        {
-            "title": "Language"
-        },
-        {
-            "title": "Options"
         }
     ]
 }
