@@ -4,6 +4,7 @@ import { CookiesProvider } from 'next-client-cookies/server';
 import { supportedLanguages } from '../i18n/settings'
 import { dir } from 'i18next'
 import CookiePopup from '@/components/cookie/Cookie'
+import Favicon from 'public/favicon.ico'
 
 export async function generateStaticParams() {
   return supportedLanguages.map((language) => ({ language }))
@@ -12,6 +13,9 @@ export async function generateStaticParams() {
 export const metadata: Metadata = {
   title: 'Medieteknik | KTH',
   description: 'Medieteknik Site',
+  icons: [
+    { rel: 'icon', type: 'image/ico', url: Favicon.src },
+  ]
 }
 
 export const viewport: Viewport = {
@@ -29,7 +33,12 @@ export default function RootLayout({
   children
   return (
     <html lang={language} dir={dir(language)}>
-      <head />
+      <head>
+        {Array.isArray(metadata.icons) && metadata.icons.map(
+          (icon => (
+          <link rel={icon.rel} href={icon.url} key={icon.rel} />
+        )))}  
+      </head>
       <body>
         <CookiesProvider>
           {children}
