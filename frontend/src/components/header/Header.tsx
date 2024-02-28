@@ -17,7 +17,7 @@ export default async function Header ({ params: { language } }: { params: { lang
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true });
 
   return (
-    <header className='w-full h-24 text-white fixed bg-white/5 backdrop-blur z-20'>
+    <header className='w-full h-24 text-white fixed bg-black/40 backdrop-blur z-20'>
       <div className='w-full h-full flex justify-between'>
         <div className='w-full h-full flex justify-between md:justify-start items-center'>
           <Link href='/' 

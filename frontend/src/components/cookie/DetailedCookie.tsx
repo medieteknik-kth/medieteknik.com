@@ -79,7 +79,7 @@ export default function DetailedCookiePopup({ params: { language, popup } }: { p
           </div>
 
           <div className='w-full flex justify-between'>
-            <button className='w-40 h-10 text-sm border-2 border-transparent bg-yellow-600 text-white rounded-2xl mt-2' onClick={() => {
+            <button className='w-40 h-10 text-sm border-2 border-transparent bg-yellow-600 text-white rounded-2xl mt-2 hover:bg-yellow-500' onClick={() => {
               setSliders(prev => {
                 const updatedSliders = {
                   ...prev,
@@ -94,7 +94,7 @@ export default function DetailedCookiePopup({ params: { language, popup } }: { p
             }}>
               {cookieTranslation('btn_acceptAll')}
             </button>
-            <button className='w-40 h-10 text-sm border-2 border-black bg-white text-black rounded-2xl mt-2' onClick={() => {
+            <button className='w-40 h-10 text-sm border-2 border-yellow-500 bg-white text-black rounded-2xl mt-2 hover:bg-black/20' onClick={() => {
               saveCookieSettings(sliders);
               return sliders;
             }}>

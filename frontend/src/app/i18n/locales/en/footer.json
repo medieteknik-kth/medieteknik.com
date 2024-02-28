@@ -27,6 +27,10 @@
                 {
                     "title": "Company",
                     "url": "/company"
+                },
+                {
+                    "title": "Media Branchday",
+                    "url": "https://mediasbranschdag.com"
                 }
             ]
         },

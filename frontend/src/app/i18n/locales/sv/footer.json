@@ -27,6 +27,10 @@
                 {
                     "title": "Företag",
                     "url": "/company"
+                },
+                {
+                    "title": "Medias Branschdag",
+                    "url": "https://mediasbranschdag.com"
                 }
             ]
         },

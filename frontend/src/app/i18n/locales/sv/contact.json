@@ -1,0 +1,71 @@
+{
+    "title": "Kontakt",
+    "sections": 
+    [
+        {
+            "title": "Sektionen",
+            "description": "Vill du komma i kontakt med sektionen eller Medieteknik? Kontakta oss för mer information!",
+            "links": 
+            [
+                {
+                    "text": "styrelsen@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:styrelsen@medieteknik.com"
+                }
+            ]
+        },
+        {
+            "title": "Näringslivsgruppen",
+            "description": "Vill ditt företag samarbeta med oss? Kontakta oss för mer information! Vi är alltid öppna för att diskutera nya idéer och möjligheter.",
+            "links": 
+            [
+                {
+                    "text": "naringsliv@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:naringsliv@medieteknik.com"
+                }
+            ]
+        },
+        {
+            "title": "Jämställdhetsgruppen",
+            "description": "Har du frågor om jämställdhet eller vill engagera dig i jämställdhetsgruppen? Kontakta oss för mer information!",
+            "links":
+            [
+                {
+                    "text": "jamo@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:jamo@medieteknik.com"
+                }
+            ]
+        },
+        {
+            "title": "Branchdagen",
+            "description": "Har ditt företag intresse av att delta på Medias Branschdag? Ett årligt event där studenter och företag möts. Kontakta oss för mer information!",
+            "links":
+            [
+                {
+                    "text": "branschdag@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:branschdag@medieteknik.com"
+                },
+                {
+                    "text": "mediasbranschdag.com",
+                    "icon": "web",
+                    "href": "http://www.mediasbranschdag.com"
+                }
+            ]
+        },
+        {
+            "title": "Hemsidan",
+            "description": "Om du har några frågor eller förslag angående hemsidan, kontakta webmaster. Vi är alltid på jakt efter nya idéer och förbättringar!",
+            "links":
+            [
+                {
+                    "text": "webmaster@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:webmaster@medieteknik.com"
+                }
+            ]
+        }
+    ]
+}
