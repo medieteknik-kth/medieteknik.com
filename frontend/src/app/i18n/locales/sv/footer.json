@@ -1,52 +1,6 @@
 {
-    "elements": [
-        {
-            "title": "Om Medieteknik",
-            "children": [
-                {
-                    "title": "Om programmet",
-                    "url": "/programme"
-                },
-                {
-                    "title": "Om sektionen",
-                    "url": "/section"
-                },
-                {
-                    "title": "Kurser",
-                    "url": "/kurser"
-                }
-            ]
-        },
-        {
-            "title": "Om oss",
-            "children": [
-                {
-                    "title": "Kontakt",
-                    "url": "/contact"
-                },
-                {
-                    "title": "Företag",
-                    "url": "/company"
-                },
-                {
-                    "title": "Medias Branschdag",
-                    "url": "https://mediasbranschdag.com"
-                }
-            ]
-        },
-        {
-            "title": "Sociala Medier",
-            "children": [
-                {
-                    "title": "Facebook",
-                    "url": "https://www.facebook.com/medieteknik"
-                },
-                {
-                    "title": "Instagram",
-                    "url": "https://www.instagram.com/medieteknik/"
-                }
-            ]
-        }
-    ],
+    "location": "Plats",
+    "contact": "Kontakt",
+    "connect": "Följ oss",
     "copyright": "© 2024 Sektionen för Medieteknik. Denna hemsida är byggd av studenter vid Medieteknikprogrammet på KTH Kungliga Tekniska Högskolan i Stockholm, Sverige."
 }

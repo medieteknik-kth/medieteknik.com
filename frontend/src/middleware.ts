@@ -3,6 +3,7 @@ import acceptLanguage from 'accept-language';
 import { fallbackLanguage, supportedLanguages, cookieName } from './app/i18n/settings';
 import { NextRequest } from 'next/server';
 import { getCookies } from 'next-client-cookies/server';
+import { Cookies } from 'next-client-cookies';
 import { CookieConsent, ServerCookieConsent  } from './utility/CookieManager';
 
 acceptLanguage.languages(supportedLanguages);
@@ -11,9 +12,7 @@ export const Config = {
   matcher: ['/:language*']
 }
 
-export function middleware(request: NextRequest) {
-  const cookies = getCookies();
-  const serverConsent = new ServerCookieConsent(request);
+function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent) {
   let language;
 
   language = cookies.get(cookieName)
@@ -46,4 +45,13 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
+}
+
+export function middleware(request: NextRequest) {
+  const cookies = getCookies();
+  const serverConsent = new ServerCookieConsent(request);
+
+  let response = handleLanguage(request, cookies, serverConsent);
+
+  return response;
 }

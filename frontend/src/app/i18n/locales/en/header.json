@@ -19,14 +19,6 @@
         {
             "title": "News",
             "link": "/news"
-        },
-        {
-            "title": "Contact",
-            "link": "/contact"
-        },
-        {
-            "title": "Svenska",
-            "link": "/sv"
         }
     ]
 }

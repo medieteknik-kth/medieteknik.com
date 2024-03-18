@@ -19,14 +19,6 @@
         {
             "title": "Nyheter",
             "link": "/news"
-        },
-        {
-            "title": "Kontakt",
-            "link": "/contact"
-        },
-        {
-            "title": "English",
-            "link": "/en"
         }
     ]
 }
