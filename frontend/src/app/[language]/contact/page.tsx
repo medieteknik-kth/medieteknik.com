@@ -63,8 +63,8 @@ function SectionDescription({
 
               <a
                 href={link.href}
+                target='_blank'
                 {...(!link.href.startsWith('mailto') && {
-                  target: '_blank',
                   rel: 'noreferrer',
                 })}
                 className='ml-4 text-blue-500 underline underline-offset-2'
@@ -91,7 +91,7 @@ export default async function Contact({
   return (
     <main>
       <Header params={{ language }} />
-      <div className='h-[720px] bg-[#111] flex flex-col items-center justify-center'>
+      <div className='h-[720px] bg-[#111] flex flex-col items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-7xl uppercase font-bold text-yellow-400'>
           {t('title')}
         </h1>

@@ -63,7 +63,7 @@
                 {
                     "text": "webmaster@medieteknik.com",
                     "icon": "email",
-                    "href": "mailto:webmaster@medieteknik.com"
+                    "href": "mailto:webmaster@medieteknik.com?subject=[Hemsidan] Fråga/Förslag"
                 }
             ]
         }
