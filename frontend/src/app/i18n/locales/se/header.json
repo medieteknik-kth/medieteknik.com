@@ -1,4 +1,8 @@
 {
+    "profile": "Profil",
+    "login": "Logga In",
+    "preferences": "Inställningar",
+    "languagePreference": "Språk",
     "navs": [
         {
             "title": "Aktuellt",

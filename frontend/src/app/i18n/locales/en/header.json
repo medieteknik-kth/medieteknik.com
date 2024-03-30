@@ -1,4 +1,8 @@
 {
+    "profile": "Profile",
+    "login": "Login",
+    "preferences": "Preferences",
+    "languagePreference": "Language",
     "navs": [
         {
             "title": "Happenings",
