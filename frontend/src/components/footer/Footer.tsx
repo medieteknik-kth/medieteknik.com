@@ -90,8 +90,8 @@ export default async function Footer({
   const { t } = await useTranslation(language, 'footer')
 
   return (
-    <footer className='w-screen h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2'>
-      <div className='w-full h-full md:mt-32 lg:mt-0 md:h-4/5 flex flex-col md:flex-row justify-around items-center'>
+    <footer className='w-screen h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 border-black'>
+      <div className='w-full h-full lg:mt-0 md:h-3/5 flex flex-col md:flex-row justify-around items-center'>
         <Link
           href='/'
           title='Home'
@@ -106,9 +106,9 @@ export default async function Footer({
             className='w-auto h-14 xxs:h-24 xs:h-32'
           />
         </Link>
-        <div className='w-full xxs:px-20 md:px-0 md:w-1/3 xl:w-3/4 h-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
-          <ul className='w-full h-full max-h-80 xl:h-1/2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
-            <li className='w-full xl:w-1/4 border-t-2 mb-8 md:mb-0 border-yellow-400 pt-4 lg:mb-4 px-0 text-center xs:text-left xxs:px-4'>
+        <div className='w-full h-fit relative xxs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
+          <ul className='w-full h-fit xl:h-1/2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 border-yellow-400 pt-4 lg:mb-8 px-0 text-center xs:text-left xxs:px-4'>
               <h2 className='text-2xl tracking-wider font-bold'>
                 {t('location')}
               </h2>
@@ -116,7 +116,7 @@ export default async function Footer({
                 Drotting Kristinas väg 15 <br /> 100 44 Stockholm
               </p>
             </li>
-            <li className='w-full xl:w-1/4 border-t-2 mb-8 md:mb-0  border-yellow-400 pt-4 lg:mb-4 px-0 xxs:px-4 grid xs:block place-items-center'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4  border-yellow-400 pt-4 lg:mb-8 px-0 xxs:px-4 grid xs:block place-items-center'>
               <h2 className='text-2xl text-center xxs:text-left tracking-wider font-bold'>
                 <Link
                   href='/contact'
@@ -138,7 +138,7 @@ export default async function Footer({
                 </a>
               </p>
             </li>
-            <li className='w-full xl:w-1/4 border-t-2 mb-8 md:mb-0  border-yellow-400 pt-4 px-4'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 border-yellow-400 pt-4 px-4'>
               <h2 className='text-2xl text-center xs:text-left tracking-wider font-bold'>
                 {t('connect')}
               </h2>
@@ -147,7 +147,7 @@ export default async function Footer({
           </ul>
         </div>
       </div>
-      <p className='mb-10 pt-10 xxs:mb-20 px-4 xs:px-20 xxs:px-10 text-xs grid place-items-center'>
+      <p className='pt-10 md:mt-4 xxs:mb-20 px-4 xs:px-20 xxs:px-10 text-xs grid place-items-center'>
         {t('copyright')}
       </p>
     </footer>
