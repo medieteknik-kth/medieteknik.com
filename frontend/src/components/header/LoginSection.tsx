@@ -8,11 +8,10 @@ import { useTranslation } from '@/app/i18n/client'
 import Link from 'next/link'
 
 export default function LoginSection({
-  params: { language },
+  params: { language, loggedIn },
 }: {
-  params: { language: string }
+  params: { language: string; loggedIn: boolean }
 }) {
-  const loggedIn: boolean = false
   const hasProfilePicture: boolean = false
   let username = 'André Eriksson'
   let role = 'Webmaster'

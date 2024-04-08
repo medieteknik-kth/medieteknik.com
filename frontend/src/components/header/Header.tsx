@@ -2,6 +2,7 @@ import React from 'react'
 import Logo from '/public/images/logo.svg'
 import { useTranslation } from '@/app/i18n'
 import LoginSection from './LoginSection'
+import NotificationHeader from './Notification'
 import OptionsHeader from './Options'
 
 import Link from 'next/link'
@@ -25,6 +26,7 @@ export default async function Header({
   const { t } = await useTranslation(language, 'header')
   const common = (await useTranslation(language, 'common')).t
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true })
+  const loggedIn: boolean = true
 
   return (
     <header className='w-full h-24 text-white fixed bg-black/70 backdrop-blur-md flex justify-between z-50'>
@@ -60,8 +62,13 @@ export default async function Header({
         </div>
       </div>
       <div className='w-fit flex'>
-        <OptionsHeader params={{ language }} />
-        <LoginSection params={{ language }} />
+        {loggedIn ? (
+          <NotificationHeader params={{ language }} />
+        ) : (
+          <OptionsHeader params={{ language }} />
+        )}
+
+        <LoginSection params={{ language, loggedIn }} />
       </div>
     </header>
   )
