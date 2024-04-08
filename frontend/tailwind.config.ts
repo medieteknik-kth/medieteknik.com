@@ -16,6 +16,9 @@ const config: Config = {
         xs: '480px',
         // => @media (min-width: 480px) { ... }
 
+        desktop: '1920px',
+        // => @media (min-width: 1920px) { ... }
+
         ...defaultTheme.screens
       },
     }

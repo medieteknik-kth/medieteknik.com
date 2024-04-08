@@ -55,9 +55,9 @@ export default function OptionsHeader({
         onClick={() => setIsOpen(!isOpen)}
         className={`w-fit h-full px-4 grid z-10 place-items-center border-b-2 ${
           isOpen
-            ? 'border-yellow-400 bg-black/75'
+            ? 'border-yellow-400 bg-black/25'
             : 'border-transparent bg-transparent'
-        } hover:border-yellow-400 hover:bg-black/75`}
+        } hover:border-yellow-400 hover:bg-black/25`}
         title='Preferences'
         aria-label='Preferences Button'
         aria-expanded={isOpen}
