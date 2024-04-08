@@ -1,6 +1,7 @@
 'use client'
 import { PieChart } from 'react-minimal-pie-chart'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { Section } from '@/components/static/Static'
 
 const data = [
   { title: 'Matematik', value: 22, color: '#1954A6' },
@@ -15,49 +16,42 @@ const data = [
 
 export default function Courses() {
   return (
-    <section className='w-full h-[1080px] bg-white flex flex-col'>
-      <div className='w-full text-center grid place-items-center'>
-        <h2 className='uppercase tracking-wider font-semibold text-3xl w-2/4 border-b-2 border-yellow-400 py-8'>
-          Courses
-        </h2>
-      </div>
-
-      <div className='w-full h-full flex justify-around items-center'>
-        <PieChart
-          label={({ dataEntry }) => Math.round(dataEntry.percentage) + '%'}
-          labelStyle={(index) => ({
-            fill: 'white',
-            fontSize: '5px',
-            fontFamily: 'sans-serif',
-          })}
-          labelPosition={87}
-          lineWidth={25}
-          paddingAngle={5}
-          data={data}
-          className='w-1/5 h-fit'
-        />
-        <div className='w-1/5 h-full text-2xl flex justify-start items-center'>
-          <ul className='w-full h-full flex flex-col items-center justify-between'>
-            {data.map((item, index) => (
-              <li
-                key={index}
-                className='w-full h-20 uppercase tracking-wide p-4 border-2 border-black m-4 rounded-3xl flex items-center'
-              >
-                <div className='w-full flex justify-between items-center'>
-                  <div>
-                    <span
-                      className='w-4 h-4 inline-block mr-2'
-                      style={{ background: item.color }}
-                    />
-                    {item.title}
-                  </div>
-                  <ChevronDownIcon className='w-6 h-6' />
+    <Section
+      title='Kurser'
+      metadata={{ height: '820px' }}
+      children={
+        <div className='w-full h-4/5 flex justify-around items-center'>
+          <div className='w-full h-4/5 flex justify-around'>
+            <PieChart
+              label={({ dataEntry }) => Math.round(dataEntry.percentage) + '%'}
+              labelStyle={(index) => ({
+                fill: 'white',
+                fontSize: '5px',
+                fontFamily: 'sans-serif',
+              })}
+              labelPosition={87}
+              lineWidth={25}
+              paddingAngle={5}
+              data={data}
+              className='w-1/5 h-fit'
+            />
+            <div className='w-3/5 h-full text-2xl grid grid-cols-4 grid-rows-2 gap-8 '>
+              {data.map((course, index) => (
+                <div
+                  key={index}
+                  className='w-full h-full flex flex-col justify-center items-center px-4 text-center'
+                  style={{ backgroundColor: course.color }}
+                >
+                  <h3 className='text-2xl text-white uppercase font-bold tracking-wider'>
+                    {course.title}
+                  </h3>
+                  <p className='text-white text-center'>{course.value} %</p>
                 </div>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      }
+    />
   )
 }

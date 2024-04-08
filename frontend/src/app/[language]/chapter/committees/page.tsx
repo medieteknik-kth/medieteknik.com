@@ -1,6 +1,8 @@
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 
+import { Head } from '@/components/static/Static'
+
 // Administrativt
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import ValberedningenIcon from 'public/images/committees/valberedningen.png'
@@ -146,11 +148,7 @@ export default function Committees({
   return (
     <main className='w-screen'>
       <Header params={{ language }} />
-      <div className='h-[720px] bg-[#111] flex flex-col items-center justify-center border-b-2 border-yellow-400'>
-        <h1 className='text-7xl uppercase font-bold text-yellow-400'>
-          Committees
-        </h1>
-      </div>
+      <Head title='Committees' />
 
       <div className='w-full flex flex-col items-center py-20'>
         <section className='w-1/2 h-[350px] flex flex-col'>

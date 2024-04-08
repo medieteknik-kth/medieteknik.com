@@ -2,6 +2,13 @@ import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import Masters from './masters'
 import Courses from './courses'
+import International from 'public/images/committees/internationals.png'
+import BG from 'public/images/kth-landskap.jpg'
+import KTH from 'public/images/KTH.jpg'
+import { Head, Section } from '@/components/static/Static'
+import Link from 'next/link'
+import './box.css'
+import Action from '@/components/cards/Action'
 
 export default function Education({
   params: { language },
@@ -11,39 +18,47 @@ export default function Education({
   return (
     <main>
       <Header params={{ language }} />
-      {/*<div className='h-24 bg-black'></div>*/}
-      <div className='h-[720px] bg-[#111] flex flex-col items-center justify-center border-b-2 border-yellow-400'>
-        <h1 className='text-7xl uppercase font-bold text-yellow-400'>
-          Media Technology
-        </h1>
-      </div>
-      <section className='w-full h-[320px] border-b-2 border-black'></section>
-      <section className='w-full h-[720px] bg-white flex flex-col'>
-        <div className='w-full text-center grid place-items-center'>
-          <h2 className='uppercase tracking-wider font-semibold text-3xl w-2/4 border-b-2 border-yellow-400 py-8'>
-            Description
-          </h2>
-        </div>
+      <div className='h-24 bg-[#111]' />
+      <Head
+        title='Media Technology'
+        description='Medieteknikens roll i samhället växer, från nyhetssajter till virtuella miljöer, med potential att både motivera hållbara val och väcka frågor om etik och design.'
+        image={BG}
+      />
+      <Section
+        metadata={{ height: '550px' }}
+        children={
+          <div className='w-full h-4/5 grid place-items-center'>
+            <div className='w-[1096px] h-[344px] grid grid-cols-3 grid-rows-1 gap-8'>
+              <Action
+                title='KTH'
+                image={KTH}
+                href={[
+                  'https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150',
+                  true,
+                ]}
+              />
 
-        <div className='w-full h-full flex justify-around items-center'>
-          <div className='w-1/3 h-fit rounded-lg text-xl'>
-            <p>
-              Medieteknik spelar en viktig roll i kommunikationen mellan
-              människor och organisationer i hela samhället. Den möjliggör allt
-              från nyhetssajter till nya virtuella miljöer – och ger stora
-              möjligheter att motivera konsumenter till hållbara val.
-              Medieteknik blir en allt större del av vår vardag, och genom
-              maskininlärning kan tekniken utvecklas genom att lära sig själv.
-              Det väcker frågor om etik kring hur den designas och används.
-              Exempelvis diskuteras hur medieteknik kan utformas för att främja
-              demokrati, inte vara ett verktyg för så kallade ”fake news”,
-              samtidigt som den fortsätter att möjliggöra att människor kommer
-              till tals och kan uttrycka sig.
-            </p>
+              <Action
+                title='International'
+                image={International}
+                href={['./chapter/committees/international', false]}
+              />
+              <div className='bg-sky-400'>
+                <div className='highlight w-full h-full relative'>
+                  <Link
+                    href='./chapter/albums'
+                    className='w-full h-16 bg-black/75 grid place-items-center absolute bottom-0 transition-all'
+                  >
+                    <h3 className='text-2xl text-white text-center uppercase tracking-wider font-bold'>
+                      Albums
+                    </h3>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className='w-1/3 h-[512px] bg-blue-500' />
-        </div>
-      </section>
+        }
+      />
 
       <Courses />
 
