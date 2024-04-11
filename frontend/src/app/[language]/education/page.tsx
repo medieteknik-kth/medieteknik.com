@@ -7,8 +7,12 @@ import BG from 'public/images/kth-landskap.jpg'
 import KTH from 'public/images/KTH.jpg'
 import { Head, Section } from '@/components/static/Static'
 import Link from 'next/link'
-import './box.css'
 import Action from '@/components/cards/Action'
+import {
+  EnvelopeIcon,
+  PhoneIcon,
+  MapPinIcon,
+} from '@heroicons/react/24/outline'
 
 export default function Education({
   params: { language },
@@ -25,10 +29,9 @@ export default function Education({
         image={BG}
       />
       <Section
-        metadata={{ height: '550px' }}
         children={
-          <div className='w-full h-4/5 grid place-items-center'>
-            <div className='w-[1096px] h-[344px] grid grid-cols-3 grid-rows-1 gap-8'>
+          <div className='w-full h-fit grid place-items-center'>
+            <div className='w-[400px] lg:w-[800px] h-fit grid lg:grid-cols-2 auto-rows-max *:h-96 gap-8 mb-8 mt-8'>
               <Action
                 title='KTH'
                 image={KTH}
@@ -43,18 +46,6 @@ export default function Education({
                 image={International}
                 href={['./chapter/committees/international', false]}
               />
-              <div className='bg-sky-400'>
-                <div className='highlight w-full h-full relative'>
-                  <Link
-                    href='./chapter/albums'
-                    className='w-full h-16 bg-black/75 grid place-items-center absolute bottom-0 transition-all'
-                  >
-                    <h3 className='text-2xl text-white text-center uppercase tracking-wider font-bold'>
-                      Albums
-                    </h3>
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         }
@@ -63,6 +54,52 @@ export default function Education({
       <Courses />
 
       <Masters />
+
+      <Section
+        title='Study Counciling'
+        children={
+          <div className='h-[420px] flex justify-center items-center'>
+            <div className='w-1/4 h-3/4 grid place-items-center'>
+              <div className='w-64 h-72 bg-blue-400' />
+            </div>
+            <div className='w-1/3 h-3/4 flex flex-col justify-center'>
+              <p>
+                Lena Smedenborn är studievägledare för studenter på
+                civilingenjörsprogrammet i medieteknik. Du kan vända dig till
+                henne om du har frågor om bland annat studieplanering, kursval,
+                studievanor och studieteknik eller återupptag av studier efter
+                studieuppehåll.
+              </p>
+              <div className='grid auto-rows-max *:h-20'>
+                <div className='flex items-center'>
+                  <div className='w-12 h-12 grid place-items-center border-2 border-[#111] rounded-full mr-2'>
+                    <EnvelopeIcon className='w-8 h-8' />
+                  </div>
+                  <Link
+                    href='mailto:svl-media@kth.se'
+                    rel='noopener noreferrer'
+                    className='text-blue-600 underline-offset-2 hover:underline'
+                  >
+                    svl-media@kth.se
+                  </Link>
+                </div>
+                <div className='flex items-center'>
+                  <div className='w-12 h-12 grid place-items-center border-2 border-[#111] rounded-full mr-2'>
+                    <PhoneIcon className='w-8 h-8' />
+                  </div>
+                  <p>08-790 84 07</p>
+                </div>
+                <div className='flex items-center'>
+                  <div className='w-12 h-12 grid place-items-center border-2 border-[#111] rounded-full mr-2'>
+                    <MapPinIcon className='w-8 h-8' />
+                  </div>
+                  <p>Rum 1434, Lindstedtsvägen 3, plan 4</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      />
 
       <Footer params={{ language }} />
     </main>

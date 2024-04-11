@@ -18,9 +18,8 @@ export default function Courses() {
   return (
     <Section
       title='Kurser'
-      metadata={{ height: '820px' }}
       children={
-        <div className='w-full h-4/5 flex justify-around items-center'>
+        <div className='w-full h-[820px] flex justify-around items-center'>
           <div className='w-full h-4/5 flex justify-around'>
             <PieChart
               label={({ dataEntry }) => Math.round(dataEntry.percentage) + '%'}

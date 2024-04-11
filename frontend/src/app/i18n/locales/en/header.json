@@ -5,8 +5,8 @@
     "languagePreference": "Language",
     "navs": [
         {
-            "title": "Happenings",
-            "link": "/happenings"
+            "title": "News",
+            "link": "/news"
         },
         {
             "title": "Chapter",
@@ -19,10 +19,6 @@
         {
             "title": "Equality",
             "link": "/equality"
-        },
-        {
-            "title": "News",
-            "link": "/news"
         }
     ]
 }

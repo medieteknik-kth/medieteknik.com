@@ -3,6 +3,7 @@ import Header from '@/components/header/Header'
 import './box.css'
 import Link from 'next/link'
 import { Head, Section } from '@/components/static/Static'
+import Action from '@/components/cards/Action'
 import Image from 'next/image'
 import StyrelsenImage from 'public/images/committees/styrelsen.png'
 import { EnvelopeIcon } from '@heroicons/react/24/outline'
@@ -25,57 +26,31 @@ export default function Chapter({
       <Section
         title='Quick Access'
         children={
-          <div className='w-full h-4/5 grid place-items-center'>
-            <div className='w-3/5 h-3/5 grid grid-cols-4 grid-rows-1 gap-8'>
-              <div className='bg-red-400'>
-                <div className='highlight w-full h-full relative'>
-                  <Link
-                    href='./chapter/committees'
-                    className='w-full h-16 bg-black/75 grid place-items-center absolute bottom-0 transition-all'
-                  >
-                    <h3 className='text-2xl text-white text-center uppercase tracking-wider font-bold'>
-                      Committees
-                    </h3>
-                  </Link>
-                </div>
-              </div>
+          <div className='w-full h-fit grid place-items-center'>
+            <div className='w-[400px] lg:w-[800px] desktop:w-[1600px] h-fit grid lg:grid-cols-2 desktop:grid-cols-4 auto-rows-max *:h-96 gap-8 mb-8 mt-8'>
+              <Action
+                href={['./chapter/committees', false]}
+                title='Committees'
+                image={BG}
+              />
 
-              <div className='bg-emerald-400'>
-                <div className='highlight w-full h-full relative'>
-                  <Link
-                    href='./chapter/documents'
-                    className='w-full h-16 bg-black/75 grid place-items-center absolute bottom-0 transition-all'
-                  >
-                    <h3 className='text-2xl text-white text-center uppercase tracking-wider font-bold'>
-                      Documents
-                    </h3>
-                  </Link>
-                </div>
-              </div>
-              <div className='bg-sky-400'>
-                <div className='highlight w-full h-full relative'>
-                  <Link
-                    href='./chapter/albums'
-                    className='w-full h-16 bg-black/75 grid place-items-center absolute bottom-0 transition-all'
-                  >
-                    <h3 className='text-2xl text-white text-center uppercase tracking-wider font-bold'>
-                      Albums
-                    </h3>
-                  </Link>
-                </div>
-              </div>
-              <div className='bg-purple-400'>
-                <div className='highlight w-full h-full relative'>
-                  <Link
-                    href='./chapter/graphical-identity'
-                    className='w-full h-16 bg-black/75 grid place-items-center absolute bottom-0 transition-all'
-                  >
-                    <h3 className='text-2xl text-white text-center uppercase tracking-wider font-bold'>
-                      Graphical Identity
-                    </h3>
-                  </Link>
-                </div>
-              </div>
+              <Action
+                href={['./chapter/documents', false]}
+                title='Documents'
+                image={BG}
+              />
+
+              <Action
+                href={['./chapter/albums', false]}
+                title='Albums'
+                image={BG}
+              />
+
+              <Action
+                href={['./chapter/graphical-identity', false]}
+                title='Graphical Identity'
+                image={BG}
+              />
             </div>
           </div>
         }

@@ -35,7 +35,11 @@ export default function RootLayout({
 }) {
   children
   return (
-    <html lang={language} dir={dir(language)}>
+    <html
+      lang={language}
+      dir={dir(language)}
+      style={{ scrollPaddingTop: '100px' }}
+    >
       <head>
         {Array.isArray(metadata.icons) &&
           metadata.icons.map((icon: Icon) => (

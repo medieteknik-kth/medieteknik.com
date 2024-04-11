@@ -5,8 +5,8 @@
     "languagePreference": "Språk",
     "navs": [
         {
-            "title": "Aktuellt",
-            "link": "/happenings"
+            "title": "Nyheter",
+            "link": "/news"
         },
         {
             "title": "Sektionen",
@@ -19,10 +19,6 @@
         {
             "title": "JML",
             "link": "/equality"
-        },
-        {
-            "title": "Nyheter",
-            "link": "/news"
-        }
+        }  
     ]
 }

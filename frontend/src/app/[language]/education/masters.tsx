@@ -100,7 +100,10 @@ export default function Masters() {
   }
 
   return (
-    <section className='w-full h-[1080px] bg-[#111] text-white relative flex flex-col items-center'>
+    <section
+      id='masters'
+      className='w-full h-[1080px] bg-[#111] text-white relative flex flex-col items-center'
+    >
       <div className='w-full text-center grid place-items-center'>
         <h2 className='uppercase tracking-wider font-semibold text-3xl w-2/4 border-b-2 border-yellow-400 py-8'>
           Masters

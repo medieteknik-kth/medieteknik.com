@@ -81,8 +81,8 @@ export function Section({
 
   return (
     <section
-      className='w-full border-b-2 border-gray-200'
-      style={{ height: metadata.height, background: metadata.background }}
+      className='w-full h-fit border-b-2 border-gray-200'
+      style={{ background: metadata.background }}
     >
       {title && (
         <div className='w-full h-fit text-center grid place-items-center'>

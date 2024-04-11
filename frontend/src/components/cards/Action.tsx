@@ -13,7 +13,7 @@ export default function Action({
   href: [string, boolean]
 }) {
   return (
-    <div className='w-full h-full relative'>
+    <div className='w-full relative'>
       <div className='w-full h-full absolute overflow-x-hidden overflow-y-hidden '>
         <div className='w-full h-full absolute bg-black/5 z-10' />
         <Image
