@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import TestBG from 'public/images/testbg.jpg'
-import { DynamicImage } from '@/utility/DynamicImage'
 
 const MockEvents = [
   {
@@ -168,10 +167,12 @@ export default function News() {
               aria-label={news.title}
               aria-description={`Title: ${news.title}, Description: ${news.description}, Author: ${news.author}, Date: ${news.date}`}
             >
-              <DynamicImage
-                src='testbg.jpg'
-                fallbackColor='#FFEEFE'
-                metadata={{ width: '100%', height: '60%' }}
+              <Image
+                src={TestBG}
+                alt='Test Background'
+                width={400}
+                height={200}
+                className='w-full h-3/5 object-cover'
               />
               <div className='w-full h-2/5 flex flex-col px-4 py-2 justify-between border-2 border-t-0 border-l-0 border-gray-300'>
                 <div>

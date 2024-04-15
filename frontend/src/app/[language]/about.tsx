@@ -20,7 +20,7 @@ export default function About() {
             title='International Students'
             description='For international students who want to study in Sweden and become active chapter members. We offer a variety of services to help you get started.'
             href='/'
-            image={{ src: 'international_placeholder.jpg' }}
+            image={PlaceholderInternationalBackground}
           />
         </li>
         <li
@@ -31,7 +31,7 @@ export default function About() {
             title='Chapter'
             description='Want to become an active chapter member? We have a variety of services to help you get started.'
             href='/'
-            image={{ src: 'ths_placeholder.jpg' }}
+            image={PlaceholderChapterBackground}
           />
         </li>
         <li
@@ -42,7 +42,7 @@ export default function About() {
             title='Education'
             description='Want to learn more about Media Technology? We have a variety of services to help you get started.'
             href='/'
-            image={{ src: 'testbg.jpg' }}
+            image={PlaceholderEducationBackground}
           />
         </li>
       </ul>

@@ -2,13 +2,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
-//import ComputerScienceBG from '/public/images/cs.jpg'
-//import InteractiveMediaBG from '/public/images/imt.jpg'
-//import ICTBG from '/public/images/ict.jpg'
-//import MachineLearingBG from '/public/images/ml.jpg'
-//import SustainableDigitalisationBG from '/public/images/sd.jpg'
+import ComputerScienceBG from '/public/images/cs.jpg'
+import InteractiveMediaBG from '/public/images/imt.jpg'
+import ICTBG from '/public/images/ict.jpg'
+import MachineLearingBG from '/public/images/ml.jpg'
+import SustainableDigitalisationBG from '/public/images/sd.jpg'
 import { useRef, useState } from 'react'
-import { DynamicImage } from '@/utility/DynamicImage'
 
 const carouselItems = [
   {
@@ -16,8 +15,7 @@ const carouselItems = [
     title: 'Computer Science',
     description:
       'Computer Science is the study of computers and computational systems. Unlike electrical and computer engineers, computer scientists deal mostly with software and software systems; this includes their theory, design, development, and application.',
-    image: 'cs.jpg',
-    fallbackBG: '#FE0000',
+    image: ComputerScienceBG,
     kthLink: 'https://www.kth.se/en/studies/master/computer-science',
     keyAreas: [
       'AI',
@@ -32,8 +30,7 @@ const carouselItems = [
     title: 'Interactive Media Technology',
     description:
       "Interactive Media Technology is a two-year master's programme that focuses on Interactive Media, Computer Graphics and Computer Games. The programme offers a broad theoretical foundation in the field of interactive media technology, and the ability to apply this knowledge to create future interactive media.",
-    image: 'imt.jpg',
-    fallbackBG: '#00C4FF',
+    image: InteractiveMediaBG,
     kthLink:
       'https://www.kth.se/en/studies/master/interactive-media-technology',
     keyAreas: [
@@ -48,8 +45,7 @@ const carouselItems = [
     title: 'ICT Innovation',
     description:
       "ICT Innovation is a two-year master's programme that focuses on the analysis, design, use and development of complex software systems and services for the needs of industry and society. The programme offers a broad theoretical foundation in the field of software technology and the ability to apply this knowledge to solve real-world problems.",
-    image: 'ict.jpg',
-    fallbackBG: '#00FF00',
+    image: ICTBG,
     kthLink: 'https://www.kth.se/en/studies/master/ict-innovation/',
     keyAreas: [
       'Marketing and Market Analysis',
@@ -63,8 +59,7 @@ const carouselItems = [
     title: 'Machine Learning',
     description:
       "Machine Learning is a two-year master's programme that focuses on the theoretical foundation of machine learning and computational learning theory, as well as the practical application of machine learning methods to real-world problems.",
-    image: 'ml.jpg',
-    fallbackBG: '#FF00FF',
+    image: MachineLearingBG,
     kthLink: 'https://www.kth.se/en/studies/master/machine-learning/',
     keyAreas: ['Machine Learning', 'AI', 'Optimization', 'Computer Vision'],
   },
@@ -73,8 +68,7 @@ const carouselItems = [
     title: 'Sustainable Digitalisation',
     description:
       'Digitalisation is a powerful driver of societal change; it offers the potential to build resilience for a volatile, uncertain, complex and ambiguous future. But digitalisation can also be problematic if it speeds up unsustainable trends.',
-    image: 'sd.jpg',
-    fallbackBG: '#FEFEFE',
+    image: SustainableDigitalisationBG,
     kthLink: 'https://www.kth.se/en/studies/master/sustainable-digitalisation',
     keyAreas: [
       'Sustainability',
@@ -145,7 +139,13 @@ export default function Masters() {
                   index == activeIndex ? 'z-10' : 'z-20'
                 }`}
               />
-              <DynamicImage src={item.image} fallbackColor={item.fallbackBG} />
+              <Image
+                src={item.image.src}
+                alt={item.title}
+                width={500}
+                height={720}
+                className='w-auto h-full object-cover'
+              />
 
               <div className='relative w-full h-full bottom-full z-10'>
                 <div className='w-full h-60 absolute bottom-0 px-8 bg-black/75 flex justify-between items-center backdrop-blur-xl overflow-hidden border-t-2 border-yellow-400'>

@@ -91,7 +91,8 @@ export default async function Contact({
   return (
     <main>
       <Header params={{ language }} />
-      <div className='h-[720px] bg-[#111] flex flex-col items-center justify-center border-b-2 border-yellow-400'>
+      <div className='h-24 bg-[#111]' />
+      <div className='h-[350px] bg-[#111] flex flex-col items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-7xl uppercase font-bold text-yellow-400'>
           {t('title')}
         </h1>

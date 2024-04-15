@@ -148,6 +148,7 @@ export default function Committees({
   return (
     <main className='w-screen'>
       <Header params={{ language }} />
+      <div className='h-24 bg-[#111]' />
       <Head title='Committees' />
 
       <div className='w-full flex flex-col items-center py-20'>
@@ -173,6 +174,39 @@ export default function Committees({
                   alt={`${item.title}icon`}
                   width={100}
                   height={100}
+                  className='w-[100px] h-[100px] absolute top-0 left-0 right-0 bottom-0 m-auto'
+                />
+                <h3 className='uppercase text-sm bg-[#232323] py-2 text-white absolute bottom-0 w-full text-center'>
+                  {item.title}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className='w-1/2 h-[350px] flex flex-col'>
+          <h2 className='text-4xl uppercase tracking-wider border-b-2 border-yellow-400 pb-4'>
+            {UtbildningProps.title}
+          </h2>
+          <div className='w-full h-[200px] grid grid-cols-5 grid-rows-1 gap-8 my-4'>
+            {UtbildningProps.data.map((item, index) => (
+              <Link
+                href={item.link}
+                title={item.title}
+                aria-label={item.title}
+                key={index}
+                {...(item.link.startsWith('http') && {
+                  // External link
+                  rel: 'noopener noreferrer',
+                  target: '_blank',
+                })}
+                className='relative shadow-lg shadow-yellow-400/50  transition-transform hover:scale-110 hover:hover:font-bold'
+              >
+                <Image
+                  src={item.icon.src}
+                  alt={`${item.title}icon`}
+                  width={256}
+                  height={256}
                   className='w-[100px] h-[100px] absolute top-0 left-0 right-0 bottom-0 m-auto'
                 />
                 <h3 className='uppercase text-sm bg-[#232323] py-2 text-white absolute bottom-0 w-full text-center'>
@@ -231,38 +265,6 @@ export default function Committees({
                   rel: 'noopener noreferrer',
                 })}
                 className='relative shadow-lg shadow-yellow-400/50 transition-transform hover:scale-110 hover:hover:font-bold'
-              >
-                <Image
-                  src={item.icon.src}
-                  alt={`${item.title}icon`}
-                  width={256}
-                  height={256}
-                  className='w-[100px] h-[100px] absolute top-0 left-0 right-0 bottom-0 m-auto'
-                />
-                <h3 className='uppercase text-sm bg-[#232323] py-2 text-white absolute bottom-0 w-full text-center'>
-                  {item.title}
-                </h3>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className='w-1/2 h-[350px] flex flex-col'>
-          <h2 className='text-4xl uppercase tracking-wider border-b-2 border-yellow-400 pb-4'>
-            {UtbildningProps.title}
-          </h2>
-          <div className='w-full h-[200px] grid grid-cols-5 grid-rows-1 gap-8 my-4'>
-            {UtbildningProps.data.map((item, index) => (
-              <Link
-                href={item.link}
-                title={item.title}
-                aria-label={item.title}
-                key={index}
-                {...(item.link.startsWith('http') && {
-                  // External link
-                  rel: 'noopener noreferrer',
-                })}
-                className='relative shadow-lg shadow-yellow-400/50  transition-transform hover:scale-110 hover:hover:font-bold'
               >
                 <Image
                   src={item.icon.src}

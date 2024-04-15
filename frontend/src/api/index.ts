@@ -10,21 +10,21 @@ const api = axios.create({
  * @param id The student's id
  * @returns  {Promise<Student>} A promise that resolves to a Student object
  */
-export const getStudent = async (id: number): Promise<any> => {
-    const cookies = useCookies();
+export const GetStudent = async (id: number): Promise<any> => {
+    const Cookies = useCookies();
 
-    const studentData = cookies.get('student');
+    const studentData = Cookies.get('student');
     if (studentData) {
         return studentData;
     }
 
     const response = await api.get(`/student/${id}`);
 
-    cookies.set('student', response.data, { expires: 7 });
+    Cookies.set('student', response.data, { expires: 7 });
     return response.data;
 }
 
-export const getStudentPreferences = async (id: number): Promise<any> => {
+export const GetStudentPreferences = async (id: number): Promise<any> => {
     const cookies = useCookies();
 
     const studentData = cookies.get('student');

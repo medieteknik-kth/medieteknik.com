@@ -4,6 +4,7 @@ import Footer from '@/components/footer/Footer'
 import Image from 'next/image'
 
 import LogoBig from 'public/images/logobig.png'
+
 import KTHSVG from 'public/images/svg/kth.svg'
 import Link from 'next/link'
 
@@ -17,12 +18,7 @@ export default function Login({
       <Header params={{ language }} />
       <div className='w-full h-[1080px] flex justify-center items-center'>
         <div className='w-full xs:w-1/2 h-3/4 max-w-[1440px] flex flex-col items-center'>
-          <Link
-            href='/'
-            title='Home'
-            aria-label='Home'
-            aria-description='Home Link'
-          >
+          <Link href='/' title='Home' aria-label='Home'>
             <Image
               src={LogoBig}
               alt='logo'
@@ -66,7 +62,6 @@ export default function Login({
                   className='w-full h-full'
                   title='KTH Login'
                   aria-label='KTH Login'
-                  aria-description='KTH Login Button'
                 >
                   <KTHSVG width={80} height={80} />
                 </button>

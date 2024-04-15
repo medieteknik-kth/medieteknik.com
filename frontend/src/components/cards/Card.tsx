@@ -2,7 +2,6 @@ import { StaticImageData } from 'next/image'
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import { DynamicImage } from '@/utility/DynamicImage'
 
 /**
  * Card component
@@ -25,7 +24,13 @@ export default function Card({ title, description, image, href }: CardProps) {
       <div className='w-full h-full absolute -z-10'>
         <div className='w-full h-full absolute bg-black/50 z-10 rounded-t-2xl' />
         {typeof image === 'object' ? (
-          <DynamicImage src={(image as { src: string }).src} fallbackColor='#FF0000' />
+          <Image
+            src={image.src}
+            alt='placeholder'
+            width={400}
+            height={600}
+            className='w-auto h-full object-cover'
+          />
         ) : (
           <Image
             src={(image as StaticImageData).src}

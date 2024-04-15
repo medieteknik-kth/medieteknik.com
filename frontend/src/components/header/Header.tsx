@@ -1,4 +1,5 @@
 import React from 'react'
+
 import Logo from '/public/images/logo.svg'
 import { useTranslation } from '@/app/i18n'
 import LoginSection from './LoginSection'

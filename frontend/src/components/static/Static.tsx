@@ -11,7 +11,7 @@ export function Head({
   image?: StaticImageData
 }) {
   return (
-    <div className='h-[600px] bg-[#111] flex items-center border-b-2 border-yellow-400 relative'>
+    <div className='h-[450px] bg-[#111] flex items-center border-b-2 border-yellow-400 relative'>
       <div
         className={`w-full ${
           image ? 'xl:w-1/2 2xl:w-1/3' : 'w-full justify-center'

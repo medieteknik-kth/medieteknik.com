@@ -1,19 +1,26 @@
 'use client'
 import { useEffect, useState } from 'react'
 import i18next from 'i18next'
-import { initReactI18next, useTranslation as useTranslationOrg } from 'react-i18next'
+import {
+  initReactI18next,
+  useTranslation as useTranslationOrg,
+} from 'react-i18next'
 import { useCookies } from 'next-client-cookies'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { getOptions, supportedLanguages, cookieName } from './settings'
-import { CookieConsent, ClientCookieConsent  } from '@/utility/CookieManager'
+import { CookieConsent, ClientCookieConsent } from '@/utility/CookieManager'
 
 const isRunningOnServer = typeof window === 'undefined'
 
 i18next
   .use(initReactI18next)
   .use(LanguageDetector)
-  .use(resourcesToBackend((lng: string, ns: string) => import(`./locales/${lng}/${ns}.json`)))
+  .use(
+    resourcesToBackend(
+      (lng: string, ns: string) => import(`./locales/${lng}/${ns}.json`)
+    )
+  )
   .init({
     ...getOptions(),
     lng: undefined,
@@ -22,36 +29,42 @@ i18next
       caches: [],
     },
     preload: isRunningOnServer ? supportedLanguages : [],
-  });
+  })
 
-export function useTranslation(language: string, namespace: string, options: {keyPrefix?: string | undefined} = {}) {
+export function useTranslation(
+  language: string,
+  namespace: string,
+  options: { keyPrefix?: string | undefined } = {}
+) {
   const cookies = useCookies()
   const ret = useTranslationOrg(namespace, options)
   const { i18n } = ret
+  const [activeLanguage, setActiveLanguage] = useState(i18n.resolvedLanguage)
+  const cookieDependecies = [language, cookies.get(cookieName), cookies]
 
-  if(isRunningOnServer && language && i18n.resolvedLanguage !== language) {
+  // Set the active language
+  useEffect(() => {
+    if (activeLanguage === language) return
+    setActiveLanguage(language)
+  }, [language, i18n.resolvedLanguage, activeLanguage])
+
+  // Change the language
+  useEffect(() => {
+    if (!language || i18n.resolvedLanguage === language) return
     i18n.changeLanguage(language)
-  } else {
-    const [activeLanguage, setActiveLanguage] = useState(i18n.resolvedLanguage)
+  }, [language, i18n.resolvedLanguage, i18n])
 
-    useEffect(() => {
-      if(activeLanguage === language) return;
-      setActiveLanguage(language)
-    }, [language, i18n.resolvedLanguage]);
+  // Set the language cookie
+  useEffect(() => {
+    const clientCookieConsent = new ClientCookieConsent(window)
+    if (!clientCookieConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) return
+    if (cookies.get(cookieName) === language) return
 
-    useEffect(() => {
-      if(!language || i18n.resolvedLanguage === language) return;
-      i18n.changeLanguage(language)
-    }, [language, i18n.resolvedLanguage]);
+    cookies.set(cookieName, language, { path: '/' })
+  }, [cookies, language])
 
-    useEffect(() => {
-      const clientCookieConsent = new ClientCookieConsent(window)
-      if(!clientCookieConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) return;
-      if(cookies.get(cookieName) === language) return;
-
-      cookies.set(cookieName, language, { path: '/' })
-      
-    }, [language, cookies.get(cookieName)]);
+  if (isRunningOnServer && language && i18n.resolvedLanguage !== language) {
+    i18n.changeLanguage(language)
   }
 
   return ret

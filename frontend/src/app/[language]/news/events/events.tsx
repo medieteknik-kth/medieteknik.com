@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import BG from 'public/images/kth-landskap.jpg'
 import Image, { StaticImageData } from 'next/image'
@@ -144,12 +144,12 @@ export default function Events({
     currentEvent,
   ])
 
-  const toNext = () => {
+  const toNext = useCallback(() => {
     const nextIndex = (currentEvent.id + 1) % highlightedEvent.length
 
     setCurrentEvent(highlightedEvent[nextIndex])
     setCurrentTime(0)
-  }
+  }, [currentEvent, highlightedEvent])
 
   const toBack = () => {
     const prevIndex =
@@ -173,7 +173,7 @@ export default function Events({
     return () => {
       window.clearInterval(timeInterval)
     }
-  }, [currentEvent])
+  }, [currentEvent, toNext])
 
   return (
     <section className='w-full h-fit px-12 mt-20'>

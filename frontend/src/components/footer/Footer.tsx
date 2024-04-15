@@ -3,6 +3,7 @@ import { useTranslation } from '../../app/i18n'
 import Link from 'next/link'
 
 import Logo from 'public/images/logobig.png'
+
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
@@ -24,7 +25,6 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
           rel='noopener noreferrer'
           className='w-full h-full'
           aria-label="Links to Medieteknik's Facebook page"
-          aria-description='Social Media Link: Facebook'
         >
           <FacebookSVG width={30} height={30} />
         </Link>
@@ -36,7 +36,6 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
           rel='noopener noreferrer'
           className='w-full h-full'
           aria-label="Links to Medieteknik's Instagram page"
-          aria-description='Social Media Link: Instagram'
         >
           <InstagramSVG width={30} height={30} />
         </Link>
@@ -48,7 +47,6 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
           rel='noopener noreferrer'
           className='w-full h-full'
           aria-label="Links to Medieteknik's LinkedIn page"
-          aria-description='Social Media Link: LinkedIn'
         >
           <LinkedInSVG width={30} height={30} />
         </Link>
@@ -60,7 +58,6 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
           rel='noopener noreferrer'
           className='w-full h-full'
           aria-label="Links to Medieteknik's YouTube page"
-          aria-description='Social Media Link: YouTube'
         >
           <YoutubeSVG width={30} height={30} />
         </Link>
@@ -73,7 +70,6 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
           rel='noopener noreferrer'
           className='w-full h-full'
           aria-label='Links to MBD'
-          aria-description='Social Media Link: MBD'
         >
           <MBDSVG width={30} height={30} />
         </Link>
@@ -92,12 +88,7 @@ export default async function Footer({
   return (
     <footer className='w-screen h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 border-black'>
       <div className='w-full h-full lg:mt-0 md:h-3/5 flex flex-col md:flex-row justify-around items-center'>
-        <Link
-          href='/'
-          title='Home'
-          aria-label='Home'
-          aria-description='Home Link'
-        >
+        <Link href='/' title='Home' aria-label='Home'>
           <Image
             src={Logo}
             alt='logo'
@@ -128,13 +119,12 @@ export default async function Footer({
               </h2>
               <p className='text-center xxs:text-left mt-4'>
                 <a
-                  href='mailto:info@medieteknik.com'
+                  href='mailto:styrelsen@medieteknik.com'
                   className=' text-sky-800 border-b-2 hover:border-sky-800'
                   title='Email'
                   aria-label={`${t('contact')} email`}
-                  aria-description='Email Link: info@medieteknik.com'
                 >
-                  info@medieteknik.com
+                  styrelsen@medieteknik.com
                 </a>
               </p>
             </li>
