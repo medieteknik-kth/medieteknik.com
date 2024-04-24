@@ -54,7 +54,7 @@ const defaultMetadata: {
   background: string
   textColor: string
 } = {
-  height: '720px',
+  height: '400px',
   background: '#fff',
   textColor: '#000',
 }
@@ -62,11 +62,18 @@ const defaultMetadata: {
 export function Section({
   title,
   children,
+  centeredChildren,
   metadata,
 }: {
   title?: string
   children?: React.JSX.Element
-  metadata?: { height?: string; background?: string; textColor?: string }
+  centeredChildren?: boolean
+  metadata?: {
+    height?: string
+    background?: string
+    textColor?: string
+    marginTop?: string
+  }
 }) {
   if (!metadata || Object.keys(metadata).length === 0) {
     metadata = defaultMetadata
@@ -81,8 +88,10 @@ export function Section({
 
   return (
     <section
-      className='w-full h-fit border-b-2 border-gray-200'
-      style={{ background: metadata.background }}
+      className={`w-full h-fit border-b-2 border-gray-200 ${
+        centeredChildren ? 'flex flex-col items-center' : ''
+      }`}
+      style={{ background: metadata.background, marginTop: metadata.marginTop }}
     >
       {title && (
         <div className='w-full h-fit text-center grid place-items-center'>
