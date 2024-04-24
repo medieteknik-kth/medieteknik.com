@@ -35,7 +35,7 @@ export default function Education({
               title='KTH'
               image={KTH}
               href={[
-                'https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150',
+                'https://www.kth.se/utbildning/civilingenjor/medieteknik',
                 true,
               ]}
             />
@@ -49,7 +49,7 @@ export default function Education({
         </div>
       </Section>
 
-      <Courses />
+      <Courses params={{ language }} />
 
       <Masters />
 
