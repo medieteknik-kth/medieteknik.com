@@ -10,11 +10,11 @@ export default function NotificationHeader({
   const [isOpen, setIsOpen] = useState(false)
   const notifications: number = 4
   return (
-    <div className='w-20 mr-2 z-10'>
+    <div className='w-20 mr-2 z-10 relative'>
       <div
         className={`w-screen h-screen ${
           isOpen ? 'block' : 'hidden'
-        } fixed -z-10 left-0 top-0`}
+        } fixed -z-50 left-0 top-0`}
         onClick={() => setIsOpen(false)}
       />
       <button
@@ -42,7 +42,7 @@ export default function NotificationHeader({
       <div
         className={`min-w-60 w-1/2 md:w-96 h-96 flex-col bg-white absolute border-2 text-black border-gray-300 border-t-0 ${
           isOpen ? 'flex' : 'hidden'
-        } top-24 right-[104px] xl:right-[88px] z-50`}
+        } top-24 right-4 z-50`}
         role='dialog'
       >
         <h1 className='w-full h-12 text-center text-2xl uppercase grid place-items-center'>
