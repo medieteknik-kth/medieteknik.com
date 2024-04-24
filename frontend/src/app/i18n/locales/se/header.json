@@ -20,5 +20,19 @@
             "title": "JML",
             "link": "/equality"
         }  
+    ],
+    "profileNavs": [
+        {
+            "title": "Profil",
+            "link": "/profile"
+        },
+        {
+            "title": "Konto Inställningar",
+            "link": "/account"
+        },
+        {
+            "title": "Logga Ut",
+            "link": "/logout"
+        }
     ]
 }

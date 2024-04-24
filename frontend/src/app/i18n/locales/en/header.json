@@ -20,5 +20,19 @@
             "title": "Equality",
             "link": "/equality"
         }
+    ],
+    "profileNavs": [
+        {
+            "title": "Profile",
+            "link": "/profile"
+        },
+        {
+            "title": "Account Settings",
+            "link": "/account"
+        },
+        {
+            "title": "Logout",
+            "link": "/logout"
+        }
     ]
 }
