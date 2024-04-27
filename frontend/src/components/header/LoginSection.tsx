@@ -39,12 +39,6 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
   let role = 'Webmaster'
   return (
     <div className='w-full h-full relative'>
-      <div
-        className={`w-screen h-screen ${
-          isMenuOpen ? 'block' : 'hidden'
-        } fixed -z-50 left-0 top-0`}
-        onClick={() => setIsMenuOpen(false)}
-      />
       <button
         className='w-full h-full text-sm uppercase flex justify-around items-center border-b-2 border-yellow-400 hover:bg-black/25 z-10'
         onClick={() => {
@@ -69,20 +63,31 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
         )}
       </button>
       <div
-        className={`min-w-60 w-1/2 md:w-96 h-fit flex-col bg-white absolute border-2 text-black border-gray-300 border-t-0 ${
+        className={`min-w-60 w-1/2 md:w-96 h-fit flex-col absolute ${
           isMenuOpen ? 'flex' : 'hidden'
-        } top-24 right-0 z-50`}
+        } top-0 right-0 z-50`}
         role='dialog'
+        onMouseLeave={() => {
+          setIsMenuOpen(false)
+        }}
       >
-        <ul className='w-full h-fit flex flex-col items-center px-10'>
+        <button
+          type='button'
+          title='Close Menu'
+          className='w-full h-24 cursor-pointer'
+          onClick={() => {
+            setIsMenuOpen(false)
+          }}
+        />
+        <ul className='w-full h-fit flex flex-col bg-white dark:bg-[#111] border-2 text-black dark:text-white border-gray-300 dark:border-gray-800 border-t-0 items-center px-10 rounded-b-xl'>
           {profileElements.map((element, index) => (
             <li
               key={index}
-              className='w-full h-fit flex items-center justify-center border-b-2 border-yellow-400 my-4'
+              className='w-full h-fit flex items-center justify-center border-b-2 border-yellow-400 my-4 last:mb-10'
             >
               <Link
                 href={element.link}
-                className='w-full h-full py-4 flex items-center hover:bg-black/15 uppercase tracking-wider'
+                className='w-full h-full py-4 flex items-center hover:bg-black/15 dark:hover:bg-white/15 rounded-t-xl uppercase tracking-wider'
                 title={element.title}
                 aria-label={element.title}
               >

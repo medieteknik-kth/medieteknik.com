@@ -2,9 +2,12 @@
 import { supportedLanguages } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, usePathname } from 'next/navigation'
-import { Cog8ToothIcon } from '@heroicons/react/24/outline'
-import { useState, useCallback } from 'react'
+import { Cog8ToothIcon, SunIcon, MoonIcon } from '@heroicons/react/24/outline'
+import { useState, useCallback, useEffect } from 'react'
+import { useTheme } from 'next-themes'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
+import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
+import { useCookies } from 'next-client-cookies'
 
 export default function OptionsHeader({
   params: { language },
@@ -15,6 +18,13 @@ export default function OptionsHeader({
   const path = usePathname()
   const { t } = useTranslation(language, 'header')
   const [isOpen, setIsOpen] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const cookies = useCookies()
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const switchLanguage = useCallback(
     (newLanguage: string) => {
@@ -24,6 +34,26 @@ export default function OptionsHeader({
     },
     [path, router]
   )
+
+  const switchTheme = useCallback(
+    (newTheme: string) => {
+      void setTheme(newTheme)
+      const clientCookies = new ClientCookieConsent(window)
+      if (clientCookies.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
+        cookies.set('theme', newTheme, {
+          path: '/',
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+          sameSite: 'lax',
+          secure: true,
+        })
+      }
+    },
+    [setTheme, cookies]
+  )
+
+  if (!isClient) {
+    return null
+  }
 
   const languageFlags = new Map([
     ['en', 'gb'],
@@ -66,7 +96,7 @@ export default function OptionsHeader({
       </button>
 
       <div
-        className={`min-w-60 w-1/2 md:w-96 h-96 flex-col bg-white absolute border-2 text-black border-gray-300 border-t-0 ${
+        className={`min-w-60 w-1/2 md:w-96 h-96 flex-col bg-white dark:bg-[#111] absolute border-2 text-black dark:text-white border-gray-300 dark:border-gray-800 border-t-0 rounded-b-xl ${
           isOpen ? 'flex' : 'hidden'
         } top-24 right-[104px] xl:right-[88px] z-50`}
         role='dialog'
@@ -95,6 +125,37 @@ export default function OptionsHeader({
                 <span className={`fi fi-${getFlagCode(lang)}`}></span>
               </button>
             ))}
+          </div>
+        </section>
+        <section className='w-full h-24 px-4'>
+          <h2 className='h-fit  text-xl font-bold text-left py-2 border-b-2 border-yellow-400'>
+            {t('themePreference')}
+          </h2>
+          <div className='h-12 flex overflow-x-auto'>
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                switchTheme('light')
+              }}
+              disabled={theme === 'light'}
+              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed'
+              title='Light Theme'
+              aria-label='Light Theme'
+            >
+              <SunIcon className='w-6 h-6' />
+            </button>
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                switchTheme('dark')
+              }}
+              disabled={theme === 'dark'}
+              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed'
+              title='Dark Theme'
+              aria-label='Dark Theme'
+            >
+              <MoonIcon className='w-6 h-6' />
+            </button>
           </div>
         </section>
       </div>

@@ -3,6 +3,7 @@
     "login": "Login",
     "preferences": "Preferences",
     "languagePreference": "Language",
+    "themePreference": "Theme",
     "navs": [
         {
             "title": "News & Events",

@@ -23,12 +23,13 @@ export default function DetailedCookiePopup({
 }) {
   const cookieTranslation = useTranslation(language, 'cookies').t
   const commonTranslation = useTranslation(language, 'common').t
+
+  const previousCookies = new ClientCookieConsent(
+    window
+  ).retrieveCookieSettings()
+
   const [sliders, setSliders] = useState({
-    NECESSARY: true,
-    FUNCTIONAL: false,
-    ANALYTICS: false,
-    PERFORMANCE: false,
-    ADVERTISING: false,
+    ...previousCookies,
   })
 
   const [dropdowns, setDropdowns] = useState({

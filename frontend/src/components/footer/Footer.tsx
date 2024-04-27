@@ -2,7 +2,8 @@ import React from 'react'
 import { useTranslation } from '../../app/i18n'
 import Link from 'next/link'
 
-import Logo from 'public/images/logobig.png'
+import LightLogo from 'public/images/logobig_light.jpg'
+import DarkLogo from 'public/images/logobig_dark.jpg'
 
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
@@ -16,8 +17,9 @@ import Image from 'next/image'
 
 function ConnectSection({ t }: { t: (key: string) => string }) {
   const linkStyle = '*:hover:fill-yellow-400 *:transition-colors'
+
   return (
-    <ul className='w-full mt-2 grid place-items-center grid-cols-2 grid-rows-1 xs:grid-cols-5 *:cursor-pointer *:p-2 xxs:-ml-2'>
+    <ul className='w-full mt-2 grid place-items-center grid-cols-2 grid-rows-1 xs:grid-cols-5 *:cursor-pointer *:p-2 xxs:-ml-2 fill-[#111] dark:fill-white'>
       <li className={linkStyle} title='Facebook'>
         <Link
           href='http://www.facebook.com/medieteknik.kth'
@@ -79,22 +81,45 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
 }
 
 export default async function Footer({
-  params: { language },
+  params: { language, priority },
 }: {
-  params: { language: string }
+  params: { language: string; priority?: boolean }
 }) {
   const { t } = await useTranslation(language, 'footer')
-
+  priority = priority || false
   return (
-    <footer className='w-screen h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 border-black'>
+    <footer
+      className='w-screen h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 
+      bg-white text-black border-gray-200 
+      dark:bg-[#111] dark:text-white dark:border-gray-800
+    '
+    >
       <div className='w-full h-full lg:mt-0 md:h-3/5 flex flex-col md:flex-row justify-around items-center'>
-        <Link href='/' title='Home' aria-label='Home'>
+        <Link
+          href='/'
+          title='Home'
+          aria-label='Home'
+          className='w-96 h-40 grid place-items-center'
+        >
           <Image
-            src={Logo}
+            src={DarkLogo}
             alt='logo'
-            width={384}
-            height={154}
-            className='w-auto h-14 xxs:h-24 xs:h-32'
+            width={320}
+            height={128}
+            priority={priority}
+            loading={priority ? 'eager' : 'lazy'}
+            className='w-auto h-14 xxs:h-24 xs:h-auto hidden dark:block'
+            placeholder='blur'
+          />
+          <Image
+            src={LightLogo}
+            alt='logo'
+            width={320}
+            height={128}
+            priority={priority}
+            loading={priority ? 'eager' : 'lazy'}
+            className='w-auto h-14 xxs:h-24 xs:h-auto block dark:hidden'
+            placeholder='blur'
           />
         </Link>
         <div className='w-full h-fit relative xxs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
@@ -111,7 +136,10 @@ export default async function Footer({
               <h2 className='text-2xl text-center xxs:text-left tracking-wider font-bold'>
                 <Link
                   href='/contact'
-                  className='w-fit border-b-2 hover:border-black flex items-center'
+                  className='w-fit border-b-2 flex items-center
+                  border-white hover:border-black
+                  dark:border-gray-600 dark:hover:border-white
+                  '
                 >
                   {t('contact')}
                   <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
@@ -120,7 +148,10 @@ export default async function Footer({
               <p className='text-center xxs:text-left mt-4'>
                 <a
                   href='mailto:styrelsen@medieteknik.com'
-                  className=' text-sky-800 border-b-2 hover:border-sky-800'
+                  className='hover:underline underline-offset-4 decoration-2 decoration-yellow-400 
+                  text-sky-800 
+                  dark:text-sky-400
+                  '
                   title='Email'
                   aria-label={`${t('contact')} email`}
                 >
