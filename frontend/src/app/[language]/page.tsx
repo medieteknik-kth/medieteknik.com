@@ -1,17 +1,11 @@
 import Image from 'next/image'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
-
 import About from './about'
 import News from './news'
-
 import Background from '/public/images/bg.jpg'
-
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { PlusIcon } from '@heroicons/react/24/outline'
-
 import { useTranslation } from '@/app/i18n'
-import Link from 'next/link'
 
 export default async function Home({
   params: { language },

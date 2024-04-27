@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next'
+import { Figtree } from 'next/font/google'
 import './globals.css'
-import { CookiesProvider } from 'next-client-cookies/server'
+import { Providers } from './providers'
 import { supportedLanguages } from '../i18n/settings'
+import { CookiesProvider } from 'next-client-cookies/server'
+
 import { dir } from 'i18next'
 import CookiePopup from '@/components/cookie/Cookie'
 import Favicon from 'public/favicon.ico'
@@ -25,6 +28,8 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 }
+
+const figtree = Figtree({ subsets: ['latin'] })
 
 export default function RootLayout({
   children,
@@ -50,10 +55,12 @@ export default function RootLayout({
             />
           ))}
       </head>
-      <body>
+      <body className={figtree.className}>
         <CookiesProvider>
-          {children}
-          <CookiePopup params={{ language }} />
+          <Providers>
+            {children}
+            <CookiePopup params={{ language }} />
+          </Providers>
         </CookiesProvider>
       </body>
     </html>
