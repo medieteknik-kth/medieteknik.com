@@ -1,5 +1,3 @@
-import Footer from '@/components/footer/Footer'
-import Header from '@/components/header/Header'
 import './box.css'
 import Link from 'next/link'
 import { Head, Section } from '@/components/static/Static'
@@ -16,8 +14,6 @@ export default function Chapter({
 }) {
   return (
     <main>
-      <Header params={{ language }} />
-      <div className='h-24 bg-[#111]' />
       <Head
         title='Chapter'
         description="The Chapter's purpose is to satisfy the needs of Media Technology students during their time at KTH."
@@ -190,7 +186,6 @@ export default function Chapter({
 
       <section className='h-[1080px] border-b-2 border-black'></section>
       <section className='h-[1080px] border-b-2 border-black'></section>
-      <Footer params={{ language }} />
     </main>
   )
 }

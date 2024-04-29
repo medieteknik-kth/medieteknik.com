@@ -81,17 +81,18 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
 }
 
 export default async function Footer({
-  params: { language, priority },
+  language,
+  priority = false,
 }: {
-  params: { language: string; priority?: boolean }
+  language: string
+  priority?: boolean
 }) {
   const { t } = await useTranslation(language, 'footer')
-  priority = priority || false
   return (
     <footer
-      className='w-screen h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 
-      bg-white text-black border-gray-200 
-      dark:bg-[#111] dark:text-white dark:border-gray-800
+      className='w-full h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 
+      bg-white text-black border-neutral-200 
+      dark:bg-[#111] dark:text-white dark:border-neutral-800
     '
     >
       <div className='w-full h-full lg:mt-0 md:h-3/5 flex flex-col md:flex-row justify-around items-center'>
@@ -138,7 +139,7 @@ export default async function Footer({
                   href='/contact'
                   className='w-fit border-b-2 flex items-center
                   border-white hover:border-black
-                  dark:border-gray-600 dark:hover:border-white
+                  dark:border-neutral-600 dark:hover:border-white
                   '
                 >
                   {t('contact')}

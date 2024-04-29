@@ -1,5 +1,3 @@
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
 import Image from 'next/image'
 import SearchBar from './search'
 import Events from './events/events'
@@ -45,8 +43,7 @@ export default function News({
 }) {
   return (
     <main>
-      <Header params={{ language }} />
-      <div className='h-24 bg-[#111]' />
+      <div className='h-24 bg-black' />
       <div className=''>
         <SearchBar />
       </div>
@@ -107,8 +104,6 @@ export default function News({
       <Events params={{ language }} />
       <Recruiting />
       <ExtraNews />
-
-      <Footer params={{ language }} />
     </main>
   )
 }

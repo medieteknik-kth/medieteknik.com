@@ -1,6 +1,3 @@
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
-
 import Image from 'next/image'
 
 import LogoBig from 'public/images/logobig.png'
@@ -15,7 +12,7 @@ export default function Login({
 }) {
   return (
     <main>
-      <Header params={{ language }} />
+      <div className='h-24 bg-black' />
       <div className='w-full h-[1080px] flex justify-center items-center'>
         <div className='w-full xs:w-1/2 h-3/4 max-w-[1440px] flex flex-col items-center'>
           <Link href='/' title='Home' aria-label='Home'>
@@ -70,7 +67,6 @@ export default function Login({
           </div>
         </div>
       </div>
-      <Footer params={{ language }} />
     </main>
   )
 }

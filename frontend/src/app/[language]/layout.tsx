@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree } from 'next/font/google'
+import { Figtree as FontSans } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 import { supportedLanguages } from '../i18n/settings'
 import { CookiesProvider } from 'next-client-cookies/server'
+import Header from '@/components/header/Header'
+import Footer from '@/components/footer/Footer'
 
 import { dir } from 'i18next'
 import CookiePopup from '@/components/cookie/Cookie'
@@ -12,6 +14,7 @@ import {
   Icon,
   IconDescriptor,
 } from 'next/dist/lib/metadata/types/metadata-types'
+import { cn } from '@/lib/utils'
 
 export async function generateStaticParams() {
   return supportedLanguages.map((language) => ({ language }))
@@ -29,7 +32,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-const figtree = Figtree({ subsets: ['latin'] })
+const fontSans = FontSans({ subsets: ['latin'], variable: '--font-sans' })
 
 export default function RootLayout({
   children,
@@ -55,10 +58,17 @@ export default function RootLayout({
             />
           ))}
       </head>
-      <body className={figtree.className}>
+      <body
+        className={cn(
+          'min-w-full min-h-screen bg-background font-sans antialiased',
+          fontSans.variable
+        )}
+      >
         <CookiesProvider>
           <Providers>
+            <Header language={language} />
             {children}
+            <Footer language={language} />
             <CookiePopup params={{ language }} />
           </Providers>
         </CookiesProvider>

@@ -1,5 +1,3 @@
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
 import { useTranslation } from '@/app/i18n'
 import { EnvelopeIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 
@@ -44,7 +42,7 @@ function SectionDescription({
   })
 
   return (
-    <section id='section' className='w-1/3 h-[280px] bg-white'>
+    <section id='section' className='w-1/3 h-[280px]'>
       <h2 className='text-3xl uppercase tracking-wider border-b-2 border-yellow-400 pb-2'>
         {title}
       </h2>
@@ -57,7 +55,7 @@ function SectionDescription({
         >
           {links.map((link, index) => (
             <div key={index} className='flex items-center'>
-              <div className='w-12 h-12 grid place-items-center border-black border-2 rounded-full'>
+              <div className='w-12 h-12 grid place-items-center border-2 border-black dark:border-white  rounded-full'>
                 <link.icon className='w-6 h-6' />
               </div>
 
@@ -67,7 +65,7 @@ function SectionDescription({
                 {...(!link.href.startsWith('mailto') && {
                   rel: 'noreferrer',
                 })}
-                className='ml-4 text-blue-500 underline underline-offset-2'
+                className='ml-4 text-sky-800 dark:text-sky-400 underline underline-offset-2'
               >
                 {link.text}
               </a>
@@ -90,15 +88,13 @@ export default async function Contact({
   })
   return (
     <main>
-      <Header params={{ language }} />
-      <div className='h-24 bg-[#111]' />
       <div className='h-[350px] bg-[#111] flex flex-col items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-7xl uppercase font-bold text-yellow-400'>
           {t('title')}
         </h1>
       </div>
 
-      <div className='w-full flex items-center flex-col py-20'>
+      <div className='w-full flex items-center flex-col py-20 text-black bg-white dark:bg-[#181818] dark:text-white'>
         {contactData.map((section, index) => (
           <SectionDescription
             key={index}
@@ -108,8 +104,6 @@ export default async function Contact({
           />
         ))}
       </div>
-
-      <Footer params={{ language }} />
     </main>
   )
 }

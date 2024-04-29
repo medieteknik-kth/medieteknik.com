@@ -2,17 +2,34 @@
 import React, { useState } from 'react'
 import { TFunction } from 'next-i18next'
 import Image from 'next/image'
-import Logo from '/public/images/logo.png'
+import Logo from 'public/images/logo.png'
+import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import {
   UserCircleIcon,
   Cog6ToothIcon,
-  LifebuoyIcon,
   UserIcon,
-  XMarkIcon,
+  UserGroupIcon,
+  ArrowRightStartOnRectangleIcon,
+  LifebuoyIcon,
 } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n/client'
 import Link from 'next/link'
 import { HeaderElement } from './Header'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 function UserLoggedIn({ params }: { params: { t: TFunction } }) {
   const { t } = params
@@ -20,85 +37,103 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
     returnObjects: true,
   })
 
-  const iconMap = (link: string) => {
-    switch (link) {
-      case '/profile':
-        return <UserIcon className='w-6 h-6 mx-2' />
-      case '/account':
-        return <Cog6ToothIcon className='w-6 h-6 mx-2' />
-      case '/logout':
-        return <XMarkIcon className='w-6 h-6 mx-2' />
-      default:
-        return <UserIcon className='w-6 h-6 mx-2' />
-    }
-  }
-
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   let hasProfilePicture: boolean = false
   let username = 'André Eriksson'
   let role = 'Webmaster'
   return (
-    <div className='w-full h-full relative'>
-      <button
-        className='w-full h-full text-sm uppercase flex justify-around items-center border-b-2 border-yellow-400 hover:bg-black/25 z-10'
-        onClick={() => {
-          setIsMenuOpen(!isMenuOpen)
-        }}
-      >
-        <p className='w-4/5 text-end truncate flex-col tracking-wider hidden xl:flex'>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger className='w-full h-full flex justify-end items-center'>
+        <div className='flex flex-col items-end mr-4 uppercase'>
           {username}
           {role && <span className='text-xs text-cyan-400'>{role}</span>}
-        </p>
-
-        {hasProfilePicture ? (
-          <Image
-            src={Logo.src}
-            alt='Profile Picture'
-            width='40'
-            height='40'
-            loading='lazy'
-          />
-        ) : (
-          <UserCircleIcon className='w-10 h-10' color='#FACC15' />
-        )}
-      </button>
-      <div
-        className={`min-w-60 w-1/2 md:w-96 h-fit flex-col absolute ${
-          isMenuOpen ? 'flex' : 'hidden'
-        } top-0 right-0 z-50`}
-        role='dialog'
-        onMouseLeave={() => {
-          setIsMenuOpen(false)
-        }}
-      >
-        <button
-          type='button'
-          title='Close Menu'
-          className='w-full h-24 cursor-pointer'
-          onClick={() => {
-            setIsMenuOpen(false)
-          }}
-        />
-        <ul className='w-full h-fit flex flex-col bg-white dark:bg-[#111] border-2 text-black dark:text-white border-gray-300 dark:border-gray-800 border-t-0 items-center px-10 rounded-b-xl'>
-          {profileElements.map((element, index) => (
-            <li
-              key={index}
-              className='w-full h-fit flex items-center justify-center border-b-2 border-yellow-400 my-4 last:mb-10'
+        </div>
+        <div className='mr-4 border border-white rounded-full'>
+          <Avatar>
+            <AvatarImage src={Logo.src} alt='Profile Picture' />
+            <AvatarFallback>Profile Picture</AvatarFallback>
+          </Avatar>
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='w-96 h-fit mr-2'>
+        <DropdownMenuLabel>Your Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <Link
+              href='/profile'
+              className='w-full flex items-center justify-between pr-2'
             >
-              <Link
-                href={element.link}
-                className='w-full h-full py-4 flex items-center hover:bg-black/15 dark:hover:bg-white/15 rounded-t-xl uppercase tracking-wider'
-                title={element.title}
-                aria-label={element.title}
-              >
-                {iconMap(element.link)}
-                <p>{element.title}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+              <UserIcon className='w-4 h-4 mx-2' />
+              <span>Profile</span>
+              <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              href='/account'
+              className='w-full flex items-center justify-between pr-2'
+            >
+              <Cog6ToothIcon className='w-4 h-4 mx-2' />
+              <span>Account Settings</span>
+              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className='w-full flex items-center'>
+              <UserGroupIcon className='w-4 h-4 mx-2' />
+              <span>Committees</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent className='w-fit'>
+                <DropdownMenuItem>
+                  <Link href='/committee' className='w-full flex items-center'>
+                    <Avatar className='w-4 h-4 mx-1'>
+                      <AvatarImage
+                        src={StyrelsenIcon.src}
+                        alt='Profile Picture'
+                      />
+                      <AvatarFallback>Committee Picture</AvatarFallback>
+                    </Avatar>
+                    <span>Styrlesen</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href='/committee' className='w-full flex items-center'>
+                    <Avatar className='w-4 h-4 mx-1'>
+                      <AvatarImage
+                        src={StyrelsenIcon.src}
+                        alt='Profile Picture'
+                      />
+                      <AvatarFallback>Committee Picture</AvatarFallback>
+                    </Avatar>
+                    <span>Näringslivsgruppen</span>
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <Link href='/support' className='flex items-center'>
+              <LifebuoyIcon className='w-4 h-4 mx-2' />
+              Support
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href='/logout' className='flex items-center'>
+              <ArrowRightStartOnRectangleIcon className='w-4 h-4 mx-2' />
+              Logout
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -127,7 +162,7 @@ export default function LoginSection({
   const { t } = useTranslation(language, 'header')
 
   return (
-    <div className='w-20 xl:w-96 h-full'>
+    <div className='w-20 xl:w-96 h-full relative'>
       {loggedIn ? <UserLoggedIn params={{ t }} /> : <Guest params={{ t }} />}
     </div>
   )

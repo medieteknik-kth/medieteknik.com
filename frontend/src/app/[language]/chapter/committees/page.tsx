@@ -1,6 +1,3 @@
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
-
 import { Head } from '@/components/static/Static'
 
 // Administrativt
@@ -147,8 +144,7 @@ export default function Committees({
 }) {
   return (
     <main className='w-screen'>
-      <Header params={{ language }} />
-      <div className='h-24 bg-[#111]' />
+      <div className='h-24 bg-black' />
       <Head title='Committees' />
 
       <div className='w-full flex flex-col items-center py-20'>
@@ -281,7 +277,6 @@ export default function Committees({
           </div>
         </section>
       </div>
-      <Footer params={{ language }} />
     </main>
   )
 }

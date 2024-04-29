@@ -1,11 +1,9 @@
 import React from 'react'
-
 import LogoPNG from 'public/images/logo.png'
 import { useTranslation } from '@/app/i18n'
 import LoginSection from './LoginSection'
 import NotificationHeader from './Notification'
 import OptionsHeader from './Options'
-
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -21,11 +19,7 @@ export interface HeaderElement {
   link: string
 }
 
-export default async function Header({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+export default async function Header({ language }: { language: string }) {
   const { t } = await useTranslation(language, 'header')
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true })
   const loggedIn: boolean = true

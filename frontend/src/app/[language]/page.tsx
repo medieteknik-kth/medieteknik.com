@@ -1,6 +1,4 @@
 import Image from 'next/image'
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
 import About from './about'
 import News from './news'
 import Background from '/public/images/bg.jpg'
@@ -17,7 +15,6 @@ export default async function Home({
   const common = (await useTranslation(language, 'common')).t
   return (
     <main>
-      <Header params={{ language }} />
       <div className='w-screen h-screen min-h-[1080px]'>
         <div className='w-full h-screen min-h-[1080px] absolute flex justify-center items-center -z-10 top-0'>
           <Image
@@ -44,7 +41,6 @@ export default async function Home({
       </div>
       <About />
       <News />
-      <Footer params={{ language }} />
     </main>
   )
 }

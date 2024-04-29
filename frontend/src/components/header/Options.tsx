@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { useCookies } from 'next-client-cookies'
+import BetaTag from '@/components/tags/Tags'
 
 export default function OptionsHeader({
   params: { language },
@@ -75,12 +76,6 @@ export default function OptionsHeader({
 
   return (
     <div className='w-20 mr-2 z-10'>
-      <div
-        className={`w-screen h-screen ${
-          isOpen ? 'block' : 'hidden'
-        } fixed -z-10 left-0 top-0`}
-        onClick={() => setIsOpen(false)}
-      />
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`w-fit h-full px-4 grid z-10 place-items-center border-b-2 ${
@@ -100,6 +95,7 @@ export default function OptionsHeader({
           isOpen ? 'flex' : 'hidden'
         } top-24 right-[104px] xl:right-[88px] z-50`}
         role='dialog'
+        onMouseLeave={() => setIsOpen(false)}
       >
         <h1 className='text-2xl text-center my-4 uppercase tracking-wider'>
           {t('preferences')}
@@ -128,17 +124,17 @@ export default function OptionsHeader({
           </div>
         </section>
         <section className='w-full h-24 px-4'>
-          <h2 className='h-fit  text-xl font-bold text-left py-2 border-b-2 border-yellow-400'>
+          <h2 className='h-fit text-xl font-bold text-left py-2 border-b-2 border-yellow-400 flex items-center'>
             {t('themePreference')}
+            <BetaTag />
           </h2>
           <div className='h-12 flex overflow-x-auto'>
             <button
               onClick={() => {
-                setIsOpen(false)
                 switchTheme('light')
               }}
               disabled={theme === 'light'}
-              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-black/50 disabled:text-yellow-400'
               title='Light Theme'
               aria-label='Light Theme'
             >
@@ -146,11 +142,10 @@ export default function OptionsHeader({
             </button>
             <button
               onClick={() => {
-                setIsOpen(false)
                 switchTheme('dark')
               }}
               disabled={theme === 'dark'}
-              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-black/50 dark:disabled:bg-white/50  disabled:text-yellow-400'
               title='Dark Theme'
               aria-label='Dark Theme'
             >

@@ -1,5 +1,3 @@
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
 import Masters from './masters'
 import Courses from './courses'
 import International from 'public/images/committees/internationals.png'
@@ -21,8 +19,7 @@ export default function Education({
 }) {
   return (
     <main>
-      <Header params={{ language }} />
-      <div className='h-24 bg-[#111]' />
+      <div className='h-24 bg-black' />
       <Head
         title='Media Technology'
         description='Medieteknikens roll i samhället växer, från nyhetssajter till virtuella miljöer, med potential att både motivera hållbara val och väcka frågor om etik och design.'
@@ -95,8 +92,6 @@ export default function Education({
           </div>
         </div>
       </Section>
-
-      <Footer params={{ language }} />
     </main>
   )
 }
