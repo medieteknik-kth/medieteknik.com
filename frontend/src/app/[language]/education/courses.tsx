@@ -98,13 +98,18 @@ export default function Courses({
   const title = t('courses')
 
   // TODO: Multiple views? Pie chart?
-  
+
   return (
     <Section title={title}>
-      <div className='w-full h-[700px] flex justify-between items-center '>
+      <div
+        className='w-full h-[700px] flex justify-between items-center'
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && detailedViewOpen) setDetailedViewOpen(false)
+        }}
+      >
         {detailedViewOpen && currentView ? (
           <div className='fixed w-screen h-screen bg-black/20 top-0 left-0 z-20 grid place-items-center'>
-            <div className='w-[550px] h-fit relative'>
+            <div className='w-[625px] h-fit relative'>
               <h3
                 className='h-20 text-2xl text-white uppercase font-bold tracking-wider grid place-items-center rounded-t-xl border-b-2 border-black/15'
                 style={{ backgroundColor: currentView.color }}
@@ -128,6 +133,10 @@ export default function Courses({
                           ? ''
                           : 'border-b-2'
                       }`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Escape' && detailedViewOpen)
+                          setDetailedViewOpen(false)
+                      }}
                     >
                       <Link
                         href={new URL(course.link)}

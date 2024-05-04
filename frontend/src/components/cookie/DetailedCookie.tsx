@@ -71,7 +71,13 @@ export default function DetailedCookiePopup({
         <button
           className='w-8 h-8 ml-auto mr-8'
           onClick={() => {
-            saveCookieSettings(sliders)
+            saveCookieSettings({
+              NECESSARY: false,
+              FUNCTIONAL: sliders.FUNCTIONAL || false,
+              ANALYTICS: sliders.ANALYTICS || false,
+              PERFORMANCE: sliders.PERFORMANCE || false,
+              ADVERTISING: sliders.ADVERTISING || false,
+            })
           }}
         >
           <XMarkIcon className='w-8 h-8 ' />
@@ -101,6 +107,7 @@ export default function DetailedCookiePopup({
                     ANALYTICS: true,
                     PERFORMANCE: true,
                     ADVERTISING: true,
+                    NECESSARY: true,
                   }
                   saveCookieSettings(updatedSliders)
                   return updatedSliders
@@ -112,7 +119,14 @@ export default function DetailedCookiePopup({
             <button
               className='w-40 h-10 text-sm border-2 border-yellow-500 bg-white text-black rounded-2xl mt-2 hover:bg-black/20'
               onClick={() => {
-                saveCookieSettings(sliders)
+                saveCookieSettings({
+                  ...sliders,
+                  FUNCTIONAL: sliders.FUNCTIONAL || false,
+                  ANALYTICS: sliders.ANALYTICS || false,
+                  PERFORMANCE: sliders.PERFORMANCE || false,
+                  ADVERTISING: sliders.ADVERTISING || false,
+                  NECESSARY: sliders.NECESSARY || true,
+                })
                 return sliders
               }}
             >

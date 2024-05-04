@@ -10,8 +10,13 @@ import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
 import YoutubeSVG from 'public/images/svg/youtube.svg'
 import MBDSVG from 'public/images/svg/mbd.svg'
+import { Button } from '@components/ui/button'
 
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowTopRightOnSquareIcon,
+  EnvelopeIcon,
+  PhoneIcon,
+} from '@heroicons/react/24/outline'
 
 import Image from 'next/image'
 
@@ -89,18 +94,13 @@ export default async function Footer({
 }) {
   const { t } = await useTranslation(language, 'footer')
   return (
-    <footer
-      className='w-full h-[720px] xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 
-      bg-white text-black border-neutral-200 
-      dark:bg-[#111] dark:text-white dark:border-neutral-800
-    '
-    >
-      <div className='w-full h-full lg:mt-0 md:h-3/5 flex flex-col md:flex-row justify-around items-center'>
+    <footer className='w-full h-fit xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 bg-white text-black border-neutral-200 dark:bg-[#111] dark:text-white dark:border-neutral-700'>
+      <div className='w-full h-full mt-8 xl:mt-0 md:h-3/5 flex flex-col md:flex-row justify-around items-center'>
         <Link
           href='/'
           title='Home'
           aria-label='Home'
-          className='w-96 h-40 grid place-items-center'
+          className='w-fit h-40 grid place-items-center'
         >
           <Image
             src={DarkLogo}
@@ -123,44 +123,62 @@ export default async function Footer({
             placeholder='blur'
           />
         </Link>
-        <div className='w-full h-fit relative xxs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
-          <ul className='w-full h-fit xl:h-1/2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
-            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 border-yellow-400 pt-4 lg:mb-8 px-0 text-center xs:text-left xxs:px-4'>
+        <div className='w-full h-fit relative xs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
+          <ul className='w-full h-fit xl:mt-2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4  px-0 text-center xs:text-left xxs:pl-4'>
               <h2 className='text-2xl tracking-wider font-bold'>
                 {t('location')}
               </h2>
               <p className='mt-4'>
-                Drotting Kristinas väg 15 <br /> 100 44 Stockholm
+                Drotting Kristinas väg 15 <br /> 100 44 Stockholm <br />{' '}
+                <span className='text-neutral-500 dark:text-neutral-300 text-sm'>
+                  c/o THSMEDIES
+                </span>
               </p>
             </li>
-            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4  border-yellow-400 pt-4 lg:mb-8 px-0 xxs:px-4 grid xs:block place-items-center'>
-              <h2 className='text-2xl text-center xxs:text-left tracking-wider font-bold'>
-                <Link
-                  href='/contact'
-                  className='w-fit border-b-2 flex items-center
-                  border-white hover:border-black
-                  dark:border-neutral-600 dark:hover:border-white
-                  '
+            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4 px-0 xxs:pl-4 grid xs:flex flex-col place-items-center items-start'>
+              <h2 className='w-fit h-fit'>
+                <Button
+                  asChild
+                  variant='link'
+                  className='text-2xl text-center xxs:text-left tracking-wider font-bold text-black dark:text-white -ml-4 -mt-2'
                 >
-                  {t('contact')}
-                  <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
-                </Link>
+                  <Link
+                    href='/contact'
+                    className='w-fit flex items-center'
+                    title='Go to Contact Page'
+                    aria-label='Go to Contact Page'
+                  >
+                    {t('contact')}
+                    <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
+                  </Link>
+                </Button>
               </h2>
-              <p className='text-center xxs:text-left mt-4'>
-                <a
+              <Button asChild variant='link' className='-ml-4'>
+                <Link
                   href='mailto:styrelsen@medieteknik.com'
-                  className='hover:underline underline-offset-4 decoration-2 decoration-yellow-400 
-                  text-sky-800 
-                  dark:text-sky-400
-                  '
+                  className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400'
                   title='Email'
                   aria-label={`${t('contact')} email`}
                 >
-                  styrelsen@medieteknik.com
-                </a>
-              </p>
+                  <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
+                  <span>styrelsen@medieteknik.com</span>
+                </Link>
+              </Button>
+              <Button asChild variant='link' className='-ml-4'>
+                <Link
+                  href='tel:802411-5647'
+                  className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400
+                  '
+                  title='Organisation Number'
+                  aria-label={`${t('contact')} phone`}
+                >
+                  <PhoneIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
+                  <span>802411-5647</span>
+                </Link>
+              </Button>
             </li>
-            <li className='w-full h-fit xl:w-1/4 border-t-2 border-yellow-400 pt-4 px-4'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 border-yellow-400 pt-4 pl-4'>
               <h2 className='text-2xl text-center xs:text-left tracking-wider font-bold'>
                 {t('connect')}
               </h2>
