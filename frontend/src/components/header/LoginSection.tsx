@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { TFunction } from 'next-i18next'
 import Image from 'next/image'
 import Logo from 'public/images/logo.png'
@@ -29,7 +29,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 function UserLoggedIn({ params }: { params: { t: TFunction } }) {
   const { t } = params
@@ -37,14 +39,22 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
     returnObjects: true,
   })
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  let hasProfilePicture: boolean = false
+  const searchParams = useSearchParams()
+  const createSearchParam = useCallback(
+    (key: string, value: string) => {
+      const params = new URLSearchParams(searchParams)
+      params.set(key, value)
+      return params.toString()
+    },
+    [searchParams]
+  )
+
   let username = 'André Eriksson'
   let role = 'Webmaster'
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className='w-full h-full flex justify-end items-center'>
-        <div className='flex flex-col items-end mr-4 uppercase'>
+      <DropdownMenuTrigger className='w-full h-full flex justify-center xl:justify-end items-center'>
+        <div className='text-sm hidden flex-col items-end mr-4 uppercase xl:flex'>
           {username}
           {role && <span className='text-xs text-cyan-400'>{role}</span>}
         </div>
@@ -55,43 +65,38 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
           </Avatar>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-96 h-fit mr-2'>
+      <DropdownMenuContent className='w-fit sm:w-96 h-fit mr-2'>
         <DropdownMenuLabel>Your Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link
-              href='/profile'
-              className='w-full flex items-center justify-between pr-2'
-            >
-              <UserIcon className='w-4 h-4 mx-2' />
+            <Link href='/profile' className='w-full flex items-center pr-2'>
+              <UserIcon className='w-4 h-4 mr-2' />
               <span>Profile</span>
-              <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link
-              href='/account'
-              className='w-full flex items-center justify-between pr-2'
-            >
-              <Cog6ToothIcon className='w-4 h-4 mx-2' />
+            <Link href='/account' className='w-full flex items-center pr-2'>
+              <Cog6ToothIcon className='w-4 h-4 mr-2' />
               <span>Account Settings</span>
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger className='w-full flex items-center'>
-              <UserGroupIcon className='w-4 h-4 mx-2' />
+            <DropdownMenuSubTrigger>
+              <UserGroupIcon className='w-4 h-4 mr-2' />
               <span>Committees</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent className='w-fit'>
                 <DropdownMenuItem>
-                  <Link href='/committee' className='w-full flex items-center'>
-                    <Avatar className='w-4 h-4 mx-1'>
+                  <Link
+                    href='/committee'
+                    className='w-full flex !justify-start'
+                  >
+                    <Avatar className='w-4 h-4 mr-1'>
                       <AvatarImage
                         src={StyrelsenIcon.src}
                         alt='Profile Picture'
@@ -102,8 +107,11 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href='/committee' className='w-full flex items-center'>
-                    <Avatar className='w-4 h-4 mx-1'>
+                  <Link
+                    href='/committee'
+                    className='w-full flex items-center !justify-start'
+                  >
+                    <Avatar className='w-4 h-4 mr-1'>
                       <AvatarImage
                         src={StyrelsenIcon.src}
                         alt='Profile Picture'
@@ -120,16 +128,18 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link href='/support' className='flex items-center'>
-              <LifebuoyIcon className='w-4 h-4 mx-2' />
-              Support
+            <Link href='/support' className='w-full flex !justify-start'>
+              <LifebuoyIcon className='w-4 h-4 mr-2' />
+              <span>Support</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href='/logout' className='flex items-center'>
-              <ArrowRightStartOnRectangleIcon className='w-4 h-4 mx-2' />
-              Logout
-            </Link>
+            <Button asChild variant={'destructive'}>
+              <Link href='/logout' className='w-full flex items-center'>
+                <ArrowRightStartOnRectangleIcon className='w-4 h-4 mr-2' />
+                Logout
+              </Link>
+            </Button>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
