@@ -15,19 +15,19 @@ export default async function Home({
   const common = (await useTranslation(language, 'common')).t
   return (
     <main>
-      <div className='w-screen h-screen min-h-[1080px]'>
-        <div className='w-full h-screen min-h-[1080px] absolute flex justify-center items-center -z-10 top-0'>
+      <div className='w-full h-screen'>
+        <div className='w-full h-full max-h-[2400px] absolute flex justify-center items-center -z-10 top-0'>
           <Image
             src={Background}
             alt='bg'
-            sizes='(min-height: 1080px) 100vw'
-            className='w-full h-screen min-h-[1080px] object-cover'
+            className='w-full h-screen object-cover'
             priority
             placeholder='blur'
             blurDataURL={Background.src}
           />
+          <ChevronDownIcon className='w-16 h-16 absolute bottom-0 left-0 right-0 mx-auto text-white' />
         </div>
-        <div className='w-screen h-full min-h-[1080px] z-10 flex flex-col items-center justify-center'>
+        <div className='w-full h-full z-10 flex flex-col items-center justify-center'>
           <div className='w-9/12 h-full flex flex-col items-center justify-center text-center'>
             <h1 className='text-xl xs:text-4xl sm:text-7xl text-yellow-400 font-semibold tracking-wide py-8 uppercase'>
               {common('title')}
@@ -36,7 +36,6 @@ export default async function Home({
               {t('school')}
             </h2>
           </div>
-          <ChevronDownIcon className='w-16 h-16 text-white' />
         </div>
       </div>
       <About />

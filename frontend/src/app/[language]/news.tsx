@@ -153,7 +153,7 @@ function Event() {
 
 export default function News() {
   return (
-    <section className='w-screen h-[1080px] relative flex flex-col p-20'>
+    <section className='w-full h-[1080px] relative flex flex-col p-20'>
       <h2 className='w-full h-fit text-3xl uppercase text-black tracking-wider text-center font-bold border-b-2 border-yellow-400 p-10 pb-4 mb-10'>
         News & Events
       </h2>

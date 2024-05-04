@@ -7,7 +7,7 @@ const CardStyle = 'w-3/4 h-full relative rounded-t-2xl'
 
 export default function About() {
   return (
-    <section className='w-screen h-[640px] bg-white flex flex-col justify-evenly items-center'>
+    <section className='w-full h-[640px] bg-white flex flex-col justify-evenly items-center'>
       <h2 className='w-full h-fit text-3xl uppercase text-black tracking-wider text-center font-bold border-b-2 border-yellow-400 p-10 pb-4 mb-10'>
         About Media Technology
       </h2>
