@@ -91,6 +91,7 @@ export function Section({
       className={`w-full h-fit border-b-2 border-gray-200 ${
         centeredChildren ? 'flex flex-col items-center' : ''
       }`}
+      id={title?.toLowerCase().replace(' ', '-')}
       style={{ background: metadata.background, marginTop: metadata.marginTop }}
     >
       {title && (
