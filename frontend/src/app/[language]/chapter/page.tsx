@@ -14,6 +14,7 @@ export default function Chapter({
 }) {
   return (
     <main>
+      <div className='h-24 bg-black' />
       <Head
         title='Chapter'
         description="The Chapter's purpose is to satisfy the needs of Media Technology students during their time at KTH."

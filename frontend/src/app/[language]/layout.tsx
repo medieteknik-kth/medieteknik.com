@@ -6,7 +6,6 @@ import { supportedLanguages } from '../i18n/settings'
 import { CookiesProvider } from 'next-client-cookies/server'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
-
 import { dir } from 'i18next'
 import CookiePopup from '@/components/cookie/Cookie'
 import Favicon from 'public/favicon.ico'
@@ -43,11 +42,7 @@ export default function RootLayout({
 }) {
   children
   return (
-    <html
-      lang={language}
-      dir={dir(language)}
-      style={{ scrollPaddingTop: '100px' }}
-    >
+    <html lang={language} dir={dir(language)}>
       <head>
         {Array.isArray(metadata.icons) &&
           metadata.icons.map((icon: Icon) => (
