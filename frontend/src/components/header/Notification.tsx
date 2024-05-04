@@ -10,7 +10,7 @@ export default function NotificationHeader({
   const [isOpen, setIsOpen] = useState(false)
   const notifications: number = 4
   return (
-    <div className='w-20 mr-2 z-10 relative'>
+    <div className='w-20 z-10 relative'>
       <div
         className={`w-screen h-screen ${
           isOpen ? 'block' : 'hidden'

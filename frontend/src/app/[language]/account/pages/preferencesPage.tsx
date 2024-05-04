@@ -6,9 +6,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { useTheme } from 'next-themes'
 import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
-import BetaTag from '@/components/tags/Tags'
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export default function PreferencesPage({
   params: { language },
@@ -96,7 +96,7 @@ export default function PreferencesPage({
           <div>
             <h2 className='text-2xl font-bold mb-2 flex items-center'>
               Theme
-              <BetaTag />
+              <Badge className='ml-2 bg-red-500 text-white'>BETA</Badge>
             </h2>
 
             <div className='flex'>

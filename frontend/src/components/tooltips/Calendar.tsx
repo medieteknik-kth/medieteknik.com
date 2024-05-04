@@ -45,7 +45,11 @@ export default function CalendarTooltip({
           <h1 className='text-2xl font-bold uppercase py-2 px-10'>
             Add to Calendar
           </h1>
-          <button className='w-10 h-10' onClick={() => closeCallback()}>
+          <button
+            className='w-10 h-10'
+            onClick={() => closeCallback()}
+            title='Close'
+          >
             <XMarkIcon className='w-6 h-6' />
           </button>
         </div>

@@ -8,7 +8,8 @@ import { useTheme } from 'next-themes'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { useCookies } from 'next-client-cookies'
-import BetaTag from '@/components/tags/Tags'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 export default function OptionsHeader({
   params: { language },
@@ -75,8 +76,8 @@ export default function OptionsHeader({
   }
 
   return (
-    <div className='w-20 mr-2 z-10'>
-      <button
+    <div className='w-20 z-10'>
+      <Button
         onClick={() => setIsOpen(!isOpen)}
         className={`w-fit h-full px-4 grid z-10 place-items-center border-b-2 ${
           isOpen
@@ -88,7 +89,7 @@ export default function OptionsHeader({
         aria-expanded={isOpen}
       >
         <Cog8ToothIcon className='w-8 h-8 text-white' />
-      </button>
+      </Button>
 
       <div
         className={`min-w-60 w-1/2 md:w-96 h-96 flex-col bg-white dark:bg-[#111] absolute border-2 text-black dark:text-white border-gray-300 dark:border-gray-800 border-t-0 rounded-b-xl ${
@@ -126,7 +127,7 @@ export default function OptionsHeader({
         <section className='w-full h-24 px-4'>
           <h2 className='h-fit text-xl font-bold text-left py-2 border-b-2 border-yellow-400 flex items-center'>
             {t('themePreference')}
-            <BetaTag />
+            <Badge className='ml-2 bg-red-500 text-white'>BETA</Badge>
           </h2>
           <div className='h-12 flex overflow-x-auto'>
             <button
