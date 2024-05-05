@@ -23,7 +23,7 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
     <Card className='w-[600px] h-[200px] flex'>
       <Link
         href={`./bulletin/news/${newsItem.id}`}
-        className='w-fit h-full p-5 pr-0 relative overflow-hidden'
+        className='w-fit max-w-44 h-full p-5 pr-0 relative overflow-hidden'
         title={newsItem.title}
         aria-label={newsItem.title}
       >
@@ -37,30 +37,21 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
       </Link>
 
       <div className='grow flex flex-col justify-between'>
-        <CardHeader className='w-fit h-fit group p-0'>
-          <CardTitle className='w-full underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
-            <Link
-              href={`./bulletin/news/${newsItem.id}`}
-              className='px-6 pt-6 block pb-2'
-              title={newsItem.title}
-              aria-label={newsItem.title}
-            >
+        <CardHeader className='w-fit h-fit p-0'>
+          <Link
+            href={`./bulletin/news/${newsItem.id}`}
+            className='group mt-3 pt-3 px-6 pb-6'
+          >
+            <CardTitle className='w-full underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
               {newsItem.title}
-            </Link>
-          </CardTitle>
-          <CardDescription className='w-full group-hover:underline !no-underline'>
-            <Link
-              href={`./bulletin/news/${newsItem.id}`}
-              className='px-6 pb-6 block -mt-1.5 '
-              title={newsItem.title}
-              aria-label={newsItem.title}
-            >
+            </CardTitle>
+            <CardDescription className='w-full group-hover:underline !no-underline'>
               {newsItem.shortDescription}
-            </Link>
-          </CardDescription>
+            </CardDescription>
+          </Link>
         </CardHeader>
 
-        <CardFooter className='w-full flex justify-between items-center'>
+        <CardFooter className='w-full flex justify-between items-center pb-0 mb-6'>
           <div className='flex items-center'>
             <Link
               href={

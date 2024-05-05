@@ -11,6 +11,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+
 import ShortNews from './components/shortNews'
 import { ShortNewsItem } from '@/models/Items'
 
@@ -49,7 +55,7 @@ const breakingNews: ShortNewsItem[] = [
   },
   {
     id: 'news3',
-    title: 'Nöjesutskottet planerar höstens första sittning',
+    title: 'NLG planerar höstens första sittning',
     shortDescription: 'Planerna för höstens första sittning är i full gång.',
     imageUrl: BG3.src,
     author: {
@@ -62,8 +68,9 @@ const breakingNews: ShortNewsItem[] = [
     creationDate: '2021-09-07',
   },
 ]
-import { LinkIcon } from '@heroicons/react/24/outline'
+import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 export default function BreakingNews({ language }: { language: string }) {
   const [copiedLink, setCopiedLink] = useState(-1)
@@ -99,6 +106,29 @@ export default function BreakingNews({ language }: { language: string }) {
               </TooltipTrigger>
             </Tooltip>
           </TooltipProvider>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant='outline'
+                size='icon'
+                title='News Tags'
+                aria-label='News Tags'
+                className='absolute bottom-4 right-16 z-10'
+              >
+                <TagIcon className='w-6 h-6' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='absolute w-fit h-fit'>
+              <h3 className='text-lg font-bold pb-1'>Tags</h3>
+              <div className='flex'>
+                {newsItem.categories.map((category, index) => (
+                  <Badge key={index} className='w-fit mr-2'>
+                    {category}
+                  </Badge>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       ))}
     </div>
