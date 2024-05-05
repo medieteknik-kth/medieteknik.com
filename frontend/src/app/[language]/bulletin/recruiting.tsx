@@ -1,8 +1,14 @@
-'use client'
-import { useEffect, useState } from 'react'
-import Image, { StaticImageData } from 'next/image'
-import Link from 'next/link'
+import { StaticImageData } from 'next/image'
 import { ClockIcon } from '@heroicons/react/24/outline'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 // Administrativt
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
@@ -56,51 +62,34 @@ export default function Recruiting() {
       <div className='w-full h-5/6 flex items-center mb-20'>
         <div className='w-full h-full overflow-x-auto'>
           <div className='w-full h-full px-8 py-4 grid auto-rows-max grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8'>
-            {recruitData
-              .sort((a, b) => {
-                return a.daysLeft - b.daysLeft
-              })
-              .map((recruit, index) => (
-                <div
-                  key={index}
-                  className='h-56 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 p-4 flex flex-col justify-between transition-transform hover:scale-105'
-                >
-                  <div className='min-h-20 h-fit flex justify-between items-center'>
-                    <Link
-                      href={`/chapter/committees/${recruit.title.toLowerCase()}`}
-                      title={`${recruit.title} Page`}
-                      aria-label={`Go to ${recruit.title} Page`}
-                    >
-                      <Image
-                        src={recruit.image}
-                        alt={recruit.title + ' icon'}
-                        width={64}
-                        height={64}
-                      />
-                    </Link>
-                    <Link
-                      href='/'
-                      className='px-2 py-2 bg-yellow-400 rounded-xl m-4 hover:bg-yellow-500'
-                    >
-                      Apply Now
-                    </Link>
+            {recruitData.map((recruit, index) => (
+              <Card key={index}>
+                <CardHeader className='flex flex-row items-center justify-between'>
+                  <div className='flex items-center'>
+                    <Avatar className='mr-4 bg-white'>
+                      <AvatarImage src={recruit.image.src} />
+                      <AvatarFallback>{recruit.title}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle>{recruit.title}</CardTitle>
+                      <CardDescription className='flex items-center mt-1'>
+                        <ClockIcon className='w-4 h-4 mr-1' />
+                        {recruit.daysLeft} days left
+                      </CardDescription>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className='text-xl font-bold uppercase'>
-                      {recruit.title}
-                    </h3>
-                    <p className='text-sm max-h-10 overflow-hidden leading-5'>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    </p>
-                  </div>
-                  <div className='h-6 text-sm font-bold flex items-center mt-1'>
-                    <ClockIcon className='w-6 h-6 mr-2' />
-                    <p>{recruit.daysLeft} days left</p>
-                  </div>
-                </div>
-              ))}
+                  <Button title='Learn More' aria-label='Learn More'>
+                    Learn More
+                  </Button>
+                </CardHeader>
+                <CardContent className='text-sm'>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Asperiores aut error repellendus quos iure eveniet.
+                  Accusantium odit, veniam ratione cumque provident cum aut
+                  sapiente qui reiciendis aperiam maiores enim expedita.
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>

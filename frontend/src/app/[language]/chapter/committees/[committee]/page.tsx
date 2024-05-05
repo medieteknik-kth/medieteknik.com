@@ -26,7 +26,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { CommitteePosition } from '@/models/Committee'
 import { ShortNewsItem } from '@/models/Items'
-import { link } from 'fs'
 import {
   Breadcrumb,
   BreadcrumbItem,

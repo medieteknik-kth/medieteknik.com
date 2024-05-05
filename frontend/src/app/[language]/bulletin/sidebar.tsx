@@ -1,7 +1,6 @@
 'use client'
 import { Event } from './events'
 import { useState } from 'react'
-import Filters from './filters'
 
 import {
   MagnifyingGlassIcon,
@@ -9,7 +8,6 @@ import {
   ChartBarIcon,
   ChevronDownIcon,
 } from '@heroicons/react/24/outline'
-import { title } from 'process'
 
 export default function EventSidebar({
   params: { language, nonHighlightedEvents },
@@ -56,16 +54,7 @@ export default function EventSidebar({
           <div
             className='w-96 h-96 absolute bg-white border-2 border-[#111] top-10 px-6 rounded-xl'
             style={{ display: isFilterOpen ? 'block' : 'none' }}
-          >
-            <Filters
-              params={{
-                language,
-                nonHighlightedEvents,
-                setFilteredEvents,
-                filteredEvents,
-              }}
-            />
-          </div>
+          ></div>
           <button
             type='button'
             className='w-fit h-fit hover:bg-white/25 flex items-center justify-between px-4 py-1 rounded-lg'
