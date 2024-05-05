@@ -18,10 +18,11 @@ export interface CommitteeCategory {
  * @param {string} email - Committee email
  * @param {string} logo_url - Committee logo URL (optional)
  */
-export interface Committee {
+export default interface Committee {
+  type: 'committee';
   name: string;
   email: string;
-  logo_url?: string;
+  logoUrl: string;
 }
 
 /**

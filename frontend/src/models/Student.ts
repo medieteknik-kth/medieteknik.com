@@ -8,10 +8,11 @@
  * @param {string} reception_name - Student reception name
  * @param {string} profile_picture_url - Student profile picture URL (optional)
  */
-export interface Student {
+export default interface Student {
+  type: 'student';
   email: string;
-  first_name: string;
-  last_name: string;
-  reception_name: string;
-  profile_picture_url?: string;
+  firstName: string;
+  lastName: string;
+  receptionName: string;
+  profilePictureUrl: string;
 }

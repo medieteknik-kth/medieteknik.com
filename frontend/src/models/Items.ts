@@ -1,17 +1,32 @@
+import Committee from './Committee'
+import Student from './Student'
+
+/**
+ * @type Author
+ * @description Author type
+ * 
+ * @param {Student} Student - Student author
+ * @param {Committee} Committee - Committee author
+ */
+type Author = Student | Committee
+
 /**
  * @interface Item
  * @description Base News Model
  * 
  * @param {string} title - The title of the news item
- * @param {string} author - The author of the news item
+ * @param {Author} author - The author of the news item
  * @param {string} imageUrl - The image url of the news item
  * @param {string} creationDate - The creation date of the news item
+ * @param {string[]} categories - The categories of the news item
  */
-interface News {
+export default interface News {
+  id: string
   title: string
-  author: string
+  author: Author
   imageUrl: string
   creationDate: string
+  categories: string[]
 }
 
 /**
@@ -47,7 +62,7 @@ export interface NewsItem extends News {
  * @param {string} startDate - The start date of the event
  * @param {string} endDate - The end date of the event
  */
-interface Event extends News {
+export interface Event extends News {
   location: string
   startDate: string
   endDate: string
@@ -60,7 +75,7 @@ interface Event extends News {
  * 
  * @param {string} shortDescription - The short description of the event
  */
-interface ShortEventItem extends Event {
+export interface ShortEventItem extends Event {
   shortDescription: string
 }
 
@@ -72,7 +87,7 @@ interface ShortEventItem extends Event {
  * @param {string} lastEdited - The last edited date of the event
  * @param {string} content - The content of the event
  */
-interface EventItem extends Event {
+export interface EventItem extends Event {
   lastEdited: string
   content: string
 }
