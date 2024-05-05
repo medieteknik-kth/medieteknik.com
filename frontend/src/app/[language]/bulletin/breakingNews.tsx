@@ -79,7 +79,7 @@ export default function BreakingNews({ language }: { language: string }) {
   return (
     <div className='w-fit h-fit flex *:mr-16 z-10'>
       {breakingNews.map((newsItem, index) => (
-        <div className='relative'>
+        <div key={index} className='relative'>
           <ShortNews key={index} newsItem={newsItem} />
           <TooltipProvider>
             <Tooltip open={copiedLink === index}>

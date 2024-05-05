@@ -82,7 +82,7 @@ export default function EventPreview({
               )}
             </Link>
             <HoverCard>
-              <HoverCardTrigger>
+              <HoverCardTrigger asChild>
                 {event.author.type === 'committee' ? (
                   <Link
                     href={`./chapter/committees/${(
