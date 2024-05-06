@@ -15,7 +15,7 @@ import { Button } from '@components/ui/button'
 import {
   ArrowTopRightOnSquareIcon,
   EnvelopeIcon,
-  PhoneIcon,
+  BuildingOffice2Icon,
 } from '@heroicons/react/24/outline'
 
 import Image from 'next/image'
@@ -173,7 +173,7 @@ export default async function Footer({
                   title='Organisation Number'
                   aria-label={`${t('contact')} phone`}
                 >
-                  <PhoneIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
+                  <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>802411-5647</span>
                 </Link>
               </Button>

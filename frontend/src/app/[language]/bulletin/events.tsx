@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from 'react'
 import BG from 'public/images/kth-landskap.jpg'
 import Image, { StaticImageData } from 'next/image'
 import CalendarTooltip from '@/components/tooltips/Calendar'
-import EventSidebar from './sidebar'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
@@ -266,7 +265,7 @@ export default function Events({
             </Button>
           </div>
         </div>
-        <EventSidebar params={{ language, nonHighlightedEvents }} />
+        <div className='w-1/4 h-full bg-[#111]'></div>
       </div>
     </section>
   )

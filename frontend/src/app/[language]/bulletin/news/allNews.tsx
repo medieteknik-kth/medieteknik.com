@@ -127,15 +127,27 @@ export default function AllNews({
   }, [setCurrentPage])
 
   return (
-    <Card>
+    <Card className='mb-24'>
       <CardHeader className='h-24'>
         <div className='grid grid-cols-4 gap-20'>
           <div className='flex relative'>
-            <Input type='text' placeholder='Search' />
-            <Button type='submit' size='icon' className='absolute right-10'>
+            <Input type='text' name='searchbar' placeholder='Search' />
+            <Button
+              type='submit'
+              size='icon'
+              className='absolute right-10'
+              title='Search'
+              aria-label='Search'
+            >
               <MagnifyingGlassIcon className='w-6 h-6' />
             </Button>
-            <Button variant='outline' size='icon' className=''>
+            <Button
+              variant='outline'
+              size='icon'
+              className=''
+              title='Information'
+              aria-label='Information'
+            >
               <InformationCircleIcon className='w-6 h-6' />
             </Button>
           </div>

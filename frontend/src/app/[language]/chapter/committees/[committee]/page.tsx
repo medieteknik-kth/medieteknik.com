@@ -34,6 +34,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import ShortNews from '@/app/[language]/bulletin/components/shortNews'
 
 /*export async function getStaticPaths() {
   const res = await fetch('https://api.medieteknik.com/committees')
@@ -97,25 +98,46 @@ export default function Committee({
 }) {
   const newsData: ShortNewsItem[] = [
     {
+      id: 'news-1',
       title: 'News Title 1',
-      author: committee,
+      author: {
+        type: 'committee',
+        name: committee,
+        email: committee + '@medieteknik.com',
+        logoUrl: Logo.src,
+      },
+      categories: ['Admin'],
       imageUrl: Logo.src,
       creationDate: '2023-01-01',
-      shortDescription: 'Short Description 2',
+      shortDescription: 'Short Description 1',
     },
     {
-      title: 'News Title 2',
-      author: committee,
+      id: 'news-1',
+      title: 'News Title 1',
+      author: {
+        type: 'committee',
+        name: committee,
+        email: committee + '@medieteknik.com',
+        logoUrl: Logo.src,
+      },
+      categories: ['Admin'],
       imageUrl: Logo.src,
-      creationDate: '2022-01-01',
-      shortDescription: 'Short Description 2',
+      creationDate: '2023-01-01',
+      shortDescription: 'Short Description 1',
     },
     {
-      title: 'News Title 3',
-      author: committee,
+      id: 'news-1',
+      title: 'News Title 1',
+      author: {
+        type: 'committee',
+        name: committee,
+        email: committee + '@medieteknik.com',
+        logoUrl: Logo.src,
+      },
+      categories: ['Admin'],
       imageUrl: Logo.src,
-      creationDate: '2021-01-01',
-      shortDescription: 'Short Description 3',
+      creationDate: '2023-01-01',
+      shortDescription: 'Short Description 1',
     },
   ]
 
@@ -226,28 +248,11 @@ export default function Committee({
             News & Events
           </h2>
           <div
-            className='grid w-full h-72 grid-cols-6 
+            className='grid w-full h-fit grid-cols-3 
           auto-rows-auto auto-cols-auto py-4 '
           >
             {newsData.map((news, index) => (
-              <Card key={index} className='w-80 h-56 top-0 bottom-0 my-auto'>
-                <CardHeader>
-                  <CardTitle>{news.title}</CardTitle>
-                  <CardDescription>{news.shortDescription}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button
-                    variant='default'
-                    className='w-full'
-                    title='Read more'
-                  >
-                    Read More
-                  </Button>
-                </CardContent>
-                <CardFooter className='mt-5 pb-0'>
-                  <p className='text-sm'>Published {news.creationDate}</p>
-                </CardFooter>
-              </Card>
+              <ShortNews key={index} newsItem={news} />
             ))}
           </div>
         </div>

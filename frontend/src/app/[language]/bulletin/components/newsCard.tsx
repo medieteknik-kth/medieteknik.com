@@ -20,7 +20,11 @@ import { StudentTooltip, CommitteeTooltip } from '@/components/tooltips/Tooltip'
 
 export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
   return (
-    <Card className='w-fit h-full flex flex-col justify-between'>
+    <Card
+      className='w-fit h-full flex flex-col justify-between'
+      title={newsItem.title}
+      aria-label={newsItem.title}
+    >
       <CardHeader>
         <Link href={'./news/' + newsItem.id} className='group w-full h-20'>
           <Image

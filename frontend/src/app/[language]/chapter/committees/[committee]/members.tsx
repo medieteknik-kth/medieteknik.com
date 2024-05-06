@@ -15,10 +15,14 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Student } from '@/models/Student'
+import Student from '@/models/Student'
 import { CommitteePosition } from '@/models/Committee'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import {
+  StudentTooltip,
+  CommitteePositionTooltip,
+} from '@/components/tooltips/Tooltip'
 
 interface CommitteePositionOccupant extends Student {
   position: CommitteePosition
@@ -26,60 +30,49 @@ interface CommitteePositionOccupant extends Student {
 
 const data: CommitteePositionOccupant[] = [
   {
+    type: 'student',
     email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
+    firstName: 'André',
+    lastName: 'Eriksson',
     position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
+    receptionName: '',
+    profilePictureUrl: Logo.src,
   },
   {
+    type: 'student',
     email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
+    firstName: 'André',
+    lastName: 'Eriksson',
     position: { name: 'Vice-Ordförande', description: 'Vice-Ordförande' },
-    reception_name: '',
+    receptionName: '',
+    profilePictureUrl: Logo.src,
   },
   {
+    type: 'student',
     email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
-    position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
+    firstName: 'André',
+    lastName: 'Eriksson',
+    position: { name: 'Kassör', description: 'Kassör' },
+    receptionName: '',
+    profilePictureUrl: Logo.src,
   },
   {
+    type: 'student',
     email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
+    firstName: 'André',
+    lastName: 'Eriksson',
     position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
+    receptionName: '',
+    profilePictureUrl: Logo.src,
   },
   {
+    type: 'student',
     email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
+    firstName: 'André',
+    lastName: 'Eriksson',
     position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
-  },
-  {
-    email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
-    position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
-  },
-  {
-    email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
-    position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
-  },
-  {
-    email: 'andree4@kth.se',
-    first_name: 'André',
-    last_name: 'Eriksson',
-    position: { name: 'Ordförande', description: 'Ordförande' },
-    reception_name: '',
+    receptionName: '',
+    profilePictureUrl: Logo.src,
   },
 ]
 
@@ -107,39 +100,10 @@ export default function CommitteeMembers({
                 <CardTitle>
                   <HoverCard>
                     <HoverCardTrigger className='flex items-center'>
-                      <p>{student.first_name + ' ' + student.last_name}</p>
+                      <p>{student.firstName + ' ' + student.lastName}</p>
                     </HoverCardTrigger>
                     <HoverCardContent>
-                      <Button
-                        asChild
-                        variant='link'
-                        className='h-fit flex flex-col justify-center pb-0'
-                      >
-                        <Link
-                          href='/'
-                          className='group'
-                          title='Go to profile page'
-                        >
-                          <Avatar className='w-24 h-24 border-2 border-black rounded-full mb-2 group-hover:scale-110 transition-transform'>
-                            <AvatarImage
-                              src={Logo.src}
-                              alt='Committee Logo'
-                              width={96}
-                              height={96}
-                            />
-                            <AvatarFallback>Committee Picture</AvatarFallback>
-                          </Avatar>
-                          <p>{student.first_name + ' ' + student.last_name}</p>
-                        </Link>
-                      </Button>
-                      <Button
-                        variant='link'
-                        className='text-neutral-500 py-0 w-full left-0 right-0 mx-auto z-10'
-                      >
-                        <Link href='mailto:' title='Send email to occupant'>
-                          <span>andree4@kth.se</span>
-                        </Link>
-                      </Button>
+                      <StudentTooltip student={student} />
                     </HoverCardContent>
                   </HoverCard>
                 </CardTitle>
@@ -154,22 +118,15 @@ export default function CommitteeMembers({
                       </Button>
                     </HoverCardTrigger>
                     <HoverCardContent className='w-fit'>
-                      <CardHeader className='flex flex-row items-center'>
-                        <Avatar className='mr-2'>
-                          <AvatarImage src={Logo.src} alt='Committee Logo' />
-                          <AvatarFallback>Committee Picture</AvatarFallback>
-                        </Avatar>
-                        <div className='flex flex-col'>
-                          <CardTitle>{student.position.name}</CardTitle>
-                          <CardDescription className='capitalize'>
-                            {committee}
-                          </CardDescription>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <h3 className='text-lg font-bold'>Description</h3>
-                        <p>{student.position.description}</p>
-                      </CardContent>
+                      <CommitteePositionTooltip
+                        position={student.position}
+                        committee={{
+                          type: 'committee',
+                          name: committee,
+                          email: committee + '@medieteknik.com',
+                          logoUrl: Logo.src,
+                        }}
+                      />
                     </HoverCardContent>
                   </HoverCard>
                 </CardDescription>
