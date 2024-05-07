@@ -53,7 +53,7 @@ export default async function NotificationHeader({
           >
             {notifications > 0 ? (
               <div className='relative'>
-                <BellIcon className='w-8 h-8 text-white' />
+                <BellIcon className='w-8 h-8' />
                 <span className='absolute top-0 right-0 w-4 h-4 bg-yellow-500 rounded-full text-xs text-black grid place-items-center'>
                   {notifications > 9 ? '9+' : notifications}
                 </span>

@@ -91,7 +91,7 @@ export default function OptionsHeader({ language }: { language: string }) {
             size='icon'
             variant='ghost'
           >
-            <Cog8ToothIcon className='w-8 h-8 text-white' />
+            <Cog8ToothIcon className='w-8 h-8' />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent asChild>
