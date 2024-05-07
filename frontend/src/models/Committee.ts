@@ -35,3 +35,19 @@ export interface CommitteePosition {
   name: string;
   description: string;
 }
+
+/**
+ * @interface StudentCommitteePosition
+ * @description Student committee position model
+ * 
+ * @param {Committee} committee - Committee
+ * @param {CommitteePosition} position - Committee position
+ * @param {string} initiatedDate - Initiated date
+ * @param {string} endDate - Expected end date
+ */
+export interface StudentCommitteePosition {
+  committee: Committee;
+  position: CommitteePosition;
+  initiatedDate: string;
+  endDate: string;
+}

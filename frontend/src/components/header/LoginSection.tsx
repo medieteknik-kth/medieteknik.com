@@ -165,9 +165,11 @@ function Guest({ params }: { params: { t: TFunction } }) {
 }
 
 export default function LoginSection({
-  params: { language, loggedIn },
+  language,
+  loggedIn,
 }: {
-  params: { language: string; loggedIn: boolean }
+  language: string
+  loggedIn: boolean
 }) {
   const { t } = useTranslation(language, 'header')
 

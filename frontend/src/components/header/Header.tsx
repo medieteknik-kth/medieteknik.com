@@ -59,12 +59,12 @@ export default async function Header({ language }: { language: string }) {
       </div>
       <div className='w-fit flex z-10'>
         {loggedIn ? (
-          <NotificationHeader params={{ language }} />
+          <NotificationHeader language={language} />
         ) : (
-          <OptionsHeader params={{ language }} />
+          <OptionsHeader language={language} />
         )}
 
-        <LoginSection params={{ language, loggedIn }} />
+        <LoginSection language={language} loggedIn={loggedIn} />
       </div>
     </header>
   )

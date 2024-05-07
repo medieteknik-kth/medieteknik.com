@@ -10,16 +10,21 @@ import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { useCookies } from 'next-client-cookies'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
-export default function OptionsHeader({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+export default function OptionsHeader({ language }: { language: string }) {
   const router = useRouter()
   const path = usePathname()
   const { t } = useTranslation(language, 'header')
-  const [isOpen, setIsOpen] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const { theme, setTheme } = useTheme()
   const cookies = useCookies()
@@ -77,84 +82,99 @@ export default function OptionsHeader({
 
   return (
     <div className='w-20 z-10'>
-      <Button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-fit h-full px-4 grid z-10 place-items-center border-b-2 ${
-          isOpen
-            ? 'border-yellow-400 bg-black/25'
-            : 'border-transparent bg-transparent'
-        } hover:border-yellow-400 hover:bg-black/25`}
-        title='Preferences'
-        aria-label='Preferences Button'
-        aria-expanded={isOpen}
-      >
-        <Cog8ToothIcon className='w-8 h-8 text-white' />
-      </Button>
-
-      <div
-        className={`min-w-60 w-1/2 md:w-96 h-96 flex-col bg-white dark:bg-[#111] absolute border-2 text-black dark:text-white border-gray-300 dark:border-gray-800 border-t-0 rounded-b-xl ${
-          isOpen ? 'flex' : 'hidden'
-        } top-24 right-[104px] xl:right-[88px] z-50`}
-        role='dialog'
-        onMouseLeave={() => setIsOpen(false)}
-      >
-        <h1 className='text-2xl text-center my-4 uppercase tracking-wider'>
-          {t('preferences')}
-        </h1>
-        <section className='w-full h-24 px-4'>
-          <h2 className='h-fit text-xl font-bold text-left py-2 border-b-2 border-yellow-400'>
-            {t('languagePreference')}
-          </h2>
-          <div className='h-12 flex overflow-x-auto'>
-            {supportedLanguages.map((lang: string) => (
-              <button
-                type='submit'
-                key={lang}
-                onClick={() => {
-                  switchLanguage(lang)
-                  setIsOpen(false)
-                }}
-                disabled={lang === language}
-                className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed'
-                title={getLanguageName(lang)}
-                aria-label={getLanguageName(lang)}
-              >
-                <span className={`fi fi-${getFlagCode(lang)}`}></span>
-              </button>
-            ))}
-          </div>
-        </section>
-        <section className='w-full h-24 px-4'>
-          <h2 className='h-fit text-xl font-bold text-left py-2 border-b-2 border-yellow-400 flex items-center'>
-            {t('themePreference')}
-            <Badge className='ml-2 bg-red-500 text-white'>BETA</Badge>
-          </h2>
-          <div className='h-12 flex overflow-x-auto'>
-            <button
-              onClick={() => {
-                switchTheme('light')
-              }}
-              disabled={theme === 'light'}
-              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-black/50 disabled:text-yellow-400'
-              title='Light Theme'
-              aria-label='Light Theme'
-            >
-              <SunIcon className='w-6 h-6' />
-            </button>
-            <button
-              onClick={() => {
-                switchTheme('dark')
-              }}
-              disabled={theme === 'dark'}
-              className='w-20 h-full px-4 grid place-items-center border-b-2 border-transparent enabled:hover:border-yellow-400 enabled:hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-black/50 dark:disabled:bg-white/50  disabled:text-yellow-400'
-              title='Dark Theme'
-              aria-label='Dark Theme'
-            >
-              <MoonIcon className='w-6 h-6' />
-            </button>
-          </div>
-        </section>
-      </div>
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            className='w-fit h-full px-4 grid z-10 place-items-center'
+            title='Preferences'
+            aria-label='Preferences Button'
+            size='icon'
+            variant='ghost'
+          >
+            <Cog8ToothIcon className='w-8 h-8 text-white' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent asChild>
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('preferences')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className='text-lg'>
+                  {t('languagePreference')}
+                </DropdownMenuLabel>
+                <DropdownMenuGroup className='flex'>
+                  {supportedLanguages.map((lang: string) => {
+                    return (
+                      <DropdownMenuItem key={lang} asChild>
+                        <Button
+                          onClick={() => switchLanguage(lang)}
+                          className='mx-1 cursor-pointer'
+                          variant={lang === language ? 'default' : 'ghost'}
+                          disabled={lang === language}
+                          title={`Switch to ${getLanguageName(lang)}`}
+                          aria-label={`Switch to ${getLanguageName(lang)}`}
+                        >
+                          <div className='w-full h-full flex items-center px-4'>
+                            <span
+                              className={`fi fi-${getFlagCode(lang)} w-6 h-6`}
+                            />
+                            <span className='ml-2'>
+                              {getLanguageName(lang)}
+                            </span>
+                          </div>
+                        </Button>
+                      </DropdownMenuItem>
+                    )
+                  })}
+                </DropdownMenuGroup>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className='text-lg flex items-center'>
+                  {t('themePreference')}
+                  <Badge className='ml-2' variant='destructive'>
+                    BETA
+                  </Badge>
+                </DropdownMenuLabel>
+                <DropdownMenuGroup className='flex'>
+                  <DropdownMenuItem asChild>
+                    <Button
+                      onClick={() => switchTheme('light')}
+                      className='mx-1 cursor-pointer'
+                      variant={theme === 'light' ? 'default' : 'ghost'}
+                      disabled={theme === 'light'}
+                      title='Switch to Light Theme'
+                      aria-label='Switch to Light Theme'
+                    >
+                      <div className='w-full h-full flex items-center px-4'>
+                        <SunIcon className='w-6 h-6' />
+                        <span className='ml-2'>Light</span>
+                      </div>
+                    </Button>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Button
+                      onClick={() => switchTheme('dark')}
+                      className='mx-1 cursor-pointer'
+                      variant={theme === 'dark' ? 'default' : 'ghost'}
+                      disabled={theme === 'dark'}
+                      title='Switch to Dark Theme'
+                      aria-label='Switch to Dark Theme'
+                    >
+                      <div className='w-full h-full flex items-center px-4'>
+                        <MoonIcon className='w-6 h-6' />
+                        <span className='ml-2'>Dark</span>
+                      </div>
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuGroup>
+            </CardContent>
+          </Card>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

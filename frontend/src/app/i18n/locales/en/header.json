@@ -4,6 +4,7 @@
     "preferences": "Preferences",
     "languagePreference": "Language",
     "themePreference": "Theme",
+    "notifications": "Notifications",
     "navs": [
         {
             "title": "News & Events",

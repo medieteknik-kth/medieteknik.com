@@ -12,7 +12,7 @@ export const Config = {
   matcher: ['/:language*']
 }
 
-function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent) {
+function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent): NextResponse {
   let language;
 
   language = cookies.get(cookieName)
@@ -47,11 +47,57 @@ function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: S
   return NextResponse.next();
 }
 
+/**
+ * Handle analytics and performance tracking
+ * @param request The request object
+ * @param cookies The cookies present in the request 
+ * @param serverConsent The server cookie consent object
+ * @returns The next response object
+ */
+function handleAnalytics(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent): NextResponse {
+  if(window === undefined) return NextResponse.next();
+
+  if(serverConsent.isCategoryAllowed(CookieConsent.ANALYTICS)) {
+    try {
+      fetch('https://.../analytics', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+
+      })
+    })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  if(serverConsent.isCategoryAllowed(CookieConsent.PERFORMANCE)) {
+    try {
+      fetch('https://.../performance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+
+      })
+    })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return NextResponse.next();
+}
+
 export function middleware(request: NextRequest) {
   const cookies = getCookies();
   const serverConsent = new ServerCookieConsent(request);
 
   let response = handleLanguage(request, cookies, serverConsent);
+  // response = handleAnalytics(request, cookies, serverConsent);
 
   return response;
 }
