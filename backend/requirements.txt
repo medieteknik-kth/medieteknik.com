@@ -1,0 +1,11 @@
+python-dotenv
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-CORS
+Flask-Limiter
+Flask-WTF
+requests
+authlib
+gunicorn
+psycopg2
