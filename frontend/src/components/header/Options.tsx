@@ -20,13 +20,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { cookieName } from '@/app/i18n/settings'
 
 export default function OptionsHeader({ language }: { language: string }) {
   const router = useRouter()
   const path = usePathname()
   const { t } = useTranslation(language, 'header')
-  const [isClient, setIsClient] = useState(false)
   const { theme, setTheme } = useTheme()
+  const [isClient, setIsClient] = useState(false)
   const cookies = useCookies()
 
   useEffect(() => {
@@ -36,7 +37,10 @@ export default function OptionsHeader({ language }: { language: string }) {
   const switchLanguage = useCallback(
     (newLanguage: string) => {
       const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
-
+      const clientCookiesConsent = new ClientCookieConsent(window)
+      if (clientCookiesConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
+        cookies.set(cookieName, newLanguage, { path: '/' })
+      }
       router.push(newPath)
     },
     [path, router]

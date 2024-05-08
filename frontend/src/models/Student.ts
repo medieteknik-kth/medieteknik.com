@@ -1,3 +1,5 @@
+import { CommitteePosition } from './Committee';
+
 /**
  * @interface Student
  * @description Student model
@@ -15,4 +17,8 @@ export default interface Student {
   lastName: string;
   receptionName: string;
   profilePictureUrl: string;
+}
+
+export interface CommitteePositionOccupant extends Student {
+  position: CommitteePosition
 }

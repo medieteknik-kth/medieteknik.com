@@ -9,6 +9,9 @@ import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
+import { cookieName } from '@/app/i18n/settings'
+import { useCookies } from 'next-client-cookies'
 
 export default function PreferencesPage({
   params: { language },
@@ -20,11 +23,16 @@ export default function PreferencesPage({
   const path = usePathname()
   const [cookiesShown, setCookiesShown] = useState(false)
   const { theme, setTheme } = useTheme()
+  const cookies = useCookies()
 
   const switchLanguage = useCallback(
     (newLanguage: string) => {
       const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
       const category = params.get('category') || 'account'
+      const clientCookiesConsent = new ClientCookieConsent(window)
+      if (clientCookiesConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
+        cookies.set(cookieName, newLanguage, { path: '/' })
+      }
       router.push(newPath + '?' + new URLSearchParams({ category }))
     },
     [path, params, router]

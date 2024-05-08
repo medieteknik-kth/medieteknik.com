@@ -51,3 +51,4 @@ export interface StudentCommitteePosition {
   initiatedDate: string;
   endDate: string;
 }
+

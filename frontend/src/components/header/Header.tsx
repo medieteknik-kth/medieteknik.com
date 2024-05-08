@@ -28,7 +28,7 @@ export default async function Header({ language }: { language: string }) {
     <header className='w-full h-24 text-white fixed bg-black/70 backdrop-blur-md flex justify-between z-50'>
       <div className='w-fit h-full flex z-20'>
         <Link
-          href='/'
+          href={'/' + language}
           className='w-20 max-w-20 px-4 h-full grid place-items-center z-10'
           title='Home'
           aria-label='Home Button'

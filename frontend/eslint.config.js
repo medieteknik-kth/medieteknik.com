@@ -46,7 +46,7 @@ const importSortConfig = {
 
 export default tseslint.config(
   {
-    ignores: ['.next', '**/*.d.ts', 'node_modules'],
+    ignores: ['.next', '**/*.d.ts', 'node_modules', '**/node_modules/', 'public', 'src/app/i18n/**/'],
   },
   {
     languageOptions: {
