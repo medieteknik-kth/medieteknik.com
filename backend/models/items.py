@@ -6,13 +6,15 @@ from utility.constants import DEFAULT_LANGUAGE_CODE
 
 db = database.db
 
+#TODO: Annoucements?
+
 class EventStatus(enum.Enum):
     UPCOMING = 'UPCOMING'
     ONGOING = 'ONGOING'
     PAST = 'PAST'
 
 class Event(db.Model):
-    __tablename__ = 'events'
+    __tablename__ = 'event'
     
     event_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -26,10 +28,10 @@ class Event(db.Model):
     location = Column(String(255))
     
     # Foreign keys
-    student_id = Column(Integer, ForeignKey('students.student_id'))
+    student_id = Column(Integer, ForeignKey('student.student_id'))
     
     # Relationships
-    student = db.relationship('Student', back_populates='events')
+    student = db.relationship('Student', backref='event')
     
     def __init__(self, created_at, last_updated, start_date, end_date, categories, status, location, student_id):
         self.created_at = created_at
@@ -37,7 +39,7 @@ class Event(db.Model):
         self.start_date = start_date
         self.end_date = end_date
         self.categories = categories
-        self.status = status
+        self.status: EventStatus = status
         self.location = location
         self.student_id = student_id
     
@@ -50,7 +52,7 @@ class Event(db.Model):
             'start_date': self.start_date,
             'end_date': self.end_date,
             'categories': self.categories,
-            'status': self.status,
+            'status': self.status.value,
             'location': self.location,
             'student_id': self.student_id,
             'title': translation.title if translation else 'Error: No translation found',
@@ -69,7 +71,7 @@ class Event(db.Model):
             'start_date': self.start_date,
             'end_date': self.end_date,
             'categories': self.categories,
-            'status': self.status,
+            'status': self.status.value,
             'location': self.location,
             'student_id': self.student_id,
             'title': translation.title if translation else 'Error: No translation found',
@@ -90,10 +92,10 @@ class News(db.Model):
     is_public = Column(Boolean)
     
     # Foreign keys
-    student_id = Column(Integer, ForeignKey('students.student_id'))
+    student_id = Column(Integer, ForeignKey('student.student_id'))
     
     # Relationships
-    student = db.relationship('Student', back_populates='news')
+    student = db.relationship('Student', backref='news')
     
     def __init__(self, created_at, last_updated, categories, is_pinned, is_public, student_id):
         self.created_at = created_at
@@ -144,7 +146,7 @@ class News(db.Model):
         return self.to_short_dict(language_code)
 
 class Album(db.Model):
-    __tablename__ = 'albums'
+    __tablename__ = 'album'
     
     album_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -153,18 +155,20 @@ class Album(db.Model):
     last_updated = Column(DateTime)
     categories = Column(ARRAY(String))
     media_urls = Column(ARRAY(String))
+    is_public = Column(Boolean)
 
     # Foreign keys
-    student_id = Column(Integer, ForeignKey('students.student_id'))
+    student_id = Column(Integer, ForeignKey('student.student_id'))
     
     # Relationships
-    student = db.relationship('Student', back_populates='albums')
+    student = db.relationship('Student', backref='album')
     
-    def __init__(self, created_at, last_updated, categories, media_urls, student_id):
+    def __init__(self, created_at, last_updated, categories, media_urls, is_public, student_id):
         self.created_at = created_at
         self.last_updated = last_updated
         self.categories = categories
         self.media_urls = media_urls
+        self.is_public = is_public
         self.student_id = student_id
     
     def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
@@ -175,13 +179,19 @@ class Album(db.Model):
             'last_updated': self.last_updated,
             'categories': self.categories,
             'media_urls': self.media_urls,
+            'is_public': self.is_public,
             'student_id': self.student_id,
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found'
         }
+        
+    def to_public_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
+        if not self.is_public:
+            return None
+        return self.to_dict(language_code)
     
 class Document(db.Model):
-    __tablename__ = 'documents'
+    __tablename__ = 'document'
     
     document_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -194,10 +204,10 @@ class Document(db.Model):
     is_public = Column(Boolean)
     
     # Foreign keys
-    student_id = Column(Integer, ForeignKey('students.student_id'))
+    student_id = Column(Integer, ForeignKey('student.student_id'))
     
     # Relationships
-    student = db.relationship('Student', back_populates='documents')
+    student = db.relationship('Student', backref='document')
     
     def __init__(self, created_at, last_updated, categories, file_url, is_pinned, is_public, student_id):
         self.created_at = created_at
@@ -231,7 +241,7 @@ class Document(db.Model):
 # Translations
    
 class EventTranslation(db.Model):
-    __tablename__ = 'event_translations'
+    __tablename__ = 'event_translation'
     
     event_translation_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -242,21 +252,21 @@ class EventTranslation(db.Model):
     sub_image_urls = Column(ARRAY(String))
     
     # Foreign keys
-    event_id = Column(Integer, ForeignKey('events.event_id'))
-    language_id = Column(Integer, ForeignKey('languages.language_id'))
+    event_id = Column(Integer, ForeignKey('event.event_id'))
+    language_code = Column(String(20), ForeignKey('language.language_code'))
     
     # Relationships
-    event = db.relationship('Event', back_populates='translations')
-    language = db.relationship('Language', back_populates='event_translations')
+    event = db.relationship('Event', backref='translation')
+    language = db.relationship('Language', backref='event_translation')
     
-    def __init__(self, title, body, short_description, main_image_url, sub_image_urls, event_id, language_id):
+    def __init__(self, title, body, short_description, main_image_url, sub_image_urls, event_id, language_code):
         self.title = title
         self.body = body
         self.short_description = short_description
         self.main_image_url = main_image_url
         self.sub_image_urls = sub_image_urls
         self.event_id = event_id
-        self.language_id = language_id
+        self.language_code = language_code
     
     def to_dict(self):
         return {
@@ -267,11 +277,11 @@ class EventTranslation(db.Model):
             'main_image_url': self.main_image_url,
             'sub_image_urls': self.sub_image_urls,
             'event_id': self.event_id,
-            'language_id': self.language_id
+            'language_code': self.language_code
         }
            
 class NewsTranslation(db.Model):
-    __tablename__ = 'news_translations'
+    __tablename__ = 'news_translation'
     
     news_translation_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -283,20 +293,20 @@ class NewsTranslation(db.Model):
     
     # Foreign keys
     news_id = Column(Integer, ForeignKey('news.news_id'))
-    language_id = Column(Integer, ForeignKey('languages.language_id'))
+    language_code = Column(String(20), ForeignKey('language.language_code'))
     
     # Relationships
-    news = db.relationship('News', back_populates='translations')
-    language = db.relationship('Language', back_populates='news_translations')
+    news = db.relationship('News', backref='translation')
+    language = db.relationship('Language', backref='news_translation')
     
-    def __init__(self, title, body, short_description, main_image_url, sub_image_urls, news_id, language_id):
+    def __init__(self, title, body, short_description, main_image_url, sub_image_urls, news_id, language_code):
         self.title = title
         self.body = body
         self.short_description = short_description
         self.main_image_url = main_image_url
         self.sub_image_urls = sub_image_urls
         self.news_id = news_id
-        self.language_id = language_id
+        self.language_code = language_code
     
     def to_dict(self):
         return {
@@ -307,11 +317,11 @@ class NewsTranslation(db.Model):
             'main_image_url': self.main_image_url,
             'sub_image_urls': self.sub_image_urls,
             'news_id': self.news_id,
-            'language_id': self.language_id
+            'language_code': self.language_code
         }
         
 class AlbumTranslation(db.Model):
-    __tablename__ = 'album_translations'
+    __tablename__ = 'album_translation'
     
     album_translation_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -319,18 +329,18 @@ class AlbumTranslation(db.Model):
     description = Column(String(2500))
     
     # Foreign keys
-    album_id = Column(Integer, ForeignKey('albums.album_id'))
-    language_id = Column(Integer, ForeignKey('languages.language_id'))
+    album_id = Column(Integer, ForeignKey('album.album_id'))
+    language_code = Column(String(20), ForeignKey('language.language_code'))
     
     # Relationships
-    album = db.relationship('Album', back_populates='translations')
-    language = db.relationship('Language', back_populates='album_translations')
+    album = db.relationship('Album', backref='translation')
+    language = db.relationship('Language', backref='album_translation')
     
-    def __init__(self, title, description, album_id, language_id):
+    def __init__(self, title, description, album_id, language_code):
         self.title = title
         self.description = description
         self.album_id = album_id
-        self.language_id = language_id
+        self.language_code = language_code
     
     def to_dict(self):
         return {
@@ -338,11 +348,11 @@ class AlbumTranslation(db.Model):
             'title': self.title,
             'description': self.description,
             'album_id': self.album_id,
-            'language_id': self.language_id
+            'language_code': self.language_code
         }
         
 class DocumentTranslation(db.Model):
-    __tablename__ = 'document_translations'
+    __tablename__ = 'document_translation'
     
     document_translation_id = Column(Integer, primary_key=True, autoincrement=True)
     
@@ -350,18 +360,18 @@ class DocumentTranslation(db.Model):
     categories = Column(ARRAY(String))
     
     # Foreign keys
-    document_id = Column(Integer, ForeignKey('documents.document_id'))
-    language_id = Column(Integer, ForeignKey('languages.language_id'))
+    document_id = Column(Integer, ForeignKey('document.document_id'))
+    language_code = Column(String(20), ForeignKey('language.language_code'))
     
     # Relationships
-    document = db.relationship('Document', back_populates='translations')
-    language = db.relationship('Language', back_populates='document_translations')
+    document = db.relationship('Document', backref='translation')
+    language = db.relationship('Language', backref='document_translation')
     
-    def __init__(self, title, categories, document_id, language_id):
+    def __init__(self, title, categories, document_id, language_code):
         self.title = title
         self.categories = categories
         self.document_id = document_id
-        self.language_id = language_id
+        self.language_code = language_code
         
     def to_dict(self):
         return {
@@ -369,7 +379,7 @@ class DocumentTranslation(db.Model):
             'title': self.title,
             'categories': self.categories,
             'document_id': self.document_id,
-            'language_id': self.language_id
+            'language_code': self.language_code
         }
     
 class RepeatableEvents(db.Model):
@@ -381,7 +391,7 @@ class RepeatableEvents(db.Model):
     reapeting_interval = Column(String(255))
     
     # Foreign keys
-    event_id = Column(Integer, ForeignKey('events.event_id'))
+    event_id = Column(Integer, ForeignKey('event.event_id'))
     
     # Relationships
-    event = db.relationship('Event', back_populates='repeatable_events')
+    event = db.relationship('Event', backref='repeatable_events')

@@ -93,16 +93,16 @@ class Audit(db.Model):
     student_id = Column(Integer, ForeignKey('student.student_id'))
     
     # Relationships
-    student = db.relationship('Student', back_populates='audit')
+    student = db.relationship('Student', backref='audit')
     
     def __init__(self, created_at, action_type, endpoint_category, request_params, response_code, additional_info, result, student_id):
         self.created_at = created_at
         self.action_type = action_type
-        self.endpoint_category = endpoint_category
+        self.endpoint_category: EndpointCategory = endpoint_category
         self.request_params = request_params
         self.response_code = response_code
         self.additional_info = additional_info
-        self.result = result
+        self.result: Result = result
         self.student_id = student_id
         
     def __repr__(self):
@@ -113,11 +113,11 @@ class Audit(db.Model):
             'audit_id': self.audit_id,
             'created_at': self.created_at,
             'action_type': self.action_type,
-            'endpoint_category': self.endpoint_category,
+            'endpoint_category': self.endpoint_category.value,
             'request_params': self.request_params,
             'response_code': self.response_code,
             'additional_info': self.additional_info,
-            'result': self.result,
+            'result': self.result.value,
             'student_id': self.student_id
         }
     
@@ -141,7 +141,7 @@ class Idempotency(db.Model):
     audit_id = Column(Integer, ForeignKey('audit.audit_id'))
     
     # Relationships
-    audit = db.relationship('Audit', back_populates='idempotency')
+    audit = db.relationship('Audit', backref='idempotency')
     
     def __init__(self, idempotency_key, created_at, expires_at, retry_count, audit_id):
         self.idempotency_key = idempotency_key

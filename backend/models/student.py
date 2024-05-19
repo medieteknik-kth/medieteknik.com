@@ -16,12 +16,13 @@ class Student(db.Model):
     profile_picture_url = Column(String(255))
     reception_profile_picture_url = Column(String(255))
     
-    def __init__(self, email, first_name, last_name, reception_name, profile_picture_url):
+    def __init__(self, email, first_name, last_name, reception_name, profile_picture_url, reception_profile_picture_url):
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
         self.reception_name = reception_name
         self.profile_picture_url = profile_picture_url
+        self.reception_profile_picture_url = reception_profile_picture_url
     
     def __repr__(self):
         return '<Student %r>' % self.student_id
@@ -34,6 +35,7 @@ class Student(db.Model):
             'last_name': self.last_name,
             'reception_name': self.reception_name,
             'profile_picture_url': self.profile_picture_url,
+            'reception_profile_picture_url': self.reception_profile_picture_url,
         }
     
     def to_public_dict(self):
@@ -76,5 +78,5 @@ class StudentPositions(db.Model):
             'termination_date': self.termination_date,
         }
         
-    def is_active(self, current_date=datetime.now()):
+    def is_active(self, current_date=datetime.datetime.now()):
         return self.initiation_date < current_date and (self.termination_date is None or self.termination_date > current_date)

@@ -1,8 +1,12 @@
+import enum
 from utility import database
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey
+from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import ARRAY
+from utility.constants import ROUTES
 
 db = database.db
+
+
 
 class Content(db.Model):
     __tablename__ = 'content'
@@ -31,6 +35,7 @@ class Resource(db.Model):
     
     route = Column(String(255), unique=True)
     is_public = Column(Boolean, default=True)
+    category = Column(Enum(ROUTES))
     
     # Foreign keys
     content_id = Column(Integer, ForeignKey('content.content_id'))
@@ -38,9 +43,10 @@ class Resource(db.Model):
     # Relationships
     content = db.relationship('Content', backref='resource')
     
-    def __init__(self, route, is_public, content_id):
+    def __init__(self, route, is_public, category, content_id):
         self.route = route
         self.is_public = is_public
+        self.category: ROUTES = category
         self.content_id = content_id
         
     def __repr__(self):
@@ -51,6 +57,7 @@ class Resource(db.Model):
             'resource_id': self.resource_id,
             'route': self.route,
             'is_public': self.is_public,
+            'category': self.category.value,
             'content_id': self.content_id
         }
     
@@ -60,6 +67,7 @@ class Resource(db.Model):
         return {
             'resource_id': self.resource_id,
             'route': self.route,
+            'category': self.category.value,
         }
     
 # Translations

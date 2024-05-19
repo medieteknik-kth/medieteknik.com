@@ -17,7 +17,6 @@ class Language(db.Model):
 
     def to_dict(self):
         return {
-            'language_id': self.language_id,
             'language_code': self.language_code,
             'language_name': self.language_name
         }

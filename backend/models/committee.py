@@ -14,6 +14,8 @@ class CommitteeCategory(db.Model):
     __tablename__ = 'committee_category'
     committee_category_id = Column(
         Integer, primary_key=True, autoincrement=True)
+    
+    email = Column(String(255), unique=True, nullable=True)
 
     def __repr__(self):
         return '<CommitteeCategory %r>' % self.committee_category_id
@@ -91,7 +93,7 @@ class CommitteePosition(db.Model):
         self.committee_id = committee_id
         self.email = email
         self.weight = weight
-        self.role = role
+        self.role: CommitteePositionsRole = role
         self.active = active
         
     def __repr__(self):
@@ -103,7 +105,7 @@ class CommitteePosition(db.Model):
             'committee_position_id': self.committee_position_id,
             'email': self.email,
             'weight': self.weight,
-            'role': self.role,
+            'role': self.role.value,
             'active': self.active,
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found',
@@ -156,8 +158,10 @@ class CommitteeCategoryTranslation(db.Model):
 
 class CommitteeTranslation(db.Model):
     __tablename__ = 'committee_translation'
+    
+    committee_translation_id = Column(Integer, primary_key=True, autoincrement=True)
 
-    title = Column(String(length=255))
+    title = Column(String(255))
     description = Column(String(255))
 
     # Foreign keys
@@ -188,6 +192,8 @@ class CommitteeTranslation(db.Model):
 
 class CommitteePositionTranslation(db.Model):
     __tablename__ = 'committee_position_translation'
+    
+    committee_position_translation_id = Column(Integer, primary_key=True, autoincrement=True)
 
     title = Column(String(255))
     description = Column(String(255))
