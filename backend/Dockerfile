@@ -15,8 +15,8 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Expose port 5000
-EXPOSE 5000
+# Expose port 8000
+EXPOSE 8000
 
 # Run the application with gunicorn
 CMD ["gunicorn", "main:app"]
