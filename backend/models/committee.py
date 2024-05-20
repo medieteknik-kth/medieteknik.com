@@ -61,16 +61,6 @@ class Committee(db.Model):
             'description': translation.description if translation else 'Error: No translation found',
         }
 
-    def to_public_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: CommitteeTranslation | None = CommitteeTranslation.query.filter_by(committee_id=self.committee_id, language_code=language_code).first()
-        return {
-            'committee_id': self.committee_id,
-            'email': self.email,
-            'logo_url': self.logo_url,
-            'title': translation.title if translation else 'Error: No translation found',
-            'description': translation.description if translation else 'Error: No translation found',
-        }
-
 class CommitteePosition(db.Model):
     __tablename__ = 'committee_position'
     committee_position_id = Column(
@@ -105,7 +95,7 @@ class CommitteePosition(db.Model):
             'committee_position_id': self.committee_position_id,
             'email': self.email,
             'weight': self.weight,
-            'role': self.role.value,
+            'role': self.role.value if self.role else None,
             'active': self.active,
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found',

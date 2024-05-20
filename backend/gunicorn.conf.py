@@ -2,7 +2,7 @@ import multiprocessing
 import os
 from dotenv import load_dotenv
 loglevel = "info"
-workers = 3
+workers = 3 * round(multiprocessing.cpu_count() / 2) + 1
 bind = "0.0.0.0:8000"
 
 

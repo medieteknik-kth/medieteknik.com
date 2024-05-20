@@ -46,14 +46,7 @@ def get_resources_by_category(category: str) -> dict:
     Returns:
         list[dict]: List of resources
     """
-    paginated_items: list[Resource] = Resource.query.filter(Resource.category == category.upper()).paginate()
-    resources_dict = [resource.to_public_dict() for resource in paginated_items]
-    return jsonify(
-        {
-            "items": resources_dict,
-            "page": paginated_items.page,
-            "per_page": paginated_items.per_page,
-            "total_pages": paginated_items.pages,
-            "total_items": paginated_items.total,
-        }
-    )
+    items: list[Resource] = Resource.query.filter(Resource.category == category.upper()).all()
+    resources_dict = [resource.to_public_dict() for resource in items]
+    
+    return jsonify(resources_dict)

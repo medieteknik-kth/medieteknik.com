@@ -24,7 +24,7 @@ class Event(db.Model):
     start_date = Column(DateTime)
     end_date = Column(DateTime)
     categories = Column(ARRAY(String))
-    status = Column(Enum(EventStatus))
+    status = Column(Enum(EventStatus), default=EventStatus.UPCOMING, nullable=False)
     location = Column(String(255))
     
     # Foreign keys

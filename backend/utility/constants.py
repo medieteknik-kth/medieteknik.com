@@ -1,5 +1,6 @@
 import enum
 DEFAULT_LANGUAGE_CODE = 'se'
+AVAILABLE_LANGUAGES = ['se', 'en']
 
 API_VERSION = 'v1'
 class ROUTES(enum.Enum):

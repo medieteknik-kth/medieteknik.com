@@ -57,7 +57,7 @@ class Resource(db.Model):
             'resource_id': self.resource_id,
             'route': self.route,
             'is_public': self.is_public,
-            'category': self.category.value,
+            'category': self.category.value if self.category else None,
             'content_id': self.content_id
         }
     
@@ -67,7 +67,7 @@ class Resource(db.Model):
         return {
             'resource_id': self.resource_id,
             'route': self.route,
-            'category': self.category.value,
+            'category': self.category.value if self.category else None,
         }
     
 # Translations

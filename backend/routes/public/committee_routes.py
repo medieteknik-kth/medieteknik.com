@@ -1,5 +1,8 @@
 from flask import Blueprint, request, jsonify
-from models.committee import Committee, CommitteeCategory, CommitteePosition
+from sqlalchemy import func
+from models.committee import Committee, CommitteeCategory, CommitteePosition, CommitteeTranslation
+from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.language import retrieve_language
 
 public_committee_category_bp = Blueprint('public_committee_category', __name__)
 public_committee_bp = Blueprint('public_committee', __name__)
@@ -12,8 +15,10 @@ def get_committee_categories() -> dict:
     Returns:
         list[dict]: List of committee categories
     """
+    language_code = retrieve_language(request.args)
+    
     categories: list[CommitteeCategory] = CommitteeCategory.query.all()
-    categories_dict = [category.to_dict() for category in categories]
+    categories_dict = [category.to_dict(language_code) for category in categories]
     return jsonify(categories_dict)
 
 @public_committee_category_bp.route('/<int:category_id>', methods=['GET'])
@@ -26,8 +31,10 @@ def get_committee_category(category_id: int) -> dict:
     Returns:
         dict: Committee category
     """
+    language_code = retrieve_language(request.args)
+    
     category: CommitteeCategory = CommitteeCategory.query.get(category_id)
-    return jsonify(category.to_dict())
+    return jsonify(category.to_dict(language_code))
 
 @public_committee_bp.route('/', methods=['GET'])
 def get_committees() -> dict:
@@ -36,19 +43,12 @@ def get_committees() -> dict:
     Returns:
         list[dict]: List of committees
     """
-    per_page = request.args.get('per_page', 5, type=int)
-    paginated_items = Committee.query.paginate(per_page=per_page)
+    language_code = retrieve_language(request.args)
     
-    committees: list[Committee] = paginated_items.items
-    committees_dict = [committee.to_public_dict() for committee in committees]
+    committees: list[Committee] = Committee.query.all()
+    committees_dict = [committee.to_dict(language_code) for committee in committees]
     return jsonify(
-        {
-            "items": committees_dict,
-            "page": paginated_items.page,
-            "per_page": paginated_items.per_page,
-            "total_pages": paginated_items.pages,
-            "total_items": paginated_items.total,
-        }
+        committees_dict
     )
 
 @public_committee_bp.route('/<int:committee_id>', methods=['GET'])
@@ -61,8 +61,34 @@ def get_committee(committee_id: int) -> dict:
     Returns:
         dict: Committee
     """
+    language_code = retrieve_language(request.args)
+    
     committee: Committee = Committee.query.get(committee_id)
-    return jsonify(committee.to_public_dict())
+    return jsonify(committee.to_dict(language_code))
+
+@public_committee_bp.route('/name/<string:committee_name>', methods=['GET'])
+def get_committee_by_name(committee_name: str) -> dict:
+    """Retrieves a committee by name
+    
+    Args:
+        committee_name (str): Committee name
+    
+    Returns:
+        dict: Committee
+    """
+    language_code = retrieve_language(request.args)
+    
+    committee_translation: CommitteeTranslation | None = CommitteeTranslation.query \
+        .filter(func.lower(CommitteeTranslation.title) == func.lower(committee_name)) \
+        .filter_by(language_code=language_code).first()
+    
+    if not committee_translation:
+        return jsonify({})
+    
+    committee_translation: CommitteeTranslation = committee_translation
+    committee = Committee.query.filter_by(committee_id=committee_translation.committee_id).first()
+    
+    return jsonify(committee.to_dict(language_code))
 
 @public_committee_position_bp.route('/', methods=['GET'])
 def get_committee_positions() -> dict:
@@ -71,11 +97,13 @@ def get_committee_positions() -> dict:
     Returns:
         list[dict]: List of committee positions
     """
+    language_code = retrieve_language(request.args)
+
     per_page = request.args.get('per_page', 10, type=int)
     paginated_items = CommitteePosition.query.paginate(per_page=per_page)
     
     positions: list[CommitteePosition] = paginated_items.items
-    positions_dict = [position.to_public_dict() for position in positions]
+    positions_dict = [position.to_public_dict(language_code) for position in positions]
     return jsonify(
         {
             "items": positions_dict,
@@ -96,5 +124,7 @@ def get_committee_position(position_id: int) -> dict:
     Returns:
         dict: Committee position
     """
+    language_code = retrieve_language(request.args)
+    
     position: CommitteePosition = CommitteePosition.query.get(position_id)
-    return jsonify(position.to_public_dict())
+    return jsonify(position.to_public_dict(language_code))

@@ -57,6 +57,7 @@ app.register_blueprint(item_routes.public_albums_bp, url_prefix=f'/api/{API_VERS
 
 # Protected Routes
 
+# Non-Specific Routes
 @app.route('/')
 def index():
     title = f'Medieteknik.com API {API_VERSION}, see documentation at /docs'
