@@ -3,11 +3,10 @@ import {
   PencilSquareIcon,
   Cog8ToothIcon,
 } from '@heroicons/react/24/outline'
-import { GetStaticPaths } from 'next'
+import type { GetStaticPaths } from 'next'
 import CommitteeMembers from './members'
 import { Button } from '@/components/ui/button'
 import Logo from 'public/images/logo.png'
-
 import {
   Card,
   CardContent,
@@ -22,7 +21,6 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
 import Link from 'next/link'
 import { CommitteePosition } from '@/models/Committee'
 import { ShortNewsItem } from '@/models/Items'
@@ -36,23 +34,47 @@ import {
 } from '@/components/ui/breadcrumb'
 import ShortNews from '@/app/[language]/bulletin/components/shortNews'
 
-/*export async function getStaticPaths() {
-  const res = await fetch('https://api.medieteknik.com/committees')
-  const committees = await res.json()
+interface Committee {
+  category: string
+  resource_id: number
+  route: string
+}
 
-  const paths = committees.map((committee: { name: string }) => ({
-    params: { committee: committee.name },
+export const getStaticPaths: GetStaticPaths = async () => {
+  const res = await fetch(
+    'http://localhost:8000/api/v1/dynamic/categories/committees'
+  )
+  const committees: Committee[] = await res.json()
+
+  const paths = committees.map((committee) => ({
+    params: {
+      language: '[language]',
+      committee: committee.route.toLowerCase(),
+    },
   }))
 
-  if (!paths) {
-    return {
-      paths: [],
-      fallback: true,
-    }
-  }
+  return { paths, fallback: true }
+}
 
-  return { paths, fallback: blocking }
-}*/
+type CommitteeProps = {
+  committee_id: number
+  email: string
+  logo_url: string
+  title: string
+  description: string
+}
+
+async function getData(
+  committee: string,
+  language: string
+): Promise<CommitteeProps> {
+  const res = await fetch(
+    `http://localhost:8000/api/v1/committees/name/${committee}?language_code=${language}`,
+    { cache: 'force-cache' }
+  )
+  const data = await res.json()
+  return data
+}
 
 interface CommitteePositionOccupant extends CommitteePosition {
   occupant: string
@@ -91,18 +113,36 @@ const committeeData: CommitteePositionOccupant[] = [
   },
 ]
 
-export default function Committee({
+export default async function Committee({
   params: { language, committee },
 }: {
   params: { language: string; committee: string }
 }) {
+  const data = await getData(committee, language)
+
+  const committeeName = decodeURIComponent(data.title)
+
   const newsData: ShortNewsItem[] = [
     {
       id: 'news-1',
       title: 'News Title 1',
       author: {
         type: 'committee',
-        name: committee,
+        name: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
+        email: data.email,
+        logoUrl: Logo.src,
+      },
+      categories: ['Admin'],
+      imageUrl: Logo.src,
+      creationDate: '2023-01-01',
+      shortDescription: 'Short Description 1',
+    },
+    {
+      id: 'news-1',
+      title: 'News Title 1',
+      author: {
+        type: 'committee',
+        name: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
         email: committee + '@medieteknik.com',
         logoUrl: Logo.src,
       },
@@ -116,21 +156,7 @@ export default function Committee({
       title: 'News Title 1',
       author: {
         type: 'committee',
-        name: committee,
-        email: committee + '@medieteknik.com',
-        logoUrl: Logo.src,
-      },
-      categories: ['Admin'],
-      imageUrl: Logo.src,
-      creationDate: '2023-01-01',
-      shortDescription: 'Short Description 1',
-    },
-    {
-      id: 'news-1',
-      title: 'News Title 1',
-      author: {
-        type: 'committee',
-        name: committee,
+        name: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
         email: committee + '@medieteknik.com',
         logoUrl: Logo.src,
       },
@@ -144,7 +170,7 @@ export default function Committee({
   return (
     <main className='relative'>
       <div className='h-24 bg-black' />
-      <Breadcrumb className='w-fit h-fit absolute top-28 left-4'>
+      <Breadcrumb className='w-full h-fit mx-4 py-2 border-b border-neutral-400'>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href={'/' + language + '/chapter'}>
@@ -159,7 +185,9 @@ export default function Committee({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className='capitalize'>{committee}</BreadcrumbPage>
+            <BreadcrumbPage className='capitalize'>
+              {committeeName}
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -167,13 +195,23 @@ export default function Committee({
       <section className='w-full h-fit mt-12 flex justify-between'>
         <div className='w-fit h-full mx-16 flex flex-col justify-around'>
           <div className='flex flex-col items-center'>
-            <div className='w-48 h-48 rounded-full border-2 border-black mb-4' />
-            <h1 className='uppercase text-3xl tracking-wider'>{committee}</h1>
+            <Avatar className='w-48 h-48 rounded-full mb-4'>
+              <AvatarImage
+                src={data.logo_url || Logo.src}
+                alt='Committee Logo'
+                width={192}
+                height={192}
+              />
+              <AvatarFallback>Committee Picture</AvatarFallback>
+            </Avatar>
+            <h1 className='uppercase text-3xl tracking-wider'>
+              {committeeName}
+            </h1>
             <Link
-              href={`mailto:` + committee + `@medieteknik.com`}
+              href={`mailto:` + data.email}
               className='flex hover:underline underline-offset-4 decoration-yellow-400 decoration-2'
             >
-              <h2>{committee + '@medieteknik.com'}</h2>
+              <h2>{data.email}</h2>
               <ArrowTopRightOnSquareIcon className='w-5 h-5 ml-2' />
             </Link>
             <div className='w-full h-12 my-2 grid grid-cols-6 auto-cols-fr grid-rows-1 place-items-center'>
@@ -199,7 +237,7 @@ export default function Committee({
                 className='rounded-full w-12 h-12 grid place-items-center'
               >
                 <Link
-                  href={'./' + committee + '/manage'}
+                  href={'./' + committeeName.toLowerCase() + '/manage'}
                   className=''
                   title='Edit Page'
                   aria-label='Edit Page'
@@ -219,29 +257,11 @@ export default function Committee({
         <div className='w-fit h-full grid place-items-end mr-96'>
           <div className='w-[900px] h-full flex flex-col items-center'>
             <div className='w-full h-[500px] bg-blue-500'></div>
-            <p className='w-full py-12 px-10'>
-              Valberedningen har i syfte att valbereda val för speciella
-              funktionärsposter för Sektionen för Medieteknik. Den ansvarar även
-              för att ta in nomineringar och kandidaturer, bedöma kandidater
-              efter utförd intervju och utfärda omdömen till dessa inför
-              aktuellt sektionsmöte.
-              <br />
-              <br />
-              Valberedningen arbetar aktivt för att alla val på sektionen skall
-              vara demokratiska och för att alla kandidater som valbereds får
-              samma bemötande och genomgår samma process. Valberedningens vision
-              är att Valberedningen skall verka som ett verktyg för sektionen så
-              att både sektionsmötet och kandidaterna är väl förberedda när
-              valdagen kommer.
-              <br />
-              <br />
-              Samtliga medlemmar i Valberedningen får även jobba med individuell
-              utveckling under sin mandat genom att lära sig mer om hur man
-              arbetar förberedande, under och efter en intervju.
-            </p>
+            <p className='w-full py-12 px-10'>{data.description}</p>
           </div>
         </div>
       </section>
+
       <section>
         <div className='w-full h-fit px-16'>
           <h2 className='text-2xl border-b-2 border-yellow-400 py-4'>
@@ -257,6 +277,7 @@ export default function Committee({
           </div>
         </div>
       </section>
+
       <section>
         <div className='w-full h-fit px-16'>
           <div className='w-full border-b-2 border-yellow-400 py-4'>
@@ -265,7 +286,7 @@ export default function Committee({
                 '/' +
                 language +
                 '/chapter/committees/' +
-                committee +
+                committeeName.toLowerCase() +
                 '/positions'
               }
               className='w-fit h-auto block'
@@ -282,7 +303,7 @@ export default function Committee({
                     <HoverCard>
                       <HoverCardTrigger>
                         {position.occupant === 'Vacant' ? (
-                          <p>{position.occupant}</p>
+                          <span>{position.occupant}</span>
                         ) : (
                           <Button
                             variant='link'
@@ -312,7 +333,7 @@ export default function Committee({
                               />
                               <AvatarFallback>Committee Picture</AvatarFallback>
                             </Avatar>
-                            <p>{position.occupant}</p>
+                            <span>{position.occupant}</span>
                           </Link>
                         </Button>
                         <Button
