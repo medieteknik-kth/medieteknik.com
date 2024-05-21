@@ -3,10 +3,9 @@ from utility import database
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import ARRAY
 from utility.constants import ROUTES
+from utility.translation import get_translation
 
 db = database.db
-
-
 
 class Content(db.Model):
     __tablename__ = 'content'
@@ -21,7 +20,12 @@ class Content(db.Model):
         return '<Content %r>' % self.content_id
     
     def to_dict(self, language_code='se'):
-        translations: ContentTranslation | None = ContentTranslation.query.filter_by(content_id=self.content_id, language_code=language_code).all()
+        translations: ContentTranslation | None = get_translation(
+            ContentTranslation,
+            ['content_id'],
+            {'content_id': self.content_id},
+            language_code
+        )
         return {
             'content_id': self.content_id,
             'image_urls': self.image_urls,
@@ -34,8 +38,8 @@ class Resource(db.Model):
     resource_id = Column(Integer, primary_key=True, autoincrement=True)
     
     route = Column(String(255), unique=True)
-    is_public = Column(Boolean, default=True)
     category = Column(Enum(ROUTES))
+    is_public = Column(Boolean, default=True, nullable=False)
     
     # Foreign keys
     content_id = Column(Integer, ForeignKey('content.content_id'))
@@ -52,22 +56,20 @@ class Resource(db.Model):
     def __repr__(self):
         return '<Resource %r>' % self.resource_id
     
-    def to_dict(self):
+    def to_dict(self, is_public=True):
+        if is_public:
+            return {
+                'resource_id': self.resource_id,
+                'route': self.route,
+                'category': self.category.value if self.category else None,
+            }
+        
         return {
             'resource_id': self.resource_id,
             'route': self.route,
             'is_public': self.is_public,
             'category': self.category.value if self.category else None,
             'content_id': self.content_id
-        }
-    
-    def to_public_dict(self):
-        if not self.is_public:
-            return None
-        return {
-            'resource_id': self.resource_id,
-            'route': self.route,
-            'category': self.category.value if self.category else None,
         }
     
 # Translations

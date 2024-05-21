@@ -8,7 +8,7 @@ from flask_wtf.csrf import CSRFProtect
 from utility.database import db
 from decorators.authorization import oauth
 from routes.public import committee_routes, general_routes, student_routes, item_routes, dynamic_routes
-from utility.constants import API_VERSION, ROUTES
+from utility.constants import API_VERSION, ROUTES, PUBLIC_PATH, PROTECTED_PATH
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'secret')
@@ -44,16 +44,16 @@ oauth.register('kth', kwargs={
 })
 
 # Public Routes
-app.register_blueprint(general_routes.public_bp, url_prefix=f'/api/{API_VERSION}')
-app.register_blueprint(dynamic_routes.dynamic_routes_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.DYNAMIC.value}')
-app.register_blueprint(committee_routes.public_committee_category_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.COMMITTEE_CATEGORIES.value}')
-app.register_blueprint(committee_routes.public_committee_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.COMMITTEES.value}')
-app.register_blueprint(committee_routes.public_committee_position_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.COMMITTEE_POSITIONS.value}')
-app.register_blueprint(student_routes.public_student_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.STUDENTS.value}')
-app.register_blueprint(item_routes.public_news_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.NEWS.value}')
-app.register_blueprint(item_routes.public_events_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.EVENTS.value}')
-app.register_blueprint(item_routes.public_documents_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.DOCUMENTS.value}')
-app.register_blueprint(item_routes.public_albums_bp, url_prefix=f'/api/{API_VERSION}/{ROUTES.ALBUMS.value}')
+app.register_blueprint(general_routes.public_bp, url_prefix=f'{PUBLIC_PATH}')
+app.register_blueprint(dynamic_routes.dynamic_routes_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.DYNAMIC.value}')
+app.register_blueprint(committee_routes.public_committee_category_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}')
+app.register_blueprint(committee_routes.public_committee_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}')
+app.register_blueprint(committee_routes.public_committee_position_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}')
+app.register_blueprint(student_routes.public_student_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.STUDENTS.value}')
+app.register_blueprint(item_routes.public_news_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.NEWS.value}')
+app.register_blueprint(item_routes.public_events_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.EVENTS.value}')
+app.register_blueprint(item_routes.public_documents_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}')
+app.register_blueprint(item_routes.public_albums_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.ALBUMS.value}')
 
 # Protected Routes
 

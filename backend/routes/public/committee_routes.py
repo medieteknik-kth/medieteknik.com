@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy import func
 from models.committee import Committee, CommitteeCategory, CommitteePosition, CommitteeTranslation
-from utility.constants import DEFAULT_LANGUAGE_CODE
-from utility.language import retrieve_language
+from backend.utility.translation import retrieve_language
 
 public_committee_category_bp = Blueprint('public_committee_category', __name__)
 public_committee_bp = Blueprint('public_committee', __name__)
@@ -103,7 +102,7 @@ def get_committee_positions() -> dict:
     paginated_items = CommitteePosition.query.paginate(per_page=per_page)
     
     positions: list[CommitteePosition] = paginated_items.items
-    positions_dict = [position.to_public_dict(language_code) for position in positions]
+    positions_dict = [position.to_dict(language_code, is_public=True) for position in positions]
     return jsonify(
         {
             "items": positions_dict,
@@ -127,4 +126,4 @@ def get_committee_position(position_id: int) -> dict:
     language_code = retrieve_language(request.args)
     
     position: CommitteePosition = CommitteePosition.query.get(position_id)
-    return jsonify(position.to_public_dict(language_code))
+    return jsonify(position.to_dict(language_code, is_public=True))

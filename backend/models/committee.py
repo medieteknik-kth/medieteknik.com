@@ -2,6 +2,7 @@ import enum
 from utility import database
 from sqlalchemy import String, Integer, Column, ForeignKey, Enum, Boolean
 from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.translation import get_translation
 
 db = database.db
 
@@ -21,7 +22,12 @@ class CommitteeCategory(db.Model):
         return '<CommitteeCategory %r>' % self.committee_category_id
 
     def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: CommitteeCategoryTranslation | None = CommitteeCategoryTranslation.query.filter_by(committee_category_id=self.committee_category_id, language_code=language_code).first()
+        translation: CommitteeCategoryTranslation | None = get_translation(
+            CommitteeCategoryTranslation,
+            ['committee_category_id'],
+            {'committee_category_id': self.committee_category_id},
+            language_code
+        )
         return {
             'committee_category_id': self.committee_category_id,
             'title': translation.title if translation else 'Error: No translation found',
@@ -51,7 +57,13 @@ class Committee(db.Model):
         return '<Committee %r>' % self.committee_id
         
     def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: CommitteeTranslation | None = CommitteeTranslation.query.filter_by(committee_id=self.committee_id, language_code=language_code).first()
+        translation: CommitteeTranslation | None = get_translation(
+            CommitteeTranslation,
+            ['committee_id'],
+            {'committee_id': self.committee_id},
+            language_code
+        )
+        
         return {
             'committee_id': self.committee_id,
             'committee_category_id': self.committee_category_id,
@@ -89,23 +101,28 @@ class CommitteePosition(db.Model):
     def __repr__(self):
         return '<CommitteePosition %r>' % self.committee_position_id
     
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: CommitteePositionTranslation | None = CommitteePositionTranslation.query.filter_by(committee_position_id=self.committee_position_id, language_code=language_code).first()
+    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public=False):
+        translation: CommitteePositionTranslation | None = get_translation(
+            CommitteePositionTranslation,
+            ['committee_position_id'],
+            {'committee_position_id': self.committee_position_id},
+            language_code
+        )
+        
+        if is_public:
+            return {
+                'committee_position_id': self.committee_position_id,
+                'email': self.email,
+                'title': translation.title if translation else 'Error: No translation found',
+                'description': translation.description if translation else 'Error: No translation found',
+            }
+        
         return {
             'committee_position_id': self.committee_position_id,
             'email': self.email,
             'weight': self.weight,
             'role': self.role.value if self.role else None,
             'active': self.active,
-            'title': translation.title if translation else 'Error: No translation found',
-            'description': translation.description if translation else 'Error: No translation found',
-        }
-
-    def to_public_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: CommitteePositionTranslation | None = CommitteePositionTranslation.query.filter_by(committee_position_id=self.committee_position_id, language_code=language_code).first()
-        return {
-            'committee_position_id': self.committee_position_id,
-            'email': self.email,
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found',
         }

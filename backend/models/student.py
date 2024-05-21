@@ -1,7 +1,6 @@
 from utility import database
 from utility.reception_mode import RECEPTION_MODE
-from sqlalchemy import String, Integer, Column, ForeignKey, DateTime
-import datetime
+from sqlalchemy import String, Integer, Column, ForeignKey, DateTime, func
 
 db = database.db
 
@@ -9,7 +8,7 @@ class Student(db.Model):
     __tablename__ = 'student'
     student_id = Column(Integer, primary_key=True, autoincrement=True)
     
-    email = Column(String(255), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False, index=True)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255))
     reception_name = Column(String(255))
@@ -27,7 +26,15 @@ class Student(db.Model):
     def __repr__(self):
         return '<Student %r>' % self.student_id
     
-    def to_dict(self):
+    def to_dict(self, is_public=True):
+        
+        if is_public:
+            return {
+                'student_id': self.student_id,
+                'name': self.reception_name if RECEPTION_MODE and self.reception_name else f'{self.first_name} {self.last_name}',
+                'profile_picture_url': self.reception_profile_picture_url if RECEPTION_MODE and self.reception_profile_picture_url else self.profile_picture_url,
+            }
+        
         return {
             'student_id': self.student_id,
             'email': self.email,
@@ -36,13 +43,6 @@ class Student(db.Model):
             'reception_name': self.reception_name,
             'profile_picture_url': self.profile_picture_url,
             'reception_profile_picture_url': self.reception_profile_picture_url,
-        }
-    
-    def to_public_dict(self):
-        return {
-            'student_id': self.student_id,
-            'name': self.reception_name if RECEPTION_MODE and self.reception_name else f'{self.first_name} {self.last_name}',
-            'profile_picture_url': self.reception_profile_picture_url if RECEPTION_MODE and self.reception_profile_picture_url else self.profile_picture_url,
         }
         
 class StudentPositions(db.Model):
@@ -78,5 +78,5 @@ class StudentPositions(db.Model):
             'termination_date': self.termination_date,
         }
         
-    def is_active(self, current_date=datetime.datetime.now()):
+    def is_active(self, current_date=func.now()):
         return self.initiation_date < current_date and (self.termination_date is None or self.termination_date > current_date)

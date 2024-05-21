@@ -12,8 +12,8 @@ def get_students() -> dict:
     """
     paginated_items = Student.query.paginate()
     
-    students = paginated_items.items
-    students_dict = [student.to_public_dict() for student in students]
+    students: list[Student] = paginated_items.items
+    students_dict = [student.to_dict(is_public=True) for student in students]
     return jsonify(
         {
             "items": students_dict,
@@ -35,4 +35,4 @@ def get_student(student_id: int) -> dict:
         dict: Student
     """
     student: Student = Student.query.get(student_id)
-    return jsonify(student.to_public_dict())
+    return jsonify(student.to_dict(is_public=True))

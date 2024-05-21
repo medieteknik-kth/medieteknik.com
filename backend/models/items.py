@@ -3,6 +3,7 @@ from utility import database
 from sqlalchemy import Column, Integer, DateTime, String, Enum, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
 from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.translation import get_translation
 
 db = database.db
 
@@ -26,6 +27,7 @@ class Event(db.Model):
     categories = Column(ARRAY(String))
     status = Column(Enum(EventStatus), default=EventStatus.UPCOMING, nullable=False)
     location = Column(String(255))
+    is_public = Column(Boolean, default=True, nullable=False)
     
     # Foreign keys
     student_id = Column(Integer, ForeignKey('student.student_id'))
@@ -33,7 +35,7 @@ class Event(db.Model):
     # Relationships
     student = db.relationship('Student', backref='event')
     
-    def __init__(self, created_at, last_updated, start_date, end_date, categories, status, location, student_id):
+    def __init__(self, created_at, last_updated, start_date, end_date, categories, status, location, is_public, student_id):
         self.created_at = created_at
         self.last_updated = last_updated
         self.start_date = start_date
@@ -41,10 +43,36 @@ class Event(db.Model):
         self.categories = categories
         self.status: EventStatus = status
         self.location = location
+        self.is_public = is_public
         self.student_id = student_id
     
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: EventTranslation | None = EventTranslation.query.filter_by(event_id=self.event_id, language_code=language_code).first()
+    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public=True, summary=False):
+        translation: EventTranslation | None = get_translation(
+            EventTranslation,
+            ['event_id'],
+            {'event_id': self.event_id},
+            language_code
+        )
+        
+        if not self.is_public and is_public:
+            return None
+        
+        if summary:
+            return {
+                'event_id': self.event_id,
+                'created_at': self.created_at,
+                'last_updated': self.last_updated,
+                'start_date': self.start_date,
+                'end_date': self.end_date,
+                'categories': self.categories,
+                'status': self.status.value,
+                'location': self.location,
+                'student_id': self.student_id,
+                'title': translation.title if translation else 'Error: No translation found',
+                'short_description': translation.short_description if translation else 'Error: No translation found',
+                'main_image_url': translation.main_image_url if translation else 'Error: No translation found'
+            }
+        
         return {
             'event_id': self.event_id,
             'created_at': self.created_at,
@@ -61,23 +89,6 @@ class Event(db.Model):
             'main_image_url': translation.main_image_url if translation else 'Error: No translation found',
             'sub_image_urls': translation.sub_image_urls if translation else 'Error: No translation found'
         }
-    
-    def to_short_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: EventTranslation | None = EventTranslation.query.filter_by(event_id=self.event_id, language_code=language_code).first()
-        return {
-            'event_id': self.event_id,
-            'created_at': self.created_at,
-            'last_updated': self.last_updated,
-            'start_date': self.start_date,
-            'end_date': self.end_date,
-            'categories': self.categories,
-            'status': self.status.value,
-            'location': self.location,
-            'student_id': self.student_id,
-            'title': translation.title if translation else 'Error: No translation found',
-            'short_description': translation.short_description if translation else 'Error: No translation found',
-            'main_image_url': translation.main_image_url if translation else 'Error: No translation found'
-        }
             
 class News(db.Model):
     __tablename__ = 'news'
@@ -88,8 +99,8 @@ class News(db.Model):
     created_at = Column(DateTime)
     last_updated = Column(DateTime)
     categories = Column(ARRAY(String))
-    is_pinned = Column(Boolean)
-    is_public = Column(Boolean)
+    is_pinned = Column(Boolean, default=False, nullable=False)
+    is_public = Column(Boolean, default=True, nullable=False)
     
     # Foreign keys
     student_id = Column(Integer, ForeignKey('student.student_id'))
@@ -105,8 +116,31 @@ class News(db.Model):
         self.is_public = is_public
         self.student_id = student_id
         
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: NewsTranslation | None = NewsTranslation.query.filter_by(news_id=self.news_id, language_code=language_code).first()
+    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public=True, summary=False):
+        translation: NewsTranslation | None = get_translation(
+            NewsTranslation,
+            ['news_id'],
+            {'news_id': self.news_id},
+            language_code
+        )
+        
+        if not self.is_public and is_public:
+            return None
+        
+        if summary:
+            return {
+                'news_id': self.news_id,
+                'created_at': self.created_at,
+                'last_updated': self.last_updated,
+                'categories': self.categories,
+                'is_pinned': self.is_pinned,
+                'is_public': self.is_public,
+                'student_id': self.student_id,
+                'title': translation.title if translation else 'Error: No translation found',
+                'short_description': translation.short_description if translation else 'Error: No translation found',
+                'main_image_url': translation.main_image_url if translation else 'Error: No translation found'
+            }
+        
         return {
             'news_id': self.news_id,
             'created_at': self.created_at,
@@ -121,29 +155,6 @@ class News(db.Model):
             'main_image_url': translation.main_image_url if translation else 'Error: No translation found',
             'sub_image_urls': translation.sub_image_urls if translation else 'Error: No translation found'
         }
-    
-    def to_short_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: NewsTranslation | None = NewsTranslation.query.filter_by(news_id=self.news_id, language_code=language_code).first()
-        return {
-            'news_id': self.news_id,
-            'created_at': self.created_at,
-            'last_updated': self.last_updated,
-            'categories': self.categories,
-            'student_id': self.student_id,
-            'title': translation.title if translation else 'Error: No translation found',
-            'short_description': translation.short_description if translation else 'Error: No translation found',
-            'main_image_url': translation.main_image_url if translation else 'Error: No translation found'
-        }
-
-    def to_public_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        if not self.is_public:
-            return None
-        return self.to_dict(language_code)
-    
-    def to_public_short_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        if not self.is_public:
-            return None
-        return self.to_short_dict(language_code)
 
 class Album(db.Model):
     __tablename__ = 'album'
@@ -155,7 +166,7 @@ class Album(db.Model):
     last_updated = Column(DateTime)
     categories = Column(ARRAY(String))
     media_urls = Column(ARRAY(String))
-    is_public = Column(Boolean)
+    is_public = Column(Boolean, default=True, nullable=False)
 
     # Foreign keys
     student_id = Column(Integer, ForeignKey('student.student_id'))
@@ -171,8 +182,17 @@ class Album(db.Model):
         self.is_public = is_public
         self.student_id = student_id
     
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: AlbumTranslation | None = AlbumTranslation.query.filter_by(album_id=self.album_id, language_code=language_code).first()
+    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public=True):
+        translation: AlbumTranslation | None = get_translation(
+            AlbumTranslation,
+            ['album_id'],
+            {'album_id': self.album_id},
+            language_code
+        )
+        
+        if not self.is_public and is_public:
+            return None
+        
         return {
             'album_id': self.album_id,
             'created_at': self.created_at,
@@ -184,11 +204,6 @@ class Album(db.Model):
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found'
         }
-        
-    def to_public_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        if not self.is_public:
-            return None
-        return self.to_dict(language_code)
     
 class Document(db.Model):
     __tablename__ = 'document'
@@ -199,9 +214,9 @@ class Document(db.Model):
     created_at = Column(DateTime)
     last_updated = Column(DateTime)
     categories = Column(ARRAY(String))
-    file_url = Column(String(255))
-    is_pinned = Column(Boolean)
-    is_public = Column(Boolean)
+    file_url = Column(String(255), nullable=False)
+    is_pinned = Column(Boolean, default=False, nullable=False)
+    is_public = Column(Boolean, default=True, nullable=False)
     
     # Foreign keys
     student_id = Column(Integer, ForeignKey('student.student_id'))
@@ -218,8 +233,17 @@ class Document(db.Model):
         self.is_public = is_public
         self.student_id = student_id
     
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: DocumentTranslation | None = DocumentTranslation.query.filter_by(document_id=self.document_id, language_code=language_code).first()
+    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public=True):
+        translation: DocumentTranslation | None = get_translation(
+            DocumentTranslation,
+            ['document_id'],
+            {'document_id': self.document_id},
+            language_code
+        )
+        
+        if not self.is_public and is_public:
+            return None
+        
         return {
             'document_id': self.document_id,
             'created_at': self.created_at,
@@ -232,11 +256,6 @@ class Document(db.Model):
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found'
         }
-    
-    def to_public_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        if not self.is_public:
-            return None
-        return self.to_dict(language_code)
     
 # Translations
    
