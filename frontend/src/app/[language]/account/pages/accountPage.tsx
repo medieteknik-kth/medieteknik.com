@@ -6,11 +6,7 @@ import { Button } from '@/components/ui/button'
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-export default function AccountPage({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+export default function AccountPage({ language }: { language: string }) {
   return (
     <section className='grow h-fit dark:bg-[#111]'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>

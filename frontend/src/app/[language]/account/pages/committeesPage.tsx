@@ -97,30 +97,24 @@ const committeeData = [
   },
 ]
 
-export default function CommitteesPage({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+export default function CommitteesPage({ language }: { language: string }) {
   const [display, setDisplay] = useState('card')
   return (
-    <section className='grow h-full relative dark:bg-[#111]'>
+    <section className='grow h-full min-h-[1080px] relative dark:bg-[#111] overflow-hidden'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-2xl py-4'>Committee Affiliations</h1>
       </div>
 
-      <Card className='h-fit absolute left-10 bottom-0 top-0 my-auto'>
+      <Card className='w-72 h-fit absolute left-10 bottom-0 top-24 xl:top-0 xl:my-auto z-10'>
         <CardHeader>
           <CardTitle>Display Type</CardTitle>
-          <CardDescription>
-            Choose how to display the committees
-          </CardDescription>
+          <CardDescription>Display format</CardDescription>
         </CardHeader>
-        <CardContent className='flex flex-col'>
+        <CardContent className='flex flex-row xl:flex-col'>
           <Button
             variant={display === 'card' ? 'default' : 'outline'}
             onClick={() => setDisplay('card')}
-            className='w-fit mb-2'
+            className='w-full mr-2 xl:mr-0 mb-0 xl:mb-2'
             disabled={display === 'card'}
             title='Card display'
           >
@@ -130,7 +124,7 @@ export default function CommitteesPage({
           <Button
             variant={display === 'list' ? 'default' : 'outline'}
             onClick={() => setDisplay('list')}
-            className='w-fit mb-2'
+            className='w-full mb-0 xl:mb-2'
             disabled={display === 'list'}
             title='List display'
           >
@@ -141,42 +135,47 @@ export default function CommitteesPage({
       </Card>
 
       {(display === 'card' && (
-        <div className='w-1/2 h-[1000px] grid grid-cols-3 auto-rows-max place-items-center py-10 left-0 right-0 mx-auto gap-8'>
-          {committeeData.map((committee, index) => (
-            <Card key={index} className='w-fit min-w-72'>
-              <CardHeader className='flex flex-row items-center'>
-                <Avatar className='border-2 border-black rounded-full dark:border-white'>
-                  <AvatarImage src={Logo.src} alt='Committe Logo' />
-                  <AvatarFallback>Committee Picture</AvatarFallback>
-                </Avatar>
-                <div className='flex flex-col justify-center'>
-                  <CardTitle className='px-4'>{committee.name}</CardTitle>
-                  <CardDescription className='px-4'>
-                    <p>{committee.position}</p>
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className='relative grid grid-cols-1 gap-4'>
-                <Button asChild>
-                  <Link
-                    href={`./chapter/committees/${committee.name.toLocaleLowerCase()}/manage`}
-                  >
-                    <span>Manage</span>
-                  </Link>
-                </Button>
-                <Button variant='outline'>
-                  <Link
-                    href={`./chapter/committees/${committee.name.toLocaleLowerCase()}`}
-                  >
-                    <span>Go To Page</span>
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+        <div className='grow h-[650px] overflow-x-auto relative py-10 top-56  ml-10 xl:ml-96 mr-10 xl:pr-20'>
+          <div className='absolute h-fit grid grid-rows-2 grid-flow-col gap-8 lg:pr-0'>
+            {committeeData.map((committee, index) => (
+              <Card
+                key={index}
+                className='w-72 h-64 flex flex-col justify-between'
+              >
+                <CardHeader className='flex flex-row items-center'>
+                  <Avatar className='border-12 border-black rounded-full dark:border-white'>
+                    <AvatarImage src={Logo.src} alt='Committe Logo' />
+                    <AvatarFallback>Committee Picture</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-col justify-center'>
+                    <CardTitle className='px-4'>{committee.name}</CardTitle>
+                    <CardDescription className='px-4'>
+                      {committee.position}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className='relative grid grid-cols-1 gap-4'>
+                  <Button asChild>
+                    <Link
+                      href={`./chapter/committees/${committee.name.toLocaleLowerCase()}/manage`}
+                    >
+                      <span>Manage</span>
+                    </Link>
+                  </Button>
+                  <Button variant='outline'>
+                    <Link
+                      href={`./chapter/committees/${committee.name.toLocaleLowerCase()}`}
+                    >
+                      <span>Go To Page</span>
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       )) || (
-        <div className='w-1/2 left-0 right-0 mx-auto grid place-items-center pt-6 pb-10'>
+        <div className='relative top-60 xl:top-0 pl-10 xl:pl-96 pr-10 xl:pr-20 place-items-center pt-6 pb-10'>
           <Table>
             <TableHeader>
               <TableRow>
@@ -184,7 +183,7 @@ export default function CommitteesPage({
                 <TableHead className='w-[270px]'>Position</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead>Members</TableHead>
-                <TableHead className='w-40'>Actions</TableHead>
+                <TableHead className='min-w-40 w-fit'>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

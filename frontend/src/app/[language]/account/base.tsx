@@ -40,7 +40,7 @@ interface AccountPage {
   name: Tabs
   icon: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>
   page: LazyExoticComponent<
-    ({ params }: { params: { language: string } }) => React.JSX.Element
+    ({ language }: { language: string }) => React.JSX.Element
   >
 }
 
@@ -377,7 +377,7 @@ export default function Base({
         <React.Suspense fallback={<div>Loading...</div>}>
           {accountPages.map((page) =>
             currentTab === page.name.toLocaleLowerCase() ? (
-              <page.page key={page.name} params={{ language }} />
+              <page.page key={page.name} language={language} />
             ) : (
               <div key={page.name} />
             )

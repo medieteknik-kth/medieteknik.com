@@ -13,11 +13,7 @@ import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { cookieName } from '@/app/i18n/settings'
 import { useCookies } from 'next-client-cookies'
 
-export default function PreferencesPage({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+export default function PreferencesPage({ language }: { language: string }) {
   const router = useRouter()
   const params = useSearchParams()
   const path = usePathname()
@@ -49,6 +45,7 @@ export default function PreferencesPage({
   ])
 
   const getFlagCode = (lang: string) => {
+    console.log('lang', lang)
     return languageFlags.get(lang) || 'xx'
   }
 
@@ -61,17 +58,18 @@ export default function PreferencesPage({
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-2xl py-4'>Preferences</h1>
       </div>
-      <div className='w-full h-full grid grid-cols-6 auto-rows-max'>
-        <section className='w-full flex items-center ml-20 mt-10 flex-col justify-between'>
+      <div className='w-full h-full flex flex-col lg:flex-row mt-10 px-10'>
+        <section className='w-fit flex items-center flex-col justify-between mr-10 '>
           <div>
             <h2 className='text-2xl font-bold mb-2'>Language</h2>
             <div>
-              <ul className='flex'>
+              <ul className='flex flex-col xs:flex-row'>
                 {supportedLanguages.map((lang) => (
-                  <li key={lang} className='mr-2 mb-2'>
+                  <li key={lang} className='w-32 xs:mr-4 first:mb-2 xs:mb-0'>
                     <Button
                       title='Switch Language'
                       onClick={() => switchLanguage(lang)}
+                      className='w-full'
                       disabled={lang === language}
                       variant={lang === language ? 'default' : 'secondary'}
                     >
@@ -85,7 +83,7 @@ export default function PreferencesPage({
           </div>
         </section>
 
-        <section className='w-full flex items-center ml-20 mt-10 flex-col justify-between'>
+        <section className='w-fit flex items-center flex-col justify-between mt-10 lg:mt-0 mr-10'>
           <div>
             <h2 className='text-2xl font-bold mb-2'>Privacy</h2>
             <div>
@@ -100,14 +98,14 @@ export default function PreferencesPage({
           </div>
         </section>
 
-        <section className='w-full flex items-center ml-20 mt-10 flex-col justify-between'>
+        <section className='w-fit flex items-center flex-col justify-between mt-10 lg:mt-0 mr-10'>
           <div>
             <h2 className='text-2xl font-bold mb-2 flex items-center'>
               Theme
               <Badge className='ml-2 bg-red-500 text-white'>BETA</Badge>
             </h2>
 
-            <div className='flex'>
+            <div className='h-fit flex flex-col xs:flex-row'>
               <Button
                 title='Change to light theme'
                 onClick={() => setTheme('light')}
@@ -122,7 +120,7 @@ export default function PreferencesPage({
                 title='Change to dark theme'
                 onClick={() => setTheme('dark')}
                 disabled={theme === 'dark'}
-                className='ml-2'
+                className='mt-4 xs:ml-2 xs:mt-0'
                 variant={theme === 'dark' ? 'default' : 'secondary'}
               >
                 <MoonIcon className='w-6 h-6 mr-2' />
