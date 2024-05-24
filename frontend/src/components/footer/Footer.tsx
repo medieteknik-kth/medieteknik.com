@@ -44,7 +44,7 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
             href='https://www.instagram.com/medieteknik_kth/'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full'
+            className='w-full h-full dark:fill-white'
             aria-label="Links to Medieteknik's Instagram page"
           >
             <InstagramSVG width={30} height={30} />

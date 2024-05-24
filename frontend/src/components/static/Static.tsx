@@ -88,17 +88,17 @@ export function Section({
 
   return (
     <section
-      className={`w-full h-fit border-b-2 border-gray-200 ${
+      className={`w-full h-fit border-b-2 border-gray-200 bg-[${
+        metadata.background
+      }] dark:bg-[#111] mt-[${metadata.marginTop}] ${
         centeredChildren ? 'flex flex-col items-center' : ''
       }`}
       id={title?.toLowerCase().replace(' ', '-')}
-      style={{ background: metadata.background, marginTop: metadata.marginTop }}
     >
       {title && (
         <div className='w-full h-fit text-center grid place-items-center'>
           <h2
-            className='uppercase tracking-wider font-semibold text-3xl w-2/4 border-b-2 border-yellow-400 py-8'
-            style={{ color: metadata.textColor }}
+            className={`uppercase tracking-wider font-semibold text-3xl w-2/4 border-b-2 border-yellow-400 py-8 text-[${metadata.textColor}]`}
           >
             {title}
           </h2>
