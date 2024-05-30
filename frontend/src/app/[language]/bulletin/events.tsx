@@ -41,7 +41,7 @@ const UPDATE_INTERVAL = 24
 const data: Event[] = [
   {
     author: {
-      type: 'committee',
+      type: 'COMMITTEE',
       email: 'styrelsen@medieteknik.com',
       title: 'Styrelsen',
       logo_url: StyrelsenIcon.src,
@@ -64,7 +64,7 @@ const data: Event[] = [
   },
   {
     author: {
-      type: 'committee',
+      type: 'COMMITTEE',
       email: 'styrelsen@medieteknik.com',
       title: 'Styrelsen',
       logo_url: StyrelsenIcon.src,
@@ -87,7 +87,7 @@ const data: Event[] = [
   },
   {
     author: {
-      type: 'committee',
+      type: 'COMMITTEE',
       email: 'styrelsen@medieteknik.com',
       title: 'Styrelsen',
       logo_url: StyrelsenIcon.src,

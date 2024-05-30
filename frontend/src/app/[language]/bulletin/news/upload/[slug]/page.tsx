@@ -10,6 +10,7 @@ import { AutoSaveProdier } from './autoSave'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_BASE_URL } from '@/utility/Constants'
 import News from '@/models/Items'
+import { redirect } from 'next/navigation'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 
@@ -21,13 +22,14 @@ async function getData(language_code: string, slug: string) {
 
     if (response.ok) {
       const data = await response.json()
-
       return data
     } else {
       console.error('Error fetching data:', response.statusText)
+      return null
     }
   } catch (error) {
     console.error(error)
+    return null
   }
 }
 
@@ -39,7 +41,11 @@ export default async function UploadNews({
   const data = await getData(language, slug)
 
   if (!data) {
-    return <div className='h-96 grid place-items-center'>Not found</div>
+    redirect(`/${language}/bulletin/news`)
+  }
+
+  if (data.published_status === 'PUBLISHED') {
+    redirect(`/${language}/bulletin/news`)
   }
 
   return (

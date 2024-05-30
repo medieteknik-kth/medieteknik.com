@@ -170,7 +170,7 @@ export default function UserPage({
               <StudentPositions
                 language={language}
                 student={{
-                  type: 'student',
+                  type: 'STUDENT',
                   email: 'andree4@kth.se',
                   firstName: 'André',
                   lastName: 'Eriksson',
@@ -185,7 +185,7 @@ export default function UserPage({
               <StudentNews
                 language={language}
                 student={{
-                  type: 'student',
+                  type: 'STUDENT',
                   email: 'andree4@kth.se',
                   firstName: 'André',
                   lastName: 'Eriksson',
@@ -200,7 +200,7 @@ export default function UserPage({
               <StudentEvents
                 language={language}
                 student={{
-                  type: 'student',
+                  type: 'STUDENT',
                   email: 'andree4@kth.se',
                   firstName: 'André',
                   lastName: 'Eriksson',

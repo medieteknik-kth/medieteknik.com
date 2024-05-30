@@ -13,7 +13,7 @@ const data: News[] = [
       'KTH:s rektor Sigbritt Karlsson berättar om planerna för att öppna campus igen.',
     main_image_url: BG.src,
     author: {
-      type: 'committee',
+      type: 'COMMITTEE',
       title: 'Styrelsen',
       logo_url: StyrelsenIcon.src,
       email: 'styrelsen@medieteknik.com',
@@ -33,7 +33,7 @@ const data: News[] = [
       'International students at KTH are struggling with the lack of support.',
     main_image_url: BG2.src,
     author: {
-      type: 'student',
+      type: 'STUDENT',
       email: 'andree4@kth.se',
       first_name: 'André',
       last_name: 'Eriksson',
@@ -51,7 +51,7 @@ const data: News[] = [
     short_description: 'Planerna för höstens första sittning är i full gång.',
     main_image_url: BG3.src,
     author: {
-      type: 'committee',
+      type: 'COMMITTEE',
       title: 'NLG',
       logo_url: NLGIcon.src,
       email: 'nlg@medieteknik.com',

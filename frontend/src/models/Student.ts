@@ -11,7 +11,7 @@ import { CommitteePosition } from './Committee';
  * @param {string} profile_picture_url - Student profile picture URL (optional)
  */
 export default interface Student {
-  type: 'student';
+  type: 'STUDENT';
   email: string;
   first_name: string;
   last_name: string;

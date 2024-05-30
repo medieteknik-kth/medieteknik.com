@@ -55,7 +55,7 @@ export default function CommandBar({ language }: { language: string }) {
   const { push } = useRouter()
 
   const formSchema = z.object({
-    title: z.string().optional().or(z.literal('')),
+    title: z.string(),
     image: z.instanceof(window.File).optional().or(z.any()),
     short_description: z.string().max(120, { message: 'Too long' }),
   })
@@ -77,16 +77,18 @@ export default function CommandBar({ language }: { language: string }) {
   })
 
   const postForm = async (data: z.infer<typeof formSchema>) => {
-    const actualTitle = data.title || content.title
-
     saveCallback(language, true)
 
-    updateContent({
+    console.log(data.title)
+
+    const json_data = {
       ...content,
-      title: actualTitle,
-      main_image_url: data.image || content.main_image_url,
-      short_description: data.short_description || content.short_description,
-    })
+      title: data.title,
+      main_image_url: data.image,
+      short_description: data.short_description,
+    }
+
+    console.log(json_data)
 
     try {
       const response = await fetch(
@@ -96,7 +98,7 @@ export default function CommandBar({ language }: { language: string }) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(content),
+          body: JSON.stringify(json_data),
         }
       )
 
@@ -246,7 +248,6 @@ export default function CommandBar({ language }: { language: string }) {
                   <form
                     onSubmit={(e) => {
                       e.preventDefault()
-                      e.preventDefault()
                       form.handleSubmit(postForm)()
                       setLoading(true)
                       setTimeout(() => {
@@ -260,12 +261,8 @@ export default function CommandBar({ language }: { language: string }) {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Title</FormLabel>
-                          <FormControl className='!w-full'>
-                            <Input
-                              placeholder='Title'
-                              {...field}
-                              className='w-96'
-                            />
+                          <FormControl className='w-full'>
+                            <Input placeholder='Title' {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -277,13 +274,8 @@ export default function CommandBar({ language }: { language: string }) {
                       render={({ field }) => (
                         <FormItem className='mt-4'>
                           <FormLabel>Image</FormLabel>
-                          <FormControl className='!w-full'>
-                            <Input
-                              type='file'
-                              placeholder='Image'
-                              {...field}
-                              className='w-96'
-                            />
+                          <FormControl className='w-full'>
+                            <Input type='file' placeholder='Image' {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -295,12 +287,8 @@ export default function CommandBar({ language }: { language: string }) {
                       render={({ field }) => (
                         <FormItem className='mt-4'>
                           <FormLabel>Short Description</FormLabel>
-                          <FormControl className='!w-full'>
-                            <Textarea
-                              placeholder='Description'
-                              {...field}
-                              className='w-96'
-                            />
+                          <FormControl className='w-full'>
+                            <Textarea placeholder='Description' {...field} />
                           </FormControl>
                           <FormDescription>
                             Will be shown outside of the article
@@ -309,7 +297,11 @@ export default function CommandBar({ language }: { language: string }) {
                         </FormItem>
                       )}
                     />
-                    <Button className='w-full my-4' type='submit'>
+                    <Button
+                      className='w-full my-4'
+                      type='submit'
+                      disabled={loading}
+                    >
                       Submit
                     </Button>
                   </form>

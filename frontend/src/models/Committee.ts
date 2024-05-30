@@ -19,7 +19,7 @@ export interface CommitteeCategory {
  * @param {string} logo_url - Committee logo URL (optional)
  */
 export default interface Committee {
-  type: 'committee';
+  type: 'COMMITTEE';
   title: string;
   description: string;
   email: string;
@@ -38,6 +38,7 @@ export default interface Committee {
  * @param {number} weight - Committee position weight
  */
 export interface CommitteePosition {
+  type: 'COMMITTEE_POSITION';
   email: string,
   title: string;
   description: string;

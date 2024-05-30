@@ -98,7 +98,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'student',
+      type: 'STUDENT',
     },
     position: {
       title: 'Ordförande',
@@ -116,7 +116,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'student',
+      type: 'STUDENT',
     },
     position: {
       title: 'Vice-Ordförande',
@@ -134,7 +134,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'student',
+      type: 'STUDENT',
     },
     position: {
       title: 'Ordförande',
@@ -152,7 +152,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'student',
+      type: 'STUDENT',
     },
     position: {
       title: 'Ordförande',
@@ -170,7 +170,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'student',
+      type: 'STUDENT',
     },
     position: {
       title: 'Ordförande',
@@ -188,7 +188,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'student',
+      type: 'STUDENT',
     },
     position: {
       title: 'Ordförande',
@@ -216,7 +216,7 @@ export default async function Committee({
     {
       title: 'News Title 1',
       author: {
-        type: 'committee',
+        type: 'COMMITTEE',
         title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
         email: data.email,
         logo_url: Logo.src,
@@ -235,7 +235,7 @@ export default async function Committee({
     {
       title: 'News Title 1',
       author: {
-        type: 'committee',
+        type: 'COMMITTEE',
         title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
         email: data.email,
         logo_url: Logo.src,
@@ -254,7 +254,7 @@ export default async function Committee({
     {
       title: 'News Title 1',
       author: {
-        type: 'committee',
+        type: 'COMMITTEE',
         title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
         email: data.email,
         logo_url: Logo.src,

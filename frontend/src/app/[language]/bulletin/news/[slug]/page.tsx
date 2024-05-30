@@ -5,7 +5,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 import Body from './body'
 
 interface Props {
-  author: any
+  author: Student | Committee | CommitteePosition
   news: News
 }
 
@@ -21,7 +21,10 @@ async function getData(language_code: string, slug: string) {
       delete temp.author
       const news = temp
       return {
-        author: data.author,
+        author: {
+          ...data.author,
+          type: data.author.author_type,
+        },
         news: news,
       } as Props
     }
@@ -31,13 +34,13 @@ async function getData(language_code: string, slug: string) {
 }
 
 function assignCorrectAuthor(
-  author: any
+  author: Student | Committee | CommitteePosition
 ): Student | Committee | CommitteePosition | null {
-  if (author.author_type === 'STUDENT') {
+  if (author.type === 'STUDENT') {
     return author as Student
-  } else if (author.author_type === 'COMMITTEE') {
+  } else if (author.type === 'COMMITTEE') {
     return author as Committee
-  } else if (author.author_type === 'COMMITTEE_POSITION') {
+  } else if (author.type === 'COMMITTEE_POSITION') {
     return author as CommitteePosition
   }
 

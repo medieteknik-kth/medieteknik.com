@@ -53,6 +53,7 @@ import {
 import { Input } from '@/components/ui/input'
 import News from '@/models/Items'
 import { useAutoSave, AutoSaveResult } from '../autoSave'
+import { useRouter } from 'next/navigation'
 
 interface CustomElement {
   type: ElementType
@@ -88,6 +89,12 @@ export default function ArticlePage({
   const { saveCallback, content, updateContent, addNotification } =
     useAutoSave()
   const [editingLanguage, setEditingLanguage] = useState(language)
+  const { push } = useRouter()
+
+  if (Object.keys(news_data).length === 0) {
+    push('/' + language + '/bulletin/news')
+    return
+  }
 
   const initialValue = useMemo(() => {
     let correctedContent = content
