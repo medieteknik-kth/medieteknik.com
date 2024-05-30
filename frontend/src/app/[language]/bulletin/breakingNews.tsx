@@ -18,54 +18,49 @@ import {
 } from '@/components/ui/popover'
 
 import ShortNews from './components/shortNews'
-import { ShortNewsItem } from '@/models/Items'
+import News from '@/models/Items'
 
-const breakingNews: ShortNewsItem[] = [
+const breakingNews: News[] = [
   {
-    id: 'news1',
     title: 'KTH:s rektor: "Vi har en plan för att öppna campus"',
-    shortDescription:
+    body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    url: '1',
+    short_description:
       'KTH:s rektor Sigbritt Karlsson berättar om planerna för att öppna campus igen.',
-    imageUrl: BG.src,
+    main_image_url: BG.src,
     author: {
       type: 'committee',
-      name: 'Styrelsen',
-      logoUrl: StyrelsenIcon.src,
+      title: 'Styrelsen',
+      logo_url: StyrelsenIcon.src,
       email: 'styrelsen@medieteknik.com',
+      description: '',
     },
     categories: ['Skola'],
-    creationDate: '2021-09-01',
+    created_at: '2021-09-01',
   },
   {
-    id: 'news2',
     title: 'International students: "We need more support"',
-    shortDescription:
+    body: 'International students at KTH are struggling with the lack of support.',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    url: '2',
+    short_description:
       'International students at KTH are struggling with the lack of support.',
-    imageUrl: BG2.src,
+    main_image_url: BG2.src,
     author: {
       type: 'student',
       email: 'andree4@kth.se',
-      firstName: 'André',
-      lastName: 'Eriksson',
-      receptionName: 'N/A',
-      profilePictureUrl: '',
+      first_name: 'André',
+      last_name: 'Eriksson',
+      reception_name: 'N/A',
+      profile_picture_url: '',
     },
-    categories: ['International', 'Studentliv'],
-    creationDate: '2021-09-03',
-  },
-  {
-    id: 'news3',
-    title: 'NLG planerar höstens första sittning',
-    shortDescription: 'Planerna för höstens första sittning är i full gång.',
-    imageUrl: BG3.src,
-    author: {
-      type: 'committee',
-      name: 'NLG',
-      logoUrl: NLGIcon.src,
-      email: 'nlg@medieteknik.com',
-    },
-    categories: ['Nöje', 'Fest'],
-    creationDate: '2021-09-07',
+    categories: ['Skola'],
+    created_at: '2021-09-01',
   },
 ]
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
@@ -121,11 +116,12 @@ export default function BreakingNews({ language }: { language: string }) {
             <PopoverContent className='absolute w-fit h-fit'>
               <h3 className='text-lg font-bold pb-1'>Tags</h3>
               <div className='flex'>
-                {newsItem.categories.map((category, index) => (
-                  <Badge key={index} className='w-fit mr-2'>
-                    {category}
-                  </Badge>
-                ))}
+                {newsItem.categories &&
+                  newsItem.categories.map((category, index) => (
+                    <Badge key={index} className='w-fit mr-2'>
+                      {category}
+                    </Badge>
+                  ))}
               </div>
             </PopoverContent>
           </Popover>

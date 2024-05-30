@@ -1,5 +1,7 @@
 import Image from 'next/image'
-import { Editor, Text, Transforms } from 'slate'
+import { useMemo } from 'react'
+import { createEditor, Descendant, Editor, Text, Transforms } from 'slate'
+import { Editable, Slate, withReact } from 'slate-react'
 
 /**
  * @type BooleanMark
@@ -282,4 +284,14 @@ export const Element = ({ attributes, children, element }: any) => {
         </p>
       )
   }
+}
+
+export const SlateDisplay = ({ value }: { value: Descendant[] }) => {
+  const editor = useMemo(() => withReact(createEditor()), [])
+
+  return (
+    <Slate editor={editor} initialValue={value} onChange={() => {}}>
+      <Editable renderElement={Element} renderLeaf={Leaf} readOnly></Editable>
+    </Slate>
+  )
 }

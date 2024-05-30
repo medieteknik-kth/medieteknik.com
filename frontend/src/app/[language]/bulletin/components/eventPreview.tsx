@@ -33,7 +33,7 @@ export default function EventPreview({
       <div className='w-full h-full relative -z-20 rounded-l-xl overflow-hidden'>
         <div className='w-full h-full absolute bg-black/50' />
         <Image
-          src={event.imageUrl || BG.src}
+          src={event.main_image_url || BG.src}
           width={1080}
           height={720}
           alt='Event image'
@@ -45,15 +45,16 @@ export default function EventPreview({
       </div>
       <Card className='min-w-72 w-1/4 h-fit absolute bottom-10 left-20'>
         <CardHeader>
-          {event.categories.map((category) => (
-            <Badge key={category} className='w-fit mr-2'>
-              {category}
-            </Badge>
-          ))}
+          {event.categories &&
+            event.categories.map((category) => (
+              <Badge key={category} className='w-fit mr-2'>
+                {category}
+              </Badge>
+            ))}
 
           <CardTitle>
             <Link
-              href={`./chapter/events/${event.id}`}
+              href={`./chapter/events/${event.url}`}
               className='hover:underline underline-offset-4 decoration-yellow-400 decoration-2'
             >
               {event.title}
@@ -65,18 +66,18 @@ export default function EventPreview({
             <Link href='./chapter/committees/styrelsen' className='mr-2'>
               {event.author.type === 'committee' ? (
                 <Avatar>
-                  <AvatarImage src={(event.author as Committee).logoUrl} />
+                  <AvatarImage src={(event.author as Committee).logo_url} />
                   <AvatarFallback>
-                    {(event.author as Committee).name + ' logo'}
+                    {(event.author as Committee).title + ' logo'}
                   </AvatarFallback>
                 </Avatar>
               ) : (
                 <Avatar>
                   <AvatarImage
-                    src={(event.author as Student).profilePictureUrl}
+                    src={(event.author as Student).profile_picture_url}
                   />
                   <AvatarFallback>
-                    {(event.author as Student).firstName + ' profile picture'}
+                    {(event.author as Student).first_name + ' profile picture'}
                   </AvatarFallback>
                 </Avatar>
               )}
@@ -87,15 +88,15 @@ export default function EventPreview({
                   <Link
                     href={`./chapter/committees/${(
                       event.author as Committee
-                    ).name.toLocaleLowerCase()}`}
+                    ).title.toLocaleLowerCase()}`}
                   >
-                    {(event.author as Committee).name}
+                    {(event.author as Committee).title}
                   </Link>
                 ) : (
                   <Link href='./chapter/students/johndoe'>
-                    {(event.author as Student).firstName +
+                    {(event.author as Student).first_name +
                       ' ' +
-                      (event.author as Student).lastName}
+                      (event.author as Student).last_name}
                   </Link>
                 )}
               </HoverCardTrigger>
@@ -113,9 +114,9 @@ export default function EventPreview({
 
       <Card className='h-24 aspect-square absolute top-10 right-[120px] text-center'>
         <CardHeader>
-          <CardTitle>{new Date(event.startDate).getDay()}</CardTitle>
+          <CardTitle>{new Date(event.start_date).getDay()}</CardTitle>
           <CardDescription className='uppercase'>
-            {new Date(event.startDate).toLocaleString(undefined, {
+            {new Date(event.start_date).toLocaleString(undefined, {
               month: 'short',
             })}
           </CardDescription>

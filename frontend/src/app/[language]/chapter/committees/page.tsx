@@ -1,7 +1,6 @@
 import { Head } from '@/components/static/Static'
-
 import Logo from 'public/images/logo.png'
-
+import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -19,22 +18,59 @@ type CommitteeProps = {
   title: string
 }
 
+/**
+ * Retrieves committee category data from the API based on the specified language.
+ *
+ * @param {string} language - The language code for which to retrieve the data.
+ * @return {Promise<CommitteeCategoryProps[]>} A promise that resolves to an array of CommitteeCategoryProps objects representing the retrieved data.
+ * @throws {Error} If the API request fails or the server is down.
+ */
 async function getCommitteeCategoryData(
   language: string
 ): Promise<CommitteeCategoryProps[]> {
-  const res = await fetch(
-    `http://localhost:8000/api/v1/committee_categories?language_code=${language}`
+  await fetch(
+    `${API_BASE_URL}/committee_categories?language_code=${language}`,
+    { cache: 'force-cache' }
   )
-  const data = await res.json()
-  return data
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Failed to fetch data (Server is down?)')
+      }
+      const data = res.json()
+      return data
+    })
+    .catch((error) => {
+      throw new Error('Failed to fetch data (Server is down?) \n' + error)
+    })
+
+  throw new Error('Failed to fetch data (Server is down?)')
 }
 
-async function getCommitteeData(language: string): Promise<CommitteeProps[]> {
-  const res = await fetch(
-    `http://localhost:8000/api/v1/committees?language_code=${language}`
-  )
-  const data = await res.json()
-  return data
+/**
+ * Retrieves committee data from the API based on the specified language.
+ *
+ * @param {string} language_code - The language code for which to retrieve the data.
+ * @return {Promise<CommitteeProps[]>} A promise that resolves to an array of CommitteeProps objects representing the retrieved data.
+ * @throws {Error} If the API request fails or the server is down.
+ */
+async function getCommitteeData(
+  language_code: string
+): Promise<CommitteeProps[]> {
+  await fetch(`${API_BASE_URL}/committees?language_code=${language_code}`, {
+    cache: 'force-cache',
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Failed to fetch data (Server is down?)')
+      }
+      const data = res.json()
+      return data
+    })
+    .catch((error) => {
+      throw new Error('Failed to fetch data (Server is down?) \n' + error)
+    })
+
+  throw new Error('Failed to fetch data (Server is down?)')
 }
 
 export default async function Committees({

@@ -40,52 +40,73 @@ const UPDATE_INTERVAL = 24
 
 const data: Event[] = [
   {
-    id: 'news-1',
     author: {
       type: 'committee',
       email: 'styrelsen@medieteknik.com',
-      name: 'Styrelsen',
-      logoUrl: StyrelsenIcon.src,
+      title: 'Styrelsen',
+      logo_url: StyrelsenIcon.src,
+      description: 'Styrelsen',
     },
     categories: ['Admin'],
     title: 'SM #4',
-    creationDate: '2021-09-01T00:00:00.000Z',
-    imageUrl: BG.src,
-    startDate: '2021-09-01T00:00:00.000Z',
-    endDate: '2021-09-01T00:00:00.000Z',
+    created_at: '2021-09-01T00:00:00.000Z',
+    main_image_url: BG.src,
+    start_date: '2021-09-01T00:00:00.000Z',
+    end_date: '2021-09-01T00:00:00.000Z',
     location: 'KTH',
+    body: '',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    short_description: '',
+    status: 'UPCOMING',
+    url: '1',
   },
   {
-    id: 'news-2',
     author: {
       type: 'committee',
       email: 'styrelsen@medieteknik.com',
-      name: 'Valberedningen',
-      logoUrl: StyrelsenIcon.src,
-    },
-    categories: ['Val'],
-    title: 'Val',
-    creationDate: '2021-09-01T00:00:00.000Z',
-    imageUrl: BG.src,
-    startDate: '2021-09-01T00:00:00.000Z',
-    endDate: '2021-09-01T00:00:00.000Z',
-    location: 'KTH',
-  },
-  {
-    id: 'news-3',
-    author: {
-      type: 'committee',
-      email: 'styrelsen@medieteknik.com',
-      name: 'NLG',
-      logoUrl: StyrelsenIcon.src,
+      title: 'Styrelsen',
+      logo_url: StyrelsenIcon.src,
+      description: 'Styrelsen',
     },
     categories: ['Admin'],
-    title: 'Lunchmöte',
-    creationDate: '2021-09-01T00:00:00.000Z',
-    imageUrl: BG.src,
-    startDate: '2021-09-01T00:00:00.000Z',
-    endDate: '2021-09-01T00:00:00.000Z',
+    title: 'SM #4',
+    created_at: '2021-09-01T00:00:00.000Z',
+    main_image_url: BG.src,
+    start_date: '2021-09-01T00:00:00.000Z',
+    end_date: '2021-09-01T00:00:00.000Z',
     location: 'KTH',
+    body: '',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    short_description: '',
+    status: 'UPCOMING',
+    url: '1',
+  },
+  {
+    author: {
+      type: 'committee',
+      email: 'styrelsen@medieteknik.com',
+      title: 'Styrelsen',
+      logo_url: StyrelsenIcon.src,
+      description: 'Styrelsen',
+    },
+    categories: ['Admin'],
+    title: 'SM #4',
+    created_at: '2021-09-01T00:00:00.000Z',
+    main_image_url: BG.src,
+    start_date: '2021-09-01T00:00:00.000Z',
+    end_date: '2021-09-01T00:00:00.000Z',
+    location: 'KTH',
+    body: '',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    short_description: '',
+    status: 'UPCOMING',
+    url: '1',
   },
 ]
 
@@ -97,13 +118,13 @@ export default function Events({
   const highlightedEvent = [...data]
     .sort(
       (a, b) =>
-        new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
+        new Date(a.start_date).valueOf() - new Date(b.start_date).valueOf()
     )
     .slice(0, 3)
   const nonHighlightedEvents = [...data]
     .sort(
       (a, b) =>
-        new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
+        new Date(a.start_date).valueOf() - new Date(b.start_date).valueOf()
     )
     .slice(3)
   const [currentEvent, setCurrentEvent] = useState(highlightedEvent[0])
@@ -157,8 +178,8 @@ export default function Events({
       {showCalendarPopup[0] && typeof showCalendarPopup[1] !== 'boolean' && (
         <CalendarTooltip
           title={encodeURIComponent(showCalendarPopup[1].title)}
-          startDate={new Date(showCalendarPopup[1].startDate)}
-          endDate={new Date(showCalendarPopup[1].endDate)}
+          startDate={new Date(showCalendarPopup[1].start_date)}
+          endDate={new Date(showCalendarPopup[1].end_date)}
           link='asd ds'
           location='asd asd'
           closeCallback={() =>
@@ -197,7 +218,7 @@ export default function Events({
                       className='relative'
                       onClick={(e) => {
                         navigator.clipboard.writeText(
-                          window.location.href + `/events/${currentEvent.id}`
+                          window.location.href + `/events/${currentEvent.url}`
                         )
 
                         setCopiedLink(true)

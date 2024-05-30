@@ -3,7 +3,7 @@ import {
   PencilSquareIcon,
   Cog8ToothIcon,
 } from '@heroicons/react/24/outline'
-import type { GetStaticPaths } from 'next'
+import { API_BASE_URL } from '@/utility/Constants'
 import CommitteeMembers from './members'
 import { Button } from '@/components/ui/button'
 import Logo from 'public/images/logo.png'
@@ -23,7 +23,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { CommitteePosition } from '@/models/Committee'
-import { ShortNewsItem } from '@/models/Items'
+import News from '@/models/Items'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,6 +33,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import ShortNews from '@/app/[language]/bulletin/components/shortNews'
+import { StudentCommitteePosition } from '@/models/Student'
 
 interface Committee {
   category: string
@@ -40,21 +41,33 @@ interface Committee {
   route: string
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch(
-    'http://localhost:8000/api/v1/dynamic/categories/committees'
-  )
-  const committees: Committee[] = await res.json()
+export async function generateStaticParams() {
+  const res = await fetch(API_BASE_URL + '/dynamic/categories/committees')
+  const committeesPages: Committee[] = await res.json()
 
-  const paths = committees.map((committee) => ({
-    params: {
-      language: '[language]',
-      committee: committee.route.toLowerCase(),
-    },
+  return committeesPages.map((committeePage) => ({
+    language: '[language]',
+    committee: committeePage.route.toLowerCase(),
   }))
-
-  return { paths, fallback: true }
 }
+
+//export const getStaticPaths: GetStaticPaths = async () => {
+//  const res = await fetch(
+//    'http://localhost:8000/api/v1/dynamic/categories/committees'
+//  ).catch((error) => {
+//    throw new Error('Failed to fetch data (Server is down?) \n' + error)
+//  })
+//  const committees: Committee[] = await res.json()
+//
+//  const paths = committees.map((committee) => ({
+//    params: {
+//      language: '[language]',
+//      committee: committee.route.toLowerCase(),
+//    },
+//  }))
+//
+//  return { paths, fallback: true }
+//}
 
 type CommitteeProps = {
   committee_id: number
@@ -69,8 +82,7 @@ async function getData(
   language: string
 ): Promise<CommitteeProps> {
   const res = await fetch(
-    `http://localhost:8000/api/v1/committees/name/${committee}?language_code=${language}`,
-    { cache: 'force-cache' }
+    `${API_BASE_URL}/committees/name/${committee}?language_code=${language}`
   )
   const data = await res.json()
   return data
@@ -80,36 +92,114 @@ interface CommitteePositionOccupant extends CommitteePosition {
   occupant: string
 }
 
-const committeeData: CommitteePositionOccupant[] = [
+const committeeData: StudentCommitteePosition[] = [
   {
-    name: 'Ordförande',
-    description: 'Ordförande',
-    occupant: 'Viggo Halvarsson Skoog',
+    student: {
+      first_name: 'André',
+      last_name: 'Eriksson',
+      email: 'andree4@kth.se',
+      type: 'student',
+    },
+    position: {
+      title: 'Ordförande',
+      active: true,
+      description: 'Ordförande',
+      email: 'ordforande@kth.se',
+      role: 'ADMIN',
+      weight: 1,
+    },
+    initiation_date: '2022-01-01',
+    termination_date: '2022-01-01',
   },
   {
-    name: 'Position',
-    description: 'Vice-Ordförande',
-    occupant: 'Member 2',
+    student: {
+      first_name: 'André',
+      last_name: 'Eriksson',
+      email: 'andree4@kth.se',
+      type: 'student',
+    },
+    position: {
+      title: 'Vice-Ordförande',
+      active: true,
+      description: 'Ordförande',
+      email: 'ordforande@kth.se',
+      role: 'ADMIN',
+      weight: 1,
+    },
+    initiation_date: '2022-01-01',
+    termination_date: '2022-01-01',
   },
   {
-    name: 'Position',
-    description: 'Member 3',
-    occupant: 'Member 3',
+    student: {
+      first_name: 'André',
+      last_name: 'Eriksson',
+      email: 'andree4@kth.se',
+      type: 'student',
+    },
+    position: {
+      title: 'Ordförande',
+      active: true,
+      description: 'Ordförande',
+      email: 'ordforande@kth.se',
+      role: 'ADMIN',
+      weight: 1,
+    },
+    initiation_date: '2022-01-01',
+    termination_date: '2022-01-01',
   },
   {
-    name: 'Position',
-    description: 'Member 4',
-    occupant: 'Member 4',
+    student: {
+      first_name: 'André',
+      last_name: 'Eriksson',
+      email: 'andree4@kth.se',
+      type: 'student',
+    },
+    position: {
+      title: 'Ordförande',
+      active: true,
+      description: 'Ordförande',
+      email: 'ordforande@kth.se',
+      role: 'ADMIN',
+      weight: 1,
+    },
+    initiation_date: '2022-01-01',
+    termination_date: '2022-01-01',
   },
   {
-    name: 'Position',
-    description: 'Member 5',
-    occupant: 'Member 5',
+    student: {
+      first_name: 'André',
+      last_name: 'Eriksson',
+      email: 'andree4@kth.se',
+      type: 'student',
+    },
+    position: {
+      title: 'Ordförande',
+      active: true,
+      description: 'Ordförande',
+      email: 'ordforande@kth.se',
+      role: 'ADMIN',
+      weight: 1,
+    },
+    initiation_date: '2022-01-01',
+    termination_date: '2022-01-01',
   },
   {
-    name: 'Position',
-    description: 'Member 6',
-    occupant: 'Vacant',
+    student: {
+      first_name: 'André',
+      last_name: 'Eriksson',
+      email: 'andree4@kth.se',
+      type: 'student',
+    },
+    position: {
+      title: 'Ordförande',
+      active: true,
+      description: 'Ordförande',
+      email: 'ordforande@kth.se',
+      role: 'ADMIN',
+      weight: 1,
+    },
+    initiation_date: '2022-01-01',
+    termination_date: '2022-01-01',
   },
 ]
 
@@ -122,48 +212,63 @@ export default async function Committee({
 
   const committeeName = decodeURIComponent(data.title)
 
-  const newsData: ShortNewsItem[] = [
+  const newsData: News[] = [
     {
-      id: 'news-1',
       title: 'News Title 1',
       author: {
         type: 'committee',
-        name: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
+        title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
         email: data.email,
-        logoUrl: Logo.src,
+        logo_url: Logo.src,
+        description: '',
       },
       categories: ['Admin'],
-      imageUrl: Logo.src,
-      creationDate: '2023-01-01',
-      shortDescription: 'Short Description 1',
+      main_image_url: Logo.src,
+      created_at: '2023-01-01',
+      short_description: 'Short Description 1',
+      body: '',
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      url: '',
     },
     {
-      id: 'news-1',
       title: 'News Title 1',
       author: {
         type: 'committee',
-        name: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
-        email: committee + '@medieteknik.com',
-        logoUrl: Logo.src,
+        title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
+        email: data.email,
+        logo_url: Logo.src,
+        description: '',
       },
       categories: ['Admin'],
-      imageUrl: Logo.src,
-      creationDate: '2023-01-01',
-      shortDescription: 'Short Description 1',
+      main_image_url: Logo.src,
+      created_at: '2023-01-01',
+      short_description: 'Short Description 1',
+      body: '',
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      url: '',
     },
     {
-      id: 'news-1',
       title: 'News Title 1',
       author: {
         type: 'committee',
-        name: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
-        email: committee + '@medieteknik.com',
-        logoUrl: Logo.src,
+        title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
+        email: data.email,
+        logo_url: Logo.src,
+        description: '',
       },
       categories: ['Admin'],
-      imageUrl: Logo.src,
-      creationDate: '2023-01-01',
-      shortDescription: 'Short Description 1',
+      main_image_url: Logo.src,
+      created_at: '2023-01-01',
+      short_description: 'Short Description 1',
+      body: '',
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      url: '',
     },
   ]
 
@@ -294,74 +399,7 @@ export default async function Committee({
               <h2 className='w-fit text-2xl'>Positions</h2>
             </Link>
           </div>
-          <div className='grid grow h-full grid-cols-10 auto-rows-max auto-cols-auto gap-4 py-4 place-items-center'>
-            {committeeData.map((position, index) => (
-              <Card key={index} className='min-w-56 w-fit h-44'>
-                <CardHeader>
-                  <CardTitle>{position.name}</CardTitle>
-                  <CardDescription>
-                    <HoverCard>
-                      <HoverCardTrigger>
-                        {position.occupant === 'Vacant' ? (
-                          <span>{position.occupant}</span>
-                        ) : (
-                          <Button
-                            variant='link'
-                            className='px-0 text-neutral-600'
-                          >
-                            {position.occupant}
-                          </Button>
-                        )}
-                      </HoverCardTrigger>
-                      <HoverCardContent>
-                        <Button
-                          asChild
-                          variant='link'
-                          className='h-fit flex flex-col justify-center pb-0'
-                        >
-                          <Link
-                            href='/'
-                            className='group'
-                            title='Go to profile page'
-                          >
-                            <Avatar className='w-24 h-24 border-2 border-black rounded-full mb-2 group-hover:scale-110 transition-transform'>
-                              <AvatarImage
-                                src={Logo.src}
-                                alt='Committee Logo'
-                                width={96}
-                                height={96}
-                              />
-                              <AvatarFallback>Committee Picture</AvatarFallback>
-                            </Avatar>
-                            <span>{position.occupant}</span>
-                          </Link>
-                        </Button>
-                        <Button
-                          variant='link'
-                          className='text-neutral-500 py-0 w-full left-0 right-0 mx-auto z-10'
-                        >
-                          <Link href='mailto:' title='Send email to occupant'>
-                            <span>andree4@kth.se</span>
-                          </Link>
-                        </Button>
-                      </HoverCardContent>
-                    </HoverCard>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {(position.occupant === 'Vacant' && (
-                    <Button
-                      variant='default'
-                      className='w-full'
-                      title='Apply for position'
-                    >
-                      Apply
-                    </Button>
-                  )) || <></>}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <div className='grid grow h-full grid-cols-10 auto-rows-max auto-cols-auto gap-4 py-4 place-items-center'></div>
         </div>
       </section>
     </main>

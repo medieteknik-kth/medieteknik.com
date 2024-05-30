@@ -21,7 +21,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'NLG',
       email: '',
-      logoUrl: NLGIcon.src,
+      logo_url: NLGIcon.src,
     },
     position: {
       name: 'Webmaster',
@@ -35,7 +35,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'Styrelsen',
       email: '',
-      logoUrl: StyrelsenIcon.src,
+      logo_url: StyrelsenIcon.src,
     },
     position: {
       name: 'Ordförande',
@@ -49,7 +49,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'Styrelsen',
       email: '',
-      logoUrl: StyrelsenIcon.src,
+      logo_url: StyrelsenIcon.src,
     },
     position: {
       name: 'Vice-Ordförande',
@@ -63,7 +63,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'Styrelsen',
       email: '',
-      logoUrl: StyrelsenIcon.src,
+      logo_url: StyrelsenIcon.src,
     },
     position: {
       name: 'Kassör',
@@ -77,7 +77,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'Styrelsen',
       email: '',
-      logoUrl: StyrelsenIcon.src,
+      logo_url: StyrelsenIcon.src,
     },
     position: {
       name: 'Sekreterare',
@@ -91,7 +91,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'Styrelsen',
       email: '',
-      logoUrl: StyrelsenIcon.src,
+      logo_url: StyrelsenIcon.src,
     },
     position: {
       name: 'Vice-Sekreterare',
@@ -105,7 +105,7 @@ const testPositions: StudentCommitteePosition[] = [
       type: 'committee',
       name: 'Styrelsen',
       email: '',
-      logoUrl: StyrelsenIcon.src,
+      logo_url: StyrelsenIcon.src,
     },
     position: {
       name: 'Ledamot',
@@ -154,7 +154,7 @@ export default function StudentPositions({
                     <TableCell className='flex items-center'>
                       <Avatar className='w-6 h-auto mr-1'>
                         <AvatarImage
-                          src={position.committee.logoUrl}
+                          src={position.committee.logo_url}
                           alt='Profile Picture'
                         />
                         <AvatarFallback>Profile Picture</AvatarFallback>
@@ -201,7 +201,7 @@ export default function StudentPositions({
                     <TableCell className='flex items-center'>
                       <Avatar className='w-6 h-auto mr-1'>
                         <AvatarImage
-                          src={position.committee.logoUrl}
+                          src={position.committee.logo_url}
                           alt='Profile Picture'
                         />
                         <AvatarFallback>Profile Picture</AvatarFallback>

@@ -26,7 +26,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import NewsCard from '../components/newsCard'
-import { ShortNewsItem } from '@/models/Items'
+import News from '@/models/Items'
 import {
   Tooltip,
   TooltipContent,
@@ -41,6 +41,16 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import Student from '@/models/Student'
 import Committee from '@/models/Committee'
+import Link from 'next/link'
+import { UploadNews } from '@/components/dialogs/Upload'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 const maxPages = 10
 
@@ -87,7 +97,7 @@ export default function AllNews({
   data,
 }: {
   language: string
-  data: ShortNewsItem[]
+  data: News[]
 }) {
   type SortTypes = 'date' | 'author'
   const [copiedLink, setCopiedLink] = useState(-1)
@@ -108,8 +118,7 @@ export default function AllNews({
     setSortedData(
       [...data].sort((a, b) => {
         return (
-          new Date(a.creationDate).getTime() -
-          new Date(b.creationDate).getTime()
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         )
       })
     )
@@ -199,8 +208,8 @@ export default function AllNews({
                     setSortedData(
                       [...sortedData].sort((a, b) => {
                         return (
-                          new Date(a.creationDate).getTime() -
-                          new Date(b.creationDate).getTime()
+                          new Date(a.created_at).getTime() -
+                          new Date(b.created_at).getTime()
                         )
                       })
                     )
@@ -219,13 +228,13 @@ export default function AllNews({
                       [...sortedData].sort((a, b) => {
                         const author =
                           a.author.type === 'committee'
-                            ? (a.author as Committee).name
-                            : (a.author as Student).firstName
+                            ? (a.author as Committee).title
+                            : (a.author as Student).first_name
 
                         const author2 =
                           b.author.type === 'committee'
-                            ? (b.author as Committee).name
-                            : (b.author as Student).firstName
+                            ? (b.author as Committee).title
+                            : (b.author as Student).first_name
                         return author.localeCompare(author2)
                       })
                     )
@@ -253,20 +262,25 @@ export default function AllNews({
       <CardContent className='grid grid-cols-5 *:h-96 gap-10'>
         <Card className='border-dashed'>
           <CardContent className='h-full pt-6'>
-            <Button
-              variant='ghost'
-              size='icon'
-              className='w-full h-full grid place-items-center'
-              title='Post a new news article'
-              aria-label='Post a new news article'
-            >
-              <PlusIcon className='w-12 h-12 text-neutral-600' />
-            </Button>
+            <Dialog>
+              <DialogTrigger
+                className='w-full h-full grid place-items-center hover:bg-neutral-100 rounded'
+                title='Upload an article'
+                aria-label='Upload an article'
+              >
+                <div className=''>
+                  <PlusIcon className='w-6 h-6' />
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <UploadNews language={language} />
+              </DialogContent>
+            </Dialog>
           </CardContent>
         </Card>
         {sortedData.map((newsItem, index) => (
           <div key={index} className='relative'>
-            <NewsCard key={newsItem.id} newsItem={newsItem} />
+            <NewsCard key={newsItem.url} newsItem={newsItem} />
             <TooltipProvider>
               <Tooltip open={copiedLink === index}>
                 <TooltipTrigger asChild>
@@ -300,11 +314,12 @@ export default function AllNews({
               <PopoverContent className='absolute w-fit h-fit'>
                 <h3 className='text-lg font-bold pb-1'>Tags</h3>
                 <div className='flex'>
-                  {newsItem.categories.map((category, index) => (
-                    <Badge key={index} className='w-fit mr-2'>
-                      {category}
-                    </Badge>
-                  ))}
+                  {newsItem.categories &&
+                    newsItem.categories.map((category, index) => (
+                      <Badge key={index} className='w-fit mr-2'>
+                        {category}
+                      </Badge>
+                    ))}
                 </div>
               </PopoverContent>
             </Popover>

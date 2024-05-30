@@ -1,4 +1,4 @@
-import { ShortNewsItem } from '@/models/Items'
+import News from '@/models/Items'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import NLGIcon from 'public/images/committees/nlg.png'
 import BG from 'public/images/kth-landskap.jpg'
@@ -6,52 +6,64 @@ import BG2 from 'public/images/international_placeholder.jpg'
 import BG3 from 'public/images/testbg.jpg'
 import AllNews from './allNews'
 
-const data: ShortNewsItem[] = [
+const data: News[] = [
   {
-    id: 'news1',
     title: 'KTH:s rektor: "Vi har en plan för att öppna campus"',
-    shortDescription:
+    short_description:
       'KTH:s rektor Sigbritt Karlsson berättar om planerna för att öppna campus igen.',
-    imageUrl: BG.src,
+    main_image_url: BG.src,
     author: {
       type: 'committee',
-      name: 'Styrelsen',
-      logoUrl: StyrelsenIcon.src,
+      title: 'Styrelsen',
+      logo_url: StyrelsenIcon.src,
       email: 'styrelsen@medieteknik.com',
+      description: '',
     },
     categories: ['Skola'],
-    creationDate: new Date('2021-09-01').toISOString(),
+    created_at: new Date('2021-09-01').toISOString(),
+    body: '',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    url: '1',
   },
   {
-    id: 'news2',
     title: 'International students: "We need more support"',
-    shortDescription:
+    short_description:
       'International students at KTH are struggling with the lack of support.',
-    imageUrl: BG2.src,
+    main_image_url: BG2.src,
     author: {
       type: 'student',
       email: 'andree4@kth.se',
-      firstName: 'André',
-      lastName: 'Eriksson',
-      receptionName: 'N/A',
-      profilePictureUrl: '',
+      first_name: 'André',
+      last_name: 'Eriksson',
     },
     categories: ['International', 'Studentliv'],
-    creationDate: new Date('2021-09-03').toISOString(),
+    created_at: new Date('2021-09-03').toISOString(),
+    body: '',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    url: '1',
   },
   {
-    id: 'news3',
     title: 'NLG planerar höstens första sittning',
-    shortDescription: 'Planerna för höstens första sittning är i full gång.',
-    imageUrl: BG3.src,
+    short_description: 'Planerna för höstens första sittning är i full gång.',
+    main_image_url: BG3.src,
     author: {
       type: 'committee',
-      name: 'NLG',
-      logoUrl: NLGIcon.src,
+      title: 'NLG',
+      logo_url: NLGIcon.src,
       email: 'nlg@medieteknik.com',
+      description: '',
     },
     categories: ['Nöje', 'Fest'],
-    creationDate: new Date('2021-09-07').toISOString(),
+    created_at: new Date('2021-09-07').toISOString(),
+    body: '',
+    is_pinned: false,
+    is_public: true,
+    published_status: 'PUBLISHED',
+    url: '1',
   },
 ]
 

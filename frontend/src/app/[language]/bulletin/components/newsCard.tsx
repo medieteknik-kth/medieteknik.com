@@ -1,4 +1,4 @@
-import { ShortNewsItem } from '@/models/Items'
+import News from '@/models/Items'
 import Committee from '@models/Committee'
 import Student from '@models/Student'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/hover-card'
 import { StudentTooltip, CommitteeTooltip } from '@/components/tooltips/Tooltip'
 
-export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
+export default function NewsCard({ newsItem }: { newsItem: News }) {
   return (
     <Card
       className='w-fit h-full flex flex-col justify-between'
@@ -26,9 +26,9 @@ export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
       aria-label={newsItem.title}
     >
       <CardHeader>
-        <Link href={'./news/' + newsItem.id} className='group w-full h-20'>
+        <Link href={'./news/' + newsItem.url} className='group w-full h-20'>
           <Image
-            src={newsItem.imageUrl}
+            src={newsItem.main_image_url}
             alt={newsItem.title + ' Image'}
             width={300}
             height={100}
@@ -39,7 +39,7 @@ export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
             {newsItem.title}
           </CardTitle>
           <CardDescription className='max-h-24 text-ellipsis overflow-y-hidden group-hover:underline !no-underline'>
-            {newsItem.shortDescription}
+            {newsItem.short_description}
           </CardDescription>
         </Link>
       </CardHeader>
@@ -51,7 +51,7 @@ export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
               '../' +
               (newsItem.author.type === 'committee'
                 ? 'chapter/committees/' +
-                  (newsItem.author as Committee).name.toLocaleLowerCase()
+                  (newsItem.author as Committee).title.toLocaleLowerCase()
                 : 'student/' + (newsItem.author as Student).email)
             }
           >
@@ -59,8 +59,8 @@ export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
               <AvatarImage
                 src={
                   newsItem.author.type === 'committee'
-                    ? (newsItem.author as Committee).logoUrl
-                    : (newsItem.author as Student).profilePictureUrl
+                    ? (newsItem.author as Committee).logo_url
+                    : (newsItem.author as Student).profile_picture_url
                 }
                 alt='Author Picture'
               />
@@ -71,10 +71,10 @@ export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
             <HoverCard>
               <HoverCardTrigger>
                 {newsItem.author.type === 'committee'
-                  ? (newsItem.author as Committee).name
-                  : (newsItem.author as Student).firstName +
+                  ? (newsItem.author as Committee).title
+                  : (newsItem.author as Student).first_name +
                     ' ' +
-                    (newsItem.author as Student).lastName}
+                    (newsItem.author as Student).last_name}
               </HoverCardTrigger>
               <HoverCardContent>
                 {newsItem.author.type === 'committee' ? (
@@ -85,7 +85,7 @@ export default function NewsCard({ newsItem }: { newsItem: ShortNewsItem }) {
               </HoverCardContent>
             </HoverCard>
             <span className='text-xs flex text-neutral-700 dark:text-neutral-400'>
-              {new Date(newsItem.creationDate).toLocaleDateString()}
+              {new Date(newsItem.created_at).toLocaleDateString()}
             </span>
           </div>
         </div>

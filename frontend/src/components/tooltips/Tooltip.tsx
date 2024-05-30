@@ -62,7 +62,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
           className='group'
         >
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
-            <AvatarImage src={committee.logoUrl} alt='Committee Logo' />
+            <AvatarImage src={committee.logo_url} alt='Committee Logo' />
             <AvatarFallback>{committee.name + ' logo'}</AvatarFallback>
           </Avatar>
           <p>{committee.name}</p>
@@ -102,7 +102,7 @@ export function CommitteePositionTooltip({
     <div>
       <CardHeader className='flex flex-row items-center'>
         <Avatar className='mr-2'>
-          <AvatarImage src={committee.logoUrl} alt='Committee Logo' />
+          <AvatarImage src={committee.logo_url} alt='Committee Logo' />
           <AvatarFallback>Committee Picture</AvatarFallback>
         </Avatar>
         <div className='flex flex-col'>

@@ -1,4 +1,4 @@
-import { ShortNewsItem } from '@/models/Items'
+import News from '@/models/Items'
 import Committee from '@models/Committee'
 import Student from '@models/Student'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -18,17 +18,17 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { StudentTooltip, CommitteeTooltip } from '@/components/tooltips/Tooltip'
 
-export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
+export default function ShortNews({ newsItem }: { newsItem: News }) {
   return (
     <Card className='w-[600px] h-[200px] flex'>
       <Link
-        href={`./bulletin/news/${newsItem.id}`}
+        href={`./bulletin/news/${newsItem.url}`}
         className='w-fit max-w-44 h-full p-5 pr-0 relative overflow-hidden'
         title={newsItem.title}
         aria-label={newsItem.title}
       >
         <Image
-          src={newsItem.imageUrl}
+          src={newsItem.main_image_url}
           alt={newsItem.title}
           width={200}
           height={200}
@@ -39,14 +39,14 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
       <div className='grow flex flex-col justify-between'>
         <CardHeader className='w-fit h-fit p-0'>
           <Link
-            href={`./bulletin/news/${newsItem.id}`}
+            href={`./bulletin/news/${newsItem.url}`}
             className='group mt-3 pt-3 px-6 pb-6'
           >
             <CardTitle className='w-full underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
               {newsItem.title}
             </CardTitle>
             <CardDescription className='w-full group-hover:underline !no-underline'>
-              {newsItem.shortDescription}
+              {newsItem.short_description}
             </CardDescription>
           </Link>
         </CardHeader>
@@ -57,7 +57,7 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
               href={
                 newsItem.author.type === 'committee'
                   ? 'chapter/committees/' +
-                    (newsItem.author as Committee).name.toLocaleLowerCase()
+                    (newsItem.author as Committee).title.toLocaleLowerCase()
                   : './chapter/students/' + (newsItem.author as Student).email
               }
             >
@@ -65,16 +65,16 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
                 <AvatarImage
                   src={
                     newsItem.author.type === 'committee'
-                      ? (newsItem.author as Committee).logoUrl
-                      : (newsItem.author as Student).profilePictureUrl
+                      ? (newsItem.author as Committee).logo_url
+                      : (newsItem.author as Student).profile_picture_url
                   }
                 />
                 <AvatarFallback>
                   {newsItem.author.type === 'committee'
-                    ? (newsItem.author as Committee).name + ' logo'
-                    : (newsItem.author as Student).firstName +
+                    ? (newsItem.author as Committee).title + ' logo'
+                    : (newsItem.author as Student).first_name +
                       ' ' +
-                      (newsItem.author as Student).lastName +
+                      (newsItem.author as Student).last_name +
                       ' profile picture'}
                 </AvatarFallback>
               </Avatar>
@@ -83,10 +83,10 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
               <HoverCard>
                 <HoverCardTrigger>
                   {newsItem.author.type === 'committee'
-                    ? (newsItem.author as Committee).name
-                    : (newsItem.author as Student).firstName +
+                    ? (newsItem.author as Committee).title
+                    : (newsItem.author as Student).first_name +
                       ' ' +
-                      (newsItem.author as Student).lastName}
+                      (newsItem.author as Student).last_name}
                 </HoverCardTrigger>
                 <HoverCardContent>
                   {newsItem.author.type === 'committee' ? (
@@ -99,7 +99,7 @@ export default function ShortNews({ newsItem }: { newsItem: ShortNewsItem }) {
                 </HoverCardContent>
               </HoverCard>
               <span className='text-xs flex text-neutral-700 dark:text-neutral-400'>
-                {newsItem.creationDate}
+                {newsItem.created_at}
               </span>
             </div>
           </div>

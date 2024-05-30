@@ -39,26 +39,9 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import {
-  createEditor,
-  Editor,
-  Descendant,
-  Transforms,
-  BaseEditor,
-  Path,
-  BaseRange,
-  Node,
-  Point,
-  Range,
-} from 'slate'
-import {
-  Slate,
-  Editable,
-  withReact,
-  useSelected,
-  useFocused,
-  ReactEditor,
-} from 'slate-react'
+import { createEditor, Editor, Descendant, Transforms, BaseEditor } from 'slate'
+import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
 import {
   Leaf,
   Element,
@@ -68,6 +51,8 @@ import {
   textTypes,
 } from '../util/Text'
 import { Input } from '@/components/ui/input'
+import News from '@/models/Items'
+import { useAutoSave, AutoSaveResult } from '../autoSave'
 
 interface CustomElement {
   type: ElementType
@@ -88,16 +73,26 @@ declare module 'slate' {
   }
 }
 
-export default function ArticlePage({ language }: { language: string }) {
+export default function ArticlePage({
+  language,
+  news_data,
+}: {
+  language: string
+  news_data: News
+}) {
   const [fontSize, setFontSize] = useState(24)
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('h1')
   const [editor] = useState(() => withReact(createEditor()))
   const [activeMarks, setActiveMarks] = useState<BooleanMark[]>([])
+  const { saveCallback, content, updateContent, addNotification } =
+    useAutoSave()
+  const [editingLanguage, setEditingLanguage] = useState(language)
+
   const initialValue = useMemo(() => {
-    const content = localStorage.getItem('content')
-    if (content) {
-      return JSON.parse(content)
+    let correctedContent = content
+    if (correctedContent.body && correctedContent.body.length > 0) {
+      return JSON.parse(correctedContent.body)
     }
     return [
       {
@@ -295,14 +290,17 @@ export default function ArticlePage({ language }: { language: string }) {
               </Popover>
               <Input
                 type='number'
+                id='font-size'
+                name='font-size'
                 className='w-fit max-w-20 ml-4'
+                title='Font Size (WIP)'
+                aria-label='Font Size'
                 disabled
                 readOnly
                 value={fontSize}
                 onChange={(e) => {
                   updateFontSize(parseInt(e.target.value))
                 }}
-                title='Font Size (WIP)'
               />
             </div>
           </div>
@@ -381,6 +379,8 @@ export default function ArticlePage({ language }: { language: string }) {
                 <Input
                   type='text'
                   id='link'
+                  title='Link URL'
+                  aria-label='Link URL'
                   placeholder='https://example.com'
                   className='w-full'
                 />
@@ -388,10 +388,13 @@ export default function ArticlePage({ language }: { language: string }) {
                   type='text'
                   id='linkName'
                   placeholder='Link Text'
+                  title='Link Text (alt text)'
                   className='w-full'
                 />
                 <Button
                   className='mt-4'
+                  title='Insert Link'
+                  aria-label='Insert Link'
                   onClick={(e) => {
                     const link = e.currentTarget.parentElement?.querySelector(
                       '#link'
@@ -426,9 +429,9 @@ export default function ArticlePage({ language }: { language: string }) {
               size='icon'
               variant='ghost'
               className='mr-1 cursor-not-allowed !pointer-events-auto'
-              disabled
               title='Insert Photo (WIP)'
               aria-label='Insert Photo'
+              disabled
             >
               <PhotoIcon className='w-6 h-6 text-black' />
             </Button>
@@ -491,8 +494,18 @@ export default function ArticlePage({ language }: { language: string }) {
             )
 
             if (isAstChange) {
-              const content = JSON.stringify(value)
-              localStorage.setItem('content', content)
+              const body = JSON.stringify(value)
+              const updatedContent: News = {
+                ...news_data,
+                body: body,
+              }
+
+              updateContent(updatedContent)
+              saveCallback(editingLanguage).then((result) => {
+                if (result === AutoSaveResult.SUCCESS) {
+                  addNotification('Auto-Saved')
+                }
+              })
             }
           }}
         >
