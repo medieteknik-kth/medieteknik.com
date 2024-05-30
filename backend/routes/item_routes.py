@@ -204,73 +204,54 @@ def update_news_by_url(url: str) -> dict:
 
 @news_bp.route('/<string:url>/publish', methods=['PUT'])
 def publish_news(url: str) -> dict:
-    """Publishes a news item
-
-    Args:
-        url (str): News URL
-
-    Returns:
-        dict: News item
-    """
+    """Publishes a news item."""
 
     data = request.get_json()
-
     if not data:
         return jsonify({'error': 'No data provided'}), 400
 
-    news_item: News | None = News.query.filter_by(url=url).first()
+    news_item = News.query.filter_by(url=url).first()
     supported_languages = request.args.getlist('language')
 
     if not supported_languages:
         return jsonify({'error': 'No languages provided'}), 400
-
-    current_date = datetime.now()
-    new_url = ''
-
-    data: dict[str, any] = json.loads(json.dumps(data))
-
     if news_item is None:
         return jsonify({'error': 'News item not found'}), 404
 
-    translation_query = NewsTranslation.query
-    language_code = ''
-
-    if 'en' not in supported_languages:
-        language_code = 'se'
-    else:
-        if 'en' in supported_languages:
-            language_code = 'en'
-        else:
-            return jsonify({'error': 'Invalid language'}), 400
-
-    translation = translation_query.filter_by(
+    translation = NewsTranslation.query.filter_by(
         news_id=news_item.news_id,
-        language_code=language_code
     ).first()
 
     if not translation:
-        return jsonify({'error': 'No Translation not found'}), 404
+        return jsonify({'error': 'Translation not found'}), 404
 
-    translation: NewsTranslation = translation
-    new_url = normalize_to_ascii(translation.title).split(
-        ' ') if language_code == 'se' else translation.title.split(' ')
-    new_url = '-'.join(new_url) + '-' + str(current_date.year) + \
-        '-' + str(current_date.month) + '-' + str(current_date.day)
+    for language in AVAILABLE_LANGUAGES:  # TODO: Add Multiple language support
+        translation: NewsTranslation | None = NewsTranslation.query.filter_by(
+            news_id=news_item.news_id,
+            language_code=language
+        ).first()
+        translation.title = data.get('title')
+        translation.body = data.get('body')
+        translation.short_description = data.get('short_description')
+        translation.main_image_url = data.get('main_image_url', '')
+        translation.sub_image_urls = data.get('sub_image_urls', '')
+
+    db.session.add(translation)
+    db.session.flush()
+
+    new_url = normalize_to_ascii(data.get('title')).split(' ')
+    new_url = '-'.join(new_url) + '-' + datetime.now().strftime('%Y-%m-%d')
     new_url = new_url.lower()
 
-    news_item: News = news_item
-    setattr(translation, 'title', data.get('title'))
-    setattr(translation, 'body', data.get('body'))
-    setattr(translation, 'short_description', data.get('short_description'))
-    setattr(translation, 'main_image_url', data.get('main_image_url', ''))
-    setattr(translation, 'sub_image_urls', data.get('sub_image_urls', ''))
-    setattr(news_item, 'url', new_url)
-    setattr(news_item, 'categories', data.get('categories', []))
-    setattr(news_item, 'is_public', True)
-    setattr(news_item, 'created_at', current_date)
-    setattr(news_item, 'published_status', PublishedStatus.PUBLISHED)
+    news_item.url = new_url
+    news_item.categories = data.get('categories', [])
+    news_item.is_public = True
+    news_item.created_at = datetime.now()
+    news_item.published_status = PublishedStatus.PUBLISHED
 
+    db.session.add(news_item)
     db.session.commit()
+
     return {'url': news_item.url}, 201
 
 

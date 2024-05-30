@@ -225,7 +225,7 @@ class News(db.Model):
         if not author:
             return None
 
-        print(author_dict)
+        print(translation)
 
         if summary:
             return {
@@ -414,7 +414,7 @@ class NewsTranslation(db.Model):
     news_translation_id = Column(Integer, primary_key=True, autoincrement=True)
 
     title = Column(String(255))
-    body = Column(String(2500))
+    body = Column(String(100_000))
     short_description = Column(String(255))
     main_image_url = Column(String(255))
     sub_image_urls = Column(ARRAY(String))
