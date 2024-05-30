@@ -2,11 +2,11 @@
  * @interface CommitteeCategory
  * @description Committee category model
  * 
- * @param {string} name - Committee category name
+ * @param {string} title - Committee category title
  * @param {string} email - Committee category email
  */
 export interface CommitteeCategory {
-  name: string;
+  title: string;
   email: string;
 }
 
@@ -20,35 +20,28 @@ export interface CommitteeCategory {
  */
 export default interface Committee {
   type: 'committee';
-  name: string;
+  title: string;
+  description: string;
   email: string;
-  logoUrl: string;
+  logo_url: string;
 }
 
 /**
  * @interface CommitteePosition
  * @description Committee position model
  * 
- * @param {string} name - Committee position name
+ * @param {string} email - Committee position email
+ * @param {string} title - Committee position title
+ * @param {string} description - Committee position description
+ * @param {'ADMIN' | 'BOARD' | 'COMMITTEE'} role - Committee position role
+ * @param {boolean} active - Whether the position is active or not
+ * @param {number} weight - Committee position weight
  */
 export interface CommitteePosition {
-  name: string;
+  email: string,
+  title: string;
   description: string;
+  role: 'ADMIN' | 'BOARD' | 'COMMITTEE'
+  active: boolean;
+  weight: number;
 }
-
-/**
- * @interface StudentCommitteePosition
- * @description Student committee position model
- * 
- * @param {Committee} committee - Committee
- * @param {CommitteePosition} position - Committee position
- * @param {string} initiatedDate - Initiated date
- * @param {string} endDate - Expected end date
- */
-export interface StudentCommitteePosition {
-  committee: Committee;
-  position: CommitteePosition;
-  initiatedDate: string;
-  endDate: string;
-}
-

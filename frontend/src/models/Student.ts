@@ -13,12 +13,24 @@ import { CommitteePosition } from './Committee';
 export default interface Student {
   type: 'student';
   email: string;
-  firstName: string;
-  lastName: string;
-  receptionName: string;
-  profilePictureUrl: string;
+  first_name: string;
+  last_name: string;
+  profile_picture_url?: string;
+  reception_name?: string;
+  reception_profile_picture_url?: string;
 }
 
-export interface CommitteePositionOccupant extends Student {
-  position: CommitteePosition
+/**
+ * @interface StudentCommitteePosition
+ * @description Student committee position model
+ * 
+ * @param {CommitteePosition} position - Committee position
+ * @param {string} initiation_date - Initiated date
+ * @param {string} termination_date - Expected end date
+ */
+export interface StudentCommitteePosition {
+  student: Student;
+  position: CommitteePosition;
+  initiation_date: string;
+  termination_date: string;
 }

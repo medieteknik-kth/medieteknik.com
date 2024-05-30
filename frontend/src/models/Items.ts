@@ -14,43 +14,35 @@ type Author = Student | Committee
  * @interface Item
  * @description Base News Model
  * 
- * @param {string} title - The title of the news item
+ * 
  * @param {Author} author - The author of the news item
- * @param {string} imageUrl - The image url of the news item
- * @param {string} creationDate - The creation date of the news item
+ * @param {string} title - The title of the news item
+ * @param {string} body - The body of the news item
+ * @param {string} main_image_url - The main image URL of the news item
+ * @param {string[]} sub_image_urls - The sub image URLs of the news item
  * @param {string[]} categories - The categories of the news item
+ * @param {string} created_at - The created date of the news item
+ * @param {string} last_updated - The last updated date of the news item
+ * @param {boolean} is_pinned - Whether the news item is pinned
+ * @param {boolean} is_public - Whether the news item is public
+ * @param {string} url - The URL of the news item
  */
 export default interface News {
-  id: string
-  title: string
   author: Author
-  imageUrl: string
-  creationDate: string
-  categories: string[]
-}
 
-/**
- * @interface ShortNewsItem
- * @description Short News Item model
- * @extends News
- * 
- * @param {string} shortDescription - The short description of the news item
- */
-export interface ShortNewsItem extends News {
-  shortDescription: string
-}
-
-/**
- * @interface NewsItem
- * @description News Item model
- * @extends News
- * 
- * @param {string} lastEdited - The last edited date of the news item
- * @param {string} content - The content of the news item
- */
-export interface NewsItem extends News {
-  lastEdited: string
-  content: string
+  title: string
+  short_description: string
+  body: string
+  main_image_url: string
+  sub_image_urls?: string[]
+  
+  categories?: string[]
+  created_at: string
+  last_updated?: string
+  is_pinned: boolean
+  is_public: boolean
+  published_status: 'PUBLISHED' | 'DRAFT'
+  url: string
 }
 
 /**
@@ -59,35 +51,12 @@ export interface NewsItem extends News {
  * @extends News
  * 
  * @param {string} location - The location of the event
- * @param {string} startDate - The start date of the event
- * @param {string} endDate - The end date of the event
+ * @param {string} start_date - The start date of the event
+ * @param {string} end_date - The end date of the event
  */
 export interface Event extends News {
   location: string
-  startDate: string
-  endDate: string
-}
-
-/**
- * @interface ShortEventItem
- * @description Short Event Item model
- * @extends Event
- * 
- * @param {string} shortDescription - The short description of the event
- */
-export interface ShortEventItem extends Event {
-  shortDescription: string
-}
-
-/**
- * @interface EventItem
- * @description Event Item model
- * @extends Event
- * 
- * @param {string} lastEdited - The last edited date of the event
- * @param {string} content - The content of the event
- */
-export interface EventItem extends Event {
-  lastEdited: string
-  content: string
+  start_date: string
+  end_date: string
+  status: 'UPCOMING' | 'ONGOING' | 'PAST'
 }
