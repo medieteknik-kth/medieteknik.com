@@ -56,8 +56,8 @@ class Resource(db.Model):
     def __repr__(self):
         return '<Resource %r>' % self.resource_id
     
-    def to_dict(self, is_public=True):
-        if is_public:
+    def to_dict(self, is_public_route=True):
+        if is_public_route:
             return {
                 'resource_id': self.resource_id,
                 'route': self.route,

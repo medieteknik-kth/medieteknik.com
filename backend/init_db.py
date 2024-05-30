@@ -4,7 +4,7 @@ from utility.database import db
 from models.language import Language
 from models.student import Student
 from models.analytics import Analytics, Audit, Idempotency
-from models.items import News, Event, Document, Album
+from models.items import Author, News, Event, Document, Album
 from models.items import NewsTranslation, EventTranslation, DocumentTranslation, AlbumTranslation, RepeatableEvents
 from models.committee import CommitteeCategory, Committee, CommitteePosition
 from models.committee import CommitteeCategoryTranslation, CommitteeTranslation, CommitteePositionTranslation

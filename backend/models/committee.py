@@ -101,7 +101,7 @@ class CommitteePosition(db.Model):
     def __repr__(self):
         return '<CommitteePosition %r>' % self.committee_position_id
     
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public=False):
+    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public_route=True):
         translation: CommitteePositionTranslation | None = get_translation(
             CommitteePositionTranslation,
             ['committee_position_id'],
@@ -109,7 +109,7 @@ class CommitteePosition(db.Model):
             language_code
         )
         
-        if is_public:
+        if is_public_route:
             return {
                 'committee_position_id': self.committee_position_id,
                 'email': self.email,

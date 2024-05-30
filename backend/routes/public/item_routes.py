@@ -22,9 +22,9 @@ def get_news() -> dict:
     short_news: bool = request.args.get('summary', 'false') == 'true'
     news_dict = []
     if short_news:
-        news_dict = [news_item.to_dict(language_code, is_public=True, summary=True) for news_item in news]
+        news_dict = [news_item.to_dict(language_code, is_public_route=True, summary=True) for news_item in news]
     else:
-        news_dict = [news_item.to_dict(language_code, is_public=True) for news_item in news]
+        news_dict = [news_item.to_dict(language_code, is_public_route=True) for news_item in news]
         
     return jsonify(
         {
@@ -51,8 +51,8 @@ def get_news_item(news_id: int) -> dict:
     news_item: News = News.query.get(news_id)
     short_news: bool = request.args.get('summary', 'false') == 'true'
     if short_news:
-        return jsonify(news_item.to_dict(language_code, is_public=True, summary=True))
-    return jsonify(news_item.to_dict(language_code, is_public=True,))
+        return jsonify(news_item.to_dict(language_code, is_public_route=True, summary=True))
+    return jsonify(news_item.to_dict(language_code, is_public_route=True,))
 
 @public_events_bp.route('/', methods=['GET'])
 def get_events() -> dict:
@@ -68,9 +68,9 @@ def get_events() -> dict:
     short_events: bool = request.args.get('summary', 'false') == 'true'
     events_dict = []
     if short_events:
-        events_dict = [event.to_dict(language_code, is_public=True, summary=True) for event in events]
+        events_dict = [event.to_dict(language_code, is_public_route=True, summary=True) for event in events]
     else:
-        events_dict = [event.to_dict(language_code, is_public=True) for event in events]
+        events_dict = [event.to_dict(language_code, is_public_route=True) for event in events]
     
     return jsonify(
         {
@@ -111,7 +111,7 @@ def get_documents() -> dict:
     paginated_items = Document.query.paginate()
     
     documents: list[Document] = paginated_items.items
-    documents_dict = [document.to_dict(language_code, is_public=True) for document in documents]
+    documents_dict = [document.to_dict(language_code, is_public_route=True) for document in documents]
     
     return jsonify(
         {
@@ -136,7 +136,7 @@ def get_document(document_id: int) -> dict:
     language_code = retrieve_language(request.args)
     
     document: Document = Document.query.get(document_id)
-    return jsonify(document.to_dict(language_code, is_public=True))
+    return jsonify(document.to_dict(language_code, is_public_route=True))
 
 @public_albums_bp.route('/', methods=['GET'])
 def get_albums() -> dict:
@@ -149,7 +149,7 @@ def get_albums() -> dict:
     paginated_items = Album.query.paginate()
     
     albums: list[Album] = paginated_items.items
-    albums_dict = [album.to_dict(language_code, is_public=True) for album in albums]
+    albums_dict = [album.to_dict(language_code, is_public_route=True) for album in albums]
     return jsonify(
         {
             "items": albums_dict,
@@ -173,4 +173,4 @@ def get_album(album_id: int) -> dict:
     language_code = retrieve_language(request.args)
     
     album: Album = Album.query.get(album_id)
-    return jsonify(album.to_dict(language_code, is_public=True))
+    return jsonify(album.to_dict(language_code, is_public_route=True))

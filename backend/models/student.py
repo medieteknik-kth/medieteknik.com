@@ -26,9 +26,9 @@ class Student(db.Model):
     def __repr__(self):
         return '<Student %r>' % self.student_id
     
-    def to_dict(self, is_public=True):
+    def to_dict(self, is_public_route=True):
         
-        if is_public:
+        if is_public_route:
             return {
                 'student_id': self.student_id,
                 'name': self.reception_name if RECEPTION_MODE and self.reception_name else f'{self.first_name} {self.last_name}',
