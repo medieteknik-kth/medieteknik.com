@@ -11,7 +11,7 @@ export function Head({
   image?: StaticImageData
 }) {
   return (
-    <div className='w-full h-fit  flex items-center border-b-2 border-yellow-400'>
+    <div className='w-full h-fit bg-[#111] dark:bg-inherit flex items-center border-b-2 border-yellow-400'>
       <div
         className={`w-full ${
           image ? 'xl:w-1/2' : 'w-full justify-center'
