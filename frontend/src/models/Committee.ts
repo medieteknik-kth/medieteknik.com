@@ -42,7 +42,7 @@ export interface CommitteePosition {
   email: string,
   title: string;
   description: string;
-  role: 'ADMIN' | 'BOARD' | 'COMMITTEE'
+  role: 'ADMIN' | 'BOARD' | 'COMMITTEE';
   active: boolean;
   weight: number;
 }

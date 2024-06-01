@@ -1,5 +1,15 @@
 import { CommitteePosition } from './Committee';
 
+const StudentType = {
+  MEDIETEKNIK: 'MEDIETEKNIK',
+  THS: 'THS',
+  DATATEKNIK: 'DATATEKNIK',
+  KTH: 'KTH',
+  OTHER: 'OTHER',
+}
+
+type StudentType = typeof StudentType[keyof typeof StudentType]
+
 /**
  * @interface Student
  * @description Student model
@@ -18,6 +28,7 @@ export default interface Student {
   profile_picture_url?: string;
   reception_name?: string;
   reception_profile_picture_url?: string;
+  student_type: StudentType;
 }
 
 /**
