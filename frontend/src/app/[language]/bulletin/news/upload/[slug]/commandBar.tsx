@@ -130,7 +130,7 @@ export default function CommandBar({ language }: { language: string }) {
   }
 
   return (
-    <div className='w-full h-48 flex flex-col bg-white fixed border-b-2 border-yellow-400 z-30'>
+    <div className='w-full h-48 flex flex-col bg-white dark:bg-[#0D0D0D] fixed border-b-2 border-yellow-400 z-30'>
       <div className='h-24 bg-white' />
       <div className='flex justify-between px-6'>
         <div className='w-fit h-24 flex flex-col justify-center'>
@@ -156,7 +156,7 @@ export default function CommandBar({ language }: { language: string }) {
           </Breadcrumb>
           <div className='flex items-center mt-2'>
             <div className='flex items-center'>
-              <DocumentTextIcon className='w-8 h-8 text-green-600' />
+              <DocumentTextIcon className='w-8 h-8 text-green-600 dark:text-green-500' />
               <Input
                 name='title'
                 id='title'

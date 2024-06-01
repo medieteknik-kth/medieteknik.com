@@ -177,6 +177,7 @@ export default function Masters() {
         <div className='text-center mt-10'>
           {carouselItems.map((item, index) => (
             <button
+              title={item.title}
               key={index}
               className={`w-4 h-4 mx-2 rounded-full ${
                 activeIndex == index ? 'bg-yellow-400' : 'bg-white'
@@ -190,12 +191,14 @@ export default function Masters() {
       <button
         className='absolute top-1/2 left-16 p-4 z-10 -translate-y-1/2'
         onClick={toBack}
+        title='Previous Page'
       >
         <ArrowLeftIcon className='w-8 h-8 text-yellow-400' />
       </button>
       <button
         className='absolute top-1/2 right-16 p-4 z-10 -translate-y-1/2'
         onClick={toNext}
+        title='Next Page'
       >
         <ArrowRightIcon className='w-8 h-8 text-yellow-400' />
       </button>

@@ -230,7 +230,7 @@ export default function ArticlePage({
 
   return (
     <section className='w-full h-full flex justify-center relative'>
-      <div className='w-full h-20 bg-white flex items-center px-20 absolute top-0 left-0'>
+      <div className='w-full h-20 bg-white dark:bg-[#141414] fixed flex items-center px-20 top-48 left-0 z-10'>
         <div className='w-full h-16 border rounded flex px-4'>
           <div className='flex items-center'>
             <Button
@@ -240,10 +240,10 @@ export default function ArticlePage({
               title='Undo'
               aria-label='Undo'
             >
-              <ArrowUturnLeftIcon className='w-5 h-5 text-black' />
+              <ArrowUturnLeftIcon className='w-5 h-5 text-black dark:text-white' />
             </Button>
             <Button size='icon' variant='ghost' title='Redo' aria-label='Redo'>
-              <ArrowUturnRightIcon className='w-5 h-5 text-black' />
+              <ArrowUturnRightIcon className='w-5 h-5 text-black dark:text-white' />
             </Button>
           </div>
           <div className='mx-4 py-2.5'>
@@ -372,7 +372,7 @@ export default function ArticlePage({
                   title='Insert Link'
                   aria-label='Insert Link'
                 >
-                  <LinkIcon className='w-6 h-6 text-black' />
+                  <LinkIcon className='w-6 h-6 text-black dark:text-white' />
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -440,7 +440,7 @@ export default function ArticlePage({
               aria-label='Insert Photo'
               disabled
             >
-              <PhotoIcon className='w-6 h-6 text-black' />
+              <PhotoIcon className='w-6 h-6 text-black dark:text-white' />
             </Button>
             <Dialog>
               <DialogTrigger asChild>
@@ -451,7 +451,7 @@ export default function ArticlePage({
                   title='Insert Tag'
                   aria-label='Insert Tag'
                 >
-                  <AtSymbolIcon className='w-6 h-6 text-black' />
+                  <AtSymbolIcon className='w-6 h-6 text-black dark:text-white' />
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -486,7 +486,7 @@ export default function ArticlePage({
       </div>
       <div
         className='w-fit h-fit
-      mt-24 bg-white shadow-lg shadow-black/20 border-l border-t border-neutral-200 flex 
+      mt-24 bg-white shadow-lg shadow-black/20 dark:shadow-white/20 border-l border-t border-neutral-200 dark:border-neutral-700 flex 
       relative flex-col justify-between dark:bg-[#111] mb-10'
       >
         <span className='w-fit h-fit absolute bottom-4 right-8 text-neutral-500'>

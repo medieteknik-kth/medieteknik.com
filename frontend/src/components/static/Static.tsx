@@ -11,11 +11,11 @@ export function Head({
   image?: StaticImageData
 }) {
   return (
-    <div className='min-h-[300px] h-fit bg-[#111] flex items-center border-b-2 border-yellow-400 relative'>
+    <div className='w-full h-fit  flex items-center border-b-2 border-yellow-400'>
       <div
         className={`w-full ${
-          image ? 'xl:w-1/2 2xl:w-1/3' : 'w-full justify-center'
-        } h-full flex items-center absolute`}
+          image ? 'xl:w-1/2' : 'w-full justify-center'
+        } h-fit flex items-center py-12`}
       >
         <div
           className={`h-fit flex flex-col justify-center z-10 px-0 lg:px-20 items-center text-center ${
@@ -32,13 +32,13 @@ export function Head({
       </div>
 
       {image && (
-        <div className='w-1/2 2xl:w-2/3 h-full hidden xl:block absolute left-1/2 2xl:left-1/3 overflow-x-hidden overflow-y-hidden'>
+        <div className='w-1/2 h-[350px] hidden xl:block overflow-x-hidden overflow-y-hidden relative'>
           <div className='w-full h-full bg-black/25 absolute z-10' />
           <Image
             src={image.src}
             alt='Test Background'
             width={2000}
-            height={720}
+            height={350}
             priority
             loading='eager'
             className='w-full h-auto object-cover absolute top-0 bottom-0 left-0 right-0 m-auto'
@@ -88,7 +88,7 @@ export function Section({
 
   return (
     <section
-      className={`w-full h-fit border-b-2 border-gray-200 bg-[${
+      className={`w-full h-fit border-b-2 border-neutral-200 dark:border-neutral-700 bg-[${
         metadata.background
       }] dark:bg-[#111] mt-[${metadata.marginTop}] ${
         centeredChildren ? 'flex flex-col items-center' : ''

@@ -61,7 +61,7 @@ export default async function UploadNews({
             defaultValue='article'
             className='w-full h-full flex justify-center relative'
           >
-            <TabsList className='w-16 h-[1288px] bg-white fixed top-0 left-0 flex flex-col rounded-none z-10 border-r-2 border-yellow-400'>
+            <TabsList className='w-16 h-full bg-white dark:bg-[#111] absolute top-0 left-0 flex flex-col rounded-none z-20 border-r-2 border-yellow-400'>
               <TabsTrigger value='article' className='p-2 mb-2'>
                 <DocumentIcon className='w-8 h-8' />
               </TabsTrigger>

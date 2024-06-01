@@ -51,7 +51,7 @@ export default function Chapter({
       </Section>
 
       <Section title='Styrelsen'>
-        <div className='w-full h-4/5 flex flex-col justify-around'>
+        <div className='w-full h-4/5 flex flex-col justify-around py-8'>
           <div className='w-full h-3/5 grid grid-cols-3 grid-rows-1 gap-8'>
             <div className='grid place-items-center'>
               <Link
@@ -67,7 +67,7 @@ export default function Chapter({
               </Link>
             </div>
 
-            <div className='flex justify-center'>
+            <div className='flex justify-center py-2'>
               <p className='overflow-y-auto'>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Suspendisse elit justo, pulvinar vel diam eu, vulputate
@@ -172,12 +172,12 @@ export default function Chapter({
             </div>
           </div>
           <div className='w-full h-12 flex justify-center items-center'>
-            <div className='w-12 h-12 border-2 border-black rounded-full grid place-items-center'>
+            <div className='w-12 h-12 rounded-full grid place-items-center'>
               <EnvelopeIcon className='w-8 h-8' />
             </div>
             <Link
               href='mailto:styrelsen@medieteknik.com'
-              className='ml-4 text-sky-800'
+              className='ml-4 text-sky-800 dark:text-sky-500'
             >
               styrelsen@medieteknik.com
             </Link>

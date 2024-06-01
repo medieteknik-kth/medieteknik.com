@@ -11,6 +11,7 @@ import {
   getCategoryColor,
   getCategoryPercentage,
 } from './constants'
+import { Button } from '@/components/ui/button'
 
 /**
  * @interface Course
@@ -116,13 +117,20 @@ export default function Courses({
               >
                 {currentView.title}
               </h3>
-              <button
+              <Button
                 className='w-10 h-10 absolute top-2 right-2 grid place-items-center text-white hover:bg-black/10 hover:text-black rounded-full'
                 onClick={() => setDetailedViewOpen(false)}
+                variant='ghost'
+                size='icon'
+                title='Close'
+                aria-label='Close'
               >
                 <XMarkIcon className='w-8 h-8' />
-              </button>
-              <div className='h-fit border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-b-xl shadow-sm shadow-gray-300'>
+              </Button>
+              <div
+                className='h-fit border-2 bg-white dark:bg-[#111] border-b-neutral-300 border-r-neutral-300 border-neutral-200 
+              dark:border-b-neutral-800 dark:border-r-neutral-800 dark:border-neutral-700 rounded-b-xl shadow-sm shadow-neutral-300 dark:shadow-neutral-700'
+              >
                 <ul>
                   {currentView.courses?.map((course, index) => (
                     <li
