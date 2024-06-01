@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.items import News, Event, Document, Album
+from models.items import News, Event, Document, Album, PublishedStatus
 from utility.translation import retrieve_language
 
 public_news_bp = Blueprint('public_news', __name__)
@@ -22,9 +22,15 @@ def get_news() -> dict:
     short_news: bool = request.args.get('summary', 'false') == 'true'
     news_dict = []
     if short_news:
-        news_dict = [news_item.to_dict(language_code, is_public_route=True, summary=True) for news_item in news]
+        for news_item in news:
+            if news_item.published_status == PublishedStatus.DRAFT:
+                continue
+            news_dict.append(news_item.to_dict(language_code, is_public_route=True, summary=True))
     else:
-        news_dict = [news_item.to_dict(language_code, is_public_route=True) for news_item in news]
+        for news_item in news:
+            if news_item.published_status == PublishedStatus.DRAFT:
+                continue
+            news_dict.append(news_item.to_dict(language_code, is_public_route=True))
         
     return jsonify(
         {
@@ -53,6 +59,28 @@ def get_news_item(news_id: int) -> dict:
     if short_news:
         return jsonify(news_item.to_dict(language_code, is_public_route=True, summary=True))
     return jsonify(news_item.to_dict(language_code, is_public_route=True,))
+
+@public_news_bp.route('/<string:url>', methods=['GET'])
+def get_news_by_url(url: str) -> dict:
+    """Retrieves a news item by URL
+    
+    Args:
+        url (str): News URL
+    
+    Returns:
+        dict: News item
+    """
+    language_code = retrieve_language(request.args)
+    
+    news_item: News | None = News.query.filter_by(url=url).first()
+    
+    if not news_item:
+        return jsonify({}), 404
+    news_item: News = news_item
+
+
+    
+    return jsonify(news_item.to_dict(language_code, is_public_route=True))
 
 @public_events_bp.route('/', methods=['GET'])
 def get_events() -> dict:

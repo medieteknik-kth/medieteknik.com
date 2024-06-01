@@ -183,6 +183,9 @@ class News(db.Model):
 
         if not self.is_public and is_public_route:
             return None
+        
+        if self.published_status == PublishedStatus.DRAFT and is_public_route:
+            return None
 
         author_entity: Author | None = Author.query.filter_by(
             author_id=self.author_id).first()
