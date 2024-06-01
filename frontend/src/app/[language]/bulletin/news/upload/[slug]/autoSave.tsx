@@ -18,14 +18,14 @@ const AutoSaveContext = createContext<{
   updateContent: (content: News) => void
   autoSavePossible: boolean
   saveCallback: (language_code: string, manual?: boolean) => Promise<string>
-  notifications: string[]
+  notifications: string
   addNotification: (message: string) => void
 }>({
   content: {} as News,
   updateContent: () => {},
   autoSavePossible: false,
   saveCallback: async () => 'Context not available',
-  notifications: [],
+  notifications: '',
   addNotification: () => {},
 })
 
@@ -41,7 +41,7 @@ export function AutoSaveProdier({
   const [autoSavePossible, setAutoSavePossible] = useState(false)
   const [errorCount, setErrorCount] = useState(0)
   const [content, setContent] = useState<News>(news_item)
-  const [notifications, setNotifications] = useState<string[]>([])
+  const [notification, setNotification] = useState<string>('')
 
   const saveCallback = useCallback(
     async (language_code: string, manual: boolean = false) => {
@@ -97,15 +97,15 @@ export function AutoSaveProdier({
 
   const addNotification = useCallback(
     (message: string) => {
-      setNotifications((prev) => [...prev, message])
+      setNotification(message)
 
       setTimeout(() => {
-        setNotifications((prevNotifications) =>
-          prevNotifications.filter((_, index) => index !== 0)
+        setNotification((prevNotification) =>
+          prevNotification === message ? '' : prevNotification
         )
       }, 5000)
     },
-    [notifications]
+    [notification]
   )
 
   setInterval(() => {
@@ -119,7 +119,7 @@ export function AutoSaveProdier({
         updateContent,
         autoSavePossible,
         saveCallback,
-        notifications,
+        notifications: notification,
         addNotification,
       }}
     >

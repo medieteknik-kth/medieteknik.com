@@ -3,6 +3,7 @@ import News from '@/models/Items'
 import Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import Body from './body'
+import StudentTag from '@/components/tags/Student'
 
 interface Props {
   author: Student | Committee | CommitteePosition
@@ -79,12 +80,14 @@ export default async function NewsPage({
               ))}
           </ul>
           <h1 className='text-4xl'>{news.title}</h1>
-          <h2 className='text-xl my-2'>
-            {(correctedAuthor as Student).first_name +
-              ' ' +
-              (correctedAuthor as Student).last_name ||
-              (correctedAuthor as Committee).title ||
-              (correctedAuthor as CommitteePosition).title}
+          <h2 className='text-lg my-2'>
+            {correctedAuthor && (
+              <StudentTag
+                language={language}
+                student={correctedAuthor as Student}
+                includeAt={false}
+              />
+            )}
           </h2>
           <p className='text-sm mt-4'>{news.created_at}</p>
         </div>

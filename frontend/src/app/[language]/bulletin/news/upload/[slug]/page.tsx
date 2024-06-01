@@ -9,7 +9,6 @@ import CommandBar from './commandBar'
 import { AutoSaveProdier } from './autoSave'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_BASE_URL } from '@/utility/Constants'
-import News from '@/models/Items'
 import { redirect } from 'next/navigation'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
@@ -17,11 +16,15 @@ const TagsPage = React.lazy(() => import('./pages/tags'))
 async function getData(language_code: string, slug: string) {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/news/${slug}?language_code=${language_code}`
+      `${API_BASE_URL}/news/${slug}?language_code=${language_code}`,
+      {
+        cache: 'no-store',
+      }
     )
 
     if (response.ok) {
       const data = await response.json()
+      console.log(data)
       return data
     } else {
       console.error('Error fetching data:', response.statusText)

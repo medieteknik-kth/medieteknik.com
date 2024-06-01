@@ -547,7 +547,12 @@ export default function ArticlePage({
                   match: (n) =>
                     'type' in n &&
                     Editor.isBlock(editor, n) &&
-                    (n.type === 'quote' || n.type === 'multi-line code'),
+                    (n.type === 'quote' ||
+                      n.type === 'multi-line code' ||
+                      n.type === 'h1' ||
+                      n.type === 'h2' ||
+                      n.type === 'h3' ||
+                      n.type === 'h4'),
                 })
                 if (exemptedBlocks) return
                 event.preventDefault()

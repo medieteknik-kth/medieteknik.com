@@ -21,14 +21,14 @@ export function StudentTooltip({ student }: { student: Student }) {
         <Link href='/' className='group' title='Go to profile page'>
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
             <AvatarImage
-              src={student.profilePictureUrl}
+              src={student.profile_picture_url}
               alt='Profile Picture'
               width={96}
               height={96}
             />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>
-          <p>{student.firstName + ' ' + student.lastName}</p>
+          <p>{student.first_name + ' ' + student.last_name}</p>
         </Link>
       </Button>
       <Button
@@ -37,9 +37,11 @@ export function StudentTooltip({ student }: { student: Student }) {
       >
         <Link
           href={`mailto:${student.email}`}
-          title={`Send email to ${student.firstName + ' ' + student.lastName}`}
+          title={`Send email to ${
+            student.first_name + ' ' + student.last_name
+          }`}
           aria-label={`Send email to ${
-            student.firstName + ' ' + student.lastName
+            student.first_name + ' ' + student.last_name
           }`}
         >
           <span>{student.email}</span>
@@ -58,14 +60,14 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
         className='h-fit flex flex-col justify-center pb-0'
       >
         <Link
-          href={`./chapter/committees/${committee.name.toLocaleLowerCase()}`}
+          href={`./chapter/committees/${committee.title.toLocaleLowerCase()}`}
           className='group'
         >
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
             <AvatarImage src={committee.logo_url} alt='Committee Logo' />
-            <AvatarFallback>{committee.name + ' logo'}</AvatarFallback>
+            <AvatarFallback>{committee.title + ' logo'}</AvatarFallback>
           </Avatar>
-          <p>{committee.name}</p>
+          <p>{committee.title}</p>
         </Link>
       </Button>
       <Button
@@ -74,8 +76,8 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
       >
         <Link
           href={`mailto:${committee.email}`}
-          title={`Send email to ${committee.name}`}
-          aria-label={`Send email to ${committee.name}`}
+          title={`Send email to ${committee.title}`}
+          aria-label={`Send email to ${committee.title}`}
         >
           <span>{committee.email}</span>
         </Link>
@@ -106,9 +108,9 @@ export function CommitteePositionTooltip({
           <AvatarFallback>Committee Picture</AvatarFallback>
         </Avatar>
         <div className='flex flex-col'>
-          <CardTitle>{position.name}</CardTitle>
+          <CardTitle>{position.title}</CardTitle>
           <CardDescription className='capitalize'>
-            {committee.name}
+            {committee.title}
           </CardDescription>
         </div>
       </CardHeader>

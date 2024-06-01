@@ -77,9 +77,7 @@ export default function CommandBar({ language }: { language: string }) {
   })
 
   const postForm = async (data: z.infer<typeof formSchema>) => {
-    saveCallback(language, true)
-
-    console.log(data.title)
+    await saveCallback(language, true)
 
     const json_data = {
       ...content,
@@ -87,8 +85,6 @@ export default function CommandBar({ language }: { language: string }) {
       main_image_url: data.image,
       short_description: data.short_description,
     }
-
-    console.log(json_data)
 
     try {
       const response = await fetch(
@@ -194,7 +190,7 @@ export default function CommandBar({ language }: { language: string }) {
                 Save
               </Button>
               <span className='ml-4 text-xs uppercase font'>
-                {notifications.map((message, index) => message)}
+                {notifications}
               </span>
             </div>
           </div>
