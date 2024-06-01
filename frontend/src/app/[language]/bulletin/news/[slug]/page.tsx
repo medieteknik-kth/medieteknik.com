@@ -5,29 +5,15 @@ import { API_BASE_URL } from '@/utility/Constants'
 import Body from './body'
 import StudentTag from '@/components/tags/Student'
 
-interface Props {
-  author: Student | Committee | CommitteePosition
-  news: News
-}
-
 async function getData(language_code: string, slug: string) {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/news/${slug}?language_code=${language_code}`
+      `${API_BASE_URL}/public/news/${slug}?language_code=${language_code}`
     )
 
     if (response.ok) {
       const data = await response.json()
-      const temp = { ...data }
-      delete temp.author
-      const news = temp
-      return {
-        author: {
-          ...data.author,
-          type: data.author.author_type,
-        },
-        news: news,
-      } as Props
+      return data as News
     }
   } catch (error) {
     console.error(error)
@@ -35,13 +21,13 @@ async function getData(language_code: string, slug: string) {
 }
 
 function assignCorrectAuthor(
-  author: Student | Committee | CommitteePosition
+  author: any
 ): Student | Committee | CommitteePosition | null {
-  if (author.type === 'STUDENT') {
+  if (author.author_type === 'STUDENT') {
     return author as Student
-  } else if (author.type === 'COMMITTEE') {
+  } else if (author.author_type === 'COMMITTEE') {
     return author as Committee
-  } else if (author.type === 'COMMITTEE_POSITION') {
+  } else if (author.author_type === 'COMMITTEE_POSITION') {
     return author as CommitteePosition
   }
 
@@ -59,11 +45,9 @@ export default async function NewsPage({
     return <div>Not found</div>
   }
 
-  const { author, news } = data
-
-  let correctedAuthor = assignCorrectAuthor(author)
+  let correctedAuthor = assignCorrectAuthor(data.author)
   if (!correctedAuthor) {
-    return <div>Not found</div>
+    return <div>Not found author</div>
   }
 
   return (
@@ -72,14 +56,14 @@ export default async function NewsPage({
       <div className='px-96 h-[1080px]'>
         <div>
           <ul className='flex min-h-20 h-fit'>
-            {news.categories &&
-              news.categories.map((category) => (
+            {data.categories &&
+              data.categories.map((category) => (
                 <li className='px-4 py-2' key={category}>
                   {category}
                 </li>
               ))}
           </ul>
-          <h1 className='text-4xl'>{news.title}</h1>
+          <h1 className='text-4xl'>{data.title}</h1>
           <h2 className='text-lg my-2'>
             {correctedAuthor && (
               <StudentTag
@@ -89,10 +73,10 @@ export default async function NewsPage({
               />
             )}
           </h2>
-          <p className='text-sm mt-4'>{news.created_at}</p>
+          <p className='text-sm mt-4'>{data.created_at}</p>
         </div>
         <div>
-          <Body body={news.body} />
+          <Body body={data.body} />
         </div>
       </div>
     </main>

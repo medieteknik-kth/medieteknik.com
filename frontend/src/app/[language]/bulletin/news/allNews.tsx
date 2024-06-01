@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
@@ -26,7 +25,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import NewsCard from '../components/newsCard'
-import News from '@/models/Items'
+import News, { NewsPagination } from '@/models/Items'
 import {
   Tooltip,
   TooltipContent,
@@ -97,32 +96,11 @@ export default function AllNews({
   data,
 }: {
   language: string
-  data: News[]
+  data: NewsPagination
 }) {
   type SortTypes = 'date' | 'author'
   const [copiedLink, setCopiedLink] = useState(-1)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [sortedData, setSortedData] = useState(data)
-  const [currentSort, setCurrentSort] = useState<SortTypes>('date')
-  const [isAscending, setIsAscending] = useState(true)
-
-  const handleCopyLink = (id: number) => {
-    navigator.clipboard.writeText(window.location.href + '/' + id)
-    setCopiedLink(id)
-    setTimeout(() => {
-      setCopiedLink(-1)
-    }, 1000)
-  }
-
-  useEffect(() => {
-    setSortedData(
-      [...data].sort((a, b) => {
-        return (
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        )
-      })
-    )
-  }, [data, setSortedData])
+  const [currentPage, setCurrentPage] = useState(data.page)
 
   const toBack = useCallback(() => {
     setCurrentPage((prev) => {
@@ -134,6 +112,14 @@ export default function AllNews({
   const toNext = useCallback(() => {
     setCurrentPage((prev) => prev + 1)
   }, [setCurrentPage])
+
+  const handleCopyLink = (id: number) => {
+    navigator.clipboard.writeText(window.location.href + '/' + id)
+    setCopiedLink(id)
+    setTimeout(() => {
+      setCopiedLink(-1)
+    }, 1000)
+  }
 
   return (
     <Card className='mb-24'>
@@ -189,58 +175,19 @@ export default function AllNews({
                   Sort By
                 </div>
                 <div className='flex items-center'>
-                  <p className='capitalize'>{currentSort}</p>
-                  {isAscending ? (
-                    <ArrowDownIcon className='text-neutral-500 w-5 h-5 ml-2' />
-                  ) : (
-                    <ArrowUpIcon className='text-neutral-500 w-5 h-5 ml-2' />
-                  )}
+                  <p className='capitalize'>Date</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-80'>
               <DropdownMenuLabel>Ascending</DropdownMenuLabel>
               <DropdownMenuItem>
-                <Button
-                  variant='ghost'
-                  className='w-full flex justify-start'
-                  onClick={() => {
-                    setSortedData(
-                      [...sortedData].sort((a, b) => {
-                        return (
-                          new Date(a.created_at).getTime() -
-                          new Date(b.created_at).getTime()
-                        )
-                      })
-                    )
-                    setCurrentSort('date')
-                  }}
-                >
+                <Button variant='ghost' className='w-full flex justify-start'>
                   Date
                 </Button>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Button
-                  variant='ghost'
-                  className='w-full flex justify-start'
-                  onClick={() => {
-                    setSortedData(
-                      [...sortedData].sort((a, b) => {
-                        const author =
-                          a.author.type === 'committee'
-                            ? (a.author as Committee).title
-                            : (a.author as Student).first_name
-
-                        const author2 =
-                          b.author.type === 'committee'
-                            ? (b.author as Committee).title
-                            : (b.author as Student).first_name
-                        return author.localeCompare(author2)
-                      })
-                    )
-                    setCurrentSort('author')
-                  }}
-                >
+                <Button variant='ghost' className='w-full flex justify-start'>
                   Author
                 </Button>
               </DropdownMenuItem>
@@ -264,7 +211,7 @@ export default function AllNews({
           <CardContent className='h-full pt-6'>
             <Dialog>
               <DialogTrigger
-                className='w-full h-full grid place-items-center hover:bg-neutral-100 rounded'
+                className='w-full h-full grid place-items-center hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded'
                 title='Upload an article'
                 aria-label='Upload an article'
               >
@@ -278,49 +225,64 @@ export default function AllNews({
             </Dialog>
           </CardContent>
         </Card>
-        {sortedData.map((newsItem, index) => (
+        {data.items.map((newsItem, index) => (
           <div key={index} className='relative'>
             <NewsCard key={newsItem.url} newsItem={newsItem} />
-            <TooltipProvider>
-              <Tooltip open={copiedLink === index}>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant='outline'
-                    size='icon'
-                    title='Share'
-                    aria-label='Share'
-                    className='absolute bottom-8 right-4 z-10'
-                    onClick={() => handleCopyLink(index)}
-                  >
-                    <TooltipContent className='z-10'>Copied</TooltipContent>
-
-                    <LinkIcon className='w-5 h-5' />
-                  </Button>
-                </TooltipTrigger>
-              </Tooltip>
-            </TooltipProvider>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant='outline'
                   size='icon'
-                  title='News Tags'
-                  aria-label='News Tags'
-                  className='absolute bottom-8 right-16 z-10'
+                  title='Actions'
+                  aria-label='Actions'
+                  className='absolute bottom-8 right-10 z-10'
                 >
-                  <TagIcon className='w-6 h-6' />
+                  <PlusIcon className='w-5 h-5' />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className='absolute w-fit h-fit'>
-                <h3 className='text-lg font-bold pb-1'>Tags</h3>
-                <div className='flex'>
-                  {newsItem.categories &&
-                    newsItem.categories.map((category, index) => (
-                      <Badge key={index} className='w-fit mr-2'>
-                        {category}
-                      </Badge>
-                    ))}
-                </div>
+              <PopoverContent className='flex items-center'>
+                <TooltipProvider>
+                  <Tooltip open={copiedLink === index}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant='outline'
+                        size='icon'
+                        title='Share'
+                        aria-label='Share'
+                        className='z-10'
+                        onClick={() => handleCopyLink(index)}
+                      >
+                        <TooltipContent className='z-10'>Copied</TooltipContent>
+
+                        <LinkIcon className='w-5 h-5' />
+                      </Button>
+                    </TooltipTrigger>
+                  </Tooltip>
+                </TooltipProvider>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      title='News Tags'
+                      aria-label='News Tags'
+                      className='z-10 ml-4'
+                    >
+                      <TagIcon className='w-6 h-6' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='absolute w-fit h-fit'>
+                    <h3 className='text-lg font-bold pb-1'>Tags</h3>
+                    <div className='flex'>
+                      {newsItem.categories &&
+                        newsItem.categories.map((category, index) => (
+                          <Badge key={index} className='w-fit mr-2'>
+                            {category}
+                          </Badge>
+                        ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </PopoverContent>
             </Popover>
           </div>

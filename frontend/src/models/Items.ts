@@ -1,4 +1,4 @@
-import Committee from './Committee'
+import Committee, { CommitteePosition } from './Committee'
 import Student from './Student'
 
 /**
@@ -8,7 +8,7 @@ import Student from './Student'
  * @param {Student} Student - Student author
  * @param {Committee} Committee - Committee author
  */
-type Author = Student | Committee
+type Author = Student | Committee | CommitteePosition
 
 /**
  * @interface Item
@@ -59,4 +59,12 @@ export interface Event extends News {
   start_date: string
   end_date: string
   status: 'UPCOMING' | 'ONGOING' | 'PAST'
+}
+
+export interface NewsPagination {
+  items: News[]
+  page: number
+  per_page: number
+  total_items: number
+  total_pages: number
 }

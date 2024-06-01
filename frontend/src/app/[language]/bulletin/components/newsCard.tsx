@@ -49,7 +49,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
           <Link
             href={
               '../' +
-              (newsItem.author.type === 'committee'
+              (newsItem.author.type === 'COMMITTEE'
                 ? 'chapter/committees/' +
                   (newsItem.author as Committee).title.toLocaleLowerCase()
                 : 'student/' + (newsItem.author as Student).email)
@@ -58,7 +58,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
             <Avatar>
               <AvatarImage
                 src={
-                  newsItem.author.type === 'committee'
+                  newsItem.author.type === 'COMMITTEE'
                     ? (newsItem.author as Committee).logo_url
                     : (newsItem.author as Student).profile_picture_url
                 }
@@ -70,14 +70,14 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
           <div className='flex flex-col justify-center ml-2'>
             <HoverCard>
               <HoverCardTrigger>
-                {newsItem.author.type === 'committee'
+                {newsItem.author.type === 'COMMITTEE'
                   ? (newsItem.author as Committee).title
                   : (newsItem.author as Student).first_name +
                     ' ' +
                     (newsItem.author as Student).last_name}
               </HoverCardTrigger>
               <HoverCardContent>
-                {newsItem.author.type === 'committee' ? (
+                {newsItem.author.type === 'COMMITTEE' ? (
                   <CommitteeTooltip committee={newsItem.author as Committee} />
                 ) : (
                   <StudentTooltip student={newsItem.author as Student} />

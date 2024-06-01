@@ -1,77 +1,31 @@
-import News from '@/models/Items'
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-import NLGIcon from 'public/images/committees/nlg.png'
-import BG from 'public/images/kth-landskap.jpg'
-import BG2 from 'public/images/international_placeholder.jpg'
-import BG3 from 'public/images/testbg.jpg'
+import News, { NewsPagination } from '@/models/Items'
 import AllNews from './allNews'
+import { API_BASE_URL } from '@/utility/Constants'
 
-const data: News[] = [
-  {
-    title: 'KTH:s rektor: "Vi har en plan för att öppna campus"',
-    short_description:
-      'KTH:s rektor Sigbritt Karlsson berättar om planerna för att öppna campus igen.',
-    main_image_url: BG.src,
-    author: {
-      type: 'COMMITTEE',
-      title: 'Styrelsen',
-      logo_url: StyrelsenIcon.src,
-      email: 'styrelsen@medieteknik.com',
-      description: '',
-    },
-    categories: ['Skola'],
-    created_at: new Date('2021-09-01').toISOString(),
-    body: '',
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    url: '1',
-  },
-  {
-    title: 'International students: "We need more support"',
-    short_description:
-      'International students at KTH are struggling with the lack of support.',
-    main_image_url: BG2.src,
-    author: {
-      type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'André',
-      last_name: 'Eriksson',
-    },
-    categories: ['International', 'Studentliv'],
-    created_at: new Date('2021-09-03').toISOString(),
-    body: '',
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    url: '1',
-  },
-  {
-    title: 'NLG planerar höstens första sittning',
-    short_description: 'Planerna för höstens första sittning är i full gång.',
-    main_image_url: BG3.src,
-    author: {
-      type: 'COMMITTEE',
-      title: 'NLG',
-      logo_url: NLGIcon.src,
-      email: 'nlg@medieteknik.com',
-      description: '',
-    },
-    categories: ['Nöje', 'Fest'],
-    created_at: new Date('2021-09-07').toISOString(),
-    body: '',
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    url: '1',
-  },
-]
+async function getNews(language_code: string) {
+  const response = await fetch(
+    `${API_BASE_URL}/public/news?language_code=${language_code}`
+  )
+  if (response.ok) {
+    const data = await response.json()
+    return data as NewsPagination
+  }
+  console.error('Error fetching data:', response.statusText)
+}
 
-export default function NewsPage({
+export default async function NewsPage({
   params: { language },
 }: {
   params: { language: string }
 }) {
+  const data = await getNews(language)
+
+  if (!data) {
+    return <div>Not found</div>
+  }
+
+  data.items = data.items as News[]
+
   return (
     <main className='px-96'>
       <div className='h-24' />
