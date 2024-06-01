@@ -11,23 +11,19 @@ db = database.db
 
 # TODO: Annoucements?
 
-
 class EventStatus(enum.Enum):
     UPCOMING = 'UPCOMING'
     ONGOING = 'ONGOING'
     PAST = 'PAST'
 
-
 class PublishedStatus(enum.Enum):
     DRAFT = 'DRAFT'
     PUBLISHED = 'PUBLISHED'
-
 
 class AuthorType(enum.Enum):
     STUDENT = 'STUDENT'
     COMMITTEE = 'COMMITTEE'
     COMMITTEE_POSITION = 'COMMITTEE_POSITION'
-
 
 class Author(db.Model):
     __tablename__ = 'author'
@@ -59,7 +55,6 @@ class Author(db.Model):
             return author_class.query.get(self.entity_id)
         else:
             raise ValueError('Author type not found')
-
 
 class Event(db.Model):
     __tablename__ = 'event'
@@ -147,7 +142,6 @@ class Event(db.Model):
             'sub_image_urls': translation.sub_image_urls if translation else 'Error: No translation found'
         }
 
-
 class News(db.Model):
     __tablename__ = 'news'
 
@@ -203,29 +197,30 @@ class News(db.Model):
         author_dict = {}
 
         if author_type == AuthorType.COMMITTEE:
-            author: Committee | None = Committee.query.get(
-                author_entity.entity_id)
+            author: Committee | None = Committee.query.filter_by(
+                committee_id=author_entity.entity_id).first()
             if author:
                 author_dict = author.to_dict(is_public_route=False)
                 author_dict.update({'author_type': author_type.value})
 
         elif author_type == AuthorType.COMMITTEE_POSITION:
-            author: CommitteePosition | None = CommitteePosition.query.get(
-                author_entity.entity_id)
+            author: CommitteePosition | None = CommitteePosition.query.filter_by(
+                committee_position_id=author_entity.entity_id
+            ).first()
             if author:
                 author_dict = author.to_dict(is_public_route=False)
                 author_dict.update({'author_type': author_type.value})
 
         elif author_type == AuthorType.STUDENT:
-            author: Student | None = Student.query.get(author_entity.entity_id)
+            author: Student | None = Student.query.filter_by(
+                student_id=author_entity.entity_id
+            ).first()
             if author:
                 author_dict = author.to_dict(is_public_route=False)
                 author_dict.update({'author_type': author_type.value})
 
-        if not author:
+        if not author and not author_dict:
             return None
-
-        print(translation)
 
         if summary:
             return {
@@ -259,7 +254,6 @@ class News(db.Model):
             'main_image_url': translation.main_image_url if translation else 'Error: No translation found',
             'sub_image_urls': translation.sub_image_urls if translation else 'Error: No translation found'
         }
-
 
 class Album(db.Model):
     __tablename__ = 'album'
@@ -309,7 +303,6 @@ class Album(db.Model):
             'title': translation.title if translation else 'Error: No translation found',
             'description': translation.description if translation else 'Error: No translation found'
         }
-
 
 class Document(db.Model):
     __tablename__ = 'document'
@@ -364,8 +357,6 @@ class Document(db.Model):
         }
 
 # Translations
-
-
 class EventTranslation(db.Model):
     __tablename__ = 'event_translation'
 
@@ -407,7 +398,6 @@ class EventTranslation(db.Model):
             'language_code': self.language_code
         }
 
-
 class NewsTranslation(db.Model):
     __tablename__ = 'news_translation'
 
@@ -448,7 +438,6 @@ class NewsTranslation(db.Model):
             'language_code': self.language_code
         }
 
-
 class AlbumTranslation(db.Model):
     __tablename__ = 'album_translation'
 
@@ -480,7 +469,6 @@ class AlbumTranslation(db.Model):
             'album_id': self.album_id,
             'language_code': self.language_code
         }
-
 
 class DocumentTranslation(db.Model):
     __tablename__ = 'document_translation'

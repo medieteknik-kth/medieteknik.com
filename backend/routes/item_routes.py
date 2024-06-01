@@ -5,6 +5,7 @@ from utility import database
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 import uuid
 import json
+from typing import List
 from datetime import datetime
 
 db = database.db
@@ -13,6 +14,20 @@ news_bp = Blueprint('news', __name__)
 events_bp = Blueprint('events', __name__)
 documents_bp = Blueprint('documents', __name__)
 albums_bp = Blueprint('albums', __name__)
+
+
+@news_bp.route('/', methods=['GET'])
+def get_news() -> dict:
+    """Retrieves all news items
+
+    Returns:
+        dict: News items
+    """
+    language_code = retrieve_language(request.args)
+
+    news_items: List[News] = News.query.all()
+
+    return jsonify([news_item.to_dict(language_code, is_public_route=False) for news_item in news_items])
 
 
 @news_bp.route('/<string:url>', methods=['GET'])
@@ -30,7 +45,7 @@ def get_news_by_url(url: str) -> dict:
     news_item: News | None = News.query.filter_by(url=url).first()
 
     if not news_item:
-        return jsonify({})
+        return jsonify({}), 404
     news_item: News = news_item
 
     return jsonify(news_item.to_dict(language_code, is_public_route=False))

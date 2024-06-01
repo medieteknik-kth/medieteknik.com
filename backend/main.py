@@ -18,23 +18,25 @@ app.secret_key = os.environ.get('SECRET_KEY', 'secret')
 app.config.from_object('config')
 
 # Enable CORS
-CORS(app, supports_credentials=True, 
-        origins=['http://localhost:3000', 'https://medieteknik.com'], allow_headers=['Content-Type', 'Authorization'], 
-        expose_headers=['Content-Type', 'Authorization'], 
+CORS(app, 
+        supports_credentials=True,
+        origins=['http://localhost:3000', 'https://medieteknik.com'], 
+        allow_headers=['Content-Type', 'Authorization'],
+        expose_headers=['Content-Type', 'Authorization'],
         methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         max_age=86400
-     )
+        )
 
 db.init_app(app)
 
-# CSRF protection 
+# CSRF protection
 # csrf = CSRFProtect(app)
 
 # Rate limiting for API
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=['150 per day', '20 per hour'],
+    default_limits=['150 per day', '100 per hour'],
     storage_uri=os.environ.get('REDIS_URL', 'memory://'),
 )
 
