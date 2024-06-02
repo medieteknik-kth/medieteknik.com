@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from sqlalchemy import func
-from models.resource import Resource
+from models.core import Resource
 
 dynamic_routes_bp = Blueprint('dynamic_routes', __name__)
 

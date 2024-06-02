@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy import func
-from models.committee import Committee, CommitteeCategory, CommitteePosition, CommitteeTranslation
+from models.committees import Committee, CommitteeCategory, CommitteePosition, CommitteeTranslation
 from utility.translation import retrieve_language
 
 public_committee_category_bp = Blueprint('public_committee_category', __name__)

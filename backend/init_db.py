@@ -1,16 +1,10 @@
 import argparse
 from main import app
 from utility.database import db
-from models.language import Language
-from models.student import Student
-from models.analytics import Analytics, Audit, Idempotency
-from models.items import Author, News, Event, Document, Album
-from models.items import NewsTranslation, EventTranslation, DocumentTranslation, AlbumTranslation, RepeatableEvents
-from models.committee import CommitteeCategory, Committee, CommitteePosition
-from models.committee import CommitteeCategoryTranslation, CommitteeTranslation, CommitteePositionTranslation
-from models.resource import Resource, Content, ContentTranslation
-from models.student import StudentPositions
-from models.shared_table import committee_position_resource
+from models.committees import *
+from models.content import *
+from models.core import *
+from models.utility import *
 
 def init_db():
     print('Initializing database...')

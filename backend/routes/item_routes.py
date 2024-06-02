@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify, Response
-from models.items import Author, AuthorType, News, Event, Document, Album, PublishedStatus, NewsTranslation
+from flask import Blueprint, request, jsonify
+from models.content import Author, News, NewsTranslation
+from models.content.base import PublishedStatus
 from utility.translation import retrieve_language, update_translation_or_create, normalize_to_ascii
 from utility import database
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+from utility.constants import AVAILABLE_LANGUAGES
 import uuid
 import json
 from typing import List

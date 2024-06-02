@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models.items import News, Event, Document, Album, PublishedStatus
+from models.content.base import PublishedStatus
+from models.content import News, Event, Document, Album
 from utility.translation import retrieve_language
 
 public_news_bp = Blueprint('public_news', __name__)

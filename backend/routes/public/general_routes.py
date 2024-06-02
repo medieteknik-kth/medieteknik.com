@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify
-from models.language import Language
+from flask import Blueprint, jsonify
+from models.core import Language
 from utility.constants import ROUTES
 
 public_bp = Blueprint('public', __name__)
