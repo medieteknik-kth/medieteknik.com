@@ -56,4 +56,9 @@ class CommitteeTranslation(db.Model):
         return '<CommitteeTranslation %r>' % self.committee_translation_id
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        del data['committee_translation_id']
+        del data['committee_id']
+
+        return data
