@@ -24,6 +24,7 @@ def get_students() -> dict:
         }
     )
 
+
 @public_student_bp.route('/<int:student_id>', methods=['GET'])
 def get_student(student_id: int) -> dict:
     """Retrieves a student

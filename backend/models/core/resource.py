@@ -28,7 +28,7 @@ class Content(db.Model):
             {'content_id': self.content_id},
             language_code
         )
-        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns if not c.endswith('_id')}
 
         data['translation'] = translation.to_dict() if translation else {}
 
@@ -64,7 +64,12 @@ class Resource(db.Model):
     def to_dict(self, is_public_route=True):
         if not self.is_public and is_public_route:
             return {}
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        del data['resource_id']
+        del data['content_id']
+
+        return data
 
 class ContentTranslation(db.Model):
     __tablename__ = 'content_translation'
@@ -85,4 +90,9 @@ class ContentTranslation(db.Model):
         return '<ContentTranslation %r>' % self.content_translation_id
     
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        
+        del data['content_translation_id']
+        del data['content_id']
+        
+        return data

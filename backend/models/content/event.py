@@ -48,6 +48,8 @@ class Event(Item):
         )
         base_dict = super().to_dict(is_public_route)
 
+        del base_dict['event_id']
+
         base_dict['start_date'] = self.start_date
         base_dict['end_date'] = self.end_date
         base_dict['status'] = self.status
@@ -77,7 +79,12 @@ class EventTranslation(db.Model):
     language = db.relationship('Language', backref='event_translation')
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        
+        del data['event_translation_id']
+        del data['event_id']
+
+        return data
 
 class RepeatableEvents(db.Model):
     __tablename__ = 'repeatable_events'

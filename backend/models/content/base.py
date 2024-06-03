@@ -2,6 +2,7 @@ import enum
 from utility.database import db
 from sqlalchemy import Column, Integer, DateTime, String, Enum, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.inspection import inspect
 
 class PublishedStatus(enum.Enum):
     """
@@ -63,11 +64,17 @@ class Item(db.Model):
     def to_dict(self, is_public_route=True) -> dict:
         if not self.is_public and is_public_route:
             return {}
-        
-        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
         if is_public_route:
             if self.published_status == PublishedStatus.DRAFT:
                 return {}
         
+        columns = inspect(self).mapper.column_attrs.keys() 
+        data = {c: getattr(self, c).value if isinstance(getattr(self, c), enum.Enum) else getattr(self, c)
+                for c in columns
+                }
+        
+        del data['item_id']
+        del data['author_id']
+
         return data

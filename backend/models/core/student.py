@@ -52,7 +52,11 @@ class Student(db.Model):
         return '<Student %r>' % self.student_id
 
     def to_dict(self, is_public_route=True):
-        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
+                for c in self.__table__.columns}
+
+        del data['student_id']    
+    
         if is_public_route:
             del data['email']
             del data['reception_name']
@@ -97,7 +101,13 @@ class StudentPositions(db.Model):
         return '<StudentPositions %r>' % self.student_positions_id
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        del data['student_positions_id']
+        del data['student_id']
+        del data['committee_position_id']
+
+        return data
 
     def is_active(self, current_date=func.now()):
         return self.initiation_date < current_date and (self.termination_date is None or self.termination_date > current_date)

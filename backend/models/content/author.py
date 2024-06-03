@@ -48,7 +48,12 @@ class Author(db.Model):
     resources = Column(ARRAY(Enum(AuthorResource, create_constraint=False, native_enum=False)))
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
+                for c in self.__table__.columns}
+        
+        del data['author_id']
+
+        return data
 
     def retrieve_author(self):
         author_class = {

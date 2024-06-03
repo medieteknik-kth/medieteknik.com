@@ -20,20 +20,6 @@ def get_committee_categories() -> dict:
     categories_dict = [category.to_dict(language_code) for category in categories]
     return jsonify(categories_dict)
 
-@public_committee_category_bp.route('/<int:category_id>', methods=['GET'])
-def get_committee_category(category_id: int) -> dict:
-    """Retrieves a committee category
-    
-    Args:
-        category_id (int): Committee category ID
-    
-    Returns:
-        dict: Committee category
-    """
-    language_code = retrieve_language(request.args)
-    
-    category: CommitteeCategory = CommitteeCategory.query.get(category_id)
-    return jsonify(category.to_dict(language_code))
 
 @public_committee_bp.route('/', methods=['GET'])
 def get_committees() -> dict:
@@ -50,22 +36,7 @@ def get_committees() -> dict:
         committees_dict
     )
 
-@public_committee_bp.route('/<int:committee_id>', methods=['GET'])
-def get_committee(committee_id: int) -> dict:
-    """Retrieves a committee
-    
-    Args:
-        committee_id (int): Committee ID
-    
-    Returns:
-        dict: Committee
-    """
-    language_code = retrieve_language(request.args)
-    
-    committee: Committee = Committee.query.get(committee_id)
-    return jsonify(committee.to_dict(language_code))
-
-@public_committee_bp.route('/name/<string:committee_name>', methods=['GET'])
+@public_committee_bp.route('/<string:committee_name>', methods=['GET'])
 def get_committee_by_name(committee_name: str) -> dict:
     """Retrieves a committee by name
     
@@ -113,8 +84,6 @@ def get_committee_positions() -> dict:
         }
     )
 
-@public_committee_position_bp.route('/<int:position_id>', methods=['GET'])
-def get_committee_position(position_id: int) -> dict:
     """Retrieves a committee position
     
     Args:

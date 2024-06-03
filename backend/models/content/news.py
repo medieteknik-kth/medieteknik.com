@@ -33,7 +33,10 @@ class News(Item):
             language_code
         )
         base_data = super().to_dict(is_public_route)
-        base_data['translation'] = translation if translation else {}
+        
+        del base_data['news_id']
+
+        base_data['translation'] = translation.to_dict() if translation else {}
 
         return base_data
 
@@ -57,4 +60,9 @@ class NewsTranslation(db.Model):
     language = db.relationship('Language', backref='news_translation')
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        del data['news_translation_id']
+        del data['news_id']
+
+        return data

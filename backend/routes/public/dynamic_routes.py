@@ -23,6 +23,7 @@ def get_resources() -> dict:
         }
     )
 
+
 @dynamic_routes_bp.route('/categories', methods=['GET'])
 def get_categories() -> dict:
     """Retrieves all categories
@@ -35,6 +36,7 @@ def get_categories() -> dict:
     categories = categories.filter_by(is_public=True).filter(Resource.category.isnot(None)).all()
     categories_dict = [{"category": category.value, "count": count} for category, count in categories]
     return jsonify(categories_dict)
+
 
 @dynamic_routes_bp.route('/categories/<string:category>', methods=['GET'])
 def get_resources_by_category(category: str) -> dict:

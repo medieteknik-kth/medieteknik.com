@@ -26,9 +26,19 @@ def get_news() -> dict:
     """
     language_code = retrieve_language(request.args)
 
-    news_items: List[News] = News.query.all()
+    paginated_items = News.query.paginate()
 
-    return jsonify([news_item.to_dict(language_code, is_public_route=False) for news_item in news_items])
+    news: list[News] = paginated_items.items
+
+    return jsonify(
+        {
+            'items': [news_item.to_dict(language_code, is_public_route=False) for news_item in news],
+            'page': paginated_items.page,
+            'per_page': paginated_items.per_page,
+            'total_pages': paginated_items.pages,
+            'total_items': paginated_items.total,
+        }
+    )
 
 
 @news_bp.route('/<string:url>', methods=['GET'])
@@ -143,33 +153,6 @@ def create_news() -> dict:
     return {'url': data.get('url')}, 201
 
 
-@news_bp.route('/<int:news_id>', methods=['PUT'])
-def update_news_by_id(news_id: int) -> dict:
-    """Updates a news item
-
-    Args:
-        news_id (int): News ID
-
-    Returns:
-        dict: News item
-    """
-    data = request.get_json()
-    language_code = retrieve_language(request.args)
-
-    news_item: News = News.query.get(news_id)
-
-    for key, value in data.items():
-        if key not in News.__table__.columns.keys():
-            return jsonify({'error': 'Invalid key'}), 400
-        if value is None:
-            return jsonify({'error': 'Invalid value'}), 400
-        setattr(news_item, key, value)
-
-    db.session.commit()
-
-    return jsonify(news_item.to_dict(language_code, is_public_route=False))
-
-
 @news_bp.route('/<string:url>', methods=['PUT'])
 def update_news_by_url(url: str) -> dict:
     """Updates a news item and the translations
@@ -271,19 +254,17 @@ def publish_news(url: str) -> dict:
     return {'url': news_item.url}, 201
 
 
-@news_bp.route('/<int:news_id>', methods=['DELETE'])
-def delete_news(news_id: int) -> dict:
-    """Deletes a news item
+@news_bp.route('/<string:url>', methods=['DELETE'])
+def delete_news(url: str) -> dict:
+    """Unpublishes a news item."""
 
-    Args:
-        news_id (int): News ID
+    news_item = News.query.filter_by(url=url).first()
 
-    Returns:
-        dict: Success message
-    """
-    news_item: News = News.query.get(news_id)
-
+    if not news_item:
+        return jsonify({'error': 'News item not found'}), 404
+    
     db.session.delete(news_item)
     db.session.commit()
 
-    return jsonify({'message': 'News item deleted'}, 204)
+    return {'url': news_item.url}, 200
+    

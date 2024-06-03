@@ -39,7 +39,8 @@ class CommitteePosition(db.Model):
             language_code
         )
 
-        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
+                for c in self.__table__.columns}
         data['translation'] = translation.to_dict() if translation else {}
 
         if is_public_route:
