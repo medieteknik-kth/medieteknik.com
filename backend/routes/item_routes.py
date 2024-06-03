@@ -181,11 +181,11 @@ def update_news_by_url(url: str) -> dict:
         db=db,
         translation_table=NewsTranslation,
         entries={
-            'title': data.get('title'),
-            'body': data.get('body'),
-            'short_description': data.get('short_description'),
-            'main_image_url': data.get('main_image_url'),
-            'sub_image_urls': data.get('sub_image_urls'),
+            'title': data.get('translation').get('title'),
+            'body': data.get('translation').get('body'),
+            'short_description': data.get('translation').get('short_description'),
+            'main_image_url': data.get('translation').get('main_image_url'),
+            'sub_image_urls': data.get('translation').get('sub_image_urls'),
             'news_id': news_item.news_id,
             'language_code': langauge_code
         }
