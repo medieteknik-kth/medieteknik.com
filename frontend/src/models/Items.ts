@@ -8,7 +8,7 @@ import Student from './Student'
  * @param {Student} Student - Student author
  * @param {Committee} Committee - Committee author
  */
-type Author = Student | Committee | CommitteePosition
+export type Author = Student | Committee | CommitteePosition
 
 /**
  * @interface Item
@@ -30,11 +30,7 @@ type Author = Student | Committee | CommitteePosition
 export default interface News {
   author: Author
 
-  title: string
-  short_description: string
-  body: string
-  main_image_url: string
-  sub_image_urls?: string[]
+  translation: NewsTranslation
   
   categories?: string[]
   created_at: string
@@ -43,6 +39,15 @@ export default interface News {
   is_public: boolean
   published_status: 'PUBLISHED' | 'DRAFT'
   url: string
+}
+
+interface NewsTranslation {
+  title: string
+  body: string
+  language_code: string
+  main_image_url: string
+  short_description: string
+  sub_image_urls?: string[]
 }
 
 /**

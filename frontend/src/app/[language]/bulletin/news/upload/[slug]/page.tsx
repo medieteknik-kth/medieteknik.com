@@ -24,7 +24,6 @@ async function getData(language_code: string, slug: string) {
 
     if (response.ok) {
       const data = await response.json()
-      console.log(data)
       return data
     } else {
       console.error('Error fetching data:', response.statusText)

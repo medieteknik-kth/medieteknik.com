@@ -1,5 +1,11 @@
 'use client'
-import { createContext, useCallback, useContext, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { API_BASE_URL } from '@/utility/Constants'
 import News from '@/models/Items'
 
@@ -108,9 +114,11 @@ export function AutoSaveProdier({
     [notification]
   )
 
-  setInterval(() => {
-    setAutoSavePossible(true)
-  }, 1000 * 30)
+  useEffect(() => {
+    setInterval(() => {
+      setAutoSavePossible(true)
+    }, 1000 * 30)
+  }, [autoSavePossible])
 
   return (
     <AutoSaveContext.Provider

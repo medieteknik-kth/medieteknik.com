@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   ArrowUturnLeftIcon,
@@ -41,7 +41,13 @@ import { Separator } from '@/components/ui/separator'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { createEditor, Editor, Descendant, Transforms, BaseEditor } from 'slate'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
+import {
+  Slate,
+  Editable,
+  withReact,
+  ReactEditor,
+  RenderElementProps,
+} from 'slate-react'
 import {
   Leaf,
   Element,
@@ -49,23 +55,12 @@ import {
   toggleMark,
   ElementType,
   textTypes,
+  CustomElement,
 } from '../util/Text'
 import { Input } from '@/components/ui/input'
-import News from '@/models/Items'
+import News, { Author } from '@/models/Items'
 import { useAutoSave, AutoSaveResult } from '../autoSave'
 import { useRouter } from 'next/navigation'
-
-interface CustomElement {
-  type: ElementType
-  url?: string
-  image?: {
-    src: string
-    alt: string
-    width: number
-    height: number
-  }
-  children: Descendant[]
-}
 
 declare module 'slate' {
   interface CustomTypes {
@@ -98,8 +93,11 @@ export default function ArticlePage({
 
   const initialValue = useMemo(() => {
     let correctedContent = content
-    if (correctedContent.body && correctedContent.body.length > 0) {
-      return JSON.parse(correctedContent.body)
+    if (
+      correctedContent.translation.body &&
+      correctedContent.translation.body.length > 0
+    ) {
+      return JSON.parse(correctedContent.translation.body)
     }
     return [
       {
@@ -213,20 +211,77 @@ export default function ArticlePage({
   )
 
   const insertTag = useCallback(
-    (tag: string) => {
+    (
+      detail: string,
+      tagType: 'committee' | 'committee position' | 'student'
+    ) => {
       const { selection } = editor
       if (selection) {
-        const tagNode: CustomElement = {
-          type: 'tag',
-          children: [{ text: tag }],
+        if (tagType === 'committee') {
+          const tagNode: CustomElement = {
+            type: 'committee tag',
+            tag: {
+              author: {
+                type: 'COMMITTEE',
+                title: detail,
+                description: '',
+                email: '',
+                logo_url: '',
+              },
+            },
+            children: [{ text: '' }],
+          }
+
+          Transforms.insertNodes(editor, tagNode, {
+            at: selection.focus,
+          })
+        } else if (tagType === 'committee position') {
+          const tagNode: CustomElement = {
+            type: 'committee position tag',
+            tag: {
+              author: {
+                type: 'COMMITTEE_POSITION',
+                title: detail,
+                description: '',
+                email: '',
+                active: true,
+                role: 'ADMIN',
+                weight: 0,
+              },
+            },
+            children: [{ text: '' }],
+          }
+
+          Transforms.insertNodes(editor, tagNode, {
+            at: selection.focus,
+          })
+        } else {
+          const tagNode: CustomElement = {
+            type: 'student tag',
+            tag: {
+              author: {
+                type: 'STUDENT',
+                email: '',
+                first_name: detail,
+                last_name: '',
+                student_type: 'MEDIETEKNIK',
+              },
+            },
+            children: [{ text: '' }],
+          }
+
+          Transforms.insertNodes(editor, tagNode, {
+            at: selection.focus,
+          })
         }
-        Transforms.insertNodes(editor, tagNode, {
-          at: selection.focus,
-        })
       }
     },
     [editor]
   )
+
+  const renderElement = useCallback((props: RenderElementProps) => {
+    return <Element {...props} />
+  }, [])
 
   return (
     <section className='w-full h-full flex justify-center relative'>
@@ -468,7 +523,7 @@ export default function ArticlePage({
                     <CommandGroup heading='Committees'>
                       <CommandItem
                         onSelect={() => {
-                          insertTag('Styrelsen')
+                          insertTag('Styrelsen', 'committee')
                         }}
                       >
                         Styrelsen
@@ -504,7 +559,10 @@ export default function ArticlePage({
               const body = JSON.stringify(value)
               const updatedContent: News = {
                 ...news_data,
-                body: body,
+                translation: {
+                  ...news_data.translation,
+                  body: body,
+                },
               }
 
               updateContent(updatedContent)
@@ -519,7 +577,7 @@ export default function ArticlePage({
           <Editable
             className='w-[800px] h-[1000px] px-10 py-8'
             renderLeaf={Leaf}
-            renderElement={Element}
+            renderElement={renderElement}
             onMouseUp={onMouseUp}
             onMouseOver={onMouseOver}
             onKeyDown={(event) => {

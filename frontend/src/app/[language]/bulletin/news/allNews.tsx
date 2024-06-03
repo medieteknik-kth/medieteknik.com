@@ -122,7 +122,7 @@ export default function AllNews({
   }
 
   return (
-    <Card className='mb-24'>
+    <Card className='w-fit desktop:w-[1784px] mb-24'>
       <CardHeader className='h-24'>
         <div className='grid grid-cols-4 gap-20'>
           <div className='flex relative'>
@@ -206,8 +206,8 @@ export default function AllNews({
           />
         </div>
       </CardHeader>
-      <CardContent className='grid grid-cols-5 *:h-96 gap-10'>
-        <Card className='border-dashed'>
+      <CardContent className='grid grid-flow-row grid-cols-3 desktop:grid-cols-5 *:h-96 gap-10'>
+        <Card className='w-[320px] border-dashed'>
           <CardContent className='h-full pt-6'>
             <Dialog>
               <DialogTrigger
@@ -235,7 +235,7 @@ export default function AllNews({
                   size='icon'
                   title='Actions'
                   aria-label='Actions'
-                  className='absolute bottom-8 right-10 z-10'
+                  className='absolute bottom-8 right-4 z-10'
                 >
                   <PlusIcon className='w-5 h-5' />
                 </Button>

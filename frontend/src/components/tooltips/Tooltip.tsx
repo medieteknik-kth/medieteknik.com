@@ -33,7 +33,7 @@ export function StudentTooltip({ student }: { student: Student }) {
       </Button>
       <Button
         variant='link'
-        className='text-neutral-500 py-0 w-full left-0 right-0 mx-auto z-10'
+        className='w-full text-neutral-600 dark:text-neutral-300 py-0 left-0 right-0 mx-auto z-40'
       >
         <Link
           href={`mailto:${student.email}`}
@@ -60,7 +60,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
         className='h-fit flex flex-col justify-center pb-0'
       >
         <Link
-          href={`./chapter/committees/${committee.title.toLocaleLowerCase()}`}
+          href={`/chapter/committees/${committee.title.toLocaleLowerCase()}`}
           className='group'
         >
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>

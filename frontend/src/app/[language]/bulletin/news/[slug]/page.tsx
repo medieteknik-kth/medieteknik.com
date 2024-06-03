@@ -3,7 +3,7 @@ import News from '@/models/Items'
 import Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import Body from './body'
-import StudentTag from '@/components/tags/Student'
+import { StudentTag } from '@/components/tags/StudentTag'
 
 async function getData(language_code: string, slug: string) {
   try {
@@ -52,9 +52,8 @@ export default async function NewsPage({
 
   return (
     <main>
-      <div className='h-24' />
-      <div className='px-96 h-[1080px]'>
-        <div>
+      <div className='flex flex-col items-center justify-start min-h-[1080px] h-fit px-4 sm:px-20 lg:px-0 pt-10'>
+        <div className='w-full lg:w-[700px] h-fit'>
           <ul className='flex min-h-20 h-fit'>
             {data.categories &&
               data.categories.map((category) => (
@@ -63,20 +62,29 @@ export default async function NewsPage({
                 </li>
               ))}
           </ul>
-          <h1 className='text-4xl'>{data.title}</h1>
+          <h1 className='text-4xl'>{data.translation.title}</h1>
           <h2 className='text-lg my-2'>
             {correctedAuthor && (
               <StudentTag
-                language={language}
                 student={correctedAuthor as Student}
                 includeAt={false}
               />
             )}
           </h2>
-          <p className='text-sm mt-4'>{data.created_at}</p>
+          <p className='text-sm mt-4'>
+            <span className='font-bold'>Published: </span>
+            {new Date(data.created_at).toDateString()}
+          </p>
+          {data.last_updated && (
+            <p className='text-sm mt-2'>
+              <span className='font-bold'>Last updated: </span>
+              {new Date(data.last_updated).toDateString()}
+            </p>
+          )}
         </div>
-        <div>
-          <Body body={data.body} />
+        <div className='w-full lg:w-[700px] h-[300px] bg-blue-500 my-8'></div>
+        <div className='w-full lg:w-[700px] -mt-4 mb-8'>
+          <Body body={data.translation.body} />
         </div>
       </div>
     </main>

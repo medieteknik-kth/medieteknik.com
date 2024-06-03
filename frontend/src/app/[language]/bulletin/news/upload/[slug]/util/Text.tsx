@@ -1,7 +1,13 @@
+import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import { StudentTag } from '@/components/tags/StudentTag'
+import Committee, { CommitteePosition } from '@/models/Committee'
+import { Author } from '@/models/Items'
+import Student from '@/models/Student'
 import Image from 'next/image'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { createEditor, Descendant, Editor, Text, Transforms } from 'slate'
-import { Editable, Slate, withReact } from 'slate-react'
+import { Editable, RenderElementProps, Slate, withReact } from 'slate-react'
 
 /**
  * @type BooleanMark
@@ -38,7 +44,24 @@ export type ElementType =
   | 'internal link'
   | 'external link'
   | 'image'
-  | 'tag'
+  | 'student tag'
+  | 'committee tag'
+  | 'committee position tag'
+
+export interface CustomElement {
+  type: ElementType
+  url?: string
+  image?: {
+    src: string
+    alt: string
+    width: number
+    height: number
+  }
+  tag?: {
+    author: Author
+  }
+  children: Descendant[]
+}
 
 /**
  * @interface TextType
@@ -140,7 +163,15 @@ export const Leaf = ({
   return <span {...attributes}>{children}</span>
 }
 
-export const Element = ({ attributes, children, element }: any) => {
+export const Element = ({
+  attributes,
+  children,
+  element,
+}: {
+  attributes: any
+  children: React.ReactNode
+  element: CustomElement
+}) => {
   switch (element.type) {
     case 'h1':
       return (
@@ -249,6 +280,9 @@ export const Element = ({ attributes, children, element }: any) => {
     }
     case 'image':
       const { image } = element
+      if (!image) {
+        return <p></p>
+      }
       return (
         <Image
           src={image.src}
@@ -262,15 +296,54 @@ export const Element = ({ attributes, children, element }: any) => {
       )
     case 'line break':
       return <p {...attributes}>{children}</p>
-    case 'tag':
-      return (
-        <p
-          {...attributes}
-          className='inline-block bg-yellow-400/50 px-1 rounded'
-        >
-          @<span className='underline underline-offset-2'>{children}</span>
-        </p>
-      )
+    case 'student tag':
+    case 'committee tag':
+    case 'committee position tag': {
+      const { tag } = element
+
+      if (!tag) {
+        return <p></p>
+      }
+
+      if (element.type === 'student tag') {
+        return (
+          <span>
+            <StudentTag
+              student={tag.author as Student}
+              includeAt={true}
+              includeImage={false}
+              {...attributes}
+            >
+              {children}
+            </StudentTag>
+          </span>
+        )
+      } else if (element.type === 'committee tag') {
+        return (
+          <CommitteeTag
+            committee={tag.author as Committee}
+            includeAt={true}
+            includeImage={false}
+            {...attributes}
+          >
+            {children}
+          </CommitteeTag>
+        )
+      } else {
+        return (
+          <span>
+            <CommitteePositionTag
+              committee_position={tag.author as CommitteePosition}
+              includeAt={true}
+              includeImage={false}
+              {...attributes}
+            >
+              {children}
+            </CommitteePositionTag>
+          </span>
+        )
+      }
+    }
     default:
       return (
         <p
@@ -288,10 +361,13 @@ export const Element = ({ attributes, children, element }: any) => {
 
 export const SlateDisplay = ({ value }: { value: Descendant[] }) => {
   const editor = useMemo(() => withReact(createEditor()), [])
+  const renderElement = useCallback((props: RenderElementProps) => {
+    return <Element {...props} />
+  }, [])
 
   return (
     <Slate editor={editor} initialValue={value} onChange={() => {}}>
-      <Editable renderElement={Element} renderLeaf={Leaf} readOnly></Editable>
+      <Editable renderElement={renderElement} renderLeaf={Leaf} readOnly />
     </Slate>
   )
 }

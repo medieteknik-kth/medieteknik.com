@@ -49,7 +49,9 @@ export default function CommandBar({ language }: { language: string }) {
     content,
     updateContent,
   } = useAutoSave()
-  const [title, setTitle] = useState(content.title || 'Untitled Article')
+  const [title, setTitle] = useState(
+    content.translation.title || 'Untitled Article'
+  )
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const { push } = useRouter()
@@ -71,8 +73,8 @@ export default function CommandBar({ language }: { language: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: content.title,
-      image: content.main_image_url,
+      title: content.translation.title,
+      image: content.translation.main_image_url,
     },
   })
 
@@ -81,9 +83,12 @@ export default function CommandBar({ language }: { language: string }) {
 
     const json_data = {
       ...content,
-      title: data.title,
-      main_image_url: data.image,
-      short_description: data.short_description,
+      translation: {
+        ...content.translation,
+        title: data.title,
+        main_image_url: data.image,
+        short_description: data.short_description,
+      },
     }
 
     try {
@@ -160,7 +165,7 @@ export default function CommandBar({ language }: { language: string }) {
               <Input
                 name='title'
                 id='title'
-                defaultValue={content.title}
+                defaultValue={content.translation.title}
                 onChange={(e) => setTitle(e.target.value)}
                 className='w-96 ml-2'
               />

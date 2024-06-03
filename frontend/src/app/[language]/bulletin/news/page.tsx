@@ -27,7 +27,7 @@ export default async function NewsPage({
   data.items = data.items as News[]
 
   return (
-    <main className='px-96'>
+    <main className='grid place-items-center'>
       <div className='h-24' />
       <h1 className='text-4xl py-10'>News</h1>
       <AllNews language={language} data={data} />
