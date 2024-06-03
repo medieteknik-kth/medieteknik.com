@@ -113,9 +113,11 @@ export default function AllNews({
     setCurrentPage((prev) => prev + 1)
   }, [setCurrentPage])
 
-  const handleCopyLink = (id: number) => {
-    navigator.clipboard.writeText(window.location.href + '/' + id)
-    setCopiedLink(id)
+  const handleCopyLink = (index: number) => {
+    navigator.clipboard.writeText(
+      window.location.href + '/' + data.items[index].url
+    )
+    setCopiedLink(index)
     setTimeout(() => {
       setCopiedLink(-1)
     }, 1000)
