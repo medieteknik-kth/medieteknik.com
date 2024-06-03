@@ -1,5 +1,6 @@
 import enum
 from utility.database import db
+from .author import Author
 from sqlalchemy import Column, Integer, DateTime, String, Enum, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.inspection import inspect
@@ -73,6 +74,14 @@ class Item(db.Model):
         data = {c: getattr(self, c).value if isinstance(getattr(self, c), enum.Enum) else getattr(self, c)
                 for c in columns
                 }
+        
+        author_data: Author | None = Author.query.get(self.author_id)
+        if author_data:
+            corrected_author_dict = author_data.retrieve_author().to_dict()
+            corrected_author_dict['author_type'] = author_data.author_type.value
+            data['author'] = corrected_author_dict
+        else:
+            data['author'] = {}
         
         del data['item_id']
         del data['author_id']

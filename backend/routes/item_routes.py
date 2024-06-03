@@ -229,16 +229,16 @@ def publish_news(url: str) -> dict:
             news_id=news_item.news_id,
             language_code=language
         ).first()
-        translation.title = data.get('title')
-        translation.body = data.get('body')
-        translation.short_description = data.get('short_description')
-        translation.main_image_url = data.get('main_image_url', '')
-        translation.sub_image_urls = data.get('sub_image_urls', '')
+        translation.title = data.get('translation').get('title')
+        translation.body = data.get('translation').get('body')
+        translation.short_description = data.get('translation').get('short_description')
+        translation.main_image_url = data.get('translation').get('main_image_url', '')
+        translation.sub_image_urls = data.get('translation').get('sub_image_urls', '')
 
     db.session.add(translation)
     db.session.flush()
 
-    new_url = normalize_to_ascii(data.get('title')).split(' ')
+    new_url = normalize_to_ascii(data.get('translation').get('title')).split(' ')
     new_url = '-'.join(new_url) + '-' + datetime.now().strftime('%Y-%m-%d')
     new_url = new_url.lower()
 

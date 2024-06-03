@@ -58,7 +58,8 @@ class Student(db.Model):
         del data['student_id']    
     
         if is_public_route:
-            del data['email']
+            if RECEPTION_MODE:
+                del data['email']
             del data['reception_name']
             del data['reception_profile_picture_url']
             data['first_name'] = self.reception_name if RECEPTION_MODE and self.reception_name else self.first_name

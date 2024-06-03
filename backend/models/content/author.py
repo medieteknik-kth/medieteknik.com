@@ -55,7 +55,7 @@ class Author(db.Model):
 
         return data
 
-    def retrieve_author(self):
+    def retrieve_author(self) -> Student | Committee | CommitteePosition: 
         author_class = {
             AuthorType.STUDENT: Student,
             AuthorType.COMMITTEE: Committee,
