@@ -4,7 +4,10 @@ import { API_BASE_URL } from '@/utility/Constants'
 
 async function getNews(language_code: string) {
   const response = await fetch(
-    `${API_BASE_URL}/public/news?language_code=${language_code}`
+    `${API_BASE_URL}/public/news`,
+    {
+      cache: 'no-store',
+    }
   )
   if (response.ok) {
     const data = await response.json()

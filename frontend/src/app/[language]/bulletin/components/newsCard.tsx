@@ -55,7 +55,9 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
               '../' +
               (newsItem.author.type === 'COMMITTEE'
                 ? 'chapter/committees/' +
-                  (newsItem.author as Committee).title.toLocaleLowerCase()
+                  (
+                    newsItem.author as Committee
+                  ).translation.title.toLocaleLowerCase()
                 : 'student/' + (newsItem.author as Student).email)
             }
           >
@@ -76,7 +78,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
             <HoverCard>
               <HoverCardTrigger className='max-w-[175px] text-sm truncate overflow-x-hidden text-ellipsis'>
                 {newsItem.author.type === 'COMMITTEE'
-                  ? (newsItem.author as Committee).title
+                  ? (newsItem.author as Committee).translation.title
                   : newsItem.author.type === 'COMMITTEE_POSITION'
                   ? (newsItem.author as CommitteePosition).title
                   : (newsItem.author as Student).first_name +

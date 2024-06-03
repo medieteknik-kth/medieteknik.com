@@ -7,19 +7,6 @@ import { API_BASE_URL } from '@/utility/Constants'
 import CommitteeMembers from './members'
 import { Button } from '@/components/ui/button'
 import Logo from 'public/images/logo.png'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { CommitteePosition } from '@/models/Committee'
@@ -34,21 +21,31 @@ import {
 } from '@/components/ui/breadcrumb'
 import ShortNews from '@/app/[language]/bulletin/components/shortNews'
 import { StudentCommitteePosition } from '@/models/Student'
+import type Committee from '@/models/Committee'
 
-interface Committee {
+interface CommitteeRoute {
   category: string
-  resource_id: number
+  is_public: boolean
   route: string
 }
 
 export async function generateStaticParams() {
-  const res = await fetch(API_BASE_URL + '/dynamic/categories/committees')
-  const committeesPages: Committee[] = await res.json()
+  try {
+    const response = await fetch(
+      API_BASE_URL + '/public/dynamic/categories/committees'
+    )
 
-  return committeesPages.map((committeePage) => ({
-    language: '[language]',
-    committee: committeePage.route.toLowerCase(),
-  }))
+    if (response.ok) {
+      const data = (await response.json()) as CommitteeRoute[]
+
+      return data.map((committee: CommitteeRoute) => ({
+        language: '[language]',
+        committee: committee.route.toLowerCase(),
+      }))
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 //export const getStaticPaths: GetStaticPaths = async () => {
@@ -69,23 +66,18 @@ export async function generateStaticParams() {
 //  return { paths, fallback: true }
 //}
 
-type CommitteeProps = {
-  committee_id: number
-  email: string
-  logo_url: string
-  title: string
-  description: string
-}
-
-async function getData(
-  committee: string,
-  language: string
-): Promise<CommitteeProps> {
-  const res = await fetch(
-    `${API_BASE_URL}/committees/name/${committee}?language_code=${language}`
-  )
-  const data = await res.json()
-  return data
+async function getData(committee: string, language: string) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/public/committees/${committee}?language_code=${language}`
+    )
+    if (response.ok) {
+      const data = await response.json()
+      return data
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 interface CommitteePositionOccupant extends CommitteePosition {
@@ -220,69 +212,13 @@ export default async function Committee({
 }: {
   params: { language: string; committee: string }
 }) {
-  const data = await getData(committee, language)
+  const data: Committee | null = await getData(committee, language)
 
-  const committeeName = decodeURIComponent(data.title)
+  if (!data) {
+    return <></>
+  }
 
-  const newsData: News[] = [
-    {
-      title: 'News Title 1',
-      author: {
-        type: 'COMMITTEE',
-        title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
-        email: data.email,
-        logo_url: Logo.src,
-        description: '',
-      },
-      categories: ['Admin'],
-      main_image_url: Logo.src,
-      created_at: '2023-01-01',
-      short_description: 'Short Description 1',
-      body: '',
-      is_pinned: false,
-      is_public: true,
-      published_status: 'PUBLISHED',
-      url: '',
-    },
-    {
-      title: 'News Title 1',
-      author: {
-        type: 'COMMITTEE',
-        title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
-        email: data.email,
-        logo_url: Logo.src,
-        description: '',
-      },
-      categories: ['Admin'],
-      main_image_url: Logo.src,
-      created_at: '2023-01-01',
-      short_description: 'Short Description 1',
-      body: '',
-      is_pinned: false,
-      is_public: true,
-      published_status: 'PUBLISHED',
-      url: '',
-    },
-    {
-      title: 'News Title 1',
-      author: {
-        type: 'COMMITTEE',
-        title: committeeName.charAt(0).toUpperCase() + committeeName.slice(1),
-        email: data.email,
-        logo_url: Logo.src,
-        description: '',
-      },
-      categories: ['Admin'],
-      main_image_url: Logo.src,
-      created_at: '2023-01-01',
-      short_description: 'Short Description 1',
-      body: '',
-      is_pinned: false,
-      is_public: true,
-      published_status: 'PUBLISHED',
-      url: '',
-    },
-  ]
+  const committeeName = decodeURIComponent(data.translation.title)
 
   return (
     <main className='relative'>
@@ -374,7 +310,7 @@ export default async function Committee({
         <div className='w-fit h-full grid place-items-end mr-96'>
           <div className='w-[900px] h-full flex flex-col items-center'>
             <div className='w-full h-[500px] bg-blue-500'></div>
-            <p className='w-full py-12 px-10'>{data.description}</p>
+            <p className='w-full py-12 px-10'>{data.translation.description}</p>
           </div>
         </div>
       </section>
@@ -387,11 +323,7 @@ export default async function Committee({
           <div
             className='grid w-full h-fit grid-cols-3 
           auto-rows-auto auto-cols-auto py-4 '
-          >
-            {newsData.map((news, index) => (
-              <ShortNews key={index} newsItem={news} />
-            ))}
-          </div>
+          ></div>
         </div>
       </section>
 

@@ -6,8 +6,11 @@
  * @param {string} email - Committee category email
  */
 export interface CommitteeCategory {
-  title: string;
+  committee_category_id: number;
   email: string;
+  translation: {
+    title: string
+  }
 }
 
 /**
@@ -20,10 +23,14 @@ export interface CommitteeCategory {
  */
 export default interface Committee {
   type: 'COMMITTEE';
-  title: string;
-  description: string;
+  committee_category_id: number;
   email: string;
-  logo_url: string;
+  logo_url?: string;
+  translation: {
+    title: string;
+    description: string;
+    language_code: string;
+  }
 }
 
 /**

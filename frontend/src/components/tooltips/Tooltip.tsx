@@ -60,14 +60,16 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
         className='h-fit flex flex-col justify-center pb-0'
       >
         <Link
-          href={`/chapter/committees/${committee.title.toLocaleLowerCase()}`}
+          href={`/chapter/committees/${committee.translation.title.toLocaleLowerCase()}`}
           className='group'
         >
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
             <AvatarImage src={committee.logo_url} alt='Committee Logo' />
-            <AvatarFallback>{committee.title + ' logo'}</AvatarFallback>
+            <AvatarFallback>
+              {committee.translation.title + ' logo'}
+            </AvatarFallback>
           </Avatar>
-          <p>{committee.title}</p>
+          <p>{committee.translation.title}</p>
         </Link>
       </Button>
       <Button
@@ -76,8 +78,8 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
       >
         <Link
           href={`mailto:${committee.email}`}
-          title={`Send email to ${committee.title}`}
-          aria-label={`Send email to ${committee.title}`}
+          title={`Send email to ${committee.translation.title}`}
+          aria-label={`Send email to ${committee.translation.title}`}
         >
           <span>{committee.email}</span>
         </Link>
@@ -110,7 +112,7 @@ export function CommitteePositionTooltip({
         <div className='flex flex-col'>
           <CardTitle>{position.title}</CardTitle>
           <CardDescription className='capitalize'>
-            {committee.title}
+            {committee.translation.title}
           </CardDescription>
         </div>
       </CardHeader>

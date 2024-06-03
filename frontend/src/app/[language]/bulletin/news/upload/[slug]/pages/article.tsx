@@ -223,10 +223,13 @@ export default function ArticlePage({
             tag: {
               author: {
                 type: 'COMMITTEE',
-                title: detail,
-                description: '',
                 email: '',
                 logo_url: '',
+                translation: {
+                  title: detail,
+                  description: '',
+                  language_code: 'sv',
+                },
               },
             },
             children: [{ text: '' }],
