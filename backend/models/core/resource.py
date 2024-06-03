@@ -1,3 +1,4 @@
+import enum
 from utility.database import db
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -64,7 +65,8 @@ class Resource(db.Model):
     def to_dict(self, is_public_route=True):
         if not self.is_public and is_public_route:
             return {}
-        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
+                for c in self.__table__.columns}
 
         del data['resource_id']
         del data['content_id']

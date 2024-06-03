@@ -49,6 +49,6 @@ def get_resources_by_category(category: str) -> dict:
         list[dict]: List of resources
     """
     items: list[Resource] = Resource.query.filter(Resource.category == category.upper()).all()
-    resources_dict = [resource.to_public_dict() for resource in items]
+    resources_dict = [resource.to_dict(is_public_route=True) for resource in items]
     
     return jsonify(resources_dict)
