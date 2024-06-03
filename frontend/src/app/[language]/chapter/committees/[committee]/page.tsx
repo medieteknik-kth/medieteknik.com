@@ -249,7 +249,7 @@ export default async function Committee({
         <div className='w-fit h-full mx-16 flex flex-col justify-around'>
           <div className='flex flex-col items-center'>
             <Avatar className='w-48 h-48 rounded-full mb-4'>
-              <AvatarImage
+              <AvatarImage className='p-6'
                 src={data.logo_url || Logo.src}
                 alt='Committee Logo'
                 width={192}

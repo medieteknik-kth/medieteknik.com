@@ -88,14 +88,14 @@ export default async function Committees({
                     title={item.translation.title}
                     aria-label={item.translation.title}
                     key={index}
-                    className='relative shadow-lg shadow-yellow-400/50 transition-transform hover:scale-110 hover:hover:font-bold'
+                    className='relative shadow-[0_0px_10px_1px] shadow-yellow-400/50 transition-transform hover:scale-110 hover:hover:font-bold'
                   >
                     <Image
                       src={item.logo_url || Logo.src}
                       alt={`${item.translation.title}icon`}
-                      width={100}
-                      height={100}
-                      className='w-[100px] h-[100px] absolute top-0 left-0 right-0 bottom-0 m-auto'
+                      width={300}
+                      height={300}
+                      className='w-[120px] h-[120px] absolute -top-8 left-0 right-0 bottom-0 m-auto'
                     />
                     <h3 className='uppercase text-sm bg-[#232323] py-2 text-white absolute bottom-0 w-full text-center'>
                       {item.translation.title}

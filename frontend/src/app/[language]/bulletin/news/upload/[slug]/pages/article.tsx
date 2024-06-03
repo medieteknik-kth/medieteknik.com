@@ -225,6 +225,7 @@ export default function ArticlePage({
                 type: 'COMMITTEE',
                 email: '',
                 logo_url: '',
+                committee_category_id: 1,
                 translation: {
                   title: detail,
                   description: '',
