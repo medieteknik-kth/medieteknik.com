@@ -92,12 +92,9 @@ export default function ArticlePage({
   }
 
   const initialValue = useMemo(() => {
-    let correctedContent = content
-    if (
-      correctedContent.translation.body &&
-      correctedContent.translation.body.length > 0
-    ) {
-      return JSON.parse(correctedContent.translation.body)
+    let correctedContent = news_data.translation.body
+    if (correctedContent && correctedContent.length > 0) {
+      return JSON.parse(correctedContent)
     }
     return [
       {

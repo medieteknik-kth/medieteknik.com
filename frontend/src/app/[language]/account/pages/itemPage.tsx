@@ -1,6 +1,6 @@
 'use client'
 import { Section } from '@/components/static/Static'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   EnvelopeIcon,
@@ -24,9 +24,42 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { UploadNews } from '@/components/dialogs/Upload'
+import { API_BASE_URL } from '@/utility/Constants'
+import { NewsPagination } from '@/models/Items'
+import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export default function ItemsPage({ language }: { language: string }) {
   const [display, setDisplay] = useState('card')
+  const [data, setData] = useState<NewsPagination | null>(null)
+  const [copiedLink, setCopiedLink] = useState(-1)
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/news?author=1`)
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data as NewsPagination)
+      })
+      .catch(() => console.error('Error fetching data! (Server is down?)'))
+  }, [data]) // TODO: Use SWR
+
+  const handleCopyLink = (index: number) => {
+    if (!data) return
+    navigator.clipboard.writeText(
+      `${window.location.origin}/${language}/bulletin/news/${data.items[index].url}`
+    )
+    setCopiedLink(index)
+    setTimeout(() => {
+      setCopiedLink(-1)
+    }, 1000)
+  }
 
   return (
     <section className='grow h-full relative dark:bg-[#111]'>
@@ -63,7 +96,7 @@ export default function ItemsPage({ language }: { language: string }) {
         </div>
       </Section>
       <div className='w-full h-auto grow px-20 2xl:px-96 dark:bg-[#111]'>
-        <div className='py-4 -ml-4 mb-4 border-b-2 border-yellow-400 flex justify-between items-center'>
+        <div className='py-4 mb-4 border-b-2 border-yellow-400 flex justify-between items-center'>
           <h2 className='text-xl font-bold'>News</h2>
           <div className='grid grid-cols-2 gap-4'>
             <div className='flex items-center'>
@@ -76,7 +109,7 @@ export default function ItemsPage({ language }: { language: string }) {
             </div>
           </div>
         </div>
-        <ul className='w-full max-h-[748px] overflow-auto grid grid-cols-1 gap-3 *:dark:bg-[#111]'>
+        <ul className='w-full max-h-[748px] overflow-auto grid grid-cols-1 grid-flow-row gap-3 *:dark:bg-[#111] pr-4'>
           <li className='w-full h-16 border-2 border-dashed border-gray-300 rounded-xl'>
             <Dialog>
               <DialogTrigger className='w-full h-full flex items-center hover:bg-neutral-300 dark:hover:bg-neutral-800 pl-4 pr-8 rounded-xl'>
@@ -90,96 +123,73 @@ export default function ItemsPage({ language }: { language: string }) {
               </DialogContent>
             </Dialog>
           </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 1</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 2</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 3</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 4</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 5</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 6</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 7</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 8</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 9</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
-          <li className='w-full h-16 border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'>
-            <h3 className='text-lg font-bold'>News 10</h3>
-            <div className='grid grid-cols-4 gap-4'>
-              <EyeIcon className='w-6 h-6' />
-              <LinkIcon className='w-6 h-6' />
-              <PencilSquareIcon className='w-6 h-6' />
-              <TrashIcon className='w-6 h-6 text-red-600' />
-            </div>
-          </li>
+          {data &&
+            data.items.map((item, index) => (
+              <li
+                key={index}
+                className='w-full h-fit border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'
+              >
+                <div className='py-2 flex flex-col items-start'>
+                  <Link
+                    href={
+                      item.published_status === 'PUBLISHED'
+                        ? `/${language}/bulletin/news/${item.url}`
+                        : `/${language}/bulletin/news/upload/${item.url}`
+                    }
+                    target='_blank'
+                    className='underline underline-offset-4 decoration-2 pb-1'
+                  >
+                    <h3 className='text-lg font-bold'>
+                      {item.translation.title}
+                    </h3>
+                  </Link>
+                  <Badge
+                    className={`
+                    ${
+                      item.published_status === 'PUBLISHED'
+                        ? 'bg-emerald-600 hover:bg-emerald-400'
+                        : 'bg-rose-600 hover:bg-rose-400'
+                    }
+                    font-bold
+                    text-white
+                  `}
+                  >
+                    {item.published_status}
+                  </Badge>
+                </div>
+                <div className='grid grid-cols-4 gap-4 py-2'>
+                  <Button size={'icon'} variant={'outline'}>
+                    <EyeIcon className='w-6 h-6' />
+                  </Button>
+                  <TooltipProvider>
+                    <Tooltip open={copiedLink === index}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          title='Share'
+                          aria-label='Share'
+                          className='z-10'
+                          onClick={() => handleCopyLink(index)}
+                        >
+                          <TooltipContent className='z-10'>
+                            Copied
+                          </TooltipContent>
+
+                          <LinkIcon className='w-5 h-5' />
+                        </Button>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <Button size={'icon'}>
+                    <PencilSquareIcon className='w-6 h-6' />
+                  </Button>
+                  <Button size={'icon'} variant={'destructive'}>
+                    <TrashIcon className='w-6 h-6' />
+                  </Button>
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
     </section>
