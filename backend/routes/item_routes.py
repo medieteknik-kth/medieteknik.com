@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.content import Author, News, NewsTranslation
-from models.content.base import PublishedStatus
+from models.content.base import Item, PublishedStatus
 from utility.translation import retrieve_language, update_translation_or_create, normalize_to_ascii
 from utility import database
 from utility.constants import AVAILABLE_LANGUAGES
@@ -25,8 +25,14 @@ def get_news() -> dict:
         dict: News items
     """
     language_code = retrieve_language(request.args)
+    specific_author_id = request.args.get('author')
 
-    paginated_items = News.query.paginate()
+    paginated_items = None
+    if specific_author_id:
+        paginated_items = Item.query.filter_by(author_id=int(specific_author_id), type='news').paginate()
+    else:
+        paginated_items = News.query.paginate()
+
 
     news: list[News] = paginated_items.items
 

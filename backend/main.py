@@ -36,7 +36,7 @@ db.init_app(app)
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=['150 per day', '100 per hour'],
+    default_limits=['1000 per day', '500 per hour'],
     storage_uri=os.environ.get('REDIS_URL', 'memory://'),
 )
 
