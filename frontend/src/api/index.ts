@@ -1,39 +1,19 @@
+import Committee from '@/models/Committee';
 import axios from 'axios';
 import { useCookies } from 'next-client-cookies';
+import { cache } from 'react'
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'http://localhost:8000/api/v1',
 });
 
-/**
- * Retrieves a student from the backend
- * @param id The student's id
- * @returns  {Promise<Student>} A promise that resolves to a Student object
- */
-export const GetStudent = async (id: number): Promise<any> => {
-    const Cookies = useCookies();
+export const GetCommittees = cache(async (committee: string, language_code: string) => {
 
-    const studentData = Cookies.get('student');
-    if (studentData) {
-        return studentData;
+    const response = await api.get(`/public/committees/${committee}?language_code=${language_code}`);
+
+    if (response.status === 200) {
+        return response.data as Committee
     }
 
-    const response = await api.get(`/student/${id}`);
-
-    Cookies.set('student', response.data, { expires: 7 });
-    return response.data;
-}
-
-export const GetStudentPreferences = async (id: number): Promise<any> => {
-    const cookies = useCookies();
-
-    const studentData = cookies.get('student');
-    if (studentData) {
-        return studentData;
-    }
-
-    const response = await api.get(`/student/${id}/preferences`);
-
-    cookies.set('student', cookies.get('student') + response.data, { expires: 7 });
-    return response.data;
-}
+    return null
+})

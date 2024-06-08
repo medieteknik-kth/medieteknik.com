@@ -22,6 +22,10 @@ import {
 import ShortNews from '@/app/[language]/bulletin/components/shortNews'
 import { StudentCommitteePosition } from '@/models/Student'
 import type Committee from '@/models/Committee'
+import { redirect } from 'next/navigation'
+import { GetCommittees } from '@/api'
+
+export const revalidate = 60 * 60 * 24 // 24 hours
 
 interface CommitteeRoute {
   category: string
@@ -42,38 +46,6 @@ export async function generateStaticParams() {
         language: '[language]',
         committee: committee.route.toLowerCase(),
       }))
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-//export const getStaticPaths: GetStaticPaths = async () => {
-//  const res = await fetch(
-//    'http://localhost:8000/api/v1/dynamic/categories/committees'
-//  ).catch((error) => {
-//    throw new Error('Failed to fetch data (Server is down?) \n' + error)
-//  })
-//  const committees: Committee[] = await res.json()
-//
-//  const paths = committees.map((committee) => ({
-//    params: {
-//      language: '[language]',
-//      committee: committee.route.toLowerCase(),
-//    },
-//  }))
-//
-//  return { paths, fallback: true }
-//}
-
-async function getData(committee: string, language: string) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/public/committees/${committee}?language_code=${language}`
-    )
-    if (response.ok) {
-      const data = await response.json()
-      return data
     }
   } catch (error) {
     console.error(error)
@@ -212,10 +184,14 @@ export default async function Committee({
 }: {
   params: { language: string; committee: string }
 }) {
-  const data: Committee | null = await getData(committee, language)
+  const data: Committee | null = await GetCommittees(committee, language)
 
-  if (!data) {
-    return <></>
+  if (!data || Object.keys(data).length === 0) {
+    redirect('/' + language + '/chapter/committees')
+  }
+
+  if (!data.translation) {
+    redirect('/' + language + '/chapter/committees')
   }
 
   const committeeName = decodeURIComponent(data.translation.title)
@@ -249,7 +225,8 @@ export default async function Committee({
         <div className='w-fit h-full mx-16 flex flex-col justify-around'>
           <div className='flex flex-col items-center'>
             <Avatar className='w-48 h-48 rounded-full mb-4'>
-              <AvatarImage className='p-6'
+              <AvatarImage
+                className='p-6'
                 src={data.logo_url || Logo.src}
                 alt='Committee Logo'
                 width={192}
