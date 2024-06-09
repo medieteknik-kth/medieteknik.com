@@ -24,12 +24,12 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
       <Link
         href={`./bulletin/news/${newsItem.url}`}
         className='w-fit max-w-44 h-full p-5 pr-0 relative overflow-hidden'
-        title={newsItem.title}
-        aria-label={newsItem.title}
+        title={newsItem.translation.title}
+        aria-label={newsItem.translation.title}
       >
         <Image
-          src={newsItem.main_image_url}
-          alt={newsItem.title}
+          src={newsItem.translation.main_image_url}
+          alt={newsItem.translation.title}
           width={200}
           height={200}
           className='h-full w-auto rounded-xl object-cover'
@@ -43,10 +43,10 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
             className='group mt-3 pt-3 px-6 pb-6'
           >
             <CardTitle className='w-full underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
-              {newsItem.title}
+              {newsItem.translation.title}
             </CardTitle>
             <CardDescription className='w-full group-hover:underline !no-underline'>
-              {newsItem.short_description}
+              {newsItem.translation.short_description}
             </CardDescription>
           </Link>
         </CardHeader>
@@ -55,23 +55,25 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
           <div className='flex items-center'>
             <Link
               href={
-                newsItem.author.type === 'committee'
+                newsItem.author.author_type === 'COMMITTEE'
                   ? 'chapter/committees/' +
-                    (newsItem.author as Committee).title.toLocaleLowerCase()
+                    (
+                      newsItem.author as Committee
+                    ).translation.title.toLocaleLowerCase()
                   : './chapter/students/' + (newsItem.author as Student).email
               }
             >
               <Avatar className='bg-white mr-2'>
                 <AvatarImage
                   src={
-                    newsItem.author.type === 'committee'
+                    newsItem.author.author_type === 'COMMITTEE'
                       ? (newsItem.author as Committee).logo_url
                       : (newsItem.author as Student).profile_picture_url
                   }
                 />
                 <AvatarFallback>
-                  {newsItem.author.type === 'committee'
-                    ? (newsItem.author as Committee).title + ' logo'
+                  {newsItem.author.author_type === 'COMMITTEE'
+                    ? (newsItem.author as Committee).translation.title + ' logo'
                     : (newsItem.author as Student).first_name +
                       ' ' +
                       (newsItem.author as Student).last_name +
@@ -82,14 +84,14 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
             <div>
               <HoverCard>
                 <HoverCardTrigger>
-                  {newsItem.author.type === 'committee'
-                    ? (newsItem.author as Committee).title
+                  {newsItem.author.author_type === 'COMMITTEE'
+                    ? (newsItem.author as Committee).translation.title
                     : (newsItem.author as Student).first_name +
                       ' ' +
                       (newsItem.author as Student).last_name}
                 </HoverCardTrigger>
                 <HoverCardContent>
-                  {newsItem.author.type === 'committee' ? (
+                  {newsItem.author.author_type === 'COMMITTEE' ? (
                     <CommitteeTooltip
                       committee={newsItem.author as Committee}
                     />

@@ -170,12 +170,12 @@ export default function UserPage({
               <StudentPositions
                 language={language}
                 student={{
-                  type: 'STUDENT',
+                  author_type: 'STUDENT',
+                  student_type: 'MEDIETEKNIK',
                   email: 'andree4@kth.se',
-                  firstName: 'André',
-                  lastName: 'Eriksson',
-                  profilePictureUrl: Logo.src,
-                  receptionName: '',
+                  first_name: 'André',
+                  last_name: 'Eriksson',
+                  profile_picture_url: Logo.src,
                 }}
               />
             </React.Suspense>
@@ -185,12 +185,12 @@ export default function UserPage({
               <StudentNews
                 language={language}
                 student={{
-                  type: 'STUDENT',
+                  author_type: 'STUDENT',
+                  student_type: 'MEDIETEKNIK',
                   email: 'andree4@kth.se',
-                  firstName: 'André',
-                  lastName: 'Eriksson',
-                  profilePictureUrl: Logo.src,
-                  receptionName: '',
+                  first_name: 'André',
+                  last_name: 'Eriksson',
+                  profile_picture_url: Logo.src,
                 }}
               />
             </React.Suspense>
@@ -200,12 +200,12 @@ export default function UserPage({
               <StudentEvents
                 language={language}
                 student={{
-                  type: 'STUDENT',
+                  author_type: 'STUDENT',
+                  student_type: 'MEDIETEKNIK',
                   email: 'andree4@kth.se',
-                  firstName: 'André',
-                  lastName: 'Eriksson',
-                  profilePictureUrl: Logo.src,
-                  receptionName: '',
+                  first_name: 'André',
+                  last_name: 'Eriksson',
+                  profile_picture_url: Logo.src,
                 }}
               />
             </React.Suspense>

@@ -33,7 +33,7 @@ export default function EventPreview({
       <div className='w-full h-full relative -z-20 rounded-l-xl overflow-hidden'>
         <div className='w-full h-full absolute bg-black/50' />
         <Image
-          src={event.main_image_url || BG.src}
+          src={event.translation.main_image_url || BG.src}
           width={1080}
           height={720}
           alt='Event image'
@@ -57,18 +57,18 @@ export default function EventPreview({
               href={`./chapter/events/${event.url}`}
               className='hover:underline underline-offset-4 decoration-yellow-400 decoration-2'
             >
-              {event.title}
+              {event.translation.title}
             </Link>
           </CardTitle>
         </CardHeader>
         <CardFooter>
           <div className='flex items-center'>
             <Link href='./chapter/committees/styrelsen' className='mr-2'>
-              {event.author.type === 'committee' ? (
+              {event.author.author_type === 'COMMITTEE' ? (
                 <Avatar>
                   <AvatarImage src={(event.author as Committee).logo_url} />
                   <AvatarFallback>
-                    {(event.author as Committee).title + ' logo'}
+                    {(event.author as Committee).translation.title + ' logo'}
                   </AvatarFallback>
                 </Avatar>
               ) : (
@@ -84,13 +84,13 @@ export default function EventPreview({
             </Link>
             <HoverCard>
               <HoverCardTrigger asChild>
-                {event.author.type === 'committee' ? (
+                {event.author.author_type === 'COMMITTEE' ? (
                   <Link
                     href={`./chapter/committees/${(
                       event.author as Committee
-                    ).title.toLocaleLowerCase()}`}
+                    ).translation.title.toLocaleLowerCase()}`}
                   >
-                    {(event.author as Committee).title}
+                    {(event.author as Committee).translation.title}
                   </Link>
                 ) : (
                   <Link href='./chapter/students/johndoe'>
@@ -101,7 +101,7 @@ export default function EventPreview({
                 )}
               </HoverCardTrigger>
               <HoverCardContent>
-                {event.author.type === 'committee' ? (
+                {event.author.author_type === 'COMMITTEE' ? (
                   <CommitteeTooltip committee={event.author as Committee} />
                 ) : (
                   <StudentTooltip student={event.author as Student} />

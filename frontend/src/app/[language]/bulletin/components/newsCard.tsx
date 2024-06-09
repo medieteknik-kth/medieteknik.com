@@ -53,7 +53,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
           <Link
             href={
               '../' +
-              (newsItem.author.type === 'COMMITTEE'
+              (newsItem.author.author_type === 'COMMITTEE'
                 ? 'chapter/committees/' +
                   (
                     newsItem.author as Committee
@@ -64,7 +64,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
             <Avatar className='w-8 h-8'>
               <AvatarImage
                 src={
-                  newsItem.author.type === 'COMMITTEE'
+                  newsItem.author.author_type === 'COMMITTEE'
                     ? (newsItem.author as Committee).logo_url
                     : (newsItem.author as Student).profile_picture_url
                   // TODO: Add support for CommitteePosition, image is the committee
@@ -77,16 +77,16 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
           <div className='flex flex-col justify-center ml-2'>
             <HoverCard>
               <HoverCardTrigger className='max-w-[175px] text-sm truncate overflow-x-hidden text-ellipsis'>
-                {newsItem.author.type === 'COMMITTEE'
+                {newsItem.author.author_type === 'COMMITTEE'
                   ? (newsItem.author as Committee).translation.title
-                  : newsItem.author.type === 'COMMITTEE_POSITION'
+                  : newsItem.author.author_type === 'COMMITTEE_POSITION'
                   ? (newsItem.author as CommitteePosition).title
                   : (newsItem.author as Student).first_name +
                     ' ' +
                     (newsItem.author as Student).last_name}
               </HoverCardTrigger>
               <HoverCardContent>
-                {newsItem.author.type === 'COMMITTEE' ? (
+                {newsItem.author.author_type === 'COMMITTEE' ? (
                   <CommitteeTooltip committee={newsItem.author as Committee} />
                 ) : (
                   <StudentTooltip student={newsItem.author as Student} />

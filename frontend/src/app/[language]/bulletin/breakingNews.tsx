@@ -22,42 +22,53 @@ import News from '@/models/Items'
 
 const breakingNews: News[] = [
   {
-    title: 'KTH:s rektor: "Vi har en plan för att öppna campus"',
-    body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
     is_pinned: false,
     is_public: true,
+    translation: {
+      title: 'KTH:s rektor: "Vi har en plan för att åpplösa campus"',
+      body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
+      language_code: 'se',
+      short_description:
+        'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
+      main_image_url: BG.src,
+    },
     published_status: 'PUBLISHED',
     url: '1',
-    short_description:
-      'KTH:s rektor Sigbritt Karlsson berättar om planerna för att öppna campus igen.',
-    main_image_url: BG.src,
     author: {
-      type: 'COMMITTEE',
-      title: 'Styrelsen',
+      author_type: 'COMMITTEE',
+      translation: {
+        title: 'Styrelsen',
+        description: '',
+        language_code: 'se',
+      },
       logo_url: StyrelsenIcon.src,
       email: 'styrelsen@medieteknik.com',
-      description: '',
+      committee_category_id: 1,
     },
     categories: ['Skola'],
     created_at: '2021-09-01',
   },
   {
-    title: 'International students: "We need more support"',
-    body: 'International students at KTH are struggling with the lack of support.',
     is_pinned: false,
     is_public: true,
     published_status: 'PUBLISHED',
+    translation: {
+      title: 'International students: "We need more support"',
+      body: 'International students at KTH are struggling with the lack of support.',
+      language_code: 'se',
+      short_description:
+        'International students at KTH are struggling with the lack of support.',
+      main_image_url: BG2.src,
+    },
     url: '2',
-    short_description:
-      'International students at KTH are struggling with the lack of support.',
-    main_image_url: BG2.src,
     author: {
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       email: 'andree4@kth.se',
       first_name: 'André',
       last_name: 'Eriksson',
       reception_name: 'N/A',
       profile_picture_url: '',
+      student_type: 'MEDIETEKNIK',
     },
     categories: ['Skola'],
     created_at: '2021-09-01',
