@@ -1,6 +1,7 @@
 from utility.database import db
 from utility.reception_mode import RECEPTION_MODE
-from sqlalchemy import String, Integer, Column, ForeignKey, DateTime, Enum, func
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import Boolean, String, Integer, Column, ForeignKey, DateTime, Enum, func
 import enum
 
 
@@ -67,6 +68,54 @@ class Student(db.Model):
             data['profile_picture_url'] = self.reception_profile_picture_url if RECEPTION_MODE and self.reception_profile_picture_url else self.profile_picture_url
 
         return data
+
+
+class Profile(db.Model):
+    """
+    Model for student profiles in the database.
+
+    Attributes:
+        profile_id (int): Primary key
+        notifications_enabled (bool): Whether notifications are enabled
+        notification_emails (list): List of emails to send notifications to
+        phone_number (str): Phone number
+        facebook_url (str): Facebook URL
+        linkedin_url (str): LinkedIn URL
+        instagram_url (str): Instagram URL
+        student_id (int): Foreign key to student table
+    """
+    __tablename__ = 'profile'
+
+    profile_id = Column(Integer, primary_key=True, autoincrement=True)
+    
+    notifications_enabled = Column(Boolean, default=True)
+    notification_emails = Column(ARRAY(String(255)))
+
+    phone_number = Column(String(255))
+    facebook_url = Column(String(255))
+    linkedin_url = Column(String(255))
+    instagram_url = Column(String(255))
+
+    # Foreign keys
+    student_id = Column(Integer, ForeignKey('student.student_id'))
+
+    # Relationships
+    student = db.relationship('Student', backref='profile')
+
+    def __repr__(self):
+        return '<Profile %r>' % self.profile_id
+    
+    def to_dict(self, is_public_route=True):
+        if is_public_route:
+            return {}
+
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        
+        del data['profile_id']
+        del data['student_id']
+
+        return data
+
 
 
 class StudentPositions(db.Model):

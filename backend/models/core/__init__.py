@@ -1,3 +1,3 @@
 from .language import Language
 from .resource import Content, ContentTranslation, Resource
-from .student import Student, StudentPositions
+from .student import Student, StudentPositions, Profile
