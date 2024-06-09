@@ -113,7 +113,7 @@ python init_db.py --recreate
 ```
 
 ### Database
-Ensure to insert some SQL into the database endpoints in the website works e.g.
+Ensure to insert some SQL into the tables so the website works e.g.
 ```sql
 INSERT INTO language (language_code, language_name)
 VALUES ('sv-SE', 'Swedish'), ('en-GB', 'English');

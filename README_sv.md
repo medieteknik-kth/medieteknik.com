@@ -127,14 +127,14 @@ python init_db.py --recreate
 
 ### Databas
 
-Ensure to insert some SQL into the database endpoints in the website works e.g.
+Se till att infoga SQL i tabellerna så att hemsidan fungerar
 
 ```sql
 INSERT INTO language (language_code, language_name)
 VALUES ('sv-SE', 'Swedish'), ('en-GB', 'English');
 ```
 
-## Lisens
+## Licens
 
 Medieteknik är licensierad enligt [MIT License](./LICENSE)
 
