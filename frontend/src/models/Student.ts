@@ -6,9 +6,9 @@ const StudentType = {
   DATATEKNIK: 'DATATEKNIK',
   KTH: 'KTH',
   OTHER: 'OTHER',
-}
+} as const
 
-type StudentType = typeof StudentType[keyof typeof StudentType]
+export type StudentType = typeof StudentType[keyof typeof StudentType]
 
 /**
  * @interface Student
@@ -21,7 +21,7 @@ type StudentType = typeof StudentType[keyof typeof StudentType]
  * @param {string} profile_picture_url - Student profile picture URL (optional)
  */
 export default interface Student {
-  type: 'STUDENT';
+  author_type: 'STUDENT';
   email: string;
   first_name: string;
   last_name: string;
