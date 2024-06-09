@@ -62,17 +62,22 @@ export default async function Committees({
   }
 
   return (
-    <main className='w-screen'>
+    <main>
       <div className='h-24 bg-black' />
       <Head title='Committees' />
 
-      <div className='w-full flex flex-col items-center py-20'>
+      <div className='w-fit flex flex-col py-10 px-20 xl:px-52 desktop:px-96'>
         {committeeCategoryData.map((category, index) => (
-          <section key={index} className='w-1/2 h-fit flex flex-col mb-20'>
+          <section
+            key={index}
+            className='w-fit h-fit flex flex-col mb-10 last:mb-0'
+          >
             <h2 className='text-4xl uppercase tracking-wider border-b-2 border-yellow-400 pb-4'>
               {category.translation.title}
             </h2>
-            <div className='w-full h-fit *:h-[200px] grid grid-cols-5 gap-8 my-4'>
+            <div
+              className={`w-fit h-fit *:h-[200px] flex flex-wrap py-4 gap-4`}
+            >
               {committeeData
                 .filter(
                   (committee) =>
@@ -88,14 +93,14 @@ export default async function Committees({
                     title={item.translation.title}
                     aria-label={item.translation.title}
                     key={index}
-                    className='relative shadow-[0_0px_10px_1px] shadow-yellow-400/50 transition-transform hover:scale-110 hover:hover:font-bold'
+                    className='w-[220px] relative rounded-t-lg border transition-transform hover:scale-110 hover:hover:font-bold'
                   >
                     <Image
                       src={item.logo_url || Logo.src}
                       alt={`${item.translation.title}icon`}
                       width={300}
                       height={300}
-                      className='w-[120px] h-[120px] absolute -top-8 left-0 right-0 bottom-0 m-auto'
+                      className='w-[120px] h-auto absolute -top-8 left-0 right-0 bottom-0 m-auto'
                     />
                     <h3 className='uppercase text-sm bg-[#232323] py-2 text-white absolute bottom-0 w-full text-center'>
                       {item.translation.title}

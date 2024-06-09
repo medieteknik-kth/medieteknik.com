@@ -62,11 +62,11 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      type: 'COMMITTEE_POSITION',
+      author_type: 'COMMITTEE_POSITION',
       title: 'Ordförande',
       active: true,
       description: 'Ordförande',
@@ -82,7 +82,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       student_type: 'DATATEKNIK',
     },
     position: {
@@ -92,7 +92,7 @@ const committeeData: StudentCommitteePosition[] = [
       email: 'ordforande@kth.se',
       role: 'ADMIN',
       weight: 1,
-      type: 'COMMITTEE_POSITION',
+      author_type: 'COMMITTEE_POSITION',
     },
     initiation_date: '2022-01-01',
     termination_date: '2022-01-01',
@@ -102,7 +102,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       student_type: 'THS',
     },
     position: {
@@ -112,7 +112,7 @@ const committeeData: StudentCommitteePosition[] = [
       email: 'ordforande@kth.se',
       role: 'ADMIN',
       weight: 1,
-      type: 'COMMITTEE_POSITION',
+      author_type: 'COMMITTEE_POSITION',
     },
     initiation_date: '2022-01-01',
     termination_date: '2022-01-01',
@@ -122,7 +122,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       student_type: 'KTH',
     },
     position: {
@@ -132,7 +132,7 @@ const committeeData: StudentCommitteePosition[] = [
       email: 'ordforande@kth.se',
       role: 'ADMIN',
       weight: 1,
-      type: 'COMMITTEE_POSITION',
+      author_type: 'COMMITTEE_POSITION',
     },
     initiation_date: '2022-01-01',
     termination_date: '2022-01-01',
@@ -142,7 +142,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       student_type: 'OTHER',
     },
     position: {
@@ -152,7 +152,7 @@ const committeeData: StudentCommitteePosition[] = [
       email: 'ordforande@kth.se',
       role: 'ADMIN',
       weight: 1,
-      type: 'COMMITTEE_POSITION',
+      author_type: 'COMMITTEE_POSITION',
     },
     initiation_date: '2022-01-01',
     termination_date: '2022-01-01',
@@ -162,7 +162,7 @@ const committeeData: StudentCommitteePosition[] = [
       first_name: 'André',
       last_name: 'Eriksson',
       email: 'andree4@kth.se',
-      type: 'STUDENT',
+      author_type: 'STUDENT',
       student_type: 'OTHER',
     },
     position: {
@@ -172,7 +172,7 @@ const committeeData: StudentCommitteePosition[] = [
       email: 'ordforande@kth.se',
       role: 'ADMIN',
       weight: 1,
-      type: 'COMMITTEE_POSITION',
+      author_type: 'COMMITTEE_POSITION',
     },
     initiation_date: '2022-01-01',
     termination_date: '2022-01-01',
@@ -222,7 +222,7 @@ export default async function Committee({
       </Breadcrumb>
 
       <section className='w-full h-fit mt-12 flex justify-between'>
-        <div className='w-fit h-full mx-16 flex flex-col justify-around'>
+        <div className='w-80 h-fit ml-16 flex flex-col justify-around'>
           <div className='flex flex-col items-center'>
             <Avatar className='w-48 h-48 rounded-full mb-4'>
               <AvatarImage
@@ -234,7 +234,7 @@ export default async function Committee({
               />
               <AvatarFallback>Committee Picture</AvatarFallback>
             </Avatar>
-            <h1 className='uppercase text-3xl tracking-wider'>
+            <h1 className='uppercase text-3xl tracking-wider text-center'>
               {committeeName}
             </h1>
             <Link
@@ -244,12 +244,12 @@ export default async function Committee({
               <h2>{data.email}</h2>
               <ArrowTopRightOnSquareIcon className='w-5 h-5 ml-2' />
             </Link>
-            <div className='w-full h-12 my-2 grid grid-cols-6 auto-cols-fr grid-rows-1 place-items-center'>
+            <div className='w-fit h-12 my-2 grid grid-cols-4 grid-rows-1 place-items-center gap-4'>
               <Button
                 asChild
                 variant={'default'}
                 size={'icon'}
-                className='rounded-full w-12 h-12 col-start-3 grid place-items-center'
+                className='rounded-full w-12 h-12 col-start-2 grid place-items-center'
               >
                 <Link
                   href='/'
