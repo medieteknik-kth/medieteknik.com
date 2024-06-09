@@ -1,7 +1,7 @@
 'use client'
 import { Section } from '@/components/static/Static'
 import { useEffect, useState } from 'react'
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   EnvelopeIcon,
   CalendarIcon,
@@ -66,35 +66,36 @@ export default function ItemsPage({ language }: { language: string }) {
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-2xl py-4'>Items</h1>
       </div>
-      <Section centeredChildren>
-        <div className='w-1/2 2xl:w-1/3 h-fit grid grid-cols-4 auto-rows-max gap-2 my-10 place-items-center *:w-20 *:h-20'>
-          <div className='border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 relative hover:bg-black/15 hover:cursor-pointer z-20'>
-            <EnvelopeIcon className='w-12 h-12 absolute top-0 bottom-0 left-0 right-0 m-auto text-green-600' />
-            <p className='w-fit absolute -bottom-8 left-0 right-0 mx-auto text-lg font-bold z-20'>
+      <div className='w-full h-fit flex justify-center my-2'>
+        <Tabs defaultValue='news' className='w-full'>
+          <TabsList className='grid w-full grid-cols-4 *:py-2'>
+            <TabsTrigger
+              value='news'
+              className='text-black dark:text-white border-b-2 aria-selected:border-yellow-400'
+            >
               News
-            </p>
-          </div>
-          <div className='border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 relative hover:bg-black/15 hover:cursor-pointer'>
-            <CalendarIcon className='w-12 h-12 absolute top-0 bottom-0 left-0 right-0 m-auto text-yellow-600' />
-            <p className='w-fit absolute -bottom-8 left-0 right-0 mx-auto text-lg font-bold'>
+            </TabsTrigger>
+            <TabsTrigger
+              value='events'
+              className='text-black dark:text-white border-b-2 aria-selected:border-yellow-400'
+            >
               Events
-            </p>
-          </div>
-          <div className='border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 relative hover:bg-black/15 hover:cursor-pointer'>
-            <DocumentTextIcon className='w-12 h-12 absolute top-0 bottom-0 left-0 right-0 m-auto text-red-600' />
-            <p className='w-fit absolute -bottom-8 -left-2 text-lg font-bold'>
+            </TabsTrigger>
+            <TabsTrigger
+              value='documents'
+              className='text-black dark:text-white border-b-2 aria-selected:border-yellow-400'
+            >
               Documents
-            </p>
-          </div>
-
-          <div className='border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 relative hover:bg-black/15 hover:cursor-pointer'>
-            <PhotoIcon className='w-12 h-12 absolute top-0 bottom-0 left-0 right-0 m-auto text-blue-600' />
-            <p className='w-fit absolute -bottom-8 left-2 text-lg font-bold'>
-              Images
-            </p>
-          </div>
-        </div>
-      </Section>
+            </TabsTrigger>
+            <TabsTrigger
+              value='albums'
+              className='text-black dark:text-white border-b-2 aria-selected:border-yellow-400'
+            >
+              Albums
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
       <div className='w-full h-auto grow px-20 2xl:px-96 dark:bg-[#111]'>
         <div className='py-4 mb-4 border-b-2 border-yellow-400 flex justify-between items-center'>
           <h2 className='text-xl font-bold'>News</h2>

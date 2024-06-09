@@ -126,7 +126,7 @@ function Sidebar({
   return (
     <div
       className={`${isExpanded ? 'w-full md:w-48' : isHidden ? 'w-0' : 'w-24'}
-      min-h-[1080px] h-full bg-white dark:bg-[#111] absolute left-0 border-r-2 z-10 border-neutral-300 dark:border-neutral-800 transition-all`}
+      min-h-[1080px] h-full bg-white dark:bg-[#111] absolute left-0 border-r-2 z-20 border-neutral-300 dark:border-neutral-800 transition-all`}
       onMouseOver={() => updateExpandMenu(true)}
       onClick={(e) => {
         e.stopPropagation()
