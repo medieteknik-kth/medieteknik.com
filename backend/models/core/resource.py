@@ -22,7 +22,7 @@ class Content(db.Model):
     def __repr__(self):
         return '<Content %r>' % self.content_id
     
-    def to_dict(self, language_code='se'):
+    def to_dict(self, language_code='sv-SE'):
         translation: ContentTranslation | None = get_translation(
             ContentTranslation,
             ['content_id'],

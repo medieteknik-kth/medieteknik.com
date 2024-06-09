@@ -68,12 +68,12 @@ export default function OptionsHeader({ language }: { language: string }) {
 
   const languageFlags = new Map([
     ['en', 'gb'],
-    ['se', 'se'],
+    ['sv', 'se'],
   ])
 
   const languageNames = new Map([
     ['en', 'English'],
-    ['se', 'Svenska'],
+    ['sv', 'Svenska'],
   ])
 
   const getFlagCode = (lang: string) => {

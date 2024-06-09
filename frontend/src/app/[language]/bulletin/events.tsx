@@ -46,7 +46,7 @@ const data: Event[] = [
       translation: {
         title: 'Styrelsen',
         description: 'Styrelsen',
-        language_code: 'se',
+        language_code: 'sv',
       },
       logo_url: StyrelsenIcon.src,
       committee_category_id: 1,
@@ -59,7 +59,7 @@ const data: Event[] = [
     translation: {
       title: 'SM #4',
       body: 'SM #4',
-      language_code: 'se',
+      language_code: 'sv',
       main_image_url: BG.src,
       short_description: 'SM #4',
     },
@@ -76,7 +76,7 @@ const data: Event[] = [
       translation: {
         title: 'Styrelsen',
         description: 'Styrelsen',
-        language_code: 'se',
+        language_code: 'sv',
       },
       logo_url: StyrelsenIcon.src,
       committee_category_id: 1,
@@ -89,7 +89,7 @@ const data: Event[] = [
     translation: {
       title: 'SM #2',
       body: 'SM #2',
-      language_code: 'se',
+      language_code: 'sv',
       main_image_url: BG.src,
       short_description: 'SM #2',
     },
@@ -106,7 +106,7 @@ const data: Event[] = [
       translation: {
         title: 'Styrelsen',
         description: 'Styrelsen',
-        language_code: 'se',
+        language_code: 'sv',
       },
       logo_url: StyrelsenIcon.src,
       committee_category_id: 1,
@@ -119,7 +119,7 @@ const data: Event[] = [
     translation: {
       title: 'SM #1',
       body: 'SM #1',
-      language_code: 'se',
+      language_code: 'sv',
       main_image_url: BG.src,
       short_description: 'SM #1',
     },

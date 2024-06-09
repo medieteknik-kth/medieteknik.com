@@ -1,3 +1,5 @@
+import { LanguageCodes } from '@/utility/Constants';
+
 /**
  * @interface CommitteeCategory
  * @description Committee category model
@@ -10,6 +12,7 @@ export interface CommitteeCategory {
   email: string;
   translation: {
     title: string
+    language_code: LanguageCodes;
   }
 }
 
@@ -29,7 +32,7 @@ export default interface Committee {
   translation: {
     title: string;
     description: string;
-    language_code: string;
+    language_code: LanguageCodes;
   }
 }
 

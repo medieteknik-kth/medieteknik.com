@@ -1,3 +1,4 @@
+import { LanguageCodes } from '@/utility/Constants'
 import Committee, { CommitteePosition } from './Committee'
 import Student from './Student'
 
@@ -44,7 +45,7 @@ export default interface News {
 interface NewsTranslation {
   title: string
   body: string
-  language_code: string
+  language_code: LanguageCodes
   main_image_url: string
   short_description: string
   sub_image_urls?: string[]

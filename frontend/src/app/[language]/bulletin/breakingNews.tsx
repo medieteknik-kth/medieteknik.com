@@ -27,7 +27,7 @@ const breakingNews: News[] = [
     translation: {
       title: 'KTH:s rektor: "Vi har en plan för att åpplösa campus"',
       body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
-      language_code: 'se',
+      language_code: 'sv',
       short_description:
         'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
       main_image_url: BG.src,
@@ -39,7 +39,7 @@ const breakingNews: News[] = [
       translation: {
         title: 'Styrelsen',
         description: '',
-        language_code: 'se',
+        language_code: 'sv',
       },
       logo_url: StyrelsenIcon.src,
       email: 'styrelsen@medieteknik.com',
@@ -55,7 +55,7 @@ const breakingNews: News[] = [
     translation: {
       title: 'International students: "We need more support"',
       body: 'International students at KTH are struggling with the lack of support.',
-      language_code: 'se',
+      language_code: 'sv',
       short_description:
         'International students at KTH are struggling with the lack of support.',
       main_image_url: BG2.src,
