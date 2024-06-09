@@ -1,9 +1,22 @@
 import Committee, { CommitteePosition } from '@/models/Committee'
-import News from '@/models/Items'
-import Student from '@/models/Student'
+import News, { Author } from '@/models/Items'
+import Student, { StudentType } from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import Body from './body'
 import { StudentTag } from '@/components/tags/StudentTag'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
+import MedieteknikSVG from 'public/images/svg/medieteknik.svg'
+import THSSVG from 'public/images/svg/ths.svg'
+import DatateknikSVG from 'public/images/svg/datateknik.svg'
+import KTHSVG from 'public/images/svg/kth.svg'
+import { GlobeAltIcon } from '@heroicons/react/24/outline'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 async function getData(language_code: string, slug: string) {
   try {
@@ -20,9 +33,7 @@ async function getData(language_code: string, slug: string) {
   }
 }
 
-function assignCorrectAuthor(
-  author: any
-): Student | Committee | CommitteePosition | null {
+function assignCorrectAuthor(author: Author): Author | null {
   if (author.author_type === 'STUDENT') {
     return author as Student
   } else if (author.author_type === 'COMMITTEE') {
@@ -49,6 +60,9 @@ export default async function NewsPage({
   if (!correctedAuthor) {
     return <div>Not found author</div>
   }
+  let student_type: StudentType | false =
+    correctedAuthor.author_type === 'STUDENT' &&
+    (correctedAuthor as Student).student_type
 
   return (
     <main>
@@ -64,11 +78,63 @@ export default async function NewsPage({
           </ul>
           <h1 className='text-4xl'>{data.translation.title}</h1>
           <h2 className='text-lg my-2'>
-            {correctedAuthor && (
-              <StudentTag
-                student={correctedAuthor as Student}
-                includeAt={false}
-              />
+            {correctedAuthor && correctedAuthor.author_type === 'STUDENT' ? (
+              <div className='flex items-center'>
+                <StudentTag
+                  student={correctedAuthor as Student}
+                  includeAt={false}
+                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      {student_type === 'MEDIETEKNIK' ? (
+                        <MedieteknikSVG
+                          width={28}
+                          height={28}
+                          className='border rounded-full p-0.5 ml-1'
+                        />
+                      ) : student_type === 'THS' ? (
+                        <THSSVG
+                          width={28}
+                          height={28}
+                          className='border rounded p-0.5 ml-1'
+                        />
+                      ) : student_type === 'DATATEKNIK' ? (
+                        <DatateknikSVG
+                          width={28}
+                          height={28}
+                          className='border rounded p-0.5 ml-1'
+                        />
+                      ) : student_type === 'KTH' ? (
+                        <KTHSVG
+                          width={28}
+                          height={28}
+                          className='border rounded p-0.5 ml-1'
+                        />
+                      ) : (
+                        <GlobeAltIcon className='w-7 h-7 border rounded p-0.5 ml-1' />
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        {student_type === 'OTHER'
+                          ? 'Person is independent'
+                          : student_type === 'THS'
+                          ? 'Student is a part of THS'
+                          : 'Student is studying at ' + student_type}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            ) : correctedAuthor.author_type === 'COMMITTEE' ? (
+              <CommitteeTag committee={correctedAuthor as Committee} />
+            ) : (
+              correctedAuthor.author_type === 'COMMITTEE_POSITION' && (
+                <CommitteePositionTag
+                  committeePosition={correctedAuthor as CommitteePosition}
+                />
+              )
             )}
           </h2>
           <p className='text-sm mt-4'>
