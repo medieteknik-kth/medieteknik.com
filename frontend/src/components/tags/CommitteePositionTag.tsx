@@ -25,7 +25,11 @@ export default function CommitteePositionTag({
   return (
     <HoverCard>
       <HoverCardTrigger className='flex items-center' asChild>
-        <Button variant='link' className='text-black dark:text-yellow-400 pl-0'>
+        <Button
+          variant='link'
+          className='text-black dark:text-yellow-400 pl-0'
+          style={{ fontSize: 'inherit' }}
+        >
           {/*includeImage && (
             <Avatar className='w-8 h-8 mr-2'>
               <AvatarImage

@@ -57,7 +57,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
       <Button
         asChild
         variant='link'
-        className='h-fit flex flex-col justify-center pb-0'
+        className='h-fit flex flex-col justify-center pb-0 z-40 cursor-pointer'
       >
         <Link
           href={`/chapter/committees/${committee.translation.title.toLocaleLowerCase()}`}

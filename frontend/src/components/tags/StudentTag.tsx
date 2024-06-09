@@ -24,6 +24,7 @@ export const StudentTag = forwardRef<
         <Button
           variant='link'
           className='h-fit text-black dark:text-yellow-400 py-0 px-1'
+          style={{ fontSize: 'inherit' }}
           ref={ref}
         >
           {includeImage && (

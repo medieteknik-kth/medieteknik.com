@@ -23,7 +23,8 @@ export const CommitteeTag = forwardRef<
       <HoverCardTrigger className='inline-block' asChild>
         <Button
           variant='link'
-          className='h-fit text-black dark:text-yellow-400 py-0 px-1'
+          className='h-fit text-black dark:text-yellow-400 bg-yellow-400/30 dark:bg-yellow-400/20 py-0 px-1'
+          style={{ fontSize: 'inherit' }}
           ref={ref}
         >
           {includeImage && (
