@@ -19,7 +19,11 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { DocumentTextIcon, EyeIcon } from '@heroicons/react/24/outline'
+import {
+  DocumentTextIcon,
+  EyeIcon,
+  InboxIcon,
+} from '@heroicons/react/24/outline'
 import { useState, useEffect } from 'react'
 import { useAutoSave, AutoSaveResult } from './autoSave'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
@@ -135,8 +139,7 @@ export default function CommandBar({ language }: { language: string }) {
   }
 
   return (
-    <div className='w-full h-48 flex flex-col bg-white dark:bg-[#0D0D0D] fixed border-b-2 border-yellow-400 z-30'>
-      <div className='h-24 bg-white' />
+    <div className='w-full h-fit flex flex-col bg-white dark:bg-[#0D0D0D] fixed border-b-2 border-yellow-400 z-30'>
       <div className='flex justify-between px-6'>
         <div className='w-fit h-24 flex flex-col justify-center'>
           <Breadcrumb className=''>
@@ -160,8 +163,9 @@ export default function CommandBar({ language }: { language: string }) {
             </BreadcrumbList>
           </Breadcrumb>
           <div className='flex items-center mt-2'>
-            <div className='flex items-center'>
+            <div className='flex items-center relative'>
               <DocumentTextIcon className='w-8 h-8 text-green-600 dark:text-green-500' />
+              <p className='absolute text-xs top-8'>News</p>
               <Input
                 name='title'
                 id='title'
@@ -169,6 +173,15 @@ export default function CommandBar({ language }: { language: string }) {
                 onChange={(e) => setTitle(e.target.value)}
                 className='w-96 ml-2'
               />
+              <Button
+                variant={'outline'}
+                size={'icon'}
+                className='ml-4'
+                title='Import/Export'
+                aria-label='Import or Export'
+              >
+                <InboxIcon className='w-6 h-6' />
+              </Button>
               <Button
                 size='icon'
                 className='ml-4'

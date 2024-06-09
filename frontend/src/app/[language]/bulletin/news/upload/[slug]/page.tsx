@@ -4,14 +4,17 @@ import {
   TagIcon,
   HandThumbUpIcon,
   CogIcon,
+  ArrowUpTrayIcon,
 } from '@heroicons/react/24/outline'
 import CommandBar from './commandBar'
-import { AutoSaveProdier } from './autoSave'
+import { AutoSaveProvdier } from './autoSave'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_BASE_URL } from '@/utility/Constants'
 import { redirect } from 'next/navigation'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
+const EngagementPage = React.lazy(() => import('./pages/engagement'))
+const SettingsPage = React.lazy(() => import('./pages/settings'))
 
 async function getData(language_code: string, slug: string) {
   try {
@@ -52,41 +55,70 @@ export default async function UploadNews({
 
   return (
     <main className='relative'>
-      <AutoSaveProdier slug={slug} news_item={data}>
+      <div className='h-24' />
+      <AutoSaveProvdier slug={slug} news_item={data}>
         <CommandBar language={language} />
-        <div className='h-fit flex relative'>
+        <div className='h-[1500px] flex relative z-10'>
           <Tabs
             orientation='vertical'
             defaultValue='article'
-            className='w-full h-full flex justify-center relative'
+            className='w-full flex relative top-24 grow -z-10'
           >
-            <TabsList className='w-16 h-full bg-white dark:bg-[#111] absolute top-0 left-0 flex flex-col rounded-none z-20 border-r-2 border-yellow-400'>
-              <TabsTrigger value='article' className='p-2 mb-2'>
-                <DocumentIcon className='w-8 h-8' />
-              </TabsTrigger>
-              <TabsTrigger value='tags' className='p-2 mb-2'>
-                <TagIcon className='w-8 h-8' />
-              </TabsTrigger>
-              <TabsTrigger value='engagement' className='p-2 mb-2'>
-                <HandThumbUpIcon className='w-8 h-8' />
-              </TabsTrigger>
-              <TabsTrigger value='settings' className='p-2'>
-                <CogIcon className='w-8 h-8' />
-              </TabsTrigger>
+            <TabsList className='w-16 h-full bg-white dark:bg-[#111] flex flex-col justify-start rounded-none z-20 border-r-2 border-yellow-400'>
+              <div className='w-full sticky top-[12.5rem] flex flex-col items-center mt-2'>
+                <TabsTrigger
+                  value='article'
+                  className='p-2 mb-2 hover:bg-neutral-400/30'
+                  title='Write an article'
+                >
+                  <DocumentIcon className='w-8 h-8' />
+                </TabsTrigger>
+                <TabsTrigger
+                  value='tags'
+                  className='p-2 mb-2 hover:bg-neutral-400/30'
+                  title='Select tags'
+                >
+                  <TagIcon className='w-8 h-8' />
+                </TabsTrigger>
+                <TabsTrigger
+                  value='engagement'
+                  className='p-2 mb-2 hover:bg-neutral-400/30'
+                  title='View article engagement'
+                >
+                  <HandThumbUpIcon className='w-8 h-8' />
+                </TabsTrigger>
+                <TabsTrigger
+                  value='settings'
+                  className='p-2 hover:bg-neutral-400/30'
+                  title='Article settings'
+                >
+                  <CogIcon className='w-8 h-8' />
+                </TabsTrigger>
+              </div>
             </TabsList>
-            <TabsContent value='article' className='grow h-fit mt-48'>
+            <TabsContent value='article' className='grow h-fit'>
               <React.Suspense fallback={<div>Loading...</div>}>
                 <ArticlePage language={language} news_data={data} />
               </React.Suspense>
             </TabsContent>
-            <TabsContent value='tags' className='grow h-fit mt-48'>
+            <TabsContent value='tags' className='grow h-fit'>
               <React.Suspense fallback={<div>Loading...</div>}>
                 <TagsPage language={language} />
               </React.Suspense>
             </TabsContent>
+            <TabsContent value='engagement' className='grow h-fit'>
+              <React.Suspense fallback={<div>Loading...</div>}>
+                <EngagementPage />
+              </React.Suspense>
+            </TabsContent>
+            <TabsContent value='settings' className='grow h-fit'>
+              <React.Suspense fallback={<div>Loading...</div>}>
+                <SettingsPage />
+              </React.Suspense>
+            </TabsContent>
           </Tabs>
         </div>
-      </AutoSaveProdier>
+      </AutoSaveProvdier>
     </main>
   )
 }

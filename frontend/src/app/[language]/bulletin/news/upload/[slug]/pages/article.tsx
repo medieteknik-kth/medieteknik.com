@@ -219,7 +219,7 @@ export default function ArticlePage({
             type: 'committee tag',
             tag: {
               author: {
-                type: 'COMMITTEE',
+                author_type: 'COMMITTEE',
                 email: '',
                 logo_url: '',
                 committee_category_id: 1,
@@ -241,7 +241,7 @@ export default function ArticlePage({
             type: 'committee position tag',
             tag: {
               author: {
-                type: 'COMMITTEE_POSITION',
+                author_type: 'COMMITTEE_POSITION',
                 title: detail,
                 description: '',
                 email: '',
@@ -261,7 +261,7 @@ export default function ArticlePage({
             type: 'student tag',
             tag: {
               author: {
-                type: 'STUDENT',
+                author_type: 'STUDENT',
                 email: '',
                 first_name: detail,
                 last_name: '',
@@ -285,7 +285,7 @@ export default function ArticlePage({
   }, [])
 
   return (
-    <section className='w-full h-full flex justify-center relative'>
+    <section className='w-full h-fit flex justify-center relative'>
       <div className='w-full h-20 bg-white dark:bg-[#141414] fixed flex items-center px-20 top-48 left-0 z-10'>
         <div className='w-full h-16 border rounded flex px-4'>
           <div className='flex items-center'>
@@ -542,10 +542,10 @@ export default function ArticlePage({
       </div>
       <div
         className='w-fit h-fit
-      mt-24 bg-white shadow-lg shadow-black/20 dark:shadow-white/20 border-l border-t border-neutral-200 dark:border-neutral-700 flex 
-      relative flex-col justify-between dark:bg-[#111] mb-10'
+      mt-24 bg-white rounded rounded-tl-md border border-neutral-200 border-r-neutral-100 border-b-neutral-100 dark:border-neutral-700 dark:border-r-neutral-800 dark:border-b-neutral-800 flex 
+      relative flex-col justify-between dark:bg-[#181818] mb-10'
       >
-        <span className='w-fit h-fit absolute bottom-4 right-8 text-neutral-500'>
+        <span className='w-fit h-fit absolute bottom-4 right-8 text-neutral-500 dark:text-neutral-300'>
           1
         </span>
         <Slate

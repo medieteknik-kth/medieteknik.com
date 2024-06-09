@@ -35,7 +35,7 @@ const AutoSaveContext = createContext<{
   addNotification: () => {},
 })
 
-export function AutoSaveProdier({
+export function AutoSaveProvdier({
   slug,
   news_item,
   children,
