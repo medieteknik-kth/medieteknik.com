@@ -5,11 +5,13 @@ import {
   UserGroupIcon,
   DocumentDuplicateIcon,
   NewspaperIcon,
+  GlobeAltIcon,
   PhotoIcon,
   DocumentTextIcon,
   PencilSquareIcon,
   ArrowTopRightOnSquareIcon,
   EyeIcon,
+  CalendarDaysIcon,
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -22,8 +24,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
+const HomePage = React.lazy(() => import('./pages/home'))
+const MembersPage = React.lazy(() => import('./pages/members'))
 const StaticPage = React.lazy(() => import('./pages/static'))
+const NewsPage = React.lazy(() => import('./pages/news'))
+const EventPage = React.lazy(() => import('./pages/events'))
+const DocumentPage = React.lazy(() => import('./pages/documents'))
+const ImagePage = React.lazy(() => import('./pages/images'))
 
 export default function CommitteeManage({
   params: { language, committee },
@@ -33,7 +42,7 @@ export default function CommitteeManage({
   return (
     <main className='relative'>
       <div className='h-24 bg-black' />
-      <Breadcrumb className='w-fit h-fit absolute top-28 left-4'>
+      <Breadcrumb className='w-full h-fit border-b px-4 py-4'>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href={'/' + language + '/chapter'}>
@@ -61,51 +70,116 @@ export default function CommitteeManage({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className='w-full h-fit mt-10'>
-        <div className='w-full h-56 flex items-center px-40 mt-10'>
-          <div className='w-48 h-48 rounded-full shadow-md shadow-gray-300 mb-4 grid place-items-center'>
-            <Link
-              href={'/chapter/committees/styrelsen'}
-              target='_blank'
-              title='Styrelsen'
-              className='grid place-items-center'
-            >
-              <Image
-                src={StyrelsenIcon}
-                alt='Styrelsen'
-                width={192}
-                height={192}
-                className='rounded-full w-11/12 h-auto'
-              />
-            </Link>
+      <div className='w-full h-fit mt-4'>
+        <h1 className='absolute capitalize left-56 top-52 text-3xl'>
+          {committee}
+        </h1>
+        <Link
+          href={'/chapter/committees/styrelsen'}
+          target='_blank'
+          title='Styrelsen'
+          className='w-32 aspect-square grid place-items-center absolute top-40 left-20 bg-white rounded-full'
+        >
+          <Image
+            src={StyrelsenIcon}
+            alt='Styrelsen'
+            width={192}
+            height={192}
+            className='rounded-full w-28 h-auto'
+          />
+        </Link>
+        <div className='flex mb-10 pt-16'>
+          <div className='w-full h-fit py-6 flex px-20'>
+            <Tabs defaultValue='home' className='w-full h-fit'>
+              <TabsList className='h-full flex space-y-1 justify-start ml-36 z-20'>
+                <TabsTrigger
+                  value='home'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <HomeIcon className='w-6 h-6 mr-2' />
+                  <span>Home</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value='members'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <UserGroupIcon className='w-6 h-6 mr-2' />
+
+                  <span>Members</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value='pages'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <GlobeAltIcon className='w-6 h-6 mr-2' />
+                  <span>Pages</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value='news'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <NewspaperIcon className='w-6 h-6 mr-2' />
+                  <span>News</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value='events'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <CalendarDaysIcon className='w-6 h-6 mr-2' />
+                  <span>Events</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value='documents'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <DocumentDuplicateIcon className='w-6 h-6 mr-2' />
+                  <span>Documents</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value='images'
+                  className='w-36 h-10 flex justify-start items-center'
+                >
+                  <PhotoIcon className='w-6 h-6 mr-2' />
+                  <span>Images</span>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value='home'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <HomePage language={language} />
+                </React.Suspense>
+              </TabsContent>
+              <TabsContent value='members'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <MembersPage />
+                </React.Suspense>
+              </TabsContent>
+              <TabsContent value='pages'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <StaticPage language={language} committee={committee} />
+                </React.Suspense>
+              </TabsContent>
+              <TabsContent value='news'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <NewsPage language={language} />
+                </React.Suspense>
+              </TabsContent>
+              <TabsContent value='events'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <EventPage language={language} />
+                </React.Suspense>
+              </TabsContent>
+              <TabsContent value='documents'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <DocumentPage language={language} />
+                </React.Suspense>
+              </TabsContent>
+              <TabsContent value='images'>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <ImagePage language={language} />
+                </React.Suspense>
+              </TabsContent>
+            </Tabs>
           </div>
-          <div className='w-fit h-full ml-6 flex flex-col justify-center'>
-            <h1 className='text-3xl uppercase'>{committee}</h1>
-            <span>Public Committee</span>
-          </div>
-        </div>
-        <div className='flex mb-10'>
-          <div className='w-96 h-[550px] ml-20 border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300'>
-            <ul className='w-full px-20 grid grid-cols-1 gap-8 mt-8 text-lg'>
-              <li className='h-12 px-4 py-2 flex items-center border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300'>
-                <HomeIcon className='w-6 h-6' />
-                <span className='ml-2'>Home</span>
-              </li>
-              <li className='h-12 px-4 py-2 flex items-center border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300'>
-                <UserGroupIcon className='w-6 h-6' />
-                <span className='ml-2'>Members</span>
-              </li>
-              <li className='h-12 px-4 py-2 flex items-center border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300'>
-                <DocumentDuplicateIcon className='w-6 h-6' />
-                <span className='ml-2'>Items</span>
-              </li>
-              <li className='h-12 px-4 py-2 flex items-center border-2 bg-white border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300'>
-                <NewspaperIcon className='w-6 h-6' />
-                <span className='ml-2'>Pages</span>
-              </li>
-            </ul>
-          </div>
-          <StaticPage params={{ language }} />
         </div>
       </div>
     </main>
