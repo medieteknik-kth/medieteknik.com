@@ -10,7 +10,7 @@ from decorators.authorization import oauth
 from routes.public import committee_routes as public_committee_routes, \
     general_routes as public_general_routes, student_routes as public_student_routes, \
     item_routes as public_item_routes, dynamic_routes as public_dynamic_routes
-from routes import item_routes
+from routes import item_routes, author_routes
 from utility.constants import API_VERSION, ROUTES, PUBLIC_PATH, PROTECTED_PATH
 
 app = Flask(__name__)
@@ -62,6 +62,7 @@ app.register_blueprint(public_item_routes.public_albums_bp, url_prefix=f'{PUBLIC
 
 # Protected Routes
 app.register_blueprint(item_routes.news_bp, url_prefix=f'{PROTECTED_PATH}/{ROUTES.NEWS.value}')
+app.register_blueprint(author_routes.author_bp, url_prefix=f'{PROTECTED_PATH}/authors')
 
 
 @app.before_request
