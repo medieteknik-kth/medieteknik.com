@@ -82,7 +82,7 @@ class Profile(db.Model):
         facebook_url (str): Facebook URL
         linkedin_url (str): LinkedIn URL
         instagram_url (str): Instagram URL
-        student_id (int): Foreign key to student table
+        student_id (int): Foreign key to student table (required)
     """
     __tablename__ = 'profile'
 
@@ -97,7 +97,7 @@ class Profile(db.Model):
     instagram_url = Column(String(255))
 
     # Foreign keys
-    student_id = Column(Integer, ForeignKey('student.student_id'))
+    student_id = Column(Integer, ForeignKey('student.student_id'), nullable=False)
 
     # Relationships
     student = db.relationship('Student', backref='profile')
@@ -117,33 +117,36 @@ class Profile(db.Model):
         return data
 
 
-
-class StudentPositions(db.Model):
+class StudentMembership(db.Model):
     """
     Model for student positions in the database. Used for both history and current positions.
+    Either a student is part of a committe but doesn't have a position or vice versa.
 
     Attributes:
-        student_positions_id (int): Primary key
-        initiation_date (DateTime): Date and time of initiation
+        student_membership_id (int): Primary key
+        initiation_date (DateTime): Date and time of initiation (required)
         termination_date (DateTime): Date and time of termination
-        student_id (int): Foreign key to student
+        student_id (int): Foreign key to student (required)
+        committee_id (int): Foreign key to committee
         committee_position_id (int): Foreign key to committee position
     """
-    __tablename__ = 'student_positions'
+    __tablename__ = 'student_membership'
 
-    student_positions_id = Column(
+    student_membership_id = Column(
         Integer, primary_key=True, autoincrement=True)
 
-    initiation_date = Column(DateTime)
+    initiation_date = Column(DateTime, nullable=False)
     termination_date = Column(DateTime)
 
     # Foreign keys
-    student_id = Column(Integer, ForeignKey('student.student_id'))
+    student_id = Column(Integer, ForeignKey('student.student_id'), nullable=False)
+    committee_id = Column(Integer, ForeignKey('committee.committee_id'))
     committee_position_id = Column(Integer, ForeignKey(
         'committee_position.committee_position_id'))
 
     # Relationships
     student = db.relationship('Student', backref='student_positions')
+    committee = db.relationship('Committee', backref='student_positions')
     committee_position = db.relationship(
         'CommitteePosition', backref='student_positions')
 

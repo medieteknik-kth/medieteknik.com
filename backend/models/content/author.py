@@ -48,8 +48,9 @@ class Author(db.Model):
     resources = Column(ARRAY(Enum(AuthorResource, create_constraint=False, native_enum=False)))
 
     def to_dict(self):
-        data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
-                for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else 
+                list(map(lambda x: x.value if isinstance(x, enum.Enum) else x, getattr(self, c.name))) if isinstance(getattr(self, c.name), list) else
+                getattr(self, c.name) for c in self.__table__.columns}
         
         del data['author_id']
 

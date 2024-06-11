@@ -11,7 +11,7 @@ class TagCategory(enum.Enum):
 
 
 class Tag(db.Model):
-    __tablename__ = 'tags'
+    __tablename__ = 'tag'
 
     tag_id = Column(Integer, primary_key=True)
 
@@ -42,7 +42,7 @@ class TagTranslation(db.Model):
     title = Column(String(255))
 
     # Foreign keys
-    tag_id = Column(Integer, ForeignKey('tags.tag_id'))
+    tag_id = Column(Integer, ForeignKey('tag.tag_id'))
     language_code = Column(String(20), ForeignKey('language.language_code'))
 
     # Relationships
