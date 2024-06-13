@@ -37,14 +37,14 @@ class Item(db.Model):
 
     item_id = Column(Integer, primary_key=True, autoincrement=True)
 
-    created_at = Column(DateTime)
-    last_updated = Column(DateTime)
-    categories = Column(ARRAY(String))
+    created_at = Column(DateTime, default=None)
+    last_updated = Column(DateTime , default=None)
+    categories = Column(ARRAY(String), default=[])
     is_pinned = Column(Boolean, default=False, nullable=False)
-    is_public = Column(Boolean, default=True, nullable=False)
+    is_public = Column(Boolean, default=False, nullable=False)
     published_status = Column(Enum(PublishedStatus),
                               default=PublishedStatus.DRAFT, nullable=False)
-    url = Column(String(255))
+    url = Column(String(255), nullable=False)
 
     # Foreign keys
     author_id = Column(Integer, ForeignKey('author.author_id'))
@@ -64,19 +64,20 @@ class Item(db.Model):
     
     def to_dict(self, is_public_route=True) -> dict:
         if not self.is_public and is_public_route:
-            return {}
+            return None
 
         if is_public_route:
             if self.published_status == PublishedStatus.DRAFT:
-                return {}
-        
+                return None
+            
         columns = inspect(self).mapper.column_attrs.keys() 
         data = {c: getattr(self, c).value if isinstance(getattr(self, c), enum.Enum) else getattr(self, c)
                 for c in columns
                 }
         
-        author_data: Author | None = Author.query.get(self.author_id)
+        author_data: Author | None = Author.query.filter_by(author_id=self.author_id).first()
         if author_data:
+            author_data: Author = author_data   
             corrected_author_dict = author_data.retrieve_author().to_dict()
             corrected_author_dict['author_type'] = author_data.author_type.value
             data['author'] = corrected_author_dict

@@ -52,6 +52,9 @@ class Author(db.Model):
                 list(map(lambda x: x.value if isinstance(x, enum.Enum) else x, getattr(self, c.name))) if isinstance(getattr(self, c.name), list) else
                 getattr(self, c.name) for c in self.__table__.columns}
         
+        if not data:
+            return {}
+        
         del data['author_id']
 
         return data

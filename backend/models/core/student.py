@@ -110,6 +110,9 @@ class Profile(db.Model):
             return {}
 
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        if not data:
+            return {}
         
         del data['profile_id']
         del data['student_id']
@@ -155,6 +158,9 @@ class StudentMembership(db.Model):
 
     def to_dict(self):
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        if not data:
+            return {}
 
         del data['student_positions_id']
         del data['student_id']
