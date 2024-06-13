@@ -5,8 +5,26 @@ from sqlalchemy.orm import Query
 import unicodedata
 from typing import Type, Optional, List, Dict
 
+def convert_ISO_639_1_to_BCP_47(code: str) -> str | None:
+    """Converts an ISO 639-1 code to BCP 47
 
-def retrieve_language(args: MultiDict[str, str]) -> str:
+    Args:
+        code (str): ISO 639-1 code
+
+    Returns:
+        str: BCP 47 code
+    """
+
+
+    for language in AVAILABLE_LANGUAGES:
+        if language == code:
+            return language
+        if language.startswith(code):
+            return language
+
+    return None
+
+def retrieve_languages(args: MultiDict[str, str]) -> List[str]:
     """Retrieves the language from the request arguments
 
     Args:
@@ -16,13 +34,23 @@ def retrieve_language(args: MultiDict[str, str]) -> str:
         str: Language code
     """
     if args is None:
-        return DEFAULT_LANGUAGE_CODE
+        return AVAILABLE_LANGUAGES
 
-    language = args.get('language')
+    language = args.getlist('language')
 
-    if language not in AVAILABLE_LANGUAGES or language is None:
-        return DEFAULT_LANGUAGE_CODE
-    return language
+    if language is None:
+        return AVAILABLE_LANGUAGES
+    
+    languages = [convert_ISO_639_1_to_BCP_47(lang) for lang in language]
+
+    for lang in languages:
+        if lang not in AVAILABLE_LANGUAGES:
+            return AVAILABLE_LANGUAGES
+    
+    if len(languages) == 0:
+        return AVAILABLE_LANGUAGES
+    
+    return languages
 
 
 def get_translation(
@@ -62,6 +90,7 @@ def get_translation(
 
     translation = query.first()
 
+    
     # Fallback 1: Default language code
     if not translation:
         query: Query = translation_table.query
@@ -118,8 +147,14 @@ def update_translation_or_create(
 
 
 def normalize_to_ascii(text: str) -> str:
-    """Converts non-ASCII characters to their closest ASCII equivalents."""
+    """Converts non-ASCII characters to their closest ASCII equivalents.
+    
+    Args:
+        text (str): The text to normalize.
+
+    Returns:
+        str: The normalized text.
+    """
     normalized = unicodedata.normalize(
-        "NFKD", text)  # Decompose combined characters
-    # Remove diacritics
+        "NFKD", text)
     return "".join(c for c in normalized if not unicodedata.combining(c))
