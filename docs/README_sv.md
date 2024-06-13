@@ -1,5 +1,5 @@
 <div align='center'>
-    <img src='./docs/images/medieteknik-logo.png' height='100px' />
+    <img src='./images/medieteknik-logo.png' height='100px' />
 </div>
 
 # Medieteknik
@@ -10,22 +10,22 @@
 
 - [Översikt](#översikt)
 - [Tech Stack](#tech-stack)
-   * [Frontend](#frontend)
-   * [Backend](#backend)
-   * [Databas](#databas)
-   * [Annat](#annat)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+  - [Databas](#databas)
+  - [Annat](#annat)
 - [Förutsättningar](#förutsättningar)
-   * [Programvarukrav](#programvarukrav)
-   * [Miljövariabler](#miljövariabler)
-      + [./backend/.env](#backendenv)
+  - [Programvarukrav](#programvarukrav)
+  - [Miljövariabler](#miljövariabler)
+    - [./backend/.env](#backendenv)
 - [Installation](#installation)
-   * [Frontend Setup](#frontend-setup)
-   * [Backend Setup](#backend-setup)
+  - [Frontend Setup](#frontend-setup)
+  - [Backend Setup](#backend-setup)
 - [Användning](#användning)
-   * [Docker](#docker)
-      + [Uppdatera databastabeller](#uppdatera-databastabeller)
-      + [Återskapa databastabeller](#återskapa-databastabeller)
-   * [Databas](#databas-1)
+  - [Docker](#docker)
+    - [Uppdatera databastabeller](#uppdatera-databastabeller)
+    - [Återskapa databastabeller](#återskapa-databastabeller)
+  - [Databas](#databas-1)
 - [Lisens](#lisens)
 - [Kontakt](#kontakt)
 
