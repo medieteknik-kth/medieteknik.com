@@ -1,6 +1,7 @@
+from typing import List
 from utility.database import db
 from sqlalchemy import DateTime, String, Integer, Column, ForeignKey
-from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 
 class Committee(db.Model):
@@ -21,17 +22,27 @@ class Committee(db.Model):
     def __repr__(self):
         return '<Committee %r>' % self.committee_id
 
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: CommitteeTranslation | None = get_translation(
-            CommitteeTranslation,
-            ['committee_id'],
-            {'committee_id': self.committee_id},
-            language_code
-        )
-
+    def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-        data['translation'] = translation.to_dict() if translation else {}
+        if not data:
+            return {}
+        
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                CommitteeTranslation,
+                ['committee_id'],
+                {'committee_id': self.committee_id},
+                language_code
+            )
+            translations.append(translation)
+
+        del data['committee_id']
+        del data['committee_category_id']
+
+        data['translations'] = [translation.to_dict() for translation in set(translations)]
 
         return data
 
@@ -60,7 +71,6 @@ class CommitteeTranslation(db.Model):
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
         del data['committee_translation_id']
-        del data['language_code']
         del data['committee_id']
 
         return data

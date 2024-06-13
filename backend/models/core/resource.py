@@ -2,7 +2,7 @@ import enum
 from utility.database import db
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import ARRAY
-from utility.constants import ROUTES
+from utility.constants import AVAILABLE_LANGUAGES, ROUTES
 from utility.translation import get_translation
 
 class Content(db.Model):
@@ -22,16 +22,28 @@ class Content(db.Model):
     def __repr__(self):
         return '<Content %r>' % self.content_id
     
-    def to_dict(self, language_code='sv-SE'):
-        translation: ContentTranslation | None = get_translation(
-            ContentTranslation,
-            ['content_id'],
-            {'content_id': self.content_id},
-            language_code
-        )
-        data = {c.name: getattr(self, c.name) for c in self.__table__.columns if not c.endswith('_id')}
+    def to_dict(self, 
+                provided_languages: list[str] = AVAILABLE_LANGUAGES):
+        
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-        data['translation'] = translation.to_dict() if translation else {}
+        if not data:
+            return {}
+        
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                ContentTranslation,
+                ['content_id'],
+                {'content_id': self.content_id},
+                language_code
+            )
+            translations.append(translation)
+
+        del data['content_id']
+
+        data['translations'] = [translation.to_dict() for translation in translations]
 
         return data
     
@@ -67,6 +79,9 @@ class Resource(db.Model):
             return {}
         data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
                 for c in self.__table__.columns}
+        
+        if not data:
+            return {}
 
         del data['resource_id']
         del data['content_id']
@@ -93,6 +108,9 @@ class ContentTranslation(db.Model):
     
     def to_dict(self):
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        if not data:
+            return {}
         
         del data['content_translation_id']
         del data['content_id']

@@ -1,4 +1,4 @@
-from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
@@ -24,18 +24,29 @@ class Document(Item):
         'polymorphic_identity': 'document'
     }
 
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public_route=True):
-        translation: DocumentTranslation | None = get_translation(
-            DocumentTranslation,
-            ['document_id'],
-            {'document_id': self.document_id},
-            language_code
-        )
+    def to_dict(self, 
+                provided_languages: list[str] = AVAILABLE_LANGUAGES, 
+                is_public_route=True):
+        
         base_data = super().to_dict(is_public_route)
+
+        if not base_data:
+            return {}
+        
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                DocumentTranslation,
+                ['document_id'],
+                {'document_id': self.document_id},
+                language_code
+            )
+            translations.append(translation)
 
         del base_data['document_id']
 
-        base_data['translation'] = translation.to_dict() if translation else {}
+        base_data['translations'] = [translation.to_dict() for translation in translations]
 
         return base_data
 

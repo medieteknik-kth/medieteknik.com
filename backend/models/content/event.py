@@ -1,5 +1,5 @@
 import enum
-from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
@@ -39,14 +39,25 @@ class Event(Item):
         'polymorphic_identity': 'event'
     }
 
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public_route=True):
-        translation: EventTranslation | None = get_translation(
-            EventTranslation,
-            ['event_id'],
-            {'event_id': self.event_id},
-            language_code
-        )
+    def to_dict(self, 
+                provided_languages: list[str] = AVAILABLE_LANGUAGES, 
+                is_public_route=True):
+        
         base_dict = super().to_dict(is_public_route)
+
+        if not base_dict:
+            return {}
+
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                EventTranslation,
+                ['event_id'],
+                {'event_id': self.event_id},
+                language_code
+            )
+            translations.append(translation)
 
         del base_dict['event_id']
 
@@ -54,7 +65,7 @@ class Event(Item):
         base_dict['end_date'] = self.end_date
         base_dict['status'] = self.status
         base_dict['location'] = self.location
-        base_dict['translation'] = translation.to_dict() if translation else {}
+        base_dict['translations'] = [translation.to_dict() for translation in translations]
 
         return base_dict
 

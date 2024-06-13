@@ -1,7 +1,8 @@
 import enum
+from typing import List
 from utility.database import db
 from sqlalchemy import String, Integer, Column, ForeignKey, Enum, Boolean
-from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 
 class CommitteePositionsRole(enum.Enum):
@@ -31,22 +32,34 @@ class CommitteePosition(db.Model):
     def __repr__(self):
         return '<CommitteePosition %r>' % self.committee_position_id
 
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE, is_public_route=True):
-        translation: CommitteePositionTranslation | None = get_translation(
-            CommitteePositionTranslation,
-            ['committee_position_id'],
-            {'committee_position_id': self.committee_position_id},
-            language_code
-        )
+    def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True):
+
 
         data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
                 for c in self.__table__.columns}
-        data['translation'] = translation.to_dict() if translation else {}
+        
+        if not data:
+            return {}
+        
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                CommitteePositionTranslation,
+                ['committee_position_id'],
+                {'committee_position_id': self.committee_position_id},
+                language_code
+            )
+            translations.append(translation)
+
+        del data['committee_position_id']
+        del data['committee_id']
+
+        data['translations'] = [translation.to_dict() for translation in set(translations)]
 
         if is_public_route:
             del data['weight']
             del data['role']
-            del data['active']
 
         return data
 
@@ -80,4 +93,9 @@ class CommitteePositionTranslation(db.Model):
         return '<CommitteePositionTranslation %r>' % self.committee_position_translation_id
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+        del data['committee_position_translation_id']
+        del data['committee_position_id']
+
+        return data

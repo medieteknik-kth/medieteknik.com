@@ -1,5 +1,5 @@
 import enum
-from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
 from sqlalchemy import Column, Enum, ForeignKey, Integer, String
@@ -18,18 +18,28 @@ class Tag(db.Model):
     color = Column(String(7))
     category = Column(Enum(TagCategory), nullable=False, default=TagCategory.NEWS)
 
-    def to_dict(self, language_code=DEFAULT_LANGUAGE_CODE):
-        translation: TagTranslation | None = get_translation(
-            TagTranslation,
-            ['tag_id'],
-            {'tag_id': self.tag_id},
-            language_code
-        )
+    def to_dict(self, 
+                provided_languages: list[str] = AVAILABLE_LANGUAGES):
         data = {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
                 for c in self.__table__.columns}
+        
+        if not data:
+            return {}
+        
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                TagTranslation,
+                ['tag_id'],
+                {'tag_id': self.tag_id},
+                language_code
+            )
+            translations.append(translation)
+
+        data['translations'] = [translation.to_dict() for translation in translations]
 
         del data['tag_id']
-        data['translation'] = translation.to_dict() if translation else {}
 
         return data
 
