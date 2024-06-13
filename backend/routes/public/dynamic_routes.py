@@ -2,9 +2,9 @@ from flask import Blueprint, jsonify
 from sqlalchemy import func
 from models.core import Resource
 
-dynamic_routes_bp = Blueprint('dynamic_routes', __name__)
+public_dynamic_routes_bp = Blueprint('dynamic_routes', __name__)
 
-@dynamic_routes_bp.route('/', methods=['GET'])
+@public_dynamic_routes_bp.route('/', methods=['GET'])
 def get_resources() -> dict:
     """Retrieves all resources
     
@@ -24,7 +24,7 @@ def get_resources() -> dict:
     )
 
 
-@dynamic_routes_bp.route('/categories', methods=['GET'])
+@public_dynamic_routes_bp.route('/categories', methods=['GET'])
 def get_categories() -> dict:
     """Retrieves all categories
     
@@ -38,7 +38,7 @@ def get_categories() -> dict:
     return jsonify(categories_dict)
 
 
-@dynamic_routes_bp.route('/categories/<string:category>', methods=['GET'])
+@public_dynamic_routes_bp.route('/categories/<string:category>', methods=['GET'])
 def get_resources_by_category(category: str) -> dict:
     """Retrieves all resources by category
     

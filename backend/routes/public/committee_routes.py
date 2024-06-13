@@ -1,7 +1,6 @@
+from services.committees.public import *
 from flask import Blueprint, request, jsonify
-from sqlalchemy import func
-from models.committees import Committee, CommitteeCategory, CommitteePosition, CommitteeTranslation
-from utility.translation import retrieve_language
+from utility.translation import retrieve_languages
 
 public_committee_category_bp = Blueprint('public_committee_category', __name__)
 public_committee_bp = Blueprint('public_committee', __name__)
@@ -14,11 +13,9 @@ def get_committee_categories() -> dict:
     Returns:
         list[dict]: List of committee categories
     """
-    language_code = retrieve_language(request.args)
-    
-    categories: list[CommitteeCategory] = CommitteeCategory.query.all()
-    categories_dict = [category.to_dict(language_code) for category in categories]
-    return jsonify(categories_dict)
+    provided_languages = retrieve_languages(request.args)
+
+    return jsonify(get_all_committee_categories(provided_languages))
 
 
 @public_committee_bp.route('/', methods=['GET'])
@@ -28,71 +25,37 @@ def get_committees() -> dict:
     Returns:
         list[dict]: List of committees
     """
-    language_code = retrieve_language(request.args)
-    
-    committees: list[Committee] = Committee.query.all()
-    committees_dict = [committee.to_dict(language_code) for committee in committees]
-    return jsonify(
-        committees_dict
-    )
+    provided_languages = retrieve_languages(request.args)
 
-@public_committee_bp.route('/<string:committee_name>', methods=['GET'])
-def get_committee_by_name(committee_name: str) -> dict:
-    """Retrieves a committee by name
+    return jsonify(get_all_committees(provided_languages))
+
+@public_committee_bp.route('/<string:committee_title>', methods=['GET'])
+def get_committee_by_name(committee_title: str) -> dict:
+    """Retrieves a committee by title
     
     Args:
-        committee_name (str): Committee name
+        committee_title (str): Committee title
     
     Returns:
         dict: Committee
     """
-    language_code = retrieve_language(request.args)
-    
-    committee_translation: CommitteeTranslation | None = CommitteeTranslation.query \
-        .filter(func.lower(CommitteeTranslation.title) == func.lower(committee_name)) \
-        .filter_by(language_code=language_code).first()
-    
-    if not committee_translation:
-        return jsonify({})
-    
-    committee_translation: CommitteeTranslation = committee_translation
-    committee = Committee.query.filter_by(committee_id=committee_translation.committee_id).first()
-    
-    return jsonify(committee.to_dict(language_code))
+    provided_languages = retrieve_languages(request.args)
+    include_positions = request.args.get('include_positions', False, type=bool)
 
-@public_committee_position_bp.route('/', methods=['GET'])
-def get_committee_positions() -> dict:
-    """Retrieves all committee positions
-    
-    Returns:
-        list[dict]: List of committee positions
-    """
-    language_code = retrieve_language(request.args)
-
-    per_page = request.args.get('per_page', 10, type=int)
-    paginated_items = CommitteePosition.query.paginate(per_page=per_page)
-    
-    positions: list[CommitteePosition] = paginated_items.items
-    positions_dict = [position.to_dict(language_code, is_public_route=True) for position in positions]
     return jsonify(
-        {
-            "items": positions_dict,
-            "page": paginated_items.page,
-            "per_page": paginated_items.per_page,
-            "total_pages": paginated_items.pages,
-            "total_items": paginated_items.total,
-        }
+        get_committee_by_title(committee_title, provided_languages, CommitteeSettings(include_positions=include_positions))
     )
 
-    """Retrieves a committee position
+@public_committee_position_bp.route('/<string:position_title>', methods=['GET'])
+def get_committee_position_by_name(position_title: str) -> dict:
+    """Retrieves a committee position by title
     
     Args:
-        position_id (int): Committee position ID
+        position_title (str): Committee position title
     
     Returns:
         dict: Committee position
     """
-    language_code = retrieve_language(request.args)
-    
-    position: CommitteePosition = CommitteePosition.query.get(position_id)
-    return jsonify(position.to_dict(language_code, is_public_route=True))
+    provided_languages = retrieve_languages(request.args)
+
+    return jsonify(get_committee_position_by_title(provided_languages=provided_languages, title=position_title))
