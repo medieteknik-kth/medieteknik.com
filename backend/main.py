@@ -7,10 +7,7 @@ from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
 from utility.database import db
 from decorators.authorization import oauth
-from routes.public import committee_routes as public_committee_routes, \
-    general_routes as public_general_routes, student_routes as public_student_routes, \
-    item_routes as public_item_routes, dynamic_routes as public_dynamic_routes
-from routes import item_routes, author_routes
+from routes import register_routes
 from utility.constants import API_VERSION, ROUTES, PUBLIC_PATH, PROTECTED_PATH
 
 app = Flask(__name__)
@@ -48,22 +45,8 @@ oauth.register('kth', kwargs={
     'response type': 'token',
 })
 
-# Public Routes
-app.register_blueprint(public_general_routes.public_bp, url_prefix=f'{PUBLIC_PATH}')
-app.register_blueprint(public_dynamic_routes.dynamic_routes_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.DYNAMIC.value}')
-app.register_blueprint(public_committee_routes.public_committee_category_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}')
-app.register_blueprint(public_committee_routes.public_committee_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}')
-app.register_blueprint(public_committee_routes.public_committee_position_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}')
-app.register_blueprint(public_student_routes.public_student_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.STUDENTS.value}')
-app.register_blueprint(public_item_routes.public_news_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.NEWS.value}')
-app.register_blueprint(public_item_routes.public_events_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.EVENTS.value}')
-app.register_blueprint(public_item_routes.public_documents_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}')
-app.register_blueprint(public_item_routes.public_albums_bp, url_prefix=f'{PUBLIC_PATH}/{ROUTES.ALBUMS.value}')
-
-# Protected Routes
-app.register_blueprint(item_routes.news_bp, url_prefix=f'{PROTECTED_PATH}/{ROUTES.NEWS.value}')
-app.register_blueprint(author_routes.author_bp, url_prefix=f'{PROTECTED_PATH}/authors')
-
+# Register routes (blueprints)
+register_routes(app)
 
 @app.before_request
 def handle_preflight():
