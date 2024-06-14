@@ -1,17 +1,18 @@
 from flask import Blueprint, jsonify
 from models.core import Student
 
-public_student_bp = Blueprint('public_student', __name__)
+public_student_bp = Blueprint("public_student", __name__)
 
-@public_student_bp.route('/', methods=['GET'])
-def get_students() -> dict:
+
+@public_student_bp.route("/", methods=["GET"])
+def get_students():
     """Retrieves all students
-    
+
     Returns:
         list[dict]: List of students
     """
     paginated_items = Student.query.paginate()
-    
+
     students: list[Student] = paginated_items.items
     students_dict = [student.to_dict(is_public_route=True) for student in students]
     return jsonify(
@@ -25,15 +26,18 @@ def get_students() -> dict:
     )
 
 
-@public_student_bp.route('/<int:student_id>', methods=['GET'])
-def get_student(student_id: int) -> dict:
+@public_student_bp.route("/<int:student_id>", methods=["GET"])
+def get_student(student_id: int):
     """Retrieves a student
-    
+
     Args:
         student_id (int): Student ID
-    
+
     Returns:
         dict: Student
     """
-    student: Student = Student.query.get(student_id)
+    student: Student | None = Student.query.get(student_id)
+    if not student:
+        return jsonify({}), 404
+
     return jsonify(student.to_dict(is_public_route=True))
