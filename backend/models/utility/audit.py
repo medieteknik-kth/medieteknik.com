@@ -1,6 +1,7 @@
 import enum
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, inspect
 from utility.database import db
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
+
 
 class Result(enum.Enum):
     """
@@ -10,9 +11,11 @@ class Result(enum.Enum):
         SUCCESS: The request was successful.
         FAILURE: The request failed.
     """
-    SUCCESS = 'SUCCESS'
-    FAILURE = 'FAILURE'
-    
+
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+
+
 class EndpointCategory(enum.Enum):
     """
     The category of the endpoint.
@@ -27,14 +30,16 @@ class EndpointCategory(enum.Enum):
         ANALYTICS: The endpoint belongs to analytics.
         NOT_SPECIFIED: The endpoint category is not specified.
     """
-    COMMITTEE = 'COMMITTEE'
-    EVENT = 'EVENT'
-    POST = 'POST'
-    DOCUMENT = 'DOCUMENT'
-    RESOURCE = 'RESOURCE'
-    STUDENT = 'STUDENT'
-    ANALYTICS = 'ANALYTICS'
-    NOT_SPECIFIED = 'NOT SPECIFIED'
+
+    COMMITTEE = "COMMITTEE"
+    EVENT = "EVENT"
+    POST = "POST"
+    DOCUMENT = "DOCUMENT"
+    RESOURCE = "RESOURCE"
+    STUDENT = "STUDENT"
+    ANALYTICS = "ANALYTICS"
+    NOT_SPECIFIED = "NOT SPECIFIED"
+
 
 class Audit(db.Model):
     """
@@ -51,27 +56,40 @@ class Audit(db.Model):
         result: Whether the request was successful or not
         student_id: Foreign key to the student table
     """
-    __tablename__ = 'audit'
-    
+
+    __tablename__ = "audit"
+
     audit_id = Column(Integer, primary_key=True, autoincrement=True)
-    
+
     created_at = Column(DateTime, nullable=False)
-    action_type= Column(String(8), nullable=False)
+    action_type = Column(String(8), nullable=False)
     endpoint_category = Column(Enum(EndpointCategory), nullable=False)
     request_params = Column(String(1000))
     response_code = Column(Integer, nullable=False)
     additional_info = Column(String(1000))
     result = Column(Enum(Result), nullable=False, default=Result.SUCCESS)
-    
+
     # Foreign key
-    student_id = Column(Integer, ForeignKey('student.student_id'))
-    
+    student_id = Column(Integer, ForeignKey("student.student_id"))
+
     # Relationships
-    student = db.relationship('Student', backref='audit')
-        
+    student = db.relationship("Student", backref="audit")
+
     def __repr__(self):
-        return '<Audit %r>' % self.audit_id
+        return "<Audit %r>" % self.audit_id
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name).value if isinstance(getattr(self, c.name), enum.Enum) else getattr(self, c.name)
-                for c in self.__table__.columns}
+        columns = inspect(self)
+
+        if not columns:
+            return None
+
+        columns = columns.mapper.column_attrs.keys()
+        data = {}
+        for column in columns:
+            value = getattr(self, column)
+            if isinstance(value, enum.Enum):
+                value = value.value
+            data[column] = value
+
+        return data

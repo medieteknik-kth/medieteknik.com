@@ -1,5 +1,6 @@
+from sqlalchemy import Column, String, inspect
 from utility.database import db
-from sqlalchemy import Column, String
+
 
 class Language(db.Model):
     """
@@ -10,14 +11,21 @@ class Language(db.Model):
         language_name: Full name of the given language code
     """
 
-    __tablename__ = 'language'
+    __tablename__ = "language"
 
     language_code = Column(String(20), primary_key=True, autoincrement=False)
-    
+
     language_name = Column(String(255), nullable=False)
 
-    def __repr__(self):
-        return '<Language %r>' % self.language_id
-
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        columns = inspect(self)
+
+        if not columns:
+            return None
+
+        columns = columns.mapper.column_attrs.keys()
+        data = {}
+        for column in columns:
+            data[column] = getattr(self, column)
+
+        return data

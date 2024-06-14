@@ -1,5 +1,6 @@
+from sqlalchemy import Column, Integer, String, DateTime, UUID, SMALLINT, inspect
 from utility.database import db
-from sqlalchemy import Column, Integer, String, DateTime, UUID, SMALLINT
+
 
 class Analytics(db.Model):
     """
@@ -18,30 +19,41 @@ class Analytics(db.Model):
         timestamp (datetime): When the session started
         time_spent (int): Time spent on a page
     """
-    __tablename__ = 'analytics'
-    
+
+    __tablename__ = "analytics"
+
     analytics_id = Column(Integer, primary_key=True, autoincrement=True)
-    
+
     # User data
     user_id = Column(Integer)
-    
+
     # Session data
     session_id = Column(UUID, index=True, unique=True)
     geo_location = Column(String(255))
-    
+
     # Browser/Device data
     user_agent = Column(String(255))
     referrer = Column(String(255))
     screen_resolution = Column(String(255))
-    
+
     # Page data
     landing_page = Column(String(255))
     route = Column(String(255))
     timestamp = Column(DateTime)
     time_spent = Column(SMALLINT)
-        
+
     def __repr__(self):
-        return '<Analytics %r>' % self.analytics_id
-    
+        return "<Analytics %r>" % self.analytics_id
+
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        columns = inspect(self)
+
+        if not columns:
+            return None
+
+        columns = columns.mapper.column_attrs.keys()
+        data = {}
+        for column in columns:
+            data[column] = getattr(self, column)
+
+        return data
