@@ -1,11 +1,16 @@
-from utility.constants import DEFAULT_LANGUAGE_CODE, AVAILABLE_LANGUAGES
+"""
+A Utility module for handling translations and everything language related
+"""
+
+import unicodedata
+from typing import Any, Type, Optional, List, Dict
 from werkzeug.datastructures import MultiDict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Query
-import unicodedata
-from typing import Type, Optional, List, Dict
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
-def convert_ISO_639_1_to_BCP_47(code: str) -> str | None:
+
+def convert_iso_639_1_to_bcp_47(code: str) -> str:
     """Converts an ISO 639-1 code to BCP 47
 
     Args:
@@ -15,14 +20,14 @@ def convert_ISO_639_1_to_BCP_47(code: str) -> str | None:
         str: BCP 47 code
     """
 
-
     for language in AVAILABLE_LANGUAGES:
         if language == code:
             return language
         if language.startswith(code):
             return language
 
-    return None
+    return DEFAULT_LANGUAGE_CODE
+
 
 def retrieve_languages(args: MultiDict[str, str]) -> List[str]:
     """Retrieves the language from the request arguments
@@ -36,37 +41,36 @@ def retrieve_languages(args: MultiDict[str, str]) -> List[str]:
     if args is None:
         return AVAILABLE_LANGUAGES
 
-    language = args.getlist('language')
+    language = args.getlist("language")
 
     if language is None:
         return AVAILABLE_LANGUAGES
-    
-    languages = [convert_ISO_639_1_to_BCP_47(lang) for lang in language]
+    languages = [convert_iso_639_1_to_bcp_47(lang) for lang in language]
 
     for lang in languages:
         if lang not in AVAILABLE_LANGUAGES:
             return AVAILABLE_LANGUAGES
-    
     if len(languages) == 0:
         return AVAILABLE_LANGUAGES
-    
     return languages
 
 
 def get_translation(
     translation_table: Type[object],
     filter_columns: List[str],
-    filter_values: Dict[str, any],
+    filter_values: Dict[str, Any],
     language_code: str = DEFAULT_LANGUAGE_CODE,
 ) -> Optional[object]:
     """
-    Retrieves a translation object from the given translation table based on the provided filter columns and values.
+    Retrieves a translation object from the given translation table based on
+        the provided filter columns and values.
 
     Args:
         translation_table (Type[object]): The translation table to query.
         filter_columns (List[str]): The columns to filter by.
         filter_values (Dict[str, any]): The filter values for each column.
-        language_code (str, optional): The language code to filter by. Defaults to DEFAULT_LANGUAGE_CODE.
+        language_code (str, optional): The language code to filter by.
+            Defaults to DEFAULT_LANGUAGE_CODE.
 
     Returns:
         Optional[object]: The translation object if found, otherwise None.
@@ -85,13 +89,10 @@ def get_translation(
         *[
             getattr(translation_table, column) == filter_values[column]
             for column in filter_columns
-        ]
+        ],
     )
 
     translation = query.first()
-
-    
-    # Fallback 1: Default language code
     if not translation:
         query: Query = translation_table.query
         query = query.filter(
@@ -99,7 +100,7 @@ def get_translation(
             *[
                 getattr(translation_table, column) == filter_values[column]
                 for column in filter_columns
-            ]
+            ],
         )
         translation = query.first()
 
@@ -122,14 +123,15 @@ def update_translation_or_create(
     translation_table: Type[object],
     entries: Dict[str, str],
 ) -> None:
-    """Updates a translation object in the given translation table or creates a new one if it doesn't exist
+    """Updates a translation object in the given translation table
+        or creates a new one if it doesn't exist
 
     Args:
         language_code (str): The language code to filter by.
         translation_table (Type[object]): The translation table to query.
         entries (Dict[str, str]): The entries to update.
     """
-    language_code = entries.get('language_code')
+    language_code = entries.get("language_code")
     translation_entry = (
         db.session.query(translation_table)
         .filter_by(language_code=language_code)
@@ -148,13 +150,12 @@ def update_translation_or_create(
 
 def normalize_to_ascii(text: str) -> str:
     """Converts non-ASCII characters to their closest ASCII equivalents.
-    
+
     Args:
         text (str): The text to normalize.
 
     Returns:
         str: The normalized text.
     """
-    normalized = unicodedata.normalize(
-        "NFKD", text)
+    normalized = unicodedata.normalize("NFKD", text)
     return "".join(c for c in normalized if not unicodedata.combining(c))
