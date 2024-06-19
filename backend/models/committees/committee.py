@@ -66,8 +66,8 @@ class CommitteeTranslation(db.Model):
 
     committee_translation_id = Column(Integer, primary_key=True, autoincrement=True)
 
-    title = Column(String(255))
-    description = Column(String(255))
+    title = Column(String(125))
+    description = Column(String(500))
 
     # Foreign keys
     committee_id = Column(Integer, ForeignKey("committee.committee_id"))

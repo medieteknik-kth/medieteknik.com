@@ -5,6 +5,10 @@ from services.committees.public import (
     get_committee_by_title,
     get_committee_position_by_title,
     CommitteeSettings,
+    CommitteeCategorySettings,
+)
+from services.committees.public.committee_category import (
+    get_committee_category_by_title,
 )
 from utility.translation import retrieve_languages
 
@@ -19,6 +23,24 @@ def get_committee_categories():
     provided_languages = retrieve_languages(request.args)
 
     return jsonify(get_all_committee_categories(provided_languages))
+
+
+@public_committee_category_bp.route(
+    "/<string:committee_category_title>", methods=["GET"]
+)
+def get_committee_category_by_name(committee_category_title: str):
+    """Retrieves a committee by title"""
+
+    provided_languages = retrieve_languages(request.args)
+    include_committees = request.args.get("committees", False, type=bool)
+
+    return jsonify(
+        get_committee_category_by_title(
+            committee_category_title,
+            provided_languages,
+            CommitteeCategorySettings(include_committees),
+        )
+    )
 
 
 @public_committee_bp.route("/", methods=["GET"])
