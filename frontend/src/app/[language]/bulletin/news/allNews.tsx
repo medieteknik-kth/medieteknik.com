@@ -50,6 +50,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const maxPages = 10
 
@@ -229,64 +230,72 @@ export default function AllNews({
         </Card>
         {data.items.map((newsItem, index) => (
           <div key={index} className='relative'>
-            <NewsCard key={newsItem.url} newsItem={newsItem} />
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  title='Actions'
-                  aria-label='Actions'
-                  className='absolute bottom-8 right-4 z-10'
-                >
-                  <PlusIcon className='w-5 h-5' />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className='flex items-center'>
-                <TooltipProvider>
-                  <Tooltip open={copiedLink === index}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        title='Share'
-                        aria-label='Share'
-                        className='z-10'
-                        onClick={() => handleCopyLink(index)}
-                      >
-                        <TooltipContent className='z-10'>Copied</TooltipContent>
-
-                        <LinkIcon className='w-5 h-5' />
-                      </Button>
-                    </TooltipTrigger>
-                  </Tooltip>
-                </TooltipProvider>
+            {Object.keys(newsItem).length === 0 ? (
+              <Skeleton className='w-full h-full' />
+            ) : (
+              <div>
+                <NewsCard key={newsItem.url} newsItem={newsItem} />
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant='outline'
                       size='icon'
-                      title='News Tags'
-                      aria-label='News Tags'
-                      className='z-10 ml-4'
+                      title='Actions'
+                      aria-label='Actions'
+                      className='absolute bottom-8 right-4 z-10'
                     >
-                      <TagIcon className='w-6 h-6' />
+                      <PlusIcon className='w-5 h-5' />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className='absolute w-fit h-fit'>
-                    <h3 className='text-lg font-bold pb-1'>Tags</h3>
-                    <div className='flex'>
-                      {newsItem.categories &&
-                        newsItem.categories.map((category, index) => (
-                          <Badge key={index} className='w-fit mr-2'>
-                            {category}
-                          </Badge>
-                        ))}
-                    </div>
+                  <PopoverContent className='flex items-center'>
+                    <TooltipProvider>
+                      <Tooltip open={copiedLink === index}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant='outline'
+                            size='icon'
+                            title='Share'
+                            aria-label='Share'
+                            className='z-10'
+                            onClick={() => handleCopyLink(index)}
+                          >
+                            <TooltipContent className='z-10'>
+                              Copied
+                            </TooltipContent>
+
+                            <LinkIcon className='w-5 h-5' />
+                          </Button>
+                        </TooltipTrigger>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          title='News Tags'
+                          aria-label='News Tags'
+                          className='z-10 ml-4'
+                        >
+                          <TagIcon className='w-6 h-6' />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className='absolute w-fit h-fit'>
+                        <h3 className='text-lg font-bold pb-1'>Tags</h3>
+                        <div className='flex'>
+                          {newsItem.categories &&
+                            newsItem.categories.map((category, index) => (
+                              <Badge key={index} className='w-fit mr-2'>
+                                {category}
+                              </Badge>
+                            ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </PopoverContent>
                 </Popover>
-              </PopoverContent>
-            </Popover>
+              </div>
+            )}
           </div>
         ))}
       </CardContent>

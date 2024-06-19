@@ -1,4 +1,5 @@
 'use client'
+import { FindItemTranslation } from '@/utility/Language'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -43,7 +44,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useRouter } from 'next/navigation'
-import News from '@/models/Items'
+import { News } from '@/models/Items'
 
 export default function CommandBar({ language }: { language: string }) {
   const {
@@ -52,9 +53,11 @@ export default function CommandBar({ language }: { language: string }) {
     addNotification,
     content,
     updateContent,
+    currentLanguage,
   } = useAutoSave()
+
   const [title, setTitle] = useState(
-    content.translation.title || 'Untitled Article'
+    content.translations[0].title || 'Untitled Article'
   )
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -77,8 +80,8 @@ export default function CommandBar({ language }: { language: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: content.translation.title,
-      image: content.translation.main_image_url,
+      title: content.translations[0].title,
+      image: content.translations[0].main_image_url,
     },
   })
 
@@ -87,12 +90,15 @@ export default function CommandBar({ language }: { language: string }) {
 
     const json_data = {
       ...content,
-      translation: {
-        ...content.translation,
-        title: data.title,
-        main_image_url: data.image,
-        short_description: data.short_description,
-      },
+      translation: [
+        {
+          ...content.translations[0],
+          title: data.title,
+          main_image_url: data.image,
+          short_description: data.short_description,
+          language_code: currentLanguage,
+        },
+      ],
     }
 
     try {
@@ -169,7 +175,7 @@ export default function CommandBar({ language }: { language: string }) {
               <Input
                 name='title'
                 id='title'
-                defaultValue={content.translation.title}
+                defaultValue={content.translations[0].title}
                 onChange={(e) => setTitle(e.target.value)}
                 className='w-96 ml-2'
               />

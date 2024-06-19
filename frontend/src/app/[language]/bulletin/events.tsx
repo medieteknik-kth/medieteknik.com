@@ -43,26 +43,29 @@ const data: Event[] = [
     author: {
       author_type: 'COMMITTEE',
       email: 'styrelsen@medieteknik.com',
-      translation: {
-        title: 'Styrelsen',
-        description: 'Styrelsen',
-        language_code: 'sv',
-      },
+      translations: [
+        {
+          title: 'Styrelsen',
+          description: 'Styrelsen',
+          language_code: 'sv',
+        },
+      ],
       logo_url: StyrelsenIcon.src,
-      committee_category_id: 1,
     },
     categories: ['Admin'],
     created_at: '2021-09-01T00:00:00.000Z',
     start_date: '2021-09-01T00:00:00.000Z',
     end_date: '2021-09-01T00:00:00.000Z',
     location: 'KTH',
-    translation: {
-      title: 'SM #4',
-      body: 'SM #4',
-      language_code: 'sv',
-      main_image_url: BG.src,
-      short_description: 'SM #4',
-    },
+    translations: [
+      {
+        title: 'SM #4',
+        body: 'SM #4',
+        language_code: 'sv',
+        main_image_url: BG.src,
+        short_description: 'SM #4',
+      },
+    ],
     is_pinned: false,
     is_public: true,
     published_status: 'PUBLISHED',
@@ -73,26 +76,29 @@ const data: Event[] = [
     author: {
       author_type: 'COMMITTEE',
       email: 'styrelsen@medieteknik.com',
-      translation: {
-        title: 'Styrelsen',
-        description: 'Styrelsen',
-        language_code: 'sv',
-      },
+      translations: [
+        {
+          title: 'Styrelsen',
+          description: 'Styrelsen',
+          language_code: 'sv',
+        },
+      ],
       logo_url: StyrelsenIcon.src,
-      committee_category_id: 1,
     },
     categories: ['Admin'],
     created_at: '2021-09-01T00:00:00.000Z',
     start_date: '2021-09-01T00:00:00.000Z',
     end_date: '2021-09-01T00:00:00.000Z',
     location: 'KTH',
-    translation: {
-      title: 'SM #2',
-      body: 'SM #2',
-      language_code: 'sv',
-      main_image_url: BG.src,
-      short_description: 'SM #2',
-    },
+    translations: [
+      {
+        title: 'SM #2',
+        body: 'SM #2',
+        language_code: 'sv',
+        main_image_url: BG.src,
+        short_description: 'SM #2',
+      },
+    ],
     is_pinned: false,
     is_public: true,
     published_status: 'PUBLISHED',
@@ -103,26 +109,29 @@ const data: Event[] = [
     author: {
       author_type: 'COMMITTEE',
       email: 'styrelsen@medieteknik.com',
-      translation: {
-        title: 'Styrelsen',
-        description: 'Styrelsen',
-        language_code: 'sv',
-      },
+      translations: [
+        {
+          title: 'Styrelsen',
+          description: 'Styrelsen',
+          language_code: 'sv',
+        },
+      ],
       logo_url: StyrelsenIcon.src,
-      committee_category_id: 1,
     },
     categories: ['Admin'],
     created_at: '2021-09-01T00:00:00.000Z',
     start_date: '2021-09-01T00:00:00.000Z',
     end_date: '2021-09-01T00:00:00.000Z',
     location: 'KTH',
-    translation: {
-      title: 'SM #1',
-      body: 'SM #1',
-      language_code: 'sv',
-      main_image_url: BG.src,
-      short_description: 'SM #1',
-    },
+    translations: [
+      {
+        title: 'SM #1',
+        body: 'SM #1',
+        language_code: 'sv',
+        main_image_url: BG.src,
+        short_description: 'SM #1',
+      },
+    ],
     is_pinned: false,
     is_public: true,
     published_status: 'PUBLISHED',
@@ -198,7 +207,7 @@ export default function Events({
       </h1>
       {showCalendarPopup[0] && typeof showCalendarPopup[1] !== 'boolean' && (
         <CalendarTooltip
-          title={encodeURIComponent(showCalendarPopup[1].translation.title)}
+          title={encodeURIComponent(showCalendarPopup[1].translations[0].title)}
           startDate={new Date(showCalendarPopup[1].start_date)}
           endDate={new Date(showCalendarPopup[1].end_date)}
           link='asd ds'

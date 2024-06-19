@@ -58,9 +58,10 @@ import {
   CustomElement,
 } from '../util/Text'
 import { Input } from '@/components/ui/input'
-import News, { Author } from '@/models/Items'
+import { News, Author } from '@/models/Items'
 import { useAutoSave, AutoSaveResult } from '../autoSave'
 import { useRouter } from 'next/navigation'
+import { FindItemTranslation } from '@/utility/Language'
 
 declare module 'slate' {
   interface CustomTypes {
@@ -81,9 +82,14 @@ export default function ArticlePage({
   const [value, setValue] = useState('h1')
   const [editor] = useState(() => withReact(createEditor()))
   const [activeMarks, setActiveMarks] = useState<BooleanMark[]>([])
-  const { saveCallback, content, updateContent, addNotification } =
-    useAutoSave()
-  const [editingLanguage, setEditingLanguage] = useState(language)
+  const {
+    saveCallback,
+    content,
+    updateContent,
+    addNotification,
+    currentLanguage,
+    switchCurrentLanguage,
+  } = useAutoSave()
   const { push } = useRouter()
 
   if (Object.keys(news_data).length === 0) {
@@ -92,7 +98,7 @@ export default function ArticlePage({
   }
 
   const initialValue = useMemo(() => {
-    let correctedContent = news_data.translation.body
+    let correctedContent = content.translations[0].body
     if (correctedContent && correctedContent.length > 0) {
       return JSON.parse(correctedContent)
     }
@@ -222,12 +228,13 @@ export default function ArticlePage({
                 author_type: 'COMMITTEE',
                 email: '',
                 logo_url: '',
-                committee_category_id: 1,
-                translation: {
-                  title: detail,
-                  description: '',
-                  language_code: 'sv',
-                },
+                translations: [
+                  {
+                    title: detail,
+                    description: '',
+                    language_code: 'sv',
+                  },
+                ],
               },
             },
             children: [{ text: '' }],
@@ -560,14 +567,17 @@ export default function ArticlePage({
               const body = JSON.stringify(value)
               const updatedContent: News = {
                 ...news_data,
-                translation: {
-                  ...news_data.translation,
-                  body: body,
-                },
+                translations: [
+                  {
+                    ...news_data.translations[0],
+                    language_code: currentLanguage,
+                    body: body,
+                  },
+                ],
               }
 
               updateContent(updatedContent)
-              saveCallback(editingLanguage).then((result) => {
+              saveCallback(currentLanguage).then((result) => {
                 if (result === AutoSaveResult.SUCCESS) {
                   addNotification('Auto-Saved')
                 }

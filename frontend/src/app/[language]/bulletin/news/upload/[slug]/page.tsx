@@ -56,7 +56,7 @@ export default async function UploadNews({
   return (
     <main className='relative'>
       <div className='h-24' />
-      <AutoSaveProvdier slug={slug} news_item={data}>
+      <AutoSaveProvdier slug={slug} news_item={data} language_code={language}>
         <CommandBar language={language} />
         <div className='h-[1500px] flex relative z-10'>
           <Tabs

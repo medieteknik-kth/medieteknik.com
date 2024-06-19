@@ -1,5 +1,5 @@
 import Committee, { CommitteePosition } from '@/models/Committee'
-import News, { Author } from '@/models/Items'
+import { News, Author } from '@/models/Items'
 import Student, { StudentType } from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import Body from './body'
@@ -76,7 +76,7 @@ export default async function NewsPage({
                 </li>
               ))}
           </ul>
-          <h1 className='text-4xl'>{data.translation.title}</h1>
+          <h1 className='text-4xl'>{data.translations[0].title}</h1>
           <h2 className='text-lg my-2'>
             {correctedAuthor && correctedAuthor.author_type === 'STUDENT' ? (
               <div className='flex items-center'>
@@ -150,7 +150,7 @@ export default async function NewsPage({
         </div>
         <div className='w-full lg:w-[700px] h-[300px] bg-blue-500 my-8'></div>
         <div className='w-full lg:w-[700px] -mt-4 mb-8'>
-          <Body body={data.translation.body} />
+          <Body body={data.translations[0].body} />
         </div>
       </div>
     </main>

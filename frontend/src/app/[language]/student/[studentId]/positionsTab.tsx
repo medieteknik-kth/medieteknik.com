@@ -12,107 +12,149 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Logo from 'public/images/logo.png'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import NLGIcon from 'public/images/committees/nlg.png'
-import { StudentCommitteePosition } from '@/models/Committee'
+import { StudentCommitteePosition } from '@/models/Student'
 import { CommitteeTooltip } from '@/components/tooltips/Tooltip'
 
 const testPositions: StudentCommitteePosition[] = [
   {
-    committee: {
-      type: 'committee',
-      name: 'NLG',
-      email: '',
-      logo_url: NLGIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Webmaster',
+      title: 'Webmaster',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('August 20 2023').toLocaleDateString(),
-    endDate: new Date('August 20 2024').toLocaleDateString(),
+    initiation_date: new Date('August 20 2023').toLocaleDateString(),
+    termination_date: new Date('August 20 2024').toLocaleDateString(),
   },
   {
-    committee: {
-      type: 'committee',
-      name: 'Styrelsen',
-      email: '',
-      logo_url: StyrelsenIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Ordförande',
+      title: 'Ordförande',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('January 20 2022').toLocaleDateString(),
-    endDate: new Date('January 20 2023').toLocaleDateString(),
+    initiation_date: new Date('January 20 2022').toLocaleDateString(),
+    termination_date: new Date('January 20 2023').toLocaleDateString(),
   },
   {
-    committee: {
-      type: 'committee',
-      name: 'Styrelsen',
-      email: '',
-      logo_url: StyrelsenIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Vice-Ordförande',
+      title: 'Vice-Ordförande',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('January 20 2021').toLocaleDateString(),
-    endDate: new Date('January 20 2022').toLocaleDateString(),
+    initiation_date: new Date('January 20 2021').toLocaleDateString(),
+    termination_date: new Date('January 20 2022').toLocaleDateString(),
   },
   {
-    committee: {
-      type: 'committee',
-      name: 'Styrelsen',
-      email: '',
-      logo_url: StyrelsenIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Kassör',
+      title: 'Kassör',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('January 20 2020').toLocaleDateString(),
-    endDate: new Date('January 20 2021').toLocaleDateString(),
+    initiation_date: new Date('January 20 2020').toLocaleDateString(),
+    termination_date: new Date('January 20 2021').toLocaleDateString(),
   },
   {
-    committee: {
-      type: 'committee',
-      name: 'Styrelsen',
-      email: '',
-      logo_url: StyrelsenIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Sekreterare',
+      title: 'Sekreterare',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('January 20 2019').toLocaleDateString(),
-    endDate: new Date('January 20 2020').toLocaleDateString(),
+    initiation_date: new Date('January 20 2019').toLocaleDateString(),
+    termination_date: new Date('January 20 2020').toLocaleDateString(),
   },
   {
-    committee: {
-      type: 'committee',
-      name: 'Styrelsen',
-      email: '',
-      logo_url: StyrelsenIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Vice-Sekreterare',
+      title: 'Vice-Sekreterare',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('January 20 2018').toLocaleDateString(),
-    endDate: new Date('January 20 2019').toLocaleDateString(),
+    initiation_date: new Date('January 20 2018').toLocaleDateString(),
+    termination_date: new Date('January 20 2019').toLocaleDateString(),
   },
   {
-    committee: {
-      type: 'committee',
-      name: 'Styrelsen',
-      email: '',
-      logo_url: StyrelsenIcon.src,
+    student: {
+      author_type: 'STUDENT',
+      email: 'andree4@kth.se',
+      first_name: 'Andree',
+      last_name: 'Eriksson',
+      student_type: 'MEDIETEKNIK',
     },
     position: {
-      name: 'Ledamot',
+      title: 'Ledamot',
+      active: true,
+      author_type: 'COMMITTEE_POSITION',
+      email: '',
+      role: 'ADMIN',
+      weight: 0,
       description: '',
     },
-    initiatedDate: new Date('January 20 2017').toLocaleDateString(),
-    endDate: new Date('January 20 2018').toLocaleDateString(),
+    initiation_date: new Date('January 20 2017').toLocaleDateString(),
+    termination_date: new Date('January 20 2018').toLocaleDateString(),
   },
 ]
 
@@ -125,10 +167,10 @@ export default function StudentPositions({
 }) {
   const hasAnyPostion = testPositions.length > 0
   const activePositions = testPositions.filter(
-    (position) => new Date(position.endDate) > new Date()
+    (position) => new Date(position.termination_date) > new Date()
   )
   const previousPositions = testPositions.filter(
-    (position) => new Date(position.endDate) < new Date()
+    (position) => new Date(position.termination_date) < new Date()
   )
   return (
     <div className='flex'>
@@ -150,22 +192,19 @@ export default function StudentPositions({
               {hasAnyPostion ? (
                 activePositions.map((position, index) => (
                   <TableRow key={index}>
-                    <TableCell>{position.position.name}</TableCell>
+                    <TableCell>{position.position.title}</TableCell>
                     <TableCell className='flex items-center'>
                       <Avatar className='w-6 h-auto mr-1'>
-                        <AvatarImage
-                          src={position.committee.logo_url}
-                          alt='Profile Picture'
-                        />
+                        <AvatarImage src={''} alt='Profile Picture' />
                         <AvatarFallback>Profile Picture</AvatarFallback>
                       </Avatar>
-                      {position.committee.name}
+                      {''}
                     </TableCell>
                     <TableCell>
-                      {new Date(position.initiatedDate).toLocaleDateString()}
+                      {new Date(position.initiation_date).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      {new Date(position.endDate).toLocaleDateString()}
+                      {new Date(position.termination_date).toLocaleDateString()}
                     </TableCell>
                   </TableRow>
                 ))
@@ -197,22 +236,19 @@ export default function StudentPositions({
               {hasAnyPostion ? (
                 previousPositions.map((position, index) => (
                   <TableRow key={index}>
-                    <TableCell>{position.position.name}</TableCell>
+                    <TableCell>{position.position.title}</TableCell>
                     <TableCell className='flex items-center'>
                       <Avatar className='w-6 h-auto mr-1'>
-                        <AvatarImage
-                          src={position.committee.logo_url}
-                          alt='Profile Picture'
-                        />
+                        <AvatarImage src={''} alt='Profile Picture' />
                         <AvatarFallback>Profile Picture</AvatarFallback>
                       </Avatar>
-                      {position.committee.name}
+                      {''}
                     </TableCell>
                     <TableCell>
-                      {new Date(position.initiatedDate).toLocaleDateString()}
+                      {new Date(position.initiation_date).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      {new Date(position.endDate).toLocaleDateString()}
+                      {new Date(position.termination_date).toLocaleDateString()}
                     </TableCell>
                   </TableRow>
                 ))

@@ -18,32 +18,35 @@ import {
 } from '@/components/ui/popover'
 
 import ShortNews from './components/shortNews'
-import News from '@/models/Items'
+import { News } from '@/models/Items'
 
 const breakingNews: News[] = [
   {
     is_pinned: false,
     is_public: true,
-    translation: {
-      title: 'KTH:s rektor: "Vi har en plan för att åpplösa campus"',
-      body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
-      language_code: 'sv',
-      short_description:
-        'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
-      main_image_url: BG.src,
-    },
+    translations: [
+      {
+        title: 'KTH:s rektor: "Vi har en plan för att åpplösa campus"',
+        body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
+        language_code: 'sv',
+        short_description:
+          'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
+        main_image_url: BG.src,
+      },
+    ],
     published_status: 'PUBLISHED',
     url: '1',
     author: {
       author_type: 'COMMITTEE',
-      translation: {
-        title: 'Styrelsen',
-        description: '',
-        language_code: 'sv',
-      },
+      translations: [
+        {
+          title: 'Styrelsen',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
       logo_url: StyrelsenIcon.src,
       email: 'styrelsen@medieteknik.com',
-      committee_category_id: 1,
     },
     categories: ['Skola'],
     created_at: '2021-09-01',
@@ -52,14 +55,16 @@ const breakingNews: News[] = [
     is_pinned: false,
     is_public: true,
     published_status: 'PUBLISHED',
-    translation: {
-      title: 'International students: "We need more support"',
-      body: 'International students at KTH are struggling with the lack of support.',
-      language_code: 'sv',
-      short_description:
-        'International students at KTH are struggling with the lack of support.',
-      main_image_url: BG2.src,
-    },
+    translations: [
+      {
+        title: 'International students: "We need more support"',
+        body: 'International students at KTH are struggling with the lack of support.',
+        language_code: 'sv',
+        short_description:
+          'International students at KTH are struggling with the lack of support.',
+        main_image_url: BG2.src,
+      },
+    ],
     url: '2',
     author: {
       author_type: 'STUDENT',

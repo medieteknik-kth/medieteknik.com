@@ -1,4 +1,3 @@
-import News from '@/models/Items'
 import Committee, { CommitteePosition } from '@models/Committee'
 import Student from '@models/Student'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -17,20 +16,21 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { StudentTooltip, CommitteeTooltip } from '@/components/tooltips/Tooltip'
+import { News } from '@/models/Items'
 
 export default function NewsCard({ newsItem }: { newsItem: News }) {
   return (
     <Card
       className='w-full h-full flex flex-col justify-between'
-      title={newsItem.translation.title}
-      aria-label={newsItem.translation.title}
+      title={newsItem.translations[0].title}
+      aria-label={newsItem.translations[0].title}
     >
       <CardHeader>
         <Link href={'./news/' + newsItem.url} className='group w-full h-20'>
-          {newsItem.translation.main_image_url ? (
+          {newsItem.translations[0].main_image_url ? (
             <Image
-              src={newsItem.translation.main_image_url}
-              alt={newsItem.translation.title + ' Image'}
+              src={newsItem.translations[0].main_image_url}
+              alt={newsItem.translations[0].title + ' Image'}
               width={300}
               height={100}
               className='object-cover w-full h-full'
@@ -40,10 +40,10 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
           )}
 
           <CardTitle className='py-2 underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
-            {newsItem.translation.title}
+            {newsItem.translations[0].title}
           </CardTitle>
           <CardDescription className='max-h-24 text-ellipsis overflow-y-hidden group-hover:underline !no-underline'>
-            {newsItem.translation.short_description}
+            {newsItem.translations[0].short_description}
           </CardDescription>
         </Link>
       </CardHeader>
@@ -57,7 +57,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
                 ? 'chapter/committees/' +
                   (
                     newsItem.author as Committee
-                  ).translation.title.toLocaleLowerCase()
+                  ).translations[0].title.toLocaleLowerCase()
                 : 'student/' + (newsItem.author as Student).email)
             }
           >
@@ -78,7 +78,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
             <HoverCard>
               <HoverCardTrigger className='max-w-[175px] text-sm truncate overflow-x-hidden text-ellipsis'>
                 {newsItem.author.author_type === 'COMMITTEE'
-                  ? (newsItem.author as Committee).translation.title
+                  ? (newsItem.author as Committee).translations[0].title
                   : newsItem.author.author_type === 'COMMITTEE_POSITION'
                   ? (newsItem.author as CommitteePosition).title
                   : (newsItem.author as Student).first_name +

@@ -1,4 +1,4 @@
-import News from '@/models/Items'
+import { News } from '@/models/Items'
 import Committee from '@models/Committee'
 import Student from '@models/Student'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -24,12 +24,12 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
       <Link
         href={`./bulletin/news/${newsItem.url}`}
         className='w-fit max-w-44 h-full p-5 pr-0 relative overflow-hidden'
-        title={newsItem.translation.title}
-        aria-label={newsItem.translation.title}
+        title={newsItem.translations[0].title}
+        aria-label={newsItem.translations[0].title}
       >
         <Image
-          src={newsItem.translation.main_image_url}
-          alt={newsItem.translation.title}
+          src={newsItem.translations[0].main_image_url}
+          alt={newsItem.translations[0].title}
           width={200}
           height={200}
           className='h-full w-auto rounded-xl object-cover'
@@ -43,10 +43,10 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
             className='group mt-3 pt-3 px-6 pb-6'
           >
             <CardTitle className='w-full underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
-              {newsItem.translation.title}
+              {newsItem.translations[0].title}
             </CardTitle>
             <CardDescription className='w-full group-hover:underline !no-underline'>
-              {newsItem.translation.short_description}
+              {newsItem.translations[0].short_description}
             </CardDescription>
           </Link>
         </CardHeader>
@@ -59,7 +59,7 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
                   ? 'chapter/committees/' +
                     (
                       newsItem.author as Committee
-                    ).translation.title.toLocaleLowerCase()
+                    ).translations[0].title.toLocaleLowerCase()
                   : './chapter/students/' + (newsItem.author as Student).email
               }
             >
@@ -73,7 +73,8 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
                 />
                 <AvatarFallback>
                   {newsItem.author.author_type === 'COMMITTEE'
-                    ? (newsItem.author as Committee).translation.title + ' logo'
+                    ? (newsItem.author as Committee).translations[0].title +
+                      ' logo'
                     : (newsItem.author as Student).first_name +
                       ' ' +
                       (newsItem.author as Student).last_name +
@@ -85,7 +86,7 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
               <HoverCard>
                 <HoverCardTrigger>
                   {newsItem.author.author_type === 'COMMITTEE'
-                    ? (newsItem.author as Committee).translation.title
+                    ? (newsItem.author as Committee).translations[0].title
                     : (newsItem.author as Student).first_name +
                       ' ' +
                       (newsItem.author as Student).last_name}

@@ -6,8 +6,8 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { API_BASE_URL } from '@/utility/Constants'
-import News from '@/models/Items'
+import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
+import { News } from '@/models/Items'
 
 export const AutoSaveResult = {
   SUCCESS: 'Saved',
@@ -26,6 +26,8 @@ const AutoSaveContext = createContext<{
   saveCallback: (language_code: string, manual?: boolean) => Promise<string>
   notifications: string
   addNotification: (message: string) => void
+  currentLanguage: LanguageCodes
+  switchCurrentLanguage: (language_code: LanguageCodes) => void
 }>({
   content: {} as News,
   updateContent: () => {},
@@ -33,21 +35,28 @@ const AutoSaveContext = createContext<{
   saveCallback: async () => 'Context not available',
   notifications: '',
   addNotification: () => {},
+  currentLanguage: 'sv',
+  switchCurrentLanguage: () => {},
 })
 
 export function AutoSaveProvdier({
   slug,
   news_item,
+  language_code,
   children,
 }: {
   slug: string
   news_item: News
+  language_code: string
   children: React.ReactNode
 }) {
   const [autoSavePossible, setAutoSavePossible] = useState(false)
   const [errorCount, setErrorCount] = useState(0)
   const [content, setContent] = useState<News>(news_item)
   const [notification, setNotification] = useState<string>('')
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCodes>(
+    language_code as LanguageCodes
+  )
 
   const saveCallback = useCallback(
     async (language_code: string, manual: boolean = false) => {
@@ -114,6 +123,13 @@ export function AutoSaveProvdier({
     [notification]
   )
 
+  const switchCurrentLanguage = useCallback(
+    (language: LanguageCodes) => {
+      setCurrentLanguage(language)
+    },
+    [currentLanguage]
+  )
+
   useEffect(() => {
     setInterval(() => {
       setAutoSavePossible(true)
@@ -129,6 +145,8 @@ export function AutoSaveProvdier({
         saveCallback,
         notifications: notification,
         addNotification,
+        currentLanguage,
+        switchCurrentLanguage,
       }}
     >
       {children}

@@ -1,14 +1,11 @@
-import News, { NewsPagination } from '@/models/Items'
 import AllNews from './allNews'
 import { API_BASE_URL } from '@/utility/Constants'
+import { News, NewsPagination } from '@/models/Items'
 
 async function getNews(language_code: string) {
-  const response = await fetch(
-    `${API_BASE_URL}/public/news`,
-    {
-      cache: 'no-store',
-    }
-  )
+  const response = await fetch(`${API_BASE_URL}/public/news`, {
+    cache: 'no-store',
+  })
   if (response.ok) {
     const data = await response.json()
     return data as NewsPagination

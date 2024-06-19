@@ -33,7 +33,7 @@ export default function EventPreview({
       <div className='w-full h-full relative -z-20 rounded-l-xl overflow-hidden'>
         <div className='w-full h-full absolute bg-black/50' />
         <Image
-          src={event.translation.main_image_url || BG.src}
+          src={event.translations[0].main_image_url || BG.src}
           width={1080}
           height={720}
           alt='Event image'
@@ -57,7 +57,7 @@ export default function EventPreview({
               href={`./chapter/events/${event.url}`}
               className='hover:underline underline-offset-4 decoration-yellow-400 decoration-2'
             >
-              {event.translation.title}
+              {event.translations[0].title}
             </Link>
           </CardTitle>
         </CardHeader>
@@ -68,7 +68,8 @@ export default function EventPreview({
                 <Avatar>
                   <AvatarImage src={(event.author as Committee).logo_url} />
                   <AvatarFallback>
-                    {(event.author as Committee).translation.title + ' logo'}
+                    {(event.author as Committee).translations[0].title +
+                      ' logo'}
                   </AvatarFallback>
                 </Avatar>
               ) : (
@@ -88,9 +89,9 @@ export default function EventPreview({
                   <Link
                     href={`./chapter/committees/${(
                       event.author as Committee
-                    ).translation.title.toLocaleLowerCase()}`}
+                    ).translations[0].title.toLocaleLowerCase()}`}
                   >
-                    {(event.author as Committee).translation.title}
+                    {(event.author as Committee).translations[0].title}
                   </Link>
                 ) : (
                   <Link href='./chapter/students/johndoe'>
