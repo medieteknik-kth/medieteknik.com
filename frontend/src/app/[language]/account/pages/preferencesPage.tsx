@@ -45,7 +45,6 @@ export default function PreferencesPage({ language }: { language: string }) {
   ])
 
   const getFlagCode = (lang: string) => {
-    console.log('lang', lang)
     return languageFlags.get(lang) || 'xx'
   }
 
