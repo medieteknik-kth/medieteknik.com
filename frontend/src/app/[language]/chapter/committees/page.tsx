@@ -4,49 +4,13 @@ import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import Committee, { CommitteeCategory } from '@/models/Committee'
+import {
+  GetCommitteeCategories,
+  GetCommitteeCategoryCommittees,
+} from '@/api/committee'
 
-/**
- * Retrieves committee category data from the API based on the specified language.
- *
- * @param {string} language - The language code for which to retrieve the data.
- * @return {Promise<CommitteeCategoryProps[]>} A promise that resolves to an array of CommitteeCategoryProps objects representing the retrieved data.
- * @throws {Error} If the API request fails or the server is down.
- */
-async function getCommitteeCategoryData(language: string) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/public/committee_categories?language_code=${language}`
-    )
-
-    if (response.ok) {
-      const data = await response.json()
-      return data as CommitteeCategory[]
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-/**
- * Retrieves committee data from the API based on the specified language.
- *
- * @param {string} language_code - The language code for which to retrieve the data.
- * @return {Promise<CommitteeProps[]>} A promise that resolves to an array of CommitteeProps objects representing the retrieved data.
- * @throws {Error} If the API request fails or the server is down.
- */
-async function getCommitteeData(language_code: string) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/public/committees?language_code=${language_code}`
-    )
-
-    if (response.ok) {
-      const data = await response.json()
-      return data as Committee[]
-    }
-  } catch (error) {
-    console.error(error)
-  }
+interface CommitteeCategoryWithCommittees extends CommitteeCategory {
+  committees: Committee[]
 }
 
 export default async function Committees({
@@ -54,10 +18,28 @@ export default async function Committees({
 }: {
   params: { language: string }
 }) {
-  const committeeCategoryData = await getCommitteeCategoryData(language)
-  const committeeData = await getCommitteeData(language)
+  const committeeCategories = await GetCommitteeCategories(language)
+  const categoriesWithCommittees: CommitteeCategoryWithCommittees[] = []
 
-  if (!committeeCategoryData || !committeeData) {
+  if (!committeeCategories) {
+    return <div>Not found</div>
+  }
+
+  for (const committeeCategory of committeeCategories) {
+    const committees = (await GetCommitteeCategoryCommittees(
+      committeeCategory.translations[0].title,
+      language
+    )) as CommitteeCategoryWithCommittees | null
+    if (committees) {
+      categoriesWithCommittees.push({
+        email: committeeCategory.email,
+        translations: committeeCategory.translations,
+        committees: committees.committees,
+      })
+    }
+  }
+
+  if (categoriesWithCommittees.length === 0) {
     return <div>Not found</div>
   }
 
@@ -67,43 +49,38 @@ export default async function Committees({
       <Head title='Committees' />
 
       <div className='w-fit flex flex-col py-10 px-20 xl:px-52 desktop:px-96'>
-        {committeeCategoryData.map((category, index) => (
+        {categoriesWithCommittees.map((data, index) => (
           <section
             key={index}
             className='w-fit h-fit flex flex-col mb-10 last:mb-0'
           >
             <h2 className='text-4xl uppercase tracking-wider border-b-2 border-yellow-400 pb-4'>
-              {category.translation.title}
+              {data.translations[0].title}
             </h2>
             <div
               className={`w-fit h-fit *:h-[200px] flex flex-wrap py-4 gap-4`}
             >
-              {committeeData
-                .filter(
-                  (committee) =>
-                    committee.committee_category_id ===
-                    category.committee_category_id
-                )
+              {data.committees
                 .sort((a, b) =>
-                  a.translation.title.localeCompare(b.translation.title)
+                  a.translations[0].title.localeCompare(b.translations[0].title)
                 )
-                .map((item, index) => (
+                .map((committee, index) => (
                   <Link
-                    href={`./committees/${item.translation.title.toLowerCase()}`}
-                    title={item.translation.title}
-                    aria-label={item.translation.title}
+                    href={`./committees/${committee.translations[0].title.toLowerCase()}`}
+                    title={committee.translations[0].title}
+                    aria-label={committee.translations[0].title}
                     key={index}
                     className='w-[220px] relative rounded-t-lg border transition-transform hover:scale-110 hover:hover:font-bold'
                   >
                     <Image
-                      src={item.logo_url || Logo.src}
-                      alt={`${item.translation.title}icon`}
+                      src={committee.logo_url || Logo.src}
+                      alt={`${committee.translations[0].title}icon`}
                       width={300}
                       height={300}
                       className='w-[120px] h-auto absolute -top-8 left-0 right-0 bottom-0 m-auto'
                     />
                     <h3 className='uppercase text-sm bg-[#232323] py-2 text-white absolute bottom-0 w-full text-center'>
-                      {item.translation.title}
+                      {committee.translations[0].title}
                     </h3>
                   </Link>
                 ))}

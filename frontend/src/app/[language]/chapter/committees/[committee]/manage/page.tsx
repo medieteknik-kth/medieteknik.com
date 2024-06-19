@@ -1,5 +1,5 @@
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-
+import Logo from 'public/images/logo.png'
 import {
   HomeIcon,
   UserGroupIcon,
@@ -25,6 +25,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { GetCommitteePublic } from '@/api/committee'
 
 const HomePage = React.lazy(() => import('./pages/home'))
 const MembersPage = React.lazy(() => import('./pages/members'))
@@ -34,11 +35,18 @@ const EventPage = React.lazy(() => import('./pages/events'))
 const DocumentPage = React.lazy(() => import('./pages/documents'))
 const ImagePage = React.lazy(() => import('./pages/images'))
 
-export default function CommitteeManage({
+export default async function CommitteeManage({
   params: { language, committee },
 }: {
   params: { language: string; committee: string }
 }) {
+  const decodedCommittee = decodeURIComponent(committee)
+  const committeeData = await GetCommitteePublic(decodedCommittee, language)
+
+  if (!committeeData) {
+    return <p>Not Found!</p>
+  }
+
   return (
     <main className='relative'>
       <div className='h-24 bg-black' />
@@ -61,7 +69,7 @@ export default function CommitteeManage({
               href={'/' + language + '/chapter/committees/' + committee}
               className='capitalize'
             >
-              {committee}
+              {decodedCommittee}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -72,17 +80,17 @@ export default function CommitteeManage({
       </Breadcrumb>
       <div className='w-full h-fit mt-4'>
         <h1 className='absolute capitalize left-56 top-52 text-3xl'>
-          {committee}
+          {decodeURIComponent(committee)}
         </h1>
         <Link
-          href={'/chapter/committees/styrelsen'}
+          href={`/chapter/committees/${committee}`}
           target='_blank'
-          title='Styrelsen'
+          title={decodedCommittee.toUpperCase()}
           className='w-32 aspect-square grid place-items-center absolute top-40 left-20 bg-white rounded-full'
         >
           <Image
-            src={StyrelsenIcon}
-            alt='Styrelsen'
+            src={committeeData.logo_url || Logo.src}
+            alt={decodedCommittee.toUpperCase()}
             width={192}
             height={192}
             className='rounded-full w-28 h-auto'

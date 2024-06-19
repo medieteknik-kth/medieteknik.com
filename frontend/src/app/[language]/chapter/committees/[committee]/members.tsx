@@ -1,32 +1,9 @@
-'use client'
-import Logo from 'public/images/logo.png'
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Student from '@/models/Student'
 import { CommitteePosition } from '@/models/Committee'
-import Link from 'next/link'
+import { UsersIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import {
-  StudentTooltip,
-  CommitteePositionTooltip,
-} from '@/components/tooltips/Tooltip'
-
-interface CommitteePositionOccupant extends Student {
-  position: CommitteePosition
-}
+import TestBG from 'public/images/kth-landskap.jpg'
 
 export default function CommitteeMembers({
   language,
@@ -35,12 +12,47 @@ export default function CommitteeMembers({
   language: string
   committee: string
 }) {
+  const committeeName = decodeURIComponent(committee)
+
   return (
-    <div className='w-fit h-5/6 my-4 '>
-      <ul
-        className='w-fit h-fit max-h-[512px] pl-4 grid grid-cols-2 auto-rows-max gap-4 overflow-y-auto overflow-x-hidden'
-        style={{ direction: 'ltr' }}
-      ></ul>
-    </div>
+    <section className='h-fit relative'>
+      <div className='pt-12 mb-10 grid place-items-center'>
+        <h2 className='text-3xl capitalize'>
+          Meet <span className='font-bold'>{committeeName}</span>
+        </h2>
+      </div>
+      <div className='w-full h-full flex flex-wrap gap-8 justify-center grid-flow-row px-12 mb-6'>
+        <div className='w-52 h-52 lg:w-96 lg:h-96 border relative rounded-xl'>
+          <Image
+            src={TestBG.src}
+            alt='img'
+            fill
+            className='object-cover rounded-xl'
+          />
+          <div className='w-full absolute bottom-0 py-4 bg-black/50 text-white border-t-2 backdrop-blur-xl border-yellow-400 flex justify-between rounded-b-xl px-4'>
+            <div>
+              <h3 className='max-w-40 text-xl leading-5 font-bold truncate'>
+                André Eriksson Eriksson Eriksson Eriksson Eriksson Eriksson
+              </h3>
+              <p className='tracking-wider'>Chairman</p>
+            </div>
+            <div className='hidden lg:block'>
+              <Button size={'icon'}>
+                <UsersIcon className='w-5 h-5' />
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-neutral-300' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-black' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-neutral-300' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-black' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-neutral-300' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-black' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-neutral-300' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-black' />
+        <div className='w-52 h-52 lg:w-96 lg:h-96 bg-neutral-300' />
+      </div>
+    </section>
   )
 }

@@ -1,50 +1,32 @@
-import {
-  ArrowTopRightOnSquareIcon,
-  PencilSquareIcon,
-  Cog8ToothIcon,
-} from '@heroicons/react/24/outline'
 import { API_BASE_URL } from '@/utility/Constants'
-import CommitteeMembers from './members'
-import { Button } from '@/components/ui/button'
-import Logo from 'public/images/logo.png'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Link from 'next/link'
-import { CommitteePosition } from '@/models/Committee'
-import News from '@/models/Items'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import ShortNews from '@/app/[language]/bulletin/components/shortNews'
-import { StudentCommitteePosition } from '@/models/Student'
 import type Committee from '@/models/Committee'
 import { redirect } from 'next/navigation'
-import { GetCommittees } from '@/api'
+import { GetCommitteePublic } from '@/api/committee'
+import { fallbackLanguage } from '@/app/i18n/settings'
+import Image from 'next/image'
+import FallbackImage from 'public/images/logo.png'
+import CommitteeMembers from './members'
+import { Button } from '@/components/ui/button'
+import ExploreMore from './explore'
+import { Cog8ToothIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
-export const revalidate = 60 * 60 * 24 // 24 hours
-
-interface CommitteeRoute {
-  category: string
-  is_public: boolean
-  route: string
-}
+export const revalidate = 60 * 60 * 24 * 30
 
 export async function generateStaticParams() {
   try {
     const response = await fetch(
-      API_BASE_URL + '/public/dynamic/categories/committees'
+      API_BASE_URL + `/public/committees?language=${fallbackLanguage}`
     )
 
     if (response.ok) {
-      const data = (await response.json()) as CommitteeRoute[]
+      const data = (await response.json()) as Committee[]
 
-      return data.map((committee: CommitteeRoute) => ({
+      return data.map((committee: Committee) => ({
         language: '[language]',
-        committee: committee.route.toLowerCase(),
+        committee: encodeURIComponent(
+          committee.translations[0].title.toLowerCase()
+        ),
       }))
     }
   } catch (error) {
@@ -52,277 +34,70 @@ export async function generateStaticParams() {
   }
 }
 
-interface CommitteePositionOccupant extends CommitteePosition {
-  occupant: string
-}
-
-const committeeData: StudentCommitteePosition[] = [
-  {
-    student: {
-      first_name: 'André',
-      last_name: 'Eriksson',
-      email: 'andree4@kth.se',
-      author_type: 'STUDENT',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      author_type: 'COMMITTEE_POSITION',
-      title: 'Ordförande',
-      active: true,
-      description: 'Ordförande',
-      email: 'ordforande@kth.se',
-      role: 'ADMIN',
-      weight: 1,
-    },
-    initiation_date: '2022-01-01',
-    termination_date: '2022-01-01',
-  },
-  {
-    student: {
-      first_name: 'André',
-      last_name: 'Eriksson',
-      email: 'andree4@kth.se',
-      author_type: 'STUDENT',
-      student_type: 'DATATEKNIK',
-    },
-    position: {
-      title: 'Vice-Ordförande',
-      active: true,
-      description: 'Ordförande',
-      email: 'ordforande@kth.se',
-      role: 'ADMIN',
-      weight: 1,
-      author_type: 'COMMITTEE_POSITION',
-    },
-    initiation_date: '2022-01-01',
-    termination_date: '2022-01-01',
-  },
-  {
-    student: {
-      first_name: 'André',
-      last_name: 'Eriksson',
-      email: 'andree4@kth.se',
-      author_type: 'STUDENT',
-      student_type: 'THS',
-    },
-    position: {
-      title: 'Ordförande',
-      active: true,
-      description: 'Ordförande',
-      email: 'ordforande@kth.se',
-      role: 'ADMIN',
-      weight: 1,
-      author_type: 'COMMITTEE_POSITION',
-    },
-    initiation_date: '2022-01-01',
-    termination_date: '2022-01-01',
-  },
-  {
-    student: {
-      first_name: 'André',
-      last_name: 'Eriksson',
-      email: 'andree4@kth.se',
-      author_type: 'STUDENT',
-      student_type: 'KTH',
-    },
-    position: {
-      title: 'Ordförande',
-      active: true,
-      description: 'Ordförande',
-      email: 'ordforande@kth.se',
-      role: 'ADMIN',
-      weight: 1,
-      author_type: 'COMMITTEE_POSITION',
-    },
-    initiation_date: '2022-01-01',
-    termination_date: '2022-01-01',
-  },
-  {
-    student: {
-      first_name: 'André',
-      last_name: 'Eriksson',
-      email: 'andree4@kth.se',
-      author_type: 'STUDENT',
-      student_type: 'OTHER',
-    },
-    position: {
-      title: 'Ordförande',
-      active: true,
-      description: 'Ordförande',
-      email: 'ordforande@kth.se',
-      role: 'ADMIN',
-      weight: 1,
-      author_type: 'COMMITTEE_POSITION',
-    },
-    initiation_date: '2022-01-01',
-    termination_date: '2022-01-01',
-  },
-  {
-    student: {
-      first_name: 'André',
-      last_name: 'Eriksson',
-      email: 'andree4@kth.se',
-      author_type: 'STUDENT',
-      student_type: 'OTHER',
-    },
-    position: {
-      title: 'Ordförande',
-      active: true,
-      description: 'Ordförande',
-      email: 'ordforande@kth.se',
-      role: 'ADMIN',
-      weight: 1,
-      author_type: 'COMMITTEE_POSITION',
-    },
-    initiation_date: '2022-01-01',
-    termination_date: '2022-01-01',
-  },
-]
-
 export default async function Committee({
   params: { language, committee },
 }: {
   params: { language: string; committee: string }
 }) {
-  const data: Committee | null = await GetCommittees(committee, language)
+  const data: Committee | null = await GetCommitteePublic(committee, language)
 
   if (!data || Object.keys(data).length === 0) {
     redirect('/' + language + '/chapter/committees')
   }
 
-  if (!data.translation) {
+  if (!data.translations) {
     redirect('/' + language + '/chapter/committees')
   }
 
-  const committeeName = decodeURIComponent(data.translation.title)
+  const committeeName = decodeURIComponent(committee)
 
   return (
-    <main className='relative'>
-      <div className='h-24 bg-black' />
-      <Breadcrumb className='w-full h-fit mx-4 py-2 border-b border-neutral-400'>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href={'/' + language + '/chapter'}>
-              Chapter
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={'/' + language + '/chapter/committees'}>
-              Committees
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage className='capitalize'>
-              {committeeName}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <main>
+      <section className='min-h-[1080px] h-screen relative'>
+        <Image
+          src={
+            'https://storage.googleapis.com/medieteknik-static/images/styrelsen23_24.jpg'
+          }
+          alt='img'
+          objectFit='cover'
+          fill
+          className='-z-10 overflow-scroll absolute left-0 top-0 bottom-0 right-0 m-auto'
+        />
 
-      <section className='w-full h-fit mt-12 flex justify-between'>
-        <div className='w-80 h-fit ml-16 flex flex-col justify-around'>
-          <div className='flex flex-col items-center'>
-            <Avatar className='w-48 h-48 rounded-full mb-4'>
-              <AvatarImage
-                className='p-6'
-                src={data.logo_url || Logo.src}
-                alt='Committee Logo'
-                width={192}
-                height={192}
-              />
-              <AvatarFallback>Committee Picture</AvatarFallback>
-            </Avatar>
-            <h1 className='uppercase text-3xl tracking-wider text-center'>
+        <div className='w-full h-fit bg-black/75 absolute backdrop-blur-xl bottom-0 left-0 px-12 py-12 flex items-center border-t-2 border-yellow-400'>
+          <div
+            className='w-32 h-32 lg:w-52 lg:h-52 lg:mr-10 bg-white rounded-full absolute lg:relative overflow-hidden 
+          mx-auto lg:ml-0 left-0 right-0 -top-24 lg:top-auto lg:left-auto lg:right-auto border-2 border-yellow-400'
+          >
+            <Image
+              src={data.logo_url || FallbackImage.src}
+              alt='img'
+              width={208}
+              height={208}
+              className='w-24 lg:w-[9.5rem] h-auto absolute left-0 top-0 bottom-0 right-0 m-auto hover:scale-105 duration-300 transition-transform'
+            />
+          </div>
+          <div className='w-full lg:w-fit h-fit flex flex-col text-white justify-between items-center lg:items-start'>
+            <h1 className='h-[144px] text-4xl xs:text-6xl sm:text-7xl uppercase tracking-wide max-w-[550px] text-center lg:text-start'>
               {committeeName}
             </h1>
-            <Link
-              href={`mailto:` + data.email}
-              className='flex hover:underline underline-offset-4 decoration-yellow-400 decoration-2'
-            >
-              <h2>{data.email}</h2>
-              <ArrowTopRightOnSquareIcon className='w-5 h-5 ml-2' />
-            </Link>
-            <div className='w-fit h-12 my-2 grid grid-cols-4 grid-rows-1 place-items-center gap-4'>
-              <Button
-                asChild
-                variant={'default'}
-                size={'icon'}
-                className='rounded-full w-12 h-12 col-start-2 grid place-items-center'
+            <p className='max-w-[1000px] h-24 max-h-24 overflow-hidden'>
+              {data.translations[0].description}
+            </p>
+          </div>
+          <div className='w-12 h-12 absolute right-4 sm:right-12 -top-16'>
+            <Button size={'icon'} className='w-full h-full' asChild>
+              <Link
+                href={`/${language}/chapter/committees/${committee}/manage`}
               >
-                <Link
-                  href='/'
-                  className=''
-                  title='Edit Page'
-                  aria-label='Edit Page'
-                >
-                  <PencilSquareIcon className='w-8 h-8' />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant={'default'}
-                size={'icon'}
-                className='rounded-full w-12 h-12 grid place-items-center'
-              >
-                <Link
-                  href={'./' + committeeName.toLowerCase() + '/manage'}
-                  className=''
-                  title='Edit Page'
-                  aria-label='Edit Page'
-                >
-                  <Cog8ToothIcon className='w-8 h-8' />
-                </Link>
-              </Button>
-            </div>
-          </div>
-          <div className='w-fit h-3/5 mt-4'>
-            <h3 className='text-2xl tracking-wide pb-2 border-b-2 border-yellow-400 '>
-              Members
-            </h3>
-            <CommitteeMembers language={language} committee={committee} />
-          </div>
-        </div>
-        <div className='w-fit h-full grid place-items-end mr-96'>
-          <div className='w-[900px] h-full flex flex-col items-center'>
-            <div className='w-full h-[500px] bg-blue-500'></div>
-            <p className='w-full py-12 px-10'>{data.translation.description}</p>
+                <Cog8ToothIcon className='w-8 h-8' />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
-
-      <section>
-        <div className='w-full h-fit px-16'>
-          <h2 className='text-2xl border-b-2 border-yellow-400 py-4'>
-            News & Events
-          </h2>
-          <div
-            className='grid w-full h-fit grid-cols-3 
-          auto-rows-auto auto-cols-auto py-4 '
-          ></div>
-        </div>
-      </section>
-
-      <section>
-        <div className='w-full h-fit px-16'>
-          <div className='w-full border-b-2 border-yellow-400 py-4'>
-            <Link
-              href={
-                '/' +
-                language +
-                '/chapter/committees/' +
-                committeeName.toLowerCase() +
-                '/positions'
-              }
-              className='w-fit h-auto block'
-            >
-              <h2 className='w-fit text-2xl'>Positions</h2>
-            </Link>
-          </div>
-          <div className='grid grow h-full grid-cols-10 auto-rows-max auto-cols-auto gap-4 py-4 place-items-center'></div>
-        </div>
-      </section>
+      <CommitteeMembers language={language} committee={committee} />
+      <ExploreMore language={language} committee={committee} />
     </main>
   )
 }
