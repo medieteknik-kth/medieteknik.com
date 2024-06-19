@@ -28,10 +28,10 @@ export type Author = Student | Committee | CommitteePosition
  * @param {boolean} is_public - Whether the news item is public
  * @param {string} url - The URL of the news item
  */
-export default interface News {
+export interface News {
   author: Author
 
-  translation: NewsTranslation
+  translations: NewsTranslation[],
   
   categories?: string[]
   created_at: string
@@ -42,7 +42,7 @@ export default interface News {
   url: string
 }
 
-interface NewsTranslation {
+export interface NewsTranslation {
   title: string
   body: string
   language_code: LanguageCodes

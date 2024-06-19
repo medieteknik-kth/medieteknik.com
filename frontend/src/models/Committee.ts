@@ -8,12 +8,13 @@ import { LanguageCodes } from '@/utility/Constants';
  * @param {string} email - Committee category email
  */
 export interface CommitteeCategory {
-  committee_category_id: number;
-  email: string;
-  translation: {
-    title: string
-    language_code: LanguageCodes;
-  }
+  email?: string;
+  translations: CommitteeCategoryTranslation[];
+}
+
+export interface CommitteeCategoryTranslation {
+  title: string
+  language_code: LanguageCodes;
 }
 
 /**
@@ -26,14 +27,15 @@ export interface CommitteeCategory {
  */
 export default interface Committee {
   author_type: 'COMMITTEE';
-  committee_category_id: number;
   email: string;
   logo_url?: string;
-  translation: {
-    title: string;
-    description: string;
-    language_code: LanguageCodes;
-  }
+  translations: CommitteeTranslation[];
+}
+
+export interface CommitteeTranslation {
+  title: string;
+  description: string;
+  language_code: LanguageCodes;
 }
 
 /**
