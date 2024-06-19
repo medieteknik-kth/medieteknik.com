@@ -11,7 +11,7 @@ from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect  # noqa: F401
 from utility.database import db
 from utility.constants import API_VERSION, ROUTES
-from decorators.authorization import oauth
+from decorators.authorization import oauth, oidc
 from routes import register_routes
 
 app = Flask(__name__)
@@ -52,6 +52,9 @@ oauth.register(
         "response type": "token",
     },
 )
+
+# OIDC
+oidc.init_app(app)
 
 # Register routes (blueprints)
 register_routes(app)
@@ -101,7 +104,7 @@ def login():
     if not oauth.kth:
         return "OAuth not configured", 500
 
-    return oauth.kth.authorize_redirect(redirect_uri)
+    return oauth.kth.authorize_redirect("https://api.medieteknik.com/oidc")
 
 
 @app.route("/auth")

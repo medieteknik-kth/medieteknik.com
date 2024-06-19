@@ -5,6 +5,7 @@ Flask-Migrate
 Flask-CORS
 Flask-Limiter
 Flask-WTF
+Flask-OIDC
 requests
 authlib
 gunicorn
