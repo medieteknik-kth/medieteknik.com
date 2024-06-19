@@ -42,7 +42,7 @@ export default function ItemsPage({ language }: { language: string }) {
   const [copiedLink, setCopiedLink] = useState(-1)
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/news?author=1`)
+    fetch(`${API_BASE_URL}/news?author=1&language=${language}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data as NewsPagination)
@@ -120,7 +120,16 @@ export default function ItemsPage({ language }: { language: string }) {
                 <h3 className='text-lg font-bold'>Upload</h3>
               </DialogTrigger>
               <DialogContent className='w-[890px]'>
-                <UploadNews language={language} />
+                <UploadNews
+                  language={language}
+                  author={{
+                    author_type: 'STUDENT',
+                    email: 'andree4@kth.se',
+                    first_name: 'Andre',
+                    last_name: 'Eriksson',
+                    student_type: 'MEDIETEKNIK',
+                  }}
+                />
               </DialogContent>
             </Dialog>
           </li>

@@ -26,12 +26,23 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { redirect, useRouter } from 'next/navigation'
+import { Author } from '@/models/Items'
 
-export function UploadNews({ language }: { language: string }) {
+export function UploadNews({
+  language,
+  author,
+}: {
+  language: string
+  author?: Author
+}) {
   const [isClient, setIsClient] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const { push } = useRouter()
+  const [correctAuthor, setCorrectAuthor] = useState<Author | null>(
+    author || null
+  )
+  const [selectingAuthor, setSelectingAuthor] = useState(true)
 
   const FormSchema = z.object({
     title: z.string().optional().or(z.literal('')),
@@ -55,24 +66,53 @@ export function UploadNews({ language }: { language: string }) {
 
   useEffect(() => {
     setIsClient(true)
-  })
+  }, [])
 
-  if (!isClient) return <></>
+  if (!isClient) return null
+
+  if (!correctAuthor) {
+    return (
+      <Dialog open={selectingAuthor}>
+        <DialogTrigger />
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Post As?</DialogTitle>
+            <DialogDescription>Choose who to post as</DialogDescription>
+          </DialogHeader>
+          <Button
+            onClick={() => {
+              setCorrectAuthor({
+                author_type: 'STUDENT',
+                email: 'andree4@kth.se',
+                first_name: 'André',
+                last_name: 'Eriksson',
+                student_type: 'MEDIETEKNIK',
+              })
+              setSelectingAuthor(false)
+            }}
+          >
+            Yourself
+          </Button>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 
   const postForm = async (data: z.infer<typeof FormSchema>) => {
-    let json: {
-      title?: string
-      published_status: 'DRAFT' | 'PUBLISHED'
-      author_id: {
-        author_type: string
-        entity_id: number
-      }
-    } = {
-      title: data.title || 'Untitled Article',
+    if (!correctAuthor) {
+      return
+    }
+    let json = {
       published_status: 'DRAFT',
-      author_id: {
-        author_type: 'STUDENT',
-        entity_id: 1,
+      translation: [
+        {
+          title: data.title || 'Untitled Article',
+          language_code: language,
+        }
+      ],
+      author: {
+        author_type: correctAuthor.author_type.toUpperCase(),
+        entity_email: correctAuthor.email,
       },
     }
 
