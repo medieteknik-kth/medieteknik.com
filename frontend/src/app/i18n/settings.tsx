@@ -1,8 +1,8 @@
 import { InitOptions } from 'i18next'
 import { LanguageCodes } from '@/utility/Constants'
 
-export const fallbackLanguage: LanguageCodes = 'en'
-export let supportedLanguages: LanguageCodes[] = [fallbackLanguage, 'sv']
+export const fallbackLanguage: LanguageCodes = 'sv'
+export let supportedLanguages: LanguageCodes[] = [fallbackLanguage, 'en']
 export const cookieName: string = 'language'
 export const defaultNS: string = 'translation'
 
