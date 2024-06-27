@@ -22,10 +22,10 @@ class Idempotency(db.Model):
     retry_count = Column(Integer, nullable=False)
 
     # Foreign key
-    audit_id = Column(Integer, ForeignKey("audit.audit_id"))
+    audit_id = Column(Integer, ForeignKey("audit.audit_id"), unique=True)
 
     # Relationships
-    audit = db.relationship("Audit", backref="idempotency")
+    audit = db.relationship("Audit", back_populates="idempotency")
 
     def __repr__(self):
         return "<Idempotency %r>" % self.idempotency_key

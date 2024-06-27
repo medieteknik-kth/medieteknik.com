@@ -24,7 +24,8 @@ class Album(Item):
     item_id = Column(Integer, ForeignKey("item.item_id"))
 
     # Relationships
-    item = db.relationship("Item", backref="album")
+    item = db.relationship("Item", back_populates="album")
+    translations = db.relationship("AlbumTranslation", back_populates="album")
 
     __mapper_args__ = {"polymorphic_identity": "album"}
 
@@ -72,8 +73,8 @@ class AlbumTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
-    album = db.relationship("Album", backref="translation")
-    language = db.relationship("Language", backref="album_translation")
+    album = db.relationship("Album", back_populates="translations")
+    language = db.relationship("Language", back_populates="album_translations")
 
     def to_dict(self):
         columns = inspect(self)

@@ -18,7 +18,16 @@ class Committee(db.Model):
     )
 
     # Relationship
-    committee_category = db.relationship("CommitteeCategory", backref="committees")
+    committee_category = db.relationship(
+        "CommitteeCategory", back_populates="committees"
+    )
+    translations = db.relationship("CommitteeTranslation", back_populates="committee")
+    committee_positions = db.relationship(
+        "CommitteePosition", back_populates="committee"
+    )
+    committee_recruitments = db.relationship(
+        "CommitteeRecruitment", back_populates="committee"
+    )
 
     def __repr__(self):
         return "<Committee %r>" % self.committee_id
@@ -74,8 +83,8 @@ class CommitteeTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationship
-    committee = db.relationship("Committee", backref="committee_translations")
-    language = db.relationship("Language", backref="committee_translations")
+    committee = db.relationship("Committee", back_populates="translations")
+    language = db.relationship("Language", back_populates="committee_translations")
 
     def __repr__(self):
         return "<CommitteeTranslation %r>" % self.committee_translation_id
@@ -109,7 +118,10 @@ class CommitteeRecruitment(db.Model):
     committee_id = Column(Integer, ForeignKey("committee.committee_id"))
 
     # Relationship
-    committee = db.relationship("Committee", backref="committee_recruitments")
+    committee = db.relationship("Committee", back_populates="committee_recruitments")
+    translations = db.relationship(
+        "CommitteeRecruitmentTranslation", back_populates="committee_recruitment"
+    )
 
     def __repr__(self):
         return "<CommitteeRecruitment %r>" % self.committee_recruitment_id
@@ -149,9 +161,9 @@ class CommitteeRecruitmentTranslation(db.Model):
 
     # Relationship
     committee_recruitment = db.relationship(
-        "CommitteeRecruitment", backref="committee_recruitment_translations"
+        "CommitteeRecruitment", back_populates="translations"
     )
-    language = db.relationship("Language", backref="committee_recruitment_translations")
+    language = db.relationship("Language", back_populates="committee_recruitment_translations")
 
     def to_dict(self):
         columns = inspect(self)

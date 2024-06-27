@@ -73,7 +73,12 @@ class Audit(db.Model):
     student_id = Column(Integer, ForeignKey("student.student_id"))
 
     # Relationships
-    student = db.relationship("Student", backref="audit")
+    idempotency = db.relationship("Idempotency", back_populates="audit", uselist=False)
+
+    def __init__(self):
+        from models.core.student import Student
+
+        self.student = db.relationship("Student", back_populates="audit")
 
     def __repr__(self):
         return "<Audit %r>" % self.audit_id

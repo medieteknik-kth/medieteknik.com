@@ -11,6 +11,12 @@ class CommitteeCategory(db.Model):
 
     email = Column(String(255), unique=True, nullable=True)
 
+    # Relationships
+    translations = db.relationship(
+        "CommitteeCategoryTranslation", back_populates="committee_category"
+    )
+    committees = db.relationship("Committee", back_populates="committee_category")
+
     def __repr__(self):
         return "<CommitteeCategory %r>" % self.committee_category_id
 
@@ -64,9 +70,9 @@ class CommitteeCategoryTranslation(db.Model):
 
     # Relationship
     committee_category = db.relationship(
-        "CommitteeCategory", backref="committee_category_translations"
+        "CommitteeCategory", back_populates="translations"
     )
-    language = db.relationship("Language", backref="committee_category_translations")
+    language = db.relationship("Language", back_populates="committee_category_translations")
 
     def __repr__(self):
         return (

@@ -12,7 +12,7 @@ from .committee_category import CommitteeCategory, CommitteeCategoryTranslation
 from .committee_position import (
     CommitteePosition,
     CommitteePositionTranslation,
-    committee_position_resource,
+    CommitteePositionResource,
 )
 
 
@@ -25,5 +25,5 @@ __all__ = [
     "CommitteeCategoryTranslation",
     "CommitteePosition",
     "CommitteePositionTranslation",
-    "committee_position_resource",
+    "CommitteePositionResource",
 ]

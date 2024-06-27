@@ -57,7 +57,11 @@ class Item(db.Model):
     author_id = Column(Integer, ForeignKey("author.author_id"))
 
     # Relationships
-    author = db.relationship("Author", backref="item")
+    author = db.relationship("Author", back_populates="items")
+    news = db.relationship("News", back_populates="item")
+    event = db.relationship("Event", back_populates="item")
+    document = db.relationship("Document", back_populates="item")
+    album = db.relationship("Album", back_populates="item")
 
     # Polymorphism
     type = Column(String(50))

@@ -22,7 +22,8 @@ class News(Item):
     item_id = Column(Integer, ForeignKey("item.item_id"))
 
     # Relationships
-    item = db.relationship("Item", backref="news")
+    item = db.relationship("Item", back_populates="news")
+    translations = db.relationship("NewsTranslation", back_populates="news")
 
     __mapper_args__ = {"polymorphic_identity": "news"}
 
@@ -69,8 +70,8 @@ class NewsTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
-    news = db.relationship("News", backref="translation")
-    language = db.relationship("Language", backref="news_translation")
+    news = db.relationship("News", back_populates="translations")
+    language = db.relationship("Language", back_populates="news_translations")
 
     def to_dict(self):
         columns = inspect(self.__class__)
@@ -78,7 +79,7 @@ class NewsTranslation(db.Model):
         if not columns:
             return {}
 
-        columns = columns.columns
+        columns = columns.mapper.column_attrs.keys()
 
         data = {}
         for column in columns:

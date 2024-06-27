@@ -65,6 +65,15 @@ class Student(db.Model):
         Enum(StudentType), nullable=False, default=StudentType.MEDIETEKNIK
     )
 
+    # Relationships
+    profile = db.relationship("Profile", back_populates="student", uselist=False)
+    student_positions = db.relationship("StudentMembership", back_populates="student")
+
+    def __init__(self):
+        from models.utility.audit import Audit
+
+        self.audit = db.relationship("Audit", back_populates="student")
+
     def __repr__(self):
         return "<Student %r>" % self.student_id
 
@@ -137,10 +146,12 @@ class Profile(db.Model):
     instagram_url = Column(String(255))
 
     # Foreign keys
-    student_id = Column(Integer, ForeignKey("student.student_id"), nullable=False)
+    student_id = Column(
+        Integer, ForeignKey("student.student_id"), nullable=False, unique=True
+    )
 
     # Relationships
-    student = db.relationship("Student", backref="profile")
+    student = db.relationship("Student", back_populates="profile")
 
     def __repr__(self):
         return "<Profile %r>" % self.profile_id
@@ -190,16 +201,15 @@ class StudentMembership(db.Model):
 
     # Foreign keys
     student_id = Column(Integer, ForeignKey("student.student_id"), nullable=False)
-    committee_id = Column(Integer, ForeignKey("committee.committee_id"))
     committee_position_id = Column(
-        Integer, ForeignKey("committee_position.committee_position_id")
+        Integer,
+        ForeignKey("committee_position.committee_position_id"),
     )
 
     # Relationships
-    student = db.relationship("Student", backref="student_positions")
-    committee = db.relationship("Committee", backref="student_positions")
+    student = db.relationship("Student", back_populates="student_positions")
     committee_position = db.relationship(
-        "CommitteePosition", backref="student_positions"
+        "CommitteePosition", back_populates="student_positions"
     )
 
     def to_dict(self):
@@ -228,13 +238,10 @@ class StudentMembership(db.Model):
         StudentMembership.query.filter(
             StudentMembership.student_id == self.student_id,
             StudentMembership.initiation_date >= current_date,
+            StudentMembership.committee_position_id == self.committee_position_id,
             or_(
                 StudentMembership.termination_date <= current_date,
                 StudentMembership.termination_date == None,  # noqa: E711
-            ),
-            or_(
-                StudentMembership.committee_id == self.committee_id,
-                StudentMembership.committee_position_id == self.committee_position_id,
             ),
         ).first()
 

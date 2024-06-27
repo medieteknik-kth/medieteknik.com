@@ -5,6 +5,7 @@ Content Models
 from .album import Album, AlbumTranslation
 from .author import Author, AuthorResource, AuthorType
 from .base import Item, PublishedStatus
+from .calendar import Calendar
 from .document import Document, DocumentTranslation
 from .event import Event, RepeatableEvents, EventTranslation
 from .news import News, NewsTranslation
@@ -23,6 +24,7 @@ __all__ = [
     "Event",
     "RepeatableEvents",
     "EventTranslation",
+    "Calendar",
     "News",
     "NewsTranslation",
     "Tag",

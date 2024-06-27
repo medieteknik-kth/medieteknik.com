@@ -21,7 +21,8 @@ class Document(Item):
     item_id = Column(Integer, ForeignKey("item.item_id"))
 
     # Relationships
-    item = db.relationship("Item", backref="document")
+    item = db.relationship("Item", back_populates="document")
+    translations = db.relationship("DocumentTranslation", back_populates="document")
 
     __mapper_args__ = {"polymorphic_identity": "document"}
 
@@ -68,8 +69,8 @@ class DocumentTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
-    document = db.relationship("Document", backref="translation")
-    language = db.relationship("Language", backref="document_translation")
+    document = db.relationship("Document", back_populates="translations")
+    language = db.relationship("Language", back_populates="document_translations")
 
     def to_dict(self):
         columns = inspect(self)

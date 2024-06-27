@@ -20,6 +20,9 @@ class Tag(db.Model):
     color = Column(String(7))
     category = Column(Enum(TagCategory), nullable=False, default=TagCategory.NEWS)
 
+    # Relationships
+    translations = db.relationship("TagTranslation", back_populates="tag")
+
     def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
         columns = inspect(self)
 
@@ -64,8 +67,8 @@ class TagTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
-    tag = db.relationship("Tag", backref="translation")
-    language = db.relationship("Language", backref="tag_translation")
+    tag = db.relationship("Tag", back_populates="translations")
+    language = db.relationship("Language", back_populates="tag_translations")
 
     def to_dict(self):
         columns = inspect(self)

@@ -17,6 +17,35 @@ class Language(db.Model):
 
     language_name = Column(String(255), nullable=False)
 
+    # Relationships
+    committee_category_translations = db.relationship(
+        "CommitteeCategoryTranslation", back_populates="language"
+    )
+    committee_translations = db.relationship(
+        "CommitteeTranslation", back_populates="language"
+    )
+    committee_position_translations = db.relationship(
+        "CommitteePositionTranslation", back_populates="language"
+    )
+    committee_recruitment_translations = db.relationship(
+        "CommitteeRecruitmentTranslation", back_populates="language"
+    )
+
+    album_translations = db.relationship("AlbumTranslation", back_populates="language")
+    document_translations = db.relationship(
+        "DocumentTranslation", back_populates="language"
+    )
+    event_translations = db.relationship("EventTranslation", back_populates="language")
+    news_translations = db.relationship("NewsTranslation", back_populates="language")
+    tag_translations = db.relationship("TagTranslation", back_populates="language")
+
+    content_translations = db.relationship(
+        "ContentTranslation", back_populates="language"
+    )
+
+    def __repr__(self):
+        return "<Language %r>" % self.language_code
+
     def to_dict(self):
         columns = inspect(self)
 

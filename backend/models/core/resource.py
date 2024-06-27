@@ -1,10 +1,10 @@
 import enum
 import urllib.parse
 from typing import List
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, Enum, inspect
+from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, inspect
 from sqlalchemy.dialects.postgresql import ARRAY
 from utility.database import db
-from utility.constants import AVAILABLE_LANGUAGES, ROUTES
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 
 
@@ -22,6 +22,10 @@ class Content(db.Model):
     content_id = Column(Integer, primary_key=True, autoincrement=True)
 
     image_urls = Column(ARRAY(String))
+
+    # Relationships
+    translations = db.relationship("ContentTranslation", back_populates="content")
+    resource = db.relationship("Resource", back_populates="content", uselist=False)
 
     def __repr__(self):
         return "<Content %r>" % self.content_id
@@ -75,14 +79,18 @@ class Resource(db.Model):
     resource_id = Column(Integer, primary_key=True, autoincrement=True)
 
     route = Column(String(255), unique=True)
-    category = Column(Enum(ROUTES))
     is_public = Column(Boolean, default=True, nullable=False)
 
     # Foreign keys
-    content_id = Column(Integer, ForeignKey("content.content_id"))
+    content_id = Column(Integer, ForeignKey("content.content_id"), unique=True)
 
     # Relationships
-    content = db.relationship("Content", backref="resource")
+    content = db.relationship("Content", back_populates="resource")
+    committee_positions = db.relationship(
+        "CommitteePosition",
+        secondary="committee_position_resource",
+        back_populates="resources",
+    )
 
     def __repr__(self):
         return "<Resource %r>" % self.resource_id
@@ -125,8 +133,8 @@ class ContentTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
-    content = db.relationship("Content", backref="content_translations")
-    language = db.relationship("Language", backref="content_translations")
+    content = db.relationship("Content", back_populates="translations")
+    language = db.relationship("Language", back_populates="content_translations")
 
     def __repr__(self):
         return "<ContentTranslation %r>" % self.content_translation_id

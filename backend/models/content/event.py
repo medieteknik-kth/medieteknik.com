@@ -1,6 +1,15 @@
 import enum
 from typing import List
-from sqlalchemy import Column, ForeignKey, Integer, DateTime, String, Enum, inspect
+from sqlalchemy import (
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    DateTime,
+    String,
+    Enum,
+    inspect,
+)
 from sqlalchemy.dialects.postgresql import ARRAY
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
@@ -32,12 +41,27 @@ class Event(Item):
     end_date = Column(DateTime)
     status = Column(Enum(EventStatus), default=EventStatus.UPCOMING, nullable=False)
     location = Column(String(255))
+    is_inherited = Column(Boolean, default=False, nullable=False)
 
     # Foreign keys
     item_id = Column(Integer, ForeignKey("item.item_id"))
+    calendar_id = Column(Integer, ForeignKey("calendar.calendar_id"))
+    parent_event_id = Column(
+        Integer, ForeignKey("event.event_id", ondelete="CASCADE", onupdate="CASCADE")
+    )
 
     # Relationships
-    item = db.relationship("Item", backref="event")
+    parent_event = db.relationship(
+        "Event", remote_side=[event_id], foreign_keys=[parent_event_id]
+    )
+    child_events = db.relationship("Event", foreign_keys=[parent_event_id])
+    item = db.relationship("Item", back_populates="event")
+    calendar = db.relationship("Calendar", back_populates="events")
+    repeatable_event = db.relationship(
+        "RepeatableEvents", back_populates="event", uselist=False
+    )
+
+    translations = db.relationship("EventTranslation", back_populates="event")
 
     __mapper_args__ = {"polymorphic_identity": "event"}
 
@@ -91,8 +115,8 @@ class EventTranslation(db.Model):
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
-    event = db.relationship("Event", backref="translation")
-    language = db.relationship("Language", backref="event_translation")
+    event = db.relationship("Event", back_populates="translations")
+    language = db.relationship("Language", back_populates="event_translations")
 
     def to_dict(self):
         columns = inspect(self)
@@ -120,7 +144,7 @@ class RepeatableEvents(db.Model):
     reapeting_interval = Column(String(255))
 
     # Foreign keys
-    event_id = Column(Integer, ForeignKey("event.event_id"))
+    event_id = Column(Integer, ForeignKey("event.event_id"), unique=True)
 
     # Relationships
-    event = db.relationship("Event", backref="repeatable_events")
+    event = db.relationship("Event", back_populates="repeatable_event")

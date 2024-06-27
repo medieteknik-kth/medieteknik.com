@@ -56,6 +56,9 @@ class Author(db.Model):
         ARRAY(Enum(AuthorResource, create_constraint=False, native_enum=False))
     )
 
+    # Relationships
+    items = db.relationship("Item", back_populates="author")
+
     def to_dict(self) -> Dict[str, Any] | None:
         columns = inspect(self)
 

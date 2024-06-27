@@ -7,6 +7,7 @@ from main import app
 from sqlalchemy.exc import SQLAlchemyError
 from utility.database import db
 
+from models.utility import Analytics, Audit, Idempotency  # noqa: F401
 from models.committees import (
     CommitteeCategory,  # noqa: F401
     CommitteeCategoryTranslation,  # noqa: F401
@@ -16,6 +17,7 @@ from models.committees import (
     CommitteeRecruitmentTranslation,  # noqa: F401
     CommitteePosition,  # noqa: F401
     CommitteePositionTranslation,  # noqa: F401
+    CommitteePositionResource,  # noqa: F401
 )
 from models.content import (
     Album,  # noqa: F401
@@ -25,6 +27,7 @@ from models.content import (
     DocumentTranslation,  # noqa: F401
     Event,  # noqa: F401
     EventTranslation,  # noqa: F401
+    Calendar,  # noqa: F401
     News,  # noqa: F401
     NewsTranslation,  # noqa: F401
     Item,  # noqa: F401
@@ -41,7 +44,6 @@ from models.core import (
     ContentTranslation,  # noqa: F401
     Language,  # noqa: F401
 )
-from models.utility import Analytics, Audit, Idempotency  # noqa: F401
 
 
 def init_db():

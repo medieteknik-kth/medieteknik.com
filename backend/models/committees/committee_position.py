@@ -1,5 +1,5 @@
 import enum
-from typing import List
+from typing import Any, Dict, List
 from sqlalchemy import String, Integer, Column, ForeignKey, Enum, Boolean, inspect
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
@@ -16,7 +16,7 @@ class CommitteePosition(db.Model):
     __tablename__ = "committee_position"
     committee_position_id = Column(Integer, primary_key=True, autoincrement=True)
 
-    email = Column(String(255), unique=True, nullable=False)
+    email = Column(String(255), unique=True)
     weight = Column(Integer, default=0)
     role = Column(
         Enum(CommitteePositionsRole), default=CommitteePositionsRole.COMMITTEE
@@ -27,14 +27,25 @@ class CommitteePosition(db.Model):
     committee_id = Column(Integer, ForeignKey("committee.committee_id"))
 
     # Relationship
-    committee = db.relationship("Committee", backref="committee_positions")
+    committee = db.relationship("Committee", back_populates="committee_positions")
+    resources = db.relationship(
+        "Resource",
+        secondary="committee_position_resource",
+        back_populates="committee_positions",
+    )
+    student_positions = db.relationship(
+        "StudentMembership", back_populates="committee_position"
+    )
+    translations = db.relationship(
+        "CommitteePositionTranslation", back_populates="committee_position"
+    )
 
     def __repr__(self):
         return "<CommitteePosition %r>" % self.committee_position_id
 
     def to_dict(
         self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
-    ):
+    ) -> Dict[str, Any] | None:
         columns = inspect(self)
 
         if not columns:
@@ -76,16 +87,15 @@ class CommitteePosition(db.Model):
         return data
 
 
-committee_position_resource = db.Table(
-    "committee_position_resource",
-    db.Model.metadata,
-    Column(
-        "committee_position_id",
+class CommitteePositionResource(db.Model):
+    __tablename__ = "committee_position_resource"
+
+    committee_position_id = Column(
         Integer,
         ForeignKey("committee_position.committee_position_id"),
-    ),
-    Column("resource_id", Integer, ForeignKey("resource.resource_id")),
-)
+        primary_key=True,
+    )
+    resource_id = Column(Integer, ForeignKey("resource.resource_id"), primary_key=True)
 
 
 class CommitteePositionTranslation(db.Model):
@@ -106,9 +116,11 @@ class CommitteePositionTranslation(db.Model):
 
     # Relationship
     committee_position = db.relationship(
-        "CommitteePosition", backref="committee_position_translations"
+        "CommitteePosition", back_populates="translations"
     )
-    language = db.relationship("Language", backref="committee_position_translations")
+    language = db.relationship(
+        "Language", back_populates="committee_position_translations"
+    )
 
     def __repr__(self):
         return (
