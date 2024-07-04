@@ -9,6 +9,10 @@ module.exports = {
             {
                 hostname: 'storage.googleapis.com',
                 protocol: 'https',
+            },
+            {
+                hostname: 'www.medieteknik.com',
+                protocol: 'https',
             }
         ]
     },
