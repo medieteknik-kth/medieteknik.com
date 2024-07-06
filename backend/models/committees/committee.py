@@ -10,7 +10,7 @@ class Committee(db.Model):
     committee_id = Column(Integer, primary_key=True, autoincrement=True)
 
     email = Column(String(255), unique=True)
-    logo_url = Column(String(500))
+    logo_url = Column(String(512))
 
     # Foreign key
     committee_category_id = Column(
@@ -28,6 +28,7 @@ class Committee(db.Model):
     committee_recruitments = db.relationship(
         "CommitteeRecruitment", back_populates="committee"
     )
+    calendar = db.relationship("Calendar", back_populates="committee", uselist=False)
 
     def __repr__(self):
         return "<Committee %r>" % self.committee_id
@@ -163,7 +164,9 @@ class CommitteeRecruitmentTranslation(db.Model):
     committee_recruitment = db.relationship(
         "CommitteeRecruitment", back_populates="translations"
     )
-    language = db.relationship("Language", back_populates="committee_recruitment_translations")
+    language = db.relationship(
+        "Language", back_populates="committee_recruitment_translations"
+    )
 
     def to_dict(self):
         columns = inspect(self)

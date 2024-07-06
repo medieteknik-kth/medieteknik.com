@@ -68,9 +68,10 @@ class Student(db.Model):
     # Relationships
     profile = db.relationship("Profile", back_populates="student", uselist=False)
     student_positions = db.relationship("StudentMembership", back_populates="student")
+    calendar = db.relationship("Calendar", back_populates="student", uselist=False)
 
     def __init__(self):
-        from models.utility.audit import Audit
+        from models.utility.audit import Audit  # noqa: F401
 
         self.audit = db.relationship("Audit", back_populates="student")
 
