@@ -151,7 +151,7 @@ export default async function Footer({
                 <Button
                   asChild
                   variant='link'
-                  className='text-2xl text-center xxs:text-left tracking-wider font-bold text-black dark:text-white -ml-4 -mt-2'
+                  className='text-2xl text-center xxs:text-left tracking-wider font-bold text-sky-800 dark:text-white -ml-4 -mt-2'
                 >
                   <Link
                     href='/contact'

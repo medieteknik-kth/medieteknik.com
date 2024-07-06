@@ -31,15 +31,15 @@ export const CommitteeTag = forwardRef<
             <Avatar className='w-8 h-8 mr-2'>
               <AvatarImage
                 src={committee.logo_url ?? ''}
-                alt={committee.translation.title}
+                alt={committee.translations[0].title}
               />
               <AvatarFallback>
-                {committee.translation.title + ' Profile Picture'}
+                {committee.translations[0].title + ' Profile Picture'}
               </AvatarFallback>
             </Avatar>
           )}
           <p>
-            {(includeAt ? '@' : '') + committee.translation.title}
+            {(includeAt ? '@' : '') + committee.translations[0].title}
             {children}
           </p>
         </Button>
