@@ -58,10 +58,9 @@ import {
   CustomElement,
 } from '../util/Text'
 import { Input } from '@/components/ui/input'
-import { News, Author } from '@/models/Items'
+import { News } from '@/models/Items'
 import { useAutoSave, AutoSaveResult } from '../autoSave'
 import { useRouter } from 'next/navigation'
-import { FindItemTranslation } from '@/utility/Language'
 
 declare module 'slate' {
   interface CustomTypes {
