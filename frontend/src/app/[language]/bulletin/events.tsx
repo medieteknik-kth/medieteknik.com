@@ -1,322 +1,183 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
-import BG from 'public/images/kth-landskap.jpg'
-import Image, { StaticImageData } from 'next/image'
-import CalendarTooltip from '@/components/tooltips/Calendar'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-import EventPreview from './components/eventPreview'
 import { Event } from '@/models/Items'
+import Calendar from '@/components/calendar/Calendar'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { ClockIcon, MapPinIcon, PlusIcon } from '@heroicons/react/24/outline'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import EventForm from './eventForm'
+import { useCalendar } from '@/components/calendar/CalendarProvider'
+import Student from '@/models/Student'
+import Committee from '@/models/Committee'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-
-import {
-  PlusIcon,
-  LinkIcon,
-  BellIcon,
-  ChevronRightIcon,
-  ChevronLeftIcon,
-  CheckIcon,
-} from '@heroicons/react/24/outline'
-import Link from 'next/link'
-
-const TIME_SECONDS = 30
-const UPDATE_INTERVAL = 24
-
-const data: Event[] = [
-  {
-    author: {
-      author_type: 'COMMITTEE',
-      email: 'styrelsen@medieteknik.com',
-      translations: [
-        {
-          title: 'Styrelsen',
-          description: 'Styrelsen',
-          language_code: 'sv',
-        },
-      ],
-      logo_url: StyrelsenIcon.src,
-    },
-    categories: ['Admin'],
-    created_at: '2021-09-01T00:00:00.000Z',
-    start_date: '2021-09-01T00:00:00.000Z',
-    end_date: '2021-09-01T00:00:00.000Z',
-    location: 'KTH',
-    translations: [
-      {
-        title: 'SM #4',
-        body: 'SM #4',
-        language_code: 'sv',
-        main_image_url: BG.src,
-        short_description: 'SM #4',
-      },
-    ],
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    status: 'UPCOMING',
-    url: '1',
-  },
-  {
-    author: {
-      author_type: 'COMMITTEE',
-      email: 'styrelsen@medieteknik.com',
-      translations: [
-        {
-          title: 'Styrelsen',
-          description: 'Styrelsen',
-          language_code: 'sv',
-        },
-      ],
-      logo_url: StyrelsenIcon.src,
-    },
-    categories: ['Admin'],
-    created_at: '2021-09-01T00:00:00.000Z',
-    start_date: '2021-09-01T00:00:00.000Z',
-    end_date: '2021-09-01T00:00:00.000Z',
-    location: 'KTH',
-    translations: [
-      {
-        title: 'SM #2',
-        body: 'SM #2',
-        language_code: 'sv',
-        main_image_url: BG.src,
-        short_description: 'SM #2',
-      },
-    ],
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    status: 'UPCOMING',
-    url: '1',
-  },
-  {
-    author: {
-      author_type: 'COMMITTEE',
-      email: 'styrelsen@medieteknik.com',
-      translations: [
-        {
-          title: 'Styrelsen',
-          description: 'Styrelsen',
-          language_code: 'sv',
-        },
-      ],
-      logo_url: StyrelsenIcon.src,
-    },
-    categories: ['Admin'],
-    created_at: '2021-09-01T00:00:00.000Z',
-    start_date: '2021-09-01T00:00:00.000Z',
-    end_date: '2021-09-01T00:00:00.000Z',
-    location: 'KTH',
-    translations: [
-      {
-        title: 'SM #1',
-        body: 'SM #1',
-        language_code: 'sv',
-        main_image_url: BG.src,
-        short_description: 'SM #1',
-      },
-    ],
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    status: 'UPCOMING',
-    url: '1',
-  },
-]
-
-export default function Events({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
-  const highlightedEvent = [...data]
-    .sort(
-      (a, b) =>
-        new Date(a.start_date).valueOf() - new Date(b.start_date).valueOf()
-    )
-    .slice(0, 3)
-  const nonHighlightedEvents = [...data]
-    .sort(
-      (a, b) =>
-        new Date(a.start_date).valueOf() - new Date(b.start_date).valueOf()
-    )
-    .slice(3)
-  const [currentEvent, setCurrentEvent] = useState(highlightedEvent[0])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [copiedLink, setCopiedLink] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [showCalendarPopup, setShowCalendarPopup] = useState([
-    false,
-    currentEvent,
-  ])
-
-  const toNext = useCallback(() => {
-    const nextIndex = (currentIndex + 1) % highlightedEvent.length
-
-    setCurrentEvent(highlightedEvent[nextIndex])
-    setCurrentIndex(nextIndex)
-    setCurrentTime(0)
-  }, [currentEvent, highlightedEvent, currentIndex])
-
-  const toBack = () => {
-    const prevIndex =
-      (currentIndex - 1 + highlightedEvent.length) % highlightedEvent.length
-    setCurrentEvent(highlightedEvent[prevIndex])
-    setCurrentIndex(prevIndex)
-    setCurrentTime(0)
+function getNumberWithOrdinal(number: number) {
+  if (typeof number !== 'number' || isNaN(number)) {
+    return 'Not a number'
   }
 
-  useEffect(() => {
-    const timeInterval = window.setInterval(() => {
-      setCurrentTime((prev) => {
-        if (prev >= TIME_SECONDS * 1000) {
-          toNext()
-          return 0
-        }
+  // Handle special cases for 11, 12, 13
+  if (number % 100 >= 11 && number % 100 <= 13) {
+    return number + 'th'
+  }
 
-        return isPaused ? prev : prev + UPDATE_INTERVAL
-      })
-    }, UPDATE_INTERVAL) as unknown as number
+  switch (number % 10) {
+    case 1:
+      return number + 'st'
+    case 2:
+      return number + 'nd'
+    case 3:
+      return number + 'rd'
+    default:
+      return number + 'th'
+  }
+}
 
-    return () => {
-      window.clearInterval(timeInterval)
-    }
-  }, [currentEvent, toNext, isPaused])
-
+export default function Events({ language }: { language: string }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const { selectedDate, events } = useCalendar()
   return (
-    <section id='upcoming-events' className='w-full h-fit px-12 mt-8'>
-      <h1 className='uppercase text-3xl font-bold tracking-wider mb-4'>
-        Upcoming Events
-      </h1>
-      {showCalendarPopup[0] && typeof showCalendarPopup[1] !== 'boolean' && (
-        <CalendarTooltip
-          title={encodeURIComponent(showCalendarPopup[1].translations[0].title)}
-          startDate={new Date(showCalendarPopup[1].start_date)}
-          endDate={new Date(showCalendarPopup[1].end_date)}
-          link='asd ds'
-          location='asd asd'
-          closeCallback={() =>
-            setShowCalendarPopup([false, showCalendarPopup[1]])
-          }
-        />
-      )}
-      <div className='w-full h-[720px] flex'>
-        <div
-          className='w-3/4 h-full relative z-10 rounded-bl-xl overflow-hidden'
-          onMouseOver={() => {
-            setIsPaused(true)
-          }}
-          onMouseOut={() => {
-            setIsPaused(false)
-          }}
-        >
-          <EventPreview language={language} event={currentEvent} />
-          <div
-            className='w-full h-1.5 absolute bottom-0 bg-yellow-400 z-20'
-            style={{
-              width: `${(currentTime / (TIME_SECONDS * 1000)) * 100}%`,
-            }}
-          />
-
-          <Card className='absolute bottom-5 right-24'>
-            <CardContent className='p-0'>
-              <TooltipProvider>
-                <Tooltip open={copiedLink}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      title='Share'
-                      aria-label='Share'
-                      className='relative'
-                      onClick={(e) => {
-                        navigator.clipboard.writeText(
-                          window.location.href + `/events/${currentEvent.url}`
-                        )
-
-                        setCopiedLink(true)
-                        setTimeout(() => {
-                          setCopiedLink(false)
-                        }, 1000)
-                      }}
-                    >
-                      <TooltipContent>Copied</TooltipContent>
-
-                      <LinkIcon className='w-6 h-6' />
-                    </Button>
-                  </TooltipTrigger>
-                </Tooltip>
-              </TooltipProvider>
-              <Button
-                variant='ghost'
-                size='icon'
-                title='Enable notifications'
-                aria-label='Enable notifications'
-                onClick={(e) => {
-                  //TODO: Implement notification
-                  const target = e.currentTarget
-                  target.style.color = 'lime'
-                  setTimeout(() => {
-                    target.style.color = 'black'
-                  }, 250)
-                }}
-              >
-                <BellIcon className='w-6 h-6' />
-              </Button>
-              <Button
-                variant='ghost'
-                size='icon'
-                title='Add to calendar'
-                aria-label='Add to calendar'
-                onClick={(e) => {
-                  setShowCalendarPopup([true, currentEvent])
-                  const target = e.currentTarget
-                  target.style.color = 'lime'
-                  setTimeout(() => {
-                    target.style.color = 'black'
-                  }, 250)
-                }}
-              >
-                <PlusIcon className='w-6 h-6' />
-              </Button>
-            </CardContent>
-          </Card>
-
-          <div>
-            <Button
-              className='absolute top-1/2 left-4 transform -translate-y-1/2'
-              onClick={toBack}
-              size='icon'
-            >
-              <ChevronLeftIcon className='w-6 h-6' />
-            </Button>
-            <Button
-              className='absolute top-1/2 right-4 transform -translate-y-1/2'
-              onClick={toNext}
-              size='icon'
-            >
-              <ChevronRightIcon className='w-6 h-6' />
-            </Button>
+    <section className='w-full h-fit px-12 py-4'>
+      <div>
+        <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
+          Events
+        </h2>
+        <p className='text-lg'>
+          {new Date().toLocaleDateString(language, {
+            year: 'numeric',
+            month: 'long',
+          })}
+        </p>
+      </div>
+      <div className='w-full flex flex-col gap-4 desktop:gap-0 justify-around desktop:flex-row'>
+        <Calendar />
+        <div className='grow bg-[#111] desktop:ml-4 rounded-xl px-6 py-8 text-white'>
+          <div className='relative'>
+            <h3 className='text-3xl'>Events</h3>
+            <p>
+              {getNumberWithOrdinal(selectedDate.getDate()) + ' '}
+              <span className='capitalize'>
+                {selectedDate.toLocaleDateString(language, { month: 'long' })}
+              </span>
+            </p>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant={'default'}
+                  size={'icon'}
+                  className='absolute right-0 top-0 bottom-0 my-auto'
+                  title='Add Event'
+                >
+                  <PlusIcon className='w-6 h-6' />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className='w-fit'>
+                <DialogHeader>
+                  <DialogTitle>Add Event</DialogTitle>
+                  <DialogDescription>
+                    Add an event to the calendar
+                  </DialogDescription>
+                </DialogHeader>
+                <EventForm
+                  selectedDate={selectedDate}
+                  closeMenuCallback={() => setIsOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className='flex flex-col gap-4 py-4'>
+            {events
+              .filter((event) => {
+                return (
+                  new Date(event.start_date).toDateString() ===
+                  selectedDate.toDateString()
+                )
+              })
+              .map((event: Event) => (
+                <div
+                  key={event.url}
+                  className={`w-full h-44 border-l-4 relative`}
+                  style={{
+                    borderColor: event.background_color,
+                  }}
+                >
+                  <div className='w-full h-full bg-white rounded-r-xl' />
+                  <div className='absolute top-4 right-4 flex flex-col gap-2 items-end'>
+                    <div className='w-fit flex items-center px-1.5 py-0.5 bg-[#111] font-bold rounded-xl justify-end'>
+                      <p>
+                        {new Date(event.start_date).toLocaleTimeString(
+                          language,
+                          {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          }
+                        )}
+                      </p>
+                      <ClockIcon className='w-6 h-6 ml-1' />
+                    </div>
+                    <div className='w-fit flex items-center px-1.5 py-0.5 bg-[#111] font-bold rounded-xl'>
+                      <p>{event.location}</p>
+                      <MapPinIcon className='w-6 h-6 ml-1' />
+                    </div>
+                  </div>
+                  <div className='z-10 w-full h-fit bg-black/75 absolute bottom-0 rounded-br-xl '>
+                    <div className='px-2 py-2 max-w-[45%]'>
+                      <h3 className='text-2xl font-bold  truncate'>
+                        {event.translations[0].title}
+                      </h3>
+                      <p
+                        className={`truncate ${
+                          event.translations[0].description === ''
+                            ? 'italic'
+                            : 'text-sm'
+                        }`}
+                      >
+                        {event.translations[0].description === ''
+                          ? 'No description'
+                          : event.translations[0].description}
+                      </p>
+                    </div>
+                    <div className='absolute h-full right-0 top-0 flex justify-end items-center'>
+                      <p>
+                        {event.author.author_type == 'STUDENT'
+                          ? (event.author as Student).first_name +
+                            ' ' +
+                            (event.author as Student).last_name
+                          : event.author.author_type == 'COMMITTEE'
+                          ? (event.author as Committee).translations[0].title
+                          : ''}
+                      </p>
+                      <Avatar className='mx-2'>
+                        <AvatarImage
+                          src={
+                            event.author.author_type == 'STUDENT'
+                              ? (event.author as Student).profile_picture_url
+                              : event.author.author_type == 'COMMITTEE'
+                              ? (event.author as Committee).logo_url
+                              : ''
+                          }
+                        />
+                        <AvatarFallback>
+                          {event.author.author_type == 'STUDENT'
+                            ? (event.author as Student).first_name
+                            : event.author.author_type == 'COMMITTEE'
+                            ? (event.author as Committee).translations[0].title
+                            : ''}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
-        <div className='w-1/4 h-full bg-[#111]'></div>
       </div>
     </section>
   )

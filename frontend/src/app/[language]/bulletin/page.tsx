@@ -4,8 +4,9 @@ import ExtraNews from './extranews'
 import BreakingNews from './breakingNews'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import CalendarProvider from '@/components/calendar/CalendarProvider'
 
-export default function News({
+export default async function News({
   params: { language },
 }: {
   params: { language: string }
@@ -30,8 +31,9 @@ export default function News({
           <BreakingNews language={language} />
         </div>
       </div>
-
-      <Events params={{ language }} />
+      <CalendarProvider>
+        <Events language={language} />
+      </CalendarProvider>
       <Recruiting />
       <ExtraNews />
     </main>
