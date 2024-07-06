@@ -23,7 +23,7 @@ export const StudentTag = forwardRef<
       <HoverCardTrigger className='flex items-center' asChild>
         <Button
           variant='link'
-          className='h-fit text-black dark:text-yellow-400 py-0 px-1'
+          className='h-fit text-inherit dark:text-yellow-400 py-0 px-1'
           style={{ fontSize: 'inherit' }}
           ref={ref}
         >
@@ -50,7 +50,7 @@ export const StudentTag = forwardRef<
           </p>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent>
+      <HoverCardContent className='z-40'>
         <StudentTooltip student={student} />
       </HoverCardContent>
     </HoverCard>

@@ -24,6 +24,8 @@ import Committee, { CommitteePosition } from '@/models/Committee'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import FallbackIcon from 'public/images/logo.png'
 import Image from 'next/image'
+import { StudentTag } from '@/components/tags/StudentTag'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
 
 function getNumberWithOrdinal(number: number) {
   if (typeof number !== 'number' || isNaN(number)) {
@@ -73,8 +75,8 @@ export default function Events({ language }: { language: string }) {
             </Button>
           </div>
         </Calendar>
-        <div className='grow lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#111] desktop:ml-4 rounded-xl px-6 py-8 text-white'>
-          <div className='relative'>
+        <div className='grow lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#111] desktop:ml-4 rounded-xl py-8 text-white'>
+          <div className='relative px-6'>
             <h3 className='text-3xl'>Events</h3>
             <p>
               {getNumberWithOrdinal(selectedDate.getDate()) + ' '}
@@ -87,7 +89,7 @@ export default function Events({ language }: { language: string }) {
                 <Button
                   variant={'default'}
                   size={'icon'}
-                  className='absolute right-0 top-0 bottom-0 my-auto'
+                  className='absolute right-0 top-0 bottom-0 my-auto mr-6'
                   title='Add Event'
                 >
                   <PlusIcon className='w-6 h-6' title='Add Event' />
@@ -107,111 +109,123 @@ export default function Events({ language }: { language: string }) {
               </DialogContent>
             </Dialog>
           </div>
-          <div className='flex flex-col gap-4 py-4'>
-            {events
-              .filter((event) => {
-                return (
-                  new Date(event.start_date).toDateString() ===
-                  selectedDate.toDateString()
+          <div className='py-4 max-h-[800px] overflow-y-auto mr-3'>
+            <div className='flex flex-col gap-4 pl-6 pr-3'>
+              {events
+                .filter((event) => {
+                  return (
+                    new Date(event.start_date).toDateString() ===
+                    selectedDate.toDateString()
+                  )
+                })
+                .sort(
+                  (a, b) =>
+                    new Date(a.start_date).getTime() -
+                    new Date(b.start_date).getTime()
                 )
-              })
-              .map((event: Event) => (
-                <div
-                  key={event.url}
-                  className={`w-full h-44 border-l-4 relative`}
-                  style={{
-                    borderColor: tinycolor(event.background_color).isDark()
-                      ? tinycolor(event.background_color).lighten(10).toString()
-                      : event.background_color,
-                  }}
-                >
-                  <div className='w-full h-full rounded-r-xl'>
-                    {event.translations[0].main_image_url && (
-                      <Image
-                        src={event.translations[0].main_image_url}
-                        alt=''
-                      />
-                    )}
-                  </div>
-                  <div className='absolute top-4 right-4 flex flex-col gap-2 items-end z-20'>
-                    <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl justify-end'>
-                      <p>
-                        {new Date(event.start_date).toLocaleTimeString(
-                          language,
-                          {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          }
-                        )}
-                      </p>
-                      <ClockIcon className='w-6 h-6 ml-1' />
-                    </div>
-                    <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl'>
-                      <p>{event.location}</p>
-                      <MapPinIcon className='w-6 h-6 ml-1' />
-                    </div>
-                  </div>
+                .map((event: Event) => (
                   <div
-                    className={`z-10 w-full ${
-                      event.translations[0].main_image_url
-                        ? 'h-fit'
-                        : 'h-full rounded-tr-xl'
-                    } absolute bottom-0 rounded-br-xl bg-[#323232]`}
+                    key={event.url}
+                    className={`w-full h-44 border-l-4 relative`}
+                    style={{
+                      borderColor: tinycolor(event.background_color).isDark()
+                        ? tinycolor(event.background_color)
+                            .lighten(10)
+                            .toString()
+                        : event.background_color,
+                    }}
                   >
-                    <div className='px-2 py-2 sm:max-w-[45%]'>
-                      <h3
-                        className={`text-2xl font-bold truncate`}
-                        title={event.translations[0].title}
-                      >
-                        {event.translations[0].title}
-                      </h3>
-                      <p
-                        title={event.translations[0].description}
-                        className={`truncate ${
-                          event.translations[0].description === ''
-                            ? 'italic'
-                            : 'text-sm'
-                        }`}
-                      >
-                        {event.translations[0].description === ''
-                          ? 'No description'
-                          : event.translations[0].description}
-                      </p>
-                    </div>
-                    <div className='absolute h-fit bottom-4 right-2 hidden sm:flex justify-end items-center '>
-                      <p>
-                        {event.author.author_type == 'STUDENT'
-                          ? (event.author as Student).first_name +
-                            ' ' +
-                            (event.author as Student).last_name
-                          : event.author.author_type == 'COMMITTEE'
-                          ? (event.author as Committee).translations[0].title
-                          : (event.author as CommitteePosition).translations[0]
-                              .title}
-                      </p>
-                      <Avatar className='mx-2 bg-white'>
-                        <AvatarImage
-                          src={
-                            event.author.author_type == 'STUDENT'
-                              ? (event.author as Student).profile_picture_url ||
-                                FallbackIcon.src
-                              : (event.author as Committee).logo_url ||
-                                FallbackIcon.src
-                          }
+                    <div className='w-full h-full rounded-r-xl'>
+                      {event.translations[0].main_image_url && (
+                        <Image
+                          src={event.translations[0].main_image_url}
+                          alt=''
                         />
-                        <AvatarFallback>
-                          {event.author.author_type == 'STUDENT'
-                            ? (event.author as Student).first_name
-                            : event.author.author_type == 'COMMITTEE'
-                            ? (event.author as Committee).translations[0].title
-                            : (event.author as CommitteePosition)
-                                .translations[0].title}
-                        </AvatarFallback>
-                      </Avatar>
+                      )}
+                    </div>
+                    <div className='absolute top-4 right-4 flex flex-col gap-2 items-end z-10'>
+                      <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl justify-end'>
+                        <p>
+                          {new Date(event.start_date).toLocaleTimeString(
+                            language,
+                            {
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            }
+                          )}
+                        </p>
+                        <ClockIcon className='w-6 h-6 ml-1' />
+                      </div>
+                      <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl'>
+                        <p>{event.location}</p>
+                        <MapPinIcon className='w-6 h-6 ml-1' />
+                      </div>
+                    </div>
+                    <div
+                      className={`w-full ${
+                        event.translations[0].main_image_url
+                          ? 'h-fit z-10'
+                          : 'h-full rounded-tr-xl'
+                      } absolute bottom-0 rounded-br-xl bg-[#323232]`}
+                    >
+                      <div className='px-2 py-2 sm:max-w-[45%]'>
+                        <h3
+                          className={`text-2xl font-bold truncate`}
+                          title={event.translations[0].title}
+                        >
+                          {event.translations[0].title}
+                        </h3>
+                        <p
+                          title={event.translations[0].description}
+                          className={`truncate ${
+                            event.translations[0].description === ''
+                              ? 'italic'
+                              : 'text-sm'
+                          }`}
+                        >
+                          {event.translations[0].description === ''
+                            ? 'No description'
+                            : event.translations[0].description}
+                        </p>
+                      </div>
+                      <div className='absolute h-fit bottom-4 right-2 hidden sm:flex justify-end items-center'>
+                        {event.author.author_type == 'STUDENT' ? (
+                          <StudentTag
+                            student={event.author as Student}
+                            includeAt={false}
+                            includeImage={false}
+                          />
+                        ) : event.author.author_type == 'COMMITTEE' ? (
+                          <CommitteeTag committee={event.author as Committee} />
+                        ) : (
+                          (event.author as CommitteePosition).translations[0]
+                            .title
+                        )}
+                        <Avatar className='mx-2 bg-white'>
+                          <AvatarImage
+                            src={
+                              event.author.author_type == 'STUDENT'
+                                ? (event.author as Student)
+                                    .profile_picture_url || FallbackIcon.src
+                                : (event.author as Committee).logo_url ||
+                                  FallbackIcon.src
+                            }
+                          />
+                          <AvatarFallback>
+                            {event.author.author_type == 'STUDENT'
+                              ? (event.author as Student).first_name
+                              : event.author.author_type == 'COMMITTEE'
+                              ? (event.author as Committee).translations[0]
+                                  .title
+                              : (event.author as CommitteePosition)
+                                  .translations[0].title}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
         </div>
       </div>

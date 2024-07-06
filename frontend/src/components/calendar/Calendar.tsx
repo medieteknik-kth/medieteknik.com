@@ -127,58 +127,62 @@ export default function Calendar({
                   onDateClickCallback(new Date(setDate(date, index + 1)))
                 }}
               />
-              <div className='w-full flex flex-col gap-1 absolute top-10 left-0 text-black font-bold px-2 max-h-[92px] overflow-hidden'>
-                {events.length >= 1 &&
-                  events
-                    .sort(
-                      (a, b) =>
-                        new Date(a.start_date).getTime() -
-                        new Date(b.start_date).getTime()
-                    )
-                    .map(
-                      (event) =>
-                        isSameMonth(
-                          new Date(event.start_date),
-                          new Date(date)
-                        ) &&
-                        isSameDay(
-                          new Date(event.start_date),
-                          new Date(setDate(date, index + 1))
-                        ) && (
-                          <div
-                            key={event.url}
-                            className='w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-10 rounded-2xl text-xs max-h-6 overflow-hidden'
-                            style={{
-                              backgroundColor: event.background_color,
-                              color: tinycolor(event.background_color).isDark()
-                                ? 'white'
-                                : 'black',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.stopPropagation()
-                              // Hover effect
-                              const bg = tinycolor(event.background_color)
-                              e.currentTarget.style.backgroundColor =
-                                bg.isDark()
-                                  ? bg.darken(10).toString()
-                                  : bg.lighten(10).toString()
-                            }}
-                            onMouseLeave={(e) => {
-                              e.stopPropagation()
-                              e.currentTarget.style.backgroundColor =
-                                event.background_color
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              onEventClickCallback(event)
-                            }}
-                          >
-                            <p className='truncate hidden sm:block'>
-                              {event.translations[0].title}
-                            </p>
-                          </div>
-                        )
-                    )}
+              <div className='w-full absolute top-10 left-0 text-black font-bold px-2 max-h-[92px] overflow-hidden'>
+                <div className='flex flex-col gap-1'>
+                  {events.length >= 1 &&
+                    events
+                      .sort(
+                        (a, b) =>
+                          new Date(a.start_date).getTime() -
+                          new Date(b.start_date).getTime()
+                      )
+                      .map(
+                        (event) =>
+                          isSameMonth(
+                            new Date(event.start_date),
+                            new Date(date)
+                          ) &&
+                          isSameDay(
+                            new Date(event.start_date),
+                            new Date(setDate(date, index + 1))
+                          ) && (
+                            <div
+                              key={event.url}
+                              className='w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-10 rounded-2xl text-xs max-h-6 overflow-hidden'
+                              style={{
+                                backgroundColor: event.background_color,
+                                color: tinycolor(
+                                  event.background_color
+                                ).isDark()
+                                  ? 'white'
+                                  : 'black',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.stopPropagation()
+                                // Hover effect
+                                const bg = tinycolor(event.background_color)
+                                e.currentTarget.style.backgroundColor =
+                                  bg.isDark()
+                                    ? bg.darken(10).toString()
+                                    : bg.lighten(10).toString()
+                              }}
+                              onMouseLeave={(e) => {
+                                e.stopPropagation()
+                                e.currentTarget.style.backgroundColor =
+                                  event.background_color
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onEventClickCallback(event)
+                              }}
+                            >
+                              <p className='truncate hidden sm:block'>
+                                {event.translations[0].title}
+                              </p>
+                            </div>
+                          )
+                      )}
+                </div>
               </div>
             </div>
           </div>
