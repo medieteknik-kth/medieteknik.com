@@ -146,6 +146,7 @@ def create_item(
     author_email: str,
     item_table: Type[Item] = Item,
     data: Dict[str, Any] | None = None,
+    public: bool = False,
 ) -> str | None:
     """
     Creates an item in the item table.
@@ -174,25 +175,25 @@ def create_item(
         return None
 
     if not data.get("title"):
-        data["title"] = "Untitled Article"
+        data["title"] = "Untitled Item"
 
-    all_authors_news = item_table.query.filter_by(author_id=author.author_id).all()
+    all_authors_items = item_table.query.filter_by(author_id=author.author_id).all()
 
-    if all_authors_news:
-        authors_news_ids = []
+    if all_authors_items:
+        authors_items_ids = []
 
         translation_table = None
         if item_table is News:
-            authors_news_ids = [a.news_id for a in all_authors_news]
+            authors_items_ids = [a.news_id for a in all_authors_items]
             translation_table = NewsTranslation
         elif item_table is Event:
-            authors_news_ids = [a.event_id for a in all_authors_news]
+            authors_items_ids = [a.event_id for a in all_authors_items]
             translation_table = EventTranslation
         elif item_table is Album:
-            authors_news_ids = [a.album_id for a in all_authors_news]
+            authors_items_ids = [a.album_id for a in all_authors_items]
             translation_table = AlbumTranslation
         elif item_table is Document:
-            authors_news_ids = [a.document_id for a in all_authors_news]
+            authors_items_ids = [a.document_id for a in all_authors_items]
             translation_table = DocumentTranslation
         else:
             raise NotImplementedError(f"Unsupported item type: {item_table}")
@@ -208,7 +209,7 @@ def create_item(
 
         original_title = data.get("title")
         title_query = translation_table.query.filter(
-            translation_pk.in_(authors_news_ids),
+            translation_pk.in_(authors_items_ids),
             translation_table.title == original_title,
         )
 
@@ -219,7 +220,7 @@ def create_item(
             new_title = f"{original_title} ({count})"
 
             title_query = translation_table.query.filter(
-                translation_pk.in_(authors_news_ids),
+                translation_pk.in_(authors_items_ids),
                 translation_table.title == new_title,
             )
 
@@ -234,14 +235,25 @@ def create_item(
 
     data["url"] = str(url)
 
-    translation_data = data.get("translation")
+    translation_data = data.get("translations")
 
-    del data["translation"]
+    del data["translations"]
 
     item = item_table()
-    item.url = str(url)  # type: ignore
-    item.author_id = author.author_id  # type: ignore
-    item.published_status = PublishedStatus.DRAFT  # type: ignore
+    setattr(item, "url", url)
+    setattr(item, "author_id", author.author_id)
+    if not public:
+        setattr(item, "published_status", PublishedStatus.DRAFT)
+    else:
+        setattr(item, "published_status", PublishedStatus.PUBLISHED)
+    setattr(item, "is_public", public)
+    setattr(item, "created_at", datetime.now())
+
+    print("data: ", data)
+    for key, value in data.items():
+        if not hasattr(item, key):
+            continue
+        setattr(item, key, value)
 
     db.session.add(item)
     db.session.flush()

@@ -14,6 +14,7 @@ def register_routes(app: Flask):
         public_committee_category_bp,
         public_committee_position_bp,
     )
+    from .public.calendar_routes import calendar_bp
     from .public.dynamic_routes import public_dynamic_routes_bp
     from .public.general_routes import public_bp
     from .public.item_routes import (
@@ -23,7 +24,7 @@ def register_routes(app: Flask):
         public_albums_bp,
     )
     from .public.student_routes import public_student_bp
-
+    from .committee_routes import committee_bp
     from .author_routes import author_bp
     from .item_routes import news_bp, events_bp, documents_bp, albums_bp
 
@@ -36,6 +37,7 @@ def register_routes(app: Flask):
         public_committee_category_bp,
         url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}",
     )
+    app.register_blueprint(calendar_bp, url_prefix=f"{PUBLIC_PATH}/calendar")
     app.register_blueprint(
         public_committee_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}"
     )
@@ -69,5 +71,8 @@ def register_routes(app: Flask):
     )
     app.register_blueprint(
         albums_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
+    )
+    app.register_blueprint(
+        committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
     )
     app.register_blueprint(author_bp, url_prefix=f"{PROTECTED_PATH}/authors")
