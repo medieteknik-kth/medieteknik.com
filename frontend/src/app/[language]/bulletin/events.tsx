@@ -3,7 +3,12 @@ import { Event } from '@/models/Items'
 import Calendar from '@/components/calendar/Calendar'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { ClockIcon, MapPinIcon, PlusIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowUpTrayIcon,
+  ClockIcon,
+  MapPinIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline'
 import {
   Dialog,
   DialogContent,
@@ -15,8 +20,10 @@ import {
 import EventForm from './eventForm'
 import { useCalendar } from '@/components/calendar/CalendarProvider'
 import Student from '@/models/Student'
-import Committee from '@/models/Committee'
+import Committee, { CommitteePosition } from '@/models/Committee'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import FallbackIcon from 'public/images/logo.png'
+import Image from 'next/image'
 
 function getNumberWithOrdinal(number: number) {
   if (typeof number !== 'number' || isNaN(number)) {
@@ -43,22 +50,30 @@ function getNumberWithOrdinal(number: number) {
 export default function Events({ language }: { language: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedDate, events } = useCalendar()
+  const tinycolor = require('tinycolor2')
   return (
     <section className='w-full h-fit px-12 py-4'>
       <div>
         <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
           Events
         </h2>
-        <p className='text-lg'>
+        <p className='text-lg mb-3'>
           {new Date().toLocaleDateString(language, {
             year: 'numeric',
             month: 'long',
           })}
         </p>
       </div>
-      <div className='w-full flex flex-col gap-4 desktop:gap-0 justify-around desktop:flex-row'>
-        <Calendar />
-        <div className='grow bg-[#111] desktop:ml-4 rounded-xl px-6 py-8 text-white'>
+
+      <div className='w-full flex flex-col gap-4 desktop:gap-0 justify-around desktop:flex-row relative'>
+        <Calendar>
+          <div className='absolute right-0 -top-12'>
+            <Button size={'icon'} variant={'outline'}>
+              <ArrowUpTrayIcon className='w-6 h-6' title='Export' />
+            </Button>
+          </div>
+        </Calendar>
+        <div className='grow lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#111] desktop:ml-4 rounded-xl px-6 py-8 text-white'>
           <div className='relative'>
             <h3 className='text-3xl'>Events</h3>
             <p>
@@ -75,7 +90,7 @@ export default function Events({ language }: { language: string }) {
                   className='absolute right-0 top-0 bottom-0 my-auto'
                   title='Add Event'
                 >
-                  <PlusIcon className='w-6 h-6' />
+                  <PlusIcon className='w-6 h-6' title='Add Event' />
                 </Button>
               </DialogTrigger>
               <DialogContent className='w-fit'>
@@ -105,12 +120,21 @@ export default function Events({ language }: { language: string }) {
                   key={event.url}
                   className={`w-full h-44 border-l-4 relative`}
                   style={{
-                    borderColor: event.background_color,
+                    borderColor: tinycolor(event.background_color).isDark()
+                      ? tinycolor(event.background_color).lighten(10).toString()
+                      : event.background_color,
                   }}
                 >
-                  <div className='w-full h-full bg-white rounded-r-xl' />
-                  <div className='absolute top-4 right-4 flex flex-col gap-2 items-end'>
-                    <div className='w-fit flex items-center px-1.5 py-0.5 bg-[#111] font-bold rounded-xl justify-end'>
+                  <div className='w-full h-full rounded-r-xl'>
+                    {event.translations[0].main_image_url && (
+                      <Image
+                        src={event.translations[0].main_image_url}
+                        alt=''
+                      />
+                    )}
+                  </div>
+                  <div className='absolute top-4 right-4 flex flex-col gap-2 items-end z-20'>
+                    <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl justify-end'>
                       <p>
                         {new Date(event.start_date).toLocaleTimeString(
                           language,
@@ -122,17 +146,27 @@ export default function Events({ language }: { language: string }) {
                       </p>
                       <ClockIcon className='w-6 h-6 ml-1' />
                     </div>
-                    <div className='w-fit flex items-center px-1.5 py-0.5 bg-[#111] font-bold rounded-xl'>
+                    <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl'>
                       <p>{event.location}</p>
                       <MapPinIcon className='w-6 h-6 ml-1' />
                     </div>
                   </div>
-                  <div className='z-10 w-full h-fit bg-black/75 absolute bottom-0 rounded-br-xl '>
-                    <div className='px-2 py-2 max-w-[45%]'>
-                      <h3 className='text-2xl font-bold  truncate'>
+                  <div
+                    className={`z-10 w-full ${
+                      event.translations[0].main_image_url
+                        ? 'h-fit'
+                        : 'h-full rounded-tr-xl'
+                    } absolute bottom-0 rounded-br-xl bg-[#323232]`}
+                  >
+                    <div className='px-2 py-2 sm:max-w-[45%]'>
+                      <h3
+                        className={`text-2xl font-bold truncate`}
+                        title={event.translations[0].title}
+                      >
                         {event.translations[0].title}
                       </h3>
                       <p
+                        title={event.translations[0].description}
                         className={`truncate ${
                           event.translations[0].description === ''
                             ? 'italic'
@@ -144,7 +178,7 @@ export default function Events({ language }: { language: string }) {
                           : event.translations[0].description}
                       </p>
                     </div>
-                    <div className='absolute h-full right-0 top-0 flex justify-end items-center'>
+                    <div className='absolute h-fit bottom-4 right-2 hidden sm:flex justify-end items-center '>
                       <p>
                         {event.author.author_type == 'STUDENT'
                           ? (event.author as Student).first_name +
@@ -152,16 +186,17 @@ export default function Events({ language }: { language: string }) {
                             (event.author as Student).last_name
                           : event.author.author_type == 'COMMITTEE'
                           ? (event.author as Committee).translations[0].title
-                          : ''}
+                          : (event.author as CommitteePosition).translations[0]
+                              .title}
                       </p>
-                      <Avatar className='mx-2'>
+                      <Avatar className='mx-2 bg-white'>
                         <AvatarImage
                           src={
                             event.author.author_type == 'STUDENT'
-                              ? (event.author as Student).profile_picture_url
-                              : event.author.author_type == 'COMMITTEE'
-                              ? (event.author as Committee).logo_url
-                              : ''
+                              ? (event.author as Student).profile_picture_url ||
+                                FallbackIcon.src
+                              : (event.author as Committee).logo_url ||
+                                FallbackIcon.src
                           }
                         />
                         <AvatarFallback>
@@ -169,7 +204,8 @@ export default function Events({ language }: { language: string }) {
                             ? (event.author as Student).first_name
                             : event.author.author_type == 'COMMITTEE'
                             ? (event.author as Committee).translations[0].title
-                            : ''}
+                            : (event.author as CommitteePosition)
+                                .translations[0].title}
                         </AvatarFallback>
                       </Avatar>
                     </div>

@@ -52,9 +52,14 @@ export interface CommitteeTranslation {
 export interface CommitteePosition {
   author_type: 'COMMITTEE_POSITION';
   email: string,
-  title: string;
-  description: string;
   role: 'ADMIN' | 'BOARD' | 'COMMITTEE';
   active: boolean;
   weight: number;
+  translations: CommitteePositionTranslation[]
+}
+
+export interface CommitteePositionTranslation {
+  title: string;
+  description: string;
+  language_code: LanguageCodes;
 }

@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { CardFooter } from '@/components/ui/card'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { useCalendar } from '@/components/calendar/CalendarProvider'
+import { Label } from '@/components/ui/label'
 
 function createRandomTempraryID(length: number): string {
   let result = ''
@@ -45,6 +46,7 @@ export default function EventForm({
   const [title, setTitle] = useState('')
   const { addEvent } = useCalendar()
   const tinycolor = require('tinycolor2')
+  const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6']
   const FormSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     description: z.string().optional().or(z.literal('')),
@@ -187,7 +189,7 @@ export default function EventForm({
           <FormField
             name='description'
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='mt-2'>
                 <FormLabel>Description (Optional)</FormLabel>
                 <FormControl>
                   <Input
@@ -313,6 +315,23 @@ export default function EventForm({
                   </FormControl>
                   <EyeDropperIcon className='absolute right-8 w-5 h-5 text-neutral-500' />
                 </div>
+                <div
+                  id='preset-colors'
+                  className='w-full flex flex-col h-fit mt-2'
+                >
+                  <Label className='w-full text-xs'>Preset Colors</Label>
+                  <div className='w-full h-fit flex gap-4 mt-1'>
+                    {presetColors.map((color) => (
+                      <div
+                        key={color}
+                        className='w-6 h-6 cursor-pointer rounded-full'
+                        style={{ backgroundColor: color }}
+                        title={color}
+                        onClick={() => handleColorChange(color)}
+                      />
+                    ))}
+                  </div>
+                </div>
 
                 <FormMessage />
               </FormItem>
@@ -335,7 +354,7 @@ export default function EventForm({
           </p>
           <div className='w-full absolute top-10 left-0 px-2'>
             <div
-              className='w-full text-xs rounded-2xl px-2 py-0.5 max-h-6 border font-bold overflow-hidden'
+              className='w-full text-xs rounded-2xl px-2 py-0.5 h-6 border font-bold overflow-hidden'
               style={{
                 backgroundColor: currentColor,
                 color: tinycolor(currentColor).isDark() ? 'white' : 'black',
