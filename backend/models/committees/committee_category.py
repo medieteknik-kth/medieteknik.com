@@ -72,7 +72,9 @@ class CommitteeCategoryTranslation(db.Model):
     committee_category = db.relationship(
         "CommitteeCategory", back_populates="translations"
     )
-    language = db.relationship("Language", back_populates="committee_category_translations")
+    language = db.relationship(
+        "Language", back_populates="committee_category_translations"
+    )
 
     def __repr__(self):
         return (

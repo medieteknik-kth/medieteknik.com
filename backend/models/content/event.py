@@ -87,6 +87,9 @@ class Event(Item):
                 value = value.value
             data[column] = value
 
+        if not data:
+            return None
+
         translations = []
 
         for language_code in provided_languages:
