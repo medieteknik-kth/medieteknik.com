@@ -11,6 +11,17 @@ import Student from './Student'
  */
 export type Author = Student | Committee | CommitteePosition
 
+interface Item {
+  author: Author
+  categories?: string[]
+  created_at: string
+  last_updated?: string
+  is_pinned: boolean
+  is_public: boolean
+  published_status: 'PUBLISHED' | 'DRAFT'
+  url: string
+}
+
 /**
  * @interface Item
  * @description Base News Model
@@ -28,18 +39,8 @@ export type Author = Student | Committee | CommitteePosition
  * @param {boolean} is_public - Whether the news item is public
  * @param {string} url - The URL of the news item
  */
-export interface News {
-  author: Author
-
+export interface News extends Item {
   translations: NewsTranslation[],
-  
-  categories?: string[]
-  created_at: string
-  last_updated?: string
-  is_pinned: boolean
-  is_public: boolean
-  published_status: 'PUBLISHED' | 'DRAFT'
-  url: string
 }
 
 export interface NewsTranslation {
@@ -54,17 +55,26 @@ export interface NewsTranslation {
 /**
  * @interface Event
  * @description Event model
- * @extends News
  * 
  * @param {string} location - The location of the event
  * @param {string} start_date - The start date of the event
  * @param {string} end_date - The end date of the event
  */
-export interface Event extends News {
+export interface Event extends Item {
   location: string
   start_date: string
   end_date: string
   status: 'UPCOMING' | 'ONGOING' | 'PAST'
+  background_color: string
+  translations: EventTranslation[]
+}
+
+export interface EventTranslation {
+  title: string
+  description: string
+  main_image_url: string
+  sub_image_urls?: string[]
+  language_code: LanguageCodes
 }
 
 export interface NewsPagination {
