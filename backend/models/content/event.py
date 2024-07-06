@@ -1,4 +1,5 @@
 import enum
+from textwrap import dedent
 from typing import List
 from sqlalchemy import (
     Boolean,
@@ -14,7 +15,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
-from models.content.base import Item
+from models.content.base import Item, PublishedStatus
 
 
 class EventStatus(enum.Enum):
@@ -42,6 +43,7 @@ class Event(Item):
     status = Column(Enum(EventStatus), default=EventStatus.UPCOMING, nullable=False)
     location = Column(String(255))
     is_inherited = Column(Boolean, default=False, nullable=False)
+    background_color = Column(String(7))
 
     # Foreign keys
     item_id = Column(Integer, ForeignKey("item.item_id"))
@@ -68,12 +70,22 @@ class Event(Item):
     def to_dict(
         self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
     ):
-        base_dict = super().to_dict(
-            provided_languages=provided_languages, is_public_route=is_public_route
-        )
+        data = super().to_dict(provided_languages, is_public_route)
 
-        if not base_dict:
-            return {}
+        if data is None:
+            return None
+
+        columns = inspect(self)
+
+        if not columns:
+            return None
+
+        columns = columns.mapper.column_attrs.keys()
+        for column in columns:
+            value = getattr(self, column)
+            if isinstance(value, enum.Enum):
+                value = value.value
+            data[column] = value
 
         translations = []
 
@@ -86,17 +98,38 @@ class Event(Item):
             )
             translations.append(translation)
 
-        del base_dict["event_id"]
+        data["translations"] = [translation.to_dict() for translation in translations]
 
-        base_dict["start_date"] = self.start_date
-        base_dict["end_date"] = self.end_date
-        base_dict["status"] = self.status
-        base_dict["location"] = self.location
-        base_dict["translations"] = [
-            translation.to_dict() for translation in translations
-        ]
+        if not isinstance(translation, EventTranslation):
+            return None
 
-        return base_dict
+        del data["event_id"]
+        del data["calendar_id"]
+        del data["parent_event_id"]
+        del data["type"]
+        del data["published_status"]
+
+        return data
+
+    def to_ics(self, language: str):
+        translation = get_translation(
+            EventTranslation, ["event_id"], {"event_id": self.event_id}, language
+        )
+
+        if not isinstance(translation, EventTranslation):
+            return None
+
+        return dedent(f"""
+            BEGIN:VEVENT
+            UID:{self.event_id + '@medieteknik.com'}
+            DTSTAMP:{self.created_at.strftime("%Y%m%dT%H%M%S" + "Z")}
+            SUMMARY:{translation.title}
+            DESCRIPTION:{translation.description}
+            LOCATION:{self.location}
+            DTSTART:{self.start_date.strftime("%Y%m%dT%H%M%S" + "Z")}
+            DTEND:{self.end_date.strftime("%Y%m%dT%H%M%S") + "Z"}
+            END:VEVENT
+            """)
 
 
 class EventTranslation(db.Model):
@@ -105,8 +138,7 @@ class EventTranslation(db.Model):
     event_translation_id = Column(Integer, primary_key=True, autoincrement=True)
 
     title = Column(String(255))
-    body = Column(String(2500))
-    short_description = Column(String(255))
+    description = Column(String(500))
     main_image_url = Column(String(255))
     sub_image_urls = Column(ARRAY(String))
 
