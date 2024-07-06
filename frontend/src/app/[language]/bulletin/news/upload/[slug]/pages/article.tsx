@@ -248,12 +248,17 @@ export default function ArticlePage({
             tag: {
               author: {
                 author_type: 'COMMITTEE_POSITION',
-                title: detail,
-                description: '',
                 email: '',
                 active: true,
                 role: 'ADMIN',
                 weight: 0,
+                translations: [
+                  {
+                    title: '',
+                    description: '',
+                    language_code: 'sv',
+                  },
+                ],
               },
             },
             children: [{ text: '' }],

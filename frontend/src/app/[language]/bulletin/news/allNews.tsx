@@ -16,8 +16,6 @@ import {
   ChevronLeftIcon,
   AdjustmentsHorizontalIcon,
   ChartBarIcon,
-  ArrowUpIcon,
-  ArrowDownIcon,
   TagIcon,
   InformationCircleIcon,
   LinkIcon,
@@ -25,7 +23,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import NewsCard from '../components/newsCard'
-import News, { NewsPagination } from '@/models/Items'
+import { NewsPagination } from '@/models/Items'
 import {
   Tooltip,
   TooltipContent,
@@ -37,17 +35,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { useCallback, useEffect, useState } from 'react'
-import Student from '@/models/Student'
-import Committee from '@/models/Committee'
-import Link from 'next/link'
+import { useCallback, useState } from 'react'
 import { UploadNews } from '@/components/dialogs/Upload'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'

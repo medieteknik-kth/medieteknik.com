@@ -42,7 +42,7 @@ export default function CommitteePositionTag({
           </Avatar>
           )}*/}
           <p>
-            {(includeAt ? '@ ' : '') + committeePosition.title}
+            {(includeAt ? '@ ' : '') + committeePosition.translations[0].title}
             {children}
           </p>
         </Button>

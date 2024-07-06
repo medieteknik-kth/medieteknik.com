@@ -25,13 +25,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Webmaster',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Webmaster',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('August 20 2023').toLocaleDateString(),
     termination_date: new Date('August 20 2024').toLocaleDateString(),
@@ -45,13 +50,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Ordförande',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Ordförande',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('January 20 2022').toLocaleDateString(),
     termination_date: new Date('January 20 2023').toLocaleDateString(),
@@ -65,13 +75,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Vice-Ordförande',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Vice-Ordförande',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('January 20 2021').toLocaleDateString(),
     termination_date: new Date('January 20 2022').toLocaleDateString(),
@@ -85,13 +100,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Kassör',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Sekreterare',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('January 20 2020').toLocaleDateString(),
     termination_date: new Date('January 20 2021').toLocaleDateString(),
@@ -105,13 +125,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Sekreterare',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Kassör',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('January 20 2019').toLocaleDateString(),
     termination_date: new Date('January 20 2020').toLocaleDateString(),
@@ -125,13 +150,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Vice-Sekreterare',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Vice-Sekreterare',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('January 20 2018').toLocaleDateString(),
     termination_date: new Date('January 20 2019').toLocaleDateString(),
@@ -145,13 +175,18 @@ const testPositions: StudentCommitteePosition[] = [
       student_type: 'MEDIETEKNIK',
     },
     position: {
-      title: 'Ledamot',
       active: true,
       author_type: 'COMMITTEE_POSITION',
       email: '',
       role: 'ADMIN',
       weight: 0,
-      description: '',
+      translations: [
+        {
+          title: 'Ledamot',
+          description: '',
+          language_code: 'sv',
+        },
+      ],
     },
     initiation_date: new Date('January 20 2017').toLocaleDateString(),
     termination_date: new Date('January 20 2018').toLocaleDateString(),
@@ -192,7 +227,9 @@ export default function StudentPositions({
               {hasAnyPostion ? (
                 activePositions.map((position, index) => (
                   <TableRow key={index}>
-                    <TableCell>{position.position.title}</TableCell>
+                    <TableCell>
+                      {position.position.translations[0].title}
+                    </TableCell>
                     <TableCell className='flex items-center'>
                       <Avatar className='w-6 h-auto mr-1'>
                         <AvatarImage src={''} alt='Profile Picture' />
@@ -236,7 +273,9 @@ export default function StudentPositions({
               {hasAnyPostion ? (
                 previousPositions.map((position, index) => (
                   <TableRow key={index}>
-                    <TableCell>{position.position.title}</TableCell>
+                    <TableCell>
+                      {position.position.translations[0].title}
+                    </TableCell>
                     <TableCell className='flex items-center'>
                       <Avatar className='w-6 h-auto mr-1'>
                         <AvatarImage src={''} alt='Profile Picture' />

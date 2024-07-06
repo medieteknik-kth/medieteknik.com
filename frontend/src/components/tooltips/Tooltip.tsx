@@ -110,7 +110,7 @@ export function CommitteePositionTooltip({
           <AvatarFallback>Committee Picture</AvatarFallback>
         </Avatar>
         <div className='flex flex-col'>
-          <CardTitle>{position.title}</CardTitle>
+          <CardTitle>{position.translations[0].title}</CardTitle>
           <CardDescription className='capitalize'>
             {committee.translations[0].title}
           </CardDescription>
@@ -118,7 +118,7 @@ export function CommitteePositionTooltip({
       </CardHeader>
       <CardContent>
         <h3 className='text-lg font-bold'>Description</h3>
-        <p>{position.description}</p>
+        <p>{position.translations[0].description}</p>
       </CardContent>
     </div>
   )

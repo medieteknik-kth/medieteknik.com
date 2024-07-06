@@ -70,6 +70,7 @@ export default function DetailedCookiePopup({
         <h1 className='text-3xl ml-4'>{commonTranslation('title')}</h1>
         <button
           className='w-8 h-8 ml-auto mr-8'
+          title='Close'
           onClick={() => {
             saveCookieSettings({
               NECESSARY: false,
@@ -176,8 +177,15 @@ export default function DetailedCookiePopup({
                       updateSlider(cookie, !sliders[cookie])
                     }}
                   >
-                    <input type='checkbox' checked={sliders[cookie]} readOnly />
-                    <span
+                    <input
+                      id={cookie}
+                      name={cookie}
+                      type='checkbox'
+                      checked={sliders[cookie]}
+                      readOnly
+                    />
+                    <label
+                      htmlFor={cookie}
                       className={`slider focus:border-2 focus:border-black ${
                         cookie === 'NECESSARY'
                           ? 'hover:cursor-not-allowed'
