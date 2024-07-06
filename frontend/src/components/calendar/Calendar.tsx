@@ -12,6 +12,7 @@ import {
   isSameDay,
 } from 'date-fns'
 import { useCalendar } from './CalendarProvider'
+import './calendar.css'
 
 /**
  * Returns an array of dates representing the last week of the previous month adjusted to include only dates that are before the start of the current month.
@@ -38,9 +39,11 @@ function getPreviousMonthsLastWeekAdjusted(currentDate: Date) {
 export default function Calendar({
   onDateClickCallback = () => {},
   onEventClickCallback = () => {},
+  children,
 }: {
   onDateClickCallback?: (date: Date) => void
   onEventClickCallback?: (event: Event) => void
+  children?: React.ReactNode
 }) {
   const { date, selectedDate, setSelectedDate, retrieveEvents, events } =
     useCalendar()
@@ -52,15 +55,30 @@ export default function Calendar({
   }
 
   return (
-    <div id='calendar' className='w-full desktop:w-fit h-fit min-h-[750px]'>
+    <div
+      id='calendar'
+      className='w-full desktop:w-fit h-fit min-h-[750px] relative'
+    >
       <div className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 font-bold text-lg border-l border-t rounded-t'>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit'>MON</p>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit'>TUE</p>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit'>WED</p>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit'>THU</p>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit'>FRI</p>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit'>SAT</p>
-        <p className='desktop:w-48 py-4 pl-2 border-r border-inherit rounded-tr'>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'>
+          MON
+        </p>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'>
+          TUE
+        </p>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'>
+          WED
+        </p>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'>
+          THU
+        </p>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'>
+          FRI
+        </p>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'>
+          SAT
+        </p>
+        <p className='week w-full desktop:w-48 py-4 px-0 xs:px-2 sm:pl-2 border-r border-inherit rounded-tr grid place-items-center sm:place-items-start'>
           SUN
         </p>
       </div>
@@ -68,14 +86,14 @@ export default function Calendar({
         {getPreviousMonthsLastWeekAdjusted(date).map((mappedDate, index) => (
           <div
             key={index}
-            className='desktop:w-48 h-36 border-r relative bg-neutral-200/75'
+            className='w-full desktop:w-48 h-36 border-r relative bg-neutral-200/75'
             onClick={(event) => {
               event.stopPropagation()
               setSelectedDate(mappedDate)
               onDateClickCallback(mappedDate)
             }}
           >
-            <p className='absolute top-2 left-2 text-2xl text-neutral-400 select-none'>
+            <p className='absolute top-2 left-2 text-md sm:text-2xl text-neutral-400 select-none'>
               {mappedDate.getDate()}
             </p>
           </div>
@@ -90,7 +108,9 @@ export default function Calendar({
             }
             `}
           >
-            <p className={`absolute top-2 left-2 text-2xl select-none z-20`}>
+            <p
+              className={`absolute top-2 left-2 text-md sm:text-2xl select-none z-20`}
+            >
               {index + 1}
             </p>
             <div className='w-full h-full'>
@@ -127,7 +147,7 @@ export default function Calendar({
                         ) && (
                           <div
                             key={event.url}
-                            className='px-2 py-0.5 z-10 rounded-2xl text-xs max-h-6 overflow-hidden'
+                            className='w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-10 rounded-2xl text-xs max-h-6 overflow-hidden'
                             style={{
                               backgroundColor: event.background_color,
                               color: tinycolor(event.background_color).isDark()
@@ -153,7 +173,7 @@ export default function Calendar({
                               onEventClickCallback(event)
                             }}
                           >
-                            <p className='truncate'>
+                            <p className='truncate hidden sm:block'>
                               {event.translations[0].title}
                             </p>
                           </div>
@@ -174,12 +194,13 @@ export default function Calendar({
               onDateClickCallback(setDate(dateClicked, index + 1))
             }}
           >
-            <p className='absolute top-2 left-2 text-2xl text-neutral-400 select-none'>
+            <p className='absolute top-2 left-2 text-md sm:text-2xl text-neutral-400 select-none'>
               {index + 1}
             </p>
           </div>
         ))}
       </div>
+      {children}
     </div>
   )
 }
