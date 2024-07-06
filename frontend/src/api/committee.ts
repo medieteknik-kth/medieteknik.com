@@ -22,6 +22,41 @@ export const GetCommittee = cache(async (committee: string, language_code: strin
   return null
 })
 
+export const GetCommitteeData = cache(async (committee: string) => {
+  const response = await api.get(`/committees/${committee}/data`);
+
+  if (response.status === 200) {
+      return response.data as {
+        members: {
+          ids: string[],
+          total: number
+        },
+        positions: {
+          ids: string[],
+          total: number
+        },
+        news: {
+          ids: string[],
+          total: number
+        },
+        events: {
+          ids: string[],
+          total: number
+        },
+        documents: {
+          ids: string[],
+          total: number
+        },
+        albums: {
+          ids: string[],
+          total: number
+        }
+      }
+  }
+
+  return null
+})
+
 export const GetCommitteeCategories = cache(async (language_code: string) => {
   const response = await api.get(`/public/committee_categories?language=${language_code}`);
 
