@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree as FontSans } from 'next/font/google'
+import { Figtree } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 import { supportedLanguages } from '../i18n/settings'
@@ -31,7 +31,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-const fontSans = FontSans({ subsets: ['latin'], variable: '--font-sans' })
+const fontSans = Figtree({ subsets: ['latin'], variable: '--font-sans' })
 
 export default function RootLayout({
   children,
