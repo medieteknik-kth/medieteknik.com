@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -37,8 +38,28 @@ import {
 } from '@/components/ui/pagination'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DraftBadge, PublishedBadge } from '@/components/badges/Items'
+import { useEffect, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default function NewsPage({ language }: { language: string }) {
+export default function NewsPage({
+  language,
+  data,
+}: {
+  language: string
+  data: {
+    news: {
+      ids: string[]
+      total: number
+    }
+  } | null
+}) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false)
+    }
+  }, [data])
   return (
     <section className='grow'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>News</h2>
@@ -53,7 +74,11 @@ export default function NewsPage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>20 000</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.news.total}</p>
+              )}
             </CardContent>
             <CardFooter>
               <Button>

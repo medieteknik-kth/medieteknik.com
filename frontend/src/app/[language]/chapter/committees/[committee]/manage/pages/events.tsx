@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -44,11 +45,41 @@ import {
   OngoingEventBadge,
   UpcomingEventBadge,
 } from '@/components/badges/Items'
+import { useEffect, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default function EventPage({ language }: { language: string }) {
+export default function EventPage({
+  language,
+  data,
+}: {
+  language: string
+  data: {
+    events: {
+      ids: string[]
+      total: number
+    }
+  } | null
+}) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false)
+    }
+  }, [data])
+
   return (
     <section className='grow'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>Events</h2>
+      {/*<section className='w-fit grid grid-cols-7 gap-1'>
+        {calendar.getDaysInMonth().map((date, index) => (
+          <div className='w-24 h-24 border relative' key={index}>
+            <p className='absolute top-2 right-2 text-xs select-none'>
+              {date.getDate()}
+            </p>
+          </div>
+        ))}
+      </section>*/}
       <div className='flex flex-col mt-4'>
         <div className='flex mb-4'>
           <Card className='w-72 relative'>
@@ -60,7 +91,11 @@ export default function EventPage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>200</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.events.total}</p>
+              )}
             </CardContent>
             <CardFooter>
               <Button>

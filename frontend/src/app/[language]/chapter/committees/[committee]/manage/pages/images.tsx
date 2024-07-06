@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -38,8 +39,29 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useEffect, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default function ImagePage({ language }: { language: string }) {
+export default function ImagePage({
+  language,
+  data,
+}: {
+  language: string
+  data: {
+    albums: {
+      ids: string[]
+      total: number
+    }
+  } | null
+}) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false)
+    }
+  }, [data])
+
   return (
     <section className='grow'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>Images</h2>
@@ -54,7 +76,11 @@ export default function ImagePage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>100</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.albums.total}</p>
+              )}
             </CardContent>
             <CardFooter>
               <Button>

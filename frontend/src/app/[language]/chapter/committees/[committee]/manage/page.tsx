@@ -25,8 +25,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { GetCommitteePublic } from '@/api/committee'
-
+import { GetCommitteePublic, GetCommitteeData } from '@/api/committee'
 const HomePage = React.lazy(() => import('./pages/home'))
 const MembersPage = React.lazy(() => import('./pages/members'))
 const StaticPage = React.lazy(() => import('./pages/static'))
@@ -35,6 +34,8 @@ const EventPage = React.lazy(() => import('./pages/events'))
 const DocumentPage = React.lazy(() => import('./pages/documents'))
 const ImagePage = React.lazy(() => import('./pages/images'))
 
+export const revalidate = 60 * 60 * 24
+
 export default async function CommitteeManage({
   params: { language, committee },
 }: {
@@ -42,6 +43,7 @@ export default async function CommitteeManage({
 }) {
   const decodedCommittee = decodeURIComponent(committee)
   const committeeData = await GetCommitteePublic(decodedCommittee, language)
+  const committeeDataFull = await GetCommitteeData(decodedCommittee)
 
   if (!committeeData) {
     return <p>Not Found!</p>
@@ -85,15 +87,23 @@ export default async function CommitteeManage({
         <Link
           href={`/chapter/committees/${committee}`}
           target='_blank'
-          title={decodedCommittee.toUpperCase()}
-          className='w-32 aspect-square grid place-items-center absolute top-40 left-20 bg-white rounded-full'
+          title={
+            decodedCommittee.charAt(0).toUpperCase() +
+            decodedCommittee.slice(1) +
+            ' Page'
+          }
+          className='w-32 h-32 grid place-items-center absolute top-40 left-20 bg-white rounded-full overflow-hidden'
         >
           <Image
             src={committeeData.logo_url || Logo.src}
-            alt={decodedCommittee.toUpperCase()}
-            width={192}
-            height={192}
-            className='rounded-full w-28 h-auto'
+            alt={
+              decodedCommittee.charAt(0).toUpperCase() +
+              decodedCommittee.slice(1) +
+              ' Logo'
+            }
+            width={256}
+            height={256}
+            className='w-28 h-auto object-cover p-2'
           />
         </Link>
         <div className='flex mb-10 pt-16'>
@@ -153,12 +163,12 @@ export default async function CommitteeManage({
               </TabsList>
               <TabsContent value='home'>
                 <React.Suspense fallback={<div>Loading...</div>}>
-                  <HomePage language={language} />
+                  <HomePage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='members'>
                 <React.Suspense fallback={<div>Loading...</div>}>
-                  <MembersPage />
+                  <MembersPage data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='pages'>
@@ -168,22 +178,22 @@ export default async function CommitteeManage({
               </TabsContent>
               <TabsContent value='news'>
                 <React.Suspense fallback={<div>Loading...</div>}>
-                  <NewsPage language={language} />
+                  <NewsPage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='events'>
                 <React.Suspense fallback={<div>Loading...</div>}>
-                  <EventPage language={language} />
+                  <EventPage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='documents'>
                 <React.Suspense fallback={<div>Loading...</div>}>
-                  <DocumentPage language={language} />
+                  <DocumentPage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='images'>
                 <React.Suspense fallback={<div>Loading...</div>}>
-                  <ImagePage language={language} />
+                  <ImagePage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
             </Tabs>

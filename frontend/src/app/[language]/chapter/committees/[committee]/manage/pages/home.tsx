@@ -1,3 +1,4 @@
+'use client'
 import {
   NewspaperIcon,
   CalendarDaysIcon,
@@ -35,8 +36,44 @@ import {
   OngoingEventBadge,
   UpcomingEventBadge,
 } from '@/components/badges/Items'
+import { useEffect, useState } from 'react'
 
-export default function HomePage({ language }: { language: string }) {
+export default function HomePage({
+  language,
+  data,
+}: {
+  language: string
+  data: {
+    members: {
+      ids: string[]
+      total: number
+    }
+    news: {
+      ids: string[]
+      total: number
+    }
+    events: {
+      ids: string[]
+      total: number
+    }
+    documents: {
+      ids: string[]
+      total: number
+    }
+    albums: {
+      ids: string[]
+      total: number
+    }
+  } | null
+}) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false)
+    }
+  }, [data])
+
   return (
     <section className='grow w-full'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>Home</h2>
@@ -51,7 +88,11 @@ export default function HomePage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>20</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.members.total}</p>
+              )}
             </CardContent>
           </Card>
           <Card className='w-64 relative mr-4'>
@@ -63,7 +104,11 @@ export default function HomePage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>20 000</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.news.total}</p>
+              )}
             </CardContent>
           </Card>
           <Card className='w-64 relative mr-4'>
@@ -75,7 +120,11 @@ export default function HomePage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>200</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.events.total}</p>
+              )}
             </CardContent>
           </Card>
           <Card className='w-64 relative mr-4'>
@@ -87,7 +136,11 @@ export default function HomePage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>150</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.documents.total}</p>
+              )}
             </CardContent>
           </Card>
           <Card className='w-64 relative'>
@@ -99,7 +152,11 @@ export default function HomePage({ language }: { language: string }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className='text-2xl'>100</p>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{data?.albums.total}</p>
+              )}
             </CardContent>
           </Card>
         </div>

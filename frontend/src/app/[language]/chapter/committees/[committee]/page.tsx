@@ -78,7 +78,7 @@ export default async function Committee({
             />
           </div>
           <div className='w-full lg:w-fit h-fit flex flex-col text-white justify-between items-center lg:items-start'>
-            <h1 className='h-[144px] text-4xl xs:text-6xl sm:text-7xl uppercase tracking-wide max-w-[550px] text-center lg:text-start'>
+            <h1 className='h-[144px] text-4xl xs:text-6xl sm:text-7xl uppercase tracking-wide max-w-[550px] text-center lg:text-start flex flex-col-reverse justify-center'>
               {committeeName}
             </h1>
             <p className='max-w-[1000px] h-24 max-h-24 overflow-hidden'>
@@ -86,7 +86,12 @@ export default async function Committee({
             </p>
           </div>
           <div className='w-12 h-12 absolute right-4 sm:right-12 -top-16'>
-            <Button size={'icon'} className='w-full h-full' asChild>
+            <Button
+              size={'icon'}
+              className='w-full h-full'
+              title='Manage'
+              asChild
+            >
               <Link
                 href={`/${language}/chapter/committees/${committee}/manage`}
               >
