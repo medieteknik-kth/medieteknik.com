@@ -4,42 +4,50 @@ import News from './news'
 import Background from '/public/images/bg.webp'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n'
+import './home.css'
 
 export default async function Home({
   params: { language },
 }: {
   params: { language: string }
 }) {
-  const { t } = await useTranslation(language, 'home')
-
-  const common = (await useTranslation(language, 'common')).t
+  const { t } = await useTranslation(language, 'common')
   return (
     <main>
-      <div className='w-full h-screen'>
-        <div className='w-full h-full max-h-[2400px] absolute flex justify-center items-center -z-10 top-0'>
+      <div className='w-full h-screen min-h-[600px] max-h-[2400px]'>
+        <div
+          id='background'
+          className='w-full min-h-[600px] max-h-[2400px] absolute grid place-items-center -z-10 top-0'
+        >
           <Image
             src={Background}
-            alt='bg'
-            className='w-full h-screen object-cover'
+            alt='Background'
+            fill
+            sizes='100vh'
+            className='w-full h-full object-cover'
             priority
             placeholder='blur'
-            blurDataURL={Background.src}
+            loading='eager'
           />
-          <ChevronDownIcon className='w-16 h-16 absolute bottom-0 left-0 right-0 mx-auto text-white' />
+          <ChevronDownIcon
+            className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce'
+            style={{
+              animationDuration: '1500ms',
+            }}
+          />
         </div>
-        <div className='w-full h-full z-10 flex flex-col items-center justify-center'>
-          <div className='w-9/12 h-full flex flex-col items-center justify-center text-center'>
-            <h1 className='text-xl xs:text-4xl sm:text-7xl text-yellow-400 font-semibold tracking-wide py-8 uppercase'>
-              {common('title')}
+        <div className='w-full h-full z-10 grid place-items-center'>
+          <div className='w-9/12 h-[300px] lg:h-[200px] flex flex-col items-center justify-center text-center'>
+            <h1 className='w-fit  h-fit text-2xl xxs:text-4xl xs:text-6xl md:text-8xl text-yellow-400 font-semibold tracking-wide py-8 uppercase grid place-items-center'>
+              {t('title')}
             </h1>
-            <h2 className='text-xl sm:text-2xl text-white tracking-widest uppercase'>
+            <h2 className='w-full md:w-[600px] lg:w-[800px] h-8 text-md xxs:text-xl sm:text-2xl text-white tracking-widest uppercase'>
               {t('school')}
             </h2>
           </div>
         </div>
       </div>
-      <About />
-      <News />
+      <About language={language} />
     </main>
   )
 }

@@ -1,51 +1,98 @@
-import PlaceholderEducationBackground from 'public/images/testbg.jpg'
-import PlaceholderChapterBackground from 'public/images/ths_placeholder.jpg'
-import PlaceholderInternationalBackground from 'public/images/international_placeholder.jpg'
-import Card from '@/components/cards/Card'
+import Image, { StaticImageData } from 'next/image'
+import StyrelsenIcon from 'public/images/committees/styrelsen.png'
+import MTGNIcon from 'public/images/committees/mtgn.png'
+import InternationalIcon from 'public/images/committees/internationals.png'
+import Logo from 'public/images/logo.webp'
+import Link from 'next/link'
+import { useTranslation } from '@/app/i18n'
 
-const CardStyle = 'w-3/4 h-full relative rounded-t-2xl'
+interface CardElement {
+  title: string
+  description: string
+  icon: StaticImageData
+  href: string
+  linkText: string
+}
 
-export default function About() {
+export default async function About({ language }: { language: string }) {
+  const { t } = await useTranslation(language, 'index')
+
+  const cards: CardElement[] = [
+    {
+      title: t('chapter.title'),
+      description: t('chapter.description'),
+      icon: StyrelsenIcon,
+      href: language + '/chapter',
+      linkText: t('chapter.link_text'),
+    },
+    {
+      title: t('new_students.title'),
+      description: t('new_students.description'),
+      icon: MTGNIcon,
+      href: language + '/education',
+      linkText: t('new_students.link_text'),
+    },
+    {
+      title: 'International Students',
+      description:
+        'Are you an international student? Click above to learn more about META. Our joint coordination between Computer Science and Media Technology programmes at KTH.',
+      icon: InternationalIcon,
+      href: 'https://meta-internationals.mailchimpsites.com/',
+      linkText: t('international_link_text'),
+    },
+  ]
+
   return (
-    <section className='w-full h-[640px] bg-white flex flex-col justify-evenly items-center'>
-      <h2 className='w-full h-fit text-3xl uppercase text-black tracking-wider text-center font-bold border-b-2 border-yellow-400 p-10 pb-4 mb-10'>
-        About Media Technology
-      </h2>
-      <ul className='w-11/12 h-4/5 grid grid-cols-3 grid-rows-1 place-items-center z-10 text-white'>
-        <li
-          className={CardStyle}
-          style={{ boxShadow: '0px 0px 20px 3px rgba(0, 0, 0, .5)' }}
-        >
-          <Card
-            title='International Students'
-            description='For international students who want to study in Sweden and become active chapter members. We offer a variety of services to help you get started.'
-            href='/'
-            image={PlaceholderInternationalBackground}
-          />
-        </li>
-        <li
-          className={CardStyle}
-          style={{ boxShadow: '0px 0px 20px 3px rgba(0, 0, 0, .5)' }}
-        >
-          <Card
-            title='Chapter'
-            description='Want to become an active chapter member? We have a variety of services to help you get started.'
-            href='/'
-            image={PlaceholderChapterBackground}
-          />
-        </li>
-        <li
-          className={CardStyle}
-          style={{ boxShadow: '0px 0px 20px 3px rgba(0, 0, 0, .5)' }}
-        >
-          <Card
-            title='Education'
-            description='Want to learn more about Media Technology? We have a variety of services to help you get started.'
-            href='/'
-            image={PlaceholderEducationBackground}
-          />
-        </li>
-      </ul>
+    <section className='w-full h-fit desktop:h-[640px] relative bg-white dark:bg-[#111] px-4 lg:px-20 2xl:px-72 py-10 border-t-2 flex flex-col justify-around border-black/75 dark:border-white/75'>
+      <Image
+        src={Logo.src}
+        alt='logo'
+        width={320}
+        height={320}
+        loading='lazy'
+        placeholder='empty'
+        className='absolute left-8 top-0 bottom-0 my-auto opacity-35 hidden md:block'
+      />
+      <div className='flex flex-col lg:flex-row justify-between items-center mb-10 desktop:mb-0'>
+        <h2 className='text-2xl xs:text-5xl font-bold w-full lg:w-80 py-2 lg:py-0 tracking-wider text-center lg:text-start'>
+          {t('about')}
+        </h2>
+        <div className='w-full mb-2 lg:mb-0 py-2 xl:py-0 lg:w-[450px] desktop:w-[750px] justify-self-center text-md md:text-lg'>
+          {t('description')}
+        </div>
+      </div>
+      <div className='flex flex-wrap gap-2 flex-col desktop:flex-row justify-around items-center'>
+        {cards.map((card) => (
+          <div
+            key={card.title}
+            className='card w-full lg:w-[720px] desktop:w-[400px] h-64 bg-slate-100 px-8 py-4 rounded-xl flex flex-col justify-between items-center relative'
+          >
+            <Link
+              href={card.href}
+              title={card.linkText}
+              target={card.href.startsWith('http') ? '_blank' : '_self'}
+              rel={card.href.startsWith('http') ? 'noopener noreferrer' : ''}
+              className='w-full h-fit lg:h-[100px] flex items-center underline-offset-4 text-sky-600 hover:text-sky-700 hover:underline'
+            >
+              <Image
+                src={card.icon.src}
+                alt={card.title}
+                width={100}
+                height={100}
+                loading='lazy'
+                placeholder='empty'
+                className='h-full aspect-square object-cover bg-white rounded-full lg:p-2'
+              />
+              <h3 className='text-lg md:text-3xl ml-8 h-full tracking-wide grow grid items-center'>
+                {card.title}
+              </h3>
+            </Link>
+            <p className='w-full h-[100px] text-sm lg:text-md text-pretty overflow-hidden'>
+              {card.description}
+            </p>
+          </div>
+        ))}
+      </div>
     </section>
   )
 }
