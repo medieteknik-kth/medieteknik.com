@@ -60,7 +60,13 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
         </div>
         <div className='mr-4 border border-white rounded-full'>
           <Avatar>
-            <AvatarImage src={Logo.src} alt='Profile Picture' />
+            <AvatarImage
+              src={Logo.src}
+              width={40}
+              height={40}
+              alt='Profile Picture'
+              loading='lazy'
+            />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>
         </div>

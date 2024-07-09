@@ -1,5 +1,5 @@
 import React from 'react'
-import LogoPNG from 'public/images/logo.webp'
+import Logo from 'public/images/logo.webp'
 import { useTranslation } from '@/app/i18n'
 import LoginSection from './LoginSection'
 import NotificationHeader from './Notification'
@@ -33,7 +33,7 @@ export default async function Header({ language }: { language: string }) {
           title='Home'
           aria-label='Home Button'
         >
-          <Image src={LogoPNG} alt='Logo' width={48} height={48} />
+          <Image src={Logo} alt='Logo' width={48} height={48} loading='eager' />
         </Link>
         <div className='w-fit h-full z-10'>
           <ul className='w-fit h-full hidden justify-between lg:flex'>
@@ -44,7 +44,7 @@ export default async function Header({ language }: { language: string }) {
                   className='w-fit h-full grid place-items-center text-sm upper mx-2 uppercase tracking-wide z-10'
                 >
                   <Link
-                    href={element.link}
+                    href={'.' + element.link}
                     className='w-full h-full grid place-items-center border-b-2 border-transparent hover:border-yellow-400 px-4 hover:bg-black/25'
                     title={element.title}
                     aria-label={element.title}
