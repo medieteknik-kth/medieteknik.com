@@ -8,6 +8,8 @@ import { CookieConsent, ServerCookieConsent  } from './utility/CookieManager';
 
 acceptLanguage.languages(supportedLanguages);
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export const Config = {
   matcher: ['/:language*']
 }
@@ -92,12 +94,58 @@ function handleAnalytics(request: NextRequest, cookies: Cookies, serverConsent: 
   return NextResponse.next();
 }
 
+/**
+ * Handles the Content Security Policy (CSP) for the request by setting appropriate headers.
+ *
+ * @param {NextRequest} request - The request object containing headers.
+ * @return {NextResponse} The response object with updated headers.
+ */
+function handleCSP(request: NextRequest): NextResponse {
+  const nonce = crypto.randomUUID();
+  const scriptSrc = isDevelopment ? `'unsafe-eval' 'nonce-${nonce}'` : `'strict-dynamic' 'nonce-${nonce}'`;
+  const styleSrc = isDevelopment ? `'unsafe-inline'` : `'nonce-${nonce}'`;
+  const cspHeader = `
+    default-src 'self';
+    connect-src 'self' 'https://api.medieteknik.com' 'https://localhost:8000';
+    script-src 'self' ${scriptSrc};
+    style-src 'self' ${styleSrc};
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+`
+
+  const contentSecurityPolicyHeaderValue = cspHeader
+  .replace(/\s{2,}/g, ' ')
+  .trim()
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders
+    }
+  });
+
+  if (nonce) {
+    response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue);
+  }
+
+  return response
+}
+
 export function middleware(request: NextRequest) {
   const cookies = getCookies();
   const serverConsent = new ServerCookieConsent(request);
-
-  let response = handleLanguage(request, cookies, serverConsent);
+  
+  let response = handleCSP(request);
+  response = handleLanguage(request, cookies, serverConsent);
   // response = handleAnalytics(request, cookies, serverConsent);
+  
 
   return response;
 }
