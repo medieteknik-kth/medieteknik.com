@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 module.exports = {
+    productionBrowserSourceMaps: true,
     typescript: {
         ignoreBuildErrors: true, // TODO: Remove this line when all errors are fixed
     },
@@ -16,6 +17,21 @@ module.exports = {
             }
         ]
     },
+
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'X-Frame-Options',
+                        value: 'DENY',
+                    },
+                ],
+            }
+        ]
+    },
+
     webpack(config) {
 
         const fileLoaderRule = config.module.rules.find((rule) =>

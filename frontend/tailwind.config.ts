@@ -80,7 +80,8 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
+        sans: ["var(--font-figtree)", ...defaultTheme.fontFamily.sans],
+        mono: ["var(--font-jetbrains-mono)", ...defaultTheme.fontFamily.mono],
       }
     },
   },
