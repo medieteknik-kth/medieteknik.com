@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import About from './about'
 import News from './news'
-import Background from '/public/images/bg.jpg'
+import Background from '/public/images/bg.webp'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n'
 

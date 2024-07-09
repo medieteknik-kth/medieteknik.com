@@ -1,5 +1,5 @@
 import { Head } from '@/components/static/Static'
-import Logo from 'public/images/logo.png'
+import Logo from 'public/images/logo.webp'
 import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'

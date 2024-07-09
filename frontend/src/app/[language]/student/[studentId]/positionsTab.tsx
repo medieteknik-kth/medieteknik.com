@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Logo from 'public/images/logo.png'
+import Logo from 'public/images/logo.webp'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import NLGIcon from 'public/images/committees/nlg.png'
 import { StudentCommitteePosition } from '@/models/Student'

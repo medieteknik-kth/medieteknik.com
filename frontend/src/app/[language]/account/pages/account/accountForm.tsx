@@ -1,9 +1,11 @@
 'use client'
 
-import Logo from 'public/images/logo.png'
+import Logo from 'public/images/logo.webp'
 import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -13,8 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Checkbox } from '@/components/ui/checkbox'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'

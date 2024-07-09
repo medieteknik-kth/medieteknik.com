@@ -26,7 +26,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import Logo from 'public/images/logo.png'
+import Logo from 'public/images/logo.webp'
 import {
   BuildingOffice2Icon,
   ClockIcon,

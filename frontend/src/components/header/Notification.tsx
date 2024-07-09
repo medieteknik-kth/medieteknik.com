@@ -26,7 +26,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu'
-import Logo from 'public/images/logo.png'
+import Logo from 'public/images/logo.webp'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '../ui/button'

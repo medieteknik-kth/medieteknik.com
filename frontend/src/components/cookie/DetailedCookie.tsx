@@ -4,7 +4,7 @@ import { useState, Dispatch, SetStateAction } from 'react'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { PlusIcon, MinusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n/client'
-import Logo from '/public/images/logo.png'
+import Logo from '/public/images/logo.webp'
 import Link from 'next/link'
 import Image from 'next/image'
 

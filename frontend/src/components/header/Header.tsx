@@ -1,5 +1,5 @@
 import React from 'react'
-import LogoPNG from 'public/images/logo.png'
+import LogoPNG from 'public/images/logo.webp'
 import { useTranslation } from '@/app/i18n'
 import LoginSection from './LoginSection'
 import NotificationHeader from './Notification'

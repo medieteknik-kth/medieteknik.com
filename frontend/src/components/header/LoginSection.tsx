@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react'
 import { TFunction } from 'next-i18next'
 import Image from 'next/image'
-import Logo from 'public/images/logo.png'
+import Logo from 'public/images/logo.webp'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import {
   UserCircleIcon,
