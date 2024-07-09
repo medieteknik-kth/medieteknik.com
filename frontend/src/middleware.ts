@@ -14,6 +14,7 @@ export const Config = {
 
 function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent): NextResponse {
   let language;
+  const blacklistedURLs = ['/_next', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png']
 
   language = cookies.get(cookieName)
   if(!language && typeof window !== 'undefined') { language = localStorage.getItem('i18nextLng') }
@@ -21,8 +22,7 @@ function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: S
   if(!language) { language = fallbackLanguage }
 
   // Non-specified language or language not supported
-  if(!supportedLanguages.some((locale) => request.nextUrl.pathname.startsWith(`/${locale}`)) 
-    && !request.nextUrl.pathname.startsWith('/_next')) {
+  if(!supportedLanguages.some((locale) => request.nextUrl.pathname.startsWith(`/${locale}`)) && !blacklistedURLs.some((url) => request.nextUrl.pathname.startsWith(url))) {
     const response = NextResponse.redirect(new URL(`/${language}${request.nextUrl.pathname}`, request.nextUrl))
     if(serverConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
       response.cookies.set(cookieName, language, { path: '/' })
