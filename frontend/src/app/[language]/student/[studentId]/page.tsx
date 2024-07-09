@@ -27,6 +27,7 @@ import Logo from 'public/images/logo.webp'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Loading from '@/components/tooltips/Loading'
 
 export default function UserPage({
   params: { studentId, language },
@@ -166,7 +167,7 @@ export default function UserPage({
             </TabsTrigger>
           </TabsList>
           <TabsContent value='positions' className='my-14 px-20'>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            <React.Suspense fallback={<Loading language={language} />}>
               <StudentPositions
                 language={language}
                 student={{
@@ -181,7 +182,7 @@ export default function UserPage({
             </React.Suspense>
           </TabsContent>
           <TabsContent value='news' className='my-14 px-20'>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            <React.Suspense fallback={<Loading language={language} />}>
               <StudentNews
                 language={language}
                 student={{
@@ -196,7 +197,7 @@ export default function UserPage({
             </React.Suspense>
           </TabsContent>
           <TabsContent value='posts' className='my-14 px-20'>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            <React.Suspense fallback={<Loading language={language} />}>
               <StudentEvents
                 language={language}
                 student={{

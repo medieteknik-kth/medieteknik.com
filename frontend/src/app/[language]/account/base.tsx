@@ -29,6 +29,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ReactNode } from 'react'
+import Loading from '@/components/tooltips/Loading'
 const AccountPage = React.lazy(() => import('./pages/accountPage'))
 const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
 const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
@@ -374,7 +375,7 @@ export default function Base({
       <Sidebar currentTab={currentTab} setCurrentTab={setCurrentTab} />
       <div className='w-full min-h-[1080px] h-fit flex'>
         <div className='w-0 md:w-24 h-full' />
-        <React.Suspense fallback={<div>Loading...</div>}>
+        <React.Suspense fallback={<Loading language={language} />}>
           {accountPages.map((page) =>
             currentTab === page.name.toLocaleLowerCase() ? (
               <page.page key={page.name} language={language} />

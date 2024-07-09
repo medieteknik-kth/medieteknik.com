@@ -11,6 +11,7 @@ import { AutoSaveProvdier } from './autoSave'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_BASE_URL } from '@/utility/Constants'
 import { redirect } from 'next/navigation'
+import Loading from '@/components/tooltips/Loading'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))
@@ -97,22 +98,22 @@ export default async function UploadNews({
               </div>
             </TabsList>
             <TabsContent value='article' className='grow h-fit'>
-              <React.Suspense fallback={<div>Loading...</div>}>
+              <React.Suspense fallback={<Loading language={language} />}>
                 <ArticlePage language={language} news_data={data} />
               </React.Suspense>
             </TabsContent>
             <TabsContent value='tags' className='grow h-fit'>
-              <React.Suspense fallback={<div>Loading...</div>}>
+              <React.Suspense fallback={<Loading language={language} />}>
                 <TagsPage language={language} />
               </React.Suspense>
             </TabsContent>
             <TabsContent value='engagement' className='grow h-fit'>
-              <React.Suspense fallback={<div>Loading...</div>}>
+              <React.Suspense fallback={<Loading language={language} />}>
                 <EngagementPage />
               </React.Suspense>
             </TabsContent>
             <TabsContent value='settings' className='grow h-fit'>
-              <React.Suspense fallback={<div>Loading...</div>}>
+              <React.Suspense fallback={<Loading language={language} />}>
                 <SettingsPage />
               </React.Suspense>
             </TabsContent>

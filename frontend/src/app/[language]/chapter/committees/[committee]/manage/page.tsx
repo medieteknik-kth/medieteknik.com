@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { GetCommitteePublic, GetCommitteeData } from '@/api/committee'
+import Loading from '@/components/tooltips/Loading'
 const HomePage = React.lazy(() => import('./pages/home'))
 const MembersPage = React.lazy(() => import('./pages/members'))
 const StaticPage = React.lazy(() => import('./pages/static'))
@@ -162,37 +163,37 @@ export default async function CommitteeManage({
                 </TabsTrigger>
               </TabsList>
               <TabsContent value='home'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <HomePage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='members'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <MembersPage data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='pages'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <StaticPage language={language} committee={committee} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='news'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <NewsPage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='events'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <EventPage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='documents'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <DocumentPage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>
               <TabsContent value='images'>
-                <React.Suspense fallback={<div>Loading...</div>}>
+                <React.Suspense fallback={<Loading language={language} />}>
                   <ImagePage language={language} data={committeeDataFull} />
                 </React.Suspense>
               </TabsContent>

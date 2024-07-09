@@ -1,10 +1,8 @@
 import React from 'react'
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import Loading from '@components/tooltips/Loading'
 const AccountForm = React.lazy(() => import('./account/accountForm'))
 const ReceptionForm = React.lazy(() => import('./account/receptionForm'))
-import { Button } from '@/components/ui/button'
-import { AcademicCapIcon } from '@heroicons/react/24/outline'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function AccountPage({ language }: { language: string }) {
   return (
@@ -29,12 +27,12 @@ export default function AccountPage({ language }: { language: string }) {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='account'>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            <React.Suspense fallback={<Loading language={language} />}>
               <AccountForm params={{ language }} />
             </React.Suspense>
           </TabsContent>
           <TabsContent value='reception'>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            <React.Suspense fallback={<Loading language={language} />}>
               <ReceptionForm params={{ language }} />
             </React.Suspense>
           </TabsContent>
