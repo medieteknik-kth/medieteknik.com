@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree } from 'next/font/google'
+import { Figtree, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 import { supportedLanguages } from '../i18n/settings'
@@ -8,12 +8,11 @@ import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import { dir } from 'i18next'
 import CookiePopup from '@/components/cookie/Cookie'
-import Favicon from 'public/favicon.ico'
 import {
   Icon,
   IconDescriptor,
 } from 'next/dist/lib/metadata/types/metadata-types'
-import { cn } from '@/lib/utils'
+import { fontFigtree } from '../fonts'
 
 export async function generateStaticParams() {
   return supportedLanguages.map((language) => ({ language }))
@@ -22,7 +21,9 @@ export async function generateStaticParams() {
 export const metadata: Metadata = {
   title: 'Medieteknik | KTH',
   description: 'Medieteknik Site',
-  icons: [{ rel: 'icon', type: 'image/ico', url: Favicon.src }],
+  other: {
+    'msapplication-TileColor': '#ffffff',
+  },
 }
 
 export const viewport: Viewport = {
@@ -30,8 +31,6 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 }
-
-const fontSans = Figtree({ subsets: ['latin'], variable: '--font-sans' })
 
 export default function RootLayout({
   children,
@@ -42,23 +41,13 @@ export default function RootLayout({
 }) {
   children
   return (
-    <html lang={language} dir={dir(language)}>
-      <head>
-        {Array.isArray(metadata.icons) &&
-          metadata.icons.map((icon: Icon) => (
-            <link
-              rel={(icon as IconDescriptor).rel}
-              href={(icon as IconDescriptor).url.toString()}
-              key={(icon as IconDescriptor).rel}
-            />
-          ))}
-      </head>
-      <body
-        className={cn(
-          'min-w-full min-h-screen bg-background font-sans antialiased',
-          fontSans.variable
-        )}
-      >
+    <html
+      lang={language}
+      dir={dir(language)}
+      className={`${fontFigtree.className}`}
+    >
+      <head />
+      <body className='min-w-full min-h-screen bg-background font-sans antialiased'>
         <CookiesProvider>
           <Providers>
             <Header language={language} />
