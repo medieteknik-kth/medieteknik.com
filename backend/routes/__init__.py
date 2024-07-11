@@ -27,6 +27,7 @@ def register_routes(app: Flask):
     from .committee_routes import committee_bp
     from .author_routes import author_bp
     from .item_routes import news_bp, events_bp, documents_bp, albums_bp
+    from .student_routes import student_bp
 
     # Public Routes
     app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
@@ -76,3 +77,6 @@ def register_routes(app: Flask):
         committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
     )
     app.register_blueprint(author_bp, url_prefix=f"{PROTECTED_PATH}/authors")
+    app.register_blueprint(
+        student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
+    )

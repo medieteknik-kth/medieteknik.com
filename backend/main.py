@@ -2,28 +2,35 @@
 The main application.
 """
 
+from datetime import datetime, timedelta
 import os
 
-from flask import Flask, url_for, session, request, make_response
+from flask import Flask, jsonify, url_for, session, request, make_response
 from flask_cors import CORS
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt,
+    get_jwt_identity,
+    set_access_cookies,
+)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_wtf.csrf import CSRFProtect  # noqa: F401
+from flask_wtf.csrf import generate_csrf
 from utility.database import db
 from utility.constants import API_VERSION, ROUTES
-from decorators.authorization import oauth, oidc
+from utility.authorization import jwt, oauth, oidc
+from utility.csrf import csrf
 from routes import register_routes
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "secret")
 app.config.from_object("config")
 
 # Enable CORS
 CORS(
-    app,
+    app=app,
     supports_credentials=True,
     origins=["http://localhost:3000", "https://medieteknik.com"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_headers=["Content-Type", "Authorization", "X-CSRF-Token"],
     expose_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     max_age=86400,
@@ -32,7 +39,7 @@ CORS(
 db.init_app(app)
 
 # CSRF protection
-# csrf = CSRFProtect(app)
+csrf.init_app(app)
 
 # Rate limiting for API
 limiter = Limiter(
@@ -42,7 +49,8 @@ limiter = Limiter(
     storage_uri=os.environ.get("REDIS_URL", "memory://"),
 )
 
-# OAuth
+# Authorization
+jwt.init_app(app)
 oauth.init_app(app)
 oauth.register(
     "kth",
@@ -52,9 +60,17 @@ oauth.register(
         "response type": "token",
     },
 )
+oauth.register(
+    "google",
+    kwargs={
+        "scope": "openid email profile",
+        "access type": "offline",
+        "response type": "code",
+    },
+)
 
 # OIDC
-oidc.init_app(app)
+# oidc.init_app(app)
 
 # Register routes (blueprints)
 register_routes(app)
@@ -67,14 +83,32 @@ def handle_preflight():
     """
     if request.method == "OPTIONS":
         response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
         response.headers.add(
-            "Access-Control-Allow-Headers", "Content-Type,Authorization"
+            "Access-Control-Allow-Headers", "Content-Type,Authorization,X-CSRF-Token"
         )
+        response.headers.add("Access-Control-Allow-Credentials", "true")
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
         )
         return response
+
+
+@app.after_request
+def refresh_jwt(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now()
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if exp_timestamp <= target_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        pass
+
+    return response
 
 
 # Non-Specific Routes
@@ -94,8 +128,15 @@ def index():
     return f'<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}'
 
 
-@app.route("/login")
-def login():
+@app.route("/csrf-token")
+def get_csrf_token():
+    if "csrf_token" not in session:
+        session["csrf_token"] = generate_csrf()
+    return jsonify({"token": session["csrf_token"]})
+
+
+@app.route("/oauth/kth/login")
+def kth_login():
     """
     Login route.
     """

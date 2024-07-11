@@ -13,6 +13,7 @@ from .item import (
     publish,
     create_item,
 )
+from .student import login, change_password, assign_password
 
 
 __all__ = [
@@ -25,4 +26,7 @@ __all__ = [
     "publish",
     "create_item",
     "get_author_from_email",
+    "login",
+    "change_password",
+    "assign_password",
 ]

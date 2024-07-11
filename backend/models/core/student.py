@@ -15,6 +15,7 @@ from sqlalchemy import (
 )
 from utility.database import db
 from utility.reception_mode import RECEPTION_MODE
+from utility.authorization import jwt
 
 
 class StudentType(enum.Enum):
@@ -64,6 +65,7 @@ class Student(db.Model):
     student_type = Column(
         Enum(StudentType), nullable=False, default=StudentType.MEDIETEKNIK
     )
+    password_hash = Column(String(length=1000), nullable=False)
 
     # Relationships
     profile = db.relationship("Profile", back_populates="student", uselist=False)
@@ -94,6 +96,7 @@ class Student(db.Model):
             data[column] = value
 
         del data["student_id"]
+        del data["password_hash"]
 
         if is_public_route:
             if RECEPTION_MODE:
@@ -247,3 +250,14 @@ class StudentMembership(db.Model):
         ).first()
 
         return True
+
+
+@jwt.user_identity_loader
+def user_identity_lookup(student: Student):
+    return student.student_id
+
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return Student.query.filter_by(student_id=identity).one_or_none()

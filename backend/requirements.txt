@@ -6,6 +6,7 @@ Flask-CORS
 Flask-Limiter
 Flask-WTF
 Flask-OIDC
+Flask-JWT-Extended
 requests
 authlib
 gunicorn
