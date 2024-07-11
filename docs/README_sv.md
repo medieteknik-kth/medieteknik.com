@@ -71,14 +71,7 @@ Denna gren är främst till för utvecklingen av den nya redesignen på hemsidan
 
 ### Miljövariabler
 
-#### ./backend/.env
-
-```properties
-DATABASE_URL=postgresql://<USERNAME>:<PASSWORD>@medieteknik_db:5432/<DB_NAME>
-POSTGRES_DB=<DB_NAME>
-POSTGRES_USER=<USERNAME>
-POSTGRES_PASSWORD=<PASSWORD>
-```
+- [./backend.env](./backend.env) (Engelska Kommentarer)
 
 ## Installation
 
