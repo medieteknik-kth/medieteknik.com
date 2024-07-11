@@ -89,7 +89,7 @@ export default function OptionsHeader({ language }: { language: string }) {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
-            className='w-fit h-full px-4 grid z-10 place-items-center'
+            className='w-fit h-full px-4 grid z-10 place-items-center hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
             title='Preferences'
             aria-label='Preferences Button'
             size='icon'

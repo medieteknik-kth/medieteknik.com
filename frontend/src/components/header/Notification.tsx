@@ -1,9 +1,5 @@
-import { useState } from 'react'
-import {
-  BellAlertIcon,
-  BellIcon,
-  Cog8ToothIcon,
-} from '@heroicons/react/24/outline'
+'use client'
+import { BellIcon, Cog8ToothIcon } from '@heroicons/react/24/outline'
 import {
   Card,
   CardContent,
@@ -29,16 +25,12 @@ import {
 import Logo from 'public/images/logo.webp'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useTranslation } from '@/app/i18n'
+import { useTranslation } from '@/app/i18n/client'
 
-export default async function NotificationHeader({
-  language,
-}: {
-  language: string
-}) {
-  const { t } = await useTranslation(language, 'header')
+export default function NotificationHeader({ language }: { language: string }) {
+  const { t } = useTranslation(language, 'header')
   const notifications: number = 4
   return (
     <div className='w-20 z-10'>
@@ -47,7 +39,7 @@ export default async function NotificationHeader({
           <Button
             size='icon'
             variant='ghost'
-            className='w-fit h-full px-4 grid z-10 place-items-center'
+            className='w-fit h-full px-4 grid z-10 place-items-center hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
             title='Notifications'
             aria-label='Notifications Button'
           >

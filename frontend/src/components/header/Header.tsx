@@ -22,7 +22,6 @@ export interface HeaderElement {
 export default async function Header({ language }: { language: string }) {
   const { t } = await useTranslation(language, 'header')
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true })
-  const loggedIn: boolean = true
 
   return (
     <header className='w-full h-24 text-white fixed bg-black/70 backdrop-blur-md flex justify-between z-50'>
@@ -33,7 +32,7 @@ export default async function Header({ language }: { language: string }) {
           title='Home'
           aria-label='Home Button'
         >
-          <Image src={Logo} alt='Logo' width={48} height={48} loading='eager' />
+          <Image src={Logo} alt='Logo' width={48} height={48} loading='lazy' />
         </Link>
         <div className='w-fit h-full z-10'>
           <ul className='w-fit h-full hidden justify-between lg:flex'>
@@ -45,7 +44,7 @@ export default async function Header({ language }: { language: string }) {
                 >
                   <Link
                     href={'.' + element.link}
-                    className='w-full h-full grid place-items-center border-b-2 border-transparent hover:border-yellow-400 px-4 hover:bg-black/25'
+                    className='w-full h-full grid place-items-center px-4 hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
                     title={element.title}
                     aria-label={element.title}
                   >
@@ -58,13 +57,7 @@ export default async function Header({ language }: { language: string }) {
         </div>
       </div>
       <div className='w-fit flex z-10'>
-        {loggedIn ? (
-          <NotificationHeader language={language} />
-        ) : (
-          <OptionsHeader language={language} />
-        )}
-
-        <LoginSection language={language} loggedIn={loggedIn} />
+        <LoginSection language={language} />
       </div>
     </header>
   )

@@ -1,7 +1,6 @@
 'use client'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { TFunction } from 'next-i18next'
-import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import {
@@ -31,10 +30,21 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import useSWR from 'swr'
+import { API_BASE_URL } from '@/utility/Constants'
+import Student from '@/models/Student'
+import NotificationHeader from './Notification'
+import OptionsHeader from './Options'
 
-function UserLoggedIn({ params }: { params: { t: TFunction } }) {
-  const { t } = params
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  })
+    .then((res) => res.json())
+    .catch(() => null)
+
+function UserLoggedIn({ t, data }: { t: TFunction; data: Student }) {
   const profileElements: HeaderElement[] = t('profileNavs', {
     returnObjects: true,
   })
@@ -49,40 +59,56 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
     [searchParams]
   )
 
-  let username = 'André Eriksson'
-  let role = 'Webmaster'
+  let username = data.first_name + ' ' + data.last_name
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className='w-full h-full flex justify-center xl:justify-end items-center'>
-        <div className='text-sm hidden flex-col items-end mr-4 uppercase xl:flex'>
-          {username}
-          {role && <span className='text-xs text-cyan-400'>{role}</span>}
-        </div>
-        <div className='mr-4 border border-white rounded-full'>
-          <Avatar>
-            <AvatarImage
-              src={Logo.src}
-              width={40}
-              height={40}
-              alt='Profile Picture'
-              loading='lazy'
-            />
-            <AvatarFallback>Profile Picture</AvatarFallback>
-          </Avatar>
-        </div>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className='w-full h-full flex justify-center xl:justify-end items-center mr-2 hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
+          variant={'ghost'}
+        >
+          <p className='text-sm hidden flex-col items-end mr-4 uppercase xl:flex'>
+            {username}
+          </p>
+          <div className='xl:mr-4 border border-white rounded-full'>
+            <Avatar>
+              <AvatarImage
+                src={Logo.src}
+                width={40}
+                height={40}
+                alt='Profile Picture'
+                loading='lazy'
+              />
+              <AvatarFallback>Profile Picture</AvatarFallback>
+            </Avatar>
+          </div>
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-fit sm:w-96 h-fit mr-2'>
-        <DropdownMenuLabel>Your Account</DropdownMenuLabel>
+      <DropdownMenuContent className='w-72 sm:w-96 h-fit mr-2'>
+        <DropdownMenuLabel className='border-b-2 border-yellow-400 text-lg flex flex-col'>
+          Your Account
+          <span className='font-normal text-sm text-neutral-500'>
+            {username}
+          </span>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link href='/profile' className='w-full flex items-center pr-2'>
+          <DropdownMenuItem asChild>
+            <Link
+              href='/profile'
+              className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer mb-1'
+              title='Your profile'
+            >
               <UserIcon className='w-4 h-4 mr-2' />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href='/account' className='w-full flex items-center pr-2'>
+          <DropdownMenuItem asChild>
+            <Link
+              href='/account'
+              className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
+              title='Account settings'
+            >
               <Cog6ToothIcon className='w-4 h-4 mr-2' />
               <span>Account Settings</span>
             </Link>
@@ -133,8 +159,12 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link href='/support' className='w-full flex !justify-start'>
+          <DropdownMenuItem asChild>
+            <Link
+              href='/support'
+              className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
+              title='Support'
+            >
               <LifebuoyIcon className='w-4 h-4 mr-2' />
               <span>Support</span>
             </Link>
@@ -153,35 +183,56 @@ function UserLoggedIn({ params }: { params: { t: TFunction } }) {
   )
 }
 
-function Guest({ params }: { params: { t: TFunction } }) {
-  const { t } = params
+function Guest({ t }: { t: TFunction }) {
   return (
     <Link
       href='/login'
-      className='w-full h-full text-sm uppercase flex justify-around items-center border-b-2 border-yellow-400 hover:bg-black/25 z-10'
+      className='w-full h-full flex justify-center xl:justify-end items-center mr-2 hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
       title={t('login')}
       aria-label={t('login')}
     >
-      <p className='w-4/5 text-end truncate flex-col tracking-wider hidden xl:flex'>
+      <p className='text-sm hidden flex-col items-end mr-4 uppercase xl:flex'>
         {t('login')}
       </p>
-      <UserCircleIcon className='w-10 h-10' />
+      <UserCircleIcon className='w-10 h-10 mr-4' />
     </Link>
   )
 }
 
-export default function LoginSection({
-  language,
-  loggedIn,
-}: {
-  language: string
-  loggedIn: boolean
-}) {
+export default function LoginSection({ language }: { language: string }) {
   const { t } = useTranslation(language, 'header')
+  let userData: Student | undefined = undefined
+
+  const { data, error, isLoading } = useSWR(
+    `${API_BASE_URL}/students/me`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+    }
+  )
+
+  if (error)
+    return (
+      <div className='w-full text-center text-red-500'>
+        Failed to load, try again later!
+      </div>
+    )
+  if (isLoading) return <div>Loading...</div>
+
+  if (data && data.student_type) {
+    userData = data as Student
+  }
 
   return (
-    <div className='w-20 xl:w-96 h-full relative'>
-      {loggedIn ? <UserLoggedIn params={{ t }} /> : <Guest params={{ t }} />}
+    <div className='w-fit xl:w-[500px] h-full relative flex gap-4'>
+      {userData ? (
+        <NotificationHeader language={language} />
+      ) : (
+        <OptionsHeader language={language} />
+      )}
+      {userData ? <UserLoggedIn t={t} data={userData} /> : <Guest t={t} />}
     </div>
   )
 }
