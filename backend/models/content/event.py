@@ -15,7 +15,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
-from models.content.base import Item, PublishedStatus
+from models.content.base import Item
 
 
 class EventStatus(enum.Enum):
@@ -124,7 +124,7 @@ class Event(Item):
 
         return dedent(f"""
             BEGIN:VEVENT
-            UID:{self.event_id + '@medieteknik.com'}
+            UID:{str(self.event_id) + '@medieteknik.com'}
             DTSTAMP:{self.created_at.strftime("%Y%m%dT%H%M%S" + "Z")}
             SUMMARY:{translation.title}
             DESCRIPTION:{translation.description}

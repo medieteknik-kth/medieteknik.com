@@ -30,8 +30,19 @@ def get_events_monthly(date_str: str):
     main_calendar = get_main_calendar()
 
     start_date = (date - timedelta(days=1)).replace(day=1)
-    _, next_month_end_day = monthrange(date.year, date.month + 1)
-    end_date = date.replace(day=next_month_end_day)  # Make end_date inclusive
+
+    # Handle year and month transition for the next month
+    if date.month == 12:
+        next_month = 1
+        next_month_year = date.year + 1
+    else:
+        next_month = date.month + 1
+        next_month_year = date.year
+
+    _, next_month_end_day = monthrange(next_month_year, next_month)
+    end_date = date.replace(
+        year=next_month_year, month=next_month, day=next_month_end_day
+    )  # Make end_date inclusive
 
     # Adjusted filter conditions for overlapping events and inclusivity
     events: List[Event] = Event.query.filter(
