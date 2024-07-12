@@ -70,7 +70,7 @@ function UserLoggedIn({ t, data }: { t: TFunction; data: Student }) {
           <p className='text-sm hidden flex-col items-end mr-4 uppercase xl:flex'>
             {username}
           </p>
-          <div className='xl:mr-4 border border-white rounded-full'>
+          <div className='xl:mr-4 border border-white rounded-full bg-white'>
             <Avatar>
               <AvatarImage
                 src={Logo.src}

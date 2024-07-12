@@ -4,10 +4,15 @@ import Calendar from '@/components/calendar/Calendar'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
+  ArrowPathRoundedSquareIcon,
   ArrowUpTrayIcon,
+  ClipboardIcon,
   ClockIcon,
+  IdentificationIcon,
+  InformationCircleIcon,
   MapPinIcon,
   PlusIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline'
 import {
   Dialog,
@@ -26,6 +31,9 @@ import FallbackIcon from 'public/images/logo.webp'
 import Image from 'next/image'
 import { StudentTag } from '@/components/tags/StudentTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import useSWR from 'swr'
+import { API_BASE_URL } from '@/utility/Constants'
+import { Separator } from '@/components/ui/separator'
 
 function getNumberWithOrdinal(number: number) {
   if (typeof number !== 'number' || isNaN(number)) {
@@ -49,10 +57,31 @@ function getNumberWithOrdinal(number: number) {
   }
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
 export default function Events({ language }: { language: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedDate, events } = useCalendar()
   const tinycolor = require('tinycolor2')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const { data, error, isLoading } = useSWR(
+    `${API_BASE_URL}/students/me`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+    }
+  )
+
+  if (error) return <div>Failed to load</div>
+  if (isLoading) return <div>Loading...</div>
+
+  if (data && data.student_type && !isLoggedIn) {
+    setIsLoggedIn(true)
+  }
+
   return (
     <section className='w-full h-fit px-12 py-4'>
       <div>
@@ -69,10 +98,108 @@ export default function Events({ language }: { language: string }) {
 
       <div className='w-full flex flex-col gap-4 desktop:gap-0 justify-around desktop:flex-row relative'>
         <Calendar>
-          <div className='absolute right-0 -top-12'>
-            <Button size={'icon'} variant={'outline'}>
-              <ArrowUpTrayIcon className='w-6 h-6' title='Export' />
-            </Button>
+          <div className='absolute right-0 -top-12 flex gap-2'>
+            {isLoggedIn && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    size={'icon'}
+                    variant={'outline'}
+                    title='Subscribe or Export'
+                  >
+                    <ArrowUpTrayIcon className='w-6 h-6' />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Subscribe or Export Calendar</DialogTitle>
+                  </DialogHeader>
+                  <div className='flex flex-col'>
+                    <div className='flex items-center gap-2 mb-2'>
+                      <ArrowPathRoundedSquareIcon className='w-6 h-6' />
+                      <p>Subscribe</p>
+                    </div>
+                    <div className='grid grid-cols-12'>
+                      <p className='w-auto text-sm text-nowrap h-10 border rounded-xl px-2 py-1 overflow-x-scroll overflow-y-hidden mr-2 col-span-11 grid items-center'>
+                        localhost:8000/api/v1/calendar/ics?u=asjdipoas0ndasuionydasyuidas9yudn
+                      </p>
+                      <Button size={'icon'}>
+                        <ClipboardIcon className='w-6 h-6' />
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <div className='flex items-center gap-2 mb-2'>
+                      <ArrowUpTrayIcon className='w-6 h-6' />
+                      <p>Export</p>
+                    </div>
+                    <div className='flex gap-2 flex-wrap'>
+                      <Button>Export to ICS</Button>
+                      <Button variant={'outline'}>Export to CSV</Button>
+                      <Button variant={'outline'}>Export to JSON</Button>
+                      <Button variant={'outline'}>Export to TXT</Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size={'icon'}
+                  variant={'outline'}
+                  title='Information about the calendar'
+                >
+                  <InformationCircleIcon className='w-6 h-6' />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Information</DialogTitle>
+                  <DialogDescription>Calendar Information</DialogDescription>
+                </DialogHeader>
+                <div className='flex items-center gap-2'>
+                  <IdentificationIcon className='w-6 h-6' />
+                  <p>
+                    Hosted by: <span className='font-bold'>Medieteknik</span>
+                  </p>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <ClockIcon className='w-6 h-6' />
+                  <p>
+                    Viewable only:{' '}
+                    <span className='font-bold'>
+                      {new Date().toLocaleDateString(language, {
+                        year: 'numeric',
+                        month: 'long',
+                      })}
+                    </span>
+                  </p>
+                </div>
+                <Separator />
+                <div className='flex flex-col gap-4'>
+                  <div
+                    className='flex items-center gap-2'
+                    title='Contact an administrator to gain access'
+                  >
+                    <XMarkIcon className='w-6 h-6 text-red-500' />
+                    <p>
+                      You <span className='font-bold'>cannot</span> host events
+                    </p>
+                  </div>
+                  <div
+                    className='flex items-center gap-2'
+                    title='Contact an administrator to gain access'
+                  >
+                    <XMarkIcon className='w-6 h-6 text-red-500' />
+                    <p>
+                      You <span className='font-bold'>cannot</span> have a
+                      private calendar
+                    </p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </Calendar>
         <div className='grow lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#111] desktop:ml-4 rounded-xl py-8 text-white'>
@@ -84,30 +211,35 @@ export default function Events({ language }: { language: string }) {
                 {selectedDate.toLocaleDateString(language, { month: 'long' })}
               </span>
             </p>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant={'default'}
-                  size={'icon'}
-                  className='absolute right-0 top-0 bottom-0 my-auto mr-6'
-                  title='Add Event'
+            {isLoggedIn ? (
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={'default'}
+                    size={'icon'}
+                    className='absolute right-0 top-0 bottom-0 my-auto mr-6'
+                    title='Add Event'
+                  >
+                    <PlusIcon className='w-6 h-6' title='Add Event' />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent
+                  className='w-fit'
+                  aria-describedby='addEventHeader addEventForm'
                 >
-                  <PlusIcon className='w-6 h-6' title='Add Event' />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className='w-fit'>
-                <DialogHeader>
-                  <DialogTitle>Add Event</DialogTitle>
-                  <DialogDescription>
-                    Add an event to the calendar
-                  </DialogDescription>
-                </DialogHeader>
-                <EventForm
-                  selectedDate={selectedDate}
-                  closeMenuCallback={() => setIsOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
+                  <DialogHeader id='addEventHeader'>
+                    <DialogTitle>Add Event</DialogTitle>
+                    <DialogDescription>
+                      Add an event to the calendar
+                    </DialogDescription>
+                  </DialogHeader>
+                  <EventForm
+                    selectedDate={selectedDate}
+                    closeMenuCallback={() => setIsOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
+            ) : null}
           </div>
           <div className='py-4 max-h-[800px] overflow-y-auto mr-3'>
             <div className='flex flex-col gap-4 pl-6 pr-3'>

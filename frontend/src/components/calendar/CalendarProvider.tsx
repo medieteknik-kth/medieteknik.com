@@ -1,65 +1,113 @@
 'use client'
-import api from '@/api'
 import { GetEvents } from '@/api/calendar'
 import { Event } from '@/models/Items'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
+  useReducer,
   useRef,
-  useState,
 } from 'react'
 
-/**
- * CalendarContext
- *
- * @description The context for the Calendar component.
- * @see https://reactjs.org/docs/context.html
- *
- * @param date - The current date
- * @param setDate - The function to set the date
- * @param events - The list of events
- * @param setEvents - The function to set the events
- * @param addEvent - The function to add an event
- * @param removeEvent - The function to remove an event
- * @param updateEvent - The function to update an event
- * @param selectedDate - The selected date
- * @param setSelectedDate - The function to set the selected date
- */
-const CalendarContext = createContext<{
+
+interface CalendarState {
   date: Date
-  setDate: (date: Date) => void
   events: Event[]
+  selectedDate: Date
+  isLoading: boolean
+  error: string | null
+}
+
+type CalendarAction =
+  | { type: 'SET_DATE'; payload: Date }
+  | { type: 'SET_EVENTS'; payload: Event[] }
+  | { type: 'ADD_EVENT'; payload: Event }
+  | { type: 'REMOVE_EVENT'; payload: Event }
+  | { type: 'UPDATE_EVENT'; payload: Event }
+  | { type: 'SET_SELECTED_DATE'; payload: Date }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string | null }
+
+/**
+ * Reducer function for handling calendar state changes based on the given action type.
+ *
+ * @param {CalendarState} state - The current state of the calendar.
+ * @param {CalendarAction} action - The action to be performed on the calendar state.
+ * @return {CalendarState} The updated calendar state after applying the action.
+ */
+function calendarReduction(
+  state: CalendarState,
+  action: CalendarAction
+): CalendarState {
+  switch (action.type) {
+    case 'SET_DATE':
+      return { ...state, date: action.payload }
+
+    case 'SET_EVENTS':
+      return { ...state, events: action.payload }
+
+    case 'ADD_EVENT':
+      return { ...state, events: [...state.events, action.payload] }
+
+    case 'REMOVE_EVENT':
+      return {
+        ...state,
+        events: state.events.filter(
+          (event) => event.url !== action.payload.url
+        ),
+      }
+    case 'UPDATE_EVENT':
+      return {
+        ...state,
+        events: state.events.map((event) =>
+          event.url === action.payload.url ? action.payload : event
+        ),
+      }
+
+    case 'SET_SELECTED_DATE':
+      return { ...state, selectedDate: action.payload }
+
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload }
+
+    case 'SET_ERROR':
+      return { ...state, error: action.payload }
+
+    default:
+      return state
+  }
+}
+
+const initalState: CalendarState = {
+  date: new Date(),
+  events: [],
+  selectedDate: new Date(),
+  isLoading: false,
+  error: null,
+}
+
+interface CalendarContextType extends CalendarState {
+  setDate: (date: Date) => void
   retrieveEvents: (date: Date) => void
   setEvents: (events: Event[]) => void
   addEvent: (event: Event) => void
   removeEvent: (event: Event) => void
   updateEvent: (event: Event) => void
-  selectedDate: Date
   setSelectedDate: (date: Date) => void
-}>({
-  date: new Date(),
-  setDate: () => {},
-  events: [],
-  retrieveEvents: () => {},
-  setEvents: () => {},
-  addEvent: () => {},
-  removeEvent: () => {},
-  updateEvent: () => {},
-  selectedDate: new Date(),
-  setSelectedDate: () => {},
-})
+}
+
+const CalendarContext = createContext<CalendarContextType | undefined>(
+  undefined
+)
 
 export default function CalendarProvider({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [date, setDate] = useState(new Date())
-  const [events, setEvents] = useState<Event[]>([])
-  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [state, dispatch] = useReducer(calendarReduction, initalState)
 
   const isMounted = useRef(false)
 
@@ -70,58 +118,55 @@ export default function CalendarProvider({
     }
   }, [])
 
-  const addEvent = useCallback(
-    (event: Event) => {
-      setEvents([...events, event])
-    },
-    [events]
-  )
-
-  const removeEvent = useCallback(
-    (event: Event) => {
-      setEvents(events.filter((e) => e.url !== event.url))
-    },
-    [events]
-  )
-
-  const updateEvent = useCallback(
-    (event: Event) => {
-      setEvents(events.map((e) => (e.url === event.url ? event : e)))
-    },
-    [events]
-  )
-
   const retrieveEvents = useCallback(async (date: Date) => {
+    dispatch({ type: 'SET_LOADING', payload: true })
+    dispatch({ type: 'SET_ERROR', payload: null })
     try {
       const events = await GetEvents(date)
 
-      if (isMounted.current && events ) {
-        setEvents(events as Event[])
+      if (isMounted.current && events) {
+        dispatch({ type: 'SET_EVENTS', payload: events })
       }
     } catch (error) {
       console.error('Failed to retrieve events:', error)
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to retrieve events' })
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }, [])
 
   useEffect(() => {
-    retrieveEvents(date)
-  }, [date, retrieveEvents])
+    retrieveEvents(state.date)
+  }, [state.date, retrieveEvents])
+
+  const contextValue = useMemo(
+    () => ({
+      ...state,
+      setDate: (newDate: Date) => {
+        dispatch({ type: 'SET_DATE', payload: newDate })
+      },
+      retrieveEvents,
+      setEvents: (newEvents: Event[]) => {
+        dispatch({ type: 'SET_EVENTS', payload: newEvents })
+      },
+      addEvent: (newEvent: Event) => {
+        dispatch({ type: 'ADD_EVENT', payload: newEvent })
+      },
+      removeEvent: (eventToRemove: Event) => {
+        dispatch({ type: 'REMOVE_EVENT', payload: eventToRemove })
+      },
+      updateEvent: (updatedEvent: Event) => {
+        dispatch({ type: 'UPDATE_EVENT', payload: updatedEvent })
+      },
+      setSelectedDate: (newDate: Date) => {
+        dispatch({ type: 'SET_SELECTED_DATE', payload: newDate })
+      },
+    }),
+    [state, retrieveEvents]
+  )
 
   return (
-    <CalendarContext.Provider
-      value={{
-        date,
-        setDate,
-        events,
-        retrieveEvents,
-        setEvents,
-        addEvent,
-        removeEvent,
-        updateEvent,
-        selectedDate,
-        setSelectedDate,
-      }}
-    >
+    <CalendarContext.Provider value={contextValue}>
       {children}
     </CalendarContext.Provider>
   )
