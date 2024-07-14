@@ -16,6 +16,7 @@ from flask_jwt_extended import (
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import generate_csrf
+from models.core.student import Student
 from utility.database import db
 from utility.constants import API_VERSION, ROUTES
 from utility.authorization import jwt, oauth, oidc
@@ -101,7 +102,14 @@ def refresh_jwt(response):
         now = datetime.now()
         target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
         if exp_timestamp <= target_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
+            student_id = get_jwt_identity()
+
+            student = Student.query.filter_by(student_id=student_id).one_or_none()
+
+            if not student:
+                return jsonify({"error": "Invalid credentials"}), 401
+
+            access_token = create_access_token(identity=student, fresh=False)
             set_access_cookies(response, access_token)
 
     except (RuntimeError, KeyError):
@@ -128,7 +136,7 @@ def index():
     return f'<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}'
 
 
-@app.route("/csrf-token")
+@app.route("/api/v1/csrf-token")
 def get_csrf_token():
     if "csrf_token" not in session:
         session["csrf_token"] = generate_csrf()

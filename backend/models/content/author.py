@@ -1,6 +1,6 @@
 import enum
 from typing import Any, Dict, List
-from sqlalchemy import Column, Integer, Enum, inspect
+from sqlalchemy import Column, Integer, Enum, UniqueConstraint, inspect
 from sqlalchemy.dialects.postgresql import ARRAY
 from utility.database import db
 from models.core import Student
@@ -56,6 +56,10 @@ class Author(db.Model):
         ARRAY(Enum(AuthorResource, create_constraint=False, native_enum=False))
     )
 
+    __table_args__ = (
+        UniqueConstraint("author_type", "entity_id", name="uq_author_type_entity"),
+    )
+
     # Relationships
     items = db.relationship("Item", back_populates="author")
 
@@ -85,30 +89,22 @@ class Author(db.Model):
         return data
 
     def retrieve_author(self) -> Student | Committee | CommitteePosition:
-        if not self.author_type not in [
-            AuthorType.STUDENT.value,
-            AuthorType.COMMITTEE.value,
-            AuthorType.COMMITTEE_POSITION.value,
-        ]:
+        if self.author_type not in AuthorType:
             raise ValueError("Author type is not set")
-        corrected_author = None
-        if self.author_type is AuthorType.STUDENT:
-            corrected_author = Student.query.get(self.entity_id)
-            if not corrected_author:
-                raise ValueError("Invalid student id")
 
-        elif self.author_type is AuthorType.COMMITTEE:
-            corrected_author = Committee.query.get(self.entity_id)
+        author_map = {
+            AuthorType.STUDENT: Student,
+            AuthorType.COMMITTEE: Committee,
+            AuthorType.COMMITTEE_POSITION: CommitteePosition,
+        }
 
-            if not corrected_author:
-                raise ValueError("Invalid committee id")
-        elif self.author_type is AuthorType.COMMITTEE_POSITION:
-            corrected_author = CommitteePosition.query.get(self.entity_id)
+        author_class = author_map.get(AuthorType(self.author_type))
 
-            if not corrected_author:
-                raise ValueError("Invalid committee position id")
+        if not author_class:
+            raise ValueError(f"Unsupported author type: {self.author_type}")
 
-        if not corrected_author:
-            raise ValueError("Invalid author type")
+        author = author_class.query.get(self.entity_id)
+        if not author:
+            raise ValueError(f"Invalid {self.author_type.value.lower()} id")
 
-        return corrected_author
+        return author
