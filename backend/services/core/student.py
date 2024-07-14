@@ -49,12 +49,21 @@ def login(data: Dict[str, Any]):
                 "message": "Invalid credentials",
             }
         ), 401
+
+    permissions_and_role = get_permissions(int(getattr(student, "student_id")))
+    additional_claims = {
+        "role": permissions_and_role.get("role"),
+        "permissions": permissions_and_role.get("permissions"),
+    }
+
     response = make_response(student.to_dict(is_public_route=False))
     response.status_code = 200
     set_access_cookies(
         response=response,
         encoded_access_token=create_access_token(
-            identity=student, fresh=timedelta(minutes=20)
+            identity=student,
+            fresh=timedelta(minutes=20),
+            additional_claims=additional_claims,
         ),
         max_age=timedelta(hours=1),
     )

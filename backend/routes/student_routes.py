@@ -4,6 +4,7 @@ from typing import Any
 from flask import Blueprint, jsonify, make_response, request
 from flask_jwt_extended import (
     create_access_token,
+    get_jwt,
     get_jwt_identity,
     jwt_required,
     current_user,
@@ -93,7 +94,10 @@ def get_student_callback():
     if not student or not isinstance(student, Student):
         return jsonify({}), 404
 
-    permissions_and_role = get_permissions(student_id)
+    claims = get_jwt()
+    role = claims.get("role")
+    permissions = claims.get("permissions")
+
     committees = []
     committee_positions = []
     student_memberships = StudentMembership.query.filter_by(student_id=student_id).all()
@@ -115,8 +119,8 @@ def get_student_callback():
     return jsonify(
         {
             "student": current_user.to_dict(False),
-            "role": permissions_and_role["role"],
-            "permissions": permissions_and_role["permissions"],
+            "role": role,
+            "permissions": permissions,
             "committees": committees,
             "positions": committee_positions,
         }
