@@ -11,7 +11,7 @@ import {
   isSameDay,
   subMonths,
 } from 'date-fns'
-import { useCalendar } from './CalendarProvider'
+import { useCalendar } from '@/providers/CalendarProvider'
 import './calendar.css'
 import { useEffect, useMemo } from 'react'
 import EventComponent from './EventComponent'
@@ -79,7 +79,11 @@ function displayEvents(
   return (
     <div className='flex flex-col gap-1'>
       {filteredEvents.map((event) => (
-        <EventComponent key={event.url} event={event} onEventClick={onEventClickCallback} />
+        <EventComponent
+          key={event.url}
+          event={event}
+          onEventClick={onEventClickCallback}
+        />
       ))}
     </div>
   )

@@ -17,7 +17,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { useState } from 'react'
 import { CardFooter } from '@/components/ui/card'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { useCalendar } from '@/components/calendar/CalendarProvider'
+import { useCalendar } from '@/providers/CalendarProvider'
 import { Label } from '@/components/ui/label'
 
 function createRandomTempraryID(length: number): string {

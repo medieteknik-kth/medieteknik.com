@@ -1,10 +1,16 @@
 'use client'
+import { AuthenticationProvider } from './AuthenticationProvider'
 import { ThemeProvider } from 'next-themes'
 import { useState, useEffect } from 'react'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { useCookies } from 'next-client-cookies'
 
-export function Providers({ children }: { children: React.ReactNode }) {
+interface Props {
+  language: string
+  children: React.ReactNode
+}
+
+export default function Providers({ language, children }: Props) {
   const [isClient, setIsClient] = useState(false)
   const [standardTheme, setStandardTheme] = useState('light')
   const cookies = useCookies()
@@ -23,13 +29,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeProvider
-      attribute='class'
-      defaultTheme={standardTheme}
-      themes={['dark', 'light']}
-      enableSystem={true}
-    >
-      {children}
-    </ThemeProvider>
+    <AuthenticationProvider language={language}>
+      <ThemeProvider
+        attribute='class'
+        defaultTheme={standardTheme}
+        themes={['dark', 'light']}
+        enableSystem={true}
+      >
+        {children}
+      </ThemeProvider>
+    </AuthenticationProvider>
   )
 }

@@ -4,7 +4,7 @@ import ExtraNews from './extranews'
 import BreakingNews from './breakingNews'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import CalendarProvider from '@/components/calendar/CalendarProvider'
+import CalendarProvider from '@/providers/CalendarProvider'
 
 export default async function News({
   params: { language },
