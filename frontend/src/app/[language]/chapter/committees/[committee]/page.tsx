@@ -59,9 +59,8 @@ export default async function Committee({
             'https://storage.googleapis.com/medieteknik-static/images/styrelsen23_24.jpg'
           }
           alt='img'
-          objectFit='cover'
           fill
-          className='-z-10 overflow-scroll absolute left-0 top-0 bottom-0 right-0 m-auto'
+          className='-z-10 overflow-scroll absolute left-0 top-0 bottom-0 right-0 m-auto object-cover'
         />
 
         <div className='w-full h-fit bg-black/75 absolute backdrop-blur-xl bottom-0 left-0 px-12 py-12 flex items-center border-t-2 border-yellow-400'>

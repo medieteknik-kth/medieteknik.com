@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import {
   ArrowPathRoundedSquareIcon,
   ArrowUpTrayIcon,
+  CheckIcon,
   ClipboardIcon,
   ClockIcon,
   IdentificationIcon,
@@ -23,7 +24,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import EventForm from './eventForm'
-import { useCalendar } from '@/components/calendar/CalendarProvider'
+import { useCalendar } from '@/providers/CalendarProvider'
 import Student from '@/models/Student'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -34,6 +35,7 @@ import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import useSWR from 'swr'
 import { API_BASE_URL } from '@/utility/Constants'
 import { Separator } from '@/components/ui/separator'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 function getNumberWithOrdinal(number: number) {
   if (typeof number !== 'number' || isNaN(number)) {
@@ -63,24 +65,7 @@ export default function Events({ language }: { language: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedDate, events } = useCalendar()
   const tinycolor = require('tinycolor2')
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/students/me`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-    }
-  )
-
-  if (error) return <div>Failed to load</div>
-  if (isLoading) return <div>Loading...</div>
-
-  if (data && data.student_type && !isLoggedIn) {
-    setIsLoggedIn(true)
-  }
+  const { student, permissions } = useAuthentication()
 
   return (
     <section className='w-full h-fit px-12 py-4'>
@@ -99,7 +84,7 @@ export default function Events({ language }: { language: string }) {
       <div className='w-full flex flex-col gap-4 desktop:gap-0 justify-around desktop:flex-row relative'>
         <Calendar>
           <div className='absolute right-0 -top-12 flex gap-2'>
-            {isLoggedIn && (
+            {student && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
@@ -182,19 +167,38 @@ export default function Events({ language }: { language: string }) {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    <XMarkIcon className='w-6 h-6 text-red-500' />
+                    {permissions.author.includes('EVENT') ? (
+                      <CheckIcon className='w-6 h-6 text-green-500' />
+                    ) : (
+                      <XMarkIcon className='w-6 h-6 text-red-500' />
+                    )}
                     <p>
-                      You <span className='font-bold'>cannot</span> host events
+                      You{' '}
+                      <span className='font-bold'>
+                        {permissions.author.includes('EVENT')
+                          ? 'can'
+                          : 'cannot'}
+                      </span>{' '}
+                      host events
                     </p>
                   </div>
                   <div
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    <XMarkIcon className='w-6 h-6 text-red-500' />
+                    {permissions.student.includes('CALENDAR_PRIVATE') ? (
+                      <CheckIcon className='w-6 h-6 text-green-500' />
+                    ) : (
+                      <XMarkIcon className='w-6 h-6 text-red-500' />
+                    )}
                     <p>
-                      You <span className='font-bold'>cannot</span> have a
-                      private calendar
+                      You{' '}
+                      <span className='font-bold'>
+                        {permissions.student.includes('CALENDAR_PRIVATE')
+                          ? 'can'
+                          : 'cannot'}
+                      </span>{' '}
+                      have a private calendar
                     </p>
                   </div>
                 </div>
@@ -211,7 +215,7 @@ export default function Events({ language }: { language: string }) {
                 {selectedDate.toLocaleDateString(language, { month: 'long' })}
               </span>
             </p>
-            {isLoggedIn ? (
+            {permissions.author.includes('EVENT') ? (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                   <Button
@@ -234,6 +238,7 @@ export default function Events({ language }: { language: string }) {
                     </DialogDescription>
                   </DialogHeader>
                   <EventForm
+                    language={language}
                     selectedDate={selectedDate}
                     closeMenuCallback={() => setIsOpen(false)}
                   />

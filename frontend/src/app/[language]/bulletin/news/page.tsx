@@ -2,8 +2,8 @@ import AllNews from './allNews'
 import { API_BASE_URL } from '@/utility/Constants'
 import { News, NewsPagination } from '@/models/Items'
 
-async function getNews(language_code: string) {
-  const response = await fetch(`${API_BASE_URL}/public/news`, {
+async function getNews(language: string) {
+  const response = await fetch(`${API_BASE_URL}/public/news?language=${language}`, {
     cache: 'no-store',
   })
   if (response.ok) {

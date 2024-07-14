@@ -13,18 +13,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())
 
 export default function LoginForm({ language }: { language: string }) {
-  const [errorMessage, setErrorMessage] = useState('')
-  const [rendering, setRendering] = useState(true)
+  const { login, error: authError } = useAuthentication()
+  const [errorMessage, setErrorMessage] = useState(authError)
   const { data, error, isLoading } = useSWR(
-    `http://localhost:8000/csrf-token`,
+    `${API_BASE_URL}/csrf-token`,
     fetcher
   )
 
@@ -73,25 +74,18 @@ export default function LoginForm({ language }: { language: string }) {
   }
 
   const submit = async (formData: z.infer<typeof FormSchema>) => {
-    const response = await fetch(`${API_BASE_URL}/students/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': data.token,
-      },
-      credentials: 'include',
-      body: JSON.stringify(formData),
-    })
+    await login(
+      formData.email,
+      formData.password,
+      formData.csrf_token || data.csrf_token
+    )
 
-    if (response.ok) {
-      const json = await response.json()
-
-      if (json) {
-        window.location.href = `${window.location.origin}/${language}`
-      }
-    } else {
-      setErrorMessage('Invalid Crendentials')
+    if (authError) {
+      setErrorMessage(authError)
+      return
     }
+
+    window.location.href = `${window.location.origin}/${language}`
   }
 
   return (

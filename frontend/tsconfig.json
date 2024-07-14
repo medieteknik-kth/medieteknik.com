@@ -28,6 +28,9 @@
       "@/*": [
         "./src/*"
       ],
+      "@providers/*": [
+        "./src/providers/*"
+      ],
       "@components/*": [
         "./src/components/*"
       ],

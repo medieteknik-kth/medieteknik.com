@@ -11,6 +11,8 @@ import Student from './Student'
  */
 export type Author = Student | Committee | CommitteePosition
 
+export type AuthorResource = 'NEWS' | 'EVENT' | 'DOCUMENT' | 'ALBUM'
+
 interface Item {
   author: Author
   categories?: string[]

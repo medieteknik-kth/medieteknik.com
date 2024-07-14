@@ -94,6 +94,13 @@ function authenticationReducer(
       return {
         ...state,
         student: null,
+        permissions: {
+          author: [],
+          student: [],
+        },
+        role: 'OTHER',
+        committees: [],
+        positions: [],
         isAuthenticated: false,
         error: null,
         isLoading: false,

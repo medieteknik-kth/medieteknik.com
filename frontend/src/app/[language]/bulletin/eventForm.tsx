@@ -19,6 +19,7 @@ import { CardFooter } from '@/components/ui/card'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { Label } from '@/components/ui/label'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 function createRandomTempraryID(length: number): string {
   let result = ''
@@ -33,13 +34,23 @@ function createRandomTempraryID(length: number): string {
   return result
 }
 
-export default function EventForm({
-  selectedDate,
-  closeMenuCallback,
-}: {
+interface EventFormProps {
+  language: string
   selectedDate: Date
   closeMenuCallback: () => void
-}) {
+}
+
+export default function EventForm({
+  language,
+  selectedDate,
+  closeMenuCallback,
+}: EventFormProps) {
+  const { student } = useAuthentication()
+
+  if (!student) {
+    return <></>
+  }
+
   const [errorMessage, setErrorMessage] = useState('')
   const [currentColor, setCurrentColor] = useState('#FFFFFF')
   const [showColorPicker, setShowColorPicker] = useState(false)
@@ -98,13 +109,13 @@ export default function EventForm({
       location: data.location,
       author: {
         author_type: 'STUDENT',
-        entity_email: 'andree4@kth.se',
+        entity_email: student.email,
       },
       translations: [
         {
           title: data.title,
           description: data.description,
-          language_code: 'en',
+          language_code: language,
         },
       ],
     }

@@ -37,24 +37,25 @@ import {
 } from '@/components/ui/popover'
 import { useCallback, useState } from 'react'
 import { UploadNews } from '@/components/dialogs/Upload'
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 const maxPages = 10
+
+interface PageScrollProps {
+  toBack: () => void
+  toNext: () => void
+  currentPage: number
+  maxPages: number
+}
 
 function PageScroll({
   toBack,
   toNext,
   currentPage,
-}: {
-  toBack: () => void
-  toNext: () => void
-  currentPage: number
-}) {
+  maxPages,
+}: PageScrollProps) {
   return (
     <div className='w-fit place-self-end flex items-center justify-around'>
       <Button
@@ -68,13 +69,14 @@ function PageScroll({
         <ChevronLeftIcon className='w-6 h-6' />
       </Button>
       <p className='w-14 text-center'>
-        {currentPage} <span className='text-neutral-500'>/ {maxPages}</span>{' '}
+        {currentPage}{' '}
+        <span className='text-neutral-500'>/ {maxPages || 1}</span>{' '}
       </p>
       <Button
         size='icon'
         className='ml-4'
         onClick={toNext}
-        disabled={currentPage === maxPages}
+        disabled={currentPage === (maxPages || 1)}
         title='Next Page'
         aria-label='Next Page'
       >
@@ -92,6 +94,7 @@ export default function AllNews({
   data: NewsPagination
 }) {
   type SortTypes = 'date' | 'author'
+  const { permissions } = useAuthentication()
   const [copiedLink, setCopiedLink] = useState(-1)
   const [currentPage, setCurrentPage] = useState(data.page)
 
@@ -196,30 +199,33 @@ export default function AllNews({
           </DropdownMenu>
           <PageScroll
             currentPage={currentPage}
+            maxPages={data.total_pages}
             toBack={toBack}
             toNext={toNext}
           />
         </div>
       </CardHeader>
-      <CardContent className='grid grid-flow-row grid-cols-3 desktop:grid-cols-5 *:h-96 gap-10'>
-        <Card className='w-[320px] border-dashed'>
-          <CardContent className='h-full pt-6'>
-            <Dialog>
-              <DialogTrigger
-                className='w-full h-full grid place-items-center hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded'
-                title='Upload an article'
-                aria-label='Upload an article'
-              >
-                <div className=''>
-                  <PlusIcon className='w-6 h-6' />
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <UploadNews language={language} />
-              </DialogContent>
-            </Dialog>
-          </CardContent>
-        </Card>
+      <CardContent className='grid grid-flow-row grid-cols-3 desktop:grid-cols-5 min-h-96 *:h-96 gap-10'>
+        {permissions.author.includes('NEWS') ? (
+          <Card className='w-[320px] border-dashed'>
+            <CardContent className='h-full pt-6'>
+              <Dialog>
+                <DialogTrigger
+                  className='w-full h-full grid place-items-center hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded'
+                  title='Upload an article'
+                  aria-label='Upload an article'
+                >
+                  <div className=''>
+                    <PlusIcon className='w-6 h-6' />
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <UploadNews language={language} />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+        ) : null}
         {data.items.map((newsItem, index) => (
           <div key={index} className='relative'>
             {Object.keys(newsItem).length === 0 ? (
@@ -295,6 +301,7 @@ export default function AllNews({
         <div className='w-fit place-self-end flex items-center justify-around'>
           <PageScroll
             currentPage={currentPage}
+            maxPages={data.total_pages}
             toBack={toBack}
             toNext={toNext}
           />

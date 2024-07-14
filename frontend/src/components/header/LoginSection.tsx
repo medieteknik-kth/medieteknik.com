@@ -36,15 +36,17 @@ import { API_BASE_URL } from '@/utility/Constants'
 import Student from '@/models/Student'
 import NotificationHeader from './Notification'
 import OptionsHeader from './Options'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
-const fetcher = (url: string) =>
-  fetch(url, {
-    credentials: 'include',
-  })
-    .then((res) => res.json())
-    .catch(() => null)
-
-function UserLoggedIn({ t, data }: { t: TFunction; data: Student }) {
+function UserLoggedIn({
+  t,
+  data,
+  logout,
+}: {
+  t: TFunction
+  data: Student
+  logout: () => void
+}) {
   const profileElements: HeaderElement[] = t('profileNavs', {
     returnObjects: true,
   })
@@ -86,9 +88,9 @@ function UserLoggedIn({ t, data }: { t: TFunction; data: Student }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-72 sm:w-96 h-fit mr-2'>
         <DropdownMenuLabel className='border-b-2 border-yellow-400 text-lg flex flex-col'>
-          Your Account
+          {username}
           <span className='font-normal text-sm text-neutral-500'>
-            {username}
+            Your Account
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -170,11 +172,9 @@ function UserLoggedIn({ t, data }: { t: TFunction; data: Student }) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Button asChild variant={'destructive'}>
-              <Link href='/logout' className='w-full flex items-center'>
-                <ArrowRightStartOnRectangleIcon className='w-4 h-4 mr-2' />
-                Logout
-              </Link>
+            <Button variant={'destructive'} onClick={logout} className='w-full'>
+              <ArrowRightStartOnRectangleIcon className='w-4 h-4 mr-2' />
+              Logout
             </Button>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -201,38 +201,20 @@ function Guest({ t }: { t: TFunction }) {
 
 export default function LoginSection({ language }: { language: string }) {
   const { t } = useTranslation(language, 'header')
-  let userData: Student | undefined = undefined
-
-  const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/students/me`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-    }
-  )
-
-  if (error)
-    return (
-      <div className='w-full text-center text-red-500'>
-        Failed to load, try again later!
-      </div>
-    )
-  if (isLoading) return <div>Loading...</div>
-
-  if (data && data.student_type) {
-    userData = data as Student
-  }
+  const { student, logout } = useAuthentication()
 
   return (
     <div className='w-fit xl:w-[500px] h-full relative flex gap-4'>
-      {userData ? (
+      {student ? (
         <NotificationHeader language={language} />
       ) : (
         <OptionsHeader language={language} />
       )}
-      {userData ? <UserLoggedIn t={t} data={userData} /> : <Guest t={t} />}
+      {student ? (
+        <UserLoggedIn t={t} data={student} logout={logout} />
+      ) : (
+        <Guest t={t} />
+      )}
     </div>
   )
 }
