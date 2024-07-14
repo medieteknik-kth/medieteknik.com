@@ -1,10 +1,16 @@
 from datetime import timedelta
-from flask import Response, jsonify, make_response, request, session
+from flask import jsonify, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+    create_refresh_token,
+    set_refresh_cookies,
+)
 from typing import Any, Dict
+from models.content.author import Author, AuthorType
+from models.core.permissions import StudentPermission
 from models.core.student import Student
-from utility.csrf import validate_csrf
 from utility.database import db
 
 
@@ -20,9 +26,6 @@ def login(data: Dict[str, Any]):
     """
     email = data.get("email")
     password = data.get("password")
-    csrf_token = data.get("csrf_token")
-
-    validate_csrf(csrf_token)
 
     if email is None or password is None:
         return jsonify(
@@ -33,29 +36,38 @@ def login(data: Dict[str, Any]):
 
     student = Student.query.filter_by(email=email).first()
 
-    if student is None:
+    if student is None or not isinstance(student, Student):
         return jsonify(
             {
                 "message": "Invalid credentials",
             }
         ), 401
 
-    if not check_password_hash(student.password_hash, password):
+    if not check_password_hash(getattr(student, "password_hash"), password):
         return jsonify(
             {
                 "message": "Invalid credentials",
             }
         ), 401
-    response = make_response({"message": "Login successful"})
+    response = make_response(student.to_dict(is_public_route=False))
     response.status_code = 200
     set_access_cookies(
-        response, create_access_token(identity=student), max_age=timedelta(hours=1)
+        response=response,
+        encoded_access_token=create_access_token(
+            identity=student, fresh=timedelta(minutes=20)
+        ),
+        max_age=timedelta(hours=1),
+    )
+    set_refresh_cookies(
+        response=response,
+        encoded_refresh_token=create_refresh_token(identity=student),
+        max_age=timedelta(days=30).seconds,
     )
 
     return response
 
 
-def change_password(data: Dict):
+def change_password(data: Dict[str, Any]):
     """ """
 
     email = data.get("email")
@@ -79,7 +91,7 @@ def change_password(data: Dict):
     return True
 
 
-def assign_password(data: Dict):
+def assign_password(data: Dict[str, Any]):
     """ """
 
     email = data.get("email")
@@ -98,6 +110,40 @@ def assign_password(data: Dict):
     db.session.commit()
 
     return True
+
+
+def get_permissions(student_id: int) -> Dict[str, Any]:
+    all_permissions_and_role = {
+        "role": None,
+        "permissions": {},
+    }
+
+    author = Author.query.filter_by(
+        entity_id=student_id, author_type=AuthorType.STUDENT
+    ).first()
+
+    if author and isinstance(author, Author):
+        author_data = author.to_dict()
+        if author_data:
+            all_permissions_and_role["permissions"]["author"] = author_data.get(
+                "resources"
+            )
+
+    student = Student.query.get(student_id)
+
+    if student and isinstance(student, Student):
+        permissions = StudentPermission.query.filter_by(student_id=student_id).first()
+
+        if permissions and isinstance(permissions, StudentPermission):
+            permission_data = permissions.to_dict()
+
+            if permission_data:
+                all_permissions_and_role["role"] = permission_data.get("role")
+                all_permissions_and_role["permissions"]["student"] = (
+                    permission_data.get("permissions")
+                )
+
+    return all_permissions_and_role
 
 
 def get_student(token: str):

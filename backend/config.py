@@ -5,18 +5,26 @@ The configuration for the backend.
 from datetime import timedelta
 import os
 
+# Database
 SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 SQLALCHEMY_ECHO = True
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "secret")
+# Security
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
+# CSRF
 WTF_CSRF_CHECK_DEFAULT = False
+JWT_COOKIE_CSRF_PROTECT = False
 
+# JWT
 JWT_COOKIE_SECURE = False
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-JWT_TOKEN_LOCATION = ["cookies", "headers"]
+JWT_TOKEN_LOCATION = ["cookies"]
+JWT_SESSION_COOKIE = False
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
+# OAuth
 KTH_CLIENT_ID = os.environ.get("KTH_CLIENT_ID")
 KTH_CLIENT_SECRET = os.environ.get("KTH_CLIENT_SECRET")
 KTH_ACCESS_TOKEN_URL = "https://login.ug.kth.se/adfs/oauth2/token"
@@ -26,7 +34,7 @@ KTH_API_BASE_URL = "https://app.kth.se/api/v.1.1"
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
-
+# OIDC
 OIDC_CLIENT_SECRETS = {
     "kth": {
         "client_id": KTH_CLIENT_ID,
