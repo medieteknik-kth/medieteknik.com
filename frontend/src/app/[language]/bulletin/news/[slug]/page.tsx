@@ -21,7 +21,7 @@ import {
 async function getData(language_code: string, slug: string) {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/public/news/${slug}?language_code=${language_code}`
+      `${API_BASE_URL}/public/news/${slug}?language=${language_code}`
     )
 
     if (response.ok) {

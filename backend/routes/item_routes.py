@@ -1,5 +1,6 @@
 from typing import Any
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.content import Author, News, NewsTranslation
@@ -27,12 +28,22 @@ albums_bp = Blueprint("albums", __name__)
 
 
 @news_bp.route("/", methods=["GET"])
+@jwt_required()
 def get_news():
-    """Retrieves all news items
+    """Retrieves all news items from a specific author
 
     Returns:
         dict: News items
     """
+    claims = get_jwt()
+    permissions = claims.get("permissions")
+
+    if not permissions:
+        return jsonify({}), 403
+
+    if not permissions.get("student").get("ITEMS_VIEW"):
+        return jsonify({}), 403
+
     language_code = retrieve_languages(request.args)
     specific_author_id = request.args.get("author")
 
@@ -48,6 +59,7 @@ def get_news():
 
 
 @news_bp.route("/<string:url>", methods=["GET"])
+@jwt_required()
 def get_news_by_url(url: str):
     """Retrieves a news item by URL
 
@@ -63,6 +75,7 @@ def get_news_by_url(url: str):
 
 
 @news_bp.route("/student/<string:email>", methods=["GET"])
+@jwt_required()
 def get_news_by_student(email: str):
     """Retrieves a news item by author
 
@@ -72,6 +85,15 @@ def get_news_by_student(email: str):
     Returns:
         dict: News item
     """
+    claims = get_jwt()
+    permissions = claims.get("permissions")
+
+    if not permissions:
+        return jsonify({}), 403
+
+    if not permissions.get("student").get("ITEMS_VIEW"):
+        return jsonify({}), 403
+
     provided_languages = retrieve_languages(request.args)
     author = get_author_from_email(entity_table=Student, entity_email=email)
 
@@ -83,12 +105,22 @@ def get_news_by_student(email: str):
 
 
 @news_bp.route("/", methods=["POST"])
+@jwt_required()
 def create_news():
     """Creates a news item
 
     Returns:
         dict: News item
     """
+    claims = get_jwt()
+    permissions = claims.get("permissions")
+
+    if not permissions:
+        return jsonify({}), 403
+
+    if not permissions.get("author").get("NEWS"):
+        return jsonify({}), 403
+
     data = request.get_json()
 
     if not data:
@@ -129,6 +161,7 @@ def create_news():
 
 
 @news_bp.route("/<string:url>", methods=["PUT"])
+@jwt_required()
 def update_news_by_url(url: str):
     """Updates a news item and the translations
     It will try and create a translation entry if it doesn't exist
@@ -139,6 +172,15 @@ def update_news_by_url(url: str):
     Returns:
         dict: News item
     """
+    claims = get_jwt()
+    permissions = claims.get("permissions")
+
+    if not permissions:
+        return jsonify({}), 403
+
+    if not permissions.get("author").get("NEWS"):
+        return jsonify({}), 403
+
     data = request.get_json()
     langauge_code = retrieve_languages(request.args)
 
@@ -150,7 +192,9 @@ def update_news_by_url(url: str):
     if news_item is None or not isinstance(news_item, News):
         return jsonify({"error": "News item not found"}), 404
 
-    update_translations({f"{langauge_code}": data.get("translation", {})})
+    update_translations(news_item, NewsTranslation, data.get("translations"))
+    del data["author"]
+    del data["translations"]
 
     update_item(news_item, data)
     return jsonify(
@@ -159,8 +203,18 @@ def update_news_by_url(url: str):
 
 
 @news_bp.route("/<string:url>/publish", methods=["PUT"])
+@jwt_required()
 def publish_news(url: str):
     """Publishes a news item."""
+
+    claims = get_jwt()
+    permissions = claims.get("permissions")
+
+    if not permissions:
+        return jsonify({}), 403
+
+    if not permissions.get("author").get("NEWS"):
+        return jsonify({}), 403
 
     data = request.get_json()
     if not data:
@@ -171,17 +225,36 @@ def publish_news(url: str):
     if not news_item:
         return jsonify({"error": "News item not found"}), 404
 
-    return jsonify(publish(news_item, data.get("translation"))), 201
+    result = publish(news_item, NewsTranslation, data.get("translations"))
+
+    if not result:
+        return jsonify({"error": "Failed to publish"}), 400
+
+    return jsonify({"url": result}), 201
 
 
 @news_bp.route("/<string:url>", methods=["DELETE"])
+@jwt_required()
 def delete_news(url: str):
-    """Unpublishes a news item."""
+    """Deletes a news item."""
 
     news_item = News.query.filter_by(url=url).first()
 
-    if not news_item:
+    if not news_item or not isinstance(news_item, News):
         return jsonify({"error": "News item not found"}), 404
+
+    claims = get_jwt()
+    student_id = get_jwt_identity()
+    permissions = claims.get("permissions")
+
+    if not permissions:
+        return jsonify({}), 403
+
+    if (
+        not permissions.get("student").get("ITEMS_DELETE")
+        or news_item.author_id is not student_id
+    ):
+        return jsonify({}), 403
 
     delete_item(news_item, NewsTranslation)
 
@@ -189,6 +262,7 @@ def delete_news(url: str):
 
 
 @events_bp.route("/", methods=["POST"])
+@jwt_required()
 def create_event():
     data = request.get_json()
 

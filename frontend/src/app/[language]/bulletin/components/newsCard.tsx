@@ -21,12 +21,12 @@ import { News } from '@/models/Items'
 export default function NewsCard({ newsItem }: { newsItem: News }) {
   return (
     <Card
-      className='w-full h-full flex flex-col justify-between'
+      className='w-full h-96 flex flex-col justify-between'
       title={newsItem.translations[0].title}
       aria-label={newsItem.translations[0].title}
     >
       <CardHeader>
-        <Link href={'./news/' + newsItem.url} className='group w-full h-20'>
+        <Link href={'./news/' + newsItem.url} className='group w-full h-fit'>
           {newsItem.translations[0].main_image_url ? (
             <Image
               src={newsItem.translations[0].main_image_url}
@@ -42,13 +42,13 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
           <CardTitle className='py-2 underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
             {newsItem.translations[0].title}
           </CardTitle>
-          <CardDescription className='max-h-24 text-ellipsis overflow-y-hidden group-hover:underline !no-underline'>
+          <CardDescription className='max-h-24 h-24 text-ellipsis overflow-y-hidden group-hover:underline !no-underline'>
             {newsItem.translations[0].short_description}
           </CardDescription>
         </Link>
       </CardHeader>
 
-      <CardFooter className='flex flex-col items-start relative'>
+      <CardFooter className='flex flex-col items-start relative h-fit'>
         <div className='flex mb-2'>
           <Link
             href={

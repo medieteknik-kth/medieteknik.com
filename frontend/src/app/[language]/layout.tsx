@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Figtree, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import { Providers } from './providers'
+import Providers from '@providers/providers'
 import { supportedLanguages } from '../i18n/settings'
 import { CookiesProvider } from 'next-client-cookies/server'
 import Header from '@/components/header/Header'
@@ -49,7 +49,7 @@ export default function RootLayout({
       <head />
       <body className='min-w-full min-h-screen bg-background font-sans antialiased'>
         <CookiesProvider>
-          <Providers>
+          <Providers language={language}>
             <Header language={language} />
             {children}
             <Footer language={language} />

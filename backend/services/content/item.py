@@ -26,6 +26,8 @@ from utility import database
 from utility.constants import AVAILABLE_LANGUAGES
 from sqlalchemy import inspect
 
+from utility.translation import convert_iso_639_1_to_bcp_47
+
 
 db = database.db
 
@@ -174,8 +176,14 @@ def create_item(
     if not author or not isinstance(author, Author):
         return None
 
-    if not data.get("title"):
-        data["title"] = "Untitled Item"
+    if not data.get("translations"):
+        index = 0
+        for language_code in AVAILABLE_LANGUAGES:
+            data["translations"][index] = {
+                "language_code": language_code,
+                "title": "Untitled Item",
+            }
+            index += 1
 
     all_authors_items = item_table.query.filter_by(author_id=author.author_id).all()
 
@@ -207,7 +215,7 @@ def create_item(
         primary_key_columns = mapper.primary_key
         translation_pk = primary_key_columns[0]
 
-        original_title = data.get("title")
+        original_title = data["translations"][0]["title"]
         title_query = translation_table.query.filter(
             translation_pk.in_(authors_items_ids),
             translation_table.title == original_title,
@@ -224,7 +232,7 @@ def create_item(
                 translation_table.title == new_title,
             )
 
-        data["title"] = new_title
+        data["translations"][0]["title"] = new_title
 
     url = uuid.uuid4()
     url_exists = Item.query.filter_by(url=str(url)).first()
@@ -238,9 +246,10 @@ def create_item(
     translation_data = data.get("translations")
 
     del data["translations"]
+    del data["author"]
 
     item = item_table()
-    setattr(item, "url", url)
+    setattr(item, "url", str(url))
     setattr(item, "author_id", author.author_id)
     if not public:
         setattr(item, "published_status", PublishedStatus.DRAFT)
@@ -249,11 +258,9 @@ def create_item(
     setattr(item, "is_public", public)
     setattr(item, "created_at", datetime.now())
 
-    print("data: ", data)
     for key, value in data.items():
-        if not hasattr(item, key):
-            continue
-        setattr(item, key, value)
+        if hasattr(item, key):
+            setattr(item, key, value)
 
     db.session.add(item)
     db.session.flush()
@@ -300,12 +307,11 @@ def create_item(
 
 
 def update_translations(
-    translations: Dict[
-        str,
-        Type[
-            NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
-        ],
+    original_item: Item,
+    translation_table: Type[
+        NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
     ],
+    translations: List[Dict[str, Any]],
 ):
     """Updates the translations of the given item.
 
@@ -313,32 +319,43 @@ def update_translations(
         translations (Dict[str, Type[object]]): The translations to update.
     """
 
-    for language_keys in translations:
-        if language_keys not in AVAILABLE_LANGUAGES:
-            continue
+    fk_map = {
+        NewsTranslation: "news_id",
+        EventTranslation: "event_id",
+        AlbumTranslation: "album_id",
+        DocumentTranslation: "document_id",
+    }
 
-        translation = translations[language_keys]
-        translation.language_code = language_keys  # type: ignore
-        db.session.add(translation)
+    correct_fk = fk_map[translation_table]
+
+    for translation in translations:
+        translation_column = translation_table.query.filter_by(
+            **{
+                correct_fk: getattr(original_item, correct_fk),
+                "language_code": convert_iso_639_1_to_bcp_47(
+                    translation["language_code"]
+                ),
+            }
+        ).first()
+        if not translation_column:
+            continue
+        for key, value in translation.items():
+            if hasattr(translation_column, key):
+                if key == "language_code":
+                    setattr(translation_column, key, convert_iso_639_1_to_bcp_47(value))
+                else:
+                    setattr(translation_column, key, value)
+        db.session.add(translation_column)
+    db.session.flush()
 
 
 def update_item(previous_item: Item, data: Dict[str, Any]):
     """
     Updates the given item.
     """
-
     for key, value in data.items():
-        previous_columns = inspect(previous_item)
-
-        if not previous_columns:
-            continue
-
-        previous_columns = previous_columns.columns
-
-        if key not in previous_columns:
-            continue
-
-        setattr(previous_item, key, value)
+        if hasattr(previous_item, key):
+            setattr(previous_item, key, value)
 
     db.session.add(previous_item)
 
@@ -347,12 +364,10 @@ def update_item(previous_item: Item, data: Dict[str, Any]):
 
 def publish(
     item: Item,
-    translations: Dict[
-        str,
-        Type[
-            NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
-        ],
+    translation_table: Type[
+        NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
     ],
+    translations: List[Dict[str, Any]],
 ) -> str | bool:
     """
     Publishes the given items.
@@ -366,21 +381,27 @@ def publish(
         bool: False if the item was not successfully published.
     """
 
-    for language_keys in translations:
-        if language_keys not in AVAILABLE_LANGUAGES:
-            return False
-
-    update_translations(translations)
+    update_translations(item, translation_table, translations)
     db.session.flush()
 
-    new_url = normalize_to_ascii(next(iter(translations.values())).title).split(" ")  # type: ignore
+    # Prefer english title
+    title = ""
+    if translations[0]["language_code"] == "en":
+        title = translations[0]["title"]
+    else:
+        for translation in translations:
+            if translation["language_code"]:
+                title = translation["title"]
+                break
+
+    new_url = normalize_to_ascii(title).split(" ")
     new_url = "-".join(new_url) + "-" + datetime.now().strftime("%Y-%m-%d")
     new_url = new_url.lower()
 
-    item.url = new_url  # type: ignore
-    item.is_public = True  # type: ignore
-    item.created_at = datetime.now()  # type: ignore
-    item.published_status = PublishedStatus.PUBLISHED  # type: ignore
+    setattr(item, "url", str(new_url))
+    setattr(item, "is_public", True)
+    setattr(item, "created_at", datetime.now())
+    setattr(item, "published_status", PublishedStatus.PUBLISHED)
 
     db.session.add(item)
     db.session.commit()
@@ -389,7 +410,7 @@ def publish(
 
 
 def delete_item(
-    item: Type[News | Event | Album | Document],  # type: ignore
+    item: Item,
     translation: Type[
         NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
     ],
@@ -405,17 +426,13 @@ def delete_item(
     translations = None
 
     # Delete translations
-    if translation is NewsTranslation:
-        item: News = item  # type: ignore
-        translations = translation.query.filter_by(news_id=item.news_id).all()  # type: ignore
-    elif translation is EventTranslation:
-        item: Event = item  # type: ignore
-        translations = translation.query.filter_by(event_id=item.event_id).all()  # type: ignore
-    elif translation is AlbumTranslation:
-        item: Album = item  # type: ignore
-        translations = translation.query.filter_by(album_id=item.album_id).all()  # type: ignore
-    elif translation is DocumentTranslation:
-        item: Document = item  # type: ignore
+    if isinstance(item, News):
+        translations = translation.query.filter_by(news_id=item.news_id).all()
+    elif isinstance(item, Event):
+        translations = translation.query.filter_by(event_id=item.event_id).all()
+    elif isinstance(item, Album):
+        translations = translation.query.filter_by(album_id=item.album_id).all()
+    elif isinstance(item, Document):
         translations = translation.query.filter_by(document_id=item.document_id).all()
 
     if translations is not None:

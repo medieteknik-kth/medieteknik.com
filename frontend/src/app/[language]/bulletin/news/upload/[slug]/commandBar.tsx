@@ -89,7 +89,7 @@ export default function CommandBar({ language }: { language: string }) {
 
     const json_data = {
       ...content,
-      translation: [
+      translations: [
         {
           ...content.translations[0],
           title: data.title,

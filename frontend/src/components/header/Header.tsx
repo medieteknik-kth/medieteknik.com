@@ -43,7 +43,7 @@ export default async function Header({ language }: { language: string }) {
                   className='w-fit h-full grid place-items-center text-sm upper mx-2 uppercase tracking-wide z-10'
                 >
                   <Link
-                    href={'.' + element.link}
+                    href={'/' + language + element.link}
                     className='w-full h-full grid place-items-center px-4 hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
                     title={element.title}
                     aria-label={element.title}

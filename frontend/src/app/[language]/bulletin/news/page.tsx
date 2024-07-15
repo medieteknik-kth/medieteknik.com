@@ -3,9 +3,9 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { News, NewsPagination } from '@/models/Items'
 
 async function getNews(language: string) {
-  const response = await fetch(`${API_BASE_URL}/public/news?language=${language}`, {
-    cache: 'no-store',
-  })
+  const response = await fetch(
+    `${API_BASE_URL}/public/news?language=${language}`
+  )
   if (response.ok) {
     const data = await response.json()
     return data as NewsPagination
@@ -19,9 +19,10 @@ export default async function NewsPage({
   params: { language: string }
 }) {
   const data = await getNews(language)
-
   if (!data) {
-    return <div>Not found</div>
+    return (
+      <div className='h-96 grid place-items-center text-3xl'>No data...</div>
+    )
   }
 
   data.items = data.items as News[]
