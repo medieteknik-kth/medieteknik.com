@@ -59,6 +59,8 @@ Denna gren är främst till för utvecklingen av den nya redesignen på hemsidan
 [![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/?hl=en)
 
+[![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=fff)](https://git-scm.com/downloads)
+
 ## Förutsättningar
 
 ### Programvarukrav
@@ -71,6 +73,8 @@ Denna gren är främst till för utvecklingen av den nya redesignen på hemsidan
 
 ### Miljövariabler
 
+Dessa kommer bli automatiskt skapade, se [Installation](#installation)
+
 - [./backend.env](./backend.env) (Engelska Kommentarer)
 
 ## Installation
@@ -80,19 +84,34 @@ git clone -b hemsidan-redesign https://github.com/medieteknik-kth/medieteknik.co
 cd medieteknik.com
 ```
 
-### Frontend Setup
+### Windows
+
+1. Installera Git och Git Bash, säkerställ att Git blir installerad i `C:\Program Files\Git\`
+2. Kör `setup.bat` som administratör, för att köra `setup.sh` med en PowerShell-hook
+
+### Unix
 
 ```sh
-cd frontend
-npm install
+$ chmod +x setup.sh
+$ bash setup.sh
+```
+
+## Körning
+
+### Frontend
+
+#### VSCode
+* Tryck på `F5`
+
+#### Terminal
+```sh
 npm run dev
 ```
 
-### Backend Setup
+### Backend
 
+#### Terminal
 ```sh
-cd backend
-pip install -r .\requirements.txt
 docker-compose up -d --build
 ```
 

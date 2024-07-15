@@ -59,6 +59,8 @@ This branch is mainly for the development of the new redesign of the website
 [![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/?hl=en)
 
+[![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=fff)](https://git-scm.com/downloads)
+
 ## Prerequisites
 
 ### Software Requirements
@@ -71,7 +73,9 @@ This branch is mainly for the development of the new redesign of the website
 
 ### Environment Variables
 
-* [./backend.env](./backend.env)
+These will be built automatically see [Installation](#installation)
+
+- [./backend.env](./backend.env)
 
 ## Installation
 
@@ -80,21 +84,32 @@ git clone -b hemsidan-redesign https://github.com/medieteknik-kth/medieteknik.co
 cd medieteknik.com
 ```
 
-### Front-End Setup
+### Windows
+
+1. Install Git and Git Bash, and ensure it is located in `C:\Program Files\Git\`
+2. Run `setup.bat` as an administrator, to run `setup.sh` with a PowerShell hook
+
+### Unix (bash)
 
 ```sh
-cd frontend
-npm install
-npm run dev
+$ chmod +x setup.sh
+$ bash setup.sh
 ```
 
-### Back-End Setup
+## Running
 
-```sh
-cd backend
-pip install -r .\requirements.txt
-docker-compose up -d --build
-```
+### Frontend
+
+1. VSCode
+
+   - Press `F5`
+
+2. Terminal
+   - `npm run dev`
+
+### Backend
+1. Terminal
+    - `docker-compose up -d --build`
 
 ## Usage
 
@@ -116,15 +131,6 @@ In `medieteknik_web`
 
 ```sh
 python init_db.py --recreate
-```
-
-### Database
-
-Ensure to insert some SQL into the tables so the website works e.g.
-
-```sql
-INSERT INTO language (language_code, language_name)
-VALUES ('sv-SE', 'Swedish'), ('en-GB', 'English');
 ```
 
 ## License
