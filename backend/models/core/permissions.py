@@ -38,6 +38,7 @@ class Permissions(enum.Enum):
 
     # News, Events, Documents, Albums
     ITEMS_EDIT = "ITEMS_EDIT"
+    ITEMS_VIEW = "ITEMS_VIEW"
     ITEMS_DELETE = "ITEMS_DELETE"
 
     # Calendar
