@@ -22,7 +22,18 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cookieName } from '@/app/i18n/settings'
 
-export default function OptionsHeader({ language }: { language: string }) {
+/**
+ * OptionsMenu
+ * @description Renderes a options menu for non-logged in users
+ *
+ * @param {string} language - The current language of the page
+ * @returns {JSX.Element} The options menu
+ */
+export default function OptionsMenu({
+  language,
+}: {
+  language: string
+}): JSX.Element {
   const router = useRouter()
   const path = usePathname()
   const { t } = useTranslation(language, 'header')
@@ -63,7 +74,7 @@ export default function OptionsHeader({ language }: { language: string }) {
   )
 
   if (!isClient) {
-    return null
+    return <></>
   }
 
   const languageFlags = new Map([
@@ -76,11 +87,23 @@ export default function OptionsHeader({ language }: { language: string }) {
     ['sv', 'Svenska'],
   ])
 
-  const getFlagCode = (lang: string) => {
+  /**
+   * A function that retrieves the flag code based on the provided language.
+   *
+   * @param {string} lang - The language code for which to retrieve the flag code.
+   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
+   */
+  const getFlagCode = (lang: string): string => {
     return languageFlags.get(lang) || 'xx'
   }
 
-  const getLanguageName = (lang: string) => {
+  /**
+   * A function that retrieves the language name based on the provided language code.
+   *
+   * @param {string} lang - The language code for which to retrieve the language name.
+   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
+   */
+  const getLanguageName = (lang: string): string => {
     return languageNames.get(lang) || 'Unknown'
   }
 
@@ -89,7 +112,7 @@ export default function OptionsHeader({ language }: { language: string }) {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
-            className='w-fit h-full px-4 grid z-10 place-items-center hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
+            className='w-fit h-full px-4 grid z-10 place-items-center rounded-none'
             title='Preferences'
             aria-label='Preferences Button'
             size='icon'

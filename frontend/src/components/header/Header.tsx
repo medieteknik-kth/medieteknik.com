@@ -1,60 +1,115 @@
 import React from 'react'
 import Logo from 'public/images/logo.webp'
 import { useTranslation } from '@/app/i18n'
-import LoginSection from './LoginSection'
-import NotificationHeader from './Notification'
-import OptionsHeader from './Options'
+import LoginSection from './client/LoginSection'
 import Link from 'next/link'
 import Image from 'next/image'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import NavigationMenu from './NavigationMenu'
 
 /**
- * @interface HeaderElement
- * @description Header Element Interface, from translation file
+ * HeaderElement
  *
- * @property {string} title - The title of the header element
- * @property {string} link - The link of the header element
+ * @description An element in the header, with the title and the link to the page from the translation files
+ * @property {string} title - The title of the element
+ * @property {string} link - The link to the element
  */
 export interface HeaderElement {
   title: string
   link: string
+  subNavs?: HeaderElement[]
 }
 
-export default async function Header({ language }: { language: string }) {
+/**
+ * Header
+ * @description Renders the main header of all pages, with a logo and navigation
+ *
+ * @param {string} language - The current language of the page
+ * @returns {Promise<JSX.Element>} - The header of the page
+ */
+export default async function Header({
+  language,
+}: {
+  language: string
+}): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'header')
   const headerElements: HeaderElement[] = t('navs', { returnObjects: true })
 
   return (
-    <header className='w-full h-24 text-white fixed bg-black/70 backdrop-blur-md flex justify-between z-50'>
+    <header
+      id='header'
+      className='w-full h-24 text-black bg-white dark:bg-[#111] dark:text-white fixed backdrop-blur-md flex justify-between z-50 transition-all shadow-md dark:shadow-neutral-900'
+    >
       <div className='w-fit h-full flex z-20'>
-        <Link
-          href={'/' + language}
-          className='w-20 max-w-20 px-4 h-full grid place-items-center z-10'
-          title='Home'
-          aria-label='Home Button'
-        >
-          <Image src={Logo} alt='Logo' width={48} height={48} loading='lazy' />
-        </Link>
-        <div className='w-fit h-full z-10'>
-          <ul className='w-fit h-full hidden justify-between lg:flex'>
-            {headerElements.map((element: HeaderElement, index: number) => {
-              return (
-                <li
-                  key={index}
-                  className='w-fit h-full grid place-items-center text-sm upper mx-2 uppercase tracking-wide z-10'
-                >
-                  <Link
-                    href={'/' + language + element.link}
-                    className='w-full h-full grid place-items-center px-4 hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
-                    title={element.title}
-                    aria-label={element.title}
+        <Button variant={'ghost'} className='w-fit h-full hidden lg:block'>
+          <Link
+            href={'/' + language}
+            className='w-fit h-full flex items-center z-10 relative'
+            title='Home'
+            aria-label='Home Button'
+          >
+            <Image
+              src={Logo.src}
+              alt='placeholder'
+              width={128}
+              height={128}
+              className='w-auto h-full py-3'
+            />
+          </Link>
+        </Button>
+        <NavigationMenu language={language} headerElements={headerElements} />
+        <nav className='w-fit h-full z-10 hidden justify-between lg:flex gap-2'>
+          {headerElements.map((element) =>
+            element.subNavs ? (
+              <DropdownMenu key={element.title} modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={'ghost'}
+                    className='w-40 h-full uppercase rounded-none'
                   >
                     {element.title}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+                    <ChevronDownIcon className='w-5 h-5 ml-2' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-40'>
+                  {element.subNavs.map((subNav) => (
+                    <DropdownMenuItem
+                      key={subNav.title}
+                      className='h-10 hover:bg-neutral-100'
+                    >
+                      <Link
+                        href={subNav.link}
+                        className='w-full h-full grid items-center'
+                      >
+                        {subNav.title}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                key={element.title}
+                variant={'ghost'}
+                className='w-40 h-full uppercase rounded-none'
+              >
+                <Link
+                  href={element.link}
+                  className='w-full h-full grid place-items-center'
+                >
+                  {element.title}
+                </Link>
+              </Button>
+            )
+          )}
+        </nav>
       </div>
       <div className='w-fit flex z-10'>
         <LoginSection language={language} />

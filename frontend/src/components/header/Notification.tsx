@@ -11,16 +11,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu'
 import Logo from 'public/images/logo.webp'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -29,7 +20,18 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
 
-export default function NotificationHeader({ language }: { language: string }) {
+/**
+ * NotificationMenu
+ * @description Renderes a dropdown menu with notifications for logged in users
+ *
+ * @param {string} language - The current language of the page
+ * @returns {JSX.Element} The dropdown menu
+ */
+export default function NotificationMenu({
+  language,
+}: {
+  language: string
+}): JSX.Element {
   const { t } = useTranslation(language, 'header')
   const notifications: number = 4
   return (
@@ -39,7 +41,7 @@ export default function NotificationHeader({ language }: { language: string }) {
           <Button
             size='icon'
             variant='ghost'
-            className='w-fit h-full px-4 grid z-10 place-items-center hover:bg-white/25 hover:text-white border-b-2 border-transparent hover:border-yellow-400 rounded-none'
+            className='w-fit h-full px-4 grid z-10 place-items-center rounded-none'
             title='Notifications'
             aria-label='Notifications Button'
           >

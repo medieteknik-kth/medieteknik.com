@@ -12,7 +12,29 @@
         },
         {
             "title": "Chapter",
-            "link": "/chapter"
+            "link": "/chapter",
+            "subNavs": [
+                {
+                    "title": "About the Chapter",
+                    "link": "/chapter"
+                }, 
+                {
+                    "title": "Committees",
+                    "link": "/chapter/committees"
+                }, 
+                {
+                    "title": "Documents",
+                    "link": "/chapter/documents"
+                }, 
+                {
+                    "title": "Graphical Identity",
+                    "link": "/chapter/graphic"
+                }, 
+                {
+                    "title": "Albums",
+                    "link": "/chapter/albums"
+                }
+            ]
         },
         {
             "title": "Education",

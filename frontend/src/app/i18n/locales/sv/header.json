@@ -12,7 +12,29 @@
         },
         {
             "title": "Sektionen",
-            "link": "/chapter"
+            "link": "/chapter",
+            "subNavs": [
+                {
+                    "title": "Om Sektionen",
+                    "link": "/chapter"
+                }, 
+                {
+                    "title": "Nämnder och Projekter",
+                    "link": "/chapter/committees"
+                }, 
+                {
+                    "title": "Dokument",
+                    "link": "/chapter/documents"
+                }, 
+                {
+                    "title": "Grafisk Identitet",
+                    "link": "/chapter/graphic"
+                }, 
+                {
+                    "title": "Album",
+                    "link": "/chapter/albums"
+                }
+            ]
         },
         {
             "title": "Utbildning",
