@@ -11,7 +11,6 @@ import {
   useRef,
 } from 'react'
 
-
 interface CalendarState {
   date: Date
   events: Event[]
@@ -102,6 +101,12 @@ const CalendarContext = createContext<CalendarContextType | undefined>(
   undefined
 )
 
+/**
+ * Renders the CalendarProvider component with the provided children.
+ *
+ * @param {React.ReactNode} children - The children of the component.
+ * @return {JSX.Element} The CalendarProvider component.
+ */
 export default function CalendarProvider({
   children,
 }: {
@@ -142,23 +147,60 @@ export default function CalendarProvider({
   const contextValue = useMemo(
     () => ({
       ...state,
-      setDate: (newDate: Date) => {
+      /**
+       * Sets the date of the calendar by dispatching the action to set it.
+       *
+       * @param {Date} newDate - The new date to be set.
+       * @return {void}
+       */
+      setDate: (newDate: Date): void => {
         dispatch({ type: 'SET_DATE', payload: newDate })
       },
       retrieveEvents,
-      setEvents: (newEvents: Event[]) => {
+      /**
+       * Sets the events of the calendar by dispatching the action to set them.
+       *
+       * @param {Event[]} newEvents - The new events to be set.
+       * @return {void}
+       */
+      setEvents: (newEvents: Event[]): void => {
         dispatch({ type: 'SET_EVENTS', payload: newEvents })
       },
-      addEvent: (newEvent: Event) => {
+      /**
+       * Adds an event to the calendar by dispatching the action to add it.
+       * Mainly used for optimal rendering client-side. Or adding calendar-specific events.
+       *
+       * @param {Event} newEvent - The new event to be added.
+       * @return {void}
+       */
+      addEvent: (newEvent: Event): void => {
         dispatch({ type: 'ADD_EVENT', payload: newEvent })
       },
-      removeEvent: (eventToRemove: Event) => {
+      /**
+       * Removes an event from the calendar by dispatching the action to remove it.
+       *
+       * @param {Event} eventToRemove - The event to be removed.
+       * @return {void}
+       */
+      removeEvent: (eventToRemove: Event): void => {
         dispatch({ type: 'REMOVE_EVENT', payload: eventToRemove })
       },
-      updateEvent: (updatedEvent: Event) => {
+      /**
+       * Updates an event in the calendar by dispatching the action to update it.
+       *
+       * @param {Event} updatedEvent - The event to be updated.
+       * @return {void}
+       */
+      updateEvent: (updatedEvent: Event): void => {
         dispatch({ type: 'UPDATE_EVENT', payload: updatedEvent })
       },
-      setSelectedDate: (newDate: Date) => {
+      /**
+       * Sets the selected date of the calendar by dispatching the action to set it.
+       *
+       * @param {Date} newDate - The new date to be set.
+       * @return {void}
+       */
+      setSelectedDate: (newDate: Date): void => {
         dispatch({ type: 'SET_SELECTED_DATE', payload: newDate })
       },
     }),
@@ -174,9 +216,10 @@ export default function CalendarProvider({
 
 /**
  * useCalendar
- *
  * @description The hook for the Calendar component.
+ *
  * @returns The context for the Calendar component.
+ * @throws {Error} If the hook is used outside of the CalendarProvider.
  */
 export function useCalendar() {
   const context = useContext(CalendarContext)

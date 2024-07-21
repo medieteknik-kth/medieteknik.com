@@ -1,3 +1,6 @@
+/**
+ * This file contains all the client providers that are used in the application.
+ */
 'use client'
 import { AuthenticationProvider } from './AuthenticationProvider'
 import { ThemeProvider } from 'next-themes'
@@ -10,7 +13,18 @@ interface Props {
   children: React.ReactNode
 }
 
-export default function Providers({ language, children }: Props) {
+/**
+ * A React component that provides all the client providers for the application.
+ *
+ * @param {Props} props - The component props.
+ * @param {string} props.language - The current language of the page.
+ * @param {React.ReactNode} props.children - The child components.
+ * @return {JSX.Element | null} The rendered component or null if not on the client.
+ */
+export default function Providers({
+  language,
+  children,
+}: Props): JSX.Element | null {
   const [isClient, setIsClient] = useState(false)
   const [standardTheme, setStandardTheme] = useState('light')
   const cookies = useCookies()
