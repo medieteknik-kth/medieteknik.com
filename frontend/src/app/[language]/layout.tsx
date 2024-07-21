@@ -1,20 +1,27 @@
-import type { Metadata, Viewport } from 'next'
-import { Figtree, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import Providers from '@providers/providers'
+import type { Metadata, Viewport } from 'next'
+import { dir } from 'i18next'
 import { supportedLanguages } from '../i18n/settings'
 import { CookiesProvider } from 'next-client-cookies/server'
+import { fontFigtree } from '../fonts'
+import Providers from '@providers/providers'
+import { LanguageCodes } from '@/utility/Constants'
+import CookiePopup from '@/components/cookie/Cookie'
+import ErrorBoundary from '@/components/error/ErrorBoundary'
+import ErrorFallback from '@/components/error/ErrorFallback'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
-import { dir } from 'i18next'
-import CookiePopup from '@/components/cookie/Cookie'
-import {
-  Icon,
-  IconDescriptor,
-} from 'next/dist/lib/metadata/types/metadata-types'
-import { fontFigtree } from '../fonts'
 
-export async function generateStaticParams() {
+/**
+ * Generates the static paths for each language ({@link LanguageCodes})
+ * @async
+ *
+ * @see https://nextjs.org/docs/app/api-reference/functions/generate-static-params
+ * @returns {Promise<{ language: LanguageCodes }[]>}
+ */
+export async function generateStaticParams(): Promise<
+  { language: LanguageCodes }[]
+> {
   return supportedLanguages.map((language) => ({ language }))
 }
 
@@ -32,28 +39,41 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
-  children,
-  params: { language },
-}: {
+interface Params {
+  language: LanguageCodes
+}
+
+interface Props {
   children: React.ReactNode
-  params: { language: string }
-}) {
+  params: Params
+}
+
+/**
+ * The Root of the frontend app
+ *
+ * @param {React.ReactNode} children - The children of the root
+ * @param {Params} params - The params of the root
+ * @param {string} params.language - The language of the root
+ * @returns {JSX.Element} The rendered root
+ */
+export default function RootLayout({ children, params }: Props): JSX.Element {
   children
   return (
     <html
-      lang={language}
-      dir={dir(language)}
+      lang={params.language}
+      dir={dir(params.language)}
       className={`${fontFigtree.className}`}
     >
       <head />
       <body className='min-w-full min-h-screen bg-background font-sans antialiased'>
         <CookiesProvider>
-          <Providers language={language}>
-            <Header language={language} />
-            {children}
-            <Footer language={language} />
-            <CookiePopup params={{ language }} />
+          <Providers language={params.language}>
+            <Header language={params.language} />
+            <ErrorBoundary fallback={<ErrorFallback />}>
+              {children}
+            </ErrorBoundary>
+            <Footer language={params.language} />
+            <CookiePopup params={params} />
           </Providers>
         </CookiesProvider>
       </body>
