@@ -5,6 +5,7 @@ import InternationalIcon from 'public/images/committees/internationals.png'
 import Logo from 'public/images/logo.webp'
 import Link from 'next/link'
 import { useTranslation } from '@/app/i18n'
+import InfographicCard from '@/components/cards/Infographic'
 
 interface CardElement {
   title: string
@@ -63,34 +64,17 @@ export default async function About({ language }: { language: string }) {
       </div>
       <div className='flex flex-wrap gap-2 flex-col desktop:flex-row justify-around items-center px-4'>
         {cards.map((card) => (
-          <div
+          <InfographicCard
             key={card.title}
-            className='card w-full lg:w-[720px] desktop:w-[450px] h-64 bg-slate-100 px-8 py-4 rounded-xl flex flex-col justify-between items-center relative'
-          >
-            <Link
-              href={card.href}
-              title={card.linkText}
-              target={card.href.startsWith('http') ? '_blank' : '_self'}
-              rel={card.href.startsWith('http') ? 'noopener noreferrer' : ''}
-              className='w-full h-fit lg:h-[100px] flex items-center underline-offset-4 text-sky-600 hover:text-sky-700 hover:underline'
-            >
-              <Image
-                src={card.icon.src}
-                alt={card.title}
-                width={100}
-                height={100}
-                loading='lazy'
-                placeholder='empty'
-                className='h-full aspect-square object-cover bg-white rounded-full lg:p-2'
-              />
-              <h3 className='text-lg md:text-3xl ml-8 h-full tracking-wide grow grid items-center'>
-                {card.title}
-              </h3>
-            </Link>
-            <p className='w-full h-[100px] text-sm lg:text-md text-pretty overflow-hidden'>
-              {card.description}
-            </p>
-          </div>
+            language={language}
+            card={{
+              title: card.title,
+              description: card.description,
+              icon: card.icon,
+              href: card.href,
+              linkText: card.linkText,
+            }}
+          />
         ))}
       </div>
     </section>

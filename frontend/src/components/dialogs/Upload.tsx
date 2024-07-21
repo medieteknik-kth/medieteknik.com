@@ -104,11 +104,11 @@ export function UploadNews({
     }
     let json = {
       published_status: 'DRAFT',
-      translation: [
+      translations: [
         {
           title: data.title || 'Untitled Article',
           language_code: language,
-        }
+        },
       ],
       author: {
         author_type: correctAuthor.author_type.toUpperCase(),

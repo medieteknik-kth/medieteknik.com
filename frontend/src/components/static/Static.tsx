@@ -15,14 +15,18 @@ export function Head({
       <div
         className={`w-full ${
           image ? 'xl:w-1/2' : 'w-full justify-center'
-        } h-fit flex items-center py-12`}
+        } h-fit flex items-center py-20`}
       >
         <div
           className={`h-fit flex flex-col justify-center z-10 px-0 lg:px-20 items-center text-center ${
             image ? 'xl:items-start' : 'xl:items-center'
           } ${image ? 'xl:text-start' : 'xl:text-center'}`}
         >
-          <h1 className='w-fit text-7xl uppercase font-bold text-yellow-400 mb-8 tracking-wider'>
+          <h1
+            className={`w-fit text-3xl lg:text-7xl uppercase font-bold text-yellow-400 ${
+              image ? 'mb-8' : 'mb-0'
+            } tracking-wider`}
+          >
             {title}
           </h1>
           <p className='w-full h-fit text-white text-xl tracking-tight uppercase'>
