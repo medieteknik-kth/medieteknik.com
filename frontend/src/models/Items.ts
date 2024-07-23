@@ -13,7 +13,7 @@ export type Author = Student | Committee | CommitteePosition
 
 export type AuthorResource = 'NEWS' | 'EVENT' | 'DOCUMENT' | 'ALBUM'
 
-interface Item {
+export interface Item {
   author: Author
   categories?: string[]
   created_at: string
