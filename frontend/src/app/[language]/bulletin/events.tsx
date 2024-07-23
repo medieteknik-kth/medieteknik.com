@@ -36,6 +36,7 @@ import useSWR from 'swr'
 import { API_BASE_URL } from '@/utility/Constants'
 import { Separator } from '@/components/ui/separator'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Permission } from '@/models/Permission'
 
 function getNumberWithOrdinal(number: number) {
   if (typeof number !== 'number' || isNaN(number)) {
@@ -186,7 +187,9 @@ export default function Events({ language }: { language: string }) {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.student.includes('CALENDAR_PRIVATE') ? (
+                    {permissions.student.includes(
+                      Permission.CALENDAR_PRIVATE
+                    ) ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -194,7 +197,9 @@ export default function Events({ language }: { language: string }) {
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.student.includes('CALENDAR_PRIVATE')
+                        {permissions.student.includes(
+                          Permission.CALENDAR_PRIVATE
+                        )
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}

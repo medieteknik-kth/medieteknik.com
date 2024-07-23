@@ -178,11 +178,11 @@ export default function Calendar({
             </p>
             <div className='w-full h-full'>
               <div
-                className={`absolute w-full h-full top-0 left-0 cursor-pointer hover:bg-neutral-200/50 z-10 ${
+                className={`absolute w-full h-full top-0 left-0 cursor-pointer z-10 ${
                   selectedDate.getDate() === index + 1 &&
                   isSameMonth(selectedDate, date)
-                    ? 'bg-red-100/50 hover:bg-red-100'
-                    : ''
+                    ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-400/25 dark:hover:bg-yellow-400/50'
+                    : 'hover:bg-yellow-200/50 dark:hover:bg-yellow-400/50'
                 } `}
                 onClick={(e) => {
                   e.stopPropagation()
