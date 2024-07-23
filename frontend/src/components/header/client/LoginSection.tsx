@@ -26,7 +26,12 @@ export default function LoginSection({
       {student ? (
         <div className='w-fit xl:w-full h-full flex relative gap-1 lg:gap-4'>
           <NotificationMenu language={language} />
-          <UserLoggedIn t={t} student={student} logout={logout} />
+          <UserLoggedIn
+            language={language}
+            t={t}
+            student={student}
+            logout={logout}
+          />
         </div>
       ) : (
         <div className='w-fit xl:w-full h-full flex relative gap-1 lg:gap-4'>

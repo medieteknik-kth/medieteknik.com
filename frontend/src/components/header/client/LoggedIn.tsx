@@ -23,22 +23,22 @@ import {
   ArrowRightStartOnRectangleIcon,
   Cog6ToothIcon,
   LifebuoyIcon,
+  PowerIcon,
   UserGroupIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
 import Logo from 'public/images/logo.webp'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 
-export default function UserLoggedIn({
-  t,
-  student,
-  logout,
-}: {
+interface Props {
+  language: string
   t: TFunction
   student: Student
   logout: () => void
-}) {
-  const { committees } = useAuthentication()
+}
+
+export default function UserLoggedIn({ language, t, student, logout }: Props) {
+  const { committees, role } = useAuthentication()
   const profileElements: HeaderElement[] = t('profileNavs', {
     returnObjects: true,
   })
@@ -91,7 +91,7 @@ export default function UserLoggedIn({
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link
-              href='/profile'
+              href={`/${language}/profile`}
               className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer mb-1'
               title='Your profile'
             >
@@ -101,7 +101,7 @@ export default function UserLoggedIn({
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href='/account'
+              href={`/${language}/account`}
               className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
               title='Account settings'
             >
@@ -111,7 +111,7 @@ export default function UserLoggedIn({
           </DropdownMenuItem>
         </DropdownMenuGroup>
         {committees.length > 0 && (
-          <div>
+          <>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuSub>
@@ -123,7 +123,7 @@ export default function UserLoggedIn({
                   <DropdownMenuSubContent className='w-fit'>
                     <DropdownMenuItem>
                       <Link
-                        href='/committee'
+                        href={`/${language}/committee`}
                         className='w-full flex !justify-start'
                       >
                         <Avatar className='w-4 h-4 mr-1'>
@@ -138,7 +138,7 @@ export default function UserLoggedIn({
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Link
-                        href='/committee'
+                        href={`/${language}/committee`}
                         className='w-full flex items-center !justify-start'
                       >
                         <Avatar className='w-4 h-4 mr-1'>
@@ -155,13 +155,30 @@ export default function UserLoggedIn({
                 </DropdownMenuPortal>
               </DropdownMenuSub>
             </DropdownMenuGroup>
-          </div>
+          </>
+        )}
+        {role.includes('ADMIN') && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/${language}/admin`}
+                  className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
+                  title='Admin Dashboard'
+                >
+                  <PowerIcon className='w-4 h-4 mr-2' />
+                  <span>Admin Dashboard</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link
-              href='/support'
+              href={`/${language}/support`}
               className='w-full flex items-center pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
               title='Support'
             >
