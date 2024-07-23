@@ -3,8 +3,6 @@ import {
   ArrowTopRightOnSquareIcon,
   Square2StackIcon,
   Bars3Icon,
-  UsersIcon,
-  PencilSquareIcon,
   Cog8ToothIcon,
 } from '@heroicons/react/24/outline'
 import { useState } from 'react'
@@ -12,7 +10,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -23,12 +20,12 @@ import Link from 'next/link'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 const committeeData = [
   {
@@ -98,6 +95,27 @@ const committeeData = [
 ]
 
 export default function CommitteesPage({ language }: { language: string }) {
+  const { committees } = useAuthentication()
+
+  if (committees.length === 0) {
+    return (
+      <section className='grow h-full min-h-[1080px] relative dark:bg-[#111] overflow-hidden'>
+        <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
+          <h1 className='text-2xl py-4'>Committee Affiliations</h1>
+        </div>
+        <div className='w-full grid place-items-center'>
+          <h2 className='text-xl py-8'>
+            You are not affiliated with any committees.
+          </h2>
+          <p>Look at committees that are recruiting if you are interested.</p>
+          <Link href={`/${language}/bulletin#recruiting`}>
+            <Button className='my-4'>View Recruitments</Button>
+          </Link>
+        </div>
+      </section>
+    )
+  }
+
   const [display, setDisplay] = useState('card')
   return (
     <section className='grow h-full min-h-[1080px] relative dark:bg-[#111] overflow-hidden'>

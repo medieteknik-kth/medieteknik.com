@@ -32,4 +32,4 @@ export const Permission = {
   CALENDAR_EDIT: 'CALENDAR_EDIT',
 }
 
-export type Permission = (typeof Permissions)[keyof typeof Permissions]
+export type Permission = (typeof Permission)[keyof typeof Permission]

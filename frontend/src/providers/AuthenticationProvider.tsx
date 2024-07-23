@@ -377,12 +377,12 @@ export function AuthenticationProvider({
        * Sets the permissions in the authentication state, by dispatching the action to the reducer.
        *
        * @param {AuthorResource[]} permissions.author - The author resources to be set.
-       * @param {Permissions[]} permissions.student - The student permissions to be set.
+       * @param {Permission[]} permissions.student - The student permissions to be set.
        * @returns {void}
        */
       setPermissions: (permissions: {
         author: AuthorResource[]
-        student: Permissions[]
+        student: Permission[]
       }): void => dispatch({ type: 'SET_PERMISSIONS', payload: permissions }),
 
       /**
