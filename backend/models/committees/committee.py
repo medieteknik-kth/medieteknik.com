@@ -10,7 +10,8 @@ class Committee(db.Model):
     committee_id = Column(Integer, primary_key=True, autoincrement=True)
 
     email = Column(String(255), unique=True)
-    logo_url = Column(String(512))
+    group_photo_url = Column(String(512))
+    logo_url = Column(String(512), nullable=False)
 
     # Foreign key
     committee_category_id = Column(

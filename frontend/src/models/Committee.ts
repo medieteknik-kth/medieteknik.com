@@ -17,6 +17,8 @@ export interface CommitteeCategoryTranslation {
   language_code: LanguageCodes;
 }
 
+export type CommitteePositionCategory = 'STYRELSEN' | 'VALBEREDNINGEN' | 'STUDIENÄMNDEN' | 'NÄRINGSLIV OCH KOMMUNIKATION' | 'STUDIESOCIALT' | 'FANBORGEN';
+
 /**
  * @interface Committee
  * @description Committee model
@@ -28,7 +30,8 @@ export interface CommitteeCategoryTranslation {
 export default interface Committee {
   author_type: 'COMMITTEE';
   email: string;
-  logo_url?: string;
+  group_photo_url?: string;
+  logo_url: string;
   translations: CommitteeTranslation[];
 }
 
@@ -55,6 +58,8 @@ export interface CommitteePosition {
   role: 'ADMIN' | 'BOARD' | 'COMMITTEE';
   active: boolean;
   weight: number;
+  category: CommitteePositionCategory;
+  committee_logo_url?: string;
   translations: CommitteePositionTranslation[]
 }
 

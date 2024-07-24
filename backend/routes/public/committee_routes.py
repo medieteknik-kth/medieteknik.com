@@ -1,9 +1,12 @@
+from typing import List
 from flask import Blueprint, request, jsonify
+from models.committees.committee_position import CommitteePosition
 from services.committees.public import (
     get_all_committee_categories,
     get_all_committees,
     get_committee_by_title,
     get_committee_position_by_title,
+    get_all_committee_members,
     CommitteeSettings,
     CommitteeCategorySettings,
 )
@@ -61,13 +64,30 @@ def get_committee_by_name(committee_title: str):
     provided_languages = retrieve_languages(request.args)
     include_positions = request.args.get("include_positions", False, type=bool)
 
-    return jsonify(
-        get_committee_by_title(
-            committee_title,
-            provided_languages,
-            CommitteeSettings(include_positions=include_positions),
-        )
+    committee = get_committee_by_title(
+        committee_title,
+        provided_languages,
+        CommitteeSettings(include_positions=include_positions),
     )
+
+    if not committee:
+        return jsonify({})
+
+    committee_dict = committee.to_dict(provided_languages)
+
+    if not committee_dict:
+        return jsonify({})
+
+    if include_positions:
+        committee_positions: List[CommitteePosition] = (
+            CommitteePosition.query.filter_by(committee_id=committee.committee_id).all()
+        )
+
+        committee_dict["positions"] = [
+            position.to_dict(provided_languages) for position in committee_positions
+        ]
+
+    return jsonify(committee_dict)
 
 
 @public_committee_position_bp.route("/<string:position_title>", methods=["GET"])
@@ -84,3 +104,22 @@ def get_committee_position_by_name(position_title: str):
             provided_languages=provided_languages, title=position_title
         )
     )
+
+
+@public_committee_bp.route("/<string:committee_title>/members", methods=["GET"])
+def get_committee_members(committee_title: str):
+    """Retrieves all committee members
+
+    Args:
+        committee_title (str): Committee title
+    """
+    provided_languages = retrieve_languages(request.args)
+
+    committee = get_committee_by_title(
+        provided_languages=provided_languages, title=committee_title
+    )
+
+    if not committee:
+        return jsonify([])
+
+    return jsonify(get_all_committee_members(committee, provided_languages))

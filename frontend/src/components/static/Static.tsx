@@ -36,16 +36,17 @@ export function Head({
       </div>
 
       {image && (
-        <div className='w-1/2 h-[350px] hidden xl:block overflow-x-hidden overflow-y-hidden relative'>
-          <div className='w-full h-full bg-black/25 absolute z-10' />
+        <div className='w-1/2 h-[350px] hidden xl:block overflow-hidden relative '>
+          <div className='w-full h-full bg-black/25 z-10 grid place-items-center absolute' />
           <Image
-            src={image.src}
+            src={image}
             alt='Test Background'
-            width={2000}
-            height={350}
+            fill
+            sizes='(max-width: 1280px) 0vw, 50vw'
             priority
             loading='eager'
-            className='w-full h-auto object-cover absolute top-0 bottom-0 left-0 right-0 m-auto'
+            quality={90}
+            className='w-full h-auto object-cover object-center bg-center'
           />
         </div>
       )}

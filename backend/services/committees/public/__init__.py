@@ -16,6 +16,7 @@ from .committee import (
 from .committee_position import (
     get_committee_position_by_title,
     get_committee_positions_by_committee_title,
+    get_all_committee_members,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "get_committee_data_by_title",
     "get_committee_position_by_title",
     "get_committee_positions_by_committee_title",
+    "get_all_committee_members",
 ]

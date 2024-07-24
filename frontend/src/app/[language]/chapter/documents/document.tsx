@@ -40,7 +40,199 @@ export default function Documents({
 }) {
   const [view, setView] = useState<View>('grid')
   const [selectedDocuments, setSelectedDocuments] = useState<number[]>([])
-  const documents: Document[] = []
+
+  const documents: Document[] = [
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Docuement',
+          language_code: 'sv',
+        },
+      ],
+      type: 'DOCUMENT',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Handlingar%20Styrelsem%C3%B6te%202024-06-13.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+
+    {
+      author: {
+        author_type: 'STUDENT',
+        email: 'andree4@kth.se',
+        first_name: 'André',
+        last_name: 'Eriksson',
+        student_type: 'MEDIETEKNIK',
+      },
+      created_at: new Date('August 20 2023').toLocaleDateString(),
+      is_pinned: false,
+      is_public: true,
+      published_status: 'PUBLISHED',
+      translations: [
+        {
+          title: 'Test Form',
+          language_code: 'sv',
+        },
+      ],
+      type: 'FORM',
+      url: 'https://storage.googleapis.com/medieteknik-static/documents/2024/6/13/Verksamhetsplan%202024/2025.pdf',
+    },
+  ]
   const categories = [
     {
       title: 'Home',

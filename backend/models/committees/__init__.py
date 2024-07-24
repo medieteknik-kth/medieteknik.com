@@ -13,6 +13,7 @@ from .committee_position import (
     CommitteePosition,
     CommitteePositionTranslation,
     CommitteePositionResource,
+    CommitteePositionsRole,
 )
 
 
@@ -26,4 +27,5 @@ __all__ = [
     "CommitteePosition",
     "CommitteePositionTranslation",
     "CommitteePositionResource",
+    "CommitteePositionsRole",
 ]

@@ -1,15 +1,24 @@
 import enum
 from typing import Any, Dict, List
 from sqlalchemy import String, Integer, Column, ForeignKey, Enum, Boolean, inspect
+from models.committees.committee import Committee
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 
 
 class CommitteePositionsRole(enum.Enum):
-    ADMIN = 1
-    BOARD = 2
-    COMMITTEE = 3
+    COMMITTEE = "COMMITTEE"
+    MEMBER = "MEMBER"
+
+
+class CommitteePositionCategory(enum.Enum):
+    STYRELSEN = "STYRELSEN"
+    VALBEREDNINGEN = "VALBEREDNINGEN"
+    STUDIENÄMNDEN = "STUDIENÄMNDEN"
+    NÄRINGSLIV_OCH_KOMMUNIKATION = "NÄRINGSLIV OCH KOMMUNIKATION"
+    STUDIESOCIALT = "STUDIESOCIALT"
+    FANBORGEN = "FANBORGEN"
 
 
 class CommitteePosition(db.Model):
@@ -19,9 +28,12 @@ class CommitteePosition(db.Model):
     email = Column(String(255), unique=True)
     weight = Column(Integer, default=0)
     role = Column(
-        Enum(CommitteePositionsRole), default=CommitteePositionsRole.COMMITTEE
+        Enum(CommitteePositionsRole),
+        default=CommitteePositionsRole.MEMBER,
+        nullable=False,
     )
     active = Column(Boolean, default=True)
+    category = Column(Enum(CommitteePositionCategory), nullable=False)
 
     # Foreign key
     committee_id = Column(Integer, ForeignKey("committee.committee_id"))
@@ -44,7 +56,10 @@ class CommitteePosition(db.Model):
         return "<CommitteePosition %r>" % self.committee_position_id
 
     def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
+        self,
+        provided_languages: List[str] = AVAILABLE_LANGUAGES,
+        is_public_route=True,
+        include_committee_logo=False,
     ) -> Dict[str, Any] | None:
         columns = inspect(self)
 
@@ -83,6 +98,14 @@ class CommitteePosition(db.Model):
         if is_public_route:
             del data["weight"]
             del data["role"]
+
+        if include_committee_logo:
+            parent_committee = Committee.query.filter_by(
+                committee_id=self.committee_id
+            ).first()
+
+            if parent_committee and isinstance(parent_committee, Committee):
+                data["committee_logo_url"] = parent_committee.logo_url
 
         return data
 

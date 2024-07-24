@@ -46,7 +46,7 @@ def get_committee_by_title(
     title: str,
     provided_languages: List[str],
     committee_settings: CommitteeSettings | None = None,
-) -> Dict[str, Any] | None:
+) -> Committee | None:
     """
     Retrieves a committee from the database by its name.
 
@@ -72,22 +72,8 @@ def get_committee_by_title(
 
     if not committee:
         return None
-
-    committee_dict = committee.to_dict(provided_languages)
-
-    if not committee_dict:
-        return None
-
-    if committee_settings.include_positions:
-        committee_positions: List[CommitteePosition] = (
-            CommitteePosition.query.filter_by(committee_id=committee.committee_id).all()
-        )
-
-        committee_dict["positions"] = [
-            position.to_dict(provided_languages) for position in committee_positions
-        ]
-
-    return committee_dict
+    
+    return committee
 
 
 def get_committee_data_by_title(title: str) -> Dict[str, Any] | None:

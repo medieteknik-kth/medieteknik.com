@@ -1,8 +1,15 @@
 from sqlalchemy import func
-from models.committees import CommitteePosition, CommitteePositionTranslation
-from models.committees.committee import Committee, CommitteeTranslation
-from utility.constants import AVAILABLE_LANGUAGES
 from typing import Any, Dict, List
+from models.committees import (
+    Committee,
+    CommitteeTranslation,
+    CommitteePosition,
+    CommitteePositionTranslation,
+)
+from models.core.student import Student, StudentMembership
+from utility.constants import AVAILABLE_LANGUAGES
+from utility.database import db
+from sqlalchemy.orm import joinedload
 
 
 def get_committee_position_by_title(
@@ -102,3 +109,49 @@ def get_member_from_position_id(position_id: int) -> Dict[str, Any] | None:
     )
 
     return committee_position_dict
+
+
+def get_all_committee_members(
+    committee: Committee, provided_languages: List[str]
+) -> List[Dict[str, Any]]:
+    """
+    Retrieves all committee members from the database.
+
+    Args:
+        provided_languages (List[str]): The languages to include in the response.
+
+    Returns:
+        List[Dict[str, Any]]: A list of committee member dictionaries.
+    """
+    committee_memberships = (
+        db.session.query(StudentMembership)
+        .join(
+            CommitteePosition,
+            CommitteePosition.committee_position_id
+            == StudentMembership.committee_position_id,
+        )
+        .filter_by(
+            committee_id=committee.committee_id,
+        )
+        .join(
+            Student,
+            StudentMembership.student_id == Student.student_id,
+        )
+        .options(
+            joinedload(StudentMembership.student),  # type: ignore
+            joinedload(StudentMembership.committee_position),  # type: ignore
+        )
+        .all()
+    )
+
+    return [
+        {
+            "position": membership.committee_position.to_dict(
+                provided_languages=provided_languages
+            ),
+            "student": membership.student.to_dict(),
+            "initiation_date": membership.initiation_date,
+            "termination_date": membership.termination_date,
+        }
+        for membership in committee_memberships
+    ]
