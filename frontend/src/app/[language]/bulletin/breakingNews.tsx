@@ -1,10 +1,5 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-import NLGIcon from 'public/images/committees/nlg.png'
-import BG from 'public/images/kth-landskap.jpg'
-import BG2 from 'public/images/international_placeholder.jpg'
-import BG3 from 'public/images/testbg.jpg'
 import {
   Tooltip,
   TooltipContent,
@@ -16,78 +11,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-
 import ShortNews from './components/shortNews'
 import { News } from '@/models/Items'
-
-const breakingNews: News[] = [
-  {
-    is_pinned: false,
-    is_public: true,
-    translations: [
-      {
-        title: 'KTH:s rektor: "Vi har en plan för att åpplösa campus"',
-        body: 'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
-        language_code: 'sv',
-        short_description:
-          'KTH:s rektor Sigbritt Karlsson berätar om planerna för att åpplösa campus igen.',
-        main_image_url: BG.src,
-      },
-    ],
-    published_status: 'PUBLISHED',
-    url: '1',
-    author: {
-      author_type: 'COMMITTEE',
-      translations: [
-        {
-          title: 'Styrelsen',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-      logo_url: StyrelsenIcon.src,
-      email: 'styrelsen@medieteknik.com',
-    },
-    categories: ['Skola'],
-    created_at: '2021-09-01',
-  },
-  {
-    is_pinned: false,
-    is_public: true,
-    published_status: 'PUBLISHED',
-    translations: [
-      {
-        title: 'International students: "We need more support"',
-        body: 'International students at KTH are struggling with the lack of support.',
-        language_code: 'sv',
-        short_description:
-          'International students at KTH are struggling with the lack of support.',
-        main_image_url: BG2.src,
-      },
-    ],
-    url: '2',
-    author: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'André',
-      last_name: 'Eriksson',
-      reception_name: 'N/A',
-      profile_picture_url: '',
-      student_type: 'MEDIETEKNIK',
-    },
-    categories: ['Skola'],
-    created_at: '2021-09-01',
-  },
-]
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import useSWR from 'swr'
+import { API_BASE_URL } from '@/utility/Constants'
+
+const fetcher = (url: string) =>
+  fetch(url).then((res) => res.json() as Promise<News[]>)
 
 export default function BreakingNews({ language }: { language: string }) {
   const [copiedLink, setCopiedLink] = useState(-1)
+  const { data, error, isLoading } = useSWR(
+    `${API_BASE_URL}/public/news/latest?language=${language}`,
+    fetcher
+  )
 
-  const handleCopyLink = (id: number) => {
-    navigator.clipboard.writeText(window.location.href + '/' + id)
+  if (error) return <></>
+  if (isLoading) return <div>Loading...</div>
+  if (!data) return <></>
+
+  const handleCopyLink = (url: string, id: number) => {
+    navigator.clipboard.writeText(window.location.href + '/' + url)
     setCopiedLink(id)
     setTimeout(() => {
       setCopiedLink(-1)
@@ -96,7 +43,7 @@ export default function BreakingNews({ language }: { language: string }) {
 
   return (
     <div className='w-fit h-fit flex *:mr-16 z-10'>
-      {breakingNews.map((newsItem, index) => (
+      {data.map((newsItem, index) => (
         <div key={index} className='relative'>
           <ShortNews key={index} newsItem={newsItem} />
           <TooltipProvider>
@@ -108,7 +55,7 @@ export default function BreakingNews({ language }: { language: string }) {
                   title='Share'
                   aria-label='Share'
                   className='absolute bottom-4 right-4 z-10'
-                  onClick={() => handleCopyLink(index)}
+                  onClick={() => handleCopyLink(newsItem.url, index)}
                 >
                   <TooltipContent className='z-10'>Copied</TooltipContent>
 

@@ -28,7 +28,7 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
         aria-label={newsItem.translations[0].title}
       >
         <Image
-          src={newsItem.translations[0].main_image_url}
+          src={newsItem.translations[0].main_image_url || ''}
           alt={newsItem.translations[0].title}
           width={200}
           height={200}

@@ -118,7 +118,7 @@ def create_news():
     if not permissions:
         return jsonify({}), 403
 
-    if not permissions.get("author").get("NEWS"):
+    if "NEWS" not in permissions.get("author"):
         return jsonify({}), 403
 
     data = request.get_json()
@@ -176,10 +176,10 @@ def update_news_by_url(url: str):
     permissions = claims.get("permissions")
 
     if not permissions:
-        return jsonify({}), 403
+        return jsonify({"error": "Not authorized"}), 403
 
-    if not permissions.get("author").get("NEWS"):
-        return jsonify({}), 403
+    if "NEWS" not in permissions.get("author"):
+        return jsonify({"error": "Not authorized"}), 403
 
     data = request.get_json()
     langauge_code = retrieve_languages(request.args)
@@ -213,7 +213,7 @@ def publish_news(url: str):
     if not permissions:
         return jsonify({}), 403
 
-    if not permissions.get("author").get("NEWS"):
+    if "NEWS" not in permissions.get("author"):
         return jsonify({}), 403
 
     data = request.get_json()
@@ -251,7 +251,7 @@ def delete_news(url: str):
         return jsonify({}), 403
 
     if (
-        not permissions.get("student").get("ITEMS_DELETE")
+        "ITEMS_DELETE" not in permissions.get("student")
         or news_item.author_id is not student_id
     ):
         return jsonify({}), 403

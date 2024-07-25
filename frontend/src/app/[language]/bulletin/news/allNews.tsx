@@ -205,7 +205,7 @@ export default function AllNews({
           />
         </div>
       </CardHeader>
-      <CardContent className='grid grid-flow-row grid-cols-3 desktop:grid-cols-5 min-h-96 *:h-96 gap-10'>
+      <CardContent className='flex flex-wrap desktop:grid-cols-5 min-h-96 *:h-96 gap-10'>
         {permissions.author.includes('NEWS') ? (
           <Card className='w-[320px] border-dashed'>
             <CardContent className='h-full pt-6'>
@@ -219,9 +219,7 @@ export default function AllNews({
                     <PlusIcon className='w-6 h-6' />
                   </div>
                 </DialogTrigger>
-                <DialogContent>
-                  <UploadNews language={language} />
-                </DialogContent>
+                <UploadNews language={language} />
               </Dialog>
             </CardContent>
           </Card>

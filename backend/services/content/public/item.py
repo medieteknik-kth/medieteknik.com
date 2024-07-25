@@ -1,6 +1,6 @@
 from models.content import Item, Author
 from utility.constants import AVAILABLE_LANGUAGES
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, List
 
 
 def get_items(
@@ -95,3 +95,35 @@ def get_item_by_url(
         return None
 
     return item.to_dict(provided_languages=provided_languages, is_public_route=True)
+
+
+def get_latest_items(
+    item_table: Type[Item] = Item,
+    count: int = 5,
+    provided_languages: List[str] = AVAILABLE_LANGUAGES,
+) -> Dict[str, Any]:
+    """
+    Retrieves the latest items from the item table.
+
+    Args:
+        item_table (Type[Item], optional): The item table to use. Defaults to Item.
+        count (int, optional): The number of items to retrieve. Defaults to 5.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the <count> latest items.
+    """
+
+    items: List[Item] = (
+        item_table.query.order_by(Item.created_at.desc()).limit(count).all()
+    )
+
+    return [
+        item_dict
+        for item in items
+        if (
+            item_dict := item.to_dict(
+                provided_languages=provided_languages, is_public_route=True
+            )
+        )
+        is not None
+    ]

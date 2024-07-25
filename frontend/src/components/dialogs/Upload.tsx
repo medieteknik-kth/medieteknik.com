@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/form'
 import { redirect, useRouter } from 'next/navigation'
 import { Author } from '@/models/Items'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 export function UploadNews({
   language,
@@ -38,10 +39,8 @@ export function UploadNews({
   const [isClient, setIsClient] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const { student } = useAuthentication()
   const { push } = useRouter()
-  const [correctAuthor, setCorrectAuthor] = useState<Author | null>(
-    author || null
-  )
   const [selectingAuthor, setSelectingAuthor] = useState(true)
 
   const FormSchema = z.object({
@@ -70,36 +69,12 @@ export function UploadNews({
 
   if (!isClient) return null
 
-  if (!correctAuthor) {
-    return (
-      <Dialog open={selectingAuthor}>
-        <DialogTrigger />
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Post As?</DialogTitle>
-            <DialogDescription>Choose who to post as</DialogDescription>
-          </DialogHeader>
-          <Button
-            onClick={() => {
-              setCorrectAuthor({
-                author_type: 'STUDENT',
-                email: 'andree4@kth.se',
-                first_name: 'André',
-                last_name: 'Eriksson',
-                student_type: 'MEDIETEKNIK',
-              })
-              setSelectingAuthor(false)
-            }}
-          >
-            Yourself
-          </Button>
-        </DialogContent>
-      </Dialog>
-    )
+  if (!student) {
+    return <></>
   }
 
   const postForm = async (data: z.infer<typeof FormSchema>) => {
-    if (!correctAuthor) {
+    if (!student) {
       return
     }
     let json = {
@@ -111,13 +86,10 @@ export function UploadNews({
         },
       ],
       author: {
-        author_type: correctAuthor.author_type.toUpperCase(),
-        entity_email: correctAuthor.email,
+        author_type: 'STUDENT',
+        entity_email: student.email,
       },
     }
-
-    // Convert formData to JSON
-    const jsonData = JSON.stringify(json)
 
     try {
       const response = await fetch(`${API_BASE_URL}/news`, {
@@ -125,7 +97,8 @@ export function UploadNews({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonData,
+        credentials: 'include',
+        body: JSON.stringify(json),
       })
 
       if (response.ok) {
@@ -135,20 +108,23 @@ export function UploadNews({
         setError('Something went wrong, try again later')
         setLoading(false)
       }
-    } catch {
-      setError('Something went wrong, try again later')
+    } catch (error) {
+      setError('Something went wrong, try again later ' + error)
       setLoading(false)
     }
   }
 
   return (
-    <DialogHeader className='relative w-full'>
-      <DialogTitle>Upload News</DialogTitle>
-      <DialogDescription>
-        Basic information about your article, you will be able to edit it later
-        <br />
-        <span className='text-red-500'>{error}</span>
-      </DialogDescription>
+    <DialogContent>
+      <DialogHeader className='relative w-full'>
+        <DialogTitle>Upload News</DialogTitle>
+        <DialogDescription>
+          Basic information about your article, you will be able to edit it
+          later
+          <br />
+          <span className='text-red-500'>{error}</span>
+        </DialogDescription>
+      </DialogHeader>
       <Form {...form}>
         <form
           onSubmit={(e) => {
@@ -220,6 +196,6 @@ export function UploadNews({
           </Button>
         </form>
       </Form>
-    </DialogHeader>
+    </DialogContent>
   )
 }

@@ -108,6 +108,7 @@ export default function CommandBar({ language }: { language: string }) {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify(json_data),
         }
       )

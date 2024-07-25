@@ -70,6 +70,7 @@ export function AutoSaveProvdier({
             headers: {
               'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(content),
           }
         )

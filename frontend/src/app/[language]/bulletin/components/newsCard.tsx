@@ -21,7 +21,7 @@ import { News } from '@/models/Items'
 export default function NewsCard({ newsItem }: { newsItem: News }) {
   return (
     <Card
-      className='w-full h-96 flex flex-col justify-between'
+      className='w-[320px] h-96 flex flex-col justify-between'
       title={newsItem.translations[0].title}
       aria-label={newsItem.translations[0].title}
     >

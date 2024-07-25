@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import {
   DocumentIcon,
@@ -12,39 +13,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { API_BASE_URL } from '@/utility/Constants'
 import { redirect } from 'next/navigation'
 import Loading from '@/components/tooltips/Loading'
+import { News } from '@/models/Items'
+import useSWR from 'swr'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))
 const SettingsPage = React.lazy(() => import('./pages/settings'))
 
-async function getData(language_code: string, slug: string) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/news/${slug}?language_code=${language_code}`,
-      {
-        cache: 'no-store',
-      }
-    )
+const fetcher = (url: string) =>
+  fetch(url, { credentials: 'include' }).then(
+    (res) => res.json() as Promise<News>
+  )
 
-    if (response.ok) {
-      const data = await response.json()
-      return data
-    } else {
-      console.error('Error fetching data:', response.statusText)
-      return null
-    }
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
-
-export default async function UploadNews({
+export default function UploadNews({
   params: { language, slug },
 }: {
   params: { language: string; slug: string }
 }) {
-  const data = await getData(language, slug)
+  const { data, error, isLoading } = useSWR(
+    `${API_BASE_URL}/news/${slug}?language=${language}`,
+    fetcher
+  )
+
+  if (error) {
+    redirect(`/${language}/bulletin/news`)
+  }
+
+  if (isLoading) {
+    return <Loading language={language} />
+  }
 
   if (!data) {
     redirect(`/${language}/bulletin/news`)
