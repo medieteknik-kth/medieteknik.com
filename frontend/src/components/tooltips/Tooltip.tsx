@@ -9,6 +9,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { Button } from '@components/ui/button'
+import FallbackImage from 'public/images/logo.webp'
 
 export function StudentTooltip({ student }: { student: Student }) {
   return (
@@ -21,7 +22,7 @@ export function StudentTooltip({ student }: { student: Student }) {
         <Link href='/' className='group' title='Go to profile page'>
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
             <AvatarImage
-              src={student.profile_picture_url}
+              src={student.profile_picture_url || FallbackImage.src}
               alt='Profile Picture'
               width={96}
               height={96}
@@ -84,13 +85,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
           <span>{committee.email}</span>
         </Link>
       </Button>
-      {/**TODO: Add description to committees, maybe own model? */}
-      <p className='text-sm'>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero enim
-        architecto culpa, voluptas, nihil numquam quidem aliquam in dicta
-        perferendis voluptates totam debitis, dignissimos doloribus. Repellat
-        magnam laboriosam neque veritatis.
-      </p>
+      <p className='text-sm'>{committee.translations[0].description}</p>
     </div>
   )
 }

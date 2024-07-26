@@ -1,5 +1,5 @@
 import { News } from '@/models/Items'
-import Committee from '@models/Committee'
+import Committee, { CommitteePosition } from '@models/Committee'
 import Student from '@models/Student'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -17,6 +17,11 @@ import {
 import Link from 'next/link'
 import Image from 'next/image'
 import { StudentTooltip, CommitteeTooltip } from '@/components/tooltips/Tooltip'
+//TODO: Remove Later
+import FallbackImage from 'public/images/logo.webp'
+import { StudentTag } from '@/components/tags/StudentTag'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 
 export default function ShortNews({ newsItem }: { newsItem: News }) {
   return (
@@ -28,7 +33,7 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
         aria-label={newsItem.translations[0].title}
       >
         <Image
-          src={newsItem.translations[0].main_image_url || ''}
+          src={newsItem.translations[0].main_image_url || FallbackImage.src}
           alt={newsItem.translations[0].title}
           width={200}
           height={200}
@@ -51,61 +56,28 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
           </Link>
         </CardHeader>
 
-        <CardFooter className='w-full flex justify-between items-center pb-0 mb-6'>
-          <div className='flex items-center'>
-            <Link
-              href={
-                newsItem.author.author_type === 'COMMITTEE'
-                  ? 'chapter/committees/' +
-                    (
-                      newsItem.author as Committee
-                    ).translations[0].title.toLocaleLowerCase()
-                  : './chapter/students/' + (newsItem.author as Student).email
-              }
-            >
-              <Avatar className='bg-white mr-2'>
-                <AvatarImage
-                  src={
-                    newsItem.author.author_type === 'COMMITTEE'
-                      ? (newsItem.author as Committee).logo_url
-                      : (newsItem.author as Student).profile_picture_url
-                  }
-                />
-                <AvatarFallback>
-                  {newsItem.author.author_type === 'COMMITTEE'
-                    ? (newsItem.author as Committee).translations[0].title +
-                      ' logo'
-                    : (newsItem.author as Student).first_name +
-                      ' ' +
-                      (newsItem.author as Student).last_name +
-                      ' profile picture'}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
-            <div>
-              <HoverCard>
-                <HoverCardTrigger>
-                  {newsItem.author.author_type === 'COMMITTEE'
-                    ? (newsItem.author as Committee).translations[0].title
-                    : (newsItem.author as Student).first_name +
-                      ' ' +
-                      (newsItem.author as Student).last_name}
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  {newsItem.author.author_type === 'COMMITTEE' ? (
-                    <CommitteeTooltip
-                      committee={newsItem.author as Committee}
-                    />
-                  ) : (
-                    <StudentTooltip student={newsItem.author as Student} />
-                  )}
-                </HoverCardContent>
-              </HoverCard>
-              <span className='text-xs flex text-neutral-700 dark:text-neutral-400'>
+        <CardFooter className='w-full flex justify-between items-center pb-0 mb-6 max-w-[325px]'>
+          {newsItem.author.author_type === 'STUDENT' ? (
+            <StudentTag student={newsItem.author as Student} includeAt={false}>
+              <span className='text-xs text-neutral-700'>
                 {newsItem.created_at}
               </span>
-            </div>
-          </div>
+            </StudentTag>
+          ) : newsItem.author.author_type === 'COMMITTEE' ? (
+            <CommitteeTag
+              committee={newsItem.author as Committee}
+              includeAt={false}
+              includeBackground={false}
+            >
+              <span className='text-xs text-neutral-700'>
+                {newsItem.created_at}
+              </span>
+            </CommitteeTag>
+          ) : (
+            <CommitteePositionTag
+              committeePosition={newsItem.author as CommitteePosition}
+            />
+          )}
         </CardFooter>
       </div>
     </Card>
