@@ -29,6 +29,7 @@ import Student from '@/models/Student'
 import { Button } from '@/components/ui/button'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Separator } from '@/components/ui/separator'
+import { Label } from '@/components/ui/label'
 
 const fetcher = (url: string) =>
   fetch(url).then(
@@ -118,48 +119,57 @@ export default function CommitteeMembers({ language }: { language: string }) {
         <h1 className='uppercase tracking-wider font-semibold text-4xl block'>
           Officials
         </h1>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant={'outline'}
-              role='combobox'
-              aria-expanded={open}
-              className='w-72 justify-start'
-            >
-              {value
-                ? dates.find((item) => item.value === value)?.label
-                : 'Select year...'}
-              <ChevronDownIcon className='ml-2 h-4 w-4' />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Command>
-              <CommandInput placeholder='Search year...' />
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandList>
-                <CommandGroup>
-                  {dates.map((date) => (
-                    <CommandItem
-                      key={date.value}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value ? '' : date.value)
-                        setOpen(false)
-                      }}
-                    >
-                      {date.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <Separator orientation='vertical' className='h-8 bg-yellow-400' />
+        <div className='flex items-center'>
+          <Label htmlFor='year' className='mr-2'>
+            Year:
+          </Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                id='year'
+                variant={'outline'}
+                name='year'
+                role='combobox'
+                aria-label='Select year'
+                aria-expanded={open}
+                className='w-72 justify-start'
+              >
+                {value
+                  ? dates.find((item) => item.value === value)?.label
+                  : 'Select year...'}
+                <ChevronDownIcon className='ml-2 h-4 w-4' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Command>
+                <CommandInput placeholder='Search year...' />
+                <CommandEmpty>No results found.</CommandEmpty>
+                <CommandList>
+                  <CommandGroup>
+                    {dates.map((date) => (
+                      <CommandItem
+                        key={date.value}
+                        onSelect={(currentValue) => {
+                          setValue(currentValue === value ? '' : date.value)
+                          setOpen(false)
+                        }}
+                      >
+                        {date.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       <div className='w-full flex flex-col gap-4'>
         {categories.map((category, index) => (
           <div key={index}>
-            <h2 className='text-3xl tracking-wide uppercase text-yellow-400'>
+            <h2 className='text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
               {category}
             </h2>
             <div className='flex flex-wrap gap-4 mt-2'>
@@ -202,14 +212,20 @@ export default function CommitteeMembers({ language }: { language: string }) {
                         <div className='flex gap-2 items-center px-2 absolute top-4 bg-white dark:bg-[#111] border border-l-0 rounded-r-md shadow-sm shadow-black/25 dark:shadow-white/25'>
                           <Avatar className='w-6 h-6'>
                             <AvatarImage
-                              src={
-                                member.position.committee_logo_url ||
-                                FallbackImage.src
-                              }
+                              src={member.position.committee_logo_url}
+                              alt={`${member.position.translations[0].title} logo`}
                               width={24}
                               height={24}
                             />
-                            <AvatarFallback>NLG</AvatarFallback>
+                            <AvatarFallback>
+                              <Image
+                                src={FallbackImage.src}
+                                alt='Fallback image'
+                                width={24}
+                                height={24}
+                                className='bg-white'
+                              />
+                            </AvatarFallback>
                           </Avatar>
                           <p className='text-sm uppercase tracking-wider max-w-40 leading-4 py-0.5'>
                             {member.position.translations[0].title}
@@ -233,7 +249,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                     ))
                 )}
             </div>
-            <Separator className='mt-4' />
+            <Separator className='mt-4 bg-yellow-400' />
           </div>
         ))}
       </div>

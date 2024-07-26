@@ -24,70 +24,6 @@ interface Props {
   committees: Committee[]
 }
 
-/*
-
-<div className='flex gap-3 overflow-x-scroll'>
-          {committees
-            .sort((a, b) =>
-              a.translations[0].title.localeCompare(b.translations[0].title)
-            )
-            .map((committee, index) => (
-              <div
-                key={index}
-                className={`h-[500px] relative rounded-xl overflow-hidden transition-all cursor-pointer ${
-                  expandedCommittee === index ? 'w-96' : 'w-32 hover:w-40'
-                }`}
-                onClick={expandCommittee(index)}
-              >
-                <Image
-                  src={
-                    'https://storage.googleapis.com/medieteknik-static/images/styrelsen23_24.jpg'
-                  }
-                  alt='img'
-                  width={1000}
-                  height={500}
-                  className='w-full h-full object-cover absolute'
-                />
-                <div className='w-full h-full bg-black/40 z-10 absolute' />
-                <Avatar className='bg-white w-20 h-20 p-2 absolute left-0 right-0 mx-auto bottom-4 z-20'>
-                  <AvatarImage
-                    src={committee.logo_url}
-                    className='w-auto h-16 object-cover p-1.5 overflow-visible'
-                  />
-                  <AvatarFallback>
-                    <Image
-                      src={FallbackImage}
-                      alt='img'
-                      width={100}
-                      height={100}
-                    />
-                  </AvatarFallback>
-                </Avatar>
-                <p
-                  className={`w-fit h-fit text-white tracking-tighter uppercase font-bold z-20 absolute left-0 right-0 mx-auto bottom-28
-                        ${
-                          committee.translations[0].title.length > 20 ||
-                          committee.translations[0].title.search(/\s/) !== -1
-                            ? 'text-md'
-                            : committee.translations[0].title.length > 13
-                            ? 'text-lg'
-                            : 'text-2xl'
-                        }
-                      `}
-                  style={{
-                    textOrientation: 'upright',
-                    writingMode: 'vertical-rl',
-                  }}
-                >
-                  {committee.translations[0].title}
-                </p>
-              </div>
-            ))}
-        </div>
-
-
-*/
-
 export default function Committees({ language, committees }: Props) {
   const [api, setApi] = useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -167,7 +103,7 @@ export default function Committees({ language, committees }: Props) {
                     <div className='rounded-md'>
                       <Image
                         src={committee.group_photo_url || ''}
-                        alt='img'
+                        alt={`${committee.translations[0].title} group photo`}
                         width={1000}
                         height={500}
                         className='w-full h-full object-cover absolute'
@@ -189,6 +125,7 @@ export default function Committees({ language, committees }: Props) {
                       <Avatar className='bg-white w-16 h-16 z-10'>
                         <AvatarImage
                           src={committee.logo_url}
+                          alt={`${committee.translations[0].title} logo`}
                           width={64}
                           height={64}
                           className='w-auto h-16 object-cover p-1.5'
@@ -196,7 +133,7 @@ export default function Committees({ language, committees }: Props) {
                         <AvatarFallback>
                           <Image
                             src={FallbackImage}
-                            alt='img'
+                            alt='Committee Fallback image'
                             width={100}
                             height={100}
                           />

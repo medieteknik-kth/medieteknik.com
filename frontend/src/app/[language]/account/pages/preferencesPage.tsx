@@ -101,7 +101,9 @@ export default function PreferencesPage({ language }: { language: string }) {
           <div>
             <h2 className='text-2xl font-bold mb-2 flex items-center'>
               Theme
-              <Badge className='ml-2 bg-red-500 text-white'>BETA</Badge>
+              <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
+                Beta
+              </sup>
             </h2>
 
             <div className='h-fit flex flex-col xs:flex-row'>

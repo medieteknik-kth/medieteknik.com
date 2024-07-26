@@ -161,9 +161,9 @@ export default function OptionsMenu({
               <DropdownMenuGroup>
                 <DropdownMenuLabel className='text-lg flex items-center'>
                   {t('themePreference')}
-                  <Badge className='ml-2' variant='destructive'>
-                    BETA
-                  </Badge>
+                  <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
+                    Beta
+                  </sup>
                 </DropdownMenuLabel>
                 <DropdownMenuGroup className='flex'>
                   <DropdownMenuItem asChild>

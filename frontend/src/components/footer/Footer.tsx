@@ -32,9 +32,16 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
             target='_blank'
             rel='noopener noreferrer'
             className='w-full h-full'
+            title='Facebook'
             aria-label="Links to Medieteknik's Facebook page"
           >
-            <FacebookSVG width={30} height={30} />
+            <FacebookSVG
+              width={30}
+              height={30}
+              name='Facebook'
+              aria-label='Facebook Icon'
+              aria-description='Facebook Icon'
+            />
           </Link>
         </Button>
       </li>
@@ -45,9 +52,16 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
             target='_blank'
             rel='noopener noreferrer'
             className='w-full h-full dark:fill-white'
+            title='Instagram'
             aria-label="Links to Medieteknik's Instagram page"
           >
-            <InstagramSVG width={30} height={30} />
+            <InstagramSVG
+              width={30}
+              height={30}
+              name='Instagram'
+              aria-label='Instagram Icon'
+              aria-description='Instagram Icon'
+            />
           </Link>
         </Button>
       </li>
@@ -58,9 +72,16 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
             target='_blank'
             rel='noopener noreferrer'
             className='w-full h-full'
+            title='LinkedIn'
             aria-label="Links to Medieteknik's LinkedIn page"
           >
-            <LinkedInSVG width={30} height={30} />
+            <LinkedInSVG
+              width={30}
+              height={30}
+              name='LinkedIn'
+              aria-label='LinkedIn Icon'
+              aria-description='LinkedIn Icon'
+            />
           </Link>
         </Button>
       </li>
@@ -71,9 +92,16 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
             target='_blank'
             rel='noopener noreferrer'
             className='w-full h-full'
+            title='YouTube'
             aria-label="Links to Medieteknik's YouTube page"
           >
-            <YoutubeSVG width={30} height={30} />
+            <YoutubeSVG
+              width={30}
+              height={30}
+              name='YouTube'
+              aria-label='YouTube Icon'
+              aria-description='YouTube Icon'
+            />
           </Link>
         </Button>
       </li>
@@ -85,9 +113,16 @@ function ConnectSection({ t }: { t: (key: string) => string }) {
             target='_blank'
             rel='noopener noreferrer'
             className='w-full h-full'
+            title='MBD'
             aria-label='Links to MBD'
           >
-            <MBDSVG width={30} height={30} />
+            <MBDSVG
+              width={30}
+              height={30}
+              name='MBD'
+              aria-description='MBD Icon'
+              aria-label='MBD Icon'
+            />
           </Link>
         </Button>
       </li>

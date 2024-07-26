@@ -1,5 +1,4 @@
 'use client'
-import { PieChart } from 'react-minimal-pie-chart'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Section } from '@/components/static/Static'
 import { useState } from 'react'
@@ -169,21 +168,20 @@ export default function Courses({
             {categoryMetadataMap.map((category, index) => (
               <button
                 key={index}
-                className='w-full h-full flex flex-col justify-center items-center px-4 text-center hover:scale-110 transition-transform duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg'
+                className='w-full h-full flex flex-col justify-center border-2 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg'
                 style={{
-                  backgroundColor: category.color,
+                  borderColor: category.color,
+                  backgroundColor: category.color + '20',
                 }}
                 onClick={() => {
                   setDetailedViewOpen(true)
                   setCurrentView(category)
                 }}
               >
-                <h3 className='text-2xl text-white uppercase font-bold tracking-wider'>
+                <h3 className='text-2xl uppercase font-bold tracking-wider'>
                   {category.title}
                 </h3>
-                <p className='text-white text-center'>
-                  {category.percentage} %
-                </p>
+                <p className='text-center'>{category.percentage} %</p>
               </button>
             ))}
           </div>

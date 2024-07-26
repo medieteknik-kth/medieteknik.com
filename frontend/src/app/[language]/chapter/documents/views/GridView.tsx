@@ -8,7 +8,7 @@ import {
   DocumentTextIcon,
   EllipsisVerticalIcon,
 } from '@heroicons/react/24/outline'
-import { MouseEvent, useCallback } from 'react'
+import { KeyboardEvent, MouseEvent, useCallback } from 'react'
 import FallbackLogo from 'public/images/logo.webp'
 import Image from 'next/image'
 import { Author } from '@/models/Items'
@@ -53,6 +53,30 @@ export default function GridView({
     [selectedDocuments, setSelectedDocuments]
   )
 
+  const handleDocumentKeydown = useCallback(
+    (event: KeyboardEvent, documentIndex: number, document: Document) => {
+      const index = selectedDocuments.indexOf(documentIndex)
+      if (event.key === 'Enter') {
+        if (event.ctrlKey || event.metaKey) {
+          if (index > -1) {
+            const newSelectedDocuments = [...selectedDocuments]
+            newSelectedDocuments.splice(index, 1)
+            setSelectedDocuments(newSelectedDocuments)
+          } else {
+            setSelectedDocuments([...selectedDocuments, documentIndex])
+          }
+        } else {
+          if (index > -1) {
+            reroute(document.url)
+          } else {
+            setSelectedDocuments([documentIndex])
+          }
+        }
+      }
+    },
+    []
+  )
+
   const authorImage = (author: Author) => {
     switch (author.author_type) {
       case 'STUDENT':
@@ -90,6 +114,7 @@ export default function GridView({
       {documents.map((document, documentIndex) => (
         <div
           key={documentIndex}
+          tabIndex={0}
           className={`w-60 h-64 rounded-md border cursor-pointer px-4 flex flex-col justify-between
           ${
             selectedDocuments.includes(documentIndex)
@@ -101,6 +126,9 @@ export default function GridView({
           onClick={(event) => {
             event.stopPropagation()
             handleDocumentClick(event, documentIndex, document)
+          }}
+          onKeyDown={(event) => {
+            handleDocumentKeydown(event, documentIndex, document)
           }}
         >
           <div className='w-full h-fit flex items-center justify-between py-2'>

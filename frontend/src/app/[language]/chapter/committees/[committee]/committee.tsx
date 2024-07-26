@@ -75,7 +75,7 @@ export default async function Committee({
           className={`w-full h-fit ${
             hasGroupPhoto
               ? 'absolute border-t-2 bg-black/75 text-white'
-              : 'border-b-2 bg-[#EEE]'
+              : 'border-b-2 bg-[#EEE] dark:bg-[#222]'
           } backdrop-blur-xl bottom-0 left-0 px-12 py-12 flex items-center  border-yellow-400`}
         >
           <div
