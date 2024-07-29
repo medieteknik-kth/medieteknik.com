@@ -79,6 +79,18 @@ class Calendar(db.Model):
         """
         return self.parent_calendar_id is None
 
+    @is_root.expression
+    def is_root(cls):
+        """
+        Returns a SQL expression representing the `is_root` property.
+
+        This expression checks if the `parent_calendar_id` attribute is `None`, indicating that the current instance is a root calendar.
+
+        Returns:
+            sqlalchemy.sql.elements.BinaryExpression: A SQL expression representing the `is_root` property.
+        """
+        return cls.parent_calendar_id.is_(None)
+
     @validates("student", "committee")
     def validate_owner(self, key, value):
         """

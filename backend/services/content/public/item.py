@@ -18,7 +18,7 @@ def get_items(
         Dict[str, Any]: A dictionary containing the items and pagination information.
     """
 
-    paginated_items = item_table.query.paginate()
+    paginated_items = item_table.query.order_by(Item.created_at.desc()).paginate()
 
     items = paginated_items.items
     items_dict = [

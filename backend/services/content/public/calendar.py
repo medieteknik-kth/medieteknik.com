@@ -7,7 +7,7 @@ from utility.database import db
 
 
 def get_main_calendar() -> Calendar:
-    main_calendar = Calendar.query.filter_by(is_root=True).first()
+    main_calendar = Calendar.query.filter(Calendar.is_root).first()
 
     if not main_calendar or not isinstance(main_calendar, Calendar):
         calendar = Calendar()
