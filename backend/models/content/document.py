@@ -1,5 +1,6 @@
 from typing import List
-from sqlalchemy.dialects.postgresql import ARRAY
+import uuid
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import Column, ForeignKey, Integer, String, inspect
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
@@ -15,10 +16,10 @@ class Document(Item):
         document_id: Primary key
     """
 
-    document_id = Column(Integer, primary_key=True, autoincrement=True)
+    document_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     # Foreign keys
-    item_id = Column(Integer, ForeignKey("item.item_id"))
+    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
 
     # Relationships
     item = db.relationship("Item", back_populates="document")
@@ -59,13 +60,15 @@ class Document(Item):
 class DocumentTranslation(db.Model):
     __tablename__ = "document_translation"
 
-    document_translation_id = Column(Integer, primary_key=True, autoincrement=True)
+    document_translation_id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
 
     title = Column(String(255))
     categories = Column(ARRAY(String))
 
     # Foreign keys
-    document_id = Column(Integer, ForeignKey("document.document_id"))
+    document_id = Column(UUID(as_uuid=True), ForeignKey("document.document_id"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships

@@ -1,6 +1,8 @@
 import enum
 from typing import List
+import uuid
 from sqlalchemy import Column, Enum, ForeignKey, Integer, String, inspect
+from sqlalchemy.dialects.postgresql import UUID
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
@@ -15,7 +17,7 @@ class TagCategory(enum.Enum):
 class Tag(db.Model):
     __tablename__ = "tag"
 
-    tag_id = Column(Integer, primary_key=True)
+    tag_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     color = Column(String(7))
     category = Column(Enum(TagCategory), nullable=False, default=TagCategory.NEWS)
@@ -58,12 +60,14 @@ class Tag(db.Model):
 class TagTranslation(db.Model):
     __tablename__ = "tag_translation"
 
-    tag_translation_id = Column(Integer, primary_key=True)
+    tag_translation_id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
 
     title = Column(String(255))
 
     # Foreign keys
-    tag_id = Column(Integer, ForeignKey("tag.tag_id"))
+    tag_id = Column(UUID(as_uuid=True), ForeignKey("tag.tag_id"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships

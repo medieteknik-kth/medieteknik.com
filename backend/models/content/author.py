@@ -1,7 +1,8 @@
 import enum
 from typing import Any, Dict, List
-from sqlalchemy import Column, Integer, Enum, UniqueConstraint, inspect
-from sqlalchemy.dialects.postgresql import ARRAY
+import uuid
+from sqlalchemy import Column, Integer, Enum, UniqueConstraint, func, inspect, text
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from utility.database import db
 from models.core import Student
 from models.committees import Committee, CommitteePosition
@@ -48,7 +49,12 @@ class Author(db.Model):
 
     __tablename__ = "author"
 
-    author_id = Column(Integer, primary_key=True, autoincrement=True)
+    author_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     author_type = Column(Enum(AuthorType), nullable=False)
     entity_id = Column(Integer, nullable=False, index=True)

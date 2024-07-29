@@ -1,27 +1,20 @@
 import enum
 from textwrap import dedent
 from typing import List
+import uuid
 from sqlalchemy import (
     Boolean,
     Column,
     ForeignKey,
     Integer,
-    DateTime,
     String,
-    Enum,
     inspect,
 )
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP, UUID
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
-
-
-class EventStatus(enum.Enum):
-    UPCOMING = "UPCOMING"
-    ONGOING = "ONGOING"
-    PAST = "PAST"
 
 
 class Event(Item):
@@ -36,27 +29,35 @@ class Event(Item):
         location: The location of the event
     """
 
-    event_id = Column(Integer, primary_key=True, autoincrement=True)
+    event_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    start_date = Column(DateTime)
-    end_date = Column(DateTime)
-    status = Column(Enum(EventStatus), default=EventStatus.UPCOMING, nullable=False)
+    start_date = Column(TIMESTAMP)
+    end_date = Column(TIMESTAMP)
     location = Column(String(255))
     is_inherited = Column(Boolean, default=False, nullable=False)
     background_color = Column(String(7))
 
     # Foreign keys
-    item_id = Column(Integer, ForeignKey("item.item_id"))
-    calendar_id = Column(Integer, ForeignKey("calendar.calendar_id"))
+    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
+    calendar_id = Column(UUID(as_uuid=True), ForeignKey("calendar.calendar_id"))
     parent_event_id = Column(
-        Integer, ForeignKey("event.event_id", ondelete="CASCADE", onupdate="CASCADE")
+        UUID(as_uuid=True),
+        ForeignKey("event.event_id", ondelete="CASCADE", onupdate="CASCADE"),
     )
 
     # Relationships
     parent_event = db.relationship(
-        "Event", remote_side=[event_id], foreign_keys=[parent_event_id]
+        "Event",
+        remote_side=[event_id],
+        back_populates="child_events",
+        foreign_keys=[parent_event_id],
     )
-    child_events = db.relationship("Event", foreign_keys=[parent_event_id])
+    child_events = db.relationship(
+        "Event",
+        back_populates="parent_event",
+        foreign_keys=[parent_event_id],
+        overlaps="parent_event",
+    )
     item = db.relationship("Item", back_populates="event")
     calendar = db.relationship("Calendar", back_populates="events")
     repeatable_event = db.relationship(
@@ -138,7 +139,9 @@ class Event(Item):
 class EventTranslation(db.Model):
     __tablename__ = "event_translation"
 
-    event_translation_id = Column(Integer, primary_key=True, autoincrement=True)
+    event_translation_id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
 
     title = Column(String(255))
     description = Column(String(500))
@@ -146,7 +149,7 @@ class EventTranslation(db.Model):
     sub_image_urls = Column(ARRAY(String))
 
     # Foreign keys
-    event_id = Column(Integer, ForeignKey("event.event_id"))
+    event_id = Column(UUID(as_uuid=True), ForeignKey("event.event_id"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
@@ -173,13 +176,15 @@ class EventTranslation(db.Model):
 class RepeatableEvents(db.Model):
     __tablename__ = "repeatable_events"
 
-    repeatable_event_id = Column(Integer, primary_key=True, autoincrement=True)
+    repeatable_event_id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
 
     # Metadata
     reapeting_interval = Column(String(255))
 
     # Foreign keys
-    event_id = Column(Integer, ForeignKey("event.event_id"), unique=True)
+    event_id = Column(UUID(as_uuid=True), ForeignKey("event.event_id"), unique=True)
 
     # Relationships
     event = db.relationship("Event", back_populates="repeatable_event")

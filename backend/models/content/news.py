@@ -1,6 +1,7 @@
+import uuid
 from typing import List
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import inspect
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
@@ -16,10 +17,10 @@ class News(Item):
         news_id: Primary key
     """
 
-    news_id = Column(Integer, primary_key=True, autoincrement=True)
+    news_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     # Foreign keys
-    item_id = Column(Integer, ForeignKey("item.item_id"))
+    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
 
     # Relationships
     item = db.relationship("Item", back_populates="news")
@@ -57,7 +58,9 @@ class News(Item):
 class NewsTranslation(db.Model):
     __tablename__ = "news_translation"
 
-    news_translation_id = Column(Integer, primary_key=True, autoincrement=True)
+    news_translation_id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
 
     title = Column(String(255))
     body = Column(String(100_000))
@@ -66,7 +69,7 @@ class NewsTranslation(db.Model):
     sub_image_urls = Column(ARRAY(String))
 
     # Foreign keys
-    news_id = Column(Integer, ForeignKey("news.news_id"))
+    news_id = Column(UUID(as_uuid=True), ForeignKey("news.news_id"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships

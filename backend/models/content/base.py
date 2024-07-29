@@ -1,10 +1,21 @@
 import enum
+import uuid
 from typing import Any, Dict, List
-from sqlalchemy import Column, Integer, DateTime, String, Enum, ForeignKey, Boolean
+from sqlalchemy import (
+    Column,
+    Integer,
+    DateTime,
+    String,
+    Enum,
+    ForeignKey,
+    Boolean,
+    func,
+)
 from sqlalchemy.inspection import inspect
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
+from datetime import datetime, timezone
 from .author import Author
 
 
@@ -41,20 +52,24 @@ class Item(db.Model):
 
     __tablename__ = "item"
 
-    item_id = Column(Integer, primary_key=True, autoincrement=True)
+    item_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    created_at = Column(DateTime, default=None)
-    last_updated = Column(DateTime, default=None)
+    created_at = Column(DateTime, default=func.now(), server_default=func.now())
+    last_updated = Column(
+        DateTime,
+        default=datetime.now(timezone.utc),
+        onupdate=datetime.now(timezone.utc),
+    )
     categories = Column(ARRAY(String), default=[])
     is_pinned = Column(Boolean, default=False, nullable=False)
     is_public = Column(Boolean, default=False, nullable=False)
     published_status = Column(
         Enum(PublishedStatus), default=PublishedStatus.DRAFT, nullable=False
     )
-    url = Column(String(255), nullable=False)
+    url = Column(String(length=512), nullable=True, index=True)
 
     # Foreign keys
-    author_id = Column(Integer, ForeignKey("author.author_id"))
+    author_id = Column(UUID(as_uuid=True), ForeignKey("author.author_id"))
 
     # Relationships
     author = db.relationship("Author", back_populates="items")

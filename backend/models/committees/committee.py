@@ -128,7 +128,7 @@ class CommitteeRecruitment(db.Model):
     def __repr__(self):
         return "<CommitteeRecruitment %r>" % self.committee_recruitment_id
 
-    def to_dict(self):
+    def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
         columns = inspect(self)
 
         if not columns:
@@ -139,8 +139,29 @@ class CommitteeRecruitment(db.Model):
         for column in columns:
             data[column] = getattr(self, column)
 
+        translations = []
+
+        for language_code in provided_languages:
+            translation = get_translation(
+                CommitteeRecruitmentTranslation,
+                ["committee_recruitment_id"],
+                {"committee_recruitment_id": self.committee_recruitment_id},
+                language_code,
+            )
+            translations.append(translation)
+
+        data["translations"] = [
+            translation.to_dict() for translation in set(translations)
+        ]
         del data["committee_recruitment_id"]
+
+        committee = Committee.query.get(data["committee_id"])
+
+        if not committee or not isinstance(committee, Committee):
+            return None
+
         del data["committee_id"]
+        data["committee"] = committee.to_dict(provided_languages)
 
         return data
 

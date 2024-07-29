@@ -1,4 +1,5 @@
 python-dotenv
+python-dateutil
 Flask
 Flask-SQLAlchemy
 Flask-Migrate
