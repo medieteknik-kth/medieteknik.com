@@ -45,7 +45,13 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { useRouter } from 'next/navigation'
 import { News } from '@/models/Items'
 
-export default function CommandBar({ language }: { language: string }) {
+export default function CommandBar({
+  language,
+  slug,
+}: {
+  language: string
+  slug: string
+}) {
   const {
     saveCallback,
     notifications,
@@ -102,7 +108,7 @@ export default function CommandBar({ language }: { language: string }) {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/news/${content.url}/publish?language=${language}`,
+        `${API_BASE_URL}/news/${slug}/publish?language=${language}`,
         {
           method: 'PUT',
           headers: {

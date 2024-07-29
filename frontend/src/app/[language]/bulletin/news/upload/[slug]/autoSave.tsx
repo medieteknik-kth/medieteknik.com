@@ -64,7 +64,7 @@ export function AutoSaveProvdier({
         return Promise.resolve(AutoSaveResult.FAILED)
       try {
         const response = await fetch(
-          API_BASE_URL + `/news/${slug}?language_code=${language_code}`,
+          API_BASE_URL + `/news/${slug}?language=${language_code}`,
           {
             method: 'PUT',
             headers: {

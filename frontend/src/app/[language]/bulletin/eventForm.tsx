@@ -13,13 +13,38 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { HexColorPicker } from 'react-colorful'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { API_BASE_URL } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  Language,
+  LanguageCodes,
+  LANGUAGES,
+} from '@/utility/Constants'
 import { useState } from 'react'
 import { CardFooter } from '@/components/ui/card'
-import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  EyeDropperIcon,
+  MapPinIcon,
+} from '@heroicons/react/24/outline'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { Label } from '@/components/ui/label'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { supportedLanguages } from '@/app/i18n/settings'
+import { cn } from '@/lib/utils'
 
 function createRandomTempraryID(length: number): string {
   let result = ''
@@ -51,13 +76,17 @@ export default function EventForm({
     return <></>
   }
 
+  const [dropdownValue, setDropdownValue] = useState(
+    LANGUAGES.find((l) => l.code === language)
+  )
   const [errorMessage, setErrorMessage] = useState('')
   const [currentColor, setCurrentColor] = useState('#FFFFFF')
   const [showColorPicker, setShowColorPicker] = useState(false)
+  const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const { addEvent } = useCalendar()
   const tinycolor = require('tinycolor2')
-  const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6']
+  const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6', '#EF4444']
   const FormSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     description: z.string().optional().or(z.literal('')),
@@ -102,9 +131,11 @@ export default function EventForm({
   }
 
   const publish = async (data: z.infer<typeof FormSchema>) => {
+    const start_date = new Date(data.date + ' ' + data.start_time + ':00')
+    const end_date = new Date(data.date + ' ' + data.end_time + ':00')
     const json_data = {
-      start_date: data.date + ' ' + data.start_time + ':00',
-      end_date: data.date + ' ' + data.end_time + ':00',
+      start_date: start_date.toISOString(),
+      end_date: end_date.toISOString(),
       background_color: data.background_color,
       location: data.location,
       author: {
@@ -126,17 +157,18 @@ export default function EventForm({
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(json_data),
       })
 
       if (response.ok) {
         addEvent({
-          start_date: new Date(
-            data.date + ' ' + data.start_time + ':00'
-          ).toLocaleDateString(),
-          end_date: new Date(
-            data.date + ' ' + data.end_time + ':00'
-          ).toLocaleDateString(),
+          start_date: start_date.toLocaleString(language, {
+            timeZone: 'Europe/Stockholm',
+          }),
+          end_date: end_date.toLocaleString(language, {
+            timeZone: 'Europe/Stockholm',
+          }),
           background_color: data.background_color,
           location: data.location,
           created_at: new Date().toLocaleDateString(),
@@ -144,16 +176,7 @@ export default function EventForm({
           is_pinned: false,
           is_public: true,
           published_status: 'PUBLISHED',
-          status: 'UPCOMING',
-          author: {
-            author_type: 'STUDENT',
-            email: 'andree4@kth.se',
-            first_name: 'André',
-            last_name: 'Eriksson',
-            reception_name: 'N/A',
-            profile_picture_url: '',
-            student_type: 'MEDIETEKNIK',
-          },
+          author: student,
           translations: [
             {
               title: data.title,
@@ -179,6 +202,54 @@ export default function EventForm({
       <Form {...eventForm}>
         <form onSubmit={eventForm.handleSubmit(publish)}>
           {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+          <div>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  role='combobox'
+                  aria-expanded={open}
+                  className='w-[200px] justify-between'
+                >
+                  {dropdownValue ? dropdownValue.name : 'Select language...'}
+                  <ChevronUpDownIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className='w-[200px] p-0'>
+                <Command>
+                  <CommandInput placeholder='Search language...' />
+                  <CommandList>
+                    <CommandEmpty>No languages found.</CommandEmpty>
+                    <CommandGroup>
+                      {supportedLanguages.map((language) => (
+                        <CommandItem
+                          key={language}
+                          onSelect={() => {
+                            setDropdownValue(
+                              LANGUAGES.find((l) => l.code === language)
+                            )
+                            setOpen(false)
+                          }}
+                        >
+                          <CheckIcon
+                            className={cn(
+                              'mr-2 h-4 w-4',
+                              LANGUAGES.find((l) => l.code === language) ===
+                                dropdownValue
+                                ? 'opacity-100'
+                                : 'opacity-0'
+                            )}
+                          />
+                          {LANGUAGES.find((l) => l.code === language)?.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <Button className='ml-2'>Add Language</Button>
+          </div>
           <FormField
             name='title'
             render={({ field }) => (

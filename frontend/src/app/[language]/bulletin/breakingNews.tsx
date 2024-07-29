@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import useSWR from 'swr'
 import { API_BASE_URL } from '@/utility/Constants'
+import Link from 'next/link'
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => res.json() as Promise<News[]>)
@@ -42,54 +43,80 @@ export default function BreakingNews({ language }: { language: string }) {
   }
 
   return (
-    <div className='w-fit h-fit flex *:mr-16 z-10'>
-      {data.map((newsItem, index) => (
-        <div key={index} className='relative'>
-          <ShortNews key={index} newsItem={newsItem} />
-          <TooltipProvider>
-            <Tooltip open={copiedLink === index}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  title='Share'
-                  aria-label='Share'
-                  className='absolute bottom-4 right-4 z-10'
-                  onClick={() => handleCopyLink(newsItem.url, index)}
-                >
-                  <TooltipContent className='z-10'>Copied</TooltipContent>
+    <div className='w-full h-fit flex flex-col justify-center'>
+      <div className='h-fit flex justify-between items-center'>
+        <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
+          Breaking News
+        </h2>
+        <Button
+          asChild
+          variant='link'
+          className='text-sky-800 dark:text-sky-400'
+        >
+          <Link href='./bulletin/news'>View All</Link>
+        </Button>
+      </div>
+      <div className='w-full relative overflow-x-auto'>
+        {data.length === 0 && (
+          <p
+            className='w-full h-[200px] grid place-items-center z-10 
+          uppercase tracking-wider text-neutral-800 dark:text-neutral-300 
+          select-none bg-neutral-100 dark:bg-neutral-800'
+          >
+            No Breaking News
+          </p>
+        )}
+        <div className='flex gap-4 pb-4'>
+          {data.length > 0 &&
+            data.map((newsItem, index) => (
+              <div key={index} className='relative'>
+                <ShortNews key={index} newsItem={newsItem} />
+                <TooltipProvider>
+                  <Tooltip open={copiedLink === index}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant='outline'
+                        size='icon'
+                        title='Share'
+                        aria-label='Share'
+                        className='absolute bottom-4 right-4 z-10'
+                        onClick={() => handleCopyLink(newsItem.url, index)}
+                      >
+                        <TooltipContent className='z-10'>Copied</TooltipContent>
 
-                  <LinkIcon className='w-5 h-5' />
-                </Button>
-              </TooltipTrigger>
-            </Tooltip>
-          </TooltipProvider>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant='outline'
-                size='icon'
-                title='News Tags'
-                aria-label='News Tags'
-                className='absolute bottom-4 right-16 z-10'
-              >
-                <TagIcon className='w-6 h-6' />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='absolute w-fit h-fit'>
-              <h3 className='text-lg font-bold pb-1'>Tags</h3>
-              <div className='flex'>
-                {newsItem.categories &&
-                  newsItem.categories.map((category, index) => (
-                    <Badge key={index} className='w-fit mr-2'>
-                      {category}
-                    </Badge>
-                  ))}
+                        <LinkIcon className='w-5 h-5' />
+                      </Button>
+                    </TooltipTrigger>
+                  </Tooltip>
+                </TooltipProvider>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      title='News Tags'
+                      aria-label='News Tags'
+                      className='absolute bottom-4 right-16 z-10'
+                    >
+                      <TagIcon className='w-6 h-6' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='absolute w-fit h-fit'>
+                    <h3 className='text-lg font-bold pb-1'>Tags</h3>
+                    <div className='flex'>
+                      {newsItem.categories &&
+                        newsItem.categories.map((category, index) => (
+                          <Badge key={index} className='w-fit mr-2'>
+                            {category}
+                          </Badge>
+                        ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
-            </PopoverContent>
-          </Popover>
+            ))}
         </div>
-      ))}
+      </div>
     </div>
   )
 }

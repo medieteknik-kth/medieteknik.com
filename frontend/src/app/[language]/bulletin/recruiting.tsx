@@ -1,3 +1,4 @@
+'use client'
 import { StaticImageData } from 'next/image'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -9,87 +10,91 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import useSWR from 'swr'
+import { API_BASE_URL } from '@/utility/Constants'
+import Committee from '@/models/Committee'
+import Link from 'next/link'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
 
-// Administrativt
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-import ValberedningenIcon from 'public/images/committees/valberedningen.png'
+interface Response {
+  committee: Committee
+  start_date: string
+  end_date: string
+  translations: { description: string; link_url: string }[]
+}
 
-// Näringsliv och Kommunikation
-import NLGIcon from 'public/images/committees/nlg.png'
-import KOMNIcon from 'public/images/committees/komn.png'
-import MBDIcon from 'public/images/committees/mbd.png'
+const fetcher = (url: string) =>
+  fetch(url).then((res) => res.json() as Promise<Response[]>)
 
-// Studiesocialt
-import QulturnamndenIcon from 'public/images/committees/qn.png'
-import MetadorernaIcon from 'public/images/committees/metadorerna.png'
-import MetaspexetIcon from 'public/images/committees/metaspexet.png'
-import SpexmastereitIcon from 'public/images/committees/spexm.png'
-import FestmastereitIcon from 'public/images/committees/festm.png'
-import MediasKlubbmasteriIcon from 'public/images/committees/mkm.png'
-import IdrottsnamndenIcon from 'public/images/committees/idrottsnamnden.png'
-import MatlagetIcon from 'public/images/committees/matlaget.png'
-import SanglederietIcon from 'public/images/committees/sanglederiet.png'
-import FilmnamndenIcon from 'public/images/committees/filmnamnden.png'
+export default function Recruiting({ language }: { language: string }) {
+  const { data: recruitmentData, error } = useSWR(
+    `${API_BASE_URL}/public/committees/recruiting?language=${language}`,
+    fetcher
+  )
 
-// Utbildning
-import StudienamndenIcon from 'public/images/committees/studienamnden.png'
-import InternationalsIcon from 'public/images/committees/internationals.png'
-const recruitData:
-  | {
-      title: string
-      daysLeft: number
-      image: StaticImageData
-    }[]
-  | undefined = [
-  { title: 'Styrelsen', daysLeft: 20, image: StyrelsenIcon },
-  { title: 'Valberedningen', daysLeft: 10, image: ValberedningenIcon },
-  { title: 'MKM', daysLeft: 5, image: MediasKlubbmasteriIcon },
-  { title: 'Filmnämnden', daysLeft: 4, image: FilmnamndenIcon },
-  { title: 'Internationell', daysLeft: 16, image: InternationalsIcon },
-  { title: 'Metaspex', daysLeft: 12, image: MetaspexetIcon },
-  { title: 'Matlaget', daysLeft: 50, image: MatlagetIcon },
-  { title: 'MBD', daysLeft: 2, image: MBDIcon },
-  { title: 'Idrottsnämnden', daysLeft: 25, image: IdrottsnamndenIcon },
-  { title: 'Metadorerna', daysLeft: 1, image: MetadorernaIcon },
-]
+  if (error) {
+    return <></>
+  }
 
-export default function Recruiting() {
-  if (recruitData === undefined) return <></>
+  if (!recruitmentData) {
+    return <></>
+  }
 
   return (
-    <section className='w-full h-fit flex flex-col justify-between px-12 relative mt-10'>
+    <section className='w-full h-fit flex flex-col justify-between relative mt-10'>
       <h2 className='text-3xl uppercase mb-4'>Currently Recruiting</h2>
       <div className='w-full h-5/6 flex items-center mb-20'>
         <div className='w-full h-full overflow-x-auto'>
-          <div className='w-full h-full px-8 py-4 grid auto-rows-max grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8'>
-            {recruitData.map((recruit, index) => (
-              <Card key={index}>
-                <CardHeader className='flex flex-row items-center justify-between'>
-                  <div className='flex items-center'>
-                    <Avatar className='mr-4 bg-white'>
-                      <AvatarImage src={recruit.image.src} />
-                      <AvatarFallback>{recruit.title}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle>{recruit.title}</CardTitle>
-                      <CardDescription className='flex items-center mt-1'>
-                        <ClockIcon className='w-4 h-4 mr-1' />
-                        {recruit.daysLeft} days left
-                      </CardDescription>
+          <div className='w-full h-full flex flex-wrap gap-8'>
+            {recruitmentData.length === 0 && (
+              <p
+                className='w-full h-[200px] grid place-items-center z-10 
+          uppercase tracking-wider text-neutral-800 dark:text-neutral-300 
+          select-none bg-neutral-100 dark:bg-neutral-800'
+              >
+                No active recruitment
+              </p>
+            )}
+            {recruitmentData.length > 0 &&
+              recruitmentData.map((recruit, index) => (
+                <Card key={index} className='w-[500px] h-[220px]'>
+                  <CardHeader className='h-fit flex flex-row items-center justify-between'>
+                    <div className='flex items-center'>
+                      <div>
+                        <CardTitle className='text-xl'>
+                          <CommitteeTag
+                            committee={recruit.committee}
+                            includeAt={false}
+                            includeBackground={false}
+                          >
+                            <span className='text-sm flex items-center font-normal text-neutral-700'>
+                              <ClockIcon className='w-4 h-4 mr-1' />
+                              {Math.floor(
+                                (new Date(recruit.end_date).getTime() -
+                                  Date.now()) /
+                                  1000 /
+                                  60 /
+                                  60 /
+                                  24
+                              )}{' '}
+                              days left
+                            </span>
+                          </CommitteeTag>
+                        </CardTitle>
+                        <CardDescription className='flex items-center mt-1'></CardDescription>
+                      </div>
                     </div>
-                  </div>
-                  <Button title='Learn More' aria-label='Learn More'>
-                    Learn More
-                  </Button>
-                </CardHeader>
-                <CardContent className='text-sm'>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Asperiores aut error repellendus quos iure eveniet.
-                  Accusantium odit, veniam ratione cumque provident cum aut
-                  sapiente qui reiciendis aperiam maiores enim expedita.
-                </CardContent>
-              </Card>
-            ))}
+                    <Button title='Learn More' aria-label='Learn More' asChild>
+                      <Link href={recruit.translations[0].link_url}>
+                        Learn More
+                      </Link>
+                    </Button>
+                  </CardHeader>
+                  <CardContent className='text-sm w-full max-w[450px] text-pretty break-words'>
+                    <p>{recruit.translations[0].description}</p>
+                  </CardContent>
+                </Card>
+              ))}
           </div>
         </div>
       </div>

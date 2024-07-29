@@ -55,7 +55,7 @@ export default function UploadNews({
     <main className='relative'>
       <div className='h-24' />
       <AutoSaveProvdier slug={slug} news_item={data} language_code={language}>
-        <CommandBar language={language} />
+        <CommandBar language={language} slug={slug} />
         <div className='h-[1500px] flex relative z-10'>
           <Tabs
             orientation='vertical'

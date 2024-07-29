@@ -37,6 +37,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { Separator } from '@/components/ui/separator'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Permission } from '@/models/Permission'
+import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 
 function getNumberWithOrdinal(number: number) {
   if (typeof number !== 'number' || isNaN(number)) {
@@ -60,8 +61,6 @@ function getNumberWithOrdinal(number: number) {
   }
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
 export default function Events({ language }: { language: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedDate, events } = useCalendar()
@@ -69,7 +68,7 @@ export default function Events({ language }: { language: string }) {
   const { student, permissions } = useAuthentication()
 
   return (
-    <section className='w-full h-fit px-12 py-4'>
+    <section className='w-full h-fit py-4'>
       <div>
         <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
           Events
@@ -331,18 +330,22 @@ export default function Events({ language }: { language: string }) {
                         </p>
                       </div>
                       <div className='absolute h-fit bottom-4 right-2 hidden sm:flex justify-end items-center'>
-                        {event.author.author_type == 'STUDENT' ? (
+                        {event.author.author_type === 'STUDENT' ? (
                           <StudentTag
                             student={event.author as Student}
                             includeAt={false}
                             includeImage={false}
                           />
-                        ) : event.author.author_type == 'COMMITTEE' ? (
+                        ) : event.author.author_type === 'COMMITTEE' ? (
                           <CommitteeTag committee={event.author as Committee} />
-                        ) : (
-                          (event.author as CommitteePosition).translations[0]
-                            .title
-                        )}
+                        ) : event.author.author_type ===
+                          'COMMITTEE_POSITION' ? (
+                          <CommitteePositionTag
+                            committeePosition={
+                              event.author as CommitteePosition
+                            }
+                          />
+                        ) : null}
                         <Avatar className='mx-2 bg-white'>
                           <AvatarImage
                             src={
@@ -354,15 +357,34 @@ export default function Events({ language }: { language: string }) {
                             }
                           />
                           <AvatarFallback>
-                            {event.author.author_type == 'STUDENT'
-                              ? (event.author as Student).first_name
-                              : event.author.author_type == 'COMMITTEE'
-                              ? (event.author as Committee).translations[0]
-                                  .title
-                              : (event.author as CommitteePosition)
-                                  .translations[0].title}
+                            <Image
+                              src={FallbackIcon}
+                              alt='Fallback'
+                              width={64}
+                              height={64}
+                            />
                           </AvatarFallback>
                         </Avatar>
+                      </div>
+                      <div className='absolute left-2 bottom-4 flex items-center'>
+                        <div
+                          className={`w-4 h-4 rounded-full mr-2 ${
+                            new Date(event.end_date) < new Date()
+                              ? 'bg-red-500'
+                              : new Date(event.end_date) > new Date() &&
+                                new Date(event.start_date) < new Date()
+                              ? 'bg-green-500'
+                              : 'bg-yellow-500'
+                          }`}
+                        />
+                        <p>
+                          {new Date(event.end_date) < new Date()
+                            ? 'Ended'
+                            : new Date(event.end_date) > new Date() &&
+                              new Date(event.start_date) < new Date()
+                            ? 'Ongoing'
+                            : 'Upcoming'}
+                        </p>
                       </div>
                     </div>
                   </div>
