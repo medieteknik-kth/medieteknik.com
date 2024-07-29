@@ -4,7 +4,8 @@ from typing import Any, Dict, Type, List
 
 
 def get_items(
-    item_table: Type[Item] = Item, provided_languages: list[str] = AVAILABLE_LANGUAGES
+    item_table: Type[Item] = Item,
+    provided_languages: list[str] = AVAILABLE_LANGUAGES,
 ) -> Dict[str, Any]:
     """
     Retrieves all items from the item table.

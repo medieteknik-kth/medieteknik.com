@@ -1,7 +1,12 @@
 from typing import Any, Dict, List
 from dataclasses import dataclass
 from sqlalchemy import func
-from models.committees import Committee, CommitteePosition, CommitteeTranslation
+from models.committees import (
+    Committee,
+    CommitteePosition,
+    CommitteeTranslation,
+    CommitteeRecruitment,
+)
 from models.content.album import Album
 from models.content.author import Author, AuthorType
 from models.content.document import Document
@@ -9,6 +14,7 @@ from models.content.event import Event
 from models.content.news import News
 from models.core.student import StudentMembership
 from .committee_position import get_committee_positions_by_committee_title
+from datetime import datetime
 
 
 @dataclass
@@ -72,7 +78,7 @@ def get_committee_by_title(
 
     if not committee:
         return None
-    
+
     return committee
 
 
@@ -162,3 +168,15 @@ def get_committee_data_by_title(title: str) -> Dict[str, Any] | None:
             data["albums"]["total"] = len(all_albums)
 
     return data
+
+
+def get_all_recruitments(provided_languages: List[str]) -> List[Dict[str, Any]]:
+    recruting: List[Any] = CommitteeRecruitment.query.filter(
+        CommitteeRecruitment.end_date > datetime.now()
+    ).all()
+
+    return [
+        recruitment_dict
+        for recruitment in recruting
+        if (recruitment_dict := recruitment.to_dict(provided_languages)) is not None
+    ]

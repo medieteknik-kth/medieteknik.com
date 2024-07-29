@@ -2,7 +2,6 @@
 Item Service (News, Event, Album, Document)
 """
 
-import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Type
 from models.content import (
@@ -25,6 +24,7 @@ from utility import normalize_to_ascii
 from utility import database
 from utility.constants import AVAILABLE_LANGUAGES
 from sqlalchemy import inspect
+from dateutil import parser
 
 from utility.translation import convert_iso_639_1_to_bcp_47
 
@@ -234,22 +234,12 @@ def create_item(
 
         data["translations"][0]["title"] = new_title
 
-    url = uuid.uuid4()
-    url_exists = Item.query.filter_by(url=str(url)).first()
-
-    while url_exists:
-        url = uuid.uuid4()
-        url_exists = Item.query.filter_by(url=str(url)).first()
-
-    data["url"] = str(url)
-
     translation_data = data.get("translations")
 
     del data["translations"]
     del data["author"]
 
     item = item_table()
-    setattr(item, "url", str(url))
     setattr(item, "author_id", author.author_id)
     if not public:
         setattr(item, "published_status", PublishedStatus.DRAFT)
@@ -260,13 +250,20 @@ def create_item(
 
     for key, value in data.items():
         if hasattr(item, key):
-            setattr(item, key, value)
+            if "date" in key:
+                setattr(
+                    item,
+                    key,
+                    parser.isoparse(value),
+                )
+            else:
+                setattr(item, key, value)
 
     db.session.add(item)
     db.session.flush()
 
     if not translation_data:
-        return str(url)
+        return str(item.item_id)
 
     del translation_data[0]["language_code"]
 
@@ -303,7 +300,7 @@ def create_item(
 
     db.session.commit()
 
-    return str(url)
+    return str(item.item_id)
 
 
 def update_translations(
@@ -394,11 +391,13 @@ def publish(
                 title = translation["title"]
                 break
 
-    new_url = normalize_to_ascii(title).split(" ")
-    new_url = "-".join(new_url) + "-" + datetime.now().strftime("%Y-%m-%d")
-    new_url = new_url.lower()
+    seo_friendly_url = normalize_to_ascii(title).split(" ")
+    seo_friendly_url = (
+        "-".join(seo_friendly_url) + "-" + datetime.now().strftime("%Y-%m-%d")
+    )
+    seo_friendly_url = seo_friendly_url.lower()
 
-    setattr(item, "url", str(new_url))
+    setattr(item, "url", str(seo_friendly_url))
     setattr(item, "is_public", True)
     setattr(item, "created_at", datetime.now())
     setattr(item, "published_status", PublishedStatus.PUBLISHED)
@@ -406,7 +405,7 @@ def publish(
     db.session.add(item)
     db.session.commit()
 
-    return new_url
+    return seo_friendly_url
 
 
 def delete_item(

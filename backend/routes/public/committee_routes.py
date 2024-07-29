@@ -9,6 +9,7 @@ from services.committees.public import (
     get_all_committee_members,
     CommitteeSettings,
     CommitteeCategorySettings,
+    get_all_recruitments,
 )
 from services.committees.public.committee_category import (
     get_committee_category_by_title,
@@ -123,3 +124,10 @@ def get_committee_members(committee_title: str):
         return jsonify([])
 
     return jsonify(get_all_committee_members(committee, provided_languages))
+
+
+@public_committee_bp.route("/recruiting", methods=["GET"])
+def get_recruitments():
+    provided_languages = retrieve_languages(request.args)
+
+    return jsonify(get_all_recruitments(provided_languages))

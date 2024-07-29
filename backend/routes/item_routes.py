@@ -58,20 +58,35 @@ def get_news():
     return jsonify(get_items(News, language_code)), 200
 
 
-@news_bp.route("/<string:url>", methods=["GET"])
+@news_bp.route("/<string:identifier>", methods=["GET"])
 @jwt_required()
-def get_news_by_url(url: str):
-    """Retrieves a news item by URL
+def get_news_by_id(identifier: str):
+    """Retrieves a news item by ID
 
     Args:
-        url (str): News URL
+        id (str): News ID
 
     Returns:
         dict: News item
     """
+    url_identifier: bool = request.args.get("url", type=bool)
     language_code = retrieve_languages(request.args)
 
-    return jsonify(get_item_by_url(url, News, language_code))
+    if url_identifier:
+        return jsonify(
+            get_item_by_url(
+                url=identifier, item_table=News, provided_languages=language_code
+            )
+        )
+
+    news = News.query.get(identifier)
+
+    if not news or not isinstance(news, News):
+        return jsonify({}), 404
+
+    return jsonify(
+        news.to_dict(provided_languages=language_code, is_public_route=False)
+    )
 
 
 @news_bp.route("/student/<string:email>", methods=["GET"])
@@ -160,9 +175,9 @@ def create_news():
     }, 201
 
 
-@news_bp.route("/<string:url>", methods=["PUT"])
+@news_bp.route("/<string:identifier>", methods=["PUT"])
 @jwt_required()
-def update_news_by_url(url: str):
+def update_news_by_url(identifier: str):
     """Updates a news item and the translations
     It will try and create a translation entry if it doesn't exist
 
@@ -172,6 +187,7 @@ def update_news_by_url(url: str):
     Returns:
         dict: News item
     """
+
     claims = get_jwt()
     permissions = claims.get("permissions")
 
@@ -181,13 +197,20 @@ def update_news_by_url(url: str):
     if "NEWS" not in permissions.get("author"):
         return jsonify({"error": "Not authorized"}), 403
 
+    url_identifier: bool = request.args.get("url", type=bool)
     data = request.get_json()
     langauge_code = retrieve_languages(request.args)
 
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
-    news_item = News.query.filter_by(url=url).first()
+    news_item = None
+    if url_identifier:
+        news_item = get_item_by_url(
+            url=identifier, item_table=News, provided_languages=langauge_code
+        )
+    else:
+        news_item = News.query.get(identifier)
 
     if news_item is None or not isinstance(news_item, News):
         return jsonify({"error": "News item not found"}), 404
@@ -202,9 +225,9 @@ def update_news_by_url(url: str):
     )
 
 
-@news_bp.route("/<string:url>/publish", methods=["PUT"])
+@news_bp.route("/<string:identifier>/publish", methods=["PUT"])
 @jwt_required()
-def publish_news(url: str):
+def publish_news(identifier: str):
     """Publishes a news item."""
 
     claims = get_jwt()
@@ -220,7 +243,7 @@ def publish_news(url: str):
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
-    news_item = News.query.filter_by(url=url).first()
+    news_item = News.query.get(identifier)
 
     if not news_item:
         return jsonify({"error": "News item not found"}), 404
@@ -295,7 +318,6 @@ def create_event():
         return jsonify({"error": "No email provided"}), 400
 
     data["calendar_id"] = get_main_calendar().calendar_id
-    del data["author"]
 
     return {
         "url": create_item(

@@ -7,12 +7,11 @@ from utility.database import db
 
 
 def get_main_calendar() -> Calendar:
-    main_calendar = Calendar.query.filter_by(is_main=True).first()
+    main_calendar = Calendar.query.filter_by(is_root=True).first()
 
     if not main_calendar or not isinstance(main_calendar, Calendar):
         calendar = Calendar()
         setattr(calendar, "name", "Medieteknik's Calendar")
-        setattr(calendar, "is_main", True)
 
         db.session.add(calendar)
         db.session.commit()
