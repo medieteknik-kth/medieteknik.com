@@ -14,9 +14,19 @@ export const Config = {
   matcher: ['/:language*']
 }
 
+/**
+ * Handles the language redirection and cookie setting based on the request headers and cookies.
+ *
+ * @param {NextRequest} request - The request object containing headers.
+ * @param {Cookies} cookies - The cookies present in the request.
+ * @param {ServerCookieConsent} serverConsent - The server cookie consent object.
+ * @return {NextResponse} The response object with redirection or next response.
+ */
 function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent): NextResponse {
   let language;
-  const blacklistedURLs = ['/_next', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png']
+
+  // Blacklisted URLs, which should not be redirected
+  const blacklistedURLs = ['/_next', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png', '/react_devtools_backend_compact']
 
   language = cookies.get(cookieName)
   if(!language && typeof window !== 'undefined') { language = localStorage.getItem('i18nextLng') }

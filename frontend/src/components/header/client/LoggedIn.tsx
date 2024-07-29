@@ -80,9 +80,9 @@ export default function UserLoggedIn({ language, t, student, logout }: Props) {
             />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>
-          <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px] '>
-            <p className='truncate'>{username}</p>
-            <span className='font-normal text-sm text-neutral-500'>
+          <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px]'>
+            <p className='truncate '>{username}</p>
+            <span className='font-normal text-sm text-neutral-500 leading-3'>
               {student.email}
             </span>
           </DropdownMenuLabel>

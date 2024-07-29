@@ -92,22 +92,23 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
 
 export function CommitteePositionTooltip({
   position,
-  committee,
 }: {
   position: CommitteePosition
-  committee: Committee
 }) {
   return (
     <div>
       <CardHeader className='flex flex-row items-center'>
         <Avatar className='mr-2'>
-          <AvatarImage src={committee.logo_url} alt='Committee Logo' />
-          <AvatarFallback>Committee Picture</AvatarFallback>
+          <AvatarImage
+            src={position.committee_logo_url || ''}
+            alt='Committee Logo'
+          />
+          <AvatarFallback>N/A</AvatarFallback>
         </Avatar>
         <div className='flex flex-col'>
           <CardTitle>{position.translations[0].title}</CardTitle>
           <CardDescription className='capitalize'>
-            {committee.translations[0].title}
+            {position.category}
           </CardDescription>
         </div>
       </CardHeader>

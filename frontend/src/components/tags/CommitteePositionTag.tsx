@@ -30,17 +30,17 @@ export default function CommitteePositionTag({
           className='text-black dark:text-yellow-400 pl-0'
           style={{ fontSize: 'inherit' }}
         >
-          {/*includeImage && (
-            <Avatar className='w-8 h-8 mr-2'>
-              <AvatarImage
-                src={committeePosition.logo_url ?? ''}
-                alt={committee.title}
-              />
-              <AvatarFallback>
-                {committee.title + ' Profile Picture'}
-              </AvatarFallback>
+          includeImage && (
+          <Avatar className='w-8 h-8 mr-2'>
+            <AvatarImage
+              src={committeePosition.committee_logo_url ?? ''}
+              alt={committeePosition.translations[0].title}
+            />
+            <AvatarFallback>
+              {committeePosition.translations[0].title + ' Profile Picture'}
+            </AvatarFallback>
           </Avatar>
-          )}*/}
+          )
           <p>
             {(includeAt ? '@ ' : '') + committeePosition.translations[0].title}
             {children}
