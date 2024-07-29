@@ -7,6 +7,13 @@ import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from './components/shortNews'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => res.json() as Promise<NewsPagination>)
@@ -51,7 +58,9 @@ function Page({ index, language }: { index: number; language: string }) {
       <div className='flex flex-wrap gap-4'>
         {' '}
         {data.items.map((item: News, index) => (
-          <ShortNews newsItem={item} key={index} />
+          <div key={index} className='relative'>
+            <ShortNews newsItem={item} />
+          </div>
         ))}
       </div>
     ),
@@ -74,7 +83,9 @@ export default function ExtraNews({ language }: { language: string }) {
 
   return (
     <section className='w-full h-fit pb-10'>
-      <h2 className='text-3xl uppercase mb-4'>More News</h2>
+      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
+        More News
+      </h2>
       <InfiniteScroll
         dataLength={pages.length}
         hasMore={page < pages.length}
@@ -85,7 +96,7 @@ export default function ExtraNews({ language }: { language: string }) {
             className='text-center py-2 text-xl tracking-wider uppercase text-neutral-800 dark:text-neutral-300 
           select-none'
           >
-            No more news
+            ---- No more news ----
           </p>
         }
       >

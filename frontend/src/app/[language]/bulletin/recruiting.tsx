@@ -42,7 +42,9 @@ export default function Recruiting({ language }: { language: string }) {
 
   return (
     <section className='w-full h-fit flex flex-col justify-between relative mt-10'>
-      <h2 className='text-3xl uppercase mb-4'>Currently Recruiting</h2>
+      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
+        Currently Recruiting
+      </h2>
       <div className='w-full h-5/6 flex items-center mb-20'>
         <div className='w-full h-full overflow-x-auto'>
           <div className='w-full h-full flex flex-wrap gap-8'>

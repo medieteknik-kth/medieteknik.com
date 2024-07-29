@@ -59,7 +59,7 @@ export default function ShortNews({ newsItem }: { newsItem: News }) {
         <CardFooter className='w-full flex justify-between items-center pb-0 mb-6 max-w-[325px]'>
           {newsItem.author.author_type === 'STUDENT' ? (
             <StudentTag student={newsItem.author as Student} includeAt={false}>
-              <span className='text-xs text-neutral-700'>
+              <span className='text-xs text-neutral-700 dark:text-neutral-300'>
                 {newsItem.created_at}
               </span>
             </StudentTag>
