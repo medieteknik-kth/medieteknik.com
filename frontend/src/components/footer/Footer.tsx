@@ -1,17 +1,9 @@
 import React from 'react'
 import { useTranslation } from '../../app/i18n'
 import Link from 'next/link'
-
 import LightLogo from 'public/images/logobig_light.jpg'
 import DarkLogo from 'public/images/logobig_dark.jpg'
-
-import FacebookSVG from 'public/images/svg/facebook.svg'
-import InstagramSVG from 'public/images/svg/instagram.svg'
-import LinkedInSVG from 'public/images/svg/linkedin.svg'
-import YoutubeSVG from 'public/images/svg/youtube.svg'
-import MBDSVG from 'public/images/svg/mbd.svg'
 import { Button } from '@components/ui/button'
-
 import {
   ArrowTopRightOnSquareIcon,
   EnvelopeIcon,
@@ -19,124 +11,20 @@ import {
 } from '@heroicons/react/24/outline'
 
 import Image from 'next/image'
+import ConnectSection from './connect'
 
-function ConnectSection({ t }: { t: (key: string) => string }) {
-  const linkStyle = '*:hover:fill-yellow-400 *:transition-colors'
-
-  return (
-    <ul className='w-full mt-2 grid place-items-center grid-cols-2 grid-rows-1 xs:grid-cols-5 *:cursor-pointer *:p-2 xxs:-ml-2 fill-[#111] dark:fill-white'>
-      <li className={linkStyle} title='Facebook'>
-        <Button asChild size='icon' variant='ghost'>
-          <Link
-            href='http://www.facebook.com/medieteknik.kth'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='w-full h-full'
-            title='Facebook'
-            aria-label="Links to Medieteknik's Facebook page"
-          >
-            <FacebookSVG
-              width={30}
-              height={30}
-              name='Facebook'
-              aria-label='Facebook Icon'
-              aria-description='Facebook Icon'
-            />
-          </Link>
-        </Button>
-      </li>
-      <li className={linkStyle} title='Instagram'>
-        <Button asChild size='icon' variant='ghost'>
-          <Link
-            href='https://www.instagram.com/medieteknik_kth/'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='w-full h-full dark:fill-white'
-            title='Instagram'
-            aria-label="Links to Medieteknik's Instagram page"
-          >
-            <InstagramSVG
-              width={30}
-              height={30}
-              name='Instagram'
-              aria-label='Instagram Icon'
-              aria-description='Instagram Icon'
-            />
-          </Link>
-        </Button>
-      </li>
-      <li className={linkStyle} title='LinkedIn'>
-        <Button asChild size='icon' variant='ghost'>
-          <Link
-            href='https://www.linkedin.com/company/sektionen-f%C3%B6r-medieteknik-%C2%A0kth/'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='w-full h-full'
-            title='LinkedIn'
-            aria-label="Links to Medieteknik's LinkedIn page"
-          >
-            <LinkedInSVG
-              width={30}
-              height={30}
-              name='LinkedIn'
-              aria-label='LinkedIn Icon'
-              aria-description='LinkedIn Icon'
-            />
-          </Link>
-        </Button>
-      </li>
-      <li className={linkStyle} title='YouTube'>
-        <Button asChild size='icon' variant='ghost'>
-          <Link
-            href='https://www.youtube.com/channel/UCfd-63pepDHT9uZku8KbQTA'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='w-full h-full'
-            title='YouTube'
-            aria-label="Links to Medieteknik's YouTube page"
-          >
-            <YoutubeSVG
-              width={30}
-              height={30}
-              name='YouTube'
-              aria-label='YouTube Icon'
-              aria-description='YouTube Icon'
-            />
-          </Link>
-        </Button>
-      </li>
-
-      <li className={linkStyle} title='Mediesbransch Dag'>
-        <Button asChild size='icon' variant='ghost'>
-          <Link
-            href='https://mediasbranschdag.com'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='w-full h-full'
-            title='MBD'
-            aria-label='Links to MBD'
-          >
-            <MBDSVG
-              width={30}
-              height={30}
-              name='MBD'
-              aria-description='MBD Icon'
-              aria-label='MBD Icon'
-            />
-          </Link>
-        </Button>
-      </li>
-    </ul>
-  )
-}
-
+/**
+ * Renders the footer for all pages
+ * @name Footer
+ *
+ * @param {string} language - The language of the current page
+ * @returns {JSX.Element} The footer
+ */
 export default async function Footer({
   language,
-  priority = false,
 }: {
   language: string
-  priority?: boolean
-}) {
+}): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'footer')
   return (
     <footer className='w-full h-fit xl:h-[420px] text-sm flex flex-col items-center justify-center xl:justify-between border-t-2 bg-white text-black border-neutral-200 dark:bg-[#111] dark:text-white dark:border-neutral-700'>
@@ -152,8 +40,7 @@ export default async function Footer({
             alt='logo'
             width={320}
             height={128}
-            priority={priority}
-            loading={priority ? 'eager' : 'lazy'}
+            loading={'lazy'}
             className='w-auto h-14 xxs:h-24 xs:h-auto hidden dark:block'
             placeholder='blur'
           />
@@ -162,8 +49,7 @@ export default async function Footer({
             alt='logo'
             width={320}
             height={128}
-            priority={priority}
-            loading={priority ? 'eager' : 'lazy'}
+            loading={'lazy'}
             className='w-auto h-14 xxs:h-24 xs:h-auto block dark:hidden'
             placeholder='blur'
           />

@@ -1,12 +1,13 @@
 import Link from 'next/link'
 
 /**
- * ErrorFallback
+ * Renders the error fallback UI.
+ * @name ErrorFallback
  * @description The fallback render for {@link ErrorBoundary}
  *
  * @returns {JSX.Element} The error fallback
  */
-export default function ErrorFallback() {
+export default function ErrorFallback(): JSX.Element {
   return (
     <div className='h-screen grid place-items-center text-center'>
       <h1 className='text-3xl'>
