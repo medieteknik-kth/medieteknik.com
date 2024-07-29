@@ -20,10 +20,28 @@ import useSWR from 'swr'
 import { API_BASE_URL } from '@/utility/Constants'
 import Link from 'next/link'
 
-const fetcher = (url: string) =>
+/**
+ * Fetches the latest breaking news from the API.
+ *
+ * @param {string} url - The URL of the API endpoint.
+ * @returns {Promise<News[]>} A promise that resolves to the fetched news data.
+ */
+const fetcher = (url: string): Promise<News[]> =>
   fetch(url).then((res) => res.json() as Promise<News[]>)
 
-export default function BreakingNews({ language }: { language: string }) {
+/**
+ * Renders the latest breaking news.
+ * @name BreakingNews
+ * @description Renders the latest breaking news
+ *
+ * @param {string} language - The language of the page
+ * @returns {JSX.Element} The latest breaking news
+ */
+export default function BreakingNews({
+  language,
+}: {
+  language: string
+}): JSX.Element {
   const [copiedLink, setCopiedLink] = useState(-1)
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/public/news/latest?language=${language}`,

@@ -2,23 +2,38 @@
 import Loading from '@/components/tooltips/Loading'
 import { News, NewsPagination } from '@/models/Items'
 import { API_BASE_URL } from '@/utility/Constants'
-import Image from 'next/image'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from './components/shortNews'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Button } from '@/components/ui/button'
 
-const fetcher = (url: string) =>
+/**
+ * The fetcher function that fetches news data from the API.
+ * @param {string} url - The URL of the API endpoint.
+ * @returns {Promise<NewsPagination>} A promise that resolves to the fetched news data.
+ */
+const fetcher = (url: string): Promise<NewsPagination> =>
   fetch(url).then((res) => res.json() as Promise<NewsPagination>)
 
-const useNews = (index: number, language: string) => {
+/**
+ * Returns an object containing the data, loading status, and error status of a news page
+ * fetched from the API using the specified index and language.
+ *
+ * @param {number} index - The index of the news page to fetch.
+ * @param {string} language - The language code of the news page to fetch.
+ * @return {Object} An object containing the following properties:
+ *   - {NewsPagination | undefined} data - The fetched news page data.
+ *   - {boolean} isLoading - A boolean indicating whether the data is currently being loaded.
+ *   - {boolean} isError - A boolean indicating whether an error occurred while fetching the data.
+ */
+const useNews = (
+  index: number,
+  language: string
+): {
+  data: NewsPagination | undefined
+  isLoading: boolean
+  isError: boolean
+} => {
   const { data, error, isLoading } = useSWR<NewsPagination>(
     `${API_BASE_URL}/public/news?page=${index}&language=${language}`,
     fetcher
@@ -31,7 +46,21 @@ const useNews = (index: number, language: string) => {
   }
 }
 
-function Page({ index, language }: { index: number; language: string }) {
+/**
+ * A component that renders a news page with the specified index and language.
+ *
+ * @param {number} index - The index of the news page to render.
+ * @param {string} language - The language code of the news page to render.
+ * @returns {Object} An object containing the following properties:
+ *   - {JSX.Element} jsx - The JSX representation of the news page.
+ *   - {number} total_items - The total number of items in the news page.
+ *   - {number} total_pages - The total number of pages in the news page.
+ */
+function Page({ index, language }: { index: number; language: string }): {
+  jsx: JSX.Element
+  total_items: number
+  total_pages: number
+} {
   const { data, isError, isLoading } = useNews(index, language)
 
   if (isError)
@@ -55,21 +84,31 @@ function Page({ index, language }: { index: number; language: string }) {
 
   return {
     jsx: (
-      <div className='flex flex-wrap gap-4'>
-        {' '}
+      <>
         {data.items.map((item: News, index) => (
           <div key={index} className='relative'>
             <ShortNews newsItem={item} />
           </div>
         ))}
-      </div>
+      </>
     ),
     total_items: data.total_items,
     total_pages: data.total_pages,
   }
 }
 
-export default function ExtraNews({ language }: { language: string }) {
+/**
+ * Extra News component that renders a list of news pages with the specified language.
+ * @name ExtraNews
+ *
+ * @param {string} language - The language code of the news pages to render.
+ * @returns {JSX.Element} The JSX representation of the Extra News component.
+ */
+export default function ExtraNews({
+  language,
+}: {
+  language: string
+}): JSX.Element {
   const [page, setPage] = useState(1)
   const pages: {
     jsx: JSX.Element
@@ -100,7 +139,11 @@ export default function ExtraNews({ language }: { language: string }) {
           </p>
         }
       >
-        {pages.map((page) => page.jsx)}
+        {pages.map((page, index) => (
+          <div key={index} className='flex flex-wrap gap-4'>
+            {page.jsx}
+          </div>
+        ))}
       </InfiniteScroll>
     </section>
   )

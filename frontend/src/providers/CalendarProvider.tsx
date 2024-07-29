@@ -108,10 +108,12 @@ const CalendarContext = createContext<CalendarContextType | undefined>(
  * @return {JSX.Element} The CalendarProvider component.
  */
 export default function CalendarProvider({
+  language,
   children,
 }: {
+  language: string
   children: React.ReactNode
-}) {
+}): JSX.Element {
   const [state, dispatch] = useReducer(calendarReduction, initalState)
 
   const isMounted = useRef(false)
@@ -127,7 +129,7 @@ export default function CalendarProvider({
     dispatch({ type: 'SET_LOADING', payload: true })
     dispatch({ type: 'SET_ERROR', payload: null })
     try {
-      const events = await GetEvents(date)
+      const events = await GetEvents(date, language)
 
       if (isMounted.current && events) {
         dispatch({ type: 'SET_EVENTS', payload: events })

@@ -32,14 +32,18 @@ import FallbackIcon from 'public/images/logo.webp'
 import Image from 'next/image'
 import { StudentTag } from '@/components/tags/StudentTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import useSWR from 'swr'
-import { API_BASE_URL } from '@/utility/Constants'
 import { Separator } from '@/components/ui/separator'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Permission } from '@/models/Permission'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 
-function getNumberWithOrdinal(number: number) {
+/**
+ * Get the ordinal suffix for a given number
+ *
+ * @param {number} number - The number to get the ordinal suffix for
+ * @returns {string} The ordinal suffix for the given number
+ */
+function getNumberWithOrdinal(number: number): string {
   if (typeof number !== 'number' || isNaN(number)) {
     return 'Not a number'
   }
@@ -61,7 +65,19 @@ function getNumberWithOrdinal(number: number) {
   }
 }
 
-export default function Events({ language }: { language: string }) {
+/**
+ * Render the events section of the bulletin
+ * @name Events
+ * @description Renders the event section of the bulletin.
+ *
+ * @param {string} language - The language of the page
+ * @returns {JSX.Element} The events section
+ */
+export default function Events({
+  language,
+}: {
+  language: string
+}): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedDate, events } = useCalendar()
   const tinycolor = require('tinycolor2')
@@ -210,22 +226,26 @@ export default function Events({ language }: { language: string }) {
             </Dialog>
           </div>
         </Calendar>
-        <div className='grow lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#111] desktop:ml-4 rounded-xl py-8 text-white'>
+        <div className='grow min-h-[320px] lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#222] dark:bg-[#111] desktop:ml-4 rounded-xl py-8 text-white'>
           <div className='relative px-6'>
-            <h3 className='text-3xl'>Events</h3>
-            <p>
+            <h3 className='text-3xl tracking-wide'>Events</h3>
+            <p className='text-neutral-300 tracking-widest dark:text-neutral-500'>
               {getNumberWithOrdinal(selectedDate.getDate()) + ' '}
               <span className='capitalize'>
                 {selectedDate.toLocaleDateString(language, { month: 'long' })}
               </span>
             </p>
+            <Separator className='my-4' />
             {permissions.author.includes('EVENT') ? (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
+                <DialogTrigger
+                  className='w-auto h-[60px] aspect-square'
+                  asChild
+                >
                   <Button
                     variant={'default'}
                     size={'icon'}
-                    className='absolute right-0 top-0 bottom-0 my-auto mr-6'
+                    className='absolute right-6 top-0 bottom-0 my-auto'
                     title='Add Event'
                   >
                     <PlusIcon className='w-6 h-6' title='Add Event' />
@@ -285,9 +305,22 @@ export default function Events({ language }: { language: string }) {
                       )}
                     </div>
                     <div className='absolute top-4 right-4 flex flex-col gap-2 items-end z-10'>
-                      <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl justify-end'>
-                        <p>
+                      <div className='w-fit flex items-center px-2 py-0.5 bg-[#222] font-bold rounded-md justify-end'>
+                        <p className='text-yellow-200' title='Start time'>
                           {new Date(event.start_date).toLocaleTimeString(
+                            language,
+                            {
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            }
+                          )}
+                        </p>
+                        <Separator
+                          orientation='vertical'
+                          className='h-4 mx-2'
+                        />
+                        <p className='text-fuchsia-200' title='End time'>
+                          {new Date(event.end_date).toLocaleTimeString(
                             language,
                             {
                               hour: 'numeric',
@@ -297,7 +330,7 @@ export default function Events({ language }: { language: string }) {
                         </p>
                         <ClockIcon className='w-6 h-6 ml-1' />
                       </div>
-                      <div className='w-fit flex items-center px-2 py-0.5 bg-[#111] font-bold rounded-xl'>
+                      <div className='w-fit flex items-center px-2 py-0.5 bg-[#222] font-bold rounded-md'>
                         <p>{event.location}</p>
                         <MapPinIcon className='w-6 h-6 ml-1' />
                       </div>

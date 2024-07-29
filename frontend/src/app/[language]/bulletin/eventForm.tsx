@@ -13,12 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { HexColorPicker } from 'react-colorful'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import {
-  API_BASE_URL,
-  Language,
-  LanguageCodes,
-  LANGUAGES,
-} from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useState } from 'react'
 import { CardFooter } from '@/components/ui/card'
 import {
@@ -46,6 +41,12 @@ import {
 import { supportedLanguages } from '@/app/i18n/settings'
 import { cn } from '@/lib/utils'
 
+/**
+ * Generates a random temprary ID
+ *
+ * @param {number} length - The length of the ID
+ * @returns {string} The generated ID
+ */
 function createRandomTempraryID(length: number): string {
   let result = ''
   const characters =
@@ -65,11 +66,22 @@ interface EventFormProps {
   closeMenuCallback: () => void
 }
 
+/**
+ * EventForm component
+ * @name EventForm
+ * @description A form for creating an event
+ *
+ * @param {EventFormProps} props - The props for the component
+ * @param {string} props.language - The language of the event
+ * @param {Date} props.selectedDate - The date of the event
+ * @param {() => void} props.closeMenuCallback - The callback function to close the menu
+ * @returns {JSX.Element} The EventForm component
+ */
 export default function EventForm({
   language,
   selectedDate,
   closeMenuCallback,
-}: EventFormProps) {
+}: EventFormProps): JSX.Element {
   const { student } = useAuthentication()
 
   if (!student) {

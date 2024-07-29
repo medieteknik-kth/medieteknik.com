@@ -1,7 +1,5 @@
 'use client'
-import { StaticImageData } from 'next/image'
 import { ClockIcon } from '@heroicons/react/24/outline'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -23,10 +21,28 @@ interface Response {
   translations: { description: string; link_url: string }[]
 }
 
-const fetcher = (url: string) =>
+/**
+ * The fetcher function that fetches recruitment data from the API.
+ *
+ * @param {string} url - The URL of the API endpoint.
+ * @returns {Promise<Response[]>} A promise that resolves to the fetched recruitment data.
+ */
+const fetcher = (url: string): Promise<Response[]> =>
   fetch(url).then((res) => res.json() as Promise<Response[]>)
 
-export default function Recruiting({ language }: { language: string }) {
+/**
+ * Recruitment Component
+ * @name Recruitment
+ * @description Renders the recruitment section of the bulletin.
+ *
+ * @param {string} language - The language of the bulletin.
+ * @returns {JSX.Element} The recruitment section of the bulletin.
+ */
+export default function Recruitment({
+  language,
+}: {
+  language: string
+}): JSX.Element {
   const { data: recruitmentData, error } = useSWR(
     `${API_BASE_URL}/public/committees/recruiting?language=${language}`,
     fetcher
