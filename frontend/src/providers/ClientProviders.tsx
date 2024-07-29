@@ -16,12 +16,10 @@ interface Props {
 /**
  * A React component that provides all the client providers for the application.
  *
- * @param {Props} props - The component props.
- * @param {string} props.language - The current language of the page.
- * @param {React.ReactNode} props.children - The child components.
+ * @param {string} language - The current language of the page.
  * @return {JSX.Element | null} The rendered component or null if not on the client.
  */
-export default function Providers({
+export default function ClientProviders({
   language,
   children,
 }: Props): JSX.Element | null {

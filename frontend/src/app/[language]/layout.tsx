@@ -4,7 +4,8 @@ import { dir } from 'i18next'
 import { supportedLanguages } from '../i18n/settings'
 import { CookiesProvider } from 'next-client-cookies/server'
 import { fontFigtree } from '../fonts'
-import Providers from '@providers/providers'
+import ClientProviders from '@/providers/ClientProviders'
+import ServerProviders from '@/providers/ServerProviders'
 import { LanguageCodes } from '@/utility/Constants'
 import CookiePopup from '@/components/cookie/Cookie'
 import ErrorBoundary from '@/components/error/ErrorBoundary'
@@ -63,19 +64,20 @@ export default function RootLayout({ children, params }: Props): JSX.Element {
       lang={params.language}
       dir={dir(params.language)}
       className={`${fontFigtree.className}`}
+      suppressHydrationWarning
     >
       <head />
       <body className='min-w-full min-h-screen bg-background font-sans antialiased'>
-        <CookiesProvider>
-          <Providers language={params.language}>
+        <ServerProviders>
+          <ClientProviders language={params.language}>
             <Header language={params.language} />
             <ErrorBoundary fallback={<ErrorFallback />}>
               {children}
             </ErrorBoundary>
             <Footer language={params.language} />
             <CookiePopup params={params} />
-          </Providers>
-        </CookiesProvider>
+          </ClientProviders>
+        </ServerProviders>
       </body>
     </html>
   )
