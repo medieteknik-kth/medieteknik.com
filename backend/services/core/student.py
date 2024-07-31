@@ -128,9 +128,9 @@ def get_permissions(student_id: str) -> Dict[str, Any]:
     }
 
     author = Author.query.filter(
-        Author.author_type == AuthorType.STUDENT,
+        Author.author_type == AuthorType.STUDENT.value,
         Author.student_id == student_id,
-    )
+    ).first()
 
     if author and isinstance(author, Author):
         author_data = author.to_dict()
