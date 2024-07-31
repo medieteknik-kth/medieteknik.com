@@ -21,7 +21,6 @@ export interface Item {
   is_pinned: boolean
   is_public: boolean
   published_status: 'PUBLISHED' | 'DRAFT'
-  url: string
 }
 
 /**
@@ -42,7 +41,8 @@ export interface Item {
  * @param {string} url - The URL of the news item
  */
 export interface News extends Item {
-  translations: NewsTranslation[],
+  url: string
+  translations: NewsTranslation[]
 }
 
 export interface NewsTranslation {

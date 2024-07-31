@@ -11,5 +11,6 @@ export interface Document extends Item {
 export interface DocumentTranslation {
   title: string
   categories?: string[]
+  url: string
   language_code: LanguageCodes
 }

@@ -78,9 +78,9 @@ function displayEvents(
   const filteredEvents = filterEventsForDate(sortEvents(events), date)
   return (
     <div className='flex flex-col gap-1'>
-      {filteredEvents.map((event) => (
+      {filteredEvents.map((event, index) => (
         <EventComponent
-          key={event.url}
+          key={index}
           event={event}
           onEventClick={onEventClickCallback}
         />

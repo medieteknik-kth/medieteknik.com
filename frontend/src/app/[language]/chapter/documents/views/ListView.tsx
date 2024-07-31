@@ -21,7 +21,7 @@ import { MouseEvent, useCallback } from 'react'
 interface Props {
   documents: Document[]
   selectedDocuments: number[]
-  setSelectedDocuments: React.Dispatch<React.SetStateAction<number[]>>
+  setSelectedDocuments: (documents: number[]) => void
   language: string
 }
 
@@ -48,7 +48,7 @@ export default function ListView({
         }
       } else {
         if (index > -1) {
-          reroute(document.url)
+          reroute(document.translations[0].url)
         } else {
           setSelectedDocuments([documentIndex])
         }
@@ -101,66 +101,67 @@ export default function ListView({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {documents.map((document, documentIndex) => (
-            <TableRow
-              key={documentIndex}
-              className={`cursor-pointer ${
-                selectedDocuments.includes(documentIndex)
-                  ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
-                  : 'hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700'
-              }`}
-              onClick={(event) => {
-                event.stopPropagation()
-                handleDocumentClick(event, documentIndex, document)
-              }}
-            >
-              <TableCell>
-                <div className='flex gap-2 items-center'>
-                  {document.type === 'DOCUMENT' ? (
-                    <DocumentIcon
-                      className='w-5 h-5 text-green-500'
-                      title='Document'
-                    />
-                  ) : (
-                    <DocumentTextIcon
-                      className='w-5 h-5 text-amber-500'
-                      title='Document type is a Form'
-                    />
-                  )}
-                  <span className='sr-only'>Document type is a document</span>
-                  <p className='tracking-wide text-sm max-w-96 truncate'>
-                    {document.translations[0].title}
-                  </p>
-                </div>
-              </TableCell>
-              <TableCell>
-                <span className='sr-only'>Changed</span>
-                {new Date(document.created_at).toLocaleDateString()}
-              </TableCell>
-              <TableCell className='flex gap-2 items-center'>
-                <span className='sr-only'>Author</span>
-                <Avatar className='bg-white mr-2'>
-                  <AvatarImage
-                    src={authorImage(document.author) || ''}
-                    width={128}
-                    height={128}
-                    alt='Author: Firstname Lastname'
-                    className='h-full w-auto'
-                  />
-                  <AvatarFallback className='bg-white p-1'>
-                    <Image
-                      src={FallbackLogo}
+          {documents.length > 0 &&
+            documents.map((document, documentIndex) => (
+              <TableRow
+                key={documentIndex}
+                className={`cursor-pointer ${
+                  selectedDocuments.includes(documentIndex)
+                    ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
+                    : 'hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700'
+                }`}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  handleDocumentClick(event, documentIndex, document)
+                }}
+              >
+                <TableCell>
+                  <div className='flex gap-2 items-center'>
+                    {document.type === 'DOCUMENT' ? (
+                      <DocumentIcon
+                        className='w-5 h-5 text-green-500'
+                        title='Document'
+                      />
+                    ) : (
+                      <DocumentTextIcon
+                        className='w-5 h-5 text-amber-500'
+                        title='Document type is a Form'
+                      />
+                    )}
+                    <span className='sr-only'>Document type is a document</span>
+                    <p className='tracking-wide text-sm max-w-96 truncate'>
+                      {document.translations[0].title}
+                    </p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span className='sr-only'>Changed</span>
+                  {new Date(document.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell className='flex gap-2 items-center'>
+                  <span className='sr-only'>Author</span>
+                  <Avatar className='bg-white mr-2'>
+                    <AvatarImage
+                      src={authorImage(document.author) || ''}
+                      width={128}
+                      height={128}
                       alt='Author: Firstname Lastname'
+                      className='h-full w-auto'
                     />
-                  </AvatarFallback>
-                </Avatar>
-                <p className='tracking-wide text-sm max-w-52 truncate'>
-                  {authorName(document.author)}
-                </p>
-              </TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          ))}
+                    <AvatarFallback className='bg-white p-1'>
+                      <Image
+                        src={FallbackLogo}
+                        alt='Author: Firstname Lastname'
+                      />
+                    </AvatarFallback>
+                  </Avatar>
+                  <p className='tracking-wide text-sm max-w-52 truncate'>
+                    {authorName(document.author)}
+                  </p>
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

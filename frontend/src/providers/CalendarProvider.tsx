@@ -54,14 +54,14 @@ function calendarReduction(
       return {
         ...state,
         events: state.events.filter(
-          (event) => event.url !== action.payload.url
+          (event) => event !== action.payload
         ),
       }
     case 'UPDATE_EVENT':
       return {
         ...state,
         events: state.events.map((event) =>
-          event.url === action.payload.url ? action.payload : event
+          event === action.payload ? action.payload : event
         ),
       }
 

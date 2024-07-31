@@ -284,9 +284,9 @@ export default function Events({
                     new Date(a.start_date).getTime() -
                     new Date(b.start_date).getTime()
                 )
-                .map((event: Event) => (
+                .map((event: Event, index) => (
                   <div
-                    key={event.url}
+                    key={index}
                     className={`w-full h-44 border-l-4 relative`}
                     style={{
                       borderColor: tinycolor(event.background_color).isDark()
