@@ -1,4 +1,4 @@
-import Student from '@/models/Student'
+import Student, { IndividualCommitteePosition } from '@/models/Student'
 import {
   Table,
   TableBody,
@@ -9,209 +9,85 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Logo from 'public/images/logo.webp'
 import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 import NLGIcon from 'public/images/committees/nlg.png'
 import { StudentCommitteePosition } from '@/models/Student'
 import { CommitteeTooltip } from '@/components/tooltips/Tooltip'
+import { CommitteePosition } from '@/models/Committee'
+import Logo from 'public/images/logo.webp'
+import Image from 'next/image'
 
-const testPositions: StudentCommitteePosition[] = [
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Webmaster',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('August 20 2023').toLocaleDateString(),
-    termination_date: new Date('August 20 2024').toLocaleDateString(),
-  },
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Ordförande',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('January 20 2022').toLocaleDateString(),
-    termination_date: new Date('January 20 2023').toLocaleDateString(),
-  },
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Vice-Ordförande',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('January 20 2021').toLocaleDateString(),
-    termination_date: new Date('January 20 2022').toLocaleDateString(),
-  },
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Sekreterare',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('January 20 2020').toLocaleDateString(),
-    termination_date: new Date('January 20 2021').toLocaleDateString(),
-  },
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Kassör',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('January 20 2019').toLocaleDateString(),
-    termination_date: new Date('January 20 2020').toLocaleDateString(),
-  },
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Vice-Sekreterare',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('January 20 2018').toLocaleDateString(),
-    termination_date: new Date('January 20 2019').toLocaleDateString(),
-  },
-  {
-    student: {
-      author_type: 'STUDENT',
-      email: 'andree4@kth.se',
-      first_name: 'Andree',
-      last_name: 'Eriksson',
-      student_type: 'MEDIETEKNIK',
-    },
-    position: {
-      active: true,
-      author_type: 'COMMITTEE_POSITION',
-      email: '',
-      role: 'ADMIN',
-      weight: 0,
-      translations: [
-        {
-          title: 'Ledamot',
-          description: '',
-          language_code: 'sv',
-        },
-      ],
-    },
-    initiation_date: new Date('January 20 2017').toLocaleDateString(),
-    termination_date: new Date('January 20 2018').toLocaleDateString(),
-  },
-]
+function TableDisplay({
+  positions,
+  language,
+}: {
+  positions: IndividualCommitteePosition[]
+  language: string
+}) {
+  return (
+    <TableBody>
+      {positions.length > 0 &&
+        positions.map((position, index) => (
+          <TableRow key={index}>
+            <TableCell>{position.position.translations[0].title}</TableCell>
+            <TableCell className='flex items-center'>
+              {position.position.committee_logo_url ? (
+                <Avatar className='w-6 h-auto aspect-square mr-1'>
+                  <AvatarImage
+                    src={position.position.committee_logo_url}
+                    alt='Profile Picture'
+                  />
+                </Avatar>
+              ) : (
+                <p className='text-neutral-600 uppercase select-none'>
+                  Independent
+                </p>
+              )}
+            </TableCell>
+            <TableCell>
+              {new Date(position.initiation_date).toLocaleDateString()}
+            </TableCell>
+            <TableCell>
+              {position.termination_date
+                ? new Date(position.termination_date).toLocaleDateString()
+                : 'N/A'}
+            </TableCell>
+          </TableRow>
+        ))}
+    </TableBody>
+  )
+}
 
 export default function StudentPositions({
   language,
-  student,
+  positions,
 }: {
   language: string
-  student: Student
+  positions: IndividualCommitteePosition[]
 }) {
-  const hasAnyPostion = testPositions.length > 0
-  const activePositions = testPositions.filter(
-    (position) => new Date(position.termination_date) > new Date()
+  if (positions.length === 0) {
+    return (
+      <div>
+        <h2>No positions</h2>
+      </div>
+    )
+  }
+
+  const activePositions: IndividualCommitteePosition[] = positions.filter(
+    (position) =>
+      new Date(position.termination_date) > new Date() ||
+      position.termination_date === null
   )
-  const previousPositions = testPositions.filter(
-    (position) => new Date(position.termination_date) < new Date()
+  const previousPositions = positions.filter(
+    (position) =>
+      new Date(position.termination_date) < new Date() &&
+      position.termination_date !== null
   )
   return (
     <div className='flex'>
       <div className='mr-10'>
         <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1'>
-          Active Positions
+          <b>{activePositions.length}</b> Active Positions
         </h2>
         <div className='max-h-[560.5px] overflow-hidden overflow-y-auto'>
           <Table className='w-[700px] max-h-[606.5px] overflow-y-auto overflow-hidden'>
@@ -223,41 +99,14 @@ export default function StudentPositions({
                 <TableHead className='w-[175px]'>Expected End Date</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {hasAnyPostion ? (
-                activePositions.map((position, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      {position.position.translations[0].title}
-                    </TableCell>
-                    <TableCell className='flex items-center'>
-                      <Avatar className='w-6 h-auto mr-1'>
-                        <AvatarImage src={''} alt='Profile Picture' />
-                        <AvatarFallback>Profile Picture</AvatarFallback>
-                      </Avatar>
-                      {''}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(position.initiation_date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(position.termination_date).toLocaleDateString()}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4}>No Positions</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
+            <TableDisplay positions={activePositions} language={language} />
           </Table>
         </div>
       </div>
 
       <div className='ml-10'>
         <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1'>
-          Past Positions
+          <b>{previousPositions.length}</b> Past Positions
         </h2>
         <div className='max-h-[560.5px] overflow-hidden overflow-y-auto'>
           <Table className='w-[700px]'>
@@ -269,34 +118,7 @@ export default function StudentPositions({
                 <TableHead className='w-[175px]'>End Date</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {hasAnyPostion ? (
-                previousPositions.map((position, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      {position.position.translations[0].title}
-                    </TableCell>
-                    <TableCell className='flex items-center'>
-                      <Avatar className='w-6 h-auto mr-1'>
-                        <AvatarImage src={''} alt='Profile Picture' />
-                        <AvatarFallback>Profile Picture</AvatarFallback>
-                      </Avatar>
-                      {''}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(position.initiation_date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(position.termination_date).toLocaleDateString()}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4}>No Positions</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
+            <TableDisplay positions={previousPositions} language={language} />
           </Table>
         </div>
       </div>
