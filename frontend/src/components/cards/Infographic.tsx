@@ -2,7 +2,6 @@ import Image, { StaticImageData } from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  language: string
   card: Card
 }
 
@@ -14,11 +13,11 @@ interface Card {
   linkText: string
 }
 
-export default function InfographicCard({ language, card }: Props) {
+export default function InfographicCard({ card }: Props) {
   return (
     <div className='w-full lg:w-[720px] desktop:w-[450px] h-64 px-8 py-4 rounded-xl flex flex-col justify-between items-center relative bg-slate-100 dark:bg-[#323232]'>
       <Link
-        href={`/${language}${card.href}`}
+        href={`${card.href}`}
         title={card.linkText}
         target={card.href.startsWith('http') ? '_blank' : '_self'}
         rel={card.href.startsWith('http') ? 'noopener noreferrer' : ''}

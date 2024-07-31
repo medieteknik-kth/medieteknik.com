@@ -205,7 +205,7 @@ export default function AllNews({
           />
         </div>
       </CardHeader>
-      <CardContent className='flex flex-wrap desktop:grid-cols-5 min-h-96 *:h-96 gap-10'>
+      <CardContent className='flex flex-wrap desktop:grid-cols-5 min-h-96 *:h-96 gap-8'>
         {permissions.author.includes('NEWS') ? (
           <Card className='w-[320px] border-dashed'>
             <CardContent className='h-full pt-6'>
@@ -224,82 +224,76 @@ export default function AllNews({
             </CardContent>
           </Card>
         ) : null}
-        {data.items
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )
-          .map((newsItem, index) => (
-            <div key={index} className='relative'>
-              {Object.keys(newsItem).length === 0 ? (
-                <Skeleton className='w-full h-full' />
-              ) : (
-                <div>
-                  <NewsCard key={newsItem.url} newsItem={newsItem} />
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        title='Actions'
-                        aria-label='Actions'
-                        className='absolute bottom-8 right-4 z-10'
-                      >
-                        <PlusIcon className='w-5 h-5' />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className='flex items-center'>
-                      <TooltipProvider>
-                        <Tooltip open={copiedLink === index}>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant='outline'
-                              size='icon'
-                              title='Share'
-                              aria-label='Share'
-                              className='z-10'
-                              onClick={() => handleCopyLink(index)}
-                            >
-                              <TooltipContent className='z-10'>
-                                Copied
-                              </TooltipContent>
-
-                              <LinkIcon className='w-5 h-5' />
-                            </Button>
-                          </TooltipTrigger>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <Popover>
-                        <PopoverTrigger asChild>
+        {data.items.map((newsItem, index) => (
+          <div key={index} className='relative'>
+            {Object.keys(newsItem).length === 0 ? (
+              <Skeleton className='w-full h-full' />
+            ) : (
+              <div>
+                <NewsCard key={newsItem.url} newsItem={newsItem} />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      title='Actions'
+                      aria-label='Actions'
+                      className='absolute bottom-8 right-4 z-10'
+                    >
+                      <PlusIcon className='w-5 h-5' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='flex items-center'>
+                    <TooltipProvider>
+                      <Tooltip open={copiedLink === index}>
+                        <TooltipTrigger asChild>
                           <Button
                             variant='outline'
                             size='icon'
-                            title='News Tags'
-                            aria-label='News Tags'
-                            className='z-10 ml-4'
+                            title='Share'
+                            aria-label='Share'
+                            className='z-10'
+                            onClick={() => handleCopyLink(index)}
                           >
-                            <TagIcon className='w-6 h-6' />
+                            <TooltipContent className='z-10'>
+                              Copied
+                            </TooltipContent>
+
+                            <LinkIcon className='w-5 h-5' />
                           </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className='absolute w-fit h-fit'>
-                          <h3 className='text-lg font-bold pb-1'>Tags</h3>
-                          <div className='flex'>
-                            {newsItem.categories &&
-                              newsItem.categories.map((category, index) => (
-                                <Badge key={index} className='w-fit mr-2'>
-                                  {category}
-                                </Badge>
-                              ))}
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              )}
-            </div>
-          ))}
+                        </TooltipTrigger>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          title='News Tags'
+                          aria-label='News Tags'
+                          className='z-10 ml-4'
+                        >
+                          <TagIcon className='w-6 h-6' />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className='absolute w-fit h-fit'>
+                        <h3 className='text-lg font-bold pb-1'>Tags</h3>
+                        <div className='flex'>
+                          {newsItem.categories &&
+                            newsItem.categories.map((category, index) => (
+                              <Badge key={index} className='w-fit mr-2'>
+                                {category}
+                              </Badge>
+                            ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            )}
+          </div>
+        ))}
       </CardContent>
       <CardFooter className='flex justify-center'>
         <div className='w-fit place-self-end flex items-center justify-around'>

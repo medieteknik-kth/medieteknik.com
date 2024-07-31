@@ -17,6 +17,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 
 async function getData(language_code: string, slug: string) {
   try {
@@ -66,12 +74,40 @@ export default async function NewsPage({
 
   return (
     <main>
-      <div className='flex flex-col items-center justify-start min-h-[1080px] h-fit px-4 sm:px-20 lg:px-0 pt-10'>
+      <div className='h-24 bg-black' />
+      <Breadcrumb className='w-full h-fit border-b px-4 py-2'>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={'/' + language + '/bulletin'}
+              className='py-2'
+            >
+              Bulletin
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={'/' + language + '/bulletin/news'}
+              className='py-2'
+            >
+              News
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink className='capitalize py-2 italic'>
+              {data.translations[0].title}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <div className='flex flex-col items-center justify-start min-h-[1080px] h-fit px-4 sm:px-20 lg:px-0'>
         <div className='w-full lg:w-[700px] h-fit'>
-          <ul className='flex min-h-20 h-fit'>
+          <ul className='flex min-h-10 h-fit py-2'>
             {data.categories &&
               data.categories.map((category) => (
-                <li className='px-4 py-2' key={category}>
+                <li className='px-2 py-1 border rounded-2xl' key={category}>
                   {category}
                 </li>
               ))}
