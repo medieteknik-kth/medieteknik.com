@@ -1,8 +1,9 @@
 import enum
+import uuid
 import urllib.parse
 from typing import List
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, inspect
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, inspect, text
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
@@ -19,7 +20,12 @@ class Content(db.Model):
 
     __tablename__ = "content"
 
-    content_id = Column(Integer, primary_key=True, autoincrement=True)
+    content_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     image_urls = Column(ARRAY(String))
 
@@ -76,13 +82,20 @@ class Resource(db.Model):
 
     __tablename__ = "resource"
 
-    resource_id = Column(Integer, primary_key=True, autoincrement=True)
+    resource_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     route = Column(String(255), unique=True)
     is_public = Column(Boolean, default=True, nullable=False)
 
     # Foreign keys
-    content_id = Column(Integer, ForeignKey("content.content_id"), unique=True)
+    content_id = Column(
+        UUID(as_uuid=True), ForeignKey("content.content_id"), unique=True
+    )
 
     # Relationships
     content = db.relationship("Content", back_populates="resource")
@@ -123,13 +136,18 @@ class Resource(db.Model):
 
 class ContentTranslation(db.Model):
     __tablename__ = "content_translation"
-    content_translation_id = Column(Integer, primary_key=True, autoincrement=True)
+    content_translation_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     title = Column(String(255))
     bodies = Column(ARRAY(String))
 
     # Foreign keys
-    content_id = Column(Integer, ForeignKey("content.content_id"))
+    content_id = Column(UUID(as_uuid=True), ForeignKey("content.content_id"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships

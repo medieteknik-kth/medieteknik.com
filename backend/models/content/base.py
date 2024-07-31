@@ -66,7 +66,6 @@ class Item(db.Model):
     published_status = Column(
         Enum(PublishedStatus), default=PublishedStatus.DRAFT, nullable=False
     )
-    url = Column(String(length=512), nullable=True, index=True)
 
     # Foreign keys
     author_id = Column(UUID(as_uuid=True), ForeignKey("author.author_id"))

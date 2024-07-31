@@ -37,10 +37,14 @@ class Calendar(db.Model):
         ForeignKey("calendar.calendar_id", ondelete="CASCADE", onupdate="CASCADE"),
     )
     student_id = Column(
-        Integer, ForeignKey("student.student_id", ondelete="CASCADE"), unique=True
+        UUID(as_uuid=True),
+        ForeignKey("student.student_id", ondelete="CASCADE"),
+        unique=True,
     )
     committee_id = Column(
-        Integer, ForeignKey("committee.committee_id", ondelete="CASCADE"), unique=True
+        UUID(as_uuid=True),
+        ForeignKey("committee.committee_id", ondelete="CASCADE"),
+        unique=True,
     )
 
     # Relationships

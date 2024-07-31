@@ -1,6 +1,8 @@
 import enum
+import uuid
 from typing import Any, Dict, List
-from sqlalchemy import String, Integer, Column, ForeignKey, Enum, Boolean, inspect
+from sqlalchemy import String, Integer, Column, ForeignKey, Enum, Boolean, inspect, text
+from sqlalchemy.dialects.postgresql import UUID
 from models.committees.committee import Committee
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
@@ -23,7 +25,12 @@ class CommitteePositionCategory(enum.Enum):
 
 class CommitteePosition(db.Model):
     __tablename__ = "committee_position"
-    committee_position_id = Column(Integer, primary_key=True, autoincrement=True)
+    committee_position_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     email = Column(String(255), unique=True)
     weight = Column(Integer, default=0)
@@ -36,9 +43,10 @@ class CommitteePosition(db.Model):
     category = Column(Enum(CommitteePositionCategory), nullable=False)
 
     # Foreign key
-    committee_id = Column(Integer, ForeignKey("committee.committee_id"))
+    committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))
 
     # Relationship
+    author = db.relationship("Author", back_populates="committee_position")
     committee = db.relationship("Committee", back_populates="committee_positions")
     resources = db.relationship(
         "Resource",
@@ -114,18 +122,23 @@ class CommitteePositionResource(db.Model):
     __tablename__ = "committee_position_resource"
 
     committee_position_id = Column(
-        Integer,
+        UUID(as_uuid=True),
         ForeignKey("committee_position.committee_position_id"),
         primary_key=True,
     )
-    resource_id = Column(Integer, ForeignKey("resource.resource_id"), primary_key=True)
+    resource_id = Column(
+        UUID(as_uuid=True), ForeignKey("resource.resource_id"), primary_key=True
+    )
 
 
 class CommitteePositionTranslation(db.Model):
     __tablename__ = "committee_position_translation"
 
     committee_position_translation_id = Column(
-        Integer, primary_key=True, autoincrement=True
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
     )
 
     title = Column(String(255))
@@ -133,7 +146,7 @@ class CommitteePositionTranslation(db.Model):
 
     # Foreign keys
     committee_position_id = Column(
-        Integer, ForeignKey("committee_position.committee_position_id")
+        UUID(as_uuid=True), ForeignKey("committee_position.committee_position_id")
     )
     language_code = Column(String(20), ForeignKey("language.language_code"))
 

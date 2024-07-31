@@ -1,5 +1,7 @@
+import uuid
 from typing import List
-from sqlalchemy import String, Integer, Column, ForeignKey, inspect
+from sqlalchemy import String, Integer, Column, ForeignKey, inspect, text
+from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
@@ -7,7 +9,12 @@ from utility.translation import get_translation
 
 class CommitteeCategory(db.Model):
     __tablename__ = "committee_category"
-    committee_category_id = Column(Integer, primary_key=True, autoincrement=True)
+    committee_category_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     email = Column(String(255), unique=True, nullable=True)
 
@@ -57,14 +64,17 @@ class CommitteeCategory(db.Model):
 class CommitteeCategoryTranslation(db.Model):
     __tablename__ = "committee_category_translation"
     committee_category_translation_id = Column(
-        Integer, primary_key=True, autoincrement=True
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
     )
 
     title = Column(String(255))
 
     # Foreign key
     committee_category_id = Column(
-        Integer, ForeignKey("committee_category.committee_category_id")
+        UUID(as_uuid=True), ForeignKey("committee_category.committee_category_id")
     )
     language_code = Column(String(20), ForeignKey("language.language_code"))
 

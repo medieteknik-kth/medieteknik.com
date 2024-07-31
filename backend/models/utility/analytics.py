@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, DateTime, UUID, SMALLINT, inspect
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Integer, String, DateTime, SMALLINT, inspect, text
 from utility.database import db
 
 
@@ -22,13 +24,18 @@ class Analytics(db.Model):
 
     __tablename__ = "analytics"
 
-    analytics_id = Column(Integer, primary_key=True, autoincrement=True)
+    analytics_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     # User data
     user_id = Column(Integer)
 
     # Session data
-    session_id = Column(UUID, index=True, unique=True)
+    session_id = Column(UUID(as_uuid=True), index=True, unique=True, default=uuid.uuid4)
     geo_location = Column(String(255))
 
     # Browser/Device data

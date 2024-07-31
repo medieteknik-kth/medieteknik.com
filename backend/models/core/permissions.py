@@ -2,7 +2,7 @@ import enum
 from typing import Any, Dict, List
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, inspect
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from utility.database import db
 
 
@@ -61,7 +61,10 @@ class StudentPermission(db.Model):
 
     # Foreign keys
     student_id = Column(
-        Integer, ForeignKey("student.student_id"), nullable=False, unique=True
+        UUID(as_uuid=True),
+        ForeignKey("student.student_id"),
+        nullable=False,
+        unique=True,
     )
 
     # Relationships

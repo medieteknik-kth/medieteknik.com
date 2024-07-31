@@ -1,5 +1,7 @@
 import enum
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, inspect
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, inspect, text
 from utility.database import db
 
 
@@ -59,7 +61,12 @@ class Audit(db.Model):
 
     __tablename__ = "audit"
 
-    audit_id = Column(Integer, primary_key=True, autoincrement=True)
+    audit_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     created_at = Column(DateTime, nullable=False)
     action_type = Column(String(8), nullable=False)
@@ -70,13 +77,13 @@ class Audit(db.Model):
     result = Column(Enum(Result), nullable=False, default=Result.SUCCESS)
 
     # Foreign key
-    student_id = Column(Integer, ForeignKey("student.student_id"))
+    student_id = Column(UUID(as_uuid=True), ForeignKey("student.student_id"))
 
     # Relationships
     idempotency = db.relationship("Idempotency", back_populates="audit", uselist=False)
 
     def __init__(self):
-        from models.core.student import Student
+        from models.core.student import Student  # noqa: F401
 
         self.student = db.relationship("Student", back_populates="audit")
 

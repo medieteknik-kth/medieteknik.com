@@ -18,6 +18,7 @@ class News(Item):
     """
 
     news_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    url = Column(String(length=512), nullable=True, index=True)
 
     # Foreign keys
     item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))

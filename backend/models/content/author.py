@@ -1,21 +1,28 @@
 import enum
 from typing import Any, Dict, List
 import uuid
-from sqlalchemy import Column, Integer, Enum, UniqueConstraint, func, inspect, text
+from sqlalchemy import (
+    case,
+    CheckConstraint,
+    Column,
+    ForeignKey,
+    Enum,
+    inspect,
+    text,
+)
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from sqlalchemy.ext.hybrid import hybrid_property
 from utility.database import db
-from models.core import Student
-from models.committees import Committee, CommitteePosition
 
 
 class AuthorType(enum.Enum):
     """
-    The types of potential authors
+    What type of author is this
 
     Attributes:
-        STUDENT: The author is a student (Only the student has access to the content)
-        COMMITTEE: The author is a committee (All committee members have access to the content)
-        COMMITTEE_POSITION: The author is a committee position (All committee members have access to the content)
+        STUDENT: The author is a student
+        COMMITTEE: The author is a committee
+        COMMITTEE_POSITION: The author is a committee position
     """
 
     STUDENT = "STUDENT"
@@ -44,7 +51,24 @@ class Author(db.Model):
     """
     Author model.
 
-    Entities will have author rights,
+    Attributes:
+        author_id: Primary key
+        resources: List of resources the author has access to
+        student_id: Foreign key to student table
+        committee_id: Foreign key to committee table
+        committee_position_id: Foreign key to committee_position table
+        author_type: Hybrid property that returns what type of author is this
+
+    Relationships:
+        student: Student
+        committee: Committee
+        committee_position: CommitteePosition
+
+    Constraints:
+        at_most_one_author: Only one of student_id, committee_id, committee_position_id can be set.
+
+    Methods:
+        to_dict(provided_languages: List[str] = AVAILABLE_LANGUAGES): Converts the model to a dictionary
     """
 
     __tablename__ = "author"
@@ -56,20 +80,72 @@ class Author(db.Model):
         server_default=text("gen_random_uuid()"),
     )
 
-    author_type = Column(Enum(AuthorType), nullable=False)
-    entity_id = Column(Integer, nullable=False, index=True)
     resources = Column(
         ARRAY(Enum(AuthorResource, create_constraint=False, native_enum=False))
     )
 
+    # Foreign keys
+    student_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("student.student_id"),
+        nullable=True,
+        unique=True,
+    )
+    committee_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("committee.committee_id"),
+        nullable=True,
+        unique=True,
+    )
+    committee_position_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("committee_position.committee_position_id"),
+        nullable=True,
+        unique=True,
+    )
+
     __table_args__ = (
-        UniqueConstraint("author_type", "entity_id", name="uq_author_type_entity"),
+        CheckConstraint(
+            sqltext="num_nonnulls(student_id, committee_id, committee_position_id) = 1",
+            name="at_most_one_author",
+        ),
     )
 
     # Relationships
+    student = db.relationship("Student", back_populates="author")
+    committee = db.relationship("Committee", back_populates="author")
+    committee_position = db.relationship("CommitteePosition", back_populates="author")
     items = db.relationship("Item", back_populates="author")
 
+    @hybrid_property
+    def author_type(self) -> AuthorType | None:
+        if self.student_id:
+            return AuthorType.STUDENT
+        if self.committee_id:
+            return AuthorType.COMMITTEE
+        if self.committee_position_id:
+            return AuthorType.COMMITTEE_POSITION
+        return None
+
+    @author_type.expression
+    def author_type(cls):
+        return case(
+            (cls.student_id.isnot(None), AuthorType.STUDENT.value),
+            (cls.committee_id.isnot(None), AuthorType.COMMITTEE.value),
+            (
+                cls.committee_position_id.isnot(None),
+                AuthorType.COMMITTEE_POSITION.value,
+            ),
+            else_=None,
+        )
+
     def to_dict(self) -> Dict[str, Any] | None:
+        """
+        Returns a dictionary representation of the model.
+
+        Returns:
+            Dict[str, Any] | None: A dictionary containing the model's attributes.
+        """
         columns = inspect(self)
 
         if not columns:
@@ -93,24 +169,3 @@ class Author(db.Model):
         del data["author_id"]
 
         return data
-
-    def retrieve_author(self) -> Student | Committee | CommitteePosition:
-        if self.author_type not in AuthorType:
-            raise ValueError("Author type is not set")
-
-        author_map = {
-            AuthorType.STUDENT: Student,
-            AuthorType.COMMITTEE: Committee,
-            AuthorType.COMMITTEE_POSITION: CommitteePosition,
-        }
-
-        author_class = author_map.get(AuthorType(self.author_type))
-
-        if not author_class:
-            raise ValueError(f"Unsupported author type: {self.author_type}")
-
-        author = author_class.query.get(self.entity_id)
-        if not author:
-            raise ValueError(f"Invalid {self.author_type.value.lower()} id")
-
-        return author

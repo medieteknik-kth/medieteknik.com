@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, inspect
+from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
 
 
@@ -22,7 +23,7 @@ class Idempotency(db.Model):
     retry_count = Column(Integer, nullable=False)
 
     # Foreign key
-    audit_id = Column(Integer, ForeignKey("audit.audit_id"), unique=True)
+    audit_id = Column(UUID(as_uuid=True), ForeignKey("audit.audit_id"), unique=True)
 
     # Relationships
     audit = db.relationship("Audit", back_populates="idempotency")

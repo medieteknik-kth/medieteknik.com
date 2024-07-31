@@ -1,5 +1,7 @@
+import uuid
 from typing import Any, Dict, List
-from sqlalchemy import DateTime, String, Integer, Column, ForeignKey, inspect
+from sqlalchemy import DateTime, String, Integer, Column, ForeignKey, inspect, text
+from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
@@ -7,7 +9,12 @@ from utility.translation import get_translation
 
 class Committee(db.Model):
     __tablename__ = "committee"
-    committee_id = Column(Integer, primary_key=True, autoincrement=True)
+    committee_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     email = Column(String(255), unique=True)
     group_photo_url = Column(String(512))
@@ -15,10 +22,11 @@ class Committee(db.Model):
 
     # Foreign key
     committee_category_id = Column(
-        Integer, ForeignKey("committee_category.committee_category_id")
+        UUID(as_uuid=True), ForeignKey("committee_category.committee_category_id")
     )
 
     # Relationship
+    author = db.relationship("Author", back_populates="committee")
     committee_category = db.relationship(
         "CommitteeCategory", back_populates="committees"
     )
@@ -75,13 +83,18 @@ class Committee(db.Model):
 class CommitteeTranslation(db.Model):
     __tablename__ = "committee_translation"
 
-    committee_translation_id = Column(Integer, primary_key=True, autoincrement=True)
+    committee_translation_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     title = Column(String(125))
     description = Column(String(500))
 
     # Foreign keys
-    committee_id = Column(Integer, ForeignKey("committee.committee_id"))
+    committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationship
@@ -111,13 +124,18 @@ class CommitteeTranslation(db.Model):
 class CommitteeRecruitment(db.Model):
     __tablename__ = "committee_recruitment"
 
-    committee_recruitment_id = Column(Integer, primary_key=True, autoincrement=True)
+    committee_recruitment_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     start_date = Column(DateTime)
     end_date = Column(DateTime)
 
     # Foreign keys
-    committee_id = Column(Integer, ForeignKey("committee.committee_id"))
+    committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))
 
     # Relationship
     committee = db.relationship("Committee", back_populates="committee_recruitments")
@@ -170,7 +188,10 @@ class CommitteeRecruitmentTranslation(db.Model):
     __tablename__ = "committee_recruitment_translation"
 
     committee_recruitment_translation_id = Column(
-        Integer, primary_key=True, autoincrement=True
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
     )
 
     description = Column(String(255))
@@ -178,7 +199,7 @@ class CommitteeRecruitmentTranslation(db.Model):
 
     # Foreign keys
     committee_recruitment_id = Column(
-        Integer, ForeignKey("committee_recruitment.committee_recruitment_id")
+        UUID(as_uuid=True), ForeignKey("committee_recruitment.committee_recruitment_id")
     )
     language_code = Column(String(20), ForeignKey("language.language_code"))
 

@@ -1,7 +1,7 @@
 import enum
 from typing import List
 import uuid
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String, inspect
+from sqlalchemy import Column, Enum, ForeignKey, Integer, String, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
@@ -17,7 +17,12 @@ class TagCategory(enum.Enum):
 class Tag(db.Model):
     __tablename__ = "tag"
 
-    tag_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tag_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     color = Column(String(7))
     category = Column(Enum(TagCategory), nullable=False, default=TagCategory.NEWS)
@@ -61,7 +66,10 @@ class TagTranslation(db.Model):
     __tablename__ = "tag_translation"
 
     tag_translation_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
     )
 
     title = Column(String(255))

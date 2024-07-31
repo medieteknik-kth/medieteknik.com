@@ -1,7 +1,7 @@
 from typing import List
 import uuid
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from sqlalchemy import Column, ForeignKey, Integer, String, inspect
+from sqlalchemy import Column, ForeignKey, String, inspect
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
@@ -66,6 +66,7 @@ class DocumentTranslation(db.Model):
 
     title = Column(String(255))
     categories = Column(ARRAY(String))
+    url = Column(String(512))
 
     # Foreign keys
     document_id = Column(UUID(as_uuid=True), ForeignKey("document.document_id"))

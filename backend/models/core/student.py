@@ -1,6 +1,7 @@
 import enum
+import uuid
 from typing import Any, Dict
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import (
     Boolean,
     String,
@@ -12,6 +13,7 @@ from sqlalchemy import (
     func,
     inspect,
     or_,
+    text,
 )
 from utility.database import db
 from utility.reception_mode import RECEPTION_MODE
@@ -54,7 +56,12 @@ class Student(db.Model):
 
     __tablename__ = "student"
 
-    student_id = Column(Integer, primary_key=True, autoincrement=True)
+    student_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     email = Column(String(255), unique=True, nullable=False, index=True)
     first_name = Column(String(255), nullable=False)
@@ -70,6 +77,7 @@ class Student(db.Model):
     # Relationships
     profile = db.relationship("Profile", back_populates="student", uselist=False)
     student_positions = db.relationship("StudentMembership", back_populates="student")
+    author = db.relationship("Author", back_populates="student", uselist=False)
     calendar = db.relationship("Calendar", back_populates="student", uselist=False)
     permissions = db.relationship(
         "StudentPermission", back_populates="student", uselist=False
@@ -98,7 +106,6 @@ class Student(db.Model):
                 value = value.value
             data[column] = value
 
-        del data["student_id"]
         del data["password_hash"]
 
         if is_public_route:
@@ -142,7 +149,12 @@ class Profile(db.Model):
 
     __tablename__ = "profile"
 
-    profile_id = Column(Integer, primary_key=True, autoincrement=True)
+    profile_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     notifications_enabled = Column(Boolean, default=True)
     notification_emails = Column(ARRAY(String(255)))
@@ -154,7 +166,10 @@ class Profile(db.Model):
 
     # Foreign keys
     student_id = Column(
-        Integer, ForeignKey("student.student_id"), nullable=False, unique=True
+        UUID(as_uuid=True),
+        ForeignKey("student.student_id"),
+        nullable=False,
+        unique=True,
     )
 
     # Relationships
@@ -164,9 +179,6 @@ class Profile(db.Model):
         return "<Profile %r>" % self.profile_id
 
     def to_dict(self, is_public_route=True):
-        if is_public_route:
-            return {}
-
         columns = inspect(self)
 
         if not columns:
@@ -178,6 +190,11 @@ class Profile(db.Model):
 
         if not data:
             return {}
+        
+        if is_public_route:
+            del data["phone_number"]
+            del data["notification_emails"]
+            del data["notifications_enabled"]
 
         del data["profile_id"]
         del data["student_id"]
@@ -201,15 +218,22 @@ class StudentMembership(db.Model):
 
     __tablename__ = "student_membership"
 
-    student_membership_id = Column(Integer, primary_key=True, autoincrement=True)
+    student_membership_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
 
     initiation_date = Column(DateTime, nullable=False)
     termination_date = Column(DateTime)
 
     # Foreign keys
-    student_id = Column(Integer, ForeignKey("student.student_id"), nullable=False)
+    student_id = Column(
+        UUID(as_uuid=True), ForeignKey("student.student_id"), nullable=False
+    )
     committee_position_id = Column(
-        Integer,
+        UUID(as_uuid=True),
         ForeignKey("committee_position.committee_position_id"),
     )
 

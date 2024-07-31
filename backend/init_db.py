@@ -85,7 +85,9 @@ def drop_db():
 
 
 parser = argparse.ArgumentParser(description="Database initialization script")
-parser.add_argument("--recreate", action="store_true", help="Drop all tables")
+parser.add_argument(
+    "--recreate", action="store_true", help="Drops all tables and creates new ones"
+)
 
 if __name__ == "__main__":
     args = parser.parse_args()
