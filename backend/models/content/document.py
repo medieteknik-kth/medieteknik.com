@@ -1,11 +1,25 @@
-from typing import List
+import enum
 import uuid
+from typing import List
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from sqlalchemy import Column, ForeignKey, String, inspect
+from sqlalchemy import Column, ForeignKey, String, inspect, Enum
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
+
+
+class DocumentType(enum.Enum):
+    """
+    What document can be uploaded as. Mainly used to distinguish between the purpose of a file.
+
+    Attributes:
+        DOCUMENT: Document
+        FORM: Form
+    """
+
+    DOCUMENT = "DOCUMENT"
+    FORM = "FORM"
 
 
 class Document(Item):
@@ -17,6 +31,8 @@ class Document(Item):
     """
 
     document_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    type = Column(Enum(DocumentType), default=DocumentType.DOCUMENT, nullable=False)
 
     # Foreign keys
     item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
@@ -36,6 +52,18 @@ class Document(Item):
 
         if not base_data:
             return {}
+
+        columns = inspect(self)
+
+        if not columns:
+            return None
+
+        columns = columns.mapper.column_attrs.keys()
+        for column in columns:
+            value = getattr(self, column)
+            if isinstance(value, enum.Enum):
+                value = value.value
+            base_data[column] = value
 
         translations = []
 
