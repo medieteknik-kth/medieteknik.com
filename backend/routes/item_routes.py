@@ -115,7 +115,6 @@ def get_news_by_student(email: str):
     if not author:
         return jsonify({}), 404
 
-    print("author", author.author_id, author.author_type, author.entity_id)
     return jsonify(get_items_from_author(author, News, provided_languages))
 
 

@@ -3,6 +3,8 @@ Author Service
 """
 
 from typing import Type
+
+from sqlalchemy import or_
 from models.core.student import Student
 from models.committees import Committee, CommitteePosition
 from models.content import AuthorType, Author
@@ -29,7 +31,7 @@ def get_author_from_email(
     if not entity:
         return None
 
-    entity_id = -1
+    entity_id = ""
     entity_type = None
 
     if isinstance(entity, Student):
@@ -42,4 +44,11 @@ def get_author_from_email(
         entity_id = entity.committee_position_id
         entity_type = AuthorType.COMMITTEE_POSITION
 
-    return Author.query.filter_by(entity_id=entity_id, author_type=entity_type).first()
+    return Author.query.filter(
+        Author.author_type == entity_type.value,
+        or_(
+            Author.student_id == entity_id,
+            Author.committee_id == entity_id,
+            Author.committee_position_id == entity_id,
+        ),
+    ).first()

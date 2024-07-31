@@ -381,23 +381,24 @@ def publish(
     update_translations(item, translation_table, translations)
     db.session.flush()
 
-    # Prefer english title
-    title = ""
-    if translations[0]["language_code"] == "en":
-        title = translations[0]["title"]
-    else:
-        for translation in translations:
-            if translation["language_code"]:
-                title = translation["title"]
-                break
+    if isinstance(item, News):
+        title = ""
+        if translations[0]["language_code"] == "en":
+            title = translations[0]["title"]
+        else:
+            for translation in translations:
+                if translation["language_code"]:
+                    title = translation["title"]
+                    break
 
-    seo_friendly_url = normalize_to_ascii(title).split(" ")
-    seo_friendly_url = (
-        "-".join(seo_friendly_url) + "-" + datetime.now().strftime("%Y-%m-%d")
-    )
-    seo_friendly_url = seo_friendly_url.lower()
+        seo_friendly_url = normalize_to_ascii(title).split(" ")
+        seo_friendly_url = (
+            "-".join(seo_friendly_url) + "-" + datetime.now().strftime("%Y-%m-%d")
+        )
+        seo_friendly_url = seo_friendly_url.lower()
 
-    setattr(item, "url", str(seo_friendly_url))
+        setattr(item, "url", str(seo_friendly_url))
+
     setattr(item, "is_public", True)
     setattr(item, "created_at", datetime.now())
     setattr(item, "published_status", PublishedStatus.PUBLISHED)

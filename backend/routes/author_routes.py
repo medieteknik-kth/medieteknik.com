@@ -1,5 +1,6 @@
 from html import escape
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from models.content import Author, AuthorType, AuthorResource
 from utility import database
 
@@ -9,6 +10,7 @@ author_bp = Blueprint("author", __name__)
 
 
 @author_bp.route("/", methods=["GET"])
+@jwt_required()
 def get_authors():
     """Get all authors
 
@@ -16,20 +18,16 @@ def get_authors():
         dict: List of authors
     """
 
-    author_type = request.args.get("type")
+    author_type = request.args.get("type", type=str)
     authors = Author.query
 
     if author_type:
-        if author_type.upper() not in [author_type.value for author_type in AuthorType]:
-            return jsonify({"error": "Invalid author type"}), 400
-
-        # Sanitize input
-        if not isinstance(author_type, str):
+        if author_type.upper() not in AuthorType.__members__:
             return jsonify({"error": "Invalid author type"}), 400
 
         author_type = escape(author_type)
 
-        authors = authors.filter_by(author_type=author_type.upper())
+        authors = authors.filter(Author.author_type == author_type.upper())
 
     resources = request.args.getlist("resources")
     santized_resources = []

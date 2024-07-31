@@ -50,7 +50,7 @@ def login(data: Dict[str, Any]):
             }
         ), 401
 
-    permissions_and_role = get_permissions(int(getattr(student, "student_id")))
+    permissions_and_role = get_permissions(getattr(student, "student_id"))
     additional_claims = {
         "role": permissions_and_role.get("role"),
         "permissions": permissions_and_role.get("permissions"),
@@ -121,15 +121,16 @@ def assign_password(data: Dict[str, Any]):
     return True
 
 
-def get_permissions(student_id: int) -> Dict[str, Any]:
+def get_permissions(student_id: str) -> Dict[str, Any]:
     all_permissions_and_role = {
         "role": None,
         "permissions": {},
     }
 
-    author = Author.query.filter_by(
-        entity_id=student_id, author_type=AuthorType.STUDENT
-    ).first()
+    author = Author.query.filter(
+        Author.author_type == AuthorType.STUDENT,
+        Author.student_id == student_id,
+    )
 
     if author and isinstance(author, Author):
         author_data = author.to_dict()

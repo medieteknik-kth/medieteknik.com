@@ -1,9 +1,12 @@
 from typing import Any, Dict, List
 from flask import Blueprint, jsonify, request
 from sqlalchemy.orm import joinedload
-from models.core import Student, StudentMembership
+from models.core import Student, StudentMembership, Profile
 from models.committees import CommitteePosition, CommitteePositionsRole
-from services.core.public.student import retrieve_all_committee_members
+from services.core.public.student import (
+    retrieve_all_committee_members,
+    retrieve_student_membership_by_id,
+)
 from utility.translation import retrieve_languages
 from utility.database import db
 
@@ -32,21 +35,44 @@ def get_students():
     )
 
 
-@public_student_bp.route("/<int:student_id>", methods=["GET"])
-def get_student(student_id: int):
+@public_student_bp.route("/<string:student_id>", methods=["GET"])
+def get_student(student_id: str):
     """Retrieves a student
 
     Args:
-        student_id (int): Student ID
+        student_id (str): Student ID
 
     Returns:
         dict: Student
     """
-    student: Student | None = Student.query.get(student_id)
-    if not student:
+    provided_languages = retrieve_languages(request.args)
+    detailed = request.args.get("detailed", type=bool, default=False)
+
+    student = Student.query.get(student_id)
+
+    if not student and not isinstance(student, Student):
         return jsonify({}), 404
 
-    return jsonify(student.to_dict(is_public_route=True))
+    profile = Profile.query.filter_by(student_id=student_id).first()
+
+    data = {}
+    data["student"] = student.to_dict(is_public_route=True)
+    data["profile"] = profile.to_dict() if profile else None
+
+    if detailed:
+        data["memberships"] = [
+            {
+                "position": membership.committee_position.to_dict(
+                    provided_languages=provided_languages,
+                    include_committee_logo=True,
+                ),
+                "initiation_date": membership.initiation_date,
+                "termination_date": membership.termination_date,
+            }
+            for membership in retrieve_student_membership_by_id(student_id)
+        ]
+
+    return jsonify(data)
 
 
 @public_student_bp.route("/committee_members", methods=["GET"])

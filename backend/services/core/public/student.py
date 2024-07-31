@@ -29,3 +29,21 @@ def retrieve_all_committee_members(languages):
     )
 
     return committee_memberships
+
+
+def retrieve_student_membership_by_id(student_id):
+    committee_memberships = (
+        db.session.query(StudentMembership)
+        .join(
+            CommitteePosition,
+            StudentMembership.committee_position_id
+            == CommitteePosition.committee_position_id,
+        )
+        .filter(StudentMembership.student_id == student_id)
+        .options(
+            joinedload(StudentMembership.committee_position),  # type: ignore
+        )
+        .all()
+    )
+
+    return committee_memberships

@@ -1,5 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models.content import News, Event, Document, Album, Author
+from models.content.author import AuthorType
+from models.core.student import Student
+from services.content.author import get_author_from_email
 from utility.translation import retrieve_languages
 from services.content.public.item import (
     get_latest_items,
@@ -30,6 +33,34 @@ def get_news() -> dict:
         ), 200
 
     return jsonify(get_items(News, provided_languages)), 200
+
+
+@public_news_bp.route("/student/<string:email>", methods=["GET"])
+def get_news_by_student(email: str):
+    """Retrieves news by a given student
+
+    Args:
+        email (str): Student email
+
+    Returns:
+        dict: News item
+    """
+
+    provided_languages = retrieve_languages(request.args)
+
+    return jsonify(
+        get_items_from_author(
+            Author.query.filter(
+                Author.author_type == AuthorType.STUDENT.value,
+                Author.student_id
+                == get_author_from_email(
+                    entity_table=Student, entity_email=email
+                ).student_id,
+            ).first_or_404(),
+            News,
+            provided_languages,
+        )
+    )
 
 
 @public_news_bp.route("/<string:url>", methods=["GET"])
@@ -73,6 +104,34 @@ def get_events() -> dict:
         return jsonify(get_items(Event, provided_languages, author_id=author_id)), 200
 
     return jsonify(get_items(Event, provided_languages)), 200
+
+
+@public_events_bp.route("/student/<string:email>", methods=["GET"])
+def get_events_by_student(email: str):
+    """Retrieves events by a given student
+
+    Args:
+        email (str): Student email
+
+    Returns:
+        dict: News item
+    """
+
+    provided_languages = retrieve_languages(request.args)
+
+    return jsonify(
+        get_items_from_author(
+            Author.query.filter(
+                Author.author_type == AuthorType.STUDENT.value,
+                Author.student_id
+                == get_author_from_email(
+                    entity_table=Student, entity_email=email
+                ).student_id,
+            ).first_or_404(),
+            Event,
+            provided_languages,
+        )
+    )
 
 
 @public_events_bp.route("/<string:url>", methods=["GET"])
