@@ -22,6 +22,7 @@ export type StudentType = typeof StudentType[keyof typeof StudentType]
  */
 export default interface Student {
   author_type: 'STUDENT';
+  student_id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -29,6 +30,12 @@ export default interface Student {
   reception_name?: string;
   reception_profile_picture_url?: string;
   student_type: StudentType;
+}
+
+export interface Profile {
+  facebook_url: string;
+  linkedin_url: string;
+  instagram_url: string;
 }
 
 /**
@@ -41,6 +48,12 @@ export default interface Student {
  */
 export interface StudentCommitteePosition {
   student: Student;
+  position: CommitteePosition;
+  initiation_date: string;
+  termination_date: string;
+}
+
+export interface IndividualCommitteePosition {
   position: CommitteePosition;
   initiation_date: string;
   termination_date: string;

@@ -23,7 +23,6 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import NewsCard from '../components/newsCard'
-import { NewsPagination } from '@/models/Items'
 import {
   Tooltip,
   TooltipContent,
@@ -40,6 +39,7 @@ import { UploadNews } from '@/components/dialogs/Upload'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { NewsPagination } from '@/models/Pagination'
 
 const maxPages = 10
 

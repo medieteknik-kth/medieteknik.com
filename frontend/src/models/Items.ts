@@ -77,11 +77,3 @@ export interface EventTranslation {
   sub_image_urls?: string[]
   language_code: LanguageCodes
 }
-
-export interface NewsPagination {
-  items: News[]
-  page: number
-  per_page: number
-  total_items: number
-  total_pages: number
-}

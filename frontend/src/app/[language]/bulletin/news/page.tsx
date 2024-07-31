@@ -1,6 +1,7 @@
 import AllNews from './allNews'
 import { API_BASE_URL } from '@/utility/Constants'
-import { News, NewsPagination } from '@/models/Items'
+import { News } from '@/models/Items'
+import { NewsPagination } from '@/models/Pagination'
 
 async function getNews(language: string) {
   const response = await fetch(

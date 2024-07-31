@@ -1,11 +1,12 @@
 'use client'
 import Loading from '@/components/tooltips/Loading'
-import { News, NewsPagination } from '@/models/Items'
+import { News } from '@/models/Items'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from './components/shortNews'
+import { NewsPagination } from '@/models/Pagination'
 
 /**
  * The fetcher function that fetches news data from the API.

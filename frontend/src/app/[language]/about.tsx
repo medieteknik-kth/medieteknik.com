@@ -23,14 +23,14 @@ export default async function About({ language }: { language: string }) {
       title: t('chapter.title'),
       description: t('chapter.description'),
       icon: StyrelsenIcon,
-      href: language + '/chapter',
+      href: '/' + language + '/chapter',
       linkText: t('chapter.link_text'),
     },
     {
       title: t('new_students.title'),
       description: t('new_students.description'),
       icon: MTGNIcon,
-      href: language + '/education',
+      href: '/' + language + '/education',
       linkText: t('new_students.link_text'),
     },
     {
@@ -66,7 +66,6 @@ export default async function About({ language }: { language: string }) {
         {cards.map((card) => (
           <InfographicCard
             key={card.title}
-            language={language}
             card={{
               title: card.title,
               description: card.description,
