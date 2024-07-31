@@ -1,16 +1,16 @@
 import Masters from './masters'
 import Courses from './courses'
-import International from 'public/images/committees/internationals.png'
 import BG from 'public/images/kth-landskap.jpg'
-import KTH from 'public/images/KTH.jpg'
+import KTH from 'public/images/svg/kth.svg'
 import { Head, Section } from '@/components/static/Static'
 import Link from 'next/link'
-import Action from '@/components/cards/Action'
 import {
   EnvelopeIcon,
   PhoneIcon,
   MapPinIcon,
 } from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import { Button } from '@/components/ui/button'
 
 export default function Education({
   params: { language },
@@ -25,26 +25,41 @@ export default function Education({
         description='Medieteknikens roll i samhället växer, från nyhetssajter till virtuella miljöer, med potential att både motivera hållbara val och väcka frågor om etik och design.'
         image={BG}
       />
-      <Section>
-        <div className='w-full h-fit grid place-items-center'>
-          <div className='w-[400px] lg:w-[800px] h-fit grid lg:grid-cols-2 auto-rows-max *:h-96 gap-8 mb-8 mt-8'>
-            <Action
-              title='KTH'
-              image={KTH}
-              href={[
-                'https://www.kth.se/utbildning/civilingenjor/medieteknik',
-                true,
-              ]}
+      <div className='absolute left-20 top-96 flex gap-8'>
+        <Button
+          size={'icon'}
+          className='overflow-hidden hover:scale-110 transition-all'
+          title='KTH Website (in Swedish)'
+          aria-label='KTH Website (in Swedish)'
+          asChild
+        >
+          <Link
+            href={`https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150`}
+            target='_blank'
+            rel='noreferrer noopenner'
+          >
+            <KTH className='w-10 h-10 rounded-md' />
+          </Link>
+        </Button>
+        <Button
+          variant={'outline'}
+          size={'icon'}
+          className='overflow-hidden hover:scale-110 transition-all'
+          asChild
+        >
+          <Link href={`/${language}/chapter/committees/internationals`}>
+            <Image
+              src={
+                'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg'
+              }
+              alt='img'
+              width={200}
+              height={200}
+              className='w-10 h-10'
             />
-
-            <Action
-              title='International'
-              image={International}
-              href={['./chapter/committees/international', false]}
-            />
-          </div>
-        </div>
-      </Section>
+          </Link>
+        </Button>
+      </div>
 
       <Courses params={{ language }} />
 

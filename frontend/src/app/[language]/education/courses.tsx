@@ -1,5 +1,5 @@
 'use client'
-import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Section } from '@/components/static/Static'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -168,20 +168,19 @@ export default function Courses({
             {categoryMetadataMap.map((category, index) => (
               <button
                 key={index}
-                className='w-full h-full flex flex-col justify-center border-2 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg'
+                className='w-full h-full flex flex-col justify-center border-4 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg relative overflow-hidden shadow-[#0000004f] dark:shadow-[#ffffff4f] bg-white dark:bg-[#111] border-black/15 dark:border-white/15'
                 style={{
                   borderColor: category.color,
-                  backgroundColor: category.color + '20',
                 }}
                 onClick={() => {
                   setDetailedViewOpen(true)
                   setCurrentView(category)
                 }}
               >
-                <h3 className='text-2xl uppercase font-bold tracking-wider'>
+                <h3 className='text-2xl uppercase font-bold tracking-wider z-10'>
                   {category.title}
                 </h3>
-                <p className='text-center'>{category.percentage} %</p>
+                <p className='text-center z-10'>{category.percentage} %</p>
               </button>
             ))}
           </div>
