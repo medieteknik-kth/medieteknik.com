@@ -47,50 +47,79 @@ export default async function StudentEvents({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {events.items.map((event, index) => (
-              <TableRow key={index}>
-                <TableCell className='max-w-[650px] truncate'>
-                  {event.translations[0].title}
-                </TableCell>
-                <TableCell>
-                  {new Date(event.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  {new Date(event.start_date) >= new Date() &&
-                  new Date(event.end_date) <= new Date() ? (
-                    <span className='text-green-500'>Ongoing</span>
-                  ) : new Date(event.end_date) < new Date() ? (
-                    <span className='text-red-500'>Ended</span>
-                  ) : (
-                    <span className='text-yellow-500'>Upcoming</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {new Date(event.start_date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  {new Date(event.end_date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant='outline'
-                    size='icon'
-                    title='Tags'
-                    aria-label='Tags'
+            {events.items
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              )
+              .map((event, index) => (
+                <TableRow key={index}>
+                  <TableCell
+                    className='max-w-[650px] truncate border-l-8'
+                    style={{
+                      borderLeftColor: event.background_color,
+                    }}
                   >
-                    <TagIcon className='w-6 h-6' />
-                  </Button>
-                  <Button
-                    variant='outline'
-                    size='icon'
-                    title='Share'
-                    aria-label='Share'
-                  >
-                    <LinkIcon className='w-6 h-6' />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                    {event.translations[0].title}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(event.created_at).toLocaleDateString(language, {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(event.end_date) > new Date() &&
+                    new Date(event.start_date) < new Date() ? (
+                      <div className='flex h-full items-center gap-2'>
+                        <div className='w-3 h-3 bg-lime-500 rounded-full animate-pulse' />
+                        <span className=''>Ongoing</span>
+                      </div>
+                    ) : new Date(event.end_date) < new Date() ? (
+                      <div className='flex h-full items-center gap-2'>
+                        <div className='w-3 h-3 bg-red-500 rounded-full' />
+                        <span className=''>Ended</span>
+                      </div>
+                    ) : (
+                      <div className='flex h-full items-center gap-2'>
+                        <div className='w-3 h-3 bg-yellow-500 rounded-full' />
+                        <span className=''>Upcoming</span>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(event.start_date).toLocaleDateString(language, {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(event.end_date).toLocaleDateString(language, {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    })}
+                  </TableCell>
+                  <TableCell className='flex gap-2'>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      title='Tags'
+                      aria-label='Tags'
+                    >
+                      <TagIcon className='w-6 h-6' />
+                    </Button>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      title='Share'
+                      aria-label='Share'
+                    >
+                      <LinkIcon className='w-6 h-6' />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>

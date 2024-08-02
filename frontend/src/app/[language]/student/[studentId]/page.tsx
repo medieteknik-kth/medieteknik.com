@@ -53,7 +53,12 @@ export default async function UserPage({
             <h1 className='text-5xl tracking-wide'>
               {data.student.first_name + ' ' + data.student.last_name}
             </h1>
-            <p className='text-xl tracking-wide'>{data.student.email}</p>
+            <Link
+              href={`mailto:${data.student.email}`}
+              className='text-xl tracking-wide hover:underline underline-offset-4 text-sky-700 dark:text-yellow-400'
+            >
+              {data.student.email}
+            </Link>
             <div className='absolute -bottom-8'>
               <EditProfile language={language} currentStudent={data.student} />
             </div>
