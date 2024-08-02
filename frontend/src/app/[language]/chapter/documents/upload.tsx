@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,8 +19,6 @@ import {
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/components/ui/input'
 import {
@@ -35,15 +34,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { DocumentType } from '@/models/Document'
+import { Document, DocumentType } from '@/models/Document'
 import { useState } from 'react'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
 
 export default function UploadDocument({ language }: { language: string }) {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('DOCUMENT')
+  const { student } = useAuthentication()
   const FormSchema = z.object({
     title: z.string().min(1, { message: 'Required' }),
-    description: z.string().min(1, { message: 'Required' }),
     type: z.enum(['DOCUMENT', 'FORM']),
     file: z.instanceof(window.File),
   })
@@ -73,13 +74,41 @@ export default function UploadDocument({ language }: { language: string }) {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       title: '',
-      description: '',
+      type: 'DOCUMENT',
     },
   })
 
   const postForm = async (data: z.infer<typeof FormSchema>) => {
-    // TODO: Upload file
-    console.log(data)
+    if (!student) {
+      return
+    }
+    const formData = new FormData()
+
+    // Add top-level fields
+    formData.append('document_type', data.type)
+
+    // Add author fields
+    formData.append('author[author_type]', 'STUDENT')
+    formData.append('author[entity_email]', student.email)
+
+    // Add translation fields
+    formData.append('translations[0][file]', data.file)
+    formData.append('translations[0][title]', data.title)
+    formData.append('translations[0][language_code]', language)
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/documents/`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      })
+      if (response.ok) {
+        const data = await response.json()
+        return data
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const documentTypes = [
@@ -120,20 +149,6 @@ export default function UploadDocument({ language }: { language: string }) {
                     <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input placeholder='Title' {...field} />
-                    </FormControl>
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Description' {...field} />
                     </FormControl>
                     <FormMessage className='text-xs font-bold' />
                   </FormItem>

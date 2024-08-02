@@ -1,3 +1,4 @@
+import { Document } from './Document'
 import { Event, News } from './Items'
 
 interface Pagniation {
@@ -13,4 +14,8 @@ export interface NewsPagination extends Pagniation {
 
 export interface EventPagniation extends Pagniation {
   items: Event[]
+}
+
+export interface DocumentPagination extends Pagniation {
+  items: Document[]
 }

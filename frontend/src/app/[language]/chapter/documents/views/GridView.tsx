@@ -134,7 +134,7 @@ export default function GridView({
           >
             <div className='w-full h-fit flex items-center justify-between py-2'>
               <div className='flex items-center gap-2'>
-                {document.type === 'DOCUMENT' ? (
+                {document.document_type === 'DOCUMENT' ? (
                   <DocumentIcon
                     className='w-5 h-5 text-green-500'
                     title='Document'

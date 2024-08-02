@@ -117,7 +117,7 @@ export default function ListView({
               >
                 <TableCell>
                   <div className='flex gap-2 items-center'>
-                    {document.type === 'DOCUMENT' ? (
+                    {document.document_type === 'DOCUMENT' ? (
                       <DocumentIcon
                         className='w-5 h-5 text-green-500'
                         title='Document'

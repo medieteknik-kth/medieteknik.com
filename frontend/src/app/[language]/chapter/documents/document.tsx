@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   Squares2X2Icon,
-  PlusIcon,
   HomeIcon,
   DocumentTextIcon,
   DocumentIcon,
@@ -20,20 +19,18 @@ import {
 } from '@heroicons/react/24/outline'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState } from 'react'
-import GridView from './views/GridView'
-import ListView from './views/ListView'
-import { Document } from '@/models/Document'
 import View from './tabs/View'
 import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import UploadDocument from './upload'
+import { DocumentPagination } from '@/models/Pagination'
 
 type View = 'grid' | 'list'
 
 const fetcher = (url: string) =>
-  fetch(url).then((res) => res.json() as Promise<Document[]>)
+  fetch(url).then((res) => res.json() as Promise<DocumentPagination>)
 
 export default function Documents({
   params: { language },
@@ -160,9 +157,12 @@ export default function Documents({
               </div>
               <Separator orientation='vertical' className='h-6' />
               <div className='flex gap-2'>
-                <Button variant='destructive' size='icon' title='Delete'>
-                  <TrashIcon className='w-6 h-6' />
-                </Button>
+                {permissions.author.includes('DOCUMENT') &&
+                  permissions.student.includes('ITEMS_DELETE') && (
+                    <Button variant='destructive' size='icon' title='Delete'>
+                      <TrashIcon className='w-6 h-6' />
+                    </Button>
+                  )}
                 <Button variant='ghost' size='icon' title='More Actions'>
                   <EllipsisVerticalIcon className='w-6 h-6' />
                 </Button>
@@ -173,17 +173,19 @@ export default function Documents({
         <TabsContent value='Home'>
           <View
             language={language}
-            documents={documents}
+            documents={documents.items}
             currentView={view}
             selectedDocuments={selectedDocuments}
             setSelectedDocuments={setSelectedDocuments}
           />
         </TabsContent>
         <TabsContent value='Documents'>
-          {documents.length > 0 ? (
+          {documents.items.length > 0 ? (
             <View
               language={language}
-              documents={documents.filter((doc) => doc.type === 'DOCUMENT')}
+              documents={documents.items.filter(
+                (doc) => doc.document_type === 'DOCUMENT'
+              )}
               currentView={view}
               selectedDocuments={selectedDocuments}
               setSelectedDocuments={setSelectedDocuments}
@@ -193,10 +195,12 @@ export default function Documents({
           )}
         </TabsContent>
         <TabsContent value='Forms'>
-          {documents.length > 0 ? (
+          {documents.items.length > 0 ? (
             <View
               language={language}
-              documents={documents.filter((doc) => doc.type === 'FORM')}
+              documents={documents.items.filter(
+                (doc) => doc.document_type === 'FORM'
+              )}
               currentView={view}
               selectedDocuments={selectedDocuments}
               setSelectedDocuments={setSelectedDocuments}

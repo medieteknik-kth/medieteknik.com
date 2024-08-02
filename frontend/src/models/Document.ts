@@ -1,10 +1,11 @@
 import { LanguageCodes } from '@/utility/Constants'
-import { Item } from './Items'
+import { Author, Item } from './Items'
 
 export type DocumentType = 'DOCUMENT' | 'FORM'
 
 export interface Document extends Item {
-  type: DocumentType
+  document_type: DocumentType
+  author: Author
   translations: DocumentTranslation[]
 }
 
