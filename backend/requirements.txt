@@ -12,3 +12,4 @@ requests
 authlib
 gunicorn
 psycopg2
+google-cloud-storage

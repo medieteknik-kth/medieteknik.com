@@ -13,10 +13,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.inspection import inspect
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from models.committees.committee import Committee
+from models.committees.committee_position import CommitteePosition
+from models.core.student import Student
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from datetime import datetime, timezone
-from .author import Author
+from .author import Author, AuthorType
 
 
 class PublishedStatus(enum.Enum):
@@ -114,13 +117,25 @@ class Item(db.Model):
         author_data = Author.query.filter_by(author_id=self.author_id).first()
 
         if author_data and isinstance(author_data, Author):
-            corrected_author_dict = author_data.retrieve_author().to_dict()
-
-            if not corrected_author_dict:
-                return None
-
-            corrected_author_dict["author_type"] = author_data.author_type.value
-            data["author"] = corrected_author_dict
+            if author_data.author_type == AuthorType.STUDENT:
+                student = Student.query.get(author_data.student_id)
+                if student and isinstance(student, Student):
+                    data["author"] = student.to_dict(is_public_route)
+                    data["author"]["author_type"] = AuthorType.STUDENT.value
+            elif author_data.author_type == AuthorType.COMMITTEE:
+                committee = Committee.query.get(author_data.committee_id)
+                if committee and isinstance(committee, Committee):
+                    data["author"] = committee.to_dict(is_public_route)
+                    data["author"]["author_type"] = AuthorType.COMMITTEE.value
+            elif author_data.author_type == AuthorType.COMMITTEE_POSITION:
+                committee_position = CommitteePosition.query.get(
+                    author_data.committee_position_id
+                )
+                if committee_position and isinstance(
+                    committee_position, CommitteePosition
+                ):
+                    data["author"] = committee_position.to_dict(is_public_route)
+                    data["author"]["author_type"] = AuthorType.COMMITTEE_POSITION.value
         else:
             data["author"] = {}
 

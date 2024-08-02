@@ -12,6 +12,7 @@ from .constants import AVAILABLE_LANGUAGES
 from .constants import DEFAULT_LANGUAGE_CODE
 
 from .database import db
+from .gc import upload_file, bucket
 from .reception_mode import RECEPTION_MODE
 
 from .translation import convert_iso_639_1_to_bcp_47
@@ -30,6 +31,8 @@ __all__ = [
     "AVAILABLE_LANGUAGES",
     "DEFAULT_LANGUAGE_CODE",
     "db",
+    "upload_file",
+    "bucket",
     "PUBLIC_PATH",
     "PROTECTED_PATH",
     "RECEPTION_MODE",

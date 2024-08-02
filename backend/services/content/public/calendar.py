@@ -7,9 +7,9 @@ from utility.database import db
 
 
 def get_main_calendar() -> Calendar:
-    main_calendar = Calendar.query.filter(Calendar.is_root).first()
+    main_calendar = Calendar.query.filter(Calendar.is_root == True).first()  # noqa: E712
 
-    if not main_calendar or not isinstance(main_calendar, Calendar):
+    if not main_calendar:
         calendar = Calendar()
         setattr(calendar, "name", "Medieteknik's Calendar")
 

@@ -167,14 +167,14 @@ def create_item(
         data = {}
 
     if not author_email or not author_table:
-        return None
+        raise ValueError("author_email and author_table are required")
 
     author: Author | None = get_author_from_email(
         entity_table=author_table, entity_email=author_email
     )
 
     if not author or not isinstance(author, Author):
-        return None
+        raise ValueError("Invalid author")
 
     if not data.get("translations"):
         index = 0
@@ -207,11 +207,11 @@ def create_item(
             raise NotImplementedError(f"Unsupported item type: {item_table}")
 
         if not translation_table:
-            return None
+            raise NotImplementedError(f"Unsupported item type: {item_table}")
 
         mapper = inspect(translation_table)
         if not mapper:
-            return None
+            raise NotImplementedError(f"Unsupported item type: {item_table}")
         primary_key_columns = mapper.primary_key
         translation_pk = primary_key_columns[0]
 
@@ -237,7 +237,8 @@ def create_item(
     translation_data = data.get("translations")
 
     del data["translations"]
-    del data["author"]
+    if data["author"]:
+        del data["author"]
 
     item = item_table()
     setattr(item, "author_id", author.author_id)

@@ -32,7 +32,9 @@ class Document(Item):
 
     document_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    type = Column(Enum(DocumentType), default=DocumentType.DOCUMENT, nullable=False)
+    document_type = Column(
+        Enum(DocumentType), default=DocumentType.DOCUMENT, nullable=False
+    )
 
     # Foreign keys
     item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
@@ -94,7 +96,7 @@ class DocumentTranslation(db.Model):
 
     title = Column(String(255))
     categories = Column(ARRAY(String))
-    url = Column(String(512))
+    url = Column(String(2096))
 
     # Foreign keys
     document_id = Column(UUID(as_uuid=True), ForeignKey("document.document_id"))
@@ -111,7 +113,14 @@ class DocumentTranslation(db.Model):
             return None
 
         columns = columns.mapper.column_attrs.keys()
-        data = {c.name: getattr(self, c.name) for c in columns}
+        data = {}
+        for column in columns:
+            data[column] = getattr(self, column)
+
+        if not data:
+            return {}
 
         del data["document_translation_id"]
         del data["document_id"]
+
+        return data

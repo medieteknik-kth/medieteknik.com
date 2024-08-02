@@ -1,9 +1,10 @@
-from typing import Any
+from typing import Any, Dict, List
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.content import Author, News, NewsTranslation
+from models.content.document import Document
 from models.content.event import Event
 from models.core.student import Student
 from services.content.item import (
@@ -18,7 +19,8 @@ from services.content.item import (
     update_translations,
 )
 from services.content.public.calendar import get_main_calendar
-from utility.translation import retrieve_languages
+from utility.gc import upload_file
+from utility.translation import convert_iso_639_1_to_bcp_47, retrieve_languages
 import json
 
 news_bp = Blueprint("news", __name__)
@@ -319,7 +321,7 @@ def create_event():
     data["calendar_id"] = get_main_calendar().calendar_id
 
     return {
-        "url": create_item(
+        "id": create_item(
             author_table=author_table,
             author_email=author_email,
             item_table=Event,
@@ -327,3 +329,57 @@ def create_event():
             public=True,
         )
     }, 201
+
+
+@documents_bp.route("/", methods=["POST"])
+@jwt_required()
+def create_document():
+    document_type = request.form.get("document_type")
+    author_type = request.form.get("author[author_type]")
+    entity_email = request.form.get("author[entity_email]")
+
+    file = request.files.get("translations[0][file]")
+    title = request.form.get("translations[0][title]")
+    language_code = request.form.get("translations[0][language_code]")
+
+    if (
+        document_type is None
+        or author_type is None
+        or entity_email is None
+        or file is None
+        or title is None
+        or language_code is None
+    ):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    result = upload_file(
+        file=file,
+        file_name=f"{file.filename}",
+        path=f"documents/{convert_iso_639_1_to_bcp_47(language_code)}",
+    )
+
+    if not result:
+        return jsonify({"error": "Failed to upload file"}), 400
+
+    id = create_item(
+        author_table=Student,
+        author_email=entity_email,
+        item_table=Document,
+        data={
+            "document_type": document_type,
+            "author": {"author_type": author_type, "entity_email": entity_email},
+            "translations": [
+                {
+                    "title": title,
+                    "language_code": language_code,
+                    "url": result,
+                }
+            ],
+        },
+        public=True,
+    )
+
+    if not id:
+        return jsonify({"error": "Failed to create item"}), 400
+
+    return {"id": id}, 201

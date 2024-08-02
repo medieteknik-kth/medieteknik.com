@@ -166,6 +166,7 @@ class Author(db.Model):
         if not data:
             return {}
 
+        data["author_type"] = self.author_type
         del data["author_id"]
 
         return data
