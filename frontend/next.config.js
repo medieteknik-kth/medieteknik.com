@@ -2,9 +2,6 @@
 
 module.exports = {
     productionBrowserSourceMaps: true,
-    typescript: {
-        ignoreBuildErrors: true, // TODO: Remove this line when all errors are fixed
-    },
     images: {
         remotePatterns: [
             {

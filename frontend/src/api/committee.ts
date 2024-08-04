@@ -69,13 +69,19 @@ export const GetCommitteeData = cache(async (committee: string) => {
 })
 
 export const GetCommitteeCategories = cache(async (language_code: string) => {
-  const response = await api.get(`/public/committee_categories?language=${language_code}`);
-
-  if (response.status === 200) {
-      return response.data as CommitteeCategory[]
+  try {
+    const response = await api.get(`/public/committee_categories?language=${language_code}`);
+  
+    if (response.status === 200) {
+        return response.data as CommitteeCategory[]
+    }
+  
+    return null
+  } catch (error) {
+    console.error(error)
+    return null
+    
   }
-
-  return null
 })
 
 export const GetCommitteeCategoryCommittees = cache(async (category: string, language_code: string) => {
@@ -97,4 +103,24 @@ export const GetCommitteeMembers = cache(async (committee: string, language_code
         student: Student
       }[]
   }
+})
+
+interface RecruitmentResponse {
+  committee: Committee
+  start_date: string
+  end_date: string
+  translations: { description: string; link_url: string }[]
+}
+
+export const GetRecruitment = cache(async (language_code: string) => {
+  const response = await api.get(`/public/committees/recruiting=${language_code}`)
+
+  if (response.status === 200) {
+    if (typeof response.data === 'object' && Object.keys(response.data).length === 0) {
+      return []
+    }
+    return response.data as RecruitmentResponse[]
+  }
+
+  return []
 })
