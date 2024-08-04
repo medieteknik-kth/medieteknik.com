@@ -46,9 +46,7 @@ export default function Documents({
     isLoading,
   } = useSWR(`${API_BASE_URL}/public/documents?language=${language}`, fetcher)
 
-  if (error) return <div>Failed to load</div>
   if (isLoading) return <Loading language={language} />
-  if (!documents) return <div>Not found</div>
 
   const categories = [
     {
@@ -170,45 +168,51 @@ export default function Documents({
             </div>
           )}
         </div>
-        <TabsContent value='Home'>
-          <View
-            language={language}
-            documents={documents.items}
-            currentView={view}
-            selectedDocuments={selectedDocuments}
-            setSelectedDocuments={setSelectedDocuments}
-          />
-        </TabsContent>
-        <TabsContent value='Documents'>
-          {documents.items.length > 0 ? (
-            <View
-              language={language}
-              documents={documents.items.filter(
-                (doc) => doc.document_type === 'DOCUMENT'
+        {documents ? (
+          <>
+            <TabsContent value='Home'>
+              <View
+                language={language}
+                documents={documents.items}
+                currentView={view}
+                selectedDocuments={selectedDocuments}
+                setSelectedDocuments={setSelectedDocuments}
+              />
+            </TabsContent>
+            <TabsContent value='Documents'>
+              {documents.items.length > 0 ? (
+                <View
+                  language={language}
+                  documents={documents.items.filter(
+                    (doc) => doc.document_type === 'DOCUMENT'
+                  )}
+                  currentView={view}
+                  selectedDocuments={selectedDocuments}
+                  setSelectedDocuments={setSelectedDocuments}
+                />
+              ) : (
+                <div className='h-[1080px]' />
               )}
-              currentView={view}
-              selectedDocuments={selectedDocuments}
-              setSelectedDocuments={setSelectedDocuments}
-            />
-          ) : (
-            <div className='h-[1080px]' />
-          )}
-        </TabsContent>
-        <TabsContent value='Forms'>
-          {documents.items.length > 0 ? (
-            <View
-              language={language}
-              documents={documents.items.filter(
-                (doc) => doc.document_type === 'FORM'
+            </TabsContent>
+            <TabsContent value='Forms'>
+              {documents.items.length > 0 ? (
+                <View
+                  language={language}
+                  documents={documents.items.filter(
+                    (doc) => doc.document_type === 'FORM'
+                  )}
+                  currentView={view}
+                  selectedDocuments={selectedDocuments}
+                  setSelectedDocuments={setSelectedDocuments}
+                />
+              ) : (
+                <div className='h-[1080px]' />
               )}
-              currentView={view}
-              selectedDocuments={selectedDocuments}
-              setSelectedDocuments={setSelectedDocuments}
-            />
-          ) : (
-            <div className='h-[1080px]' />
-          )}
-        </TabsContent>
+            </TabsContent>
+          </>
+        ) : (
+          <div className='min-h-[1080px]' />
+        )}
       </Tabs>
     </main>
   )
