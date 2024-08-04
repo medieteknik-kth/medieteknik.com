@@ -33,7 +33,7 @@ export default function NotificationMenu({
   language: string
 }): JSX.Element {
   const { t } = useTranslation(language, 'header')
-  const notifications: number = 4
+  const notifications: number = 0
   return (
     <div className='w-20 z-10'>
       <DropdownMenu modal={false}>
@@ -44,6 +44,8 @@ export default function NotificationMenu({
             className='w-fit h-full px-4 grid z-10 place-items-center rounded-none'
             title='Notifications'
             aria-label='Notifications Button'
+            disabled
+            // TODO: Implement Notifications
           >
             {notifications > 0 ? (
               <div className='relative'>
@@ -53,7 +55,7 @@ export default function NotificationMenu({
                 </span>
               </div>
             ) : (
-              <BellIcon className='w-8 h-8 text-white' />
+              <BellIcon className='w-8 h-8' />
             )}
           </Button>
         </DropdownMenuTrigger>

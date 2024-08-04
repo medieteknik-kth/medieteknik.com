@@ -94,8 +94,7 @@ export default function Calendar({
   onEventClickCallback = () => {},
   children,
 }: CalendarProps) {
-  const { date, selectedDate, setSelectedDate, retrieveEvents, events } =
-    useCalendar()
+  const { date, selectedDate, setSelectedDate, events } = useCalendar()
   const totalDays = useMemo(() => getDaysInMonth(new Date(date)), [date])
   const previousMonthLastWeek = useMemo(
     () => getPreviousMonthsLastWeekAdjusted(new Date(date)),
@@ -103,10 +102,6 @@ export default function Calendar({
   )
 
   const MAX_NEXT_MONTH_DAYS = 14
-
-  useEffect(() => {
-    retrieveEvents(date)
-  }, [date, retrieveEvents])
 
   return (
     <div
@@ -141,7 +136,7 @@ export default function Calendar({
         {previousMonthLastWeek.map((mappedDate, index) => (
           <div
             key={index}
-            className='w-full desktop:w-48 h-36 border-r relative bg-neutral-200/75'
+            className='w-full desktop:w-48 h-36 border-r relative bg-neutral-100 dark:bg-[#222] cursor-pointer hover:bg-neutral-300/75 dark:hover:bg-neutral-700/75'
             onClick={(event) => {
               event.stopPropagation()
               setSelectedDate(mappedDate)
@@ -203,7 +198,7 @@ export default function Calendar({
         {[...Array(MAX_NEXT_MONTH_DAYS)].map((_, index) => (
           <div
             key={index}
-            className='w-full desktop:w-48 h-36 border-r border-t relative bg-neutral-200/75 dark:bg-neutral-700/75 cursor-pointer hover:bg-neutral-300/75'
+            className='w-full desktop:w-48 h-36 border-r border-t relative bg-neutral-100 dark:bg-[#222] cursor-pointer hover:bg-neutral-300/75 dark:hover:bg-neutral-700/75'
             onClick={(event) => {
               event.stopPropagation()
               const dateClicked = addMonths(date, 1)

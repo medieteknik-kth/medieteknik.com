@@ -78,11 +78,11 @@ export default async function Header({
                     <ChevronDownIcon className='w-5 h-5 ml-2' />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='w-40'>
+                <DropdownMenuContent className='w-52'>
                   {element.subNavs.map((subNav) => (
                     <DropdownMenuItem
                       key={subNav.title}
-                      className='h-10 hover:bg-neutral-100'
+                      className='min-h-10 h-fit hover:bg-neutral-100 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none'
                     >
                       <Link
                         href={subNav.link}

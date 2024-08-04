@@ -92,14 +92,17 @@ export function UploadNews({
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/news`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(json),
-      })
+      const response = await fetch(
+        `${API_BASE_URL}/news?language=${language}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify(json),
+        }
+      )
 
       if (response.ok) {
         const jsonResponse = await response.json()
