@@ -6,6 +6,8 @@ from datetime import timedelta
 import os
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
+from urllib.parse import urlparse
+
 
 client = storage.Client()
 bucket_name = "medieteknik-static"
@@ -33,6 +35,28 @@ def upload_file(file, file_name: str, path: str):
         url = blob.generate_signed_url(expiration=timedelta(days=365))
 
         return url
+    except GoogleCloudError as e:
+        print(e)
+        raise
+
+
+def delete_file(url: str):
+    """
+    Deletes a file from the bucket
+
+    Args:
+        file_name (str): File to delete
+        path (str): Path of the file
+
+    Returns:
+        None
+    """
+    try:
+        parsed_url = urlparse(url)
+        blob_name = parsed_url.path.lstrip("/")
+        blob_name = blob_name.split("/", 1)[1]
+        blob = bucket.blob(blob_name)
+        blob.delete()
     except GoogleCloudError as e:
         print(e)
         raise

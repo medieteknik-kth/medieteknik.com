@@ -3,7 +3,6 @@ import uuid
 from typing import Any, Dict, List
 from sqlalchemy import (
     Column,
-    Integer,
     DateTime,
     String,
     Enum,

@@ -19,11 +19,15 @@ def csrf(f):
 
     @wraps(f)
     def wrap(*args, **kwargs):
+        csrf_token = ""
         if not request.is_json:
-            return jsonify({"error": "Invalid request"}), HTTPStatus.BAD_REQUEST
+            csrf_token = request.form.get("csrf_token")
+        else:
+            csrf_token = request.get_json().get("csrf_token")
 
-        json: Dict[str, Any] = request.get_json()
-        result = validate_csrf(json.get("csrf_token"))
+        if not csrf_token:
+            return jsonify({"error": "CSRF token is missing"}), HTTPStatus.BAD_REQUEST
+        result = validate_csrf(csrf_token)
 
         if result:
             return f(*args, **kwargs)

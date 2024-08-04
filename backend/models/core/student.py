@@ -67,8 +67,8 @@ class Student(db.Model):
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255))
     reception_name = Column(String(255))
-    profile_picture_url = Column(String(255))
-    reception_profile_picture_url = Column(String(255))
+    profile_picture_url = Column(String(length=2096))
+    reception_profile_picture_url = Column(String(length=2096))
     student_type = Column(
         Enum(StudentType), nullable=False, default=StudentType.MEDIETEKNIK
     )
@@ -190,7 +190,7 @@ class Profile(db.Model):
 
         if not data:
             return {}
-        
+
         if is_public_route:
             del data["phone_number"]
             del data["notification_emails"]
