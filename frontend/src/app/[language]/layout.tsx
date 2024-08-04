@@ -2,7 +2,6 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 import { dir } from 'i18next'
 import { supportedLanguages } from '../i18n/settings'
-import { CookiesProvider } from 'next-client-cookies/server'
 import { fontFigtree } from '../fonts'
 import ClientProviders from '@/providers/ClientProviders'
 import ServerProviders from '@/providers/ServerProviders'
@@ -12,6 +11,8 @@ import ErrorBoundary from '@/components/error/ErrorBoundary'
 import ErrorFallback from '@/components/error/ErrorFallback'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
+import Script from 'next/script'
+import { Toaster } from '@/components/ui/toaster'
 
 /**
  * Generates the static paths for each language ({@link LanguageCodes})
@@ -60,25 +61,24 @@ interface Props {
 export default function RootLayout({ children, params }: Props): JSX.Element {
   children
   return (
-    <html
-      lang={params.language}
-      dir={dir(params.language)}
-      className={`${fontFigtree.className}`}
-      suppressHydrationWarning
-    >
-      <head />
-      <body className='min-w-full min-h-screen bg-background font-sans antialiased'>
-        <ServerProviders>
-          <ClientProviders language={params.language}>
-            <Header language={params.language} />
-            <ErrorBoundary fallback={<ErrorFallback />}>
-              {children}
-            </ErrorBoundary>
-            <Footer language={params.language} />
-            <CookiePopup params={params} />
-          </ClientProviders>
-        </ServerProviders>
-      </body>
-    </html>
+    <>
+      <ServerProviders>
+        <ClientProviders language={params.language}>
+          <Header language={params.language} />
+          <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>
+          <Footer language={params.language} />
+          <CookiePopup params={params} />
+          <Toaster />
+        </ClientProviders>
+      </ServerProviders>
+      <Script id='language-attributes'>
+        {`
+            document.documentElement.lang = "${params.language}";
+            document.documentElement.dir = "${dir(params.language)}";
+            document.documentElement.className = "${fontFigtree.className}";
+            document.body.className = "min-w-full min-h-screen bg-background font-sans antialiased";
+            `}
+      </Script>
+    </>
   )
 }
