@@ -22,7 +22,11 @@ const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())
 
 export default function LoginForm({ language }: { language: string }) {
-  const { login, error: authError } = useAuthentication()
+  const {
+    login,
+    error: authError,
+    isLoading: authLoading,
+  } = useAuthentication()
   const [errorMessage, setErrorMessage] = useState(authError)
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/csrf-token`,

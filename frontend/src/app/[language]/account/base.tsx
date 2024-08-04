@@ -50,15 +50,22 @@ export default function Base({
   const [accountPages, setAccountPages] = useState<AccountPage[]>([])
   const router = useRouter()
 
-  const { student, committees, permissions } = useAuthentication()
+  const {
+    student,
+    committees,
+    permissions,
+    isLoading: authLoading,
+  } = useAuthentication()
 
   useEffect(() => {
-    if (!student) {
-      router.push(`/${language}/login`)
-    } else {
-      setIsLoading(false)
+    if (!authLoading) {
+      if (!student) {
+        router.push(`/${language}/login`)
+      } else {
+        setIsLoading(false)
+      }
     }
-  }, [student, language, router])
+  }, [student, language, router, authLoading])
 
   useEffect(() => {
     const defaultPages: AccountPage[] = [
@@ -80,7 +87,7 @@ export default function Base({
     ]
 
     const additionalPages: AccountPage[] = []
-    if (permissions.author.length >= 1) {
+    if (permissions &&  permissions.author.length >= 1) {
       additionalPages.push({
         name: 'items',
         icon: DocumentDuplicateIcon,
@@ -125,7 +132,7 @@ export default function Base({
             {Array.from(accountPages).map((page) =>
               currentTab === page.name.toLocaleLowerCase() ? (
                 page.name === 'calendar' ? (
-                  <CalendarProvider key='calendar'>
+                  <CalendarProvider language={language} key='calendar'>
                     <CalendarPage language={language} key='calendar' />
                   </CalendarProvider>
                 ) : (

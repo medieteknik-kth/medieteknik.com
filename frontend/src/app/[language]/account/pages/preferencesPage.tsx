@@ -1,5 +1,4 @@
 'use client'
-
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { supportedLanguages } from '@/app/i18n/settings'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -8,7 +7,6 @@ import { useTheme } from 'next-themes'
 import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { cookieName } from '@/app/i18n/settings'
 import { useCookies } from 'next-client-cookies'
@@ -29,7 +27,7 @@ export default function PreferencesPage({ language }: { language: string }) {
       if (clientCookiesConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
         cookies.set(cookieName, newLanguage, { path: '/' })
       }
-      router.push(newPath + '?' + new URLSearchParams({ category }))
+      router.replace(newPath + '?' + new URLSearchParams({ category }))
     },
     [path, params, router]
   )

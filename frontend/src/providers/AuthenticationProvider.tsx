@@ -73,7 +73,6 @@ function authenticationReducer(
         ...state,
         isAuthenticated: true,
         error: null,
-        isLoading: false,
       }
 
     case 'LOGOUT':
@@ -89,7 +88,6 @@ function authenticationReducer(
         positions: [],
         isAuthenticated: false,
         error: null,
-        isLoading: false,
       }
 
     case 'REGISTER':
@@ -97,7 +95,6 @@ function authenticationReducer(
         ...state,
         isAuthenticated: true,
         error: null,
-        isLoading: false,
       }
 
     case 'REFRESH_TOKEN':
@@ -105,7 +102,6 @@ function authenticationReducer(
         ...state,
         isAuthenticated: true,
         error: null,
-        isLoading: false,
       }
 
     case 'SET_STUDENT':
@@ -145,9 +141,11 @@ function authenticationReducer(
       }
 
     case 'SET_ERROR':
+      console.error(action.payload)
       return {
         ...state,
         error: action.payload,
+        isLoading: false,
       }
 
     default:
@@ -166,7 +164,7 @@ const initialState: AuthenticationState = {
   committees: [],
   positions: [],
   error: null,
-  isLoading: false,
+  isLoading: true,
 }
 
 interface AuthenticationContextType extends AuthenticationState {
@@ -212,8 +210,8 @@ const createAuthFunctions = (
     password: string,
     csrf_token: string
   ): Promise<void> => {
+    dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      dispatch({ type: 'SET_LOADING', payload: true })
       const json_data = {
         email: email,
         password: password,
@@ -250,8 +248,8 @@ const createAuthFunctions = (
    * @returns {Promise<void>}
    */
   logout: async (): Promise<void> => {
+    dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      dispatch({ type: 'SET_LOADING', payload: true })
       const response = await fetch(`${API_BASE_URL}/students/logout`, {
         method: 'POST',
         credentials: 'include',
@@ -266,6 +264,8 @@ const createAuthFunctions = (
         type: 'SET_ERROR',
         payload: 'Something went wrong! Please try again',
       })
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   },
   /**
@@ -275,8 +275,8 @@ const createAuthFunctions = (
    * @returns {Promise<void>}
    */
   refreshToken: async (): Promise<void> => {
+    dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      dispatch({ type: 'SET_LOADING', payload: true })
       const response = await fetch(`${API_BASE_URL}/students/refresh`, {
         method: 'POST',
         credentials: 'include',
@@ -288,6 +288,8 @@ const createAuthFunctions = (
     } catch (error) {
       console.error(error)
       dispatch({ type: 'LOGOUT' })
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   },
 })
@@ -313,8 +315,8 @@ export function AuthenticationProvider({
      * @async
      */
     const checkAuth = async () => {
+      dispatch({ type: 'SET_LOADING', payload: true })
       try {
-        dispatch({ type: 'SET_LOADING', payload: true })
         const response = await fetch(
           `${API_BASE_URL}/students/me?language=${language}`,
           {
@@ -411,6 +413,7 @@ export function AuthenticationProvider({
      */
     const refreshTimer = setInterval(() => {
       if (state.student) {
+        dispatch({ type: 'REFRESH_TOKEN' })
         authFunctions.refreshToken()
       } else {
         clearInterval(refreshTimer)
