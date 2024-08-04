@@ -1,3 +1,8 @@
+"""
+Committee Routes (Protected)
+API Endpoint: '/api/v1/committees'
+"""
+
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
 from utility import database

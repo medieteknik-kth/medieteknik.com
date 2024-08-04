@@ -1,32 +1,32 @@
-from typing import Any, Dict, List
-from flask import Blueprint, request, jsonify
+"""
+News Routes (Protected)
+API Endpoint: '/api/v1/news'
+"""
+
+import json
+from typing import Any, Dict
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
-from models.content import Author, News, NewsTranslation
-from models.content.document import Document
-from models.content.event import Event
+from models.content.author import Author
+from models.content.news import News, NewsTranslation
 from models.core.student import Student
+from services.content.author import get_author_from_email
 from services.content.item import (
     create_item,
+    delete_item,
+    get_item_by_url,
     get_items,
     get_items_from_author,
-    get_author_from_email,
-    get_item_by_url,
-    delete_item,
     publish,
     update_item,
     update_translations,
 )
-from services.content.public.calendar import get_main_calendar
-from utility.gc import upload_file
-from utility.translation import convert_iso_639_1_to_bcp_47, retrieve_languages
-import json
+from utility.translation import retrieve_languages
+
 
 news_bp = Blueprint("news", __name__)
-events_bp = Blueprint("events", __name__)
-documents_bp = Blueprint("documents", __name__)
-albums_bp = Blueprint("albums", __name__)
 
 
 @news_bp.route("/", methods=["GET"])
@@ -142,9 +142,9 @@ def create_news():
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
-    data: dict[str, Any] = json.loads(json.dumps(data))
+    data: Dict[str, Any] = json.loads(json.dumps(data))
 
-    author: dict | None = data.get("author")
+    author: Dict | None = data.get("author")
     if author is None:
         return jsonify({"error": "No author provided"}), 400
 
@@ -283,103 +283,3 @@ def delete_news(url: str):
     delete_item(news_item, NewsTranslation)
 
     return jsonify({}), 200
-
-
-@events_bp.route("/", methods=["POST"])
-@jwt_required()
-def create_event():
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
-
-    data: dict[str, Any] = json.loads(json.dumps(data))
-
-    author = data.get("author")
-
-    if author is None:
-        return jsonify({"error": "No author provided"}), 400
-
-    author_table = None
-    if author.get("author_type") == "STUDENT":
-        author_table = Student
-    elif author.get("author_type") == "COMMITTEE":
-        author_table = Committee
-    elif author.get("author_type") == "COMMITTEE_POSITION":
-        author_table = CommitteePosition
-    else:
-        return jsonify({"error": "Invalid author type"}), 400
-
-    if author_table is None:
-        return jsonify({"error": "Invalid author type"}), 400
-
-    author_email = author.get("entity_email")
-
-    if author_email is None:
-        return jsonify({"error": "No email provided"}), 400
-
-    data["calendar_id"] = get_main_calendar().calendar_id
-
-    return {
-        "id": create_item(
-            author_table=author_table,
-            author_email=author_email,
-            item_table=Event,
-            data=data,
-            public=True,
-        )
-    }, 201
-
-
-@documents_bp.route("/", methods=["POST"])
-@jwt_required()
-def create_document():
-    document_type = request.form.get("document_type")
-    author_type = request.form.get("author[author_type]")
-    entity_email = request.form.get("author[entity_email]")
-
-    file = request.files.get("translations[0][file]")
-    title = request.form.get("translations[0][title]")
-    language_code = request.form.get("translations[0][language_code]")
-
-    if (
-        document_type is None
-        or author_type is None
-        or entity_email is None
-        or file is None
-        or title is None
-        or language_code is None
-    ):
-        return jsonify({"error": "Missing required fields"}), 400
-
-    result = upload_file(
-        file=file,
-        file_name=f"{file.filename}",
-        path=f"documents/{convert_iso_639_1_to_bcp_47(language_code)}",
-    )
-
-    if not result:
-        return jsonify({"error": "Failed to upload file"}), 400
-
-    id = create_item(
-        author_table=Student,
-        author_email=entity_email,
-        item_table=Document,
-        data={
-            "document_type": document_type,
-            "author": {"author_type": author_type, "entity_email": entity_email},
-            "translations": [
-                {
-                    "title": title,
-                    "language_code": language_code,
-                    "url": result,
-                }
-            ],
-        },
-        public=True,
-    )
-
-    if not id:
-        return jsonify({"error": "Failed to create item"}), 400
-
-    return {"id": id}, 201

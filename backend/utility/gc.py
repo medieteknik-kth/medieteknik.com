@@ -2,8 +2,8 @@
 Google Cloud Utility Module
 """
 
-from datetime import timedelta
 import os
+from datetime import timedelta
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
 from urllib.parse import urlparse

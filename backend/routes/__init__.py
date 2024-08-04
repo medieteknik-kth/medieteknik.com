@@ -9,6 +9,12 @@ from utility.constants import PROTECTED_PATH, PUBLIC_PATH, ROUTES
 
 
 def register_routes(app: Flask):
+    """
+    Register all routes for the backend.
+
+    Args:
+        app (Flask): The Flask app.
+    """
     from .public.committee_routes import (
         public_committee_bp,
         public_committee_category_bp,
@@ -26,7 +32,9 @@ def register_routes(app: Flask):
     from .public.student_routes import public_student_bp
     from .committee_routes import committee_bp
     from .author_routes import author_bp
-    from .item_routes import news_bp, events_bp, documents_bp, albums_bp
+    from .news_routes import news_bp
+    from .event_routes import events_bp
+    from .document_routes import documents_bp
     from .student_routes import student_bp
 
     # Public Routes
@@ -69,9 +77,6 @@ def register_routes(app: Flask):
     )
     app.register_blueprint(
         documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
-    )
-    app.register_blueprint(
-        albums_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
     )
     app.register_blueprint(
         committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"

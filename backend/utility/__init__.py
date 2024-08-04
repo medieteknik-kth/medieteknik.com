@@ -1,5 +1,5 @@
 """
-The utility module. Imports all the utility modules.
+The utility package. Imports all the utility modules.
 """
 
 from .authorization import jwt, oauth, oidc

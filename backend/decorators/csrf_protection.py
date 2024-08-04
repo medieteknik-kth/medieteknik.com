@@ -1,14 +1,19 @@
+"""
+CSRF Protection
+
+Decorator for CSRF protection.
+"""
+
 from functools import wraps
 from http import HTTPStatus
-from typing import Any, Dict
 from utility.csrf import validate_csrf
 
-from flask import jsonify, request
+from flask import Response, jsonify, request
 
 
-def csrf(f):
+def csrf_protected(f):
     """
-    Decorator for CSRF protection. Validates the CSRF token in the request JSON.
+    Decorator for CSRF protection. Validates the CSRF token in the request from either a JSON or Form.
 
     Args:
         f: The function to be wrapped with CSRF protection.
@@ -19,7 +24,13 @@ def csrf(f):
 
     @wraps(f)
     def wrap(*args, **kwargs):
-        csrf_token = ""
+        if not request:
+            raise ValueError(
+                "Request object is missing! Make sure you're using the decorator in a endpoint."
+            )
+
+        csrf_token: str = ""
+        # Check if the request is JSON or a Form
         if not request.is_json:
             csrf_token = request.form.get("csrf_token")
         else:
@@ -27,9 +38,9 @@ def csrf(f):
 
         if not csrf_token:
             return jsonify({"error": "CSRF token is missing"}), HTTPStatus.BAD_REQUEST
-        result = validate_csrf(csrf_token)
+        result: Response | bool = validate_csrf(csrf_token)
 
-        if result:
+        if isinstance(result, bool) and result is True:
             return f(*args, **kwargs)
         return result
 

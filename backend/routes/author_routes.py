@@ -1,3 +1,8 @@
+"""
+Author Routes (Protected)
+API Endpoint: '/api/v1/authors'
+"""
+
 from html import escape
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
