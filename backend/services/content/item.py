@@ -234,7 +234,7 @@ def create_item(
 
         data["translations"][0]["title"] = new_title
 
-    translation_data = data.get("translations")
+    translation_data: List[Dict[str, Any]] = data.get("translations")
 
     del data["translations"]
     if data["author"]:
@@ -266,34 +266,33 @@ def create_item(
     if not translation_data:
         return str(item.item_id)
 
-    del translation_data[0]["language_code"]
-
-    for language in AVAILABLE_LANGUAGES:
-        translation = None
+    for translation in translation_data:
+        language_code = convert_iso_639_1_to_bcp_47(translation.get("language_code"))
+        del translation["language_code"]
         if isinstance(item, News):
             translation = NewsTranslation(
                 news_id=item.news_id,
-                language_code=language,
-                **translation_data[0],
-            )  # type: ignore
+                language_code=language_code,
+                **translation,
+            )
         elif isinstance(item, Event):
             translation = EventTranslation(
                 event_id=item.event_id,
-                language_code=language,
-                **translation_data[0],
-            )  # type: ignore
+                language_code=language_code,
+                **translation,
+            )
         elif isinstance(item, Album):
             translation = AlbumTranslation(
                 album_id=item.album_id,
-                language_code=language,
-                **translation_data[0],
-            )  # type: ignore
+                language_code=language_code,
+                **translation,
+            )
         elif isinstance(item, Document):
             translation = DocumentTranslation(
                 document_id=item.document_id,
-                language_code=language,
-                **translation_data[0],
-            )  # type: ignore
+                language_code=language_code,
+                **translation,
+            )
         else:
             raise NotImplementedError(f"Unsupported item type: {type(item_table)}")
 

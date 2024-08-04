@@ -1,3 +1,8 @@
+"""
+Committee Routes (Public)
+API Endpoint: '/api/v1/public/committees'
+"""
+
 from typing import List
 from flask import Blueprint, request, jsonify
 from models.committees.committee_position import CommitteePosition

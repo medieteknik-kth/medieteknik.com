@@ -1,14 +1,20 @@
+"""
+General Routes (Public)
+API Endpoint: '/api/v1/public'
+"""
+
 from flask import Blueprint, jsonify
 from models.core import Language
 from utility.constants import ROUTES
 
-public_bp = Blueprint('public', __name__)
+public_bp = Blueprint("public", __name__)
 LANGUAGE_ROUTE_PREFIX: str = ROUTES.LANGUAGES.value
 
-@public_bp.route(LANGUAGE_ROUTE_PREFIX, methods=['GET'])
+
+@public_bp.route(LANGUAGE_ROUTE_PREFIX, methods=["GET"])
 def get_languages() -> dict:
     """Retrieves all languages
-    
+
     Returns:
         list[dict]: List of languages
     """

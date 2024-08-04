@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import List
 from sqlalchemy import and_, or_
 from models.content import Calendar, Event
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 
 
@@ -20,7 +21,9 @@ def get_main_calendar() -> Calendar:
     return main_calendar
 
 
-def get_events_monthly(date_str: str):
+def get_events_monthly(
+    date_str: str, provided_languages: List[str] = AVAILABLE_LANGUAGES
+):
     try:
         date = datetime.strptime(date_str, "%Y-%m")
     except ValueError:
@@ -55,7 +58,14 @@ def get_events_monthly(date_str: str):
     ).all()
 
     return [
-        event_dict for event in events if (event_dict := event.to_dict()) is not None
+        event_dict
+        for event in events
+        if (
+            event_dict := event.to_dict(
+                is_public_route=True, provided_languages=provided_languages
+            )
+        )
+        is not None
     ]
 
 

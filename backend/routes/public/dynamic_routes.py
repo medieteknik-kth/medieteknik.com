@@ -1,3 +1,8 @@
+"""
+Dynamic Routes (Public)
+API Endpoint: '/api/v1/public/dynamic'
+"""
+
 from typing import List
 from flask import Blueprint, jsonify
 from sqlalchemy import func

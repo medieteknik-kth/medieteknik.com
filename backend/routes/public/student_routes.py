@@ -1,14 +1,16 @@
+"""
+Student Routes (Public)
+API Endpoint: '/api/v1/public/students'
+"""
+
 from typing import Any, Dict, List
 from flask import Blueprint, jsonify, request
-from sqlalchemy.orm import joinedload
-from models.core import Student, StudentMembership, Profile
-from models.committees import CommitteePosition, CommitteePositionsRole
+from models.core import Student, Profile
 from services.core.public.student import (
     retrieve_all_committee_members,
     retrieve_student_membership_by_id,
 )
 from utility.translation import retrieve_languages
-from utility.database import db
 
 public_student_bp = Blueprint("public_student", __name__)
 

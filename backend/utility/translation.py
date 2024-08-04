@@ -36,7 +36,7 @@ def retrieve_languages(args: MultiDict[str, str]) -> List[str]:
         args (MultiDict): Request arguments
 
     Returns:
-        str: Language code
+        List[str]: Language codes
     """
     if args is None:
         return AVAILABLE_LANGUAGES
