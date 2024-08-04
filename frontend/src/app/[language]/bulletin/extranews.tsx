@@ -7,6 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from './components/shortNews'
 import { NewsPagination } from '@/models/Pagination'
+import { useTranslation } from '@/app/i18n/client'
 
 /**
  * The fetcher function that fetches news data from the API.
@@ -121,10 +122,12 @@ export default function ExtraNews({
     pages.push(Page({ index: i, language: language }))
   }
 
+  const { t } = useTranslation(language, 'bulletin')
+
   return (
     <section className='w-full h-fit pb-10'>
       <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
-        More News
+        {t('more_news')}
       </h2>
       <InfiniteScroll
         dataLength={pages.length}
@@ -136,7 +139,7 @@ export default function ExtraNews({
             className='text-center py-2 text-xl tracking-wider uppercase text-neutral-800 dark:text-neutral-300 
           select-none'
           >
-            ---- No more news ----
+            {t('end_news')}
           </p>
         }
       >

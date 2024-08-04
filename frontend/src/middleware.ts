@@ -26,7 +26,7 @@ function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: S
   let language;
 
   // Blacklisted URLs, which should not be redirected
-  const blacklistedURLs = ['/_next', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png', '/react_devtools_backend_compact']
+  const blacklistedURLs = ['/_next', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png', '/react_devtools_backend_compact.js.map', '/installHook.js.map']
 
   language = cookies.get(cookieName)
   if(!language && typeof window !== 'undefined') { language = localStorage.getItem('i18nextLng') }

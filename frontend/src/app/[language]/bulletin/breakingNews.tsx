@@ -1,12 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -14,20 +8,10 @@ import {
 import ShortNews from './components/shortNews'
 import { News } from '@/models/Items'
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import useSWR from 'swr'
-import { API_BASE_URL } from '@/utility/Constants'
 import Link from 'next/link'
-
-/**
- * Fetches the latest breaking news from the API.
- *
- * @param {string} url - The URL of the API endpoint.
- * @returns {Promise<News[]>} A promise that resolves to the fetched news data.
- */
-const fetcher = (url: string): Promise<News[]> =>
-  fetch(url).then((res) => res.json() as Promise<News[]>)
+import { useToast } from '@/components/ui/use-toast'
+import { useTranslation } from '@/app/i18n/client'
 
 /**
  * Renders the latest breaking news.
@@ -39,39 +23,27 @@ const fetcher = (url: string): Promise<News[]> =>
  */
 export default function BreakingNews({
   language,
+  data,
 }: {
   language: string
+  data: News[]
 }): JSX.Element {
-  const [copiedLink, setCopiedLink] = useState(-1)
-  const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/public/news/latest?language=${language}`,
-    fetcher
-  )
+  const { toast } = useToast()
 
-  if (error) return <></>
-  if (isLoading) return <div>Loading...</div>
-  if (!data) return <></>
-
-  const handleCopyLink = (url: string, id: number) => {
-    navigator.clipboard.writeText(window.location.href + '/' + url)
-    setCopiedLink(id)
-    setTimeout(() => {
-      setCopiedLink(-1)
-    }, 1000)
-  }
+  const { t } = useTranslation(language, 'bulletin')
 
   return (
     <div className='w-full h-fit flex flex-col justify-center'>
       <div className='h-fit flex justify-between items-center'>
         <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
-          Breaking News
+          {t('breaking_news')}
         </h2>
         <Button
           asChild
           variant='link'
           className='text-sky-800 dark:text-sky-400'
         >
-          <Link href='./bulletin/news'>View All</Link>
+          <Link href='./bulletin/news'>{t('all_news')}</Link>
         </Button>
       </div>
       <div className='w-full relative overflow-x-auto'>
@@ -81,7 +53,7 @@ export default function BreakingNews({
           uppercase tracking-wider text-neutral-800 dark:text-neutral-300 
           select-none bg-neutral-100 dark:bg-neutral-800'
           >
-            No Breaking News
+            {t('no_breaking_news')}
           </p>
         )}
         <div className='flex gap-4 pb-4'>
@@ -89,24 +61,25 @@ export default function BreakingNews({
             data.map((newsItem, index) => (
               <div key={index} className='relative'>
                 <ShortNews key={index} newsItem={newsItem} />
-                <TooltipProvider>
-                  <Tooltip open={copiedLink === index}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        title='Share'
-                        aria-label='Share'
-                        className='absolute bottom-4 right-4 z-10'
-                        onClick={() => handleCopyLink(newsItem.url, index)}
-                      >
-                        <TooltipContent className='z-10'>Copied</TooltipContent>
-
-                        <LinkIcon className='w-5 h-5' />
-                      </Button>
-                    </TooltipTrigger>
-                  </Tooltip>
-                </TooltipProvider>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  title='Share'
+                  aria-label='Share'
+                  className='absolute bottom-4 right-4 z-10'
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      window.location.href + '/' + newsItem.url
+                    )
+                    toast({
+                      title: 'Copied to clipboard',
+                      description: window.location.href + '/' + newsItem.url,
+                      duration: 2500,
+                    })
+                  }}
+                >
+                  <LinkIcon className='w-5 h-5' />
+                </Button>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button

@@ -72,8 +72,8 @@ export interface Event extends Item {
 
 export interface EventTranslation {
   title: string
-  description: string
-  main_image_url: string
+  description?: string
+  main_image_url?: string
   sub_image_urls?: string[]
   language_code: LanguageCodes
 }

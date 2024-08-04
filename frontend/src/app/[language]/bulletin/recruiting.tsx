@@ -8,11 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import useSWR from 'swr'
-import { API_BASE_URL } from '@/utility/Constants'
 import Committee from '@/models/Committee'
 import Link from 'next/link'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import { useTranslation } from '@/app/i18n/client'
 
 interface Response {
   committee: Committee
@@ -22,16 +21,6 @@ interface Response {
 }
 
 /**
- * The fetcher function that fetches recruitment data from the API.
- *
- * @param {string} url - The URL of the API endpoint.
- * @returns {Promise<Response[]>} A promise that resolves to the fetched recruitment data.
- */
-const fetcher = (url: string): Promise<Response[]> =>
-  fetch(url).then((res) => res.json() as Promise<Response[]>)
-
-/**
- * Recruitment Component
  * @name Recruitment
  * @description Renders the recruitment section of the bulletin.
  *
@@ -40,41 +29,32 @@ const fetcher = (url: string): Promise<Response[]> =>
  */
 export default function Recruitment({
   language,
+  data,
 }: {
   language: string
+  data: Response[]
 }): JSX.Element {
-  const { data: recruitmentData, error } = useSWR(
-    `${API_BASE_URL}/public/committees/recruiting?language=${language}`,
-    fetcher
-  )
-
-  if (error) {
-    return <></>
-  }
-
-  if (!recruitmentData) {
-    return <></>
-  }
+  const { t } = useTranslation(language, 'bulletin')
 
   return (
     <section className='w-full h-fit flex flex-col justify-between relative mt-10'>
       <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
-        Currently Recruiting
+        {t('recruitment')}
       </h2>
       <div className='w-full h-5/6 flex items-center mb-20'>
         <div className='w-full h-full overflow-x-auto'>
           <div className='w-full h-full flex flex-wrap gap-8'>
-            {recruitmentData.length === 0 && (
+            {data.length === 0 && (
               <p
                 className='w-full h-[200px] grid place-items-center z-10 
           uppercase tracking-wider text-neutral-800 dark:text-neutral-300 
           select-none bg-neutral-100 dark:bg-neutral-800'
               >
-                No active recruitment
+                {t('no_recruitment')}
               </p>
             )}
-            {recruitmentData.length > 0 &&
-              recruitmentData.map((recruit, index) => (
+            {data.length > 0 &&
+              data.map((recruit, index) => (
                 <Card key={index} className='w-[500px] h-[220px]'>
                   <CardHeader className='h-fit flex flex-row items-center justify-between'>
                     <div className='flex items-center'>

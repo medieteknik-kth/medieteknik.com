@@ -4,10 +4,7 @@ import Calendar from '@/components/calendar/Calendar'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
-  ArrowPathRoundedSquareIcon,
-  ArrowUpTrayIcon,
   CheckIcon,
-  ClipboardIcon,
   ClockIcon,
   IdentificationIcon,
   InformationCircleIcon,
@@ -34,8 +31,9 @@ import { StudentTag } from '@/components/tags/StudentTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import { Separator } from '@/components/ui/separator'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { Permission } from '@/models/Permission'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
+import CalendarExport from './components/calendarExport'
+import { useTranslation } from '@/app/i18n/client'
 
 /**
  * Get the ordinal suffix for a given number
@@ -83,11 +81,13 @@ export default function Events({
   const tinycolor = require('tinycolor2')
   const { student, permissions } = useAuthentication()
 
+  const { t } = useTranslation(language, 'bulletin')
+
   return (
     <section className='w-full h-fit py-4'>
       <div>
         <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
-          Events
+          {t('events')}
         </h2>
         <p className='text-lg mb-3'>
           {new Date().toLocaleDateString(language, {
@@ -100,50 +100,7 @@ export default function Events({
       <div className='w-full flex flex-col gap-4 desktop:gap-0 justify-around desktop:flex-row relative'>
         <Calendar>
           <div className='absolute right-0 -top-12 flex gap-2'>
-            {student && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    size={'icon'}
-                    variant={'outline'}
-                    title='Subscribe or Export'
-                  >
-                    <ArrowUpTrayIcon className='w-6 h-6' />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Subscribe or Export Calendar</DialogTitle>
-                  </DialogHeader>
-                  <div className='flex flex-col'>
-                    <div className='flex items-center gap-2 mb-2'>
-                      <ArrowPathRoundedSquareIcon className='w-6 h-6' />
-                      <p>Subscribe</p>
-                    </div>
-                    <div className='grid grid-cols-12'>
-                      <p className='w-auto text-sm text-nowrap h-10 border rounded-xl px-2 py-1 overflow-x-scroll overflow-y-hidden mr-2 col-span-11 grid items-center'>
-                        localhost:8000/api/v1/calendar/ics?u=asjdipoas0ndasuionydasyuidas9yudn
-                      </p>
-                      <Button size={'icon'}>
-                        <ClipboardIcon className='w-6 h-6' />
-                      </Button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className='flex items-center gap-2 mb-2'>
-                      <ArrowUpTrayIcon className='w-6 h-6' />
-                      <p>Export</p>
-                    </div>
-                    <div className='flex gap-2 flex-wrap'>
-                      <Button>Export to ICS</Button>
-                      <Button variant={'outline'}>Export to CSV</Button>
-                      <Button variant={'outline'}>Export to JSON</Button>
-                      <Button variant={'outline'}>Export to TXT</Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
+            {student && <CalendarExport student={student} />}
             <Dialog>
               <DialogTrigger asChild>
                 <Button
@@ -198,29 +155,6 @@ export default function Events({
                       host events
                     </p>
                   </div>
-                  <div
-                    className='flex items-center gap-2'
-                    title='Contact an administrator to gain access'
-                  >
-                    {permissions.student.includes(
-                      Permission.CALENDAR_PRIVATE
-                    ) ? (
-                      <CheckIcon className='w-6 h-6 text-green-500' />
-                    ) : (
-                      <XMarkIcon className='w-6 h-6 text-red-500' />
-                    )}
-                    <p>
-                      You{' '}
-                      <span className='font-bold'>
-                        {permissions.student.includes(
-                          Permission.CALENDAR_PRIVATE
-                        )
-                          ? 'can'
-                          : 'cannot'}
-                      </span>{' '}
-                      have a private calendar
-                    </p>
-                  </div>
                 </div>
               </DialogContent>
             </Dialog>
@@ -228,7 +162,7 @@ export default function Events({
         </Calendar>
         <div className='grow min-h-[320px] lg:mx-40 xl:mx-72 desktop:mx-0 bg-[#222] dark:bg-[#111] desktop:ml-4 rounded-xl py-8 text-white'>
           <div className='relative px-6'>
-            <h3 className='text-3xl tracking-wide'>Events</h3>
+            <h3 className='text-3xl tracking-wide'>{t('events')}</h3>
             <p className='text-neutral-300 tracking-widest dark:text-neutral-500'>
               {getNumberWithOrdinal(selectedDate.getDate()) + ' '}
               <span className='capitalize'>
@@ -252,13 +186,13 @@ export default function Events({
                   </Button>
                 </DialogTrigger>
                 <DialogContent
-                  className='w-fit'
+                  className='w-fit h-fit'
                   aria-describedby='addEventHeader addEventForm'
                 >
                   <DialogHeader id='addEventHeader'>
-                    <DialogTitle>Add Event</DialogTitle>
+                    <DialogTitle>{t('event.form.add')}</DialogTitle>
                     <DialogDescription>
-                      Add an event to the calendar
+                      {t('event.form.add_to_calendar')}
                     </DialogDescription>
                   </DialogHeader>
                   <EventForm
@@ -412,11 +346,11 @@ export default function Events({
                         />
                         <p>
                           {new Date(event.end_date) < new Date()
-                            ? 'Ended'
+                            ? t('event.ended')
                             : new Date(event.end_date) > new Date() &&
                               new Date(event.start_date) < new Date()
-                            ? 'Ongoing'
-                            : 'Upcoming'}
+                            ? t('event.ongoing')
+                            : t('event.upcoming')}
                         </p>
                       </div>
                     </div>

@@ -1,11 +1,14 @@
 import Events from './events'
 import Recruitment from './recruiting'
-import ExtraNews from './extranews'
 import BreakingNews from './breakingNews'
 import CalendarProvider from '@/providers/CalendarProvider'
+import { GetRecruitment } from '@/api/committee'
+import { GetBreakingNews } from '@/api/items'
+import ExtraNewsObserver from './extranewsObserver'
+
+export const revalidate = 60 * 60 * 24 // 1 day
 
 /**
- * Renders the bulletin page
  * @name Bulletin
  * @description Renders the bulletin page
  *
@@ -18,16 +21,18 @@ export default async function Bulletin({
 }: {
   params: { language: string }
 }): Promise<JSX.Element> {
-  // TODO: Potentially retrieve events only once?
+  const recruitmentData = await GetRecruitment(language)
+  const breakingNewsData = await GetBreakingNews(language)
+
   return (
     <main className='px-12'>
       <div className='h-24' />
-      <BreakingNews language={language} />
+      <BreakingNews language={language} data={breakingNewsData} />
       <CalendarProvider language={language}>
         <Events language={language} />
       </CalendarProvider>
-      <Recruitment language={language} />
-      <ExtraNews language={language} />
+      <Recruitment language={language} data={recruitmentData} />
+      <ExtraNewsObserver language={language} />
     </main>
   )
 }

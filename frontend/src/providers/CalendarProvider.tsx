@@ -3,7 +3,6 @@ import { GetEvents } from '@/api/calendar'
 import { Event } from '@/models/Items'
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -53,9 +52,7 @@ function calendarReduction(
     case 'REMOVE_EVENT':
       return {
         ...state,
-        events: state.events.filter(
-          (event) => event !== action.payload
-        ),
+        events: state.events.filter((event) => event !== action.payload),
       }
     case 'UPDATE_EVENT':
       return {
@@ -89,7 +86,6 @@ const initalState: CalendarState = {
 
 interface CalendarContextType extends CalendarState {
   setDate: (date: Date) => void
-  retrieveEvents: (date: Date) => void
   setEvents: (events: Event[]) => void
   addEvent: (event: Event) => void
   removeEvent: (event: Event) => void
@@ -100,6 +96,8 @@ interface CalendarContextType extends CalendarState {
 const CalendarContext = createContext<CalendarContextType | undefined>(
   undefined
 )
+
+export const revalidate = 60 * 60 * 24
 
 /**
  * Renders the CalendarProvider component with the provided children.
@@ -125,26 +123,26 @@ export default function CalendarProvider({
     }
   }, [])
 
-  const retrieveEvents = useCallback(async (date: Date) => {
-    dispatch({ type: 'SET_LOADING', payload: true })
-    dispatch({ type: 'SET_ERROR', payload: null })
-    try {
-      const events = await GetEvents(date, language)
-
-      if (isMounted.current && events) {
-        dispatch({ type: 'SET_EVENTS', payload: events })
-      }
-    } catch (error) {
-      console.error('Failed to retrieve events:', error)
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to retrieve events' })
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false })
-    }
-  }, [])
-
   useEffect(() => {
+    const retrieveEvents = async (date: Date) => {
+      dispatch({ type: 'SET_LOADING', payload: true })
+      dispatch({ type: 'SET_ERROR', payload: null })
+      try {
+        const events = await GetEvents(date, language)
+
+        if (isMounted.current && events) {
+          dispatch({ type: 'SET_EVENTS', payload: events })
+        }
+      } catch (error) {
+        console.error('Failed to retrieve events:', error)
+        dispatch({ type: 'SET_ERROR', payload: 'Failed to retrieve events' })
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false })
+      }
+    }
+
     retrieveEvents(state.date)
-  }, [state.date, retrieveEvents])
+  }, [state.date])
 
   const contextValue = useMemo(
     () => ({
@@ -158,7 +156,6 @@ export default function CalendarProvider({
       setDate: (newDate: Date): void => {
         dispatch({ type: 'SET_DATE', payload: newDate })
       },
-      retrieveEvents,
       /**
        * Sets the events of the calendar by dispatching the action to set them.
        *
@@ -206,7 +203,7 @@ export default function CalendarProvider({
         dispatch({ type: 'SET_SELECTED_DATE', payload: newDate })
       },
     }),
-    [state, retrieveEvents]
+    [state]
   )
 
   return (
