@@ -1,5 +1,4 @@
 'use client'
-import './cookieStyle.css'
 import { useState, Dispatch, SetStateAction } from 'react'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { PlusIcon, MinusIcon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -7,6 +6,7 @@ import { useTranslation } from '@/app/i18n/client'
 import Logo from '/public/images/logo.webp'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Switch } from '@/components/ui/switch'
 
 interface AvailableCookieSettings {
   NECESSARY: boolean
@@ -177,20 +177,9 @@ export default function DetailedCookiePopup({
                       updateSlider(cookie, !sliders[cookie])
                     }}
                   >
-                    <input
-                      id={cookie}
-                      name={cookie}
-                      type='checkbox'
+                    <Switch
                       checked={sliders[cookie]}
-                      readOnly
-                    />
-                    <label
-                      htmlFor={cookie}
-                      className={`slider focus:border-2 focus:border-black ${
-                        cookie === 'NECESSARY'
-                          ? 'hover:cursor-not-allowed'
-                          : 'hover:cursor-pointer'
-                      }`}
+                      disabled={cookie === 'NECESSARY'}
                     />
                   </div>
                 </div>
