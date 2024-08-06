@@ -1,9 +1,9 @@
 'use client'
+import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -34,6 +34,8 @@ export default function ListView({
   const reroute = (url: string) => {
     window.open(url, '_blank')
   }
+
+  const { t } = useTranslation(language, 'document')
 
   const handleDocumentClick = useCallback(
     (event: MouseEvent, documentIndex: number, document: Document) => {
@@ -94,10 +96,12 @@ export default function ListView({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className='w-96'>Name</TableHead>
-            <TableHead className='w-40'>Changed</TableHead>
-            <TableHead className='w-80'>Author</TableHead>
-            <TableHead className='text-right w-40'>Actions</TableHead>
+            <TableHead className='w-96'>{t('view.list.name')}</TableHead>
+            <TableHead className='w-40'>{t('view.list.changed')}</TableHead>
+            <TableHead className='w-80'>{t('view.list.author')}</TableHead>
+            <TableHead className='text-right w-40'>
+              {t('view.list.actions')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -139,7 +143,7 @@ export default function ListView({
                   {new Date(document.created_at).toLocaleDateString()}
                 </TableCell>
                 <TableCell className='flex gap-2 items-center'>
-                  <span className='sr-only'>Author</span>
+                  <span className='sr-only'>{t('view.list.author')}</span>
                   <Avatar className='bg-white mr-2'>
                     <AvatarImage
                       src={authorImage(document.author) || ''}

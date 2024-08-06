@@ -14,7 +14,14 @@ bucket_name = "medieteknik-static"
 bucket = client.get_bucket(bucket_name)
 
 
-def upload_file(file, file_name: str, path: str):
+def upload_file(
+    file,
+    file_name: str,
+    path: str,
+    language_code: str | None = None,
+    content_disposition: str | None = None,
+    content_type: str | None = None,
+):
     """
     Uploads a file to the bucket
 
@@ -22,6 +29,8 @@ def upload_file(file, file_name: str, path: str):
         file (Any): File to upload
         file_name (str): File to upload
         path (str): Path of the file
+        language_code (str): Language code (Optional)
+        content_disposition (str): Content disposition (Optional)
 
     Returns:
         str: URL of the uploaded file
@@ -29,8 +38,15 @@ def upload_file(file, file_name: str, path: str):
     Raises:
         GoogleCloudError: Error while uploading the file
     """
+
     try:
         blob = bucket.blob(os.path.join(path, file_name))
+        if language_code:
+            blob.content_language = language_code
+        if content_disposition:
+            blob.content_disposition = content_disposition
+        if content_type:
+            blob.content_type = content_type
         blob.upload_from_file(file)
         url = blob.generate_signed_url(expiration=timedelta(days=365))
 

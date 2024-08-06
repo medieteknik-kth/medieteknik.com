@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
 from models.content import News, Event, Document, Album, Author
 from models.content.author import AuthorType
@@ -163,14 +164,23 @@ def get_documents() -> dict:
         list[dict]: List of documents
     """
     provided_languages = retrieve_languages(request.args)
-    author_id = request.args.get("author")
+    documents = Document.query.filter(
+        Document.is_public == True,  # noqa: E712
+        Document.created_at >= datetime.now() - timedelta(days=365),
+    ).all()
 
-    if author_id:
-        return jsonify(
-            get_items(Document, provided_languages, author_id=author_id)
-        ), 200
+    document_dict = [
+        document_dict
+        for document in documents
+        if (
+            document_dict := document.to_dict(
+                is_public_route=True, provided_languages=provided_languages
+            )
+        )
+        is not None
+    ]
 
-    return jsonify(get_items(Document, provided_languages)), 200
+    return jsonify(document_dict), 200
 
 
 @public_documents_bp.route("/<string:url>", methods=["GET"])
@@ -189,6 +199,7 @@ def get_documents_by_url(url: str) -> dict:
 
     if not item:
         return jsonify({}), 404
+
     item: Document = item
 
     return jsonify(item)

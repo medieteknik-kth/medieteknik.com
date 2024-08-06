@@ -1,5 +1,3 @@
-'use client'
-import { useState } from 'react'
 import GridView from '../views/GridView'
 import ListView from '../views/ListView'
 import { Document } from '@/models/Document'

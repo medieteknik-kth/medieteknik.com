@@ -1,14 +1,12 @@
 'use client'
 import { Head } from '@/components/static/Static'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   Squares2X2Icon,
   HomeIcon,
   DocumentTextIcon,
   DocumentIcon,
-  AdjustmentsHorizontalIcon,
   Bars3Icon,
   EllipsisVerticalIcon,
   XMarkIcon,
@@ -18,19 +16,20 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import View from './tabs/View'
 import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import UploadDocument from './upload'
-import { DocumentPagination } from '@/models/Pagination'
+import { Document } from '@/models/Document'
+import { useTranslation } from '@/app/i18n/client'
 
 type View = 'grid' | 'list'
 
 const fetcher = (url: string) =>
-  fetch(url).then((res) => res.json() as Promise<DocumentPagination>)
+  fetch(url).then((res) => res.json() as Promise<Document[]>)
 
 export default function Documents({
   params: { language },
@@ -40,49 +39,71 @@ export default function Documents({
   const [view, setView] = useState<View>('grid')
   const [selectedDocuments, setSelectedDocuments] = useState<number[]>([])
   const { permissions } = useAuthentication()
-  const {
-    data: documents,
-    error,
-    isLoading,
-  } = useSWR(`${API_BASE_URL}/public/documents?language=${language}`, fetcher)
+  const { t } = useTranslation(language, 'document')
+  const { data, error, isLoading } = useSWR(
+    `${API_BASE_URL}/public/documents?language=${language}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      errorRetryCount: 0,
+      shouldRetryOnError: false,
+    }
+  )
+  let documents = data
+
+  const addDocument = useCallback(
+    (document: Document) => {
+      if (!documents) {
+        documents = [document]
+      } else {
+        documents.push(document)
+      }
+    },
+    [documents]
+  )
 
   if (isLoading) return <Loading language={language} />
 
   const categories = [
     {
-      title: 'Home',
+      title: t('category.home'),
       icon: <HomeIcon className='w-6 h-6 mr-2' />,
     },
     {
-      title: 'Documents',
+      title: t('category.documents'),
       icon: <DocumentIcon className='w-6 h-6 mr-2 text-green-500' />,
     },
     {
-      title: 'Forms',
+      title: t('category.forms'),
       icon: <DocumentTextIcon className='w-6 h-6 mr-2 text-amber-500' />,
     },
   ]
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title='Documents' />
-      <Tabs orientation='vertical' defaultValue='Home'>
+      <Head title={t('title')} />
+      <Tabs orientation='vertical' defaultValue={t('category.home')}>
         <div className='w-60 absolute h-full left-0 border-r py-3 px-4 flex flex-col gap-4'>
           {permissions.author.includes('DOCUMENT') && (
             <div className='flex flex-col gap-4'>
-              <UploadDocument language={language} />
+              <UploadDocument language={language} addDocument={addDocument} />
               <Separator className='-my-0.5' />
             </div>
           )}
 
           <div className='flex flex-col gap-2'>
-            <h3 className='text-lg font-semibold tracking-wide'>Categories</h3>
+            <h3 className='text-lg font-semibold tracking-wide'>
+              {t('categories')}
+            </h3>
             <TabsList className='flex flex-col gap-2 h-fit'>
               {categories.map((category, index) => (
                 <TabsTrigger asChild key={index} value={category.title}>
                   <Button
                     variant='outline'
                     className='w-full flex justify-start'
+                    title={category.title}
                   >
                     {category.icon}
                     <p>{category.title}</p>
@@ -98,6 +119,7 @@ export default function Documents({
             <Button
               variant={view === 'grid' ? 'default' : 'ghost'}
               size='icon'
+              title={t('view.grid')}
               onClick={() => {
                 if (view === 'grid') return
                 setView('grid')
@@ -109,6 +131,7 @@ export default function Documents({
             <Button
               variant={view === 'list' ? 'default' : 'ghost'}
               size='icon'
+              title={t('view.list')}
               onClick={() => {
                 if (view === 'list') return
                 setView('list')
@@ -117,13 +140,10 @@ export default function Documents({
               <Bars3Icon className='w-6 h-6' />
             </Button>
           </div>
+          {/*
+          TODO: Add Search
           <Separator orientation='vertical' className='h-8' />
-          <Button variant='outline'>
-            <AdjustmentsHorizontalIcon className='w-6 h-6 mr-2' />
-            <p>Filters</p>
-          </Button>
-          <Separator orientation='vertical' className='h-8' />
-          <Input type='search' className='w-96' placeholder='Search' />
+          <Input type='search' className='w-96' placeholder={t('search')} />*/}
         </div>
         <div className='grow h-12 border-b ml-60 px-4'>
           {selectedDocuments.length > 0 && (
@@ -138,18 +158,18 @@ export default function Documents({
                   <XMarkIcon className='w-6 h-6' />
                 </Button>
                 <span className='tracking-wide'>
-                  {selectedDocuments.length} selected
+                  {selectedDocuments.length} {t('document_selected')}
                 </span>
               </div>
               <Separator orientation='vertical' className='h-6' />
               <div className='flex gap-2'>
-                <Button variant='ghost' size='icon' title='Information'>
+                <Button variant='ghost' size='icon' title={t('information')}>
                   <InformationCircleIcon className='w-6 h-6' />
                 </Button>
-                <Button variant='ghost' size='icon' title='Share'>
+                <Button variant='ghost' size='icon' title={t('share')}>
                   <ArrowTopRightOnSquareIcon className='w-6 h-6' />
                 </Button>
-                <Button variant='ghost' size='icon' title='Download'>
+                <Button variant='ghost' size='icon' title={t('download')}>
                   <ArrowDownTrayIcon className='w-6 h-6' />
                 </Button>
               </div>
@@ -157,11 +177,15 @@ export default function Documents({
               <div className='flex gap-2'>
                 {permissions.author.includes('DOCUMENT') &&
                   permissions.student.includes('ITEMS_DELETE') && (
-                    <Button variant='destructive' size='icon' title='Delete'>
+                    <Button
+                      variant='destructive'
+                      size='icon'
+                      title={t('delete')}
+                    >
                       <TrashIcon className='w-6 h-6' />
                     </Button>
                   )}
-                <Button variant='ghost' size='icon' title='More Actions'>
+                <Button variant='ghost' size='icon' title={t('more_actions')}>
                   <EllipsisVerticalIcon className='w-6 h-6' />
                 </Button>
               </div>
@@ -170,20 +194,20 @@ export default function Documents({
         </div>
         {documents ? (
           <>
-            <TabsContent value='Home'>
+            <TabsContent value={t('category.home')}>
               <View
                 language={language}
-                documents={documents.items}
+                documents={documents}
                 currentView={view}
                 selectedDocuments={selectedDocuments}
                 setSelectedDocuments={setSelectedDocuments}
               />
             </TabsContent>
-            <TabsContent value='Documents'>
-              {documents.items.length > 0 ? (
+            <TabsContent value={t('category.documents')}>
+              {documents.length > 0 ? (
                 <View
                   language={language}
-                  documents={documents.items.filter(
+                  documents={documents.filter(
                     (doc) => doc.document_type === 'DOCUMENT'
                   )}
                   currentView={view}
@@ -194,11 +218,11 @@ export default function Documents({
                 <div className='h-[1080px]' />
               )}
             </TabsContent>
-            <TabsContent value='Forms'>
-              {documents.items.length > 0 ? (
+            <TabsContent value={t('category.forms')}>
+              {documents.length > 0 ? (
                 <View
                   language={language}
-                  documents={documents.items.filter(
+                  documents={documents.filter(
                     (doc) => doc.document_type === 'FORM'
                   )}
                   currentView={view}

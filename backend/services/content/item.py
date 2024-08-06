@@ -177,13 +177,11 @@ def create_item(
         raise ValueError("Invalid author")
 
     if not data.get("translations"):
-        index = 0
-        for language_code in AVAILABLE_LANGUAGES:
+        for language_code, index in enumerate(AVAILABLE_LANGUAGES):
             data["translations"][index] = {
                 "language_code": language_code,
                 "title": "Untitled Item",
             }
-            index += 1
 
     all_authors_items = item_table.query.filter_by(author_id=author.author_id).all()
 

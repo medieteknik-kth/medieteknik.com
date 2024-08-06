@@ -11,6 +11,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,47 +35,123 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Document, DocumentType } from '@/models/Document'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Document, DocumentTranslation } from '@/models/Document'
 import { useState } from 'react'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
+import { API_BASE_URL } from '@/utility/Constants'
+import { supportedLanguages } from '@/app/i18n/settings'
 
-export default function UploadDocument({ language }: { language: string }) {
-  const [open, setOpen] = useState(false)
+function TranslatedInputs({
+  index,
+  currentFiles,
+  setCurrentFile,
+}: {
+  index: number
+  currentFiles: File[]
+  setCurrentFile: (index: number, file: File) => void
+}) {
+  const ACCEPTED_FILE_TYPES = ['application/pdf']
+  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+  return (
+    <>
+      <FormField
+        name={`translations.${index}.language_code`}
+        render={({ field }) => (
+          <FormItem>
+            <Input id='language' type='hidden' {...field} />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        name={`translations.${index}.title`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Title</FormLabel>
+            <Input id='title' placeholder='Title' {...field} />
+            <FormMessage className='text-xs font-bold' />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        name={`translations.${index}.file`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>File</FormLabel>
+            <Input
+              id='file'
+              type='file'
+              accept={ACCEPTED_FILE_TYPES.join(', ')}
+              onChange={(event) => {
+                const file = event.target.files ? event.target.files[0] : null
+
+                if (!file) return
+
+                if (file.size > MAX_FILE_SIZE) {
+                  alert('File is too large')
+                  event.target.value = ''
+                  return
+                }
+
+                setCurrentFile(index, file)
+
+                field.onChange({
+                  target: {
+                    name: field.name,
+                    value: file,
+                  },
+                })
+              }}
+            />
+            {currentFiles[index] && (
+              <FormDescription>
+                Selected file: {currentFiles[index].name}
+              </FormDescription>
+            )}
+            <FormMessage className='text-xs font-bold' />
+          </FormItem>
+        )}
+      />
+    </>
+  )
+}
+
+export default function UploadDocument({
+  language,
+  addDocument,
+}: {
+  language: string
+  addDocument: (document: Document) => void
+}) {
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const [formOpen, setFormOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const [value, setValue] = useState('DOCUMENT')
   const { student } = useAuthentication()
+  const [files, setFiles] = useState<File[]>([])
   const FormSchema = z.object({
-    title: z.string().min(1, { message: 'Required' }),
     type: z.enum(['DOCUMENT', 'FORM']),
-    file: z.instanceof(window.File),
+    translations: z.array(
+      z.object({
+        language_code: z.string().optional().or(z.literal('')),
+        title: z.string().min(1, { message: 'Required' }),
+        file: z.instanceof(window.File),
+      })
+    ),
   })
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024
-  const ACCEPTED_FILE_TYPES = [
-    'application/pdf',
-    'application/rtf',
-    'text/plain',
-    'application/x-latex',
-    'application/x-tex',
-    'text/markdown',
-    'text/html',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    'application/vnd.ms-powerpoint',
-    'application/vnd.oasis.opendocument.text',
-    'application/vnd.oasis.opendocument.spreadsheet',
-    'application/vnd.oasis.opendocument.presentation',
-    'text/csv',
-  ]
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: '',
       type: 'DOCUMENT',
+      translations: supportedLanguages.map((language) => ({
+        language_code: language,
+        title: '',
+      })),
     },
   })
 
@@ -92,9 +169,17 @@ export default function UploadDocument({ language }: { language: string }) {
     formData.append('author[entity_email]', student.email)
 
     // Add translation fields
-    formData.append('translations[0][file]', data.file)
-    formData.append('translations[0][title]', data.title)
-    formData.append('translations[0][language_code]', language)
+    supportedLanguages.forEach((language, index) => {
+      formData.append(`translations[${index}][language_code]`, language)
+      formData.append(
+        `translations[${index}][title]`,
+        data.translations[index].title
+      )
+      formData.append(
+        `translations[${index}][file]`,
+        data.translations[index].file
+      )
+    })
 
     try {
       const response = await fetch(`${API_BASE_URL}/documents/`, {
@@ -103,12 +188,67 @@ export default function UploadDocument({ language }: { language: string }) {
         body: formData,
       })
       if (response.ok) {
-        const data = await response.json()
-        return data
+        const json = (await response.json()) as {
+          id: string
+          translations: DocumentTranslation[]
+        }
+        addDocument({
+          author: {
+            author_type: 'STUDENT',
+            email: student.email,
+            first_name: student.first_name,
+            last_name: student.last_name,
+            student_id: student.student_id,
+            student_type: student.student_type,
+            profile_picture_url: student.profile_picture_url,
+            reception_name: student.reception_name,
+            reception_profile_picture_url:
+              student.reception_profile_picture_url,
+          },
+          document_type: data.type,
+          translations: json.translations,
+          created_at: new Date().toISOString(),
+          is_pinned: false,
+          is_public: true,
+          published_status: 'PUBLISHED',
+        })
+        setFormOpen(false)
+      } else {
+        setErrorMessage('Failed to upload document ' + response.statusText)
       }
     } catch (error) {
       console.error(error)
+      setErrorMessage('Failed to upload document ' + error)
     }
+  }
+  const languageFlags = new Map([
+    ['en', 'gb'],
+    ['sv', 'se'],
+  ])
+
+  const languageNames = new Map([
+    ['en', 'English'],
+    ['sv', 'Svenska'],
+  ])
+
+  /**
+   * A function that retrieves the flag code based on the provided language.
+   *
+   * @param {string} lang - The language code for which to retrieve the flag code.
+   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
+   */
+  const getFlagCode = (lang: string): string => {
+    return languageFlags.get(lang) || 'xx'
+  }
+
+  /**
+   * A function that retrieves the language name based on the provided language code.
+   *
+   * @param {string} lang - The language code for which to retrieve the language name.
+   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
+   */
+  const getLanguageName = (lang: string): string => {
+    return languageNames.get(lang) || 'Unknown'
   }
 
   const documentTypes = [
@@ -123,7 +263,7 @@ export default function UploadDocument({ language }: { language: string }) {
   ] as const
 
   return (
-    <Dialog>
+    <Dialog open={formOpen} onOpenChange={setFormOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className='w-6 h-6 mr-2' />
@@ -137,36 +277,37 @@ export default function UploadDocument({ language }: { language: string }) {
           <DialogDescription>
             Max {MAX_FILE_SIZE / 1024 / 1024} MB
           </DialogDescription>
+          {errorMessage && (
+            <p className='text-xs font-bold text-red-600'>{errorMessage}</p>
+          )}
         </DialogHeader>
-        <>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(postForm)}>
-              <FormField
-                control={form.control}
-                name='title'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Title' {...field} />
-                    </FormControl>
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
-              />
-
+        <Tabs defaultValue={language} className='mb-2'>
+          <TabsList>
+            {supportedLanguages.map((language) => (
+              <TabsTrigger
+                key={language}
+                value={language}
+                className='w-fit'
+                title={getLanguageName(language)}
+              >
+                <span className={`fi fi-${getFlagCode(language)}`} />
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <form onSubmit={form.handleSubmit(postForm)}>
+            <Form {...form}>
               <FormField
                 control={form.control}
                 name='type'
                 render={({ field }) => (
                   <FormItem className='flex flex-col my-2'>
                     <FormLabel>Type</FormLabel>
-                    <Popover open={open} onOpenChange={setOpen}>
+                    <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant='outline'
-                            aria-expanded={open}
+                            aria-expanded={popoverOpen}
                             value={value}
                             className='w-52 justify-between'
                           >
@@ -190,7 +331,7 @@ export default function UploadDocument({ language }: { language: string }) {
                                   value={documentType.value}
                                   onSelect={() => {
                                     form.setValue('type', documentType.value)
-                                    setOpen(false)
+                                    setPopoverOpen(false)
                                   }}
                                 >
                                   {documentType.label}
@@ -206,48 +347,28 @@ export default function UploadDocument({ language }: { language: string }) {
                 )}
               />
 
-              <FormField
-                name='file'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>File</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='file'
-                        accept={ACCEPTED_FILE_TYPES.join(', ')}
-                        value={field.value ? undefined : ''}
-                        onChange={(event) => {
-                          const file = event.target.files
-                            ? event.target.files[0]
-                            : null
-
-                          if (!file) return
-
-                          if (file.size > MAX_FILE_SIZE) {
-                            alert('File is too large')
-                            return
-                          }
-
-                          field.onChange({
-                            target: {
-                              name: field.name,
-                              value: file,
-                            },
-                          })
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
-              />
+              {supportedLanguages.map((language, index) => (
+                <TabsContent key={language} value={language}>
+                  <TranslatedInputs
+                    index={index}
+                    currentFiles={files}
+                    setCurrentFile={(index, file) =>
+                      setFiles((files) => {
+                        const newFiles = [...files]
+                        newFiles[index] = file
+                        return newFiles
+                      })
+                    }
+                  />
+                </TabsContent>
+              ))}
 
               <Button type='submit' className='w-full my-2'>
                 Upload
               </Button>
-            </form>
-          </Form>
-        </>
+            </Form>
+          </form>
+        </Tabs>
       </DialogContent>
     </Dialog>
   )
