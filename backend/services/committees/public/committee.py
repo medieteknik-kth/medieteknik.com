@@ -100,7 +100,7 @@ def get_committee_data_by_title(title: str) -> Dict[str, Any] | None:
         return None
 
     committee_author = Author.query.filter_by(
-        author_type=AuthorType.COMMITTEE, entity_id=committee.committee_id
+        author_type=AuthorType.COMMITTEE.value, committee_id=committee.committee_id
     ).first()
 
     data = {
