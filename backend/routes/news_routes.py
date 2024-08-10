@@ -112,7 +112,7 @@ def get_news_by_student(email: str):
         return jsonify({}), 403
 
     provided_languages = retrieve_languages(request.args)
-    author = get_author_from_email(entity_table=Student, entity_email=email)
+    author = get_author_from_email(entity_table=Student, email=email)
 
     if not author:
         return jsonify({}), 404
@@ -161,7 +161,7 @@ def create_news():
     if author_table is None:
         return jsonify({"error": "Invalid author type"}), 400
 
-    author_email = author.get("entity_email")
+    author_email = author.get("email")
 
     if author_email is None:
         return jsonify({"error": "No email provided"}), 400
@@ -169,7 +169,7 @@ def create_news():
     return {
         "url": create_item(
             author_table=author_table,
-            author_email=author_email,
+            email=author_email,
             item_table=News,
             data=data,
         )

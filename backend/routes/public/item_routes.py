@@ -54,9 +54,7 @@ def get_news_by_student(email: str):
             Author.query.filter(
                 Author.author_type == AuthorType.STUDENT.value,
                 Author.student_id
-                == get_author_from_email(
-                    entity_table=Student, entity_email=email
-                ).student_id,
+                == get_author_from_email(entity_table=Student, email=email).student_id,
             ).first_or_404(),
             News,
             provided_languages,
@@ -125,9 +123,7 @@ def get_events_by_student(email: str):
             Author.query.filter(
                 Author.author_type == AuthorType.STUDENT.value,
                 Author.student_id
-                == get_author_from_email(
-                    entity_table=Student, entity_email=email
-                ).student_id,
+                == get_author_from_email(entity_table=Student, email=email).student_id,
             ).first_or_404(),
             Event,
             provided_languages,

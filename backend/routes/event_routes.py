@@ -47,7 +47,7 @@ def create_event():
     if author_table is None:
         return jsonify({"error": "Invalid author type"}), 400
 
-    author_email = author.get("entity_email")
+    author_email = author.get("email")
 
     if author_email is None:
         return jsonify({"error": "No email provided"}), 400
@@ -57,9 +57,15 @@ def create_event():
     return {
         "id": create_item(
             author_table=author_table,
-            author_email=author_email,
+            email=author_email,
             item_table=Event,
             data=data,
             public=True,
         )
     }, 201
+
+
+@events_bp.route("/<string:url>", methods=["DELETE"])
+@jwt_required()
+def delete_event():
+    pass

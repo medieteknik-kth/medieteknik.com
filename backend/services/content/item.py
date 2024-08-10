@@ -145,8 +145,8 @@ def get_items_from_author(
 
 def create_item(
     author_table: Type[Student | Committee | CommitteePosition],
-    author_email: str,
-    item_table: Type[Item] = Item,
+    email: str,
+    item_table: Item,
     data: Dict[str, Any] | None = None,
     public: bool = False,
 ) -> str | None:
@@ -166,11 +166,11 @@ def create_item(
     if not data:
         data = {}
 
-    if not author_email or not author_table:
+    if not email or not author_table:
         raise ValueError("author_email and author_table are required")
 
     author: Author | None = get_author_from_email(
-        entity_table=author_table, entity_email=author_email
+        entity_table=author_table, email=email
     )
 
     if not author or not isinstance(author, Author):

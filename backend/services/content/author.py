@@ -14,19 +14,19 @@ db = database.db
 
 
 def get_author_from_email(
-    entity_table: Type[Student | Committee | CommitteePosition], entity_email: str
+    entity_table: Type[Student | Committee | CommitteePosition], email: str
 ) -> Author | None:
     """
     Retrieves an author from an email
 
     Args:
         entity_table (Type[Student | Committee | CommitteePosition]): The entity table to use
-        entity_email (str): The email of the entity
+        email (str): The email of the entity
 
     Returns:
         Author | None: The author or None if not found
     """
-    entity = entity_table.query.filter_by(email=entity_email).first()
+    entity = entity_table.query.filter_by(email=email).first()
 
     if not entity:
         return None

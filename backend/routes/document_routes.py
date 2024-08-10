@@ -6,6 +6,8 @@ API Endpoint: '/api/v1/documents'
 from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
+from models.committees.committee import Committee
+from models.committees.committee_position import CommitteePosition
 from models.content.document import Document
 from models.core.student import Student
 from services.content.item import create_item
@@ -22,9 +24,9 @@ documents_bp = Blueprint("documents", __name__)
 def create_document():
     document_type = request.form.get("document_type")
     author_type = request.form.get("author[author_type]")
-    entity_email = request.form.get("author[entity_email]")
+    email = request.form.get("author[email]")
 
-    if document_type is None or author_type is None or entity_email is None:
+    if document_type is None or author_type is None or email is None:
         return jsonify(
             {
                 "error": "Missing required fields, either 'author' or 'document_type' is missing"
@@ -60,13 +62,26 @@ def create_document():
 
         urls.append(result)
 
+    author_table = None
+    if author_type == "STUDENT":
+        author_table = Student
+    elif author_type == "COMMITTEE":
+        author_table = Committee
+    elif author_type == "COMMITTEE_POSITION":
+        author_table = CommitteePosition
+    else:
+        return jsonify({"error": "Invalid author type"}), 400
+
+    if author_table is None:
+        return jsonify({"error": "Invalid author type"}), 400
+
     id = create_item(
-        author_table=Student,
-        author_email=entity_email,
+        author_table=author_table,
+        email=email,
         item_table=Document,
         data={
             "document_type": document_type,
-            "author": {"author_type": author_type, "entity_email": entity_email},
+            "author": {"author_type": author_type, "email": email},
             "translations": [
                 {
                     "url": urls[index],
