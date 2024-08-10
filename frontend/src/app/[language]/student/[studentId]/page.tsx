@@ -38,7 +38,7 @@ export default async function UserPage({
         className='h-96 bg-[#EEE] dark:bg-[#222] border-b-4 border-yellow-400 relative flex items-center justify-between px-44'
       >
         <div className='w-1/2 h-1/2 flex items-center ml-24 text-black dark:text-yellow-400'>
-          <Avatar className='w-52 h-auto aspect-square border-2 bg-white'>
+          <Avatar className='w-52 h-auto aspect-square bg-white border-4 border-yellow-400 shadow-md'>
             <AvatarImage
               src={data.student.profile_picture_url}
               alt='Profile Picture'

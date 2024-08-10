@@ -7,10 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import { GetStudentNews } from '@/api/student'
 import EditNewsButton from './client/editNewsButton'
+import CopyButton from './client/copyButton'
 
 export default async function StudentNews({
   language,
@@ -54,35 +53,18 @@ export default async function StudentNews({
                 <TableCell>
                   {new Date(item.created_at).toLocaleDateString()}
                 </TableCell>
+                <TableCell className='flex gap-2'>
+                  <CopyButton
+                    language={language}
+                    url={`/bulletin/news/${item.url}`}
+                  />
+                  <EditNewsButton
+                    language={language}
+                    currentStudent={student}
+                  />
+                </TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell className='max-w-[650px] truncate'>
-                News Title
-              </TableCell>
-              <TableCell>
-                {new Date('January 20 2024').toLocaleDateString()}
-              </TableCell>
-              <TableCell className='grid grid-cols-3 gap-2'>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  title='Tags'
-                  aria-label='Tags'
-                >
-                  <TagIcon className='w-6 h-6' />
-                </Button>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  title='Share'
-                  aria-label='Share'
-                >
-                  <LinkIcon className='w-6 h-6' />
-                </Button>
-                <EditNewsButton language={language} currentStudent={student} />
-              </TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

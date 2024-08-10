@@ -39,7 +39,7 @@ function TableDisplay({
                   />
                 </Avatar>
               ) : (
-                <p className='text-neutral-600 uppercase select-none'>
+                <p className='text-neutral-600 uppercase select-none px-2'>
                   Independent
                 </p>
               )}

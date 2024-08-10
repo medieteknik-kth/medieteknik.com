@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import { GetStudentEvents } from '@/api/student'
+import CopyButton from './client/copyButton'
 
 export default async function StudentEvents({
   language,
@@ -108,14 +109,6 @@ export default async function StudentEvents({
                       aria-label='Tags'
                     >
                       <TagIcon className='w-6 h-6' />
-                    </Button>
-                    <Button
-                      variant='outline'
-                      size='icon'
-                      title='Share'
-                      aria-label='Share'
-                    >
-                      <LinkIcon className='w-6 h-6' />
                     </Button>
                   </TableCell>
                 </TableRow>

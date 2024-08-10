@@ -14,15 +14,10 @@ export default function EditNewsButton({
   const { student } = useAuthentication()
 
   if (!student) return <></>
-  if (currentStudent !== student) return <></>
+  if (currentStudent.student_id !== student.student_id) return <></>
 
   return (
-    <Button
-      variant='outline'
-      size='icon'
-      title='Edit News'
-      aria-label='Edit News'
-    >
+    <Button size='icon' title='Edit News' aria-label='Edit News'>
       <Cog8ToothIcon className='w-6 h-6' />
     </Button>
   )
