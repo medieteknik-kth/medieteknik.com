@@ -228,8 +228,12 @@ const createAuthFunctions = (
       })
 
       if (response.ok) {
-        const json = await response.json()
-        dispatch({ type: 'SET_STUDENT', payload: json })
+        const json = (await response.json()) as AuthenticationResponse
+        dispatch({ type: 'SET_STUDENT', payload: json.student })
+        dispatch({ type: 'SET_ROLE', payload: json.role })
+        dispatch({ type: 'SET_PERMISSIONS', payload: json.permissions })
+        dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
+        dispatch({ type: 'SET_POSITIONS', payload: json.positions })
         dispatch({ type: 'LOGIN' })
       } else {
         dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
@@ -282,8 +286,16 @@ const createAuthFunctions = (
         credentials: 'include',
       })
 
-      if (!response.ok) {
-        throw new Error('Session Expired')
+      if (response.ok) {
+        const json = (await response.json()) as AuthenticationResponse
+        dispatch({ type: 'SET_STUDENT', payload: json.student })
+        dispatch({ type: 'SET_ROLE', payload: json.role })
+        dispatch({ type: 'SET_PERMISSIONS', payload: json.permissions })
+        dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
+        dispatch({ type: 'SET_POSITIONS', payload: json.positions })
+      } else {
+        dispatch({ type: 'LOGOUT' })
+        throw new Error('Failed to refresh token')
       }
     } catch (error) {
       console.error(error)
@@ -328,7 +340,13 @@ export function AuthenticationProvider({
         if (response.ok) {
           const json: AuthenticationResponse = await response.json()
           // Update the authentication state with the retrieved data
-          dispatch({ type: 'SET_STUDENT', payload: json.student })
+          dispatch({
+            type: 'SET_STUDENT',
+            payload: {
+              ...json.student,
+              author_type: 'STUDENT',
+            },
+          })
           dispatch({ type: 'SET_ROLE', payload: json.role })
           dispatch({ type: 'SET_PERMISSIONS', payload: json.permissions })
           dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
