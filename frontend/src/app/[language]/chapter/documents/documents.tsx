@@ -22,9 +22,17 @@ import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import UploadDocument from './upload'
 import { Document } from '@/models/Document'
 import { useTranslation } from '@/app/i18n/client'
+import DocumentUpload from '@/components/dialogs/DocumentUpload'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 type View = 'grid' | 'list'
 
@@ -38,7 +46,8 @@ export default function Documents({
 }) {
   const [view, setView] = useState<View>('grid')
   const [selectedDocuments, setSelectedDocuments] = useState<number[]>([])
-  const { permissions } = useAuthentication()
+  const [open, setOpen] = useState(false)
+  const { permissions, student } = useAuthentication()
   const { t } = useTranslation(language, 'document')
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/public/documents?language=${language}`,
@@ -86,11 +95,21 @@ export default function Documents({
       <Head title={t('title')} />
       <Tabs orientation='vertical' defaultValue={t('category.home')}>
         <div className='w-60 absolute h-full left-0 border-r py-3 px-4 flex flex-col gap-4'>
-          {permissions.author.includes('DOCUMENT') && (
-            <div className='flex flex-col gap-4'>
-              <UploadDocument language={language} addDocument={addDocument} />
+          {student && permissions.author.includes('DOCUMENT') && (
+            <>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button>Upload Document</Button>
+                </DialogTrigger>
+                <DocumentUpload
+                  language={language}
+                  addDocument={addDocument}
+                  author={student}
+                  closeMenuCallback={() => setOpen(false)}
+                />
+              </Dialog>
               <Separator className='-my-0.5' />
-            </div>
+            </>
           )}
 
           <div className='flex flex-col gap-2'>

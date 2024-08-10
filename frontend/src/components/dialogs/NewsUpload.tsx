@@ -1,15 +1,13 @@
 'use client'
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@components/ui/button'
-import { useState, useDeferredValue, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { API_BASE_URL } from '@/utility/Constants'
 import { z } from 'zod'
@@ -25,23 +23,30 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Author } from '@/models/Items'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 
-export function UploadNews({
-  language,
-  author,
-}: {
+interface NewsUploadProps {
   language: string
-  author?: Author
-}) {
+  author: Author
+}
+
+/**
+ * @name NewsUpload
+ * @description Upload a news article
+ *
+ * @param {NewsUploadProps} props - The props for the component
+ * @param {string} props.language - The language of the news article
+ * @param {Author} props.author - The author of the news article
+ * @returns {JSX.Element} The news upload form
+ */
+export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
   const [isClient, setIsClient] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const { student } = useAuthentication()
   const { push } = useRouter()
-  const [selectingAuthor, setSelectingAuthor] = useState(true)
 
   const FormSchema = z.object({
     title: z.string().optional().or(z.literal('')),
@@ -67,7 +72,7 @@ export function UploadNews({
     setIsClient(true)
   }, [])
 
-  if (!isClient) return null
+  if (!isClient) return <></>
 
   if (!student) {
     return <></>
@@ -85,10 +90,7 @@ export function UploadNews({
           language_code: language,
         },
       ],
-      author: {
-        author_type: 'STUDENT',
-        entity_email: student.email,
-      },
+      author: author,
     }
 
     try {

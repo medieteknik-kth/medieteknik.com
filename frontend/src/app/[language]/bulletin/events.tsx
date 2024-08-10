@@ -20,7 +20,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import EventForm from './eventForm'
 import { useCalendar } from '@/providers/CalendarProvider'
 import Student from '@/models/Student'
 import Committee, { CommitteePosition } from '@/models/Committee'
@@ -34,6 +33,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import CalendarExport from './components/calendarExport'
 import { useTranslation } from '@/app/i18n/client'
+import EventUpload from '@/components/dialogs/EventUpload'
 
 /**
  * Get the ordinal suffix for a given number
@@ -77,7 +77,7 @@ export default function Events({
   language: string
 }): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedDate, events } = useCalendar()
+  const { selectedDate, events, addEvent } = useCalendar()
   const tinycolor = require('tinycolor2')
   const { student, permissions } = useAuthentication()
 
@@ -170,7 +170,7 @@ export default function Events({
               </span>
             </p>
             <Separator className='my-4' />
-            {permissions.author.includes('EVENT') ? (
+            {student && permissions.author.includes('EVENT') ? (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger
                   className='w-auto h-[60px] aspect-square'
@@ -185,22 +185,13 @@ export default function Events({
                     <PlusIcon className='w-6 h-6' title='Add Event' />
                   </Button>
                 </DialogTrigger>
-                <DialogContent
-                  className='w-fit h-fit'
-                  aria-describedby='addEventHeader addEventForm'
-                >
-                  <DialogHeader id='addEventHeader'>
-                    <DialogTitle>{t('event.form.add')}</DialogTitle>
-                    <DialogDescription>
-                      {t('event.form.add_to_calendar')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <EventForm
-                    language={language}
-                    selectedDate={selectedDate}
-                    closeMenuCallback={() => setIsOpen(false)}
-                  />
-                </DialogContent>
+                <EventUpload
+                  author={student}
+                  language={language}
+                  selectedDate={selectedDate}
+                  closeMenuCallback={() => setIsOpen(false)}
+                  addEvent={addEvent}
+                />
               </Dialog>
             ) : null}
           </div>
@@ -304,7 +295,12 @@ export default function Events({
                             includeImage={false}
                           />
                         ) : event.author.author_type === 'COMMITTEE' ? (
-                          <CommitteeTag committee={event.author as Committee} />
+                          <CommitteeTag
+                            committee={event.author as Committee}
+                            includeAt={false}
+                            includeBackground={false}
+                            includeImage={false}
+                          />
                         ) : event.author.author_type ===
                           'COMMITTEE_POSITION' ? (
                           <CommitteePositionTag

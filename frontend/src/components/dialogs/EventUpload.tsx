@@ -8,88 +8,64 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { any, z } from 'zod'
-import { useForm, UseFormReturn } from 'react-hook-form'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Checkbox } from '@/components/ui/checkbox'
 import { HexColorPicker } from 'react-colorful'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { API_BASE_URL, LanguageCodes, LANGUAGES } from '@/utility/Constants'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
+import { useState } from 'react'
 import { CardFooter } from '@/components/ui/card'
-import {
-  CheckIcon,
-  ChevronUpDownIcon,
-  EyeDropperIcon,
-  MapPinIcon,
-} from '@heroicons/react/24/outline'
-import { useCalendar } from '@/providers/CalendarProvider'
+import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { Label } from '@/components/ui/label'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { supportedLanguages } from '@/app/i18n/settings'
-import { cn } from '@/lib/utils'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { useTranslation } from '@/app/i18n/client'
 import { TFunction } from 'next-i18next'
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Author, Event } from '@/models/Items'
 
-/**
- * Generates a random temprary ID
- *
- * @param {number} length - The length of the ID
- * @returns {string} The generated ID
- */
-function createRandomTempraryID(length: number): string {
-  let result = ''
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const charactersLength = characters.length
-
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-
-  return result
+interface TranslatedInputProps {
+  index: number
+  language: string
+  t: TFunction
 }
 
 interface EventFormProps {
   language: string
   selectedDate: Date
   closeMenuCallback: () => void
+  author: Author
+  addEvent?: (event: Event) => void
 }
 
 /**
  * @name TranslatedInputs
  * @description Inputs for translated fields
  *
- * @param {number} index - The index of the input
- * @param {TFunction} t - The translation function
+ * @param {TranslatedInputProps} props - The props for the component
+ * @param {number} props.index - The index of the input
+ * @param {string} props.language - The language of the input
+ * @param {TFunction} props.t - The translation function
  * @returns {JSX.Element} The translated inputs
  */
 function TranslatedInputs({
   index,
+  language,
   t,
-}: {
-  index: number
-  t: TFunction
-}): JSX.Element {
+}: TranslatedInputProps): JSX.Element {
   return (
     <>
       <FormField
-        name={`translations.${index}.language`}
+        name={`translations.${index}.language_code`}
         render={({ field }) => (
           <FormItem>
             <Input id='language' type='hidden' {...field} />
@@ -100,7 +76,12 @@ function TranslatedInputs({
         name={`translations.${index}.title`}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('event.form.title')}</FormLabel>
+            <FormLabel>
+              {t('event.form.title')}{' '}
+              <span className='uppercase text-xs tracking-wide'>
+                [{language}]
+              </span>
+            </FormLabel>
             <FormControl>
               <Input id='title' type='text' {...field} />
             </FormControl>
@@ -113,7 +94,12 @@ function TranslatedInputs({
         name={`translations.${index}.description`}
         render={({ field }) => (
           <FormItem className='mt-2'>
-            <FormLabel>{t('event.form.description')}</FormLabel>
+            <FormLabel>
+              {t('event.form.description')}{' '}
+              <span className='uppercase text-xs tracking-wide select-none'>
+                [{language}]
+              </span>
+            </FormLabel>
             <FormControl>
               <Input
                 id='description'
@@ -131,19 +117,23 @@ function TranslatedInputs({
 }
 
 /**
- * @name EventForm
- * @description A form for creating an event
+ * @name EventUpload
+ * @description Upload an event
  *
  * @param {EventFormProps} props - The props for the component
  * @param {string} props.language - The language of the event
  * @param {Date} props.selectedDate - The date of the event
  * @param {() => void} props.closeMenuCallback - The callback function to close the menu
+ * @param {(event: Event) => void} props.addEvent - The callback function to add the event optimistically (optional)
+ *
  * @returns {JSX.Element} The EventForm component
  */
-export default function EventForm({
+export default function EventUpload({
   language,
   selectedDate,
+  author,
   closeMenuCallback,
+  addEvent,
 }: EventFormProps): JSX.Element {
   const { student } = useAuthentication()
   const { t } = useTranslation(language, 'bulletin')
@@ -151,10 +141,10 @@ export default function EventForm({
   if (!student) {
     return <></>
   }
+
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [currentColor, setCurrentColor] = useState('#FFFFFF')
-  const { addEvent } = useCalendar()
   const tinycolor = require('tinycolor2')
   const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6', '#EF4444']
   const FormSchema = z.object({
@@ -219,10 +209,7 @@ export default function EventForm({
       end_date: end_date.toISOString(),
       background_color: data.background_color,
       location: data.location,
-      author: {
-        author_type: 'STUDENT',
-        entity_email: student.email,
-      },
+      author: author,
       translations: data.translations,
     }
 
@@ -237,25 +224,28 @@ export default function EventForm({
       })
 
       if (response.ok) {
-        addEvent({
-          start_date: start_date.toLocaleString(language, {
-            timeZone: 'Europe/Stockholm',
-          }),
-          end_date: end_date.toLocaleString(language, {
-            timeZone: 'Europe/Stockholm',
-          }),
-          background_color: data.background_color,
-          location: data.location,
-          created_at: new Date().toLocaleDateString(),
-          is_pinned: false,
-          is_public: true,
-          published_status: 'PUBLISHED',
-          author: student,
-          translations: data.translations.map((translation) => ({
-            ...translation,
-            language_code: translation.language_code as LanguageCodes,
-          })),
-        })
+        if (addEvent) {
+          addEvent({
+            start_date: start_date.toLocaleString(language, {
+              timeZone: 'Europe/Stockholm',
+            }),
+            end_date: end_date.toLocaleString(language, {
+              timeZone: 'Europe/Stockholm',
+            }),
+            background_color: data.background_color,
+            location: data.location,
+            created_at: new Date().toLocaleDateString(),
+            is_pinned: false,
+            is_public: true,
+            published_status: 'PUBLISHED',
+            author: student,
+            translations: data.translations.map((translation) => ({
+              ...translation,
+              language_code: translation.language_code as LanguageCodes,
+            })),
+          })
+        }
+
         closeMenuCallback()
       } else {
         setErrorMessage('Something went wrong, try again later!')
@@ -298,7 +288,11 @@ export default function EventForm({
   }
 
   return (
-    <div className='h-fit'>
+    <DialogContent className='h-fit'>
+      <DialogHeader>
+        <DialogTitle>{t('event.form.title')}</DialogTitle>
+        <DialogDescription>{t('event.form.description')}</DialogDescription>
+      </DialogHeader>
       {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
       <Tabs defaultValue={language} className='mb-2'>
         <Label>{t('event.form.language')}</Label>
@@ -314,7 +308,7 @@ export default function EventForm({
             </TabsTrigger>
           ))}
         </TabsList>
-        <form>
+        <form onSubmit={eventForm.handleSubmit(publish)}>
           <Form {...eventForm}>
             <div className='grid grid-cols-12 gap-2 mt-2 relative'>
               <FormField
@@ -458,15 +452,15 @@ export default function EventForm({
             />
             {supportedLanguages.map((language, index) => (
               <TabsContent key={language} value={language}>
-                <TranslatedInputs index={index} t={t} />
+                <TranslatedInputs
+                  index={index}
+                  t={t}
+                  language={getLanguageName(language)}
+                />
               </TabsContent>
             ))}
 
-            <Button
-              type='submit'
-              className='w-full mt-4'
-              onClick={eventForm.handleSubmit(publish)}
-            >
+            <Button type='submit' className='w-full mt-4'>
               {t('event.form.publish')}
             </Button>
           </Form>
@@ -484,10 +478,12 @@ export default function EventForm({
           <div className='w-full h-fit relative top-10 mb-12 left-0 px-2 flex flex-col gap-1'>
             {getValues('translations').map((translation, index) => (
               <div
-                className='w-full text-xs rounded-2xl px-2 py-0.5 h-6 border font-bold overflow-hidden'
+                key={index}
+                className={`w-full text-xs rounded-2xl px-2 py-0.5 h-6 border font-bold overflow-hidden ${
+                  tinycolor(currentColor).isDark() ? 'text-white' : 'text-black'
+                }`}
                 style={{
                   backgroundColor: currentColor,
-                  color: tinycolor(currentColor).isDark() ? 'white' : 'black',
                 }}
                 onMouseEnter={(e) => {
                   e.stopPropagation()
@@ -520,6 +516,6 @@ export default function EventForm({
           </div>
         </div>
       </CardFooter>
-    </div>
+    </DialogContent>
   )
 }

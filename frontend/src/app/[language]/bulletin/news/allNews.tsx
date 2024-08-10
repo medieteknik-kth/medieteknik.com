@@ -35,7 +35,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useCallback, useState } from 'react'
-import { UploadNews } from '@/components/dialogs/Upload'
+import { NewsUpload } from '@/components/dialogs/NewsUpload'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
@@ -94,7 +94,7 @@ export default function AllNews({
   data: NewsPagination
 }) {
   type SortTypes = 'date' | 'author'
-  const { permissions } = useAuthentication()
+  const { permissions, student } = useAuthentication()
   const [copiedLink, setCopiedLink] = useState(-1)
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -206,7 +206,7 @@ export default function AllNews({
         </div>
       </CardHeader>
       <CardContent className='flex flex-wrap desktop:grid-cols-5 min-h-96 *:h-96 gap-8'>
-        {permissions.author.includes('NEWS') ? (
+        {student && permissions.author.includes('NEWS') ? (
           <Card className='w-[320px] border-dashed'>
             <CardContent className='h-full pt-6'>
               <Dialog>
@@ -219,7 +219,7 @@ export default function AllNews({
                     <PlusIcon className='w-6 h-6' />
                   </div>
                 </DialogTrigger>
-                <UploadNews language={language} />
+                <NewsUpload language={language} author={student} />
               </Dialog>
             </CardContent>
           </Card>
