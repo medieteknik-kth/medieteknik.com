@@ -9,15 +9,14 @@ export default function EventComponent({ event, onEventClick }: EventProps) {
   const tinycolor = require('tinycolor2')
 
   return (
-    <div
+    <li
       className={`w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-10 rounded-2xl text-xs max-h-6 overflow-hidden 
         ${
           tinycolor(event.background_color).isDark()
             ? 'text-white'
             : 'text-black'
         }
-        ${event.background_color === '#FFFFFF' && 'border dark:border-none'}
-        `}
+        ${event.background_color === '#FFFFFF' && 'border dark:border-none'}`}
       style={{
         backgroundColor: event.background_color,
       }}
@@ -39,6 +38,6 @@ export default function EventComponent({ event, onEventClick }: EventProps) {
       }}
     >
       <p className='truncate hidden sm:block'>{event.translations[0].title}</p>
-    </div>
+    </li>
   )
 }
