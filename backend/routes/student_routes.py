@@ -34,9 +34,11 @@ def student_login():
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
+    provided_languages = retrieve_languages(request.args)
+
     data: dict[str, Any] = json.loads(json.dumps(data))
 
-    return login(data)
+    return login(data=data, provided_languages=provided_languages)
 
 
 @student_bp.route("/", methods=["PUT"])
@@ -60,11 +62,44 @@ def update_student():
 def refresh_token():
     student_id = get_jwt_identity()
     student = Student.query.filter_by(student_id=student_id).one_or_none()
+    provided_languages = retrieve_languages(request.args)
 
     if not student:
         return jsonify({"error": "Invalid credentials"}), 401
 
-    response = make_response()
+    claims = get_jwt()
+    role = claims.get("role")
+    permissions = claims.get("permissions")
+
+    committees = []
+    committee_positions = []
+    student_memberships = StudentMembership.query.filter_by(student_id=student_id).all()
+
+    for membership in student_memberships:
+        position = CommitteePosition.query.get(membership.committee_position_id)
+        if not position or not isinstance(position, CommitteePosition):
+            continue
+
+        committee = Committee.query.get(position.committee_id)
+        if not committee or not isinstance(committee, Committee):
+            continue
+
+        committees.append(committee.to_dict(provided_languages=provided_languages))
+        committee_positions.append(
+            position.to_dict(
+                provided_languages=provided_languages, is_public_route=False
+            )
+        )
+
+    response = make_response(
+        {
+            "student": student.to_dict(is_public_route=False),
+            "committees": committees,
+            "committee_positions": committee_positions,
+            "role": role,
+            "permissions": permissions,
+        }
+    )
     access_token = create_access_token(identity=student, fresh=False)
     set_access_cookies(response=response, encoded_access_token=access_token)
     response.status_code = HTTPStatus.OK
@@ -107,7 +142,7 @@ def reset_password():
 @student_bp.route("/me", methods=["GET"])
 @jwt_required()
 def get_student_callback():
-    language_code = retrieve_languages(request.args)
+    provided_languages = retrieve_languages(request.args)
     student_id = get_jwt_identity()
 
     student = Student.query.get(student_id)
@@ -132,14 +167,16 @@ def get_student_callback():
         if not committee or not isinstance(committee, Committee):
             continue
 
-        committees.append(committee.to_dict(provided_languages=language_code))
+        committees.append(committee.to_dict(provided_languages=provided_languages))
         committee_positions.append(
-            position.to_dict(provided_languages=language_code, is_public_route=False)
+            position.to_dict(
+                provided_languages=provided_languages, is_public_route=False
+            )
         )
 
     return jsonify(
         {
-            "student": current_user.to_dict(False),
+            "student": current_user.to_dict(is_public_route=False),
             "role": role,
             "permissions": permissions,
             "committees": committees,

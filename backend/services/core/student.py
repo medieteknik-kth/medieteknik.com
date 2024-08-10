@@ -8,15 +8,18 @@ from flask_jwt_extended import (
     create_refresh_token,
     set_refresh_cookies,
 )
-from typing import Any, Dict
+from typing import Any, Dict, List
+from models.committees.committee import Committee
+from models.committees.committee_position import CommitteePosition
 from models.content.author import Author, AuthorType
 from models.core.permissions import StudentPermission
-from models.core.student import Student
+from models.core.student import Student, StudentMembership
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from utility.gc import delete_file, upload_file
 
 
-def login(data: Dict[str, Any]):
+def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUAGES):
     """
     Login function that validates the user's credentials and generates an access token.
 
@@ -59,7 +62,37 @@ def login(data: Dict[str, Any]):
         "permissions": permissions_and_role.get("permissions"),
     }
 
-    response = make_response(student.to_dict(is_public_route=False))
+    committees = []
+    committee_positions = []
+    student_memberships = StudentMembership.query.filter_by(
+        student_id=student.student_id
+    ).all()
+
+    for membership in student_memberships:
+        position = CommitteePosition.query.get(membership.committee_position_id)
+        if not position or not isinstance(position, CommitteePosition):
+            continue
+
+        committee = Committee.query.get(position.committee_id)
+        if not committee or not isinstance(committee, Committee):
+            continue
+
+        committees.append(committee.to_dict(provided_languages=provided_languages))
+        committee_positions.append(
+            position.to_dict(
+                provided_languages=provided_languages, is_public_route=False
+            )
+        )
+
+    response = make_response(
+        {
+            "student": student.to_dict(is_public_route=False),
+            "committees": committees,
+            "committee_positions": committee_positions,
+            "permissions": permissions_and_role.get("permissions"),
+            "role": permissions_and_role.get("role"),
+        }
+    )
     response.status_code = 200
     set_access_cookies(
         response=response,

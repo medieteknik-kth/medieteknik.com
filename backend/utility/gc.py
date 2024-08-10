@@ -21,22 +21,45 @@ def upload_file(
     language_code: str | None = None,
     content_disposition: str | None = None,
     content_type: str | None = None,
+    timedelta: timedelta | None = timedelta(days=365),
 ):
     """
-    Uploads a file to the bucket
+    Uploads a file to the bucket and returns its URL
 
-    Args:
-        file (Any): File to upload
-        file_name (str): File to upload
-        path (str): Path of the file
-        language_code (str): Language code (Optional)
-        content_disposition (str): Content disposition (Optional)
+    :type file: file
+    :param file:
+        File to upload
 
-    Returns:
-        str: URL of the uploaded file
+    :type file_name: str
+    :param file_name:
+        Name of the file
 
-    Raises:
-        GoogleCloudError: Error while uploading the file
+    :type path: str
+    :param path:
+        Path of the file
+
+    :type language_code: str
+    :param language_code:
+        (Optional) Language code of the file, fallback to None
+
+    :type content_disposition: str
+    :param content_disposition:
+        (Optional) Content disposition of the file, fallback to None
+
+    :type content_type: str
+    :param content_type:
+        (Optional) Content type of the file, fallback to None
+
+    :type timedelta: timedelta
+    :param timedelta:
+        (Optional) Expiration time of the file, fallback to 365 days
+
+    :rtype: str
+    :returns:
+        URL of the uploaded file
+
+    :raises: :class:`~google.cloud.exceptions.GoogleCloudError`
+        if the upload response returns an error status.
     """
 
     try:
@@ -47,8 +70,15 @@ def upload_file(
             blob.content_disposition = content_disposition
         if content_type:
             blob.content_type = content_type
+
+        url = None
+        if timedelta is None:
+            blob.make_public()
+            url = blob.public_url()
+        else:
+            url = blob.generate_signed_url(expiration=timedelta)
+
         blob.upload_from_file(file)
-        url = blob.generate_signed_url(expiration=timedelta(days=365))
 
         return url
     except GoogleCloudError as e:

@@ -119,12 +119,14 @@ class Item(db.Model):
             if author_data.author_type == AuthorType.STUDENT:
                 student = Student.query.get(author_data.student_id)
                 if student and isinstance(student, Student):
-                    data["author"] = student.to_dict(is_public_route)
+                    data["author"] = student.to_dict(is_public_route=is_public_route)
                     data["author"]["author_type"] = AuthorType.STUDENT.value
             elif author_data.author_type == AuthorType.COMMITTEE:
                 committee = Committee.query.get(author_data.committee_id)
                 if committee and isinstance(committee, Committee):
-                    data["author"] = committee.to_dict(is_public_route)
+                    data["author"] = committee.to_dict(
+                        provided_languages=provided_languages
+                    )
                     data["author"]["author_type"] = AuthorType.COMMITTEE.value
             elif author_data.author_type == AuthorType.COMMITTEE_POSITION:
                 committee_position = CommitteePosition.query.get(
@@ -133,7 +135,11 @@ class Item(db.Model):
                 if committee_position and isinstance(
                     committee_position, CommitteePosition
                 ):
-                    data["author"] = committee_position.to_dict(is_public_route)
+                    data["author"] = committee_position.to_dict(
+                        provided_languages=provided_languages,
+                        is_public_route=is_public_route,
+                        include_committee_logo=True,
+                    )
                     data["author"]["author_type"] = AuthorType.COMMITTEE_POSITION.value
         else:
             data["author"] = {}

@@ -12,7 +12,10 @@ from flask_jwt_extended import (
     get_jwt_identity,
     set_access_cookies,
 )
-from models.core.student import Student
+from models.committees.committee import Committee
+from models.committees.committee_position import CommitteePosition
+from models.core.student import Student, StudentMembership
+from services.core.student import get_permissions
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
@@ -129,6 +132,38 @@ def register_routes(app: Flask):
 
                 if not student:
                     return jsonify({"error": "Invalid credentials"}), 401
+
+                permissions_and_role = get_permissions(getattr(student, "student_id"))
+
+                committees = []
+                committee_positions = []
+                student_memberships = StudentMembership.query.filter_by(
+                    student_id=student.student_id
+                ).all()
+
+                for membership in student_memberships:
+                    position = CommitteePosition.query.get(
+                        membership.committee_position_id
+                    )
+                    if not position or not isinstance(position, CommitteePosition):
+                        continue
+
+                    committee = Committee.query.get(position.committee_id)
+                    if not committee or not isinstance(committee, Committee):
+                        continue
+
+                    committees.append(committee.to_dict())
+                    committee_positions.append(position.to_dict(is_public_route=False))
+
+                response = jsonify(
+                    {
+                        "student": student.to_dict(),
+                        "permissions": permissions_and_role.get("permissions"),
+                        "role": permissions_and_role.get("role"),
+                        "committees": committees,
+                        "committee_positions": committee_positions,
+                    }
+                )
 
                 access_token = create_access_token(identity=student, fresh=False)
                 set_access_cookies(response, access_token)
