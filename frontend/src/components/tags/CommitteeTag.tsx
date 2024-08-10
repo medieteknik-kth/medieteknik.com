@@ -9,16 +9,27 @@ import { Button } from '@components/ui/button'
 import Committee from '@/models/Committee'
 import { forwardRef } from 'react'
 
-export const CommitteeTag = forwardRef<
-  HTMLButtonElement,
-  {
-    committee: Committee
-    includeImage?: boolean
-    includeAt?: boolean
-    includeBackground?: boolean
-    children?: React.ReactNode
-  }
->(
+interface CommitteeTagProps {
+  committee: Committee
+  includeImage?: boolean
+  includeAt?: boolean
+  includeBackground?: boolean
+  children?: React.ReactNode
+}
+
+/**
+ * @name CommitteeTag
+ * @description A tag component for committee
+ *
+ * @param {CommitteeTagProps} props - The props for the component
+ * @param {Committee} props.committee - The committee to display
+ * @param {boolean} props.includeImage - Whether to include the image
+ * @param {boolean} props.includeAt - Whether to include the @ symbol
+ * @param {React.ReactNode} props.children - The children
+ *
+ * @returns {ForwardRefExoticComponent<CommitteeTagProps & RefAttributes<HTMLButtonElement>>} The component
+ */
+export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
   (
     {
       committee,
@@ -37,7 +48,7 @@ export const CommitteeTag = forwardRef<
         >
           <Button
             variant='link'
-            className={`h-fit text-black ${
+            className={`h-fit text-inherit hover:bg-neutral-200 dark:hover:bg-neutral-800 ${
               includeBackground
                 ? 'dark:text-yellow-400 bg-yellow-400/30 dark:bg-yellow-400/20 '
                 : ''
@@ -46,7 +57,7 @@ export const CommitteeTag = forwardRef<
             ref={ref}
           >
             {includeImage && (
-              <Avatar className='w-10 h-10 mr-2'>
+              <Avatar className='w-10 h-10 mr-2 rounded-full'>
                 <AvatarImage
                   src={committee.logo_url ?? ''}
                   alt={committee.translations[0].title}

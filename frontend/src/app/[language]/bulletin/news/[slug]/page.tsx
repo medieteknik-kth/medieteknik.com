@@ -164,7 +164,11 @@ export default async function NewsPage({
                 </TooltipProvider>
               </div>
             ) : correctedAuthor.author_type === 'COMMITTEE' ? (
-              <CommitteeTag committee={correctedAuthor as Committee} />
+              <CommitteeTag
+                committee={correctedAuthor as Committee}
+                includeAt={false}
+                includeBackground={false}
+              />
             ) : (
               correctedAuthor.author_type === 'COMMITTEE_POSITION' && (
                 <CommitteePositionTag

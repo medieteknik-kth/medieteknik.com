@@ -4,24 +4,34 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import {
-  CommitteePositionTooltip,
-  CommitteeTooltip,
-} from '@components/tooltips/Tooltip'
 import { Button } from '@components/ui/button'
 import { CommitteePosition } from '@/models/Committee'
 
+interface CommitteePositionTagProps {
+  committeePosition: CommitteePosition
+  includeImage?: boolean
+  includeAt?: boolean
+  children?: React.ReactNode
+}
+
+/**
+ * @name CommitteePositionTag
+ * @description A tag for displaying a committee position
+ *
+ * @param {CommitteePositionTagProps} props - The props for the component
+ * @param {CommitteePosition} props.committeePosition - The committee position to display
+ * @param {boolean} props.includeImage - Whether to include the image
+ * @param {boolean} props.includeAt - Whether to include the @ symbol
+ * @param {React.ReactNode} props.children - The children
+ *
+ * @returns {JSX.Element} The component
+ */
 export default function CommitteePositionTag({
   committeePosition,
   includeImage = true,
   includeAt = true,
   children,
-}: {
-  committeePosition: CommitteePosition
-  includeImage?: boolean
-  includeAt?: boolean
-  children?: React.ReactNode
-}) {
+}: CommitteePositionTagProps): JSX.Element {
   return (
     <HoverCard>
       <HoverCardTrigger className='flex items-center' asChild>

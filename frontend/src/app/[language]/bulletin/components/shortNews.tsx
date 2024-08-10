@@ -1,7 +1,6 @@
 import { News } from '@/models/Items'
 import Committee, { CommitteePosition } from '@models/Committee'
 import Student from '@models/Student'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Card,
   CardDescription,
@@ -9,15 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
 import Link from 'next/link'
 import Image from 'next/image'
-import { StudentTooltip, CommitteeTooltip } from '@/components/tooltips/Tooltip'
-//TODO: Remove Later
 import FallbackImage from 'public/images/logo.webp'
 import { StudentTag } from '@/components/tags/StudentTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
