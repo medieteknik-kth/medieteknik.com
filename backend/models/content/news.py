@@ -66,7 +66,7 @@ class NewsTranslation(db.Model):
     title = Column(String(255))
     body = Column(String(100_000))
     short_description = Column(String(255))
-    main_image_url = Column(String(255))
+    main_image_url = Column(String(2096))
     sub_image_urls = Column(ARRAY(String))
 
     # Foreign keys

@@ -70,7 +70,9 @@ class Event(Item):
     def to_dict(
         self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
     ):
-        data = super().to_dict(provided_languages, is_public_route)
+        data = super().to_dict(
+            provided_languages=provided_languages, is_public_route=is_public_route
+        )
 
         if data is None:
             return None
@@ -144,7 +146,7 @@ class EventTranslation(db.Model):
 
     title = Column(String(255))
     description = Column(String(500))
-    main_image_url = Column(String(255))
+    main_image_url = Column(String(length=2096))
     sub_image_urls = Column(ARRAY(String))
 
     # Foreign keys

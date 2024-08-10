@@ -17,8 +17,8 @@ class Committee(db.Model):
     )
 
     email = Column(String(255), unique=True)
-    group_photo_url = Column(String(512))
-    logo_url = Column(String(512), nullable=False)
+    group_photo_url = Column(String(length=2096))
+    logo_url = Column(String(2096), nullable=False)
 
     # Foreign key
     committee_category_id = Column(
