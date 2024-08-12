@@ -33,14 +33,14 @@ class CommitteePosition(db.Model):
     )
 
     email = Column(String(255), unique=True)
-    weight = Column(Integer, default=0)
+    weight = Column(Integer, default=1_000)
     role = Column(
         Enum(CommitteePositionsRole),
-        default=CommitteePositionsRole.MEMBER,
+        default=CommitteePositionsRole.COMMITTEE,
         nullable=False,
     )
     active = Column(Boolean, default=True)
-    category = Column(Enum(CommitteePositionCategory), nullable=False)
+    category = Column(Enum(CommitteePositionCategory), nullable=True)
 
     # Foreign key
     committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))
@@ -142,7 +142,7 @@ class CommitteePositionTranslation(db.Model):
     )
 
     title = Column(String(255))
-    description = Column(String(255))
+    description = Column(String(500))
 
     # Foreign keys
     committee_position_id = Column(
