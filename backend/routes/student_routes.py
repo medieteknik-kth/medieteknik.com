@@ -150,9 +150,7 @@ def get_student_callback():
     if not student or not isinstance(student, Student):
         return jsonify({}), 404
 
-    claims = get_jwt()
-    role = claims.get("role")
-    permissions = claims.get("permissions")
+    permissions_and_role = get_permissions(getattr(student, "student_id"))
 
     committees = []
     committee_positions = []
@@ -177,8 +175,8 @@ def get_student_callback():
     return jsonify(
         {
             "student": current_user.to_dict(is_public_route=False),
-            "role": role,
-            "permissions": permissions,
+            "role": permissions_and_role.get("role"),
+            "permissions": permissions_and_role.get("permissions"),
             "committees": committees,
             "positions": committee_positions,
         }
