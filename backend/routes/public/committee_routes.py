@@ -72,7 +72,6 @@ def get_committee_by_name(committee_title: str):
 
     committee = get_committee_by_title(
         committee_title,
-        provided_languages,
         CommitteeSettings(include_positions=include_positions),
     )
 
@@ -121,9 +120,7 @@ def get_committee_members(committee_title: str):
     """
     provided_languages = retrieve_languages(request.args)
 
-    committee = get_committee_by_title(
-        provided_languages=provided_languages, title=committee_title
-    )
+    committee = get_committee_by_title(title=committee_title)
 
     if not committee:
         return jsonify([])

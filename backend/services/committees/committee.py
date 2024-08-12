@@ -12,9 +12,7 @@ from utility.database import db
 def update_committee(
     request: Request, committee_title: str, provided_languages: List[str]
 ) -> Dict[str, Any]:
-    committee: Committee | None = get_committee_by_title(
-        committee_title, provided_languages
-    )
+    committee: Committee | None = get_committee_by_title(committee_title)
 
     if not committee:
         return {
