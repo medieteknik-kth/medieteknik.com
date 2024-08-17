@@ -1,6 +1,6 @@
 /**
  * Constants for the education page
- * They are in a very strict order, and should be changed alongside the language files
+ * NOTE: They are in a very strict order, and should be changed alongside each language file!
  */
 
 interface Links {

@@ -5,13 +5,15 @@ export function Head({
   title,
   description,
   image,
+  children,
 }: {
   title: string
   description?: string
   image?: StaticImageData
+  children?: React.JSX.Element
 }) {
   return (
-    <div className='w-full h-fit bg-[#EEE] dark:bg-[#222] dark:bg-inherit flex items-center border-b-2 border-yellow-400'>
+    <div className='w-full h-fit bg-[#EEE] dark:bg-[#222] flex items-center border-b-2 border-yellow-400 relative'>
       <div
         className={`w-full ${
           image ? 'xl:w-1/2' : 'w-full justify-center'
@@ -36,7 +38,7 @@ export function Head({
       </div>
 
       {image && (
-        <div className='w-1/2 h-[350px] hidden xl:block overflow-hidden relative '>
+        <div className='grow h-[448px] hidden xl:block overflow-hidden relative '>
           <div className='w-full h-full bg-black/25 z-10 grid place-items-center absolute' />
           <Image
             src={image}
@@ -50,6 +52,8 @@ export function Head({
           />
         </div>
       )}
+
+      {children}
     </div>
   )
 }
@@ -93,17 +97,20 @@ export function Section({
 
   return (
     <section
-      className={`w-full h-fit border-b-2 border-neutral-200 dark:border-neutral-700 bg-[${
-        metadata.background
-      }] dark:bg-[#111] mt-[${metadata.marginTop}] ${
+      className={`w-full h-fit border-b-2 border-neutral-200 dark:border-neutral-700  dark:bg-[#111]  ${
         centeredChildren ? 'flex flex-col items-center' : ''
       }`}
       id={title?.toLowerCase().replace(' ', '-')}
+      style={{
+        backgroundColor: metadata.background,
+        marginTop: metadata.marginTop,
+        color: metadata.textColor,
+      }}
     >
       {title && (
         <div className='w-full h-fit text-center grid place-items-center'>
           <h2
-            className={`uppercase tracking-wider font-semibold text-3xl w-2/4 border-b-2 border-yellow-400 py-8 text-[${metadata.textColor}]`}
+            className={`uppercase tracking-wider font-semibold text-3xl w-9/12 border-b-2 border-yellow-400 py-8`}
           >
             {title}
           </h2>
