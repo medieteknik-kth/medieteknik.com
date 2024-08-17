@@ -6,7 +6,6 @@ import {
 } from '@/models/Committee'
 import Image from 'next/image'
 import Link from 'next/link'
-import NLGIcon from 'public/images/committees/nlg.png'
 import BG from 'public/images/kth-landskap.jpg'
 import FallbackImage from 'public/images/logo.webp'
 import {

@@ -8,7 +8,7 @@ interface Props {
 interface Card {
   title: string
   description: string
-  icon: StaticImageData
+  icon: string
   href: string
   linkText: string
 }
@@ -24,7 +24,7 @@ export default function InfographicCard({ card }: Props) {
         className='w-full h-fit lg:h-[100px] flex flex-col lg:flex-row items-center underline-offset-4 text-sky-600 hover:text-sky-700 hover:underline'
       >
         <Image
-          src={card.icon.src}
+          src={card.icon}
           alt={card.title}
           width={100}
           height={100}

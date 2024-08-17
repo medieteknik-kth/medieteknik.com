@@ -1,7 +1,4 @@
-import Image, { StaticImageData } from 'next/image'
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-import MTGNIcon from 'public/images/committees/mtgn.png'
-import InternationalIcon from 'public/images/committees/internationals.png'
+import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 import Link from 'next/link'
 import { useTranslation } from '@/app/i18n'
@@ -10,7 +7,7 @@ import InfographicCard from '@/components/cards/Infographic'
 interface CardElement {
   title: string
   description: string
-  icon: StaticImageData
+  icon: string
   href: string
   linkText: string
 }
@@ -22,14 +19,14 @@ export default async function About({ language }: { language: string }) {
     {
       title: t('chapter.title'),
       description: t('chapter.description'),
-      icon: StyrelsenIcon,
+      icon: 'https://storage.googleapis.com/medieteknik-static/committees/styrelsen.svg',
       href: '/' + language + '/chapter',
       linkText: t('chapter.link_text'),
     },
     {
       title: t('new_students.title'),
       description: t('new_students.description'),
-      icon: MTGNIcon,
+      icon: 'https://storage.googleapis.com/medieteknik-static/committees/mtgn.svg',
       href: '/' + language + '/education',
       linkText: t('new_students.link_text'),
     },
@@ -37,7 +34,7 @@ export default async function About({ language }: { language: string }) {
       title: 'International Students',
       description:
         'Are you an international student? Click above to learn more about META. Our joint coordination between Computer Science and Media Technology programmes at KTH.',
-      icon: InternationalIcon,
+      icon: 'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg',
       href: 'https://meta-internationals.mailchimpsites.com/',
       linkText: t('international_link_text'),
     },

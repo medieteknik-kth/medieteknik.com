@@ -12,7 +12,10 @@ module.exports = {
                 hostname: 'www.medieteknik.com',
                 protocol: 'https',
             }
-        ]
+        ],
+        dangerouslyAllowSVG: true,
+        contentDispositionType: 'attachment',
+        contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
 
     async headers() {

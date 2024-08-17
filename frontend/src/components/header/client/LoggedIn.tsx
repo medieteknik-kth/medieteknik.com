@@ -28,7 +28,6 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import Logo from 'public/images/logo.webp'
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
 
 interface Props {
   language: string
@@ -110,54 +109,8 @@ export default function UserLoggedIn({ language, t, student, logout }: Props) {
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        {committees.length > 0 && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <UserGroupIcon className='w-4 h-4 mr-2' />
-                  <span>Committees</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent className='w-fit'>
-                    <DropdownMenuItem>
-                      <Link
-                        href={`/${language}/committee`}
-                        className='w-full flex !justify-start'
-                      >
-                        <Avatar className='w-4 h-4 mr-1'>
-                          <AvatarImage
-                            src={StyrelsenIcon.src}
-                            alt='Profile Picture'
-                          />
-                          <AvatarFallback>Committee Picture</AvatarFallback>
-                        </Avatar>
-                        <span>Styrlesen</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link
-                        href={`/${language}/committee`}
-                        className='w-full flex items-center !justify-start'
-                      >
-                        <Avatar className='w-4 h-4 mr-1'>
-                          <AvatarImage
-                            src={StyrelsenIcon.src}
-                            alt='Profile Picture'
-                          />
-                          <AvatarFallback>Committee Picture</AvatarFallback>
-                        </Avatar>
-                        <span>Näringslivsgruppen</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-          </>
-        )}
-        {role.includes('ADMIN') && (
+        {committees.length > 0 && <></>}
+        {role && role.includes('ADMIN') && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

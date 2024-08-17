@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import About from './about'
-import Background from '/public/images/bg.webp'
+import Background from '/public/images/bg2.webp'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n'
 import './home.css'
@@ -18,6 +18,7 @@ export default async function Home({
           id='background'
           className='w-full min-h-[600px] max-h-[2400px] absolute grid place-items-center -z-10 top-0'
         >
+          <div className='w-full h-full bg-black/40 z-10' />
           <Image
             src={Background}
             alt='Background'

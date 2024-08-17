@@ -9,13 +9,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import StyrelsenIcon from 'public/images/committees/styrelsen.png'
-import NLGIcon from 'public/images/committees/nlg.png'
-import { StudentCommitteePosition } from '@/models/Student'
-import { CommitteeTooltip } from '@/components/tooltips/Tooltip'
-import { CommitteePosition } from '@/models/Committee'
-import Logo from 'public/images/logo.webp'
-import Image from 'next/image'
 
 function TableDisplay({
   positions,
