@@ -5,12 +5,9 @@ import { GetCommitteePublic } from '@/api/committee'
 import { fallbackLanguage } from '@/app/i18n/settings'
 import Image from 'next/image'
 import FallbackImage from 'public/images/logo.webp'
-import CommitteeMembers from './members'
-import { Button } from '@/components/ui/button'
-import ExploreMore from './explore'
-import { Cog8ToothIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
-import ManageButton from './manage'
+import CommitteeMembers from './client/members'
+import ExploreMore from './client/explore'
+import ManageButton from './client/manage'
 
 export const revalidate = 60 * 60 * 24 * 30
 
@@ -58,7 +55,7 @@ export default async function Committee({
       <section
         className={`${
           hasGroupPhoto ? 'min-h-[1080px] h-screen' : 'h-fit'
-        } relative`}
+        } relative bg-[#EEE]`}
       >
         {hasGroupPhoto ? (
           <Image
@@ -75,8 +72,8 @@ export default async function Committee({
           className={`w-full h-fit ${
             hasGroupPhoto
               ? 'absolute border-t-2 bg-black/75 text-white'
-              : 'border-b-2 bg-[#EEE] dark:bg-[#222]'
-          } backdrop-blur-xl bottom-0 left-0 px-12 py-12 flex items-center  border-yellow-400`}
+              : 'border-b-2 bg-[#EEE] dark:bg-[#222] mt-28 lg:mt-0'
+          } backdrop-blur-xl bottom-0 left-0 px-12 py-12 flex items-center border-yellow-400`}
         >
           <div
             className='w-32 h-32 lg:w-52 lg:h-52 lg:mr-10 bg-white rounded-full absolute lg:relative overflow-hidden 
@@ -87,14 +84,14 @@ export default async function Committee({
               alt='img'
               width={208}
               height={208}
-              className='w-24 lg:w-[9.5rem] h-auto absolute left-0 top-0 bottom-0 right-0 m-auto hover:scale-105 duration-300 transition-transform'
+              className='w-24 lg:w-[9.5rem] bg-white h-auto absolute left-0 top-0 bottom-0 right-0 m-auto hover:scale-105 duration-300 transition-transform'
             />
           </div>
           <div className='w-full lg:w-fit h-fit flex flex-col justify-between items-center lg:items-start'>
-            <h1 className='h-[144px] text-4xl xs:text-6xl sm:text-7xl uppercase tracking-wide max-w-[550px] text-center lg:text-start flex flex-col-reverse justify-center'>
+            <h1 className='h-[144px] text-3xl xxs:text-4xl xs:text-6xl sm:text-7xl uppercase tracking-wide max-w-[550px] text-center lg:text-start flex flex-col-reverse justify-center'>
               {committeeName}
             </h1>
-            <p className='max-w-[1000px] h-24 max-h-24 overflow-hidden'>
+            <p className='max-w-[1000px] h-24 max-h-24 overflow-hidden text-center xs:text-start'>
               {data.translations[0].description}
             </p>
           </div>
