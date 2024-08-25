@@ -1,24 +1,19 @@
+'use client'
+import { useDocumentManagement } from '@/providers/DocumentProvider'
 import GridView from '../views/GridView'
 import ListView from '../views/ListView'
 import { Document } from '@/models/Document'
 
-type View = 'grid' | 'list'
+type Type = 'all' | 'documents' | 'forms'
 
 interface Props {
   language: string
-  documents: Document[]
-  currentView: View
-  selectedDocuments: number[]
-  setSelectedDocuments: (documents: number[]) => void
+  type: Type
 }
 
-export default function View({
-  language,
-  documents,
-  currentView,
-  selectedDocuments,
-  setSelectedDocuments,
-}: Props) {
+export default function View({ language, type }: Props) {
+  const { setSelectedDocuments, view } = useDocumentManagement()
+
   return (
     <div
       className='min-h-[1080px] h-fit'
@@ -26,20 +21,10 @@ export default function View({
         setSelectedDocuments([])
       }}
     >
-      {currentView === 'grid' ? (
-        <GridView
-          documents={documents}
-          selectedDocuments={selectedDocuments}
-          setSelectedDocuments={setSelectedDocuments}
-          language={language}
-        />
+      {view === 'grid' ? (
+        <GridView language={language} type={type} />
       ) : (
-        <ListView
-          documents={documents}
-          selectedDocuments={selectedDocuments}
-          setSelectedDocuments={setSelectedDocuments}
-          language={language}
-        />
+        <ListView language={language} type={type} />
       )}
     </div>
   )

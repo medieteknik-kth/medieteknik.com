@@ -13,46 +13,44 @@ import Committee, { CommitteePosition } from '@/models/Committee'
 import { Document } from '@/models/Document'
 import { Author } from '@/models/Items'
 import Student from '@/models/Student'
+import { useDocumentManagement } from '@/providers/DocumentProvider'
 import { DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
 import { MouseEvent, useCallback } from 'react'
 
+type Type = 'all' | 'documents' | 'forms'
+
 interface Props {
-  documents: Document[]
-  selectedDocuments: number[]
-  setSelectedDocuments: (documents: number[]) => void
   language: string
+  type: Type
 }
 
-export default function ListView({
-  documents,
-  selectedDocuments,
-  setSelectedDocuments,
-  language,
-}: Props) {
+export default function ListView({ language, type }: Props) {
   const reroute = (url: string) => {
     window.open(url, '_blank')
   }
+  const { documents, selectedDocuments, setSelectedDocuments } =
+    useDocumentManagement()
 
   const { t } = useTranslation(language, 'document')
 
   const handleDocumentClick = useCallback(
-    (event: MouseEvent, documentIndex: number, document: Document) => {
-      const index = selectedDocuments.indexOf(documentIndex)
+    (event: MouseEvent, document: Document) => {
+      const index = selectedDocuments.indexOf(document)
       if (event.ctrlKey || event.metaKey) {
         if (index > -1) {
           const newSelectedDocuments = [...selectedDocuments]
           newSelectedDocuments.splice(index, 1)
           setSelectedDocuments(newSelectedDocuments)
         } else {
-          setSelectedDocuments([...selectedDocuments, documentIndex])
+          setSelectedDocuments([...selectedDocuments, document])
         }
       } else {
         if (index > -1) {
           reroute(document.translations[0].url)
         } else {
-          setSelectedDocuments([documentIndex])
+          setSelectedDocuments([document])
         }
       }
     },
@@ -106,66 +104,76 @@ export default function ListView({
         </TableHeader>
         <TableBody>
           {documents.length > 0 &&
-            documents.map((document, documentIndex) => (
-              <TableRow
-                key={documentIndex}
-                className={`cursor-pointer ${
-                  selectedDocuments.includes(documentIndex)
-                    ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
-                    : 'hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700'
-                }`}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  handleDocumentClick(event, documentIndex, document)
-                }}
-              >
-                <TableCell>
-                  <div className='flex gap-2 items-center'>
-                    {document.document_type === 'DOCUMENT' ? (
-                      <DocumentIcon
-                        className='w-5 h-5 text-green-500'
-                        title='Document'
-                      />
-                    ) : (
-                      <DocumentTextIcon
-                        className='w-5 h-5 text-amber-500'
-                        title='Document type is a Form'
-                      />
-                    )}
-                    <span className='sr-only'>Document type is a document</span>
-                    <p className='tracking-wide text-sm max-w-96 truncate'>
-                      {document.translations[0].title}
-                    </p>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <span className='sr-only'>Changed</span>
-                  {new Date(document.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className='flex gap-2 items-center'>
-                  <span className='sr-only'>{t('view.list.author')}</span>
-                  <Avatar className='bg-white mr-2'>
-                    <AvatarImage
-                      src={authorImage(document.author) || ''}
-                      width={128}
-                      height={128}
-                      alt='Author: Firstname Lastname'
-                      className='h-full w-auto'
-                    />
-                    <AvatarFallback className='bg-white p-1'>
-                      <Image
-                        src={FallbackLogo}
+            documents
+              .filter(
+                (document) =>
+                  type === 'all' ||
+                  (type === 'documents' &&
+                    document.document_type === 'DOCUMENT') ||
+                  (type === 'forms' && document.document_type === 'FORM')
+              )
+              .map((document, documentIndex) => (
+                <TableRow
+                  key={documentIndex}
+                  className={`cursor-pointer ${
+                    selectedDocuments.includes(document)
+                      ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
+                      : 'hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700'
+                  }`}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    handleDocumentClick(event, document)
+                  }}
+                >
+                  <TableCell>
+                    <div className='flex gap-2 items-center'>
+                      {document.document_type === 'DOCUMENT' ? (
+                        <DocumentIcon
+                          className='w-5 h-5 text-green-500'
+                          title='Document'
+                        />
+                      ) : (
+                        <DocumentTextIcon
+                          className='w-5 h-5 text-amber-500'
+                          title='Document type is a Form'
+                        />
+                      )}
+                      <span className='sr-only'>
+                        Document type is a document
+                      </span>
+                      <p className='tracking-wide text-sm max-w-96 truncate'>
+                        {document.translations[0].title}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className='sr-only'>Changed</span>
+                    {new Date(document.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className='flex gap-2 items-center'>
+                    <span className='sr-only'>{t('view.list.author')}</span>
+                    <Avatar className='bg-white mr-2'>
+                      <AvatarImage
+                        src={authorImage(document.author) || ''}
+                        width={128}
+                        height={128}
                         alt='Author: Firstname Lastname'
+                        className='h-full w-auto'
                       />
-                    </AvatarFallback>
-                  </Avatar>
-                  <p className='tracking-wide text-sm max-w-52 truncate'>
-                    {authorName(document.author)}
-                  </p>
-                </TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            ))}
+                      <AvatarFallback className='bg-white p-1'>
+                        <Image
+                          src={FallbackLogo}
+                          alt='Author: Firstname Lastname'
+                        />
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className='tracking-wide text-sm max-w-52 truncate'>
+                      {authorName(document.author)}
+                    </p>
+                  </TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              ))}
         </TableBody>
       </Table>
     </div>

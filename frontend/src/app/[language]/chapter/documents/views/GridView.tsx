@@ -14,42 +14,54 @@ import Image from 'next/image'
 import { Author } from '@/models/Items'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { useTranslation } from '@/app/i18n/client'
+import { useDocumentManagement } from '@/providers/DocumentProvider'
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from '@/components/ui/menubar'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Permission, Role } from '@/models/Permission'
+import Link from 'next/link'
+
+type Type = 'all' | 'documents' | 'forms'
 
 interface Props {
-  documents: Document[]
-  selectedDocuments: number[]
-  setSelectedDocuments: (documents: number[]) => void
   language: string
+  type: Type
 }
 
-export default function GridView({
-  documents,
-  selectedDocuments,
-  setSelectedDocuments,
-  language,
-}: Props) {
+export default function GridView({ language, type }: Props) {
   const reroute = (url: string) => {
     window.open(url, '_blank')
   }
 
+  const { documents, selectedDocuments, setSelectedDocuments } =
+    useDocumentManagement()
+  const { permissions, role } = useAuthentication()
   const { t } = useTranslation(language, 'document')
 
   const handleDocumentClick = useCallback(
-    (event: MouseEvent, documentIndex: number, document: Document) => {
-      const index = selectedDocuments.indexOf(documentIndex)
+    (event: MouseEvent, document: Document) => {
+      const index = selectedDocuments.indexOf(document)
       if (event.ctrlKey || event.metaKey) {
         if (index > -1) {
           const newSelectedDocuments = [...selectedDocuments]
           newSelectedDocuments.splice(index, 1)
           setSelectedDocuments(newSelectedDocuments)
         } else {
-          setSelectedDocuments([...selectedDocuments, documentIndex])
+          setSelectedDocuments([...selectedDocuments, document])
         }
       } else {
         if (index > -1) {
           reroute(document.translations[0].url)
         } else {
-          setSelectedDocuments([documentIndex])
+          setSelectedDocuments([document])
         }
       }
     },
@@ -57,8 +69,8 @@ export default function GridView({
   )
 
   const handleDocumentKeydown = useCallback(
-    (event: KeyboardEvent, documentIndex: number, document: Document) => {
-      const index = selectedDocuments.indexOf(documentIndex)
+    (event: KeyboardEvent, document: Document) => {
+      const index = selectedDocuments.indexOf(document)
       if (event.key === 'Enter') {
         if (event.ctrlKey || event.metaKey) {
           if (index > -1) {
@@ -66,13 +78,13 @@ export default function GridView({
             newSelectedDocuments.splice(index, 1)
             setSelectedDocuments(newSelectedDocuments)
           } else {
-            setSelectedDocuments([...selectedDocuments, documentIndex])
+            setSelectedDocuments([...selectedDocuments, document])
           }
         } else {
           if (index > -1) {
             reroute(document.translations[0].url)
           } else {
-            setSelectedDocuments([documentIndex])
+            setSelectedDocuments([document])
           }
         }
       }
@@ -116,6 +128,12 @@ export default function GridView({
     <div className='flex gap-4 flex-wrap pl-72 pr-20 mt-4'>
       {documents.length > 0 &&
         documents
+          .filter(
+            (document) =>
+              type === 'all' ||
+              (type === 'documents' && document.document_type === 'DOCUMENT') ||
+              (type === 'forms' && document.document_type === 'FORM')
+          )
           .sort(
             (a, b) =>
               new Date(b.created_at).getTime() -
@@ -127,7 +145,7 @@ export default function GridView({
               tabIndex={0}
               className={`w-60 h-64 rounded-md border cursor-pointer px-4 flex flex-col justify-between
           ${
-            selectedDocuments.includes(documentIndex)
+            selectedDocuments.includes(document)
               ? 'border-yellow-400 bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
               : 'bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700'
           }
@@ -135,10 +153,10 @@ export default function GridView({
               title={document.translations[0].title}
               onClick={(event) => {
                 event.stopPropagation()
-                handleDocumentClick(event, documentIndex, document)
+                handleDocumentClick(event, document)
               }}
               onKeyDown={(event) => {
-                handleDocumentKeydown(event, documentIndex, document)
+                handleDocumentKeydown(event, document)
               }}
             >
               <div className='w-full h-fit flex items-center justify-between py-2'>
@@ -159,16 +177,35 @@ export default function GridView({
                     {document.translations[0].title}
                   </p>
                 </div>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='w-fit h-fit p-1 hover:bg-neutral-200 dark:hover:bg-neutral-600 rounded-md z-10'
-                  onClick={(event) => {
-                    event.stopPropagation()
-                  }}
-                >
-                  <EllipsisVerticalIcon className='w-5 h-5 ' />
-                </Button>
+                <Menubar asChild>
+                  <MenubarMenu>
+                    <MenubarTrigger asChild>
+                      <Button
+                        variant='outline'
+                        size='icon'
+                        title={t('more_actions')}
+                        onClick={(event) => event.stopPropagation()}
+                        className='w-8 h-8 p-0'
+                      >
+                        <EllipsisVerticalIcon className='w-6 h-6 p-1' />
+                      </Button>
+                    </MenubarTrigger>
+                    <MenubarContent sideOffset={5} alignOffset={-3}>
+                      <MenubarCheckboxItem
+                        checked
+                        disabled={
+                          !(
+                            permissions.student.includes(
+                              Permission.ITEMS_EDIT
+                            ) || role === Role.ADMIN
+                          )
+                        }
+                      >
+                        Pin File
+                      </MenubarCheckboxItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                </Menubar>
               </div>
               <div
                 id='preview'

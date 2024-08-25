@@ -240,6 +240,7 @@ export default function DocumentUpload({
           is_pinned: false,
           is_public: true,
           published_status: 'PUBLISHED',
+          document_id: json.id,
         })
         closeMenuCallback()
       } else {
