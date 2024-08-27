@@ -137,10 +137,10 @@ export default function Masters() {
                 <Card className='w-fit h-[900px] md:h-[700px] xl:h-[550px] flex flex-col justify-between'>
                   <CardHeader className='w-fit'>
                     <CardTitle>{item.title}</CardTitle>
-                    <CardDescription className='flex flex-wrap gap-3'>
+                    <div className='flex flex-wrap gap-1'>
                       {item.keyAreas.map((keyArea, index) => (
                         <Badge
-                          key={keyArea}
+                          key={index}
                           variant={
                             index === 0
                               ? 'default'
@@ -152,8 +152,8 @@ export default function Masters() {
                         >
                           {keyArea}
                         </Badge>
-                      ))}
-                    </CardDescription>
+                      ))}{' '}
+                    </div>
                   </CardHeader>
                   <CardContent>{item.description}</CardContent>
                   <CardFooter>

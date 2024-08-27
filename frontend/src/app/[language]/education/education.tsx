@@ -31,7 +31,6 @@ export default function Education({
       <Head
         title='Media Technology'
         description='Medieteknikens roll i samhället växer, från nyhetssajter till virtuella miljöer, med potential att både motivera hållbara val och väcka frågor om etik och design.'
-        image={BG}
       >
         <div className='absolute left-20 bottom-4 flex gap-8'>
           <Button

@@ -161,9 +161,8 @@ export default function Courses({
         <div className='w-full h-4/5 flex items-center justify-center py-8 px-10'>
           <div className='w-fit relative h-fit text-2xl flex flex-wrap justify-center gap-8 max-w-[1250px]'>
             {categoryMetadataMap.map((category, index) => (
-              <DialogTrigger asChild>
+              <DialogTrigger asChild key={index}>
                 <Button
-                  key={index}
                   variant={'ghost'}
                   className='w-72 h-72 flex flex-col justify-center border-4 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg relative overflow-hidden shadow-[#0000004f] dark:shadow-[#ffffff4f] bg-white dark:bg-[#111] border-black/15 dark:border-white/15'
                   style={{
