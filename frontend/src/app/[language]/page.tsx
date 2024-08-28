@@ -16,7 +16,7 @@ export default async function Home({
       <div className='w-full h-screen min-h-[600px] max-h-[2400px]'>
         <div
           id='background'
-          className='w-full min-h-[600px] max-h-[2400px] absolute grid place-items-center -z-10 top-0'
+          className='w-full min-h-[600px] max-h-[2400px] absolute grid place-items-center -z-10 top-0 shadow-lg shadow-black'
         >
           <div className='w-full h-full bg-black/40 z-10' />
           <Image
@@ -30,13 +30,13 @@ export default async function Home({
             loading='eager'
           />
           <ChevronDownIcon
-            className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce'
+            className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce z-20'
             style={{
               animationDuration: '1500ms',
             }}
           />
         </div>
-        <div className='w-full h-full z-10 grid place-items-center'>
+        <div className='w-full h-full grid place-items-center'>
           <div className='w-9/12 h-[300px] lg:h-[200px] flex flex-col items-center justify-center text-center'>
             <h1 className='w-fit  h-fit text-2xl xxs:text-4xl xs:text-6xl md:text-8xl text-yellow-400 font-semibold tracking-wide py-8 uppercase grid place-items-center'>
               {t('title')}

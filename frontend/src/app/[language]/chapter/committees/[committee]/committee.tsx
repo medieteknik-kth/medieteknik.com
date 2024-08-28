@@ -5,7 +5,7 @@ import { GetCommitteePublic } from '@/api/committee'
 import { fallbackLanguage } from '@/app/i18n/settings'
 import Image from 'next/image'
 import FallbackImage from 'public/images/logo.webp'
-import CommitteeMembers from './client/members'
+import CommitteeMembers from './members'
 import ExploreMore from './client/explore'
 import ManageButton from './client/manage'
 

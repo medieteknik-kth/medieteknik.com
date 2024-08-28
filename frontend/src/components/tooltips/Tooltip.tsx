@@ -100,7 +100,7 @@ export function CommitteePositionTooltip({
       <CardHeader className='flex flex-row items-center'>
         <Avatar className='mr-2'>
           <AvatarImage
-            src={position.committee_logo_url || ''}
+            src={position.committee?.logo_url || ''}
             alt='Committee Logo'
           />
           <AvatarFallback>N/A</AvatarFallback>

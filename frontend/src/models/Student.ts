@@ -46,9 +46,9 @@ export interface Profile {
  * @param {string} initiation_date - Initiated date
  * @param {string} termination_date - Expected end date
  */
-export interface StudentCommitteePosition {
+export interface StudentMembership {
   student: Student;
-  position: CommitteePosition;
+  committee_position_id: string;
   initiation_date: string;
   termination_date: string;
 }

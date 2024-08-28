@@ -53,13 +53,15 @@ export interface CommitteeTranslation {
  * @param {number} weight - Committee position weight
  */
 export interface CommitteePosition {
+  committee_position_id: string;
   author_type: 'COMMITTEE_POSITION';
-  email: string,
+  email?: string,
   role: 'ADMIN' | 'BOARD' | 'COMMITTEE';
   active: boolean;
   weight: number;
+  base: boolean;
   category: CommitteePositionCategory;
-  committee_logo_url?: string;
+  committee?: Committee;
   translations: CommitteePositionTranslation[]
 }
 
@@ -67,4 +69,16 @@ export interface CommitteePositionTranslation {
   title: string;
   description: string;
   language_code: LanguageCodes;
+}
+
+export interface CommitteePositionRecruitment {
+  committee_position: CommitteePosition;
+  start_date: string;
+  end_date: string;
+  translations: [
+    {
+      description: string;
+      link_url: string;
+    }
+  ]
 }

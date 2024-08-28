@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button'
 import Autoplay from 'embla-carousel-autoplay'
 import ClassNames from 'embla-carousel-class-names'
 
+
 interface Props {
   language: string
   committees: Committee[]
@@ -63,31 +64,28 @@ export default function Committees({ language, committees }: Props) {
     committee.translations.find((t) => t.language_code.substring(0, 2) === 'sv')
 
   return (
-    <section
-      className='px-20 h-fit max-h-[1080px] my-10 relative'
-      id='tab-committees'
-    >
+    <section className='px-4 sm:px-20 h-fit my-10 relative' id='tab-committees'>
       <Link
         href={`/${language}/chapter/committees`}
-        className='uppercase tracking-wider font-semibold text-4xl w-1/2 block border-b-2 border-yellow-400 pb-4 mb-10 transition-colors text-blue-500 hover:text-yellow-400'
+        className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 block border-b-2 border-yellow-400 pb-4 mb-10 transition-colors text-blue-500 hover:text-yellow-400'
       >
         Committees
       </Link>
       <div className='w-full mt-10'>
         <Carousel
-          className='carousel w-[750px] lg:w-full'
+          className='carousel w-full'
           setApi={setApi}
           opts={{
             loop: true,
-            align: 'start',
-            watchDrag: false,
+            align: 'center',
+            watchDrag: true,
           }}
           plugins={[
-            //Autoplay({ delay: 5000 }),
+            Autoplay({ delay: 5000 }),
             ClassNames({ inView: 'in-view', snapped: 'snapped' }),
           ]}
         >
-          <CarouselContent className='flex gap-2 !ml-0'>
+          <CarouselContent className='flex -pl-4'>
             {committees
               .sort((a, b) =>
                 a.translations[0].title.localeCompare(b.translations[0].title)
@@ -95,9 +93,9 @@ export default function Committees({ language, committees }: Props) {
               .map((committee, index) => (
                 <CarouselItem
                   key={index}
-                  className='item h-[500px] relative rounded-md overflow-hidden !pl-0'
+                  className='item h-[500px] md:h-[228px] relative rounded-md overflow-hidden ml-4'
                 >
-                  <div className='blurred w-full h-full backdrop-blur-sm z-20 absolute left-0' />
+                  <div className='blurred w-full h-full backdrop-blur-0 z-20 absolute left-0' />
 
                   {hasGroupPhoto(committee) && (
                     <div className='rounded-md'>
@@ -112,7 +110,7 @@ export default function Committees({ language, committees }: Props) {
                     </div>
                   )}
                   <div
-                    className={`p-4 flex flex-col gap-4 ${
+                    className={`p-4 h-fit flex flex-col gap-4 ${
                       hasGroupPhoto(committee) && 'text-white'
                     }`}
                   >
@@ -120,7 +118,8 @@ export default function Committees({ language, committees }: Props) {
                       href={`/${language}/chapter/committees/${
                         link(committee) && link(committee)?.title.toLowerCase()
                       }`}
-                      className='flex items-center z-10  border-yellow-400 hover:text-yellow-400 pb-2'
+                      title={translation(committee)?.title + ' page' || ''}
+                      className='flex flex-col items-start md:flex-row md:items-center z-10 border-yellow-400 hover:text-yellow-400 pb-2'
                     >
                       <Avatar className='bg-white w-16 h-16 z-10'>
                         <AvatarImage
@@ -128,7 +127,7 @@ export default function Committees({ language, committees }: Props) {
                           alt={`${committee.translations[0].title} logo`}
                           width={64}
                           height={64}
-                          className='w-auto h-16 object-cover p-1.5'
+                          className='w-auto h-16 aspect-square object-contain p-2'
                         />
                         <AvatarFallback>
                           <Image
@@ -140,51 +139,25 @@ export default function Committees({ language, committees }: Props) {
                         </AvatarFallback>
                       </Avatar>
                       <p
-                        className={`text-lg uppercase font-bold ml-4 tracking-wider z-10`}
+                        className={`text-lg uppercase font-bold md:ml-4 tracking-wider z-10 text-center md:text-start`}
                       >
                         {translation(committee)?.title}
                       </p>
                     </Link>
-                    <div className='z-10'>
-                      <h3 className='text-lg tracking-wider my-1 font-semibold'>
-                        Objective
+                    <div className='z-10 h-fit'>
+                      <h3 className='text-lg tracking-wider my-1 font-semibold text-center md:text-start'>
+                        Description
                       </h3>
-                      <p className=''>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Mollitia repellat id corrupti beatae voluptate
-                        perspiciatis dicta, dolore maxime quae nesciunt, fugit
-                        reprehenderit quaerat. Accusantium esse, sunt eveniet
-                        quisquam quae deleniti!
-                      </p>
-
-                      <h3 className='text-lg tracking-wider my-1 font-semibold'>
-                        Goals
-                      </h3>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Mollitia repellat id corrupti beatae voluptate
-                        perspiciatis dicta, dolore maxime quae nesciunt, fugit
-                        reprehenderit quaerat. Accusantium esse, sunt eveniet
-                        quisquam quae deleniti!
-                      </p>
-
-                      <h3 className='text-lg tracking-wider my-1 font-semibold'>
-                        Daily Activity
-                      </h3>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Mollitia repellat id corrupti beatae voluptate
-                        perspiciatis dicta, dolore maxime quae nesciunt, fugit
-                        reprehenderit quaerat. Accusantium esse, sunt eveniet
-                        quisquam quae deleniti!
+                      <p className='h-fit text-pretty overflow-hidden break-words text-center md:text-start'>
+                        {translation(committee)?.description || ''}
                       </p>
                     </div>
                   </div>
                 </CarouselItem>
               ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious title='previous' aria-label='previous committee' />
+          <CarouselNext title='next' aria-label='next committee' />
         </Carousel>
         <div>
           <div
@@ -204,11 +177,11 @@ export default function Committees({ language, committees }: Props) {
                     api?.selectedScrollSnap() === index && 'brightness-95'
                   }`}
                   onClick={onThumbClick(index)}
-                  title='thumb'
+                  title={translation(committee)?.title + ' thumbnail' || ''}
                 >
                   <Image
                     src={committee.logo_url}
-                    alt='img'
+                    alt={`${committee.translations[0].title} logo`}
                     width={64}
                     height={64}
                     className='w-auto h-full object-contain overflow-visible'

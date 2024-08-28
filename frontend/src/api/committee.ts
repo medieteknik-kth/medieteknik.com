@@ -3,11 +3,13 @@ import api from './index';
 import Committee, { CommitteeCategory, CommitteePosition } from '@/models/Committee';
 import Student from '@/models/Student';
 
-export const GetCommitteePublic = cache(async (committee: string, language_code: string) => {
-  const response = await api.get(`/public/committees/${committee}?language=${language_code}`);
+export const GetCommitteePublic = cache(async (committee: string, language_code?: string) => {
+  const response = await api.get(`/public/committees/${committee}${language_code ? `?language=${language_code}` : ``}`,);
 
   if (response.status === 200) {
-      return response.data as Committee
+    const data = response.data
+    data.author_type = 'COMMITTEE'
+    return data as Committee
   }
 
   return null
@@ -34,7 +36,9 @@ export const GetCommittee = cache(async (committee: string, language_code: strin
 })
 
 export const GetCommitteeData = cache(async (committee: string) => {
-  const response = await api.get(`/committees/${committee}/data`);
+  const response = await api.get(`/committees/${committee}/data`, {
+    withCredentials: true
+  });
 
   if (response.status === 200) {
       return response.data as {
@@ -94,26 +98,36 @@ export const GetCommitteeCategoryCommittees = cache(async (category: string, lan
   return null
 })
 
-export const GetCommitteeMembers = cache(async (committee: string, language_code: string) => {
-  const response = await api.get(`public/committees/${committee}/members?language=${language_code}`);
+export const GetCommitteeMembers = cache(async (committee: string, language_code: string, page: number, per_page: number = 25) => {
+  const response = await api.get(`public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}`);
 
   if (response.status === 200) {
       return response.data as {
-        position: CommitteePosition
-        student: Student
-      }[]
+        items: {
+          student: Student
+          position: CommitteePosition
+          initation_date: string
+          end_date: string
+        }[],
+        page: number
+        per_page: number
+        total_pages: number
+        total_items: number
+        }
   }
+
+  return null
 })
 
 interface RecruitmentResponse {
-  committee: Committee
+  committee_position: CommitteePosition
   start_date: string
   end_date: string
   translations: { description: string; link_url: string }[]
 }
 
 export const GetRecruitment = cache(async (language_code: string) => {
-  const response = await api.get(`/public/committees/recruiting=${language_code}`)
+  const response = await api.get(`/public/committee_positions/recruiting?language=${language_code}`)
 
   if (response.status === 200) {
     if (typeof response.data === 'object' && Object.keys(response.data).length === 0) {

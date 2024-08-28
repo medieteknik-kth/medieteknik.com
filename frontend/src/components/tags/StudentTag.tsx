@@ -20,13 +20,13 @@ interface StudentTagProps {
 /**
  * @name StudentTag
  * @description A tag component for students
- * 
+ *
  * @param {StudentTagProps} props - The props for the component
  * @param {Student} props.student - The student to display
  * @param {boolean} props.includeImage - Whether to include the image
  * @param {boolean} props.includeAt - Whether to include the @ symbol
  * @param {React.ReactNode} props.children - The children
- * 
+ *
  * @returns {ForwardRefExoticComponent<StudentTagProps & RefAttributes<HTMLButtonElement>>} The component
  */
 export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
@@ -54,8 +54,8 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                 </AvatarFallback>
               </Avatar>
             )}
-            <div className='flex flex-col text-start overflow-hidden'>
-              <p className='truncate'>
+            <div className='flex flex-col text-start overflow-hidden '>
+              <p className='truncate max-w-full'>
                 {(includeAt ? '@ ' : '') +
                   student.first_name +
                   ' ' +

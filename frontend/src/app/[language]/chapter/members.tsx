@@ -113,13 +113,16 @@ export default function CommitteeMembers({ language }: { language: string }) {
   ]
 
   return (
-    <section className='px-20 mb-10'>
-      <div className='w-1/2 flex items-center gap-4 border-b-2 border-yellow-400 pb-4 mb-4'>
-        <h1 className='uppercase tracking-wider font-semibold text-4xl block'>
+    <section className='px-4 sm:px-20 mb-10'>
+      <div className='w-full lg:w-1/2 flex flex-col md:flex-row items-center gap-4 border-b-2 border-yellow-400 pb-4 mb-4'>
+        <h1 className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl block'>
           Officials
         </h1>
-        <Separator orientation='vertical' className='h-8 bg-yellow-400' />
-        <div className='flex items-center'>
+        <Separator
+          orientation='vertical'
+          className='h-8 bg-yellow-400 hidden md:block'
+        />
+        <div className='flex items-center flex-col xs:flex-row'>
           <Label htmlFor='year' className='mr-2'>
             Year:
           </Label>
@@ -132,7 +135,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                 role='combobox'
                 aria-label='Select year'
                 aria-expanded={open}
-                className='w-72 justify-start'
+                className='w-40 justify-start'
               >
                 {value
                   ? dates.find((item) => item.value === value)?.label
@@ -168,10 +171,10 @@ export default function CommitteeMembers({ language }: { language: string }) {
       <div className='w-full flex flex-col gap-4'>
         {categories.map((category, index) => (
           <div key={index}>
-            <h2 className='text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
+            <h2 className='text-center sm:text-start text-lg sm:text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
               {category}
             </h2>
-            <div className='flex flex-wrap gap-4 mt-2'>
+            <div className='flex flex-wrap gap-4 mt-2 justify-center sm:justify-start'>
               {memberCategories
                 .filter((member) => member.name === category)
                 .map((member) =>
@@ -190,7 +193,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                     .map((member, index) => (
                       <div
                         key={index}
-                        className='w-72 h-fit border rounded-md relative dark:bg-[#111] shadow-sm shadow-black/25 dark:shadow-white/25'
+                        className='w-40 sm:w-72 h-fit border rounded-md relative dark:bg-[#111] shadow-sm shadow-black/25 dark:shadow-white/25'
                       >
                         <div className='relative'>
                           <Image
@@ -199,8 +202,8 @@ export default function CommitteeMembers({ language }: { language: string }) {
                               FallbackImage
                             }
                             alt='img'
-                            width={286}
-                            height={286}
+                            width={512}
+                            height={512}
                             className={`w-full aspect-square object-cover rounded-md mx-auto ${
                               !hasImage(member) &&
                               'p-8 bg-[#EEE] dark:bg-[#323232]'
@@ -211,7 +214,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                         <div className='flex gap-2 items-center px-2 absolute top-4 bg-white dark:bg-[#111] border border-l-0 rounded-r-md shadow-sm shadow-black/25 dark:shadow-white/25'>
                           <Avatar className='w-6 h-6'>
                             <AvatarImage
-                              src={member.position.committee_logo_url}
+                              src={member.position.committee?.logo_url}
                               alt={`${member.position.translations[0].title} logo`}
                               width={24}
                               height={24}
@@ -226,19 +229,19 @@ export default function CommitteeMembers({ language }: { language: string }) {
                               />
                             </AvatarFallback>
                           </Avatar>
-                          <p className='text-sm uppercase tracking-wider max-w-40 leading-4 py-0.5'>
+                          <p className='text-xs sm:text-sm uppercase tracking-wider max-w-40 leading-4 py-0.5'>
                             {member.position.translations[0].title}
                           </p>
                         </div>
                         <div className='px-2 pb-2 h-24'>
-                          <p className='text-xl max-h-14 overflow-hidden '>
+                          <p className='text-base sm:text-xl h-14 max-h-14 overflow-hidden'>
                             {member.student.first_name +
                               ' ' +
                               member.student.last_name}
                           </p>
                           <Link
                             href={`mailto:${member.position.email}`}
-                            className='text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
+                            className='text-xs break-words sm:text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
                             title={`Mail to ${member.position.email}`}
                           >
                             {member.position.email}
@@ -248,7 +251,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                     ))
                 )}
             </div>
-            <Separator className='mt-4 bg-yellow-400' />
+            <Separator className='w-full sm:w-1/3 mt-4 bg-yellow-400' />
           </div>
         ))}
       </div>

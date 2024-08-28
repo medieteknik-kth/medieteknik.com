@@ -38,7 +38,7 @@ export function Head({
       </div>
 
       {image && (
-        <div className='grow h-[448px] hidden xl:block overflow-hidden relative '>
+        <div className='grow h-full max-h-[448px] hidden xl:block overflow-hidden relative '>
           <div className='w-full h-full bg-black/25 z-10 grid place-items-center absolute' />
           <Image
             src={image}
