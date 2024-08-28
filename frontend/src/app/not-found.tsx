@@ -1,6 +1,13 @@
 import Logo from 'public/images/logobig_light.jpg'
 import './error.css'
-export default async function NotFound() {
+
+/**
+ * @name NotFound
+ * @description The 404 page
+ *
+ * @returns {JSX.Element} The 404 page
+ */
+export default async function NotFound(): Promise<JSX.Element> {
   return (
     <main aria-label='Page not found'>
       <img src={Logo.src} alt='logo' aria-label='logo' />

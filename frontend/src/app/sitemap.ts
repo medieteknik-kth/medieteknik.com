@@ -1,5 +1,11 @@
 import { MetadataRoute } from 'next';
 
+/**
+ * @name sitemap
+ * @description Generate the sitemap.xml file for the site
+ * 
+ * @returns {MetadataRoute.Sitemap} The sitemap.xml configuration 
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {

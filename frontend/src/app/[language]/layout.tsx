@@ -15,8 +15,8 @@ import { Toaster } from '@/components/ui/toaster'
 import { LanguageCode } from '@/models/Language'
 
 /**
- * Generates the static paths for each language ({@link LanguageCode})
- * @async
+ * @name generateStaticParams
+ * @description Generates the static paths for each language ({@link LanguageCode})
  *
  * @see https://nextjs.org/docs/app/api-reference/functions/generate-static-params
  * @returns {Promise<{ language: LanguageCode }[]>}
@@ -51,12 +51,15 @@ interface Props {
 }
 
 /**
- * The Root of the frontend app
+ * @name RootLayout
+ * @description The dynamic root layout component, top level component for all *most* pages excluding non-language specific pages
  *
- * @param {React.ReactNode} children - The children of the root
- * @param {Params} params - The params of the root
- * @param {string} params.language - The language of the root
- * @returns {JSX.Element} The rendered root
+ * @param {Props} props - The props to pass to the component
+ * @param {React.ReactNode} props.children - The children to render
+ * @param {Params} props.params - The parameters to pass to the component
+ * @param {LanguageCode} props.params.language - The language code
+ *
+ * @returns {JSX.Element} The root layout component
  */
 export default function RootLayout({ children, params }: Props): JSX.Element {
   children

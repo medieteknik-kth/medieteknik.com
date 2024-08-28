@@ -4,6 +4,7 @@ import i18next from 'i18next'
 import {
   initReactI18next,
   useTranslation as useTranslationOrg,
+  UseTranslationResponse,
 } from 'react-i18next'
 import { useCookies } from 'next-client-cookies'
 import resourcesToBackend from 'i18next-resources-to-backend'
@@ -13,6 +14,7 @@ import { CookieConsent, ClientCookieConsent } from '@/utility/CookieManager'
 
 const isRunningOnServer = typeof window === 'undefined'
 
+// Initialize i18next instance with resources
 i18next
   .use(initReactI18next)
   .use(LanguageDetector)
@@ -31,11 +33,20 @@ i18next
     preload: isRunningOnServer ? supportedLanguages : [],
   })
 
+/**
+ * @name useTranslation
+ * @description Get client-side translations for a language and namespace
+ *
+ * @param {string} language - The language code to use
+ * @param {string} namespace - The namespace, i.e. the translation file name
+ * @param {object} options - Additional options
+ * @returns {UseTranslationResponse<string, string>} Translation function and i18next instance
+ */
 export function useTranslation(
   language: string,
   namespace: string,
   options: { keyPrefix?: string | undefined } = {}
-) {
+): UseTranslationResponse<string, string> {
   const cookies = useCookies()
   const ret = useTranslationOrg(namespace, options)
   const { i18n } = ret

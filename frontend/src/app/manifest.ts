@@ -1,5 +1,11 @@
 import { MetadataRoute } from 'next'
 
+/**
+ * @name manifest
+ * @description Generate the web app manifest for the site, mainly for PWA
+ * 
+ * @returns {MetadataRoute.Manifest} The web app manifest configuration 
+ */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: '',

@@ -1,17 +1,27 @@
 import Image from 'next/image'
 import KTHSVG from 'public/images/svg/kth.svg'
 import Link from 'next/link'
-import LoginForm from './loginForm'
+import LoginForm from './client/loginForm'
 
 import LightLogo from 'public/images/logobig_light.jpg'
 import DarkLogo from 'public/images/logobig_dark.jpg'
 import { Button } from '@/components/ui/button'
 
-export default function Login({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+interface Props {
+  params: {
+    language: string
+  }
+}
+
+/**
+ * @name Login
+ * @description The login page
+ *
+ * @param {object} params - The dynamic route parameters
+ * @param {string} params.language - The language code
+ * @returns {JSX.Element} The login page
+ */
+export default function Login({ params: { language } }: Props): JSX.Element {
   return (
     <main>
       <div className='h-24 bg-black' />

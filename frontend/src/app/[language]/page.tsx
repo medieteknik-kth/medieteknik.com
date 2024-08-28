@@ -5,11 +5,23 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n'
 import './home.css'
 
+interface Props {
+  params: {
+    language: string
+  }
+}
+
+/**
+ * @name Home
+ * @description The home page
+ *
+ * @param {object} params - The dynamic route parameters
+ * @param {string} params.language - The language code
+ * @returns {Promise<JSX.Element>} The home page
+ */
 export default async function Home({
   params: { language },
-}: {
-  params: { language: string }
-}) {
+}: Props): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'common')
   return (
     <main>

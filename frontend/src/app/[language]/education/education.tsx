@@ -12,6 +12,12 @@ import {
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 
+interface Props {
+  params: {
+    language: string
+  }
+}
+
 /**
  * @name Education
  * @description The education page, with useful information regarding courses, possible master degrees, and other useful information
@@ -22,9 +28,7 @@ import { Button } from '@/components/ui/button'
  */
 export default function Education({
   params: { language },
-}: {
-  params: { language: string }
-}): JSX.Element {
+}: Props): JSX.Element {
   return (
     <main>
       <div className='h-24 bg-black' />

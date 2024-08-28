@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
-import Link from 'next/link'
 import { useTranslation } from '@/app/i18n'
 import InfographicCard from '@/components/cards/Infographic'
 
@@ -12,7 +11,19 @@ interface CardElement {
   linkText: string
 }
 
-export default async function About({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name About
+ * @description The about section of the home page
+ *
+ * @param {object} props - The props to pass to the component
+ * @param {string} props.language - The language code
+ * @returns {Promise<JSX.Element>} The about section
+ */
+export default async function About({ language }: Props): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'index')
 
   const cards: CardElement[] = [
