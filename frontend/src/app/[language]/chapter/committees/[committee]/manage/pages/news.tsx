@@ -11,55 +11,83 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
 import {
-  ArrowTopRightOnSquareIcon,
   BookOpenIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  Cog6ToothIcon,
+  CheckBadgeIcon,
+  ClipboardIcon,
   NewspaperIcon,
-  PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { Checkbox } from '@/components/ui/checkbox'
 import { DraftBadge, PublishedBadge } from '@/components/badges/Items'
 import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import Committee from '@/models/Committee'
+import { NewsPagination } from '@/models/Pagination'
+import useSWR from 'swr'
+import { API_BASE_URL } from '@/utility/Constants'
+import { useToast } from '@/components/ui/use-toast'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { NewsUpload } from '@/components/dialogs/NewsUpload'
 
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  }).then((res) => res.json() as Promise<NewsPagination>)
+
+/**
+ * @name NewsPage
+ * @description The page for managing a committees news articles
+ *
+ * @param {string} language - The language of the page
+ * @param {Committee} committee - The committee to manage
+ * @returns {JSX.Element} The rendered component
+ */
 export default function NewsPage({
   language,
-  data,
+  committee,
 }: {
   language: string
-  data: {
-    news: {
-      ids: string[]
-      total: number
-    }
-  } | null
-}) {
+  committee: Committee
+}): JSX.Element {
+  const [pageIndex, setPageIndex] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
+  const { toast } = useToast()
+  const { data: news, error: swrError } = useSWR<NewsPagination>(
+    `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/news?language=${language}&page=${pageIndex}`,
+    fetcher
+  )
+  const { total_news, isLoading: isLoadingNews } = useCommitteeManagement()
+  const [openModal, setOpenModal] = useState(false)
 
   useEffect(() => {
-    if (data) {
+    if (!isLoadingNews) {
       setIsLoading(false)
     }
-  }, [data])
+  }, [isLoadingNews])
+
+  if (swrError) {
+    console.error(swrError)
+    return <p>{swrError.message}</p>
+  }
+
+  if (!news) {
+    return <p>Loading...</p>
+  }
+
   return (
     <section className='grow'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>News</h2>
@@ -77,14 +105,16 @@ export default function NewsPage({
               {isLoading ? (
                 <Skeleton className='w-32 h-8' />
               ) : (
-                <p className='text-2xl'>{data?.news.total}</p>
+                <p className='text-2xl'>{total_news}</p>
               )}
             </CardContent>
             <CardFooter>
-              <Button>
-                <PlusIcon className='w-5 h-5 mr-2' />
-                Add
-              </Button>
+              <Dialog open={openModal} onOpenChange={setOpenModal}>
+                <DialogTrigger asChild>
+                  <Button>Create a News Article</Button>
+                </DialogTrigger>
+                <NewsUpload language={language} author={committee} />
+              </Dialog>
             </CardFooter>
           </Card>
         </div>
@@ -101,30 +131,37 @@ export default function NewsPage({
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href='#' />
+                    <PaginationPrevious
+                      href='#'
+                      onClick={() =>
+                        setPageIndex((prev) => {
+                          if (prev > 0) {
+                            return prev - 1
+                          }
+                          return prev
+                        })
+                      }
+                    />
                   </PaginationItem>
+                  {Array.from({ length: news.total_pages }, (_, i) => (
+                    <PaginationItem key={i} onClick={() => setPageIndex(i)}>
+                      <PaginationLink href='#' isActive={pageIndex === i}>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
                   <PaginationItem>
-                    <PaginationLink href='#' isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href='#' />
+                    <PaginationNext
+                      href='#'
+                      onClick={() =>
+                        setPageIndex((prev) => {
+                          if (prev < news.total_pages - 1) {
+                            return prev + 1
+                          }
+                          return prev
+                        })
+                      }
+                    />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
@@ -139,64 +176,58 @@ export default function NewsPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell>
-                    <DraftBadge language={language} />
-                  </TableCell>
-                  <TableCell className='w-12'>
-                    <Checkbox disabled />
-                  </TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell>
-                    <PublishedBadge language={language} />
-                  </TableCell>
-                  <TableCell className='w-12'>
-                    <Checkbox defaultChecked disabled />
-                  </TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                {news.items.map((article, index) => (
+                  <TableRow key={index}>
+                    <TableCell className='max-w-52'>
+                      {article.translations[0].title}
+                    </TableCell>
+                    <TableCell>
+                      {article.published_status === 'DRAFT' ? (
+                        <DraftBadge language={language} />
+                      ) : (
+                        <PublishedBadge language={language} />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {article.is_public && (
+                        <CheckBadgeIcon className='w-5 h-5 text-green-600' />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className='flex gap-2'>
+                        <Button
+                          size={'icon'}
+                          variant={'secondary'}
+                          title='Copy URL'
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              window.location.origin +
+                                '/' +
+                                language +
+                                '/bulletin/news/' +
+                                article.url
+                            )
+                            toast({
+                              title: 'Copied to clipboard',
+                              description:
+                                window.location.origin +
+                                '/' +
+                                language +
+                                '/bulletin/news/' +
+                                article.url,
+                              duration: 2500,
+                            })
+                          }}
+                        >
+                          <ClipboardIcon className='w-5 h-5' />
+                        </Button>
+                        <Button size={'icon'} variant={'destructive'}>
+                          <TrashIcon className='w-5 h-5' />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>

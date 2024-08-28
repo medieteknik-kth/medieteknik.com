@@ -138,41 +138,42 @@ export default function EventUpload({
   const { student } = useAuthentication()
   const { t } = useTranslation(language, 'bulletin')
 
-  if (!student) {
-    return <></>
-  }
-
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [currentColor, setCurrentColor] = useState('#FFFFFF')
   const tinycolor = require('tinycolor2')
   const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6', '#EF4444']
-  const FormSchema = z.object({
-    date: z.string().date().min(1, 'Date is required'),
-    start_time: z.string().refine((value) => {
-      return /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/.test(value)
-    }),
-    end_time: z.string().refine((value) => {
-      return /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/.test(value)
-    }),
-    repeats: z.boolean(),
-    location: z.string().min(1, 'Location is required'),
-    background_color: z.string().refine(
-      (value) => {
-        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
-      },
+  const FormSchema = z
+    .object({
+      date: z.string().date().min(1, 'Date is required'),
+      start_time: z.string().time(),
+      end_time: z.string().time(),
+      repeats: z.boolean(),
+      location: z.string().min(1, 'Location is required'),
+      background_color: z.string().refine(
+        (value) => {
+          return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
+        },
+        {
+          message: 'Invalid color',
+        }
+      ),
+      translations: z.array(
+        z.object({
+          language_code: z.string().optional().or(z.literal('')),
+          title: z.string().min(1, 'Title is required'),
+          description: z.string().optional().or(z.literal('')),
+        })
+      ),
+    })
+    .refine(
+      (data) =>
+        data.end_time.valueOf() > data.start_time.valueOf() + 1 * 60 * 1000,
       {
-        message: 'Invalid color',
+        message: 'End time must be after start time',
+        path: ['end_time'],
       }
-    ),
-    translations: z.array(
-      z.object({
-        language_code: z.string().optional().or(z.literal('')),
-        title: z.string().min(1, 'Title is required'),
-        description: z.string().optional().or(z.literal('')),
-      })
-    ),
-  })
+    )
 
   const eventForm = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -185,8 +186,8 @@ export default function EventUpload({
         }
       }),
       date: selectedDate.toISOString().split('T')[0],
-      start_time: '11:00',
-      end_time: '12:00',
+      start_time: '11:00:00',
+      end_time: '12:00:00',
       repeats: false,
       location: '',
       background_color: currentColor,
@@ -195,14 +196,18 @@ export default function EventUpload({
 
   const { setValue, getValues } = eventForm
 
+  if (!student) {
+    return <></>
+  }
+
   const handleColorChange = (color: string) => {
     setValue('background_color', color)
     setCurrentColor(color)
   }
 
   const publish = async (data: z.infer<typeof FormSchema>) => {
-    const start_date = new Date(data.date + ' ' + data.start_time + ':00')
-    const end_date = new Date(data.date + ' ' + data.end_time + ':00')
+    const start_date = new Date(data.date + ' ' + data.start_time)
+    const end_date = new Date(data.date + ' ' + data.end_time)
 
     const json_data = {
       start_date: start_date.toISOString(),
@@ -310,11 +315,11 @@ export default function EventUpload({
         </TabsList>
         <form onSubmit={eventForm.handleSubmit(publish)}>
           <Form {...eventForm}>
-            <div className='grid grid-cols-12 gap-2 mt-2 relative'>
+            <div className='grid grid-cols-2 grid-rows-2 gap-2 mt-2 relative'>
               <FormField
                 name='date'
                 render={({ field }) => (
-                  <FormItem className='col-span-5'>
+                  <FormItem className='col-span-2'>
                     <FormLabel>{t('event.form.date')}</FormLabel>
                     <FormControl>
                       <Input id='date' type='date' {...field} />
@@ -327,28 +332,23 @@ export default function EventUpload({
               <FormField
                 name='start_time'
                 render={({ field }) => (
-                  <FormItem className='col-span-3'>
+                  <FormItem className='col-span-1'>
                     <FormLabel>{t('event.form.start_time')}</FormLabel>
                     <FormControl>
-                      <Input id='start_time' type='time' {...field} />
+                      <Input id='start_time' type='time' step={2} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <span className='grid place-items-center relative top-4'>
-                {' '}
-                -{' '}
-              </span>
-
               <FormField
                 name='end_time'
                 render={({ field }) => (
-                  <FormItem className='col-span-3'>
+                  <FormItem className='col-span-1'>
                     <FormLabel>{t('event.form.end_time')}</FormLabel>
                     <FormControl>
-                      <Input id='end_time' type='time' {...field} />
+                      <Input id='end_time' type='time' step={2} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

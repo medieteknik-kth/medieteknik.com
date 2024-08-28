@@ -11,56 +11,83 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
 import {
-  ArrowTopRightOnSquareIcon,
   ArrowUpTrayIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  Cog6ToothIcon,
+  CheckBadgeIcon,
   DocumentDuplicateIcon,
-  NewspaperIcon,
-  PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { Checkbox } from '@/components/ui/checkbox'
-import { DraftBadge, PublishedBadge } from '@/components/badges/Items'
 import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { DocumentPagination } from '@/models/Pagination'
+import useSWR from 'swr'
+import Committee from '@/models/Committee'
+import { API_BASE_URL } from '@/utility/Constants'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import DocumentUpload from '@/components/dialogs/DocumentUpload'
 
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  }).then((res) => res.json() as Promise<DocumentPagination>)
+
+/**
+ * @name DocumentPage
+ * @description The page for managing a committees documents
+ *
+ * @param {string} language - The language of the page
+ * @param {Committee} committee - The committee to manage
+ * @returns {JSX.Element} The rendered component
+ */
 export default function DocumentPage({
   language,
-  data,
+  committee,
 }: {
   language: string
-  data: {
-    documents: {
-      ids: string[]
-      total: number
-    }
-  } | null
-}) {
+  committee: Committee
+}): JSX.Element {
   const [isLoading, setIsLoading] = useState(true)
+  const [pageIndex, setPageIndex] = useState(1)
+  const { data: documents, error: swrError } = useSWR<DocumentPagination>(
+    `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/documents?language=${language}&page=${pageIndex}`,
+    fetcher
+  )
+  const {
+    total_documents,
+    isLoading: isLoadingDocuments,
+    error,
+    incrementDocuments,
+  } = useCommitteeManagement()
+  const [openModal, setOpenModal] = useState(false)
 
   useEffect(() => {
-    if (data) {
+    if (!isLoadingDocuments) {
       setIsLoading(false)
     }
-  }, [data])
+  }, [isLoadingDocuments])
+
+  if (swrError) {
+    console.error(swrError)
+    return <p>{swrError.message}</p>
+  }
+
+  if (!documents) {
+    return <p>Loading...</p>
+  }
 
   return (
     <section className='grow'>
@@ -79,14 +106,21 @@ export default function DocumentPage({
               {isLoading ? (
                 <Skeleton className='w-32 h-8' />
               ) : (
-                <p className='text-2xl'>{data?.documents.total}</p>
+                <p className='text-2xl'>{total_documents}</p>
               )}
             </CardContent>
             <CardFooter>
-              <Button>
-                <PlusIcon className='w-5 h-5 mr-2' />
-                Upload
-              </Button>
+              <Dialog open={openModal} onOpenChange={setOpenModal}>
+                <DialogTrigger asChild>
+                  <Button>Upload Document</Button>
+                </DialogTrigger>
+                <DocumentUpload
+                  language={language}
+                  author={committee}
+                  addDocument={incrementDocuments}
+                  closeMenuCallback={() => setOpenModal(false)}
+                />
+              </Dialog>
             </CardFooter>
           </Card>
         </div>
@@ -103,30 +137,37 @@ export default function DocumentPage({
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href='#' />
+                    <PaginationPrevious
+                      href='#'
+                      onClick={() =>
+                        setPageIndex((prev) => {
+                          if (prev > 0) {
+                            return prev - 1
+                          }
+                          return prev
+                        })
+                      }
+                    />
                   </PaginationItem>
+                  {Array.from({ length: documents.total_pages }, (_, i) => (
+                    <PaginationItem key={i} onClick={() => setPageIndex(i)}>
+                      <PaginationLink href='#' isActive={pageIndex === i}>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
                   <PaginationItem>
-                    <PaginationLink href='#' isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href='#' />
+                    <PaginationNext
+                      href='#'
+                      onClick={() =>
+                        setPageIndex((prev) => {
+                          if (prev < documents.total_pages - 1) {
+                            return prev + 1
+                          }
+                          return prev
+                        })
+                      }
+                    />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
@@ -140,58 +181,21 @@ export default function DocumentPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell className='w-12'>
-                    <Checkbox disabled />
-                  </TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell className='w-12'>
-                    <Checkbox defaultChecked disabled />
-                  </TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                {documents.items.map((document, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{document.translations[0].title}</TableCell>
+                    <TableCell>
+                      {document.is_public && (
+                        <CheckBadgeIcon className='w-5 h-5 text-green-600' />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Button size={'icon'} variant={'destructive'}>
+                        <TrashIcon className='w-5 h-5' />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>

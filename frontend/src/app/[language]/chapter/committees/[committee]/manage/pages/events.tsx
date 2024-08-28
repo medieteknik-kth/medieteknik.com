@@ -11,75 +11,88 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  ArrowTopRightOnSquareIcon,
-  BookOpenIcon,
-  CalendarDaysIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  Cog6ToothIcon,
-  NewspaperIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline'
+import { BookOpenIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
-  DraftBadge,
-  PublishedBadge,
   CompletedEventBadge,
   OngoingEventBadge,
   UpcomingEventBadge,
 } from '@/components/badges/Items'
 import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { EventPagniation } from '@/models/Pagination'
+import useSWR from 'swr'
+import { API_BASE_URL } from '@/utility/Constants'
+import Committee from '@/models/Committee'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import EventUpload from '@/components/dialogs/EventUpload'
 
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  }).then((res) => res.json() as Promise<EventPagniation>)
+
+/**
+ * @name EventPage
+ * @description The page for managing a committees events
+ *
+ * @param {string} language - The language of the page
+ * @param {Committee} committee - The committee to manage
+ * @returns {JSX.Element} The rendered component
+ */
 export default function EventPage({
   language,
-  data,
+  committee,
 }: {
   language: string
-  data: {
-    events: {
-      ids: string[]
-      total: number
-    }
-  } | null
-}) {
+  committee: Committee
+}): JSX.Element {
+  // TODO: Clean-up the code, separate the components into smaller components?
+  const [pageIndex, setPageIndex] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
+  const { data: events, error: swrError } = useSWR<EventPagniation>(
+    `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/events?language=${language}&page=${pageIndex}`,
+    fetcher
+  )
+  const {
+    total_events,
+    isLoading: isLoadingEvents,
+    error,
+    incrementEvents,
+  } = useCommitteeManagement()
+  const [openModal, setOpenModal] = useState(false)
 
   useEffect(() => {
-    if (data) {
+    if (!isLoadingEvents) {
       setIsLoading(false)
     }
-  }, [data])
+  }, [isLoadingEvents])
+
+  if (swrError) {
+    console.error(swrError)
+    return <p>{swrError.message}</p>
+  }
+
+  if (!events) {
+    return <p>Loading...</p>
+  }
 
   return (
     <section className='grow'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>Events</h2>
-      {/*<section className='w-fit grid grid-cols-7 gap-1'>
-        {calendar.getDaysInMonth().map((date, index) => (
-          <div className='w-24 h-24 border relative' key={index}>
-            <p className='absolute top-2 right-2 text-xs select-none'>
-              {date.getDate()}
-            </p>
-          </div>
-        ))}
-      </section>*/}
       <div className='flex flex-col mt-4'>
         <div className='flex mb-4'>
           <Card className='w-72 relative'>
@@ -94,14 +107,22 @@ export default function EventPage({
               {isLoading ? (
                 <Skeleton className='w-32 h-8' />
               ) : (
-                <p className='text-2xl'>{data?.events.total}</p>
+                <p className='text-2xl'>{total_events}</p>
               )}
             </CardContent>
             <CardFooter>
-              <Button>
-                <PlusIcon className='w-5 h-5 mr-2' />
-                Add
-              </Button>
+              <Dialog open={openModal} onOpenChange={setOpenModal}>
+                <DialogTrigger asChild>
+                  <Button>Create an Event</Button>
+                </DialogTrigger>
+                <EventUpload
+                  language={language}
+                  author={committee}
+                  closeMenuCallback={() => setOpenModal(false)}
+                  addEvent={incrementEvents}
+                  selectedDate={new Date()}
+                />
+              </Dialog>
             </CardFooter>
           </Card>
         </div>
@@ -118,30 +139,37 @@ export default function EventPage({
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href='#' />
+                    <PaginationPrevious
+                      href='#'
+                      onClick={() =>
+                        setPageIndex((prev) => {
+                          if (prev > 0) {
+                            return prev - 1
+                          }
+                          return prev
+                        })
+                      }
+                    />
                   </PaginationItem>
+                  {Array.from({ length: events.total_pages }, (_, i) => (
+                    <PaginationItem key={i} onClick={() => setPageIndex(i)}>
+                      <PaginationLink href='#' isActive={pageIndex === i}>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
                   <PaginationItem>
-                    <PaginationLink href='#' isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href='#' />
+                    <PaginationNext
+                      href='#'
+                      onClick={() =>
+                        setPageIndex((prev) => {
+                          if (prev < events.total_pages - 1) {
+                            return prev + 1
+                          }
+                          return prev
+                        })
+                      }
+                    />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
@@ -150,121 +178,50 @@ export default function EventPage({
               <TableHeader>
                 <TableRow>
                   <TableHead className='max-w-52'>Title</TableHead>
-                  <TableHead className='w-36'>Publishing Status</TableHead>
                   <TableHead className='w-36'>Event Status</TableHead>
                   <TableHead className='max-w-96'>Location</TableHead>
-                  <TableHead className='max-w-16'>Public</TableHead>
                   <TableHead className='w-36'>Start Date</TableHead>
                   <TableHead className='w-36'>End Date</TableHead>
                   <TableHead className='text-right w-48'>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell>
-                    <DraftBadge language={language} />
-                  </TableCell>
-                  <TableCell>
-                    <CompletedEventBadge language={language} />
-                  </TableCell>
-                  <TableCell>Random location</TableCell>
-                  <TableCell className='w-16'>
-                    <Checkbox disabled />
-                  </TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell>
-                    <PublishedBadge language={language} />
-                  </TableCell>
-                  <TableCell>
-                    <OngoingEventBadge language={language} />
-                  </TableCell>
-                  <TableCell>Random location</TableCell>
-                  <TableCell className='w-16'>
-                    <Checkbox defaultChecked disabled />
-                  </TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className='max-w-52 truncate'>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Recusandae excepturi a fugit iusto praesentium ullam illo
-                    magnam, nesciunt sit. Iste laudantium exercitationem
-                    deleniti culpa fugiat quo nesciunt ratione quod repellat.
-                  </TableCell>
-                  <TableCell>
-                    <PublishedBadge language={language} />
-                  </TableCell>
-                  <TableCell>
-                    <UpcomingEventBadge language={language} />
-                  </TableCell>
-                  <TableCell>Random location</TableCell>
-                  <TableCell className='w-16'>
-                    <Checkbox defaultChecked disabled />
-                  </TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                  <TableCell className='text-right w-48'>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <Cog6ToothIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'outline'} className='mr-2'>
-                      <ArrowTopRightOnSquareIcon className='w-5 h-5' />
-                    </Button>
-                    <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      className='mr-2'
-                    >
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                {events.items.map((event, index) => (
+                  <TableRow key={index}>
+                    <TableCell className='max-w-52'>
+                      {event.translations[0].title}
+                    </TableCell>
+                    <TableCell className='w-36'>
+                      {new Date(event.end_date) < new Date() ? (
+                        <CompletedEventBadge language={language} />
+                      ) : new Date(event.end_date) > new Date() &&
+                        new Date(event.start_date) < new Date() ? (
+                        <OngoingEventBadge language={language} />
+                      ) : (
+                        <UpcomingEventBadge language={language} />
+                      )}
+                    </TableCell>
+                    <TableCell className='max-w-96'>{event.location}</TableCell>
+                    <TableCell className='w-72'>
+                      {new Date(event.start_date).toLocaleDateString(language, {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      })}
+                    </TableCell>
+                    <TableCell className='w-72'>
+                      {new Date(event.end_date).toLocaleDateString(language, {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      })}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>

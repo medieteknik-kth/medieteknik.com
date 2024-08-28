@@ -1,17 +1,8 @@
 'use client'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -25,10 +16,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import Logo from 'public/images/logo.webp'
 import {
   BuildingOffice2Icon,
+  CircleStackIcon,
   ClockIcon,
   Cog6ToothIcon,
   IdentificationIcon,
@@ -39,38 +29,58 @@ import {
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import PositionForm from '../forms/positionForm'
+import Committee from '@/models/Committee'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import RecruitmentForm from '../forms/recruitmentForm'
+import { StudentTag } from '@/components/tags/StudentTag'
+import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
+import RemovePositionForm from '../forms/removePosition'
 
+/**
+ * @name MembersPage
+ * @description The page for managing a committees members
+ *
+ * @param {string} language - The language of the page
+ * @param {Committee} committee - The committee to manage
+ * @returns {JSX.Element} The rendered component
+ */
 export default function MembersPage({
-  data,
+  committee,
+  language,
 }: {
-  data: {
-    members: {
-      ids: string[]
-      total: number
-    }
-    positions: {
-      ids: string[]
-      total: number
-    }
-  } | null
-}) {
+  committee: Committee
+  language: string
+}): JSX.Element {
+  // TODO: Clean-up the code, separate the components into smaller components?
   const [isLoading, setIsLoading] = useState(true)
+  const [addPositionOpen, setAddPositionOpen] = useState(false)
+  const {
+    members,
+    positions,
+    isLoading: isLoadingMembers,
+    error,
+    recruitments,
+    addPosition,
+  } = useCommitteeManagement()
+
+  const findPosition = (id: string) => {
+    return positions.find((position) => position.committee_position_id === id)
+  }
 
   useEffect(() => {
-    if (data) {
+    if (!isLoadingMembers) {
       setIsLoading(false)
     }
-  }, [data])
+  }, [isLoadingMembers])
 
   return (
     <section className='grow'>
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>
         Members & Positions
       </h2>
-      <div className='flex flex-col mt-4'>
-        <div className='flex mb-4'>
+      <div className='flex flex-col mt-4 gap-4'>
+        <div className='flex'>
           <Card className='w-fit relative mr-4'>
             <CardHeader>
               <CardTitle>Members</CardTitle>
@@ -83,27 +93,36 @@ export default function MembersPage({
               {isLoading ? (
                 <Skeleton className='w-32 h-8' />
               ) : (
-                <p className='text-2xl'>{data?.members.total}</p>
+                <p className='text-2xl'>{members.total_items}</p>
               )}
             </CardContent>
-            <CardFooter>
-              <Button
-                variant={'outline'}
-                className='mr-4'
-                disabled={!data}
-                title='Add a new member to the committee'
-              >
-                <PlusIcon className='w-5 h-5 mr-2' />
-                Add
-              </Button>
-              <Button
-                variant={'destructive'}
-                disabled={data?.members.total === 0 || !data}
-                title='Remove a member from the committee'
-              >
-                <TrashIcon className='w-5 h-5 mr-2' />
-                Remove
-              </Button>
+            <CardFooter className='flex gap-4'>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={'outline'}
+                    disabled={error !== null}
+                    title='Add a new member to the committee'
+                  >
+                    <PlusIcon className='w-5 h-5 mr-2' />
+                    Add
+                  </Button>
+                </DialogTrigger>
+                <AddMemberForm language={language} />
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={'destructive'}
+                    disabled={members.total_items === 0 || error !== null}
+                    title='Remove a member from the committee'
+                  >
+                    <TrashIcon className='w-5 h-5 mr-2' />
+                    Remove
+                  </Button>
+                </DialogTrigger>
+                <RemoveMemberForm language={language} />
+              </Dialog>
             </CardFooter>
           </Card>
 
@@ -119,77 +138,59 @@ export default function MembersPage({
               {isLoading ? (
                 <Skeleton className='w-32 h-8' />
               ) : (
-                <p className='text-2xl'>{data?.positions.total}</p>
+                <p className='text-2xl'>{positions.length}</p>
               )}
             </CardContent>
             <CardFooter>
-              <Dialog>
-                <DialogTrigger>
+              <Dialog open={addPositionOpen} onOpenChange={setAddPositionOpen}>
+                <DialogTrigger asChild>
                   <Button
                     variant={'outline'}
                     className='mr-4'
-                    disabled={!data}
+                    disabled={error !== null}
                     title='Create a new position to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
                     Create
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create a new position</DialogTitle>
-                    <DialogDescription>
-                      Add a new position to the committee
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div>
-                    <Label htmlFor='positionName'>Name</Label>
-                    <Input
-                      id='positionName'
-                      autoComplete='off'
-                      placeholder='Position Name'
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor='positionEmail'>Email (optional)</Label>
-                    <Input
-                      id='positionEmail'
-                      type='email'
-                      autoComplete='off'
-                      placeholder='Position Email'
-                    />
-                  </div>
-                  <div className='relative'>
-                    <Label htmlFor='positionDescription'>Description</Label>
-                    <Textarea
-                      id='positionDescription'
-                      placeholder='Position Description'
-                      className='max-h-32'
-                    />
-                    <p className='absolute bottom-2 right-2 text-xs select-none text-neutral-600'>
-                      0/500
-                    </p>
-                  </div>
-                </DialogContent>
+                <PositionForm
+                  committee={committee}
+                  language={language}
+                  onSuccess={(position) => {
+                    addPosition(position)
+                    setAddPositionOpen(false)
+                  }}
+                />
               </Dialog>
 
-              <Button
-                variant={'outline'}
-                className='mr-4'
-                disabled={!data || data?.positions.total === 0}
-                title='Open a position for recruitment'
-              >
-                <ClockIcon className='w-5 h-5 mr-2' />
-                Recruit
-              </Button>
-              <Button
-                variant={'destructive'}
-                disabled={data?.positions.total === 0 || !data}
-                title='Remove a position from the committee'
-              >
-                <TrashIcon className='w-5 h-5 mr-2' />
-                Remove
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={'outline'}
+                    className='mr-4'
+                    disabled={error !== null || positions.length === 0}
+                    title='Open a position for recruitment'
+                  >
+                    <ClockIcon className='w-5 h-5 mr-2' />
+                    Recruit
+                  </Button>
+                </DialogTrigger>
+                <RecruitmentForm language={language} />
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={'destructive'}
+                    disabled={error !== null || positions.length <= 1}
+                    title='Remove a position from the committee'
+                  >
+                    <TrashIcon className='w-5 h-5 mr-2' />
+                    Remove
+                  </Button>
+                </DialogTrigger>
+                <RemovePositionForm language={language} onSuccess={() => {}} />
+              </Dialog>
             </CardFooter>
           </Card>
         </div>
@@ -208,69 +209,144 @@ export default function MembersPage({
                   <TableHead>Name</TableHead>
                   <TableHead>Position</TableHead>
                   <TableHead>Initiated</TableHead>
-                  <TableHead>Expected Termination</TableHead>
                   <TableHead className='text-right'>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className='flex items-center space-x-3'>
-                      <Avatar>
-                        <AvatarImage
-                          src={Logo.src}
-                          alt='Avatar'
-                          width={32}
-                          height={32}
-                        />
-                        <AvatarFallback>
-                          <span className='sr-only'>Avatar</span>
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h3 className='font-bold'>André Eriksson</h3>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>Webmaster</TableCell>
-                  <TableCell>
-                    {new Date('January 20 2023').toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    {new Date('January 20 2024').toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className='flex items-center space-x-3'>
-                      <Avatar>
-                        <AvatarImage
-                          src={Logo.src}
-                          alt='Avatar'
-                          width={32}
-                          height={32}
-                        />
-                        <AvatarFallback>
-                          <span className='sr-only'>Avatar</span>
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h3 className='font-bold'>Viggo Halvarsson Skoog</h3>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>Webmaster</TableCell>
-                  <TableCell>
-                    {new Date('January 20 2023').toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    {new Date('January 20 2024').toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
+                {members.items.map((member, index) => (
+                  <TableRow key={index}>
+                    <TableCell className='flex items-center gap-2'>
+                      <StudentTag student={member.student} includeAt={false} />
+                    </TableCell>
+                    <TableCell>
+                      {isLoading ? (
+                        <Skeleton className='w-32 h-8' />
+                      ) : (
+                        findPosition(member.committee_position_id) && (
+                          <p>
+                            {
+                              findPosition(member.committee_position_id)!
+                                .translations[0].title
+                            }
+                          </p>
+                        )
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(member.initiation_date).toLocaleDateString(
+                        language,
+                        {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        }
+                      )}
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      <Button
+                        variant={'outline'}
+                        size={'icon'}
+                        title='View member'
+                      >
+                        <Cog6ToothIcon className='w-5 h-5' />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
+        <div className='flex gap-4 flex-wrap'>
+          <Card className='w-96 relative'>
+            <CardHeader>
+              <CardTitle>Positions</CardTitle>
+              <CardDescription>
+                <CircleStackIcon className='absolute top-6 right-4 w-5 h-5 mr-2' />
+                All positions in the committee
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className='flex flex-col gap-1'>
+                {positions
+                  .sort((a, b) => a.weight - b.weight)
+                  .map((position, index) => (
+                    <li
+                      key={index}
+                      className='even:bg-neutral-100 even:dark:bg-neutral-800 rounded-md p-2 uppercase font-mono text-sm even:dark:hover:bg-neutral-800 even:hover:bg-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900'
+                    >
+                      <p>{position.translations[0].title}</p>
+                    </li>
+                  ))}
+              </ul>
+            </CardContent>
+          </Card>
+          <Card className='relative grow min-w-[875px]'>
+            <CardHeader>
+              <CardTitle>Active Recruitment</CardTitle>
+              <CardDescription>
+                <BuildingOffice2Icon className='absolute top-6 right-4 w-5 h-5 mr-2' />
+                Currently recruiting positions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Position</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead className='text-right'>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recruitments.map((recruitment, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        {recruitment.committee_position.translations[0].title}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(recruitment.start_date).toLocaleDateString(
+                          language,
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(recruitment.end_date).toLocaleDateString(
+                          language,
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell className='text-right'>
+                        <Button
+                          variant={'outline'}
+                          size={'icon'}
+                          title='View recruitment'
+                        >
+                          <Cog6ToothIcon className='w-5 h-5' />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </section>
   )
