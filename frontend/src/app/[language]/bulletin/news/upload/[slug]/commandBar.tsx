@@ -41,9 +41,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
-import { API_BASE_URL } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useRouter } from 'next/navigation'
 import { News } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
+import { supportedLanguages } from '@/app/i18n/settings'
 
 export default function CommandBar({
   language,
@@ -132,24 +134,6 @@ export default function CommandBar({
     }
   }
 
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  const getFlagCode = (lang: string) => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  const getLanguageName = (lang: string) => {
-    return languageNames.get(lang) || 'Unknown'
-  }
-
   return (
     <div className='w-full h-fit flex flex-col bg-white dark:bg-[#0D0D0D] fixed border-b-2 border-yellow-400 z-30'>
       <div className='flex justify-between px-6'>
@@ -200,7 +184,11 @@ export default function CommandBar({
                 title='Language'
                 aria-label='Language'
               >
-                <span className={`fi fi-${getFlagCode(language)}`} />
+                <span
+                  className={`fi fi-${
+                    LANGUAGES[language as LanguageCode].flag
+                  }`}
+                />
               </Button>
               <Button
                 className='ml-4'
@@ -256,14 +244,12 @@ export default function CommandBar({
                 <div className='mb-4'>
                   <p>Article Avaliablity</p>
                   <ul className='flex'>
-                    {Array.from(languageFlags.keys()).map((lang) => (
+                    {supportedLanguages.map((lang) => (
                       <li key={lang} className='mr-4 last:mr-0'>
                         <span
-                          className={`fi fi-${languageFlags.get(
-                            lang
-                          )} mr-2 text-sm`}
+                          className={`fi fi-${LANGUAGES[lang].flag} mr-2 text-sm`}
                         />
-                        <span className='text-sm'>{getLanguageName(lang)}</span>
+                        <span className='text-sm'>{LANGUAGES[lang].name}</span>
                       </li>
                     ))}
                   </ul>

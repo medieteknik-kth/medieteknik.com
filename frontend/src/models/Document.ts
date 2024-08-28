@@ -1,5 +1,5 @@
-import { LanguageCodes } from '@/utility/Constants'
 import { Author, Item } from './Items'
+import { LanguageCode } from './Language'
 
 export type DocumentType = 'DOCUMENT' | 'FORM'
 
@@ -14,5 +14,5 @@ export interface DocumentTranslation {
   title: string
   categories?: string[]
   url: string
-  language_code: LanguageCodes
+  language_code: LanguageCode
 }

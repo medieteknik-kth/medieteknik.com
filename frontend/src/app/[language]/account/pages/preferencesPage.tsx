@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { cookieName } from '@/app/i18n/settings'
 import { useCookies } from 'next-client-cookies'
+import { LANGUAGES } from '@/utility/Constants'
+import { LanguageCode } from '@/models/Language'
 
 export default function PreferencesPage({ language }: { language: string }) {
   const router = useRouter()
@@ -32,24 +34,6 @@ export default function PreferencesPage({ language }: { language: string }) {
     [path, params, router]
   )
 
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  const getFlagCode = (lang: string) => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  const getLanguageName = (lang: string) => {
-    return languageNames.get(lang) || 'Unknown'
-  }
-
   return (
     <section className='grow min-h-[1080px] h-full bg-white dark:bg-[#111] text-black dark:text-white'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
@@ -70,8 +54,12 @@ export default function PreferencesPage({ language }: { language: string }) {
                       disabled={lang === language}
                       variant={lang === language ? 'default' : 'secondary'}
                     >
-                      <span className={`fi fi-${getFlagCode(lang)} mr-2`} />
-                      <p>{getLanguageName(lang)}</p>
+                      <span
+                        className={`fi fi-${
+                          LANGUAGES[language as LanguageCode].flag
+                        } mr-2`}
+                      />
+                      <p>{LANGUAGES[language as LanguageCode].name}</p>
                     </Button>
                   </li>
                 ))}

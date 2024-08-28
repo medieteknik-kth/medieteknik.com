@@ -15,7 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { HexColorPicker } from 'react-colorful'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useState } from 'react'
 import { CardFooter } from '@/components/ui/card'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Author, Event } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
 
 interface TranslatedInputProps {
   index: number
@@ -246,7 +247,7 @@ export default function EventUpload({
             author: student,
             translations: data.translations.map((translation) => ({
               ...translation,
-              language_code: translation.language_code as LanguageCodes,
+              language_code: translation.language_code as LanguageCode,
             })),
           })
         }
@@ -260,36 +261,6 @@ export default function EventUpload({
       setErrorMessage('Something went wrong, try again later!')
       console.error(error)
     }
-  }
-
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  /**
-   * A function that retrieves the flag code based on the provided language.
-   *
-   * @param {string} lang - The language code for which to retrieve the flag code.
-   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
-   */
-  const getFlagCode = (lang: string): string => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  /**
-   * A function that retrieves the language name based on the provided language code.
-   *
-   * @param {string} lang - The language code for which to retrieve the language name.
-   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
-   */
-  const getLanguageName = (lang: string): string => {
-    return languageNames.get(lang) || 'Unknown'
   }
 
   return (
@@ -307,9 +278,9 @@ export default function EventUpload({
               key={language}
               value={language}
               className='w-fit'
-              title={getLanguageName(language)}
+              title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${getFlagCode(language)}`} />
+              <span className={`fi fi-${LANGUAGES[language].flag}`} />
             </TabsTrigger>
           ))}
         </TabsList>
@@ -455,7 +426,7 @@ export default function EventUpload({
                 <TranslatedInputs
                   index={index}
                   t={t}
-                  language={getLanguageName(language)}
+                  language={LANGUAGES[language].name}
                 />
               </TabsContent>
             ))}
@@ -505,9 +476,9 @@ export default function EventUpload({
               >
                 <div className='w-2 absolute -left-6'>
                   <span
-                    className={`fi fi-${languageFlags.get(
-                      translation.language_code || ''
-                    )} mr-1`}
+                    className={`fi fi-${
+                      LANGUAGES[translation.language_code as LanguageCode].flag
+                    } mr-1`}
                   />
                 </div>
                 <p className='truncate'>{translation.title}</p>

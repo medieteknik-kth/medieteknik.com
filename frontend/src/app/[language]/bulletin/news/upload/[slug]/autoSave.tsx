@@ -6,8 +6,9 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
+import { API_BASE_URL } from '@/utility/Constants'
 import { News } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
 
 export const AutoSaveResult = {
   SUCCESS: 'Saved',
@@ -26,8 +27,8 @@ const AutoSaveContext = createContext<{
   saveCallback: (language_code: string, manual?: boolean) => Promise<string>
   notifications: string
   addNotification: (message: string) => void
-  currentLanguage: LanguageCodes
-  switchCurrentLanguage: (language_code: LanguageCodes) => void
+  currentLanguage: LanguageCode
+  switchCurrentLanguage: (language_code: LanguageCode) => void
 }>({
   content: {} as News,
   updateContent: () => {},
@@ -54,8 +55,8 @@ export function AutoSaveProvdier({
   const [errorCount, setErrorCount] = useState(0)
   const [content, setContent] = useState<News>(news_item)
   const [notification, setNotification] = useState<string>('')
-  const [currentLanguage, setCurrentLanguage] = useState<LanguageCodes>(
-    language_code as LanguageCodes
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(
+    language_code as LanguageCode
   )
 
   const saveCallback = useCallback(
@@ -125,7 +126,7 @@ export function AutoSaveProvdier({
   )
 
   const switchCurrentLanguage = useCallback(
-    (language: LanguageCodes) => {
+    (language: LanguageCode) => {
       setCurrentLanguage(language)
     },
     [currentLanguage]

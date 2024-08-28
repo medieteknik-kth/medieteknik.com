@@ -1,19 +1,14 @@
+import { Language } from '@/models/Language'
+
 export const API_BASE_URL: string = 'http://localhost:8000/api/v1'
 
-export type LanguageCodes = 'sv' | 'en'
-
-export interface Language {
-  code: LanguageCodes
-  name: string
-}
-
-export const LANGUAGES: Language[] = [
-  {
-    code: 'sv',
+export const LANGUAGES: Language = {
+  'sv': {
     name: 'Svenska',
+    flag: 'se',
   },
-  {
-    code: 'en',
+  'en': {
     name: 'English',
+    flag: 'gb',
   },
-]
+}

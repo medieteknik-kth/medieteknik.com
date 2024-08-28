@@ -1,5 +1,5 @@
-import { LanguageCodes } from '@/utility/Constants'
 import Committee, { CommitteePosition } from './Committee'
+import { LanguageCode } from './Language'
 import Student from './Student'
 
 /**
@@ -48,7 +48,7 @@ export interface News extends Item {
 export interface NewsTranslation {
   title: string
   body: string
-  language_code: LanguageCodes
+  language_code: LanguageCode
   main_image_url: string
   short_description: string
   sub_image_urls?: string[]
@@ -75,5 +75,5 @@ export interface EventTranslation {
   description?: string
   main_image_url?: string
   sub_image_urls?: string[]
-  language_code: LanguageCodes
+  language_code: LanguageCode
 }

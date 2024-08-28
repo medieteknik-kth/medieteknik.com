@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cookieName } from '@/app/i18n/settings'
+import { LANGUAGES } from '@/utility/Constants'
 
 /**
  * OptionsMenu
@@ -77,36 +78,6 @@ export default function OptionsMenu({
     return <></>
   }
 
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  /**
-   * A function that retrieves the flag code based on the provided language.
-   *
-   * @param {string} lang - The language code for which to retrieve the flag code.
-   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
-   */
-  const getFlagCode = (lang: string): string => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  /**
-   * A function that retrieves the language name based on the provided language code.
-   *
-   * @param {string} lang - The language code for which to retrieve the language name.
-   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
-   */
-  const getLanguageName = (lang: string): string => {
-    return languageNames.get(lang) || 'Unknown'
-  }
-
   return (
     <div className='w-20 z-10'>
       <DropdownMenu modal={false}>
@@ -132,7 +103,7 @@ export default function OptionsMenu({
                   {t('languagePreference')}
                 </DropdownMenuLabel>
                 <DropdownMenuGroup className='flex'>
-                  {supportedLanguages.map((lang: string) => {
+                  {supportedLanguages.map((lang) => {
                     return (
                       <DropdownMenuItem key={lang} asChild>
                         <Button
@@ -140,16 +111,14 @@ export default function OptionsMenu({
                           className='mx-1 cursor-pointer'
                           variant={lang === language ? 'default' : 'ghost'}
                           disabled={lang === language}
-                          title={`Switch to ${getLanguageName(lang)}`}
-                          aria-label={`Switch to ${getLanguageName(lang)}`}
+                          title={`Switch to ${LANGUAGES[lang].name}`}
+                          aria-label={`Switch to ${LANGUAGES[lang].name}`}
                         >
                           <div className='w-full h-full flex items-center px-4'>
                             <span
-                              className={`fi fi-${getFlagCode(lang)} w-6 h-6`}
+                              className={`fi fi-${LANGUAGES[lang].flag} w-6 h-6`}
                             />
-                            <span className='ml-2'>
-                              {getLanguageName(lang)}
-                            </span>
+                            <span className='ml-2'>{LANGUAGES[lang].name}</span>
                           </div>
                         </Button>
                       </DropdownMenuItem>

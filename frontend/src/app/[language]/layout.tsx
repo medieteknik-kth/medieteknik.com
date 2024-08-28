@@ -5,7 +5,6 @@ import { supportedLanguages } from '../i18n/settings'
 import { fontFigtree } from '../fonts'
 import ClientProviders from '@/providers/ClientProviders'
 import ServerProviders from '@/providers/ServerProviders'
-import { LanguageCodes } from '@/utility/Constants'
 import CookiePopup from '@/components/cookie/Cookie'
 import ErrorBoundary from '@/components/error/ErrorBoundary'
 import ErrorFallback from '@/components/error/ErrorFallback'
@@ -13,16 +12,17 @@ import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import Script from 'next/script'
 import { Toaster } from '@/components/ui/toaster'
+import { LanguageCode } from '@/models/Language'
 
 /**
- * Generates the static paths for each language ({@link LanguageCodes})
+ * Generates the static paths for each language ({@link LanguageCode})
  * @async
  *
  * @see https://nextjs.org/docs/app/api-reference/functions/generate-static-params
- * @returns {Promise<{ language: LanguageCodes }[]>}
+ * @returns {Promise<{ language: LanguageCode }[]>}
  */
 export async function generateStaticParams(): Promise<
-  { language: LanguageCodes }[]
+  { language: LanguageCode }[]
 > {
   return supportedLanguages.map((language) => ({ language }))
 }
@@ -42,7 +42,7 @@ export const viewport: Viewport = {
 }
 
 interface Params {
-  language: LanguageCodes
+  language: LanguageCode
 }
 
 interface Props {

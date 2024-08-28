@@ -1,4 +1,4 @@
-import { LanguageCodes } from '@/utility/Constants';
+import { LanguageCode } from './Language';
 
 /**
  * @interface CommitteeCategory
@@ -14,7 +14,7 @@ export interface CommitteeCategory {
 
 export interface CommitteeCategoryTranslation {
   title: string
-  language_code: LanguageCodes;
+  language_code: LanguageCode;
 }
 
 export type CommitteePositionCategory = 'STYRELSEN' | 'VALBEREDNINGEN' | 'STUDIENÄMNDEN' | 'NÄRINGSLIV OCH KOMMUNIKATION' | 'STUDIESOCIALT' | 'FANBORGEN';
@@ -38,7 +38,7 @@ export default interface Committee {
 export interface CommitteeTranslation {
   title: string;
   description: string;
-  language_code: LanguageCodes;
+  language_code: LanguageCode;
 }
 
 /**
@@ -68,7 +68,7 @@ export interface CommitteePosition {
 export interface CommitteePositionTranslation {
   title: string;
   description: string;
-  language_code: LanguageCodes;
+  language_code: LanguageCode;
 }
 
 export interface CommitteePositionRecruitment {

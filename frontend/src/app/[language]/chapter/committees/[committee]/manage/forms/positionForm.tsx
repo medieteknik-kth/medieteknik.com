@@ -42,8 +42,9 @@ import {
 } from '@/components/ui/popover'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
-import { API_BASE_URL, LanguageCodes } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { title } from 'process'
+import { LanguageCode } from '@/models/Language'
 
 function TranslatedInputs({
   index,
@@ -192,43 +193,13 @@ export default function PositionForm({
           translations: new_data.translations.map((t) => ({
             title: t.title,
             description: t.description,
-            language_code: t.language_code as LanguageCodes,
+            language_code: t.language_code as LanguageCode,
           })),
         })
       }
     } catch (error) {
       console.error(error)
     }
-  }
-
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  /**
-   * A function that retrieves the flag code based on the provided language.
-   *
-   * @param {string} lang - The language code for which to retrieve the flag code.
-   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
-   */
-  const getFlagCode = (lang: string): string => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  /**
-   * A function that retrieves the language name based on the provided language code.
-   *
-   * @param {string} lang - The language code for which to retrieve the language name.
-   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
-   */
-  const getLanguageName = (lang: string): string => {
-    return languageNames.get(lang) || 'Unknown'
   }
 
   const categories = [
@@ -278,9 +249,9 @@ export default function PositionForm({
               key={language}
               value={language}
               className='w-fit'
-              title={getLanguageName(language)}
+              title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${getFlagCode(language)}`} />
+              <span className={`fi fi-${LANGUAGES[language].flag}`} />
             </TabsTrigger>
           ))}
         </TabsList>
@@ -309,7 +280,7 @@ export default function PositionForm({
               <TabsContent key={index} value={language}>
                 <TranslatedInputs
                   index={index}
-                  language={getLanguageName(language)}
+                  language={LANGUAGES[language].name}
                 />
               </TabsContent>
             ))}

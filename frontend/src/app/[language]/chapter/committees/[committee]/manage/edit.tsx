@@ -26,7 +26,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
-import { API_BASE_URL } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useState } from 'react'
 
 /**
@@ -127,37 +127,6 @@ export default function EditCommittee({
   const MAX_LOGO_FILE_SIZE = 1 * 1024 * 1024 // 1 MB
   const MAX_GROUP_PHOTO_FILE_SIZE = 15 * 1024 * 1024 // 15 MB
 
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  //TODO: Move these functions to a utility file
-  /**
-   * A function that retrieves the flag code based on the provided language.
-   *
-   * @param {string} lang - The language code for which to retrieve the flag code.
-   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
-   */
-  const getFlagCode = (lang: string): string => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  /**
-   * A function that retrieves the language name based on the provided language code.
-   *
-   * @param {string} lang - The language code for which to retrieve the language name.
-   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
-   */
-  const getLanguageName = (lang: string): string => {
-    return languageNames.get(lang) || 'Unknown'
-  }
-
   const postForm = async (data: z.infer<typeof EditCommitteeSchema>) => {
     const formData = new FormData()
 
@@ -224,7 +193,7 @@ export default function EditCommittee({
           <TabsList>
             {supportedLanguages.map((language) => (
               <TabsTrigger key={language} value={language}>
-                <span className={`fi fi-${getFlagCode(language)}`} />
+                <span className={`fi fi-${LANGUAGES[language].flag}`} />
               </TabsTrigger>
             ))}
           </TabsList>
@@ -256,7 +225,7 @@ export default function EditCommittee({
                 <TabsContent key={language} value={language}>
                   <TranslatedInputs
                     index={index}
-                    language={getLanguageName(language)}
+                    language={LANGUAGES[language].name}
                   />
                 </TabsContent>
               ))}

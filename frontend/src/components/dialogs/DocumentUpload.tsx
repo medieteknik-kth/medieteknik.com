@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Document, DocumentTranslation } from '@/models/Document'
 import { useState } from 'react'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { API_BASE_URL } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { supportedLanguages } from '@/app/i18n/settings'
 import { Author } from '@/models/Items'
 
@@ -206,7 +206,7 @@ export default function DocumentUpload({
 
     // Add author fields
     formData.append('author[author_type]', author.author_type)
-    formData.append('author[email]', author.email)
+    formData.append('author[email]', author.email || '')
 
     // Add translation fields
     supportedLanguages.forEach((language, index) => {
@@ -251,35 +251,6 @@ export default function DocumentUpload({
       setErrorMessage('Failed to upload document ' + error)
     }
   }
-  const languageFlags = new Map([
-    ['en', 'gb'],
-    ['sv', 'se'],
-  ])
-
-  const languageNames = new Map([
-    ['en', 'English'],
-    ['sv', 'Svenska'],
-  ])
-
-  /**
-   * A function that retrieves the flag code based on the provided language.
-   *
-   * @param {string} lang - The language code for which to retrieve the flag code.
-   * @return {string} The corresponding flag code for the language, defaulting to 'xx' if not found.
-   */
-  const getFlagCode = (lang: string): string => {
-    return languageFlags.get(lang) || 'xx'
-  }
-
-  /**
-   * A function that retrieves the language name based on the provided language code.
-   *
-   * @param {string} lang - The language code for which to retrieve the language name.
-   * @return {string} The corresponding language name, defaulting to 'Unknown' if not found.
-   */
-  const getLanguageName = (lang: string): string => {
-    return languageNames.get(lang) || 'Unknown'
-  }
 
   const documentTypes = [
     {
@@ -310,9 +281,9 @@ export default function DocumentUpload({
               key={language}
               value={language}
               className='w-fit'
-              title={getLanguageName(language)}
+              title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${getFlagCode(language)}`} />
+              <span className={`fi fi-${LANGUAGES[language].flag}`} />
             </TabsTrigger>
           ))}
         </TabsList>
@@ -373,7 +344,7 @@ export default function DocumentUpload({
               <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}
-                  language={getLanguageName(language)}
+                  language={LANGUAGES[language].name}
                   currentFiles={files}
                   setCurrentFile={(index, file) =>
                     setFiles((files) => {
