@@ -1,5 +1,5 @@
 'use client'
-import { UploadNews } from '@/components/dialogs/Upload'
+import { NewsUpload } from '@/components/dialogs/NewsUpload'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { NewsPagination } from '@/models/Pagination'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   AdjustmentsHorizontalIcon,
@@ -33,6 +34,8 @@ export default function AccountNewsPage({ language }: { language: string }) {
     `${API_BASE_URL}/news?author=1&language=${language}`,
     fetcher
   )
+  const { student } = useAuthentication()
+  if (!student) return null
 
   if (error)
     return (
@@ -78,18 +81,7 @@ export default function AccountNewsPage({ language }: { language: string }) {
               </div>
               <h3 className='text-lg font-bold'>Upload</h3>
             </DialogTrigger>
-            <DialogContent className='w-[890px]'>
-              <UploadNews
-                language={language}
-                author={{
-                  author_type: 'STUDENT',
-                  email: 'andree4@kth.se',
-                  first_name: 'Andre',
-                  last_name: 'Eriksson',
-                  student_type: 'MEDIETEKNIK',
-                }}
-              />
-            </DialogContent>
+            <NewsUpload language={language} author={student} />
           </Dialog>
         </li>
         {data &&

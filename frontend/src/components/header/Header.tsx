@@ -72,21 +72,18 @@ export default async function Header({
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={'ghost'}
-                    className='w-40 h-full uppercase rounded-none'
+                    className='w-32 h-full uppercase rounded-none'
                   >
                     {element.title}
                     <ChevronDownIcon className='w-5 h-5 ml-2' />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='w-52'>
+                <DropdownMenuContent className='w-52 flex flex-col gap-1'>
                   {element.subNavs.map((subNav) => (
-                    <DropdownMenuItem
-                      key={subNav.title}
-                      className='min-h-10 h-fit hover:bg-neutral-100 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none'
-                    >
+                    <DropdownMenuItem key={subNav.title} asChild>
                       <Link
                         href={subNav.link}
-                        className='w-full h-full grid items-center'
+                        className='w-full h-10 grid items-center hover:bg-neutral-100 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none cursor-pointer'
                       >
                         {subNav.title}
                       </Link>
@@ -95,14 +92,10 @@ export default async function Header({
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button
-                key={element.title}
-                variant={'ghost'}
-                className='w-40 h-full uppercase rounded-none'
-              >
+              <Button key={element.title} variant={'ghost'} asChild>
                 <Link
                   href={element.link}
-                  className='w-full h-full grid place-items-center'
+                  className='w-40 h-full grid place-items-center uppercase rounded-none'
                 >
                   {element.title}
                 </Link>

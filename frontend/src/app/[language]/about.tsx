@@ -49,7 +49,7 @@ export default async function About({ language }: { language: string }) {
         height={280}
         loading='lazy'
         placeholder='empty'
-        className='absolute left-8 top-0 bottom-0 my-auto opacity-35 hidden md:block'
+        className='absolute left-8 top-0 bottom-0 my-auto opacity-50 hidden md:block'
       />
       <div className='flex flex-col lg:flex-row justify-between items-center mb-10 desktop:mb-0'>
         <h2 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
