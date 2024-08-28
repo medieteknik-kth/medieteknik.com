@@ -9,12 +9,13 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
-from models.content.event import Event
+from models.content.event import Event, RepeatableEvents
 from models.core.student import Student
 from services.content.item import (
     create_item,
 )
 from services.content.public.calendar import get_main_calendar
+from utility.database import db
 
 events_bp = Blueprint("events", __name__)
 
@@ -54,15 +55,26 @@ def create_event():
 
     data["calendar_id"] = get_main_calendar().calendar_id
 
-    return {
-        "id": create_item(
-            author_table=author_table,
-            email=author_email,
-            item_table=Event,
-            data=data,
-            public=True,
+    id = create_item(
+        author_table=author_table,
+        email=author_email,
+        item_table=Event,
+        data=data,
+        public=True,
+    )
+
+    repeatable = data.get("repeatable")
+
+    if repeatable:
+        repeatable_event = RepeatableEvents(
+            event_id=id,
+            reapeting_interval="weekly",
         )
-    }, 201
+
+        db.session.add(repeatable_event)
+        db.session.commit()
+
+    return {"id": id}, 201
 
 
 @events_bp.route("/<string:url>", methods=["DELETE"])

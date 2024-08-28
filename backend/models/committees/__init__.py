@@ -5,8 +5,6 @@ Committee Models
 from .committee import (
     Committee,
     CommitteeTranslation,
-    CommitteeRecruitment,
-    CommitteeRecruitmentTranslation,
 )
 from .committee_category import CommitteeCategory, CommitteeCategoryTranslation
 from .committee_position import (
@@ -14,18 +12,20 @@ from .committee_position import (
     CommitteePositionTranslation,
     CommitteePositionResource,
     CommitteePositionsRole,
+    CommitteePositionRecruitment,
+    CommitteePositionRecruitmentTranslation,
 )
 
 
 __all__ = [
     "Committee",
     "CommitteeTranslation",
-    "CommitteeRecruitment",
-    "CommitteeRecruitmentTranslation",
     "CommitteeCategory",
     "CommitteeCategoryTranslation",
     "CommitteePosition",
     "CommitteePositionTranslation",
     "CommitteePositionResource",
     "CommitteePositionsRole",
+    "CommitteePositionRecruitment",
+    "CommitteePositionRecruitmentTranslation",
 ]

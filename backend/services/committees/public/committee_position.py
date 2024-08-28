@@ -50,7 +50,7 @@ def get_committee_position_by_title(
 
 
 def get_committee_positions_by_committee_title(
-    committee_title: str, provided_languages: List[str] = AVAILABLE_LANGUAGES
+    committee_title: str,
 ) -> List[CommitteePosition] | None:
     """
     Retrieves all committee positions from the database by its committee title.
@@ -80,8 +80,16 @@ def get_committee_positions_by_committee_title(
         return None
 
     committee_positions: List[CommitteePosition] = CommitteePosition.query.filter_by(
-        committee_id=committee.committee_id
+        committee_id=committee.committee_id,
+        active=True,
     ).all()
+
+    if (
+        not committee_positions
+        or len(committee_positions) == 0
+        or not isinstance(committee_positions, list)
+    ):
+        return None
 
     return committee_positions
 
@@ -112,7 +120,10 @@ def get_member_from_position_id(position_id: int) -> Dict[str, Any] | None:
 
 
 def get_all_committee_members(
-    committee: Committee, provided_languages: List[str]
+    committee: Committee,
+    provided_languages: List[str],
+    page: int = 1,
+    per_page: int = 10,
 ) -> List[Dict[str, Any]]:
     """
     Retrieves all committee members from the database.
@@ -123,7 +134,13 @@ def get_all_committee_members(
     Returns:
         List[Dict[str, Any]]: A list of committee member dictionaries.
     """
-    committee_memberships = (
+    if per_page > 25:
+        per_page = 25
+    if per_page < 1:
+        per_page = 1
+
+    offset = (page - 1) * per_page
+    query = (
         db.session.query(StudentMembership)
         .join(
             CommitteePosition,
@@ -141,17 +158,32 @@ def get_all_committee_members(
             joinedload(StudentMembership.student),  # type: ignore
             joinedload(StudentMembership.committee_position),  # type: ignore
         )
-        .all()
+        .limit(per_page)
+        .offset(offset)
     )
+    committee_memberships = query.all()
 
-    return [
-        {
-            "position": membership.committee_position.to_dict(
-                provided_languages=provided_languages
-            ),
-            "student": membership.student.to_dict(),
-            "initiation_date": membership.initiation_date,
-            "termination_date": membership.termination_date,
-        }
-        for membership in committee_memberships
-    ]
+    total_members = query.count()
+    total_pages = (total_members + per_page - 1) // per_page
+
+    return {
+        "items": [
+            {
+                "position": membership.committee_position.to_dict(
+                    provided_languages=provided_languages
+                ),
+                "student": membership.student.to_dict(),
+                "initiation_date": membership.initiation_date,
+                "termination_date": membership.termination_date,
+            }
+            for membership in committee_memberships
+        ],
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+        "total_items": total_members,
+    }
+
+
+def recruit_for_position():
+    pass

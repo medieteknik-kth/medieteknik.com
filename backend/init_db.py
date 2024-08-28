@@ -13,11 +13,11 @@ from models.committees import (
     CommitteeCategoryTranslation,  # noqa: F401
     Committee,  # noqa: F401
     CommitteeTranslation,  # noqa: F401
-    CommitteeRecruitment,  # noqa: F401
-    CommitteeRecruitmentTranslation,  # noqa: F401
     CommitteePosition,  # noqa: F401
     CommitteePositionTranslation,  # noqa: F401
     CommitteePositionResource,  # noqa: F401
+    CommitteePositionRecruitment,  # noqa: F401
+    CommitteePositionRecruitmentTranslation,  # noqa: F401
 )
 from models.content import (
     Album,  # noqa: F401

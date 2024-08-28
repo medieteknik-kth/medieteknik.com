@@ -67,9 +67,7 @@ def refresh_token():
     if not student:
         return jsonify({"error": "Invalid credentials"}), 401
 
-    claims = get_jwt()
-    role = claims.get("role")
-    permissions = claims.get("permissions")
+    permissions_and_role = get_permissions(getattr(student, "student_id"))
 
     committees = []
     committee_positions = []
@@ -96,8 +94,8 @@ def refresh_token():
             "student": student.to_dict(is_public_route=False),
             "committees": committees,
             "committee_positions": committee_positions,
-            "role": role,
-            "permissions": permissions,
+            "role": permissions_and_role.get("role"),
+            "permissions": permissions_and_role.get("permissions"),
         }
     )
     access_token = create_access_token(identity=student, fresh=False)

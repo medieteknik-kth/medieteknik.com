@@ -31,8 +31,8 @@ def register_routes(app: Flask):
     from .public.committee_routes import (
         public_committee_bp,
         public_committee_category_bp,
-        public_committee_position_bp,
     )
+    from .public.committee_position_routes import public_committee_position_bp
     from .public.calendar_routes import public_calendar_bp
     from .public.dynamic_routes import public_dynamic_routes_bp
     from .public.general_routes import public_bp
@@ -45,6 +45,7 @@ def register_routes(app: Flask):
     from .public.student_routes import public_student_bp
     from .calendar_routes import calendar_bp
     from .committee_routes import committee_bp
+    from .committee_position_routes import committee_position_bp
     from .author_routes import author_bp
     from .news_routes import news_bp
     from .event_routes import events_bp
@@ -85,16 +86,20 @@ def register_routes(app: Flask):
     )
 
     # Protected Routes
+    app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
+    app.register_blueprint(
+        committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
+    )
+    app.register_blueprint(
+        committee_position_bp,
+        url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
+    )
     app.register_blueprint(news_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.NEWS.value}")
     app.register_blueprint(
         events_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.EVENTS.value}"
     )
     app.register_blueprint(
         documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
-    )
-    app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
-    app.register_blueprint(
-        committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
     )
     app.register_blueprint(author_bp, url_prefix=f"{PROTECTED_PATH}/authors")
     app.register_blueprint(
@@ -164,8 +169,14 @@ def register_routes(app: Flask):
                         "committee_positions": committee_positions,
                     }
                 )
+                additional_claims = {
+                    "role": permissions_and_role.get("role"),
+                    "permissions": permissions_and_role.get("permissions"),
+                }
 
-                access_token = create_access_token(identity=student, fresh=False)
+                access_token = create_access_token(
+                    identity=student, fresh=False, additional_claims=additional_claims
+                )
                 set_access_cookies(response, access_token)
 
         except (RuntimeError, KeyError):

@@ -243,21 +243,28 @@ class StudentMembership(db.Model):
         "CommitteePosition", back_populates="student_positions"
     )
 
-    def to_dict(self):
+    def to_dict(self, is_public_route=True):
         columns = inspect(self)
 
         if not columns:
             return None
 
         columns = columns.mapper.column_attrs.keys()
-        data = {c.name: getattr(self, c.name) for c in columns}
+        data = {}
+        for column in columns:
+            data[column] = getattr(self, column)
 
-        if not data:
-            return {}
+        if is_public_route:
+            del data["student_positions_id"]
+            del data["committee_position_id"]
 
-        del data["student_positions_id"]
         del data["student_id"]
-        del data["committee_position_id"]
+        student: Student | None = Student.query.get(self.student_id)
+
+        if not student:
+            return None
+
+        data["student"] = student.to_dict(is_public_route=is_public_route)
 
         return data
 

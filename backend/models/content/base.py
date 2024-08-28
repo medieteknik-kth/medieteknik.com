@@ -74,10 +74,10 @@ class Item(db.Model):
 
     # Relationships
     author = db.relationship("Author", back_populates="items")
-    news = db.relationship("News", back_populates="item")
-    event = db.relationship("Event", back_populates="item")
-    document = db.relationship("Document", back_populates="item")
-    album = db.relationship("Album", back_populates="item")
+    news = db.relationship("News", back_populates="item", passive_deletes=True)
+    event = db.relationship("Event", back_populates="item", passive_deletes=True)
+    document = db.relationship("Document", back_populates="item", passive_deletes=True)
+    album = db.relationship("Album", back_populates="item", passive_deletes=True)
 
     # Polymorphism
     type = Column(String(50))
@@ -138,7 +138,7 @@ class Item(db.Model):
                     data["author"] = committee_position.to_dict(
                         provided_languages=provided_languages,
                         is_public_route=is_public_route,
-                        include_committee_logo=True,
+                        include_parent=True,
                     )
                     data["author"]["author_type"] = AuthorType.COMMITTEE_POSITION.value
         else:

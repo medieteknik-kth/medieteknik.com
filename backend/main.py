@@ -35,8 +35,9 @@ csrf.init_app(app)
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["1000 per day", "500 per hour"],
+    default_limits=["1000/day", "300/hour", "10/second"],
     storage_uri=os.environ.get("REDIS_URL", "memory://"),
+    strategy="fixed-window",
 )
 
 # Authorization

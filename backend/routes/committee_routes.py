@@ -27,9 +27,13 @@ committee_bp = Blueprint("committee", __name__)
 @committee_bp.route("/<string:committee_title>/data", methods=["GET"])
 @jwt_required()
 def get_committees_data_by_title(committee_title: str):
-    languages = retrieve_languages(request.args)
+    provided_languages = retrieve_languages(request.args)
     return jsonify(
-        get_committee_data_by_title(title=committee_title, provided_languages=languages)
+        get_committee_data_by_title(
+            title=committee_title,
+            provided_languages=provided_languages,
+            is_public_route=False,
+        )
     )
 
 

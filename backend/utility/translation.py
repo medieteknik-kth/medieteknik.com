@@ -29,7 +29,7 @@ def convert_iso_639_1_to_bcp_47(code: str) -> str:
     return DEFAULT_LANGUAGE_CODE
 
 
-def retrieve_languages(args: MultiDict[str, str]) -> List[str]:
+def retrieve_languages(args: MultiDict[str, str] | None) -> List[str]:
     """Retrieves the language from the request arguments
 
     Args:
@@ -41,18 +41,10 @@ def retrieve_languages(args: MultiDict[str, str]) -> List[str]:
     if args is None:
         return AVAILABLE_LANGUAGES
 
-    language = args.getlist("language")
+    languages = [convert_iso_639_1_to_bcp_47(lang) for lang in args.getlist("language")]
 
-    if language is None:
-        return AVAILABLE_LANGUAGES
-    languages = [convert_iso_639_1_to_bcp_47(lang) for lang in language]
-
-    for lang in languages:
-        if lang not in AVAILABLE_LANGUAGES:
-            return AVAILABLE_LANGUAGES
-    if len(languages) == 0:
-        return AVAILABLE_LANGUAGES
-    return languages
+    valid_languages = [lang for lang in languages if lang in AVAILABLE_LANGUAGES]
+    return valid_languages if valid_languages else AVAILABLE_LANGUAGES
 
 
 def get_translation(
@@ -79,6 +71,7 @@ def get_translation(
     # Check if the column exists in the table
     for column in filter_columns:
         if not hasattr(translation_table, column):
+            print(f"Column {column} does not exist in {translation_table}")
             return None
 
     query: Query = translation_table.query

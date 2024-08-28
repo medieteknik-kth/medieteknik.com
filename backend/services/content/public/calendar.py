@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import List
 from sqlalchemy import and_, or_
 from models.content import Calendar, Event
+from models.content.event import RepeatableEvents
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 
@@ -56,6 +57,23 @@ def get_events_monthly(
             & (Event.end_date > end_date),  # Spans the range
         ),
     ).all()
+
+    #repeatable_events: List[RepeatableEvents] = RepeatableEvents.query.all()
+
+    event_dict = [
+        event_dict
+        for event in events
+        if (
+            event_dict := event.to_dict(
+                is_public_route=True, provided_languages=provided_languages
+            )
+        )
+        is not None
+    ]
+
+    #for repeatable_event in repeatable_events:
+    #    referenced_event = Event.query.get(repeatable_event.event_id)
+        
 
     return [
         event_dict

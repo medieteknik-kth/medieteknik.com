@@ -21,10 +21,10 @@ class News(Item):
     url = Column(String(length=512), nullable=True, index=True)
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
+    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id", ondelete="CASCADE"))
 
     # Relationships
-    item = db.relationship("Item", back_populates="news")
+    item = db.relationship("Item", back_populates="news", passive_deletes=True)
     translations = db.relationship("NewsTranslation", back_populates="news")
 
     __mapper_args__ = {"polymorphic_identity": "news"}
@@ -70,7 +70,7 @@ class NewsTranslation(db.Model):
     sub_image_urls = Column(ARRAY(String))
 
     # Foreign keys
-    news_id = Column(UUID(as_uuid=True), ForeignKey("news.news_id"))
+    news_id = Column(UUID(as_uuid=True), ForeignKey("news.news_id", ondelete="CASCADE"))
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships

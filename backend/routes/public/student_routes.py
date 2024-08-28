@@ -17,14 +17,20 @@ public_student_bp = Blueprint("public_student", __name__)
 
 @public_student_bp.route("/", methods=["GET"])
 def get_students():
-    """Retrieves all students
+    """Retrieves all students"""
+    search_query = request.args.get("q", type=str, default=None)
+    paginated_items = None
 
-    Returns:
-        list[dict]: List of students
-    """
-    paginated_items = Student.query.paginate()
+    if search_query:
+        paginated_items = Student.query.filter(
+            Student.first_name.ilike(f"%{search_query}%")
+            | Student.last_name.ilike(f"%{search_query}%")
+            | Student.email.ilike(f"%{search_query}%")
+        ).paginate(max_per_page=10)
+    else:
+        paginated_items = Student.query.paginate(max_per_page=10)
 
-    students: list[Student] = paginated_items.items
+    students: List[Student] = paginated_items.items
     students_dict = [student.to_dict(is_public_route=True) for student in students]
     return jsonify(
         {
@@ -38,7 +44,7 @@ def get_students():
 
 
 @public_student_bp.route("/<string:student_id>", methods=["GET"])
-def get_student(student_id: str):
+def get_student_by_id(student_id: str):
     """Retrieves a student
 
     Args:
@@ -65,8 +71,7 @@ def get_student(student_id: str):
         data["memberships"] = [
             {
                 "position": membership.committee_position.to_dict(
-                    provided_languages=provided_languages,
-                    include_committee_logo=True,
+                    provided_languages=provided_languages, include_parent=True
                 ),
                 "initiation_date": membership.initiation_date,
                 "termination_date": membership.termination_date,
@@ -75,6 +80,25 @@ def get_student(student_id: str):
         ]
 
     return jsonify(data)
+
+
+@public_student_bp.route("/<string:email>", methods=["GET"])
+def get_student_by_email(email: str):
+    """Retrieves a student by email
+
+    Args:
+        email (str): Student email
+
+    Returns:
+        dict: Student
+    """
+
+    student = Student.query.filter_by(email=email).first()
+
+    if not student and not isinstance(student, Student):
+        return jsonify({}), 404
+
+    return jsonify(student.to_dict(is_public_route=True))
 
 
 @public_student_bp.route("/committee_members", methods=["GET"])
@@ -93,7 +117,7 @@ def get_committee_members():
     committee_members: List[Dict[str, Any]] = [
         {
             "position": membership.committee_position.to_dict(
-                provided_languages=provided_languages, include_committee_logo=True
+                provided_languages=provided_languages, include_parent=True
             ),
             "student": membership.student.to_dict(),
             "initiation_date": membership.initiation_date,

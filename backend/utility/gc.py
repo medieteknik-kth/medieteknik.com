@@ -6,7 +6,7 @@ import os
 from datetime import timedelta
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 
 client = storage.Client()
@@ -83,7 +83,7 @@ def upload_file(
         return url
     except GoogleCloudError as e:
         print(e)
-        raise
+        return None
 
 
 def delete_file(url: str):
@@ -91,18 +91,18 @@ def delete_file(url: str):
     Deletes a file from the bucket
 
     Args:
-        file_name (str): File to delete
-        path (str): Path of the file
+        url (str): URL of the file
 
     Returns:
         None
     """
     try:
         parsed_url = urlparse(url)
-        blob_name = parsed_url.path.lstrip("/")
+        blob_name = unquote(parsed_url.path.lstrip("/"))
         blob_name = blob_name.split("/", 1)[1]
         blob = bucket.blob(blob_name)
         blob.delete()
+        return True
     except GoogleCloudError as e:
         print(e)
-        raise
+        return False

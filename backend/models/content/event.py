@@ -37,8 +37,10 @@ class Event(Item):
     background_color = Column(String(7))
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
-    calendar_id = Column(UUID(as_uuid=True), ForeignKey("calendar.calendar_id"))
+    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id", ondelete="CASCADE"))
+    calendar_id = Column(
+        UUID(as_uuid=True), ForeignKey("calendar.calendar_id", ondelete="CASCADE")
+    )
     parent_event_id = Column(
         UUID(as_uuid=True),
         ForeignKey("event.event_id", ondelete="CASCADE", onupdate="CASCADE"),
@@ -57,7 +59,7 @@ class Event(Item):
         foreign_keys=[parent_event_id],
         overlaps="parent_event",
     )
-    item = db.relationship("Item", back_populates="event")
+    item = db.relationship("Item", back_populates="event", passive_deletes=True)
     calendar = db.relationship("Calendar", back_populates="events")
     repeatable_event = db.relationship(
         "RepeatableEvents", back_populates="event", uselist=False
@@ -150,7 +152,9 @@ class EventTranslation(db.Model):
     sub_image_urls = Column(ARRAY(String))
 
     # Foreign keys
-    event_id = Column(UUID(as_uuid=True), ForeignKey("event.event_id"))
+    event_id = Column(
+        UUID(as_uuid=True), ForeignKey("event.event_id", ondelete="CASCADE")
+    )
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships
@@ -183,6 +187,7 @@ class RepeatableEvents(db.Model):
 
     # Metadata
     reapeting_interval = Column(String(255))
+    day = Column(TIMESTAMP)
 
     # Foreign keys
     event_id = Column(UUID(as_uuid=True), ForeignKey("event.event_id"), unique=True)

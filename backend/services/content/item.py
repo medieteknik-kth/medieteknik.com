@@ -189,16 +189,16 @@ def create_item(
         authors_items_ids = []
 
         translation_table = None
-        if item_table is News:
+        if isinstance(item_table, News):
             authors_items_ids = [a.news_id for a in all_authors_items]
             translation_table = NewsTranslation
-        elif item_table is Event:
+        elif isinstance(item_table, Event):
             authors_items_ids = [a.event_id for a in all_authors_items]
             translation_table = EventTranslation
-        elif item_table is Album:
+        elif isinstance(item_table, Album):
             authors_items_ids = [a.album_id for a in all_authors_items]
             translation_table = AlbumTranslation
-        elif item_table is Document:
+        elif isinstance(item_table, Document):
             authors_items_ids = [a.document_id for a in all_authors_items]
             translation_table = DocumentTranslation
         else:
@@ -408,10 +408,8 @@ def publish(
 
 
 def delete_item(
-    item: Item,
-    translation: Type[
-        NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
-    ],
+    item_table: type[News] | type[Event] | type[Album] | type[Document],
+    item_id: str,
 ):
     """
     Deletes the given item.
@@ -420,25 +418,29 @@ def delete_item(
         item (Type[object]): The item to delete.
         translation (Type[object]): The translation of the item.
     """
+    model_translation_map = {
+        News: (NewsTranslation, "news_id"),
+        Event: (EventTranslation, "event_id"),
+        Album: (AlbumTranslation, "album_id"),
+        Document: (DocumentTranslation, "document_id"),
+    }
 
-    translations = None
+    if item_table not in model_translation_map:
+        raise NotImplementedError(f"Unsupported item type: {item_table}")
 
-    # Delete translations
-    if isinstance(item, News):
-        translations = translation.query.filter_by(news_id=item.news_id).all()
-    elif isinstance(item, Event):
-        translations = translation.query.filter_by(event_id=item.event_id).all()
-    elif isinstance(item, Album):
-        translations = translation.query.filter_by(album_id=item.album_id).all()
-    elif isinstance(item, Document):
-        translations = translation.query.filter_by(document_id=item.document_id).all()
+    translation_table, item_id_attr = model_translation_map[item_table]
 
-    if translations is not None:
-        for translation in translations:
-            db.session.delete(translation)
+    # Fetch the item using a dynamic filter
+    item = item_table.query.filter_by(**{item_id_attr: item_id}).first_or_404()
+
+    # Fetch the translations using a dynamic filter
+    translations = translation_table.query.filter_by(
+        **{item_id_attr: getattr(item, item_id_attr)}
+    ).all()
+
+    for translation in translations:
+        db.session.delete(translation)
 
     db.session.flush()
-
-    # Delete item
     db.session.delete(item)
     db.session.commit()

@@ -37,11 +37,14 @@ class Document(Item):
     )
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
+    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id", ondelete="CASCADE"))
 
     # Relationships
-    item = db.relationship("Item", back_populates="document")
-    translations = db.relationship("DocumentTranslation", back_populates="document")
+    item = db.relationship("Item", back_populates="document", passive_deletes=True)
+    translations = db.relationship(
+        "DocumentTranslation",
+        back_populates="document",
+    )
 
     __mapper_args__ = {"polymorphic_identity": "document"}
 
@@ -78,8 +81,6 @@ class Document(Item):
             )
             translations.append(translation)
 
-        del base_data["document_id"]
-
         base_data["translations"] = [
             translation.to_dict() for translation in translations
         ]
@@ -99,7 +100,9 @@ class DocumentTranslation(db.Model):
     url = Column(String(2096))
 
     # Foreign keys
-    document_id = Column(UUID(as_uuid=True), ForeignKey("document.document_id"))
+    document_id = Column(
+        UUID(as_uuid=True), ForeignKey("document.document_id", ondelete="CASCADE")
+    )
     language_code = Column(String(20), ForeignKey("language.language_code"))
 
     # Relationships

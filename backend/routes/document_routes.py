@@ -3,17 +3,23 @@ Document Routes (Protected)
 API Endpoint: '/api/v1/documents'
 """
 
+from datetime import date
 from http import HTTPStatus
+from typing import Any, Dict, List
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
-from models.content.document import Document
+from models.content.author import Author
+from models.content.base import Item
+from models.content.document import Document, DocumentTranslation
+from models.core.permissions import Permissions, Role
 from models.core.student import Student
 from services.content.item import create_item
 from utility.constants import AVAILABLE_LANGUAGES
-from utility.gc import upload_file
+from utility.gc import upload_file, delete_file
 from utility.translation import convert_iso_639_1_to_bcp_47
+from utility.database import db
 
 
 documents_bp = Blueprint("documents", __name__)
@@ -46,10 +52,12 @@ def create_document():
                 }
             ), HTTPStatus.BAD_REQUEST
 
+        current_year = date.today().strftime("%Y")
+        current_month = date.today().strftime("%m")
         result = upload_file(
             file=file,
             file_name=f"{file.filename}",
-            path=f"documents/{convert_iso_639_1_to_bcp_47(language_code)}",
+            path=f"documents/{convert_iso_639_1_to_bcp_47(language_code)}/{current_year}/{current_month}",
             language_code=language_code,
             content_disposition="inline",
             content_type="application/pdf",
@@ -116,3 +124,57 @@ def create_document():
             ],
         }
     ), HTTPStatus.CREATED
+
+
+@documents_bp.route("/<string:document_id>", methods=["DELETE"])
+@jwt_required()
+def delete_document(document_id: str):
+    student_id = get_jwt_identity()
+    claims = get_jwt()
+    permissions: Dict[str, Any] | None = claims.get("permissions")
+    role: List[str] | None = claims.get("role")
+
+    if not permissions or not role:
+        return jsonify({}), HTTPStatus.UNAUTHORIZED
+
+    # Check ownership
+    author = Author.query.filter_by(student_id=student_id).first()
+    # TODO: Check committee ownership
+
+    if author is None:
+        # Check if the user is allowed to delete any document
+        if (
+            Permissions.ITEMS_DELETE.value not in permissions.get("student")
+            and Role.ADMIN.value not in role
+        ):
+            return jsonify({}), HTTPStatus.UNAUTHORIZED
+    document: Document = Document.query.filter_by(
+        document_id=document_id
+    ).first_or_404()
+
+    translations: List[DocumentTranslation] = DocumentTranslation.query.filter_by(
+        document_id=str(document_id)
+    ).all()
+
+    if len(translations) == 0:
+        return jsonify(
+            {"error": "Document translation not found"}
+        ), HTTPStatus.NOT_FOUND
+
+    for translation in translations:
+        result = delete_file(translation.url)
+
+        if not result:
+            db.session.rollback()
+            return jsonify(
+                {"error": "Failed to delete file"}
+            ), HTTPStatus.INTERNAL_SERVER_ERROR
+    for translation in translations:
+        db.session.delete(translation)
+
+    db.session.flush()
+
+    db.session.delete(document)
+    db.session.commit()
+
+    return jsonify({}), HTTPStatus.NO_CONTENT

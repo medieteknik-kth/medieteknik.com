@@ -10,11 +10,9 @@ from services.committees.public import (
     get_all_committee_categories,
     get_all_committees,
     get_committee_by_title,
-    get_committee_position_by_title,
     get_all_committee_members,
     CommitteeSettings,
     CommitteeCategorySettings,
-    get_all_recruitments,
 )
 from services.committees.public.committee_category import (
     get_committee_category_by_title,
@@ -23,7 +21,6 @@ from utility.translation import retrieve_languages
 
 public_committee_category_bp = Blueprint("public_committee_category", __name__)
 public_committee_bp = Blueprint("public_committee", __name__)
-public_committee_position_bp = Blueprint("public_committee_position", __name__)
 
 
 @public_committee_category_bp.route("/", methods=["GET"])
@@ -95,22 +92,6 @@ def get_committee_by_name(committee_title: str):
     return jsonify(committee_dict)
 
 
-@public_committee_position_bp.route("/<string:position_title>", methods=["GET"])
-def get_committee_position_by_name(position_title: str):
-    """Retrieves a committee position by title
-
-    Args:
-        position_title (str): Committee position title
-    """
-    provided_languages = retrieve_languages(request.args)
-
-    return jsonify(
-        get_committee_position_by_title(
-            provided_languages=provided_languages, title=position_title
-        )
-    )
-
-
 @public_committee_bp.route("/<string:committee_title>/members", methods=["GET"])
 def get_committee_members(committee_title: str):
     """Retrieves all committee members
@@ -119,17 +100,19 @@ def get_committee_members(committee_title: str):
         committee_title (str): Committee title
     """
     provided_languages = retrieve_languages(request.args)
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
 
     committee = get_committee_by_title(title=committee_title)
 
     if not committee:
         return jsonify([])
 
-    return jsonify(get_all_committee_members(committee, provided_languages))
-
-
-@public_committee_bp.route("/recruiting", methods=["GET"])
-def get_recruitments():
-    provided_languages = retrieve_languages(request.args)
-
-    return jsonify(get_all_recruitments(provided_languages))
+    return jsonify(
+        get_all_committee_members(
+            committee=committee,
+            provided_languages=provided_languages,
+            page=page,
+            per_page=per_page,
+        )
+    )

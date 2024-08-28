@@ -27,8 +27,8 @@ class Language(db.Model):
     committee_position_translations = db.relationship(
         "CommitteePositionTranslation", back_populates="language"
     )
-    committee_recruitment_translations = db.relationship(
-        "CommitteeRecruitmentTranslation", back_populates="language"
+    committee_position_recruitment_translations = db.relationship(
+        "CommitteePositionRecruitmentTranslation", back_populates="language"
     )
 
     album_translations = db.relationship("AlbumTranslation", back_populates="language")
