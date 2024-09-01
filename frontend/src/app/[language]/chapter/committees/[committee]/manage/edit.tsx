@@ -28,6 +28,9 @@ import { Label } from '@/components/ui/label'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useState } from 'react'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Permission } from '@/models/Permission'
+import { Textarea } from '@/components/ui/textarea'
 
 /**
  * @name TranslatedInputs
@@ -65,7 +68,7 @@ function TranslatedInputs({
                 [{language}]
               </span>
             </FormLabel>
-            <Input id='description' placeholder='Description' {...field} />
+            <Textarea id='description' placeholder='Description' {...field} />
             <FormMessage className='text-xs font-bold' />
           </FormItem>
         )}
@@ -89,9 +92,9 @@ export default function EditCommittee({
   language: string
   committee: Committee
 }): JSX.Element {
-  // TODO: Add permissions
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const { permissions, positions } = useAuthentication()
   const EditCommitteeSchema = z.object({
     title: z
       .string()
@@ -103,7 +106,7 @@ export default function EditCommittee({
         description: z
           .string()
           .min(1, { message: 'Description is required' })
-          .max(500, { message: 'Description is too long' }),
+          .max(511, { message: 'Description is too long' }),
       })
     ),
     logo: z.instanceof(window.File).optional().or(z.literal('')),
@@ -123,6 +126,20 @@ export default function EditCommittee({
       })),
     },
   })
+
+  if (
+    !(
+      permissions.student &&
+      permissions.student.includes(Permission.COMMITTEE_EDIT)
+    ) &&
+    !(
+      positions &&
+      positions.length > 0 &&
+      positions.some((position) => position.weight <= 150)
+    )
+  ) {
+    return <></>
+  }
 
   const MAX_LOGO_FILE_SIZE = 1 * 1024 * 1024 // 1 MB
   const MAX_GROUP_PHOTO_FILE_SIZE = 15 * 1024 * 1024 // 15 MB

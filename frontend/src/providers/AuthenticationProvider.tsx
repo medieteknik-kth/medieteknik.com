@@ -13,16 +13,49 @@ import {
 } from 'react'
 
 interface AuthenticationState {
+  /**
+   * The student object of the authenticated user.
+   */
   student: Student | null
+
+  /**
+   * The authentication status of the student.
+   */
   isAuthenticated: boolean
+
+  /**
+   * The role of the student.
+   */
   role: Role
+
+  /**
+   * The permissions of the student based on their role.
+   * author: Authorial permissions for the student, e.g. create news articles.
+   * student: Advanced permissions for the student, e.g. edit permissions of other students.
+   */
   permissions: {
-    author: AuthorResource[]
-    student: Permission[]
+    author?: AuthorResource[]
+    student?: Permission[]
   }
+
+  /**
+   * The committees the student is a member of.
+   */
   committees: Committee[]
+
+  /**
+   * The positions the student holds in committees or independent.
+   */
   positions: CommitteePosition[]
+
+  /**
+   * The error message if any error occurs during authentication.
+   */
   error: string | null
+
+  /**
+   * The loading status of the authentication.
+   */
   isLoading: boolean
 }
 

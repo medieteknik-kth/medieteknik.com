@@ -45,6 +45,8 @@ import { useState } from 'react'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { title } from 'process'
 import { LanguageCode } from '@/models/Language'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Role } from '@/models/Permission'
 
 function TranslatedInputs({
   index,
@@ -116,6 +118,7 @@ export default function PositionForm({
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [value, setValue] = useState('NONE')
+  const { role } = useAuthentication()
   const PositionFormSchema = z.object({
     email: z
       .string()
@@ -130,6 +133,7 @@ export default function PositionForm({
       'NÄRINGSLIV OCH KOMMUNIKATION',
       'STUDIESOCIALT',
       'FANBORGEN',
+      'UTBILDNING',
       'NONE',
     ]),
     translations: z.array(
@@ -335,27 +339,28 @@ export default function PositionForm({
                 </FormItem>
               )}
             />
-
-            <FormField
-              name='weight'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Weight</FormLabel>
-                  <FormControl>
-                    <Input
-                      id='weight'
-                      type='number'
-                      placeholder='Weight'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Permission Level, leave 1000 if unsure!
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {role === Role.ADMIN && (
+              <FormField
+                name='weight'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Weight</FormLabel>
+                    <FormControl>
+                      <Input
+                        id='weight'
+                        type='number'
+                        placeholder='Weight'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Permission Level, leave 1000 if unsure!
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <Button type='submit' className='w-full mt-4'>
               Submit

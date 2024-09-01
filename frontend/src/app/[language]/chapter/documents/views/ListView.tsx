@@ -112,6 +112,9 @@ export default function ListView({ language, type }: Props) {
                     document.document_type === 'DOCUMENT') ||
                   (type === 'forms' && document.document_type === 'FORM')
               )
+              .sort((a, b) =>
+                a.is_pinned === b.is_pinned ? 0 : a.is_pinned ? -1 : 1
+              )
               .map((document, documentIndex) => (
                 <TableRow
                   key={documentIndex}

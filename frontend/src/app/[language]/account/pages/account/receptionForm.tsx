@@ -1,7 +1,7 @@
 'use client'
 
 import Logo from 'public/images/logo.webp'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
 import {
@@ -18,19 +18,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
+import { API_BASE_URL } from '@/utility/Constants'
+import useSWR from 'swr'
+import Loading from '@/components/tooltips/Loading'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
-const FormSchema = z.object({
-  image: z.instanceof(window.File),
-  receptionName: z.string().optional().or(z.literal('')),
-})
-
-const MAX_FILE_SIZE = 500 * 1024
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-]
+const fetcher = (url: string) =>
+  fetch(url).then(
+    (res) =>
+      res.json() as Promise<{
+        token: string
+      }>
+  )
 
 export default function ReceptionForm({
   params: { language },
@@ -39,6 +38,22 @@ export default function ReceptionForm({
 }) {
   const [receptionPicturePreview, setReceptionPicturePreview] =
     useState<File | null>(null)
+  const { student } = useAuthentication()
+  const [csrfToken, setCsrfToken] = useState<string | null>()
+
+  const FormSchema = z.object({
+    image: z.instanceof(window.File),
+    receptionName: z.string().optional().or(z.literal('')),
+    csrf_token: z.string().optional().or(z.literal('')),
+  })
+
+  const MAX_FILE_SIZE = 500 * 1024
+  const ACCEPTED_IMAGE_TYPES = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/webp',
+  ]
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -48,8 +63,49 @@ export default function ReceptionForm({
     },
   })
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data)
+  const {
+    data: csrf,
+    error,
+    isLoading,
+  } = useSWR(`${API_BASE_URL}/csrf-token`, fetcher)
+
+  useEffect(() => {
+    if (csrf) {
+      setCsrfToken(csrf.token)
+      form.setValue('csrf_token', csrf.token)
+    }
+  })
+
+  if (!student) return null
+  if (error) return <div>Failed to load</div>
+  if (isLoading) return <Loading language={language} />
+  if (!csrf) return null
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const formData = new FormData()
+
+    formData.append('reception_image', data.image)
+    formData.append('reception_name', data.receptionName || '')
+    formData.append('csrf_token', data.csrf_token || csrf.token)
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/students/reception`, {
+        method: 'PUT',
+        headers: {
+          'X-CSRF-Token': csrfToken || data.csrf_token || '',
+        },
+        credentials: 'include',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        alert('Failed to save')
+        return
+      }
+    } catch (error) {
+      alert('Failed to save')
+      return
+    }
   }
 
   return (
@@ -72,7 +128,7 @@ export default function ReceptionForm({
                       src={
                         receptionPicturePreview
                           ? URL.createObjectURL(receptionPicturePreview)
-                          : Logo.src
+                          : student.reception_profile_picture_url || Logo.src
                       }
                     />
                     <AvatarFallback>Profile Icon</AvatarFallback>
@@ -144,7 +200,18 @@ export default function ReceptionForm({
               </FormItem>
             )}
           />
-          <Button type='submit'>Save</Button>
+          <FormField
+            name='csrf_token'
+            render={({ field }) => <input type='hidden' {...field} />}
+          />
+          <Button
+            type='submit'
+            onClick={() => {
+              form.setValue('csrf_token', csrf.token || '')
+            }}
+          >
+            Save
+          </Button>
         </form>
       </Form>
     </div>

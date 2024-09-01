@@ -122,8 +122,6 @@ export default function AccountForm({
     },
   })
 
-  const { setValue } = accountForm
-
   const profileForm = useForm<z.infer<typeof ProfileFormSchema>>({
     resolver: zodResolver(ProfileFormSchema),
     defaultValues: {
@@ -291,6 +289,7 @@ export default function AccountForm({
               <FormField
                 control={accountForm.control}
                 name={`emailTwo`}
+                disabled
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -308,6 +307,7 @@ export default function AccountForm({
               <FormField
                 control={accountForm.control}
                 name={`emailThree`}
+                disabled
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -319,8 +319,7 @@ export default function AccountForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Manage your accounts email for external services (e.g.
-                      Notifications)
+                      Manage your accounts email for external services
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -334,6 +333,9 @@ export default function AccountForm({
                 render={({ field }) => (
                   <FormItem className='pr-2'>
                     <FormLabel>Password</FormLabel>
+                    <FormDescription>
+                      Can be used to change your password
+                    </FormDescription>
                     <FormControl>
                       <Input
                         {...field}
@@ -373,7 +375,7 @@ export default function AccountForm({
             <Button
               type='submit'
               onClick={() => {
-                setValue('csrf_token', csrf.token)
+                accountForm.setValue('csrf_token', csrf.token)
               }}
             >
               Save
@@ -381,127 +383,134 @@ export default function AccountForm({
           </form>
         </div>
       </Form>
-      <Form {...profileForm}>
-        <div className='flex justify-center mb-8 2xl:mb-0'>
-          <form
-            className='w-2/3 flex flex-col *:py-2'
-            onSubmit={profileForm.handleSubmit(postProfileForm)}
-          >
-            <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
-              Profile Settings
-            </h2>
-            <FormField
-              control={profileForm.control}
-              name='facebook'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='flex items-center'>
-                    <FacebookSVG className='w-6 h-6 mr-2 dark:fill-white' />
-                    Facebook
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='https://www.facebook.com/<username>/'
-                      onFocus={(e) => {
-                        e.target.value = 'https://www.facebook.com/'
-                      }}
-                      onBlur={(e) => {
-                        if (e.target.value === 'https://www.facebook.com/') {
-                          e.target.value = ''
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={profileForm.control}
-              name='instagram'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='flex items-center'>
-                    <InstagramSVG className='w-6 h-6 mr-2 dark:fill-white' />
-                    Instagram
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='https://www.instagram.com/<username>/'
-                      onFocus={(e) => {
-                        e.target.value = 'https://www.instagram.com/'
-                      }}
-                      onBlur={(e) => {
-                        if (e.target.value === 'https://www.instagram.com/') {
-                          e.target.value = ''
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={profileForm.control}
-              name='linkedin'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='flex items-center dark:fill-white'>
-                    <LinkedInSVG className='w-6 h-6 mr-2' />
-                    LinkedIn
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='https://www.linkedin.com/in/<username>/'
-                      onFocus={(e) => {
-                        e.target.value = 'https://www.linkedin.com/in/'
-                      }}
-                      onBlur={(e) => {
-                        if (e.target.value === 'https://www.linkedin.com/in/') {
-                          e.target.value = ''
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={profileForm.control}
-              name='emailNotifications'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor='emailNotifications'>
-                    Email Notifications
-                  </FormLabel>
-                  <FormControl>
-                    <div className='flex place-items-center'>
-                      <Checkbox
-                        id='emailNotifications'
-                        name='emailNotifications'
-                        aria-label='Email Notifications'
-                        role='checkbox'
-                        defaultChecked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                      <FormDescription className='ml-2'>
-                        Receive email notifications
-                      </FormDescription>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type='submit'>Save</Button>
-          </form>
+      <div className='relative'>
+        <div className='w-full h-full bg-neutral-200/80 z-20 absolute grid place-items-center'>
+          <p className='uppercase text-2xl'>To be Added</p>
         </div>
-      </Form>
+        <Form {...profileForm}>
+          <div className='flex justify-center mb-8 2xl:mb-0'>
+            <form
+              className='w-2/3 flex flex-col *:py-2'
+              onSubmit={profileForm.handleSubmit(postProfileForm)}
+            >
+              <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
+                Profile Settings
+              </h2>
+              <FormField
+                control={profileForm.control}
+                name='facebook'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='flex items-center'>
+                      <FacebookSVG className='w-6 h-6 mr-2 dark:fill-white' />
+                      Facebook
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder='https://www.facebook.com/<username>/'
+                        onFocus={(e) => {
+                          e.target.value = 'https://www.facebook.com/'
+                        }}
+                        onBlur={(e) => {
+                          if (e.target.value === 'https://www.facebook.com/') {
+                            e.target.value = ''
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={profileForm.control}
+                name='instagram'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='flex items-center'>
+                      <InstagramSVG className='w-6 h-6 mr-2 dark:fill-white' />
+                      Instagram
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder='https://www.instagram.com/<username>/'
+                        onFocus={(e) => {
+                          e.target.value = 'https://www.instagram.com/'
+                        }}
+                        onBlur={(e) => {
+                          if (e.target.value === 'https://www.instagram.com/') {
+                            e.target.value = ''
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={profileForm.control}
+                name='linkedin'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='flex items-center dark:fill-white'>
+                      <LinkedInSVG className='w-6 h-6 mr-2' />
+                      LinkedIn
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder='https://www.linkedin.com/in/<username>/'
+                        onFocus={(e) => {
+                          e.target.value = 'https://www.linkedin.com/in/'
+                        }}
+                        onBlur={(e) => {
+                          if (
+                            e.target.value === 'https://www.linkedin.com/in/'
+                          ) {
+                            e.target.value = ''
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={profileForm.control}
+                name='emailNotifications'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor='emailNotifications'>
+                      Email Notifications
+                    </FormLabel>
+                    <FormControl>
+                      <div className='flex place-items-center'>
+                        <Checkbox
+                          id='emailNotifications'
+                          name='emailNotifications'
+                          aria-label='Email Notifications'
+                          role='checkbox'
+                          defaultChecked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <FormDescription className='ml-2'>
+                          Receive email notifications
+                        </FormDescription>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type='submit'>Save</Button>
+            </form>
+          </div>
+        </Form>
+      </div>
     </div>
   )
 }

@@ -97,7 +97,11 @@ export default function Recruitment({
                       </div>
                     </div>
                     <Button title='Learn More' aria-label='Learn More' asChild>
-                      <Link href={recruit.translations[0].link_url}>
+                      <Link
+                        href={recruit.translations[0].link_url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
                         Learn More
                       </Link>
                     </Button>

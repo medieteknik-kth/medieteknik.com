@@ -75,6 +75,7 @@ export default function UploadNews({
                   value='tags'
                   className='p-2 mb-2 hover:bg-neutral-400/30'
                   title='Select tags'
+                  disabled // TODO: Implement tags page
                 >
                   <TagIcon className='w-8 h-8' />
                 </TabsTrigger>
@@ -82,6 +83,7 @@ export default function UploadNews({
                   value='engagement'
                   className='p-2 mb-2 hover:bg-neutral-400/30'
                   title='View article engagement'
+                  disabled // TODO: Implement engagement page
                 >
                   <HandThumbUpIcon className='w-8 h-8' />
                 </TabsTrigger>
@@ -89,6 +91,7 @@ export default function UploadNews({
                   value='settings'
                   className='p-2 hover:bg-neutral-400/30'
                   title='Article settings'
+                  disabled // TODO: Implement settings page
                 >
                   <CogIcon className='w-8 h-8' />
                 </TabsTrigger>

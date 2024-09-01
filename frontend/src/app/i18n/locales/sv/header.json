@@ -31,11 +31,7 @@
         {
             "title": "Utbildning",
             "link": "/education"
-        },
-        {
-            "title": "JML",
-            "link": "/equality"
-        }  
+        } 
     ],
     "profileNavs": [
         {
