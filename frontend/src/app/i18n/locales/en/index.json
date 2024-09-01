@@ -1,0 +1,15 @@
+{
+    "about": "Media Technology at KTH",
+    "description": "Civilingenjörsutbildningen inom Medieteknik på KTH passar dig som på kreativa sätt vill utforma teknik för mänsklig kommunikation. Efter utbildningen kan du driva utveckling inom allt från film och spelupplevelser till nyhetsindustrin och framtidens sociala medier.",
+    "chapter": {
+        "title": "Chapter",
+        "description": "Want to become more active socially with the chapter of Media Technology? Click above to understand what the chapters daily operation may include.",
+        "link_text": "Link to the chapter page"
+    },
+    "new_students": {
+        "title": "New Students",
+        "description": "Are you a new student, joining the Media Technology programme this year? Click above to learn more of your 3 year undergraduate education and master options.",
+        "link_text": "Link to the education page"
+    },
+    "international_link_text": "Link to the international page"
+}

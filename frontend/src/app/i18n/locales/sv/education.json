@@ -1,0 +1,78 @@
+{
+    "courses": "Kurser",
+    "categories": [
+        {
+            "id": "math",
+            "title": "Matematik",
+            "courses": [
+                "Algebra och geometri",
+                "Envariabelanalys",
+                "Flervariabelanalys",
+                "Programmeringsteknik och tekniska beräkningar",
+                "Sannolikhetsteori och statistik"
+            ]
+        },
+        {
+            "id": "physics",
+            "title": "Fysik",
+            "courses": [
+                "Vågrörelselära"
+            ]
+        },
+        {
+            "id": "programming",
+            "title": "Programmering",
+            "courses": [
+                "Programmeringsteknik och tekniska beräkningar"
+            ]
+        },
+        {
+            "id": "computer_science",
+            "title": "Datalogi",
+            "courses": [
+                "Interaktionsprogrammering och dynamiska webben",
+                "Maskininlärning för medieteknik",
+                "Människa-Datorinteraktion",
+                "Sensorprogrammering för medieteknik",
+                "Tillämpad datalogi"
+            ]
+        },
+        {
+            "id": "media_technology",
+            "title": "Medieteknik",
+            "courses": [
+                "Fotografi för medieteknik",
+                "Hållbarhet och Medieteknik",
+                "Industriell Ekonomi och Entreprenörskap inom Media och IKT",
+                "Introduktion till medieteknik",
+                "Ljud",
+                "Maskininlärning för medieteknik",
+                "Medieproduktion",
+                "Programmeringsteknik för interaktiva medier",
+                "Sensorprogrammering för medieteknik",
+                "Videoteknik"
+            ]
+        },
+        {
+            "id": "broadening_skill",
+            "title": "Breddande Färdigheter",
+            "courses": [
+                "Hållbarhet och Medieteknik",
+                "Industriell Ekonomi och Entreprenörskap inom Media och IKT",
+                "Kommunikation och information",
+                "Programintegrerande kurs i medieteknik"
+            ]
+        },
+        {
+            "id": "electives",
+            "title": "Valbara Kurser"
+        },
+        {
+            "id": "degree_project",
+            "title": "Examensarbete",
+            "courses": [
+                "Examensarbete i medieteknik"
+            ]
+        }
+    ]
+}

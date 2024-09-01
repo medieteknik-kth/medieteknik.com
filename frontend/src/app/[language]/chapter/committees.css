@@ -1,0 +1,28 @@
+.item {
+  border-width: 1px;
+  flex: 0 0 404px;
+}
+
+.item:is(.dark *) {
+  background-color: rgb(23, 23, 23);
+  border-color: rgb(235 235 235 / 0.8);
+}
+
+.in-view .blurred {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.in-view .blurred:is(.dark *) {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.snapped .blurred {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .item {
+    flex: 0 0 208px;
+  }
+}

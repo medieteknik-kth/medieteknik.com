@@ -1,0 +1,11 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.extraPaths": [
+        "./backend/"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always"
+    },
+    "eslint.run": "onSave",
+    "python.analysis.typeCheckingMode": "basic"
+}

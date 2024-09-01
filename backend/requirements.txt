@@ -1,0 +1,15 @@
+python-dotenv
+python-dateutil
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-CORS
+Flask-Limiter
+Flask-WTF
+Flask-OIDC
+Flask-JWT-Extended
+requests
+authlib
+gunicorn
+psycopg2
+google-cloud-storage

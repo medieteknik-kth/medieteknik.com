@@ -1,0 +1,71 @@
+{
+    "title": "Contact",
+    "sections": 
+    [
+        {
+            "title": "Section",
+            "description": "Want to get in touch with the section or Media Technology? Contact us for more information!",
+            "links": 
+            [
+                {
+                    "text": "styrelsen@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:styrelsen@medieteknik.com"
+                }
+            ]
+        },
+        {
+            "title": "Business Group",
+            "description": "Does your company want to collaborate with us? Contact us for more information! We are always willing to discuss new ideas and opportunities.",
+            "links": 
+            [
+                {
+                    "text": "naringsliv@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:naringsliv@medieteknik.com"
+                }
+            ]
+        },
+        {
+            "title": "The Equality Group",
+            "description": "Do you have concerns about equality or want to get involved in the equality group? Contact us for more information!",
+            "links":
+            [
+                {
+                    "text": "jamo@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:jamo@medieteknik.com"
+                }
+            ]
+        },
+        {
+            "title": "Media Branchday",
+            "description": "Does your company want to participate in Media Branchday? A yearly event where students and companies meet. Contact us for more information!",
+            "links":
+            [
+                {
+                    "text": "branschdag@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:branschdag@medieteknik.com"
+                },
+                {
+                    "text": "mediasbranschdag.com",
+                    "icon": "web",
+                    "href": "http://www.mediasbranschdag.com"
+                }
+            ]
+        },
+        {
+            "title": "Website",
+            "description": "If you have any questions or suggestions regarding the website, please contact the webmaster. We are always looking for new ideas and improvements!",
+            "links":
+            [
+                {
+                    "text": "webmaster@medieteknik.com",
+                    "icon": "email",
+                    "href": "mailto:webmaster@medieteknik.com?subject=[Website] Question/Suggestion"
+                }
+            ]
+        }
+    ]
+}

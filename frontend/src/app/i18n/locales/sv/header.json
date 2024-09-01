@@ -1,0 +1,54 @@
+{
+    "profile": "Profil",
+    "login": "Logga In",
+    "preferences": "Inställningar",
+    "languagePreference": "Språk",
+    "themePreference": "Tema",
+    "notifications": "Notifikationer",
+    "navs": [
+        {
+            "title": "Aktuellt",
+            "link": "/bulletin"
+        },
+        {
+            "title": "Sektionen",
+            "link": "/chapter",
+            "subNavs": [
+                {
+                    "title": "Om Sektionen",
+                    "link": "/chapter"
+                }, 
+                {
+                    "title": "Nämnder och Projekter",
+                    "link": "/chapter/committees"
+                }, 
+                {
+                    "title": "Dokument",
+                    "link": "/chapter/documents"
+                }
+            ]
+        },
+        {
+            "title": "Utbildning",
+            "link": "/education"
+        },
+        {
+            "title": "JML",
+            "link": "/equality"
+        }  
+    ],
+    "profileNavs": [
+        {
+            "title": "Profil",
+            "link": "/profile"
+        },
+        {
+            "title": "Konto Inställningar",
+            "link": "/account"
+        },
+        {
+            "title": "Logga Ut",
+            "link": "/logout"
+        }
+    ]
+}

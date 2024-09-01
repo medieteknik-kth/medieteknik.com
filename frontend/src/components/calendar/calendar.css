@@ -1,0 +1,7 @@
+@media screen and (max-width: 639px) {
+    .week {
+        writing-mode: vertical-lr;
+        text-orientation: upright;
+        text-align: center;
+    }
+}

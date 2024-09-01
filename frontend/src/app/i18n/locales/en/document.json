@@ -1,0 +1,21 @@
+{
+    "title": "Documents",
+    "categories": "Categories",
+    "category.home": "Home",
+    "category.documents": "Documents",
+    "category.forms": "Forms",
+    "no_preview": "No preview available",
+    "view.grid": "Grid",
+    "view.list": "List",
+    "view.list.name": "Name",
+    "view.list.changed": "Changed",
+    "view.list.author": "Author",
+    "view.list.actions": "Actions",
+    "search": "Search",
+    "document_selected": "selected",
+    "information": "Information",
+    "share": "Share",
+    "download": "Download",
+    "delete": "Delete",
+    "more_actions": "More actions"
+}

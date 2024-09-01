@@ -1,0 +1,54 @@
+{
+    "profile": "Profile",
+    "login": "Login",
+    "preferences": "Preferences",
+    "languagePreference": "Language",
+    "themePreference": "Theme",
+    "notifications": "Notifications",
+    "navs": [
+        {
+            "title": "News & Events",
+            "link": "/bulletin"
+        },
+        {
+            "title": "Chapter",
+            "link": "/chapter",
+            "subNavs": [
+                {
+                    "title": "About the Chapter",
+                    "link": "/chapter"
+                }, 
+                {
+                    "title": "Committees",
+                    "link": "/chapter/committees"
+                }, 
+                {
+                    "title": "Documents",
+                    "link": "/chapter/documents"
+                }
+            ]
+        },
+        {
+            "title": "Education",
+            "link": "/education"
+        },
+        {
+            "title": "Equality",
+            "link": "/equality"
+        }
+    ],
+    "profileNavs": [
+        {
+            "title": "Profile",
+            "link": "/profile"
+        },
+        {
+            "title": "Account Settings",
+            "link": "/account"
+        },
+        {
+            "title": "Logout",
+            "link": "/logout"
+        }
+    ]
+}

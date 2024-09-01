@@ -1,0 +1,21 @@
+{
+    "title": "Dokument",
+    "categories": "Kategorier",
+    "category.home": "Hem",
+    "category.documents": "Dokument",
+    "category.forms": "Formulär",
+    "no_preview": "Ingen förhandsvisning tillgänglig",
+    "view.grid": "Grid",
+    "view.list": "Lista",
+    "view.list.name": "Namn",
+    "view.list.changed": "Ändrat",
+    "view.list.author": "Skapad av",
+    "view.list.actions": "Åtgärder",
+    "search": "Sök",
+    "document_selected": "vald",
+    "information": "Information",
+    "share": "Dela",
+    "download": "Nedladda",
+    "delete": "Ta bort",
+    "more_actions": "Mer åtgärder"
+}

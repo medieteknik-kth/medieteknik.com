@@ -1,0 +1,78 @@
+{
+    "courses": "Courses",
+    "categories": [
+        {
+            "id": "math",
+            "title": "Math",
+            "courses": [
+                "Algebra and Geometry",
+                "Calculus in One Variable",
+                "Calculus in Several Variables",
+                "Programming and Scientific Computing",
+                "Probability Theory and Statistics"
+            ]
+        },
+        {
+            "id": "physics",
+            "title": "Physics",
+            "courses": [
+                "Waves, Optics and Modern Physics"
+            ]
+        },
+        {
+            "id": "programming",
+            "title": "Programming",
+            "courses": [
+                "Programming and Scientific Computing"
+            ]
+        },
+        {
+            "id": "computer_science",
+            "title": "Computer Science",
+            "courses": [
+                "Interaction Programming and the Dynamic Web",
+                "Machine Learning for Media Technology",
+                "Human-Computer Interaction",
+                "Sensor Programming for Media Technology",
+                "Applied Computer Science"
+            ]
+        },
+        {
+            "id": "media_technology",
+            "title": "Media Technology",
+            "courses": [
+                "Photography for Media",
+                "Sustainability and Media Technology",
+                "Industrial Management and Entrepreneurship for Media and ICT",
+                "Introduction to Media Technology",
+                "Sound",
+                "Machine Learning for Media Technology",
+                "Media Production",
+                "Program Development for Interactive Media",
+                "Sensor Programming for Media Technology",
+                "Video Technology"
+            ]
+        },
+        {
+            "id": "broadening_skill",
+            "title": "Broadening Skills",
+            "courses": [
+                "Sustainability and Media Technology",
+                "Industrial Management and Entrepreneurship for Media and ICT",
+                "Communication and information",
+                "Program Integrating Course in Media Technology"
+            ]
+        },
+        {
+            "id": "electives",
+            "title": "Electives"
+        },
+        {
+            "id": "degree_project",
+            "title": "Degree Project",
+            "courses": [
+                "Degree Project in Media Technology"
+            ]
+        }
+    ]
+}
