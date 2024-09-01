@@ -329,6 +329,7 @@ export default function EventUpload({
 
             <FormField
               name='repeats'
+              disabled
               render={({ field }) => (
                 <FormItem className='flex items-center mt-1'>
                   <FormControl>

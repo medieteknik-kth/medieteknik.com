@@ -8,9 +8,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
+import { TagIcon } from '@heroicons/react/24/outline'
 import { GetStudentEvents } from '@/api/student'
-import CopyButton from './client/copyButton'
 
 export default async function StudentEvents({
   language,

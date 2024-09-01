@@ -1,0 +1,25 @@
+[debug] [2024-09-01T01:41:52.373Z] ----------------------------------------------------------------------
+[debug] [2024-09-01T01:41:52.375Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\andre\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting:github
+[debug] [2024-09-01T01:41:52.375Z] CLI Version:   13.16.0
+[debug] [2024-09-01T01:41:52.375Z] Platform:      win32
+[debug] [2024-09-01T01:41:52.376Z] Node Version:  v21.5.0
+[debug] [2024-09-01T01:41:52.376Z] Time:          Sun Sep 01 2024 03:41:52 GMT+0200 (Central European Summer Time)
+[debug] [2024-09-01T01:41:52.376Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-09-01T01:41:52.432Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-09-01T01:41:52.433Z] > authorizing via signed-in user (webmaster@medieteknik.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\Programming\Medieteknik\medieteknik.com\frontend
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+

@@ -1,6 +1,6 @@
 import uuid
 from typing import Any, Dict, List
-from sqlalchemy import DateTime, String, Integer, Column, ForeignKey, inspect, text
+from sqlalchemy import String, Integer, Column, ForeignKey, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
@@ -91,7 +91,7 @@ class CommitteeTranslation(db.Model):
     )
 
     title = Column(String(125))
-    description = Column(String(500))
+    description = Column(String(512))
 
     # Foreign keys
     committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))

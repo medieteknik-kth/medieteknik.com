@@ -203,9 +203,13 @@ def register_routes(app: Flask):
 
     @app.route("/api/v1/csrf-token")
     def get_csrf_token():
-        if "csrf_token" not in session:
-            session["csrf_token"] = generate_csrf()
-        return jsonify({"token": session["csrf_token"]})
+        token = session.get("csrf_token")
+        print(token)
+        if not token:
+            new_token = generate_csrf()
+            session["csrf_token"] = new_token
+            return jsonify({"token": new_token})
+        return jsonify({"token": token})
 
     @app.route("/oauth/kth/login")
     def kth_login():

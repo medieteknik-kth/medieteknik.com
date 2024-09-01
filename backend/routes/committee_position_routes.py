@@ -38,7 +38,7 @@ def create_committee_position():
     data: Dict[str, Any] = json.loads(json.dumps(data))
 
     email = data.get("email")
-    category: CommitteePositionCategory = data.get("category")
+    category: str = data.get("category")
     weight = data.get("weight")
     translations: List[Dict[str, Any]] = data.get("translations")
     committee_title = data.get("committee_title")
@@ -53,7 +53,7 @@ def create_committee_position():
 
     new_position = CommitteePosition(
         email=email if email else None,
-        category=category,
+        category=None if category == "NONE" else category.replace(" ", "_").upper(),
         weight=weight,
         active=True,
         role=CommitteePositionsRole.COMMITTEE.value,

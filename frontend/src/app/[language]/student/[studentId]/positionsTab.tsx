@@ -1,14 +1,15 @@
-import Student, { IndividualCommitteePosition } from '@/models/Student'
+import { IndividualCommitteePosition } from '@/models/Student'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import FallbackLogo from 'public/images/logo.webp'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Image from 'next/image'
 
 function TableDisplay({
   positions,
@@ -24,12 +25,21 @@ function TableDisplay({
           <TableRow key={index}>
             <TableCell>{position.position.translations[0].title}</TableCell>
             <TableCell className='flex items-center'>
-              {position.position.committee_logo_url ? (
+              {position.position.committee ? (
                 <Avatar className='w-6 h-auto aspect-square mr-1'>
                   <AvatarImage
-                    src={position.position.committee_logo_url}
+                    src={position.position.committee.logo_url}
                     alt='Profile Picture'
                   />
+                  <AvatarFallback className='bg-white'>
+                    <Image
+                      src={FallbackLogo}
+                      alt='Logo'
+                      width={64}
+                      height={64}
+                      className='object-cover'
+                    />
+                  </AvatarFallback>
                 </Avatar>
               ) : (
                 <p className='text-neutral-600 uppercase select-none px-2'>

@@ -1,6 +1,6 @@
 import uuid
 from typing import List
-from sqlalchemy import String, Integer, Column, ForeignKey, inspect, text
+from sqlalchemy import String, Column, ForeignKey, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES

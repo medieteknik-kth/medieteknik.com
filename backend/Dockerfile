@@ -13,8 +13,6 @@ WORKDIR /app
 COPY . /app
 COPY env/service-account-file.json /app/service-account-file.json
 
-# Set up the relevant environment variable
-ENV GOOGLE_APPLICATION_CREDENTIALS="/app/service-account-file.json"
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt

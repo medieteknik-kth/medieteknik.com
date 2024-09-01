@@ -28,6 +28,8 @@ import {
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Permission, Role } from '@/models/Permission'
 import Link from 'next/link'
+import { TFunction } from 'next-i18next'
+import { Separator } from '@/components/ui/separator'
 
 type Type = 'all' | 'documents' | 'forms'
 
@@ -125,126 +127,144 @@ export default function GridView({ language, type }: Props) {
   }
 
   return (
-    <div className='flex gap-4 flex-wrap pl-72 pr-20 mt-4'>
-      {documents.length > 0 &&
-        documents
-          .filter(
-            (document) =>
-              type === 'all' ||
-              (type === 'documents' && document.document_type === 'DOCUMENT') ||
-              (type === 'forms' && document.document_type === 'FORM')
-          )
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )
-          .map((document, documentIndex) => (
-            <div
-              key={documentIndex}
-              tabIndex={0}
-              className={`w-60 h-64 rounded-md border cursor-pointer px-4 flex flex-col justify-between
+    <div className='pl-72 pr-20 mt-4 flex flex-col gap-6 mb-4'>
+      <div className='w-full flex flex-wrap gap-4'>
+        {documents.length > 0 &&
+          documents
+            .filter(
+              (document) =>
+                type === 'all' ||
+                (type === 'documents' &&
+                  document.document_type === 'DOCUMENT') ||
+                (type === 'forms' && document.document_type === 'FORM')
+            )
+            .filter((document) => document.is_pinned)
+            .sort((a, b) =>
+              a.is_pinned === b.is_pinned ? 0 : a.is_pinned ? -1 : 1
+            )
+            .map((document, documentIndex) =>
+              renderDocuments(
+                documentIndex,
+                selectedDocuments,
+                document,
+                handleDocumentClick,
+                handleDocumentKeydown,
+                t,
+                authorImage,
+                authorName
+              )
+            )}
+      </div>
+      <Separator />
+      <div className='w-full flex flex-wrap gap-4'>
+        {documents.length > 0 &&
+          documents
+            .filter(
+              (document) =>
+                type === 'all' ||
+                (type === 'documents' &&
+                  document.document_type === 'DOCUMENT') ||
+                (type === 'forms' && document.document_type === 'FORM')
+            )
+            .filter((document) => !document.is_pinned)
+            .sort((a, b) =>
+              a.is_pinned === b.is_pinned ? 0 : a.is_pinned ? -1 : 1
+            )
+            .map((document, documentIndex) =>
+              renderDocuments(
+                documentIndex,
+                selectedDocuments,
+                document,
+                handleDocumentClick,
+                handleDocumentKeydown,
+                t,
+                authorImage,
+                authorName
+              )
+            )}
+      </div>
+    </div>
+  )
+}
+function renderDocuments(
+  documentIndex: number,
+  selectedDocuments: Document[],
+  document: Document,
+  handleDocumentClick: (event: MouseEvent, document: Document) => void,
+  handleDocumentKeydown: (event: KeyboardEvent, document: Document) => void,
+  t: TFunction,
+  authorImage: (author: Author) => string | null | undefined,
+  authorName: (author: Author) => string
+) {
+  return (
+    <div
+      key={documentIndex}
+      tabIndex={0}
+      className={`w-60 h-64 rounded-md border cursor-pointer px-4 flex flex-col justify-between
           ${
             selectedDocuments.includes(document)
               ? 'border-yellow-400 bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
               : 'bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700'
           }
         `}
-              title={document.translations[0].title}
-              onClick={(event) => {
-                event.stopPropagation()
-                handleDocumentClick(event, document)
-              }}
-              onKeyDown={(event) => {
-                handleDocumentKeydown(event, document)
-              }}
-            >
-              <div className='w-full h-fit flex items-center justify-between py-2'>
-                <div className='flex items-center gap-2'>
-                  {document.document_type === 'DOCUMENT' ? (
-                    <DocumentIcon
-                      className='w-5 h-5 text-green-500'
-                      title='Document'
-                    />
-                  ) : (
-                    <DocumentTextIcon
-                      className='w-5 h-5 text-amber-500'
-                      title='Document type is a Form'
-                    />
-                  )}
-                  <span className='sr-only'>Document type is a document</span>
-                  <p className='tracking-wide text-sm truncate max-w-36'>
-                    {document.translations[0].title}
-                  </p>
-                </div>
-                <Menubar asChild>
-                  <MenubarMenu>
-                    <MenubarTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        title={t('more_actions')}
-                        onClick={(event) => event.stopPropagation()}
-                        className='w-8 h-8 p-0'
-                      >
-                        <EllipsisVerticalIcon className='w-6 h-6 p-1' />
-                      </Button>
-                    </MenubarTrigger>
-                    <MenubarContent sideOffset={5} alignOffset={-3}>
-                      <MenubarCheckboxItem
-                        checked
-                        disabled={
-                          !(
-                            permissions.student.includes(
-                              Permission.ITEMS_EDIT
-                            ) || role === Role.ADMIN
-                          )
-                        }
-                      >
-                        Pin File
-                      </MenubarCheckboxItem>
-                    </MenubarContent>
-                  </MenubarMenu>
-                </Menubar>
-              </div>
-              <div
-                id='preview'
-                className='w-full h-full bg-neutral-200 grid place-items-center dark:bg-neutral-700'
-              >
-                <p className='text-xs select-none uppercase tracking-widest text-center'>
-                  {t('no_preview')}
-                </p>
-              </div>
-              <div className='w-full h-fit flex items-center py-2'>
-                <Avatar className='bg-white mr-2'>
-                  <AvatarImage
-                    src={authorImage(document.author) || ''}
-                    width={128}
-                    height={128}
-                    alt='Author: Firstname Lastname'
-                    className='h-full w-auto'
-                  />
-                  <AvatarFallback className='bg-white p-1'>
-                    <Image
-                      src={FallbackLogo}
-                      alt='Author: Firstname Lastname'
-                    />
-                  </AvatarFallback>
-                </Avatar>
-                <div className='flex flex-col'>
-                  <p
-                    className='text-sm max-w-36 truncate'
-                    title={authorName(document.author)}
-                  >
-                    {authorName(document.author)}
-                  </p>
-                  <p className='text-xs text-neutral-500 dark:text-neutral-300'>
-                    {new Date(document.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+      title={document.translations[0].title}
+      onClick={(event) => {
+        event.stopPropagation()
+        handleDocumentClick(event, document)
+      }}
+      onKeyDown={(event) => {
+        handleDocumentKeydown(event, document)
+      }}
+    >
+      <div className='w-full h-fit flex items-center justify-between py-2'>
+        <div className='flex items-center gap-2'>
+          {document.document_type === 'DOCUMENT' ? (
+            <DocumentIcon className='w-5 h-5 text-green-500' title='Document' />
+          ) : (
+            <DocumentTextIcon
+              className='w-5 h-5 text-amber-500'
+              title='Document type is a Form'
+            />
+          )}
+          <span className='sr-only'>Document type is a document</span>
+          <p className='tracking-wide text-sm truncate max-w-44'>
+            {document.translations[0].title}
+          </p>
+        </div>
+      </div>
+      <div
+        id='preview'
+        className='w-full h-full bg-neutral-200 grid place-items-center dark:bg-neutral-700'
+      >
+        <p className='text-xs select-none uppercase tracking-widest text-center'>
+          {t('no_preview')}
+        </p>
+      </div>
+      <div className='w-full h-fit flex items-center py-2'>
+        <Avatar className='bg-white mr-2'>
+          <AvatarImage
+            src={authorImage(document.author) || ''}
+            width={128}
+            height={128}
+            alt='Author: Firstname Lastname'
+            className='h-full w-auto'
+          />
+          <AvatarFallback className='bg-white p-1'>
+            <Image src={FallbackLogo} alt='Author: Firstname Lastname' />
+          </AvatarFallback>
+        </Avatar>
+        <div className='flex flex-col'>
+          <p
+            className='text-sm max-w-36 truncate'
+            title={authorName(document.author)}
+          >
+            {authorName(document.author)}
+          </p>
+          <p className='text-xs text-neutral-500 dark:text-neutral-300'>
+            {new Date(document.created_at).toLocaleDateString()}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

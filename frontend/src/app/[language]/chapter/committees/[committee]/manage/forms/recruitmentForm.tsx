@@ -41,6 +41,7 @@ import {
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 function TranslatedInputs({
   index,
@@ -104,6 +105,7 @@ function TranslatedInputs({
 export default function RecruitmentForm({ language }: { language: string }) {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { positions } = useCommitteeManagement()
+  const { positions: studentPositions } = useAuthentication()
 
   if (!positions) {
     throw new Error('Positions not found')
@@ -111,20 +113,40 @@ export default function RecruitmentForm({ language }: { language: string }) {
 
   const [value, setValue] = useState(positions[0].translations[0].title)
 
-  const dropdownOptions = positions.map((position) => ({
-    value: position.translations[0].title,
-    label: position.translations[0].title
-      .split('_')
-      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-      .join(' '),
-  }))
+  const dropdownOptions = positions
+    .filter((position) => {
+      if (!studentPositions) return false
+      if (studentPositions.length === 0) return true
+
+      // Find students highest position (position with highest weight)
+      const studentHighestPosition = studentPositions.reduce((prev, current) =>
+        prev.weight > current.weight ? prev : current
+      )
+
+      // Remove positions with higher weight than the student's highest position
+      return position.weight > studentHighestPosition.weight
+    })
+    .sort((a, b) => a.weight - b.weight)
+    .map((position) => ({
+      value: position.translations[0].title,
+      label: position.translations[0].title
+        .split('_')
+        .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+        .join(' '),
+    }))
 
   const RecruitmentSchema = z
     .object({
       position: z.string(),
-      start_date: z.coerce.date().refine((date) => date >= new Date(), {
-        message: 'Start date must be today or later',
-      }),
+      start_date: z.coerce
+        .date()
+        .refine(
+          (date) =>
+            date.getTime() >= new Date().getTime() - 1000 * 60 * 60 * 24,
+          {
+            message: 'Start date must be today or later',
+          }
+        ),
       end_date: z.coerce.date().refine((date) => date >= new Date(), {
         message: 'Start date must be today or later',
       }),

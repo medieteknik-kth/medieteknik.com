@@ -95,6 +95,23 @@ export default function CommandBar({
   const postForm = async (data: z.infer<typeof formSchema>) => {
     await saveCallback(language, true)
 
+    /*
+    const formData = new window.FormData()
+
+    supportedLanguages.forEach((lang, index) => {
+      formData.append(`translations[${index}][language_code]`, lang)
+      formData.append(`translations[${index}][title]`, data.title)
+      formData.append(`translations[${index}][main_image_url]`, data.image)
+      formData.append(
+        `translations[${index}][body]`,
+        content.translations[index].body
+      )
+      formData.append(
+        `translations[${index}][short_description]`,
+        data.short_description
+      )
+    })*/
+
     const json_data = {
       ...content,
       translations: [
@@ -141,10 +158,6 @@ export default function CommandBar({
           <Breadcrumb className=''>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href='#'>Styrelsen</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
                 <BreadcrumbLink href='#'>Articles</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -175,6 +188,7 @@ export default function CommandBar({
                 className='ml-4'
                 title='Import/Export'
                 aria-label='Import or Export'
+                disabled // TODO: Enable when import/export is ready
               >
                 <InboxIcon className='w-6 h-6' />
               </Button>
@@ -183,6 +197,7 @@ export default function CommandBar({
                 className='ml-4'
                 title='Language'
                 aria-label='Language'
+                disabled // TODO: Enable when language is ready
               >
                 <span
                   className={`fi fi-${
@@ -220,6 +235,7 @@ export default function CommandBar({
             size='icon'
             title='Preview'
             aria-label='Preview'
+            disabled // TODO: Enable when preview is ready
           >
             <EyeIcon className='w-6 h-6' />
           </Button>

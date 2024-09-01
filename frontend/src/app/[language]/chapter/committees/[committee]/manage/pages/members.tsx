@@ -36,6 +36,7 @@ import RecruitmentForm from '../forms/recruitmentForm'
 import { StudentTag } from '@/components/tags/StudentTag'
 import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
 import RemovePositionForm from '../forms/removePosition'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 /**
  * @name MembersPage
@@ -55,6 +56,7 @@ export default function MembersPage({
   // TODO: Clean-up the code, separate the components into smaller components?
   const [isLoading, setIsLoading] = useState(true)
   const [addPositionOpen, setAddPositionOpen] = useState(false)
+  const [addMemberOpen, setAddMemberOpen] = useState(false)
   const {
     members,
     positions,
@@ -62,10 +64,30 @@ export default function MembersPage({
     error,
     recruitments,
     addPosition,
+    addMember,
   } = useCommitteeManagement()
+  const { positions: userPostions } = useAuthentication()
 
   const findPosition = (id: string) => {
     return positions.find((position) => position.committee_position_id === id)
+  }
+
+  const limit = (weight: number) => {
+    const positions = userPostions.map((userPosition) =>
+      findPosition(userPosition.committee_position_id)
+    )
+
+    if (!positions || positions.length === 0) {
+      return false
+    }
+
+    return positions.some((position) => {
+      if (!position) {
+        return false
+      }
+
+      return position.weight >= weight
+    })
   }
 
   useEffect(() => {
@@ -97,24 +119,32 @@ export default function MembersPage({
               )}
             </CardContent>
             <CardFooter className='flex gap-4'>
-              <Dialog>
+              <Dialog open={addMemberOpen} onOpenChange={setAddMemberOpen}>
                 <DialogTrigger asChild>
                   <Button
                     variant={'outline'}
-                    disabled={error !== null}
+                    disabled={error !== null || limit(300)}
                     title='Add a new member to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
                     Add
                   </Button>
                 </DialogTrigger>
-                <AddMemberForm language={language} />
+                <AddMemberForm
+                  language={language}
+                  onSuccess={() => {
+                    setAddMemberOpen(false)
+                    window.location.reload()
+                  }}
+                />
               </Dialog>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
                     variant={'destructive'}
-                    disabled={members.total_items === 0 || error !== null}
+                    disabled={
+                      members.total_items === 0 || error !== null || limit(150)
+                    }
                     title='Remove a member from the committee'
                   >
                     <TrashIcon className='w-5 h-5 mr-2' />
@@ -147,7 +177,7 @@ export default function MembersPage({
                   <Button
                     variant={'outline'}
                     className='mr-4'
-                    disabled={error !== null}
+                    disabled={error !== null || limit(300)}
                     title='Create a new position to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
@@ -160,6 +190,7 @@ export default function MembersPage({
                   onSuccess={(position) => {
                     addPosition(position)
                     setAddPositionOpen(false)
+                    window.location.reload()
                   }}
                 />
               </Dialog>
@@ -169,7 +200,9 @@ export default function MembersPage({
                   <Button
                     variant={'outline'}
                     className='mr-4'
-                    disabled={error !== null || positions.length === 0}
+                    disabled={
+                      error !== null || positions.length === 0 || limit(400)
+                    }
                     title='Open a position for recruitment'
                   >
                     <ClockIcon className='w-5 h-5 mr-2' />
@@ -182,7 +215,9 @@ export default function MembersPage({
                 <DialogTrigger asChild>
                   <Button
                     variant={'destructive'}
-                    disabled={error !== null || positions.length <= 1}
+                    disabled={
+                      error !== null || positions.length <= 1 || limit(150)
+                    }
                     title='Remove a position from the committee'
                   >
                     <TrashIcon className='w-5 h-5 mr-2' />
@@ -213,48 +248,65 @@ export default function MembersPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {members.items.map((member, index) => (
-                  <TableRow key={index}>
-                    <TableCell className='flex items-center gap-2'>
-                      <StudentTag student={member.student} includeAt={false} />
-                    </TableCell>
-                    <TableCell>
-                      {isLoading ? (
-                        <Skeleton className='w-32 h-8' />
-                      ) : (
-                        findPosition(member.committee_position_id) && (
-                          <p>
-                            {
-                              findPosition(member.committee_position_id)!
-                                .translations[0].title
-                            }
-                          </p>
-                        )
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(member.initiation_date).toLocaleDateString(
-                        language,
-                        {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: 'numeric',
-                        }
-                      )}
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      <Button
-                        variant={'outline'}
-                        size={'icon'}
-                        title='View member'
-                      >
-                        <Cog6ToothIcon className='w-5 h-5' />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {members.items
+                  .sort((a, b) => {
+                    return a.student.first_name.localeCompare(
+                      b.student.first_name
+                    )
+                  })
+                  .sort((a, b) => {
+                    const positionA = findPosition(a.committee_position_id)
+                    const positionB = findPosition(b.committee_position_id)
+                    return (
+                      (positionA ? positionA.weight : 0) -
+                      (positionB ? positionB.weight : 0)
+                    )
+                  })
+                  .map((member, index) => (
+                    <TableRow key={index}>
+                      <TableCell className='flex items-center gap-2'>
+                        <StudentTag
+                          student={member.student}
+                          includeAt={false}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {isLoading ? (
+                          <Skeleton className='w-32 h-8' />
+                        ) : (
+                          findPosition(member.committee_position_id) && (
+                            <p>
+                              {
+                                findPosition(member.committee_position_id)!
+                                  .translations[0].title
+                              }
+                            </p>
+                          )
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(member.initiation_date).toLocaleDateString(
+                          language,
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell className='text-right'>
+                        <Button
+                          variant={'outline'}
+                          size={'icon'}
+                          title='View member'
+                        >
+                          <Cog6ToothIcon className='w-5 h-5' />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </CardContent>

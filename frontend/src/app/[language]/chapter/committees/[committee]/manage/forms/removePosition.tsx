@@ -46,10 +46,14 @@ export default function RemovePositionForm({
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
 
-  const positionOptions = positions.map((position) => ({
-    label: position.translations[0].title,
-    value: position.committee_position_id,
-  }))
+  const positionOptions = positions
+    .filter((position) => {
+      return !position.base
+    })
+    .map((position) => ({
+      label: position.translations[0].title,
+      value: position.committee_position_id,
+    }))
 
   const Schema = z.object({
     position_id: z.string().uuid(),

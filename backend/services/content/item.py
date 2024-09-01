@@ -189,16 +189,16 @@ def create_item(
         authors_items_ids = []
 
         translation_table = None
-        if isinstance(item_table, News):
+        if isinstance(item_table, News) or item_table is News:
             authors_items_ids = [a.news_id for a in all_authors_items]
             translation_table = NewsTranslation
-        elif isinstance(item_table, Event):
+        elif isinstance(item_table, Event) or item_table is Event:
             authors_items_ids = [a.event_id for a in all_authors_items]
             translation_table = EventTranslation
-        elif isinstance(item_table, Album):
+        elif isinstance(item_table, Album) or item_table is Album:
             authors_items_ids = [a.album_id for a in all_authors_items]
             translation_table = AlbumTranslation
-        elif isinstance(item_table, Document):
+        elif isinstance(item_table, Document) or item_table is Document:
             authors_items_ids = [a.document_id for a in all_authors_items]
             translation_table = DocumentTranslation
         else:

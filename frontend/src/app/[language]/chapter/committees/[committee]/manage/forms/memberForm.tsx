@@ -43,6 +43,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { API_BASE_URL } from '@/utility/Constants'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 export function RemoveMemberForm({ language }: { language: string }) {
   const { committee, members } = useCommitteeManagement()
@@ -140,15 +141,36 @@ export function RemoveMemberForm({ language }: { language: string }) {
   )
 }
 
-export function AddMemberForm({ language }: { language: string }) {
+export function AddMemberForm({
+  language,
+  onSuccess,
+}: {
+  language: string
+  onSuccess: () => void
+}) {
   const { positions } = useCommitteeManagement()
+  const { positions: studentPositions } = useAuthentication()
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
 
-  const positionOptions = positions.map((position) => ({
-    label: position.translations[0].title,
-    value: position.committee_position_id,
-  }))
+  const positionOptions = positions
+    .filter((position) => {
+      if (!studentPositions) return false
+      if (studentPositions.length === 0) return true
+
+      // Find students highest position (position with highest weight)
+      const studentHighestPosition = studentPositions.reduce((prev, current) =>
+        prev.weight > current.weight ? prev : current
+      )
+
+      // Remove positions with higher weight than the student's highest position
+      return position.weight > studentHighestPosition.weight
+    })
+    .sort((a, b) => a.weight - b.weight)
+    .map((position) => ({
+      label: position.translations[0].title,
+      value: position.committee_position_id,
+    }))
 
   const Schema = z.object({
     students: z
@@ -185,7 +207,7 @@ export function AddMemberForm({ language }: { language: string }) {
       )
 
       if (response.ok) {
-        console.log('success')
+        onSuccess()
       } else {
         console.error('error')
       }

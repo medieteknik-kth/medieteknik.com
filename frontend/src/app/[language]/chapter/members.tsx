@@ -188,8 +188,9 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           !member.termination_date)
                     )
                     .sort((a, b) =>
-                      a.position.email.localeCompare(b.position.email, language)
+                      a.student.first_name.localeCompare(b.student.first_name)
                     )
+                    .sort((a, b) => a.position.weight - b.position.weight)
                     .map((member, index) => (
                       <div
                         key={index}
@@ -212,12 +213,13 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           <div className='w-full h-20 absolute bottom-0 from-white from-20% dark:from-[#111] bg-gradient-to-t' />
                         </div>
                         <div className='flex gap-2 items-center px-2 absolute top-4 bg-white dark:bg-[#111] border border-l-0 rounded-r-md shadow-sm shadow-black/25 dark:shadow-white/25'>
-                          <Avatar className='w-6 h-6'>
+                          <Avatar className='w-6 h-6 rounded-full overflow-hidden'>
                             <AvatarImage
                               src={member.position.committee?.logo_url}
                               alt={`${member.position.translations[0].title} logo`}
-                              width={24}
-                              height={24}
+                              width={32}
+                              height={32}
+                              className='w-6 h-full object-contain p-0.5'
                             />
                             <AvatarFallback>
                               <Image
@@ -229,7 +231,16 @@ export default function CommitteeMembers({ language }: { language: string }) {
                               />
                             </AvatarFallback>
                           </Avatar>
-                          <p className='text-xs sm:text-sm uppercase tracking-wider max-w-40 leading-4 py-0.5'>
+                          <p
+                            className={`${
+                              member.position.translations[0].title.length >
+                                15 &&
+                              !/\s/.test(member.position.translations[0].title)
+                                ? 'text-xs'
+                                : 'text-xs md:text-sm'
+                            } truncate lg:text-wrap lg:overflow-visible lg:whitespace-normal uppercase tracking-wider w-fit max-w-56 leading-4 py-0.5`}
+                            title={member.position.translations[0].title}
+                          >
                             {member.position.translations[0].title}
                           </p>
                         </div>
@@ -241,6 +252,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           </p>
                           <Link
                             href={`mailto:${member.position.email}`}
+                            target='_blank'
                             className='text-xs break-words sm:text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
                             title={`Mail to ${member.position.email}`}
                           >
