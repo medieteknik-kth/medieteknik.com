@@ -9,7 +9,6 @@ from typing import Any
 from flask import Blueprint, jsonify, make_response, request
 from flask_jwt_extended import (
     create_access_token,
-    get_jwt,
     get_jwt_identity,
     jwt_required,
     current_user,
@@ -21,7 +20,9 @@ from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
 from services.core.student import login, assign_password, get_permissions, update
+from utility.gc import delete_file, upload_file
 from utility.translation import retrieve_languages
+from utility.database import db
 
 student_bp = Blueprint("student", __name__)
 
@@ -55,6 +56,46 @@ def update_student():
         request=request,
         student=student,
     )
+
+
+@student_bp.route("/reception", methods=["PUT"])
+@csrf_protected
+@jwt_required()
+def update_reception():
+    student_id = get_jwt_identity()
+    student = Student.query.filter_by(student_id=student_id).one_or_none()
+
+    if not student or not isinstance(student, Student):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    reception_image = request.files.get("reception_image")
+    reception_name = request.form.get("reception_name")
+
+    if not reception_image:
+        return jsonify({"error": "Invalid data"}), 400
+
+    file_extension = reception_image.filename.split(".")[-1]
+
+    if getattr(student, "reception_profile_picture_url"):
+        delete_file(
+            getattr(student, "reception_profile_picture_url"),
+        )
+
+    result = upload_file(
+        file=reception_image,
+        file_name=f"{student.student_id}.{file_extension}",
+        path="profile/reception",
+    )
+
+    if not result:
+        return jsonify({"error": "Failed to upload"}), 400
+
+    setattr(student, "reception_profile_picture_url", result)
+    setattr(student, "reception_name", reception_name)
+
+    db.session.commit()
+
+    return jsonify({"url": result}), 201
 
 
 @student_bp.route("/refresh", methods=["POST"])

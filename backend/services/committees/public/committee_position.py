@@ -150,6 +150,10 @@ def get_all_committee_members(
         .filter_by(
             committee_id=committee.committee_id,
         )
+        .filter(
+            CommitteePosition.active.is_(True),
+            StudentMembership.termination_date.is_(None),
+        )
         .join(
             Student,
             StudentMembership.student_id == Student.student_id,

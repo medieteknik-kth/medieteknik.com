@@ -31,6 +31,7 @@ class CommitteePositionCategory(enum.Enum):
     NÄRINGSLIV_OCH_KOMMUNIKATION = "NÄRINGSLIV OCH KOMMUNIKATION"
     STUDIESOCIALT = "STUDIESOCIALT"
     FANBORGEN = "FANBORGEN"
+    UTBILDNING = "UTBILDNING"
 
 
 class CommitteePosition(db.Model):
@@ -43,7 +44,7 @@ class CommitteePosition(db.Model):
         server_default=text("gen_random_uuid()"),
     )
 
-    email = Column(String(255), unique=True)
+    email = Column(String(255))
     weight = Column(Integer, default=1_000)
     role = Column(
         Enum(CommitteePositionsRole),
@@ -118,18 +119,19 @@ class CommitteePosition(db.Model):
         ]
 
         if is_public_route:
-            del data["weight"]
             del data["role"]
 
-        if include_parent:
+        if include_parent and self.committee_id:
             parent_committee = Committee.query.filter_by(
                 committee_id=self.committee_id
             ).first()
 
-            if parent_committee and isinstance(parent_committee, Committee):
-                data["committee"] = parent_committee.to_dict(
-                    provided_languages=provided_languages,
-                )
+            if not parent_committee or not isinstance(parent_committee, Committee):
+                return data
+
+            data["committee"] = parent_committee.to_dict(
+                provided_languages=provided_languages,
+            )
 
         return data
 

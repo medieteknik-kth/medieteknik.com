@@ -33,12 +33,28 @@ def validate_csrf(csrf_token) -> Response | bool:
         return response
 
     if csrf_token != header_csrf_token:
-        response = make_response(jsonify({"message": "Invalid CSRF Token"}))
+        response = make_response(
+            jsonify(
+                {
+                    "message": "Invalid Header CSRF Token",
+                    "csrf_token": csrf_token,
+                    "header_csrf_token": header_csrf_token,
+                }
+            )
+        )
         response.status_code = HTTPStatus.FORBIDDEN
         return response
 
     if csrf_token != session_csrf_token:
-        response = make_response(jsonify({"message": "Invalid CSRF Token"}))
+        response = make_response(
+            jsonify(
+                {
+                    "message": "Invalid Session CSRF Token",
+                    "csrf_token": csrf_token,
+                    "session_csrf_token": session_csrf_token,
+                }
+            )
+        )
         response.status_code = HTTPStatus.FORBIDDEN
         return response
 
