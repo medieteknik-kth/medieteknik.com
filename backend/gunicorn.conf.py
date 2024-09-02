@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 loglevel = "debug"
 workers = 3 * round(multiprocessing.cpu_count() / 2) + 1
-bind = "0.0.0.0:8000"
+bind = "0.0.0.0:80"
 timeout = 120
 
 env = os.path.join(os.getcwd(), ".env")

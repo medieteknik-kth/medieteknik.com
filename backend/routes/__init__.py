@@ -4,6 +4,7 @@ Routes for the backend.
 All routes are registered here via the `register_routes` function.
 """
 
+import secrets
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, make_response, request, session, url_for
 from flask_jwt_extended import (
@@ -11,14 +12,17 @@ from flask_jwt_extended import (
     get_jwt,
     get_jwt_identity,
     set_access_cookies,
+    set_refresh_cookies,
+    create_refresh_token,
 )
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
-from services.core.student import get_permissions
+from services.core.student import get_permissions, retrieve_extra_claims
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
-from utility.authorization import oauth
+from utility.authorization import oidc, oauth
+from utility.database import db
 
 
 def register_routes(app: Flask):
@@ -113,7 +117,9 @@ def register_routes(app: Flask):
         """
         if request.method == "OPTIONS":
             response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+            response.headers.add(
+                "Access-Control-Allow-Origin", "https://www.medieteknik.com"
+            )
             response.headers.add(
                 "Access-Control-Allow-Headers",
                 "Content-Type,Authorization,X-CSRF-Token",
@@ -211,27 +217,81 @@ def register_routes(app: Flask):
             return jsonify({"token": new_token})
         return jsonify({"token": token})
 
-    @app.route("/oauth/kth/login")
-    def kth_login():
-        """
-        Login route.
-        """
-        redirect_uri = url_for("auth", _external=True)
-
-        if not oauth.kth:
-            return "OAuth not configured", 500
-
-        return oauth.kth.authorize_redirect("https://api.medieteknik.com/oidc")
-
     @app.route("/auth")
     def auth():
         """
         Auth route.
         """
-        if not oauth.kth:
-            return "OAuth not configured", 500
+        nonce = secrets.token_urlsafe(32)
 
+        session["oauth_nonce"] = nonce
+
+        redirect_uri = url_for(endpoint="oidc_auth", _external=True)
+        return oauth.kth.authorize_redirect(redirect_uri, nonce=nonce)
+
+    @app.route("/oidc")
+    def oidc_auth():
+        """
+        OIDC route.
+        """
         token = oauth.kth.authorize_access_token()
-        user = oauth.kth.parse_id_token(token)
-        session["user"] = user
-        return token
+
+        if not token:
+            return jsonify({"error": "Invalid credentials"}), 401
+
+        nonce = session.pop("oauth_nonce", None)
+
+        student_data = oauth.kth.parse_id_token(token, nonce=nonce)
+
+        if not student_data:
+            return jsonify({"error": "Invalid credentials"}), 401
+
+        session["student"] = student_data
+
+        if not student_data.get("username"):
+            return jsonify({"error": "Invalid response"}), 401
+
+        student_email = student_data.get("username") + "@kth.se"
+
+        student = Student.query.filter_by(email=student_email).one_or_none()
+
+        if not student:
+            student = Student(
+                email=student_email,
+                first_name=student_data.get("username"),
+                password_hash="",
+            )
+
+            db.session.add(student)
+            db.session.commit()
+
+        permissions_and_role, additional_claims, committees, committee_positions = (
+            retrieve_extra_claims(student=student)
+        )
+        response = make_response(
+            {
+                "student": student.to_dict(is_public_route=False),
+                "committees": committees,
+                "committee_positions": committee_positions,
+                "permissions": permissions_and_role.get("permissions"),
+                "role": permissions_and_role.get("role"),
+            }
+        )
+
+        response.status_code = 302
+        set_access_cookies(
+            response=response,
+            encoded_access_token=create_access_token(
+                identity=student,
+                fresh=timedelta(minutes=20),
+                additional_claims=additional_claims,
+            ),
+            max_age=timedelta(hours=1),
+        )
+        set_refresh_cookies(
+            response=response,
+            encoded_refresh_token=create_refresh_token(identity=student),
+            max_age=timedelta(days=30).seconds,
+        )
+        response.headers.add("Location", "https://www.medieteknik.com")
+        return response

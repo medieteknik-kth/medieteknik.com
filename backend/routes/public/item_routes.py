@@ -117,16 +117,18 @@ def get_events_by_student(email: str):
     """
 
     provided_languages = retrieve_languages(request.args)
+    student: Student = Student.query.filter_by(email=email).first_or_404()
+
+    author: Author = Author.query.filter(
+        Author.author_type == AuthorType.STUDENT.value,
+        Author.student_id == student.student_id,
+    ).first_or_404()
 
     return jsonify(
         get_items_from_author(
-            Author.query.filter(
-                Author.author_type == AuthorType.STUDENT.value,
-                Author.student_id
-                == get_author_from_email(entity_table=Student, email=email).student_id,
-            ).first_or_404(),
-            Event,
-            provided_languages,
+            author=author,
+            item_table=Event,
+            provided_languages=provided_languages,
         )
     )
 

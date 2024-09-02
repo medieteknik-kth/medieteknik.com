@@ -9,7 +9,12 @@ from google.cloud.exceptions import GoogleCloudError
 from urllib.parse import unquote, urlparse
 
 
-client = storage.Client()
+client = None
+if os.getenv("FLASK_ENV") == "development":
+    client = storage.Client.from_service_account_json("/app/service-account-file.json")
+else:
+    client = storage.Client()
+
 bucket_name = "medieteknik-static"
 bucket = client.get_bucket(bucket_name)
 

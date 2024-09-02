@@ -19,7 +19,7 @@ from decorators import csrf_protected
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
-from services.core.student import login, assign_password, get_permissions, update
+from services.core.student import login, get_permissions, update
 from utility.gc import delete_file, upload_file
 from utility.translation import retrieve_languages
 from utility.database import db
@@ -158,24 +158,6 @@ def student_logout():
 def get_student_permissions():
     student_id = get_jwt_identity()
     return get_permissions(student_id)
-
-
-# TODO: Remove Later
-@student_bp.route(rule="/reset", methods=["POST"])
-def reset_password():
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
-
-    data: dict[str, Any] = json.loads(json.dumps(data))
-
-    result = assign_password(data)
-
-    if result is None:
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    return jsonify(result), 200
 
 
 @student_bp.route("/me", methods=["GET"])
