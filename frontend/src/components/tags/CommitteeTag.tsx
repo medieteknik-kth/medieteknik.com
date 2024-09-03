@@ -57,8 +57,9 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
             ref={ref}
           >
             {includeImage && (
-              <Avatar className='w-10 h-10 mr-2 rounded-full'>
+              <Avatar className='w-10 h-10 mr-2 rounded-full bg-white'>
                 <AvatarImage
+                  className='p-1'
                   src={committee.logo_url ?? ''}
                   alt={committee.translations[0].title}
                 />

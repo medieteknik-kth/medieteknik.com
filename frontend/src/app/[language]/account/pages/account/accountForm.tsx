@@ -28,7 +28,9 @@ import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
 
 const fetcher = (url: string) =>
-  fetch(url).then(
+  fetch(url, {
+    credentials: 'include',
+  }).then(
     (res) =>
       res.json() as Promise<{
         token: string
@@ -69,14 +71,10 @@ export default function AccountForm({
   ]
 
   const AccountFormSchema = z.object({
-    profilePicture: z.instanceof(window.File),
+    profilePicture: z.instanceof(window.File).optional(),
     emailTwo: z.string().email().optional().or(z.literal('')),
     emailThree: z.string().email().optional().or(z.literal('')),
-    currentPassword: z
-      .string({
-        required_error: 'Password is required to edit account settings',
-      })
-      .min(3),
+    currentPassword: z.string().min(3).optional().or(z.literal('')),
     newPassword: z
       .string()
       .min(8)
@@ -138,10 +136,23 @@ export default function AccountForm({
   const postAccountForm = async (data: z.infer<typeof AccountFormSchema>) => {
     const formData = new FormData()
 
-    formData.append('profile_picture', data.profilePicture)
+    if (
+      !data.profilePicture &&
+      !data.emailTwo &&
+      !data.emailThree &&
+      !data.currentPassword &&
+      !data.newPassword
+    ) {
+      alert('No changes were made')
+      return
+    }
+
+    if (data.profilePicture)
+      formData.append('profile_picture', data.profilePicture)
     if (data.emailTwo) formData.append('email_two', data.emailTwo)
     if (data.emailThree) formData.append('email_three', data.emailThree)
-    formData.append('current_password', data.currentPassword)
+    if (data.currentPassword)
+      formData.append('current_password', data.currentPassword)
     if (data.newPassword) formData.append('new_password', data.newPassword)
     formData.append('csrf_token', data.csrf_token || csrf.token)
 
@@ -353,6 +364,9 @@ export default function AccountForm({
                 name='newPassword'
                 render={({ field }) => (
                   <FormItem className='pl-2 mt-8'>
+                    <FormDescription>
+                      Leave blank if you do not want to change your password
+                    </FormDescription>
                     <FormControl>
                       <Input
                         {...field}

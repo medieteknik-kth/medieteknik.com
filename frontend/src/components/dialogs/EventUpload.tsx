@@ -149,7 +149,7 @@ export default function EventUpload({
       date: z.string().date().min(1, 'Date is required'),
       start_time: z.string().time(),
       end_time: z.string().time(),
-      repeats: z.boolean(),
+      repeats: z.boolean().optional().or(z.literal(false)),
       location: z.string().min(1, 'Location is required'),
       background_color: z.string().refine(
         (value) => {

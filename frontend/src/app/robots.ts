@@ -16,7 +16,7 @@ export default function robots(): MetadataRoute.Robots {
         crawlDelay: 2,
       },
     ],
-    sitemap: 'https://localhost:3000/sitemap.xml',
-    host: 'localhost:3000',
+    sitemap: 'https://www.medieteknik.com/sitemap.xml',
+    host: 'www.medieteknik.com',
   };
 }

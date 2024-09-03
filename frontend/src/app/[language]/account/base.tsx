@@ -87,7 +87,7 @@ export default function Base({
     ]
 
     const additionalPages: AccountPage[] = []
-    if (permissions &&  permissions.author.length >= 1) {
+    if (permissions.author && permissions.author.length >= 1) {
       additionalPages.push({
         name: 'items',
         icon: DocumentDuplicateIcon,

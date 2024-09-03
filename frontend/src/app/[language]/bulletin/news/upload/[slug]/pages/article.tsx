@@ -249,6 +249,9 @@ export default function ArticlePage({
               author: {
                 author_type: 'COMMITTEE_POSITION',
                 email: '',
+                base: false,
+                category: 'STYRELSEN',
+                committee_position_id: '',
                 active: true,
                 role: 'ADMIN',
                 weight: 0,
@@ -273,6 +276,7 @@ export default function ArticlePage({
             tag: {
               author: {
                 author_type: 'STUDENT',
+                student_id: '',
                 email: '',
                 first_name: detail,
                 last_name: '',

@@ -206,7 +206,9 @@ export default function AllNews({
         </div>
       </CardHeader>
       <CardContent className='flex flex-wrap desktop:grid-cols-5 min-h-96 *:h-96 gap-8'>
-        {student && permissions.author.includes('NEWS') ? (
+        {student &&
+        permissions.author &&
+        permissions.author.includes('NEWS') ? (
           <Card className='w-[320px] border-dashed'>
             <CardContent className='h-full pt-6'>
               <Dialog>

@@ -83,7 +83,6 @@ export default function Education({
 
       <Section title='Study Counciling'>
         <div className='w-full h-fit flex justify-center items-center py-10 gap-20 flex-wrap'>
-          <div className='w-64 h-72 bg-blue-400' />
           <div className='w-fit xl:w-[750px] h-3/4 flex flex-col justify-center px-10'>
             <p>
               Lena Smedenborn är studievägledare för studenter på
@@ -94,29 +93,37 @@ export default function Education({
             </p>
             <div className='grid auto-rows-max *:h-20'>
               <div className='flex justify-start items-center flex-wrap gap-2'>
-                <div className='w-12 h-12 grid place-items-center border-2 border-[#111] rounded-full'>
+                <div className='w-12 h-12 grid place-items-center rounded-full'>
                   <EnvelopeIcon className='w-8 h-8' />
                 </div>
                 <Link
                   href='mailto:svl-media@kth.se'
                   rel='noopener noreferrer'
-                  className='text-blue-600 underline-offset-2 hover:underline'
+                  className='text-blue-600 dark:text-yellow-400 underline-offset-2 hover:underline'
                 >
                   svl-media@kth.se
                 </Link>
               </div>
               <div className='flex justify-start items-center flex-wrap gap-2'>
-                <div className='w-12 h-12 grid place-items-center border-2 border-[#111] rounded-full'>
+                <div className='w-12 h-12 grid place-items-center rounded-full'>
                   <PhoneIcon className='w-8 h-8' />
                 </div>
                 <p>08-790 84 07</p>
               </div>
               <div className='flex justify-start items-center flex-wrap gap-2'>
-                <div className='w-12 h-12 grid place-items-center border-2 border-[#111] rounded-full'>
+                <div className='w-12 h-12 grid place-items-center rounded-full'>
                   <MapPinIcon className='w-8 h-8' />
                 </div>
                 <p>Rum 1434, Lindstedtsvägen 3, plan 4</p>
               </div>
+              <Link
+                href='https://www.kth.se/profile/lenasm'
+                target='_blank'
+                className='flex items-center gap-2 hover:underline underline-offset-4 dark:decoration-yellow-400 decoration-sky-700 border rounded-md px-4 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+              >
+                <KTH className='w-10 h-10 rounded-md' />
+                Se hela profilen på KTH.se
+              </Link>
             </div>
           </div>
         </div>

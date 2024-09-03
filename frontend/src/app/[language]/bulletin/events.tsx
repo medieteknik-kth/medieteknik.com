@@ -140,7 +140,8 @@ export default function Events({
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.author.includes('EVENT') ? (
+                    {permissions.author &&
+                    permissions.author.includes('EVENT') ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -148,7 +149,8 @@ export default function Events({
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.author.includes('EVENT')
+                        {permissions.author &&
+                        permissions.author.includes('EVENT')
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}
@@ -170,7 +172,9 @@ export default function Events({
               </span>
             </p>
             <Separator className='my-4' />
-            {student && permissions.author.includes('EVENT') ? (
+            {student &&
+            permissions.author &&
+            permissions.author.includes('EVENT') ? (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger
                   className='w-auto h-[60px] aspect-square'

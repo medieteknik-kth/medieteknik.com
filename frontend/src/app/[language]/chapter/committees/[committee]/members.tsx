@@ -82,13 +82,13 @@ export default async function CommitteeMembers({
                 </p>
               </div>
               <div className='px-2 pb-2 h-24'>
-                <p className='text-xl max-h-14 overflow-hidden '>
+                <p className='text-xl max-h-14 overflow-hidden'>
                   {member.student.first_name + ' ' + member.student.last_name}
                 </p>
                 <Link
                   href={`mailto:${member.position.email}`}
                   target='_blank'
-                  className='text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
+                  className='text-xs break-words sm:text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
                   title={`Mail to ${member.position.email}`}
                 >
                   {member.position.email}

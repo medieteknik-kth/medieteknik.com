@@ -12,7 +12,9 @@ interface Props {
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
     <html suppressHydrationWarning>
-      <head />
+      <head>
+        <meta name='google-adsense-account' content='ca-pub-2106963438710910' />
+      </head>
       <body>{children}</body>
     </html>
   )

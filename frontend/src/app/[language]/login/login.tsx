@@ -1,8 +1,8 @@
+'use client'
 import Image from 'next/image'
 import KTHSVG from 'public/images/svg/kth.svg'
 import Link from 'next/link'
 import LoginForm from './client/loginForm'
-
 import LightLogo from 'public/images/logobig_light.jpg'
 import DarkLogo from 'public/images/logobig_dark.jpg'
 import { Button } from '@/components/ui/button'
@@ -22,6 +22,14 @@ interface Props {
  * @returns {JSX.Element} The login page
  */
 export default function Login({ params: { language } }: Props): JSX.Element {
+  const loginKTH = () => {
+    const redirectURL =
+      process.env.NODE_ENV === 'production'
+        ? 'https://api.medieteknik.com/auth'
+        : 'http://localhost:3000/auth'
+    window.location.href = `${redirectURL}`
+  }
+
   return (
     <main>
       <div className='h-24 bg-black' />
@@ -59,17 +67,13 @@ export default function Login({ params: { language } }: Props): JSX.Element {
 
             <ul className='w-full grid grid-cols-1 place-items-center'>
               <li className='text-center'>
-                <span className='text-neutral-600 dark:text-neutral-400'>
-                  Disabled for now
-                </span>
                 <Button
                   className='w-full h-full'
                   title='KTH Login'
                   aria-label='KTH Login'
-                  aria-disabled
                   variant={'ghost'}
                   size={'icon'}
-                  disabled
+                  onClick={loginKTH}
                 >
                   <KTHSVG
                     width={80}

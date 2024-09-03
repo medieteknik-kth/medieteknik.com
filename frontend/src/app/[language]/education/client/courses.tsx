@@ -164,7 +164,7 @@ export default function Courses({
               <DialogTrigger asChild key={index}>
                 <Button
                   variant={'ghost'}
-                  className='w-72 h-72 flex flex-col justify-center border-4 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg relative overflow-hidden shadow-[#0000004f] dark:shadow-[#ffffff4f] bg-white dark:bg-[#111] border-black/15 dark:border-white/15'
+                  className='w-72 h-72 flex flex-col justify-center border-4 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg relative overflow-hidden shadow-[#0000004f] dark:shadow-[#ffffff4f] bg-white dark:bg-[#111] dark:text-white border-black/15 dark:border-white/15'
                   style={{
                     borderColor: category.color,
                   }}

@@ -1,6 +1,6 @@
 import { Language } from '@/models/Language'
 
-export const API_BASE_URL: string = 'http://localhost:8000/api/v1'
+export const API_BASE_URL: string =  'https://api.medieteknik.com/api/v1'
 
 export const LANGUAGES: Language = {
   'sv': {

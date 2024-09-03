@@ -68,7 +68,7 @@ export default function Recruitment({
                               includeBackground={false}
                             >
                               <span
-                                className='text-sm flex items-center font-normal text-neutral-700'
+                                className='text-sm flex items-center font-normal text-neutral-700 dark:text-neutral-300'
                                 title={new Date(
                                   recruit.end_date
                                 ).toLocaleDateString(language, {

@@ -84,7 +84,9 @@ export default function Toolbar({ language }: { language: string }) {
             </div>
             <Separator orientation='vertical' className='h-6' />
             <div className='flex gap-2'>
-              {permissions.author.includes('DOCUMENT') &&
+              {permissions.author &&
+                permissions.student &&
+                permissions.author.includes('DOCUMENT') &&
                 permissions.student.includes('ITEMS_DELETE') && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>

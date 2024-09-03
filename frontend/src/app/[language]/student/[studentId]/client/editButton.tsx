@@ -19,6 +19,7 @@ export default function EditProfile({
 
   if (
     currentStudent !== student &&
+    permissions.student &&
     !permissions.student.includes('STUDENT_EDIT')
   )
     return <></>

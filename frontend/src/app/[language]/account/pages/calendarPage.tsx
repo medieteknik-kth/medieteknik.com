@@ -261,7 +261,8 @@ export default function CalendarPage({ language }: { language: string }) {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.author.includes('EVENT') ? (
+                    {permissions.author &&
+                    permissions.author.includes('EVENT') ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -269,7 +270,8 @@ export default function CalendarPage({ language }: { language: string }) {
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.author.includes('EVENT')
+                        {permissions.author &&
+                        permissions.author.includes('EVENT')
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}
@@ -280,7 +282,7 @@ export default function CalendarPage({ language }: { language: string }) {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.student.includes(
+                    {permissions.student && permissions.student.includes(
                       Permission.CALENDAR_PRIVATE
                     ) ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
@@ -290,7 +292,7 @@ export default function CalendarPage({ language }: { language: string }) {
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.student.includes(
+                        {permissions.student && permissions.student.includes(
                           Permission.CALENDAR_PRIVATE
                         )
                           ? 'can'

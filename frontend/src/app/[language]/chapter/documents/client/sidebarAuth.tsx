@@ -13,22 +13,24 @@ export default function SidebarAuth({ language }: { language: string }) {
   const { addDocument } = useDocumentManagement()
   return (
     <>
-      {student && permissions.author.includes('DOCUMENT') && (
-        <>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button>Upload Document</Button>
-            </DialogTrigger>
-            <DocumentUpload
-              language={language}
-              addDocument={addDocument}
-              author={student}
-              closeMenuCallback={() => setOpen(false)}
-            />
-          </Dialog>
-          <Separator className='-my-0.5' />
-        </>
-      )}
+      {student &&
+        permissions.author &&
+        permissions.author.includes('DOCUMENT') && (
+          <>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button>Upload Document</Button>
+              </DialogTrigger>
+              <DocumentUpload
+                language={language}
+                addDocument={addDocument}
+                author={student}
+                closeMenuCallback={() => setOpen(false)}
+              />
+            </Dialog>
+            <Separator className='-my-0.5' />
+          </>
+        )}
     </>
   )
 }

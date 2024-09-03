@@ -5,6 +5,7 @@ import YoutubeSVG from 'public/images/svg/youtube.svg'
 import MBDSVG from 'public/images/svg/mbd.svg'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { TFunction } from 'next-i18next'
 
 /**
  * Renders the connect section
@@ -13,11 +14,7 @@ import Link from 'next/link'
  * @param {TFunction} t - The translation function
  * @returns {JSX.Element} The connect section
  */
-export default function ConnectSection({
-  t,
-}: {
-  t: (key: string) => string
-}): JSX.Element {
+export default function ConnectSection(): JSX.Element {
   const linkStyle = '*:hover:fill-yellow-400 *:transition-colors'
 
   return (

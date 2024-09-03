@@ -132,7 +132,7 @@ export default function Masters() {
                 key={item.id}
                 className='basis-full xl:basis-1/3 relative rounded-md overflow-hidden grid place-items-center pl-0 xl:pl-4'
               >
-                <div className='blurred w-full h-full z-20 absolute left-0' />
+                <div className='blurred w-full h-full z-20 absolute left-4 rounded-md' />
 
                 <Card className='w-fit h-[900px] md:h-[700px] xl:h-[550px] flex flex-col justify-between'>
                   <CardHeader className='w-fit'>
@@ -171,8 +171,8 @@ export default function Masters() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className='*:stroke-black' />
-          <CarouselNext className='*:stroke-black' />
+          <CarouselPrevious className='*:stroke-black dark:*:stroke-white' />
+          <CarouselNext className='*:stroke-black dark:*:stroke-white' />
         </Carousel>
       </div>
     </Section>

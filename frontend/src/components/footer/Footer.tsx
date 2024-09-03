@@ -113,7 +113,7 @@ export default async function Footer({
               <h2 className='text-2xl text-center xs:text-left tracking-wider font-bold'>
                 {t('connect')}
               </h2>
-              <ConnectSection t={t} />
+              <ConnectSection />
             </li>
           </ul>
         </div>
