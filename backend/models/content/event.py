@@ -1,3 +1,4 @@
+from datetime import timedelta
 import enum
 from textwrap import dedent
 from typing import List
@@ -5,7 +6,9 @@ import uuid
 from sqlalchemy import (
     Boolean,
     Column,
+    Enum,
     ForeignKey,
+    Integer,
     String,
     inspect,
 )
@@ -14,6 +17,13 @@ from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
+
+
+class Frequency(enum.Enum):
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    YEARLY = "yearly"
 
 
 class Event(Item):
@@ -30,8 +40,8 @@ class Event(Item):
 
     event_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    start_date = Column(TIMESTAMP)
-    end_date = Column(TIMESTAMP)
+    start_date = Column(TIMESTAMP, nullable=False)
+    duration = Column(Integer, nullable=False)  # Duration in minutes
     location = Column(String(255))
     is_inherited = Column(Boolean, default=False, nullable=False)
     background_color = Column(String(7))
@@ -62,7 +72,7 @@ class Event(Item):
     item = db.relationship("Item", back_populates="event", passive_deletes=True)
     calendar = db.relationship("Calendar", back_populates="events")
     repeatable_event = db.relationship(
-        "RepeatableEvents", back_populates="event", uselist=False
+        "RepeatableEvent", back_populates="event", uselist=False
     )
 
     translations = db.relationship("EventTranslation", back_populates="event")
@@ -70,7 +80,10 @@ class Event(Item):
     __mapper_args__ = {"polymorphic_identity": "event"}
 
     def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
+        self,
+        provided_languages: List[str] = AVAILABLE_LANGUAGES,
+        is_public_route=True,
+        custom_start_date: str = None,
     ):
         data = super().to_dict(
             provided_languages=provided_languages, is_public_route=is_public_route
@@ -115,6 +128,8 @@ class Event(Item):
         del data["parent_event_id"]
         del data["type"]
         del data["published_status"]
+        if custom_start_date:
+            data["start_date"] = custom_start_date
 
         return data
 
@@ -133,6 +148,7 @@ class Event(Item):
             SUMMARY:{translation.title}
             DESCRIPTION:{translation.description}
             LOCATION:{self.location}
+            LAST-MODIFIED:{self.last_updated.strftime("%Y%m%dT%H%M%S" + "Z")}
             DTSTART:{self.start_date.strftime("%Y%m%dT%H%M%S" + "Z")}
             DTEND:{self.end_date.strftime("%Y%m%dT%H%M%S") + "Z"}
             END:VEVENT
@@ -178,16 +194,21 @@ class EventTranslation(db.Model):
         return data
 
 
-class RepeatableEvents(db.Model):
-    __tablename__ = "repeatable_events"
+class RepeatableEvent(db.Model):
+    __tablename__ = "repeatable_event"
 
     repeatable_event_id = Column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
 
     # Metadata
-    reapeting_interval = Column(String(255))
-    day = Column(TIMESTAMP)
+    frequency = Column(
+        Enum(Frequency), default=Frequency.WEEKLY, nullable=False
+    )  # Daily, Weekly, Monthly, Yearly
+    interval = Column(Integer, default=1)  # Every x days, weeks, months, years
+    end_date = Column(TIMESTAMP)  # End of the repeatable
+    max_occurrences = Column(Integer)  # Number of times to repeat
+    repeat_forever = Column(Boolean, default=False)  # Repeat forever
 
     # Foreign keys
     event_id = Column(UUID(as_uuid=True), ForeignKey("event.event_id"), unique=True)

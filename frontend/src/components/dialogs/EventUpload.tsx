@@ -17,14 +17,12 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useState } from 'react'
-import { CardFooter } from '@/components/ui/card'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { Label } from '@/components/ui/label'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { supportedLanguages } from '@/app/i18n/settings'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { useTranslation } from '@/app/i18n/client'
-import { TFunction } from 'next-i18next'
 import {
   DialogContent,
   DialogDescription,
@@ -33,12 +31,8 @@ import {
 } from '@/components/ui/dialog'
 import { Author, Event } from '@/models/Items'
 import { LanguageCode } from '@/models/Language'
-
-interface TranslatedInputProps {
-  index: number
-  language: string
-  t: TFunction
-}
+import RepeatingForm from './event/repeating'
+import TranslatedInputs from './event/translations'
 
 interface EventFormProps {
   language: string
@@ -46,75 +40,6 @@ interface EventFormProps {
   closeMenuCallback: () => void
   author: Author
   addEvent?: (event: Event) => void
-}
-
-/**
- * @name TranslatedInputs
- * @description Inputs for translated fields
- *
- * @param {TranslatedInputProps} props - The props for the component
- * @param {number} props.index - The index of the input
- * @param {string} props.language - The language of the input
- * @param {TFunction} props.t - The translation function
- * @returns {JSX.Element} The translated inputs
- */
-function TranslatedInputs({
-  index,
-  language,
-  t,
-}: TranslatedInputProps): JSX.Element {
-  return (
-    <>
-      <FormField
-        name={`translations.${index}.language_code`}
-        render={({ field }) => (
-          <FormItem>
-            <Input id='language' type='hidden' {...field} />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name={`translations.${index}.title`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t('event.form.title')}{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <FormControl>
-              <Input id='title' type='text' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        name={`translations.${index}.description`}
-        render={({ field }) => (
-          <FormItem className='mt-2'>
-            <FormLabel>
-              {t('event.form.description')}{' '}
-              <span className='uppercase text-xs tracking-wide select-none'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <FormControl>
-              <Input
-                id='description'
-                type='text'
-                placeholder='Optional'
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </>
-  )
 }
 
 /**
@@ -138,43 +63,37 @@ export default function EventUpload({
 }: EventFormProps): JSX.Element {
   const { student } = useAuthentication()
   const { t } = useTranslation(language, 'bulletin')
-
+  const [isRepeating, setIsRepeating] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [currentColor, setCurrentColor] = useState('#FFFFFF')
-  const tinycolor = require('tinycolor2')
   const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6', '#EF4444']
-  const FormSchema = z
-    .object({
-      date: z.string().date().min(1, 'Date is required'),
-      start_time: z.string().time(),
-      end_time: z.string().time(),
-      repeats: z.boolean().optional().or(z.literal(false)),
-      location: z.string().min(1, 'Location is required'),
-      background_color: z.string().refine(
-        (value) => {
-          return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
-        },
-        {
-          message: 'Invalid color',
-        }
-      ),
-      translations: z.array(
-        z.object({
-          language_code: z.string().optional().or(z.literal('')),
-          title: z.string().min(1, 'Title is required'),
-          description: z.string().optional().or(z.literal('')),
-        })
-      ),
-    })
-    .refine(
-      (data) =>
-        data.end_time.valueOf() > data.start_time.valueOf() + 1 * 60 * 1000,
+
+  const FormSchema = z.object({
+    date: z.string().date(),
+    start_time: z.string().time(),
+    duration: z.number().int().min(1, 'Duration is required'),
+    repeats: z.boolean().optional().or(z.literal(false)),
+    frequency: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']),
+    end_date: z.string().date().optional().or(z.literal('')),
+    max_occurrences: z.coerce.number().optional().or(z.literal(0)),
+    location: z.string().min(1, 'Location is required'),
+    background_color: z.string().refine(
+      (value) => {
+        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
+      },
       {
-        message: 'End time must be after start time',
-        path: ['end_time'],
+        message: 'Invalid color',
       }
-    )
+    ),
+    translations: z.array(
+      z.object({
+        language_code: z.string().optional().or(z.literal('')),
+        title: z.string().min(1, 'Title is required'),
+        description: z.string().optional().or(z.literal('')),
+      })
+    ),
+  })
 
   const eventForm = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -188,7 +107,7 @@ export default function EventUpload({
       }),
       date: selectedDate.toISOString().split('T')[0],
       start_time: '11:00:00',
-      end_time: '12:00:00',
+      duration: 60,
       repeats: false,
       location: '',
       background_color: currentColor,
@@ -208,11 +127,14 @@ export default function EventUpload({
 
   const publish = async (data: z.infer<typeof FormSchema>) => {
     const start_date = new Date(data.date + ' ' + data.start_time)
-    const end_date = new Date(data.date + ' ' + data.end_time)
 
     const json_data = {
       start_date: start_date.toISOString(),
-      end_date: end_date.toISOString(),
+      duration: data.duration,
+      repeats: data.repeats,
+      frequency: data.repeats ? data.frequency : null,
+      end_date: data.repeats ? data.end_date : null,
+      max_occurrences: data.repeats ? data.max_occurrences : null,
       background_color: data.background_color,
       location: data.location,
       author: author,
@@ -235,9 +157,7 @@ export default function EventUpload({
             start_date: start_date.toLocaleString(language, {
               timeZone: 'Europe/Stockholm',
             }),
-            end_date: end_date.toLocaleString(language, {
-              timeZone: 'Europe/Stockholm',
-            }),
+            duration: data.duration,
             background_color: data.background_color,
             location: data.location,
             created_at: new Date().toLocaleDateString(),
@@ -314,12 +234,12 @@ export default function EventUpload({
               />
 
               <FormField
-                name='end_time'
+                name='duration'
                 render={({ field }) => (
                   <FormItem className='col-span-1'>
-                    <FormLabel>{t('event.form.end_time')}</FormLabel>
+                    <FormLabel>{t('event.form.duration')}</FormLabel>
                     <FormControl>
-                      <Input id='end_time' type='time' step={2} {...field} />
+                      <Input id='duration' type='number' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -329,11 +249,22 @@ export default function EventUpload({
 
             <FormField
               name='repeats'
-              disabled
               render={({ field }) => (
                 <FormItem className='flex items-center mt-1'>
                   <FormControl>
-                    <Checkbox id='repeats' {...field} />
+                    <Checkbox
+                      id='repeats'
+                      onClick={(e) => {
+                        console.log(e.currentTarget.value)
+                        setIsRepeating(
+                          e.currentTarget.value === 'on' && !isRepeating
+                        )
+                        setValue(
+                          'repeats',
+                          e.currentTarget.value === 'on' && !isRepeating
+                        )
+                      }}
+                    />
                   </FormControl>
                   <FormLabel className='h-full ml-2 !mt-0'>
                     {t('event.form.repeats')}
@@ -342,6 +273,17 @@ export default function EventUpload({
                 </FormItem>
               )}
             />
+            {isRepeating && (
+              <RepeatingForm
+                language={language}
+                setValue={(value) => {
+                  setValue(
+                    'frequency',
+                    value as 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY'
+                  )
+                }}
+              />
+            )}
 
             <FormField
               name='location'
@@ -438,56 +380,14 @@ export default function EventUpload({
           </Form>
         </form>
       </Tabs>
-
+      {/* 
       <CardFooter className='w-full h-fit mt-3 pt-3 border-t flex flex-col items-start px-0 pb-0'>
-        <h2 className='text-lg font-semibold leading-none tracking-tight mb-2'>
-          {t('event.form.preview')}
-        </h2>
-        <div className='w-52 min-h-36 h-fit border relative self-center'>
-          <p className='absolute top-2 left-2 text-2xl text-neutral-400 select-none'>
-            1
-          </p>
-          <div className='w-full h-fit relative top-10 mb-12 left-0 px-2 flex flex-col gap-1'>
-            {getValues('translations').map((translation, index) => (
-              <div
-                key={index}
-                className={`w-full text-xs rounded-2xl px-2 py-0.5 h-6 border font-bold overflow-hidden ${
-                  tinycolor(currentColor).isDark() ? 'text-white' : 'text-black'
-                }`}
-                style={{
-                  backgroundColor: currentColor,
-                }}
-                onMouseEnter={(e) => {
-                  e.stopPropagation()
-                  const bg = tinycolor(currentColor)
-                  if (bg.isDark()) {
-                    e.currentTarget.style.backgroundColor = bg
-                      .lighten(10)
-                      .toString()
-                  } else {
-                    e.currentTarget.style.backgroundColor = bg
-                      .darken(10)
-                      .toString()
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.stopPropagation()
-                  e.currentTarget.style.backgroundColor = currentColor
-                }}
-              >
-                <div className='w-2 absolute -left-6'>
-                  <span
-                    className={`fi fi-${
-                      LANGUAGES[translation.language_code as LanguageCode].flag
-                    } mr-1`}
-                  />
-                </div>
-                <p className='truncate'>{translation.title}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </CardFooter>
+        <EventPreview
+          language={language}
+          currentColor={currentColor}
+          translations={getValues('translations')}
+        />
+      </CardFooter>*/}
     </DialogContent>
   )
 }

@@ -3,6 +3,7 @@ Content Service
 """
 
 from .author import get_author_from_email
+from .event import generate_ics, generate_events
 from .item import (
     get_items,
     get_items_from_author,
@@ -16,6 +17,9 @@ from .item import (
 
 
 __all__ = [
+    "get_author_from_email",
+    "generate_ics",
+    "generate_events",
     "get_items",
     "get_items_from_author",
     "get_item_by_url",
@@ -24,5 +28,4 @@ __all__ = [
     "delete_item",
     "publish",
     "create_item",
-    "get_author_from_email",
 ]

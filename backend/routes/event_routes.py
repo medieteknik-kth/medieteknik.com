@@ -9,7 +9,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
-from models.content.event import Event, RepeatableEvents
+from models.content.event import Event, RepeatableEvent
 from models.core.student import Student
 from services.content.item import (
     create_item,
@@ -63,12 +63,19 @@ def create_event():
         public=True,
     )
 
-    repeatable = data.get("repeatable")
+    repeatable = data.get("repeats")
 
     if repeatable:
-        repeatable_event = RepeatableEvents(
-            event_id=id,
-            reapeting_interval="weekly",
+        event: Event = Event.query.filter(Event.item_id == id).first_or_404()
+        end_date = data.get("end_date")
+        max_occurrences = data.get("max_occurrences")
+        repeatable_event = RepeatableEvent(
+            event_id=event.event_id,
+            frequency=data.get("frequency"),
+            interval=data.get("interval"),
+            end_date=end_date,
+            max_occurrences=max_occurrences,
+            repeat_forever=end_date is None and max_occurrences is None,
         )
 
         db.session.add(repeatable_event)

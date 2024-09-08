@@ -149,6 +149,8 @@ class Calendar(db.Model):
         calendar = dedent(f"""\
         BEGIN:VCALENDAR
         VERSION:2.0
+        X-WR-CALNAME:{self.name}
+        X-WR-TIMEZONE:Europe/Stockholm
         PRODID:-//medieteknik//Calendar 1.0//{language[0:2].upper()}
         CALSCALE:GREGORIAN""")
 

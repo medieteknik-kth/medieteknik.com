@@ -189,13 +189,15 @@ export default function Events({
                     <PlusIcon className='w-6 h-6' title='Add Event' />
                   </Button>
                 </DialogTrigger>
-                <EventUpload
-                  author={student}
-                  language={language}
-                  selectedDate={selectedDate}
-                  closeMenuCallback={() => setIsOpen(false)}
-                  addEvent={addEvent}
-                />
+                {isOpen && (
+                  <EventUpload
+                    author={student}
+                    language={language}
+                    selectedDate={selectedDate}
+                    closeMenuCallback={() => setIsOpen(false)}
+                    addEvent={addEvent}
+                  />
+                )}
               </Dialog>
             ) : null}
           </div>
@@ -249,13 +251,13 @@ export default function Events({
                           className='h-4 mx-2'
                         />
                         <p className='text-fuchsia-200' title='End time'>
-                          {new Date(event.end_date).toLocaleTimeString(
-                            language,
-                            {
-                              hour: 'numeric',
-                              minute: 'numeric',
-                            }
-                          )}
+                          {new Date(
+                            new Date(event.start_date).getTime() +
+                              event.duration * 60000
+                          ).toLocaleTimeString(language, {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          })}
                         </p>
                         <ClockIcon className='w-6 h-6 ml-1' />
                       </div>
@@ -336,18 +338,22 @@ export default function Events({
                       <div className='absolute left-2 bottom-4 flex items-center'>
                         <div
                           className={`w-4 h-4 rounded-full mr-2 ${
-                            new Date(event.end_date) < new Date()
+                            new Date(event.start_date + event.duration) <
+                            new Date()
                               ? 'bg-red-500'
-                              : new Date(event.end_date) > new Date() &&
+                              : new Date(event.start_date + event.duration) >
+                                  new Date() &&
                                 new Date(event.start_date) < new Date()
                               ? 'bg-green-500'
                               : 'bg-yellow-500'
                           }`}
                         />
                         <p>
-                          {new Date(event.end_date) < new Date()
+                          {new Date(event.start_date + event.duration) <
+                          new Date()
                             ? t('event.ended')
-                            : new Date(event.end_date) > new Date() &&
+                            : new Date(event.start_date + event.duration) >
+                                new Date() &&
                               new Date(event.start_date) < new Date()
                             ? t('event.ongoing')
                             : t('event.upcoming')}
