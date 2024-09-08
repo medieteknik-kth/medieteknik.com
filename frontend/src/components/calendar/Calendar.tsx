@@ -1,9 +1,5 @@
 import { Event } from '@/models/Items'
 import {
-  startOfMonth,
-  subWeeks,
-  startOfWeek,
-  addDays,
   getDaysInMonth,
   setDate,
   addMonths,
@@ -13,7 +9,7 @@ import {
 } from 'date-fns'
 import { useCalendar } from '@/providers/CalendarProvider'
 import './calendar.css'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import EventComponent from './EventComponent'
 
 interface CalendarProps {
@@ -28,20 +24,29 @@ interface CalendarProps {
  * @param {Date} currentDate - The current date.
  * @return {Date[]} An array of dates representing the last week of the previous month adjusted to include only dates that are before the start of the current month.
  */
-function getPreviousMonthsLastWeekAdjusted(currentDate: Date): Date[] {
-  const startOfCurrentMonth = startOfMonth(currentDate)
+function getPreviousMonthLastWeekToCurrent(date: Date): Date[] {
+  const firstDayOfCurrentMonth = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    1
+  )
+  const lastDayOfPreviousMonth = new Date(firstDayOfCurrentMonth)
+  lastDayOfPreviousMonth.setDate(0)
 
-  const lastWeekOfPreviousMonthEnd = subWeeks(startOfCurrentMonth, 0)
-  const lastWeekOfPreviousMonthStart = startOfWeek(lastWeekOfPreviousMonthEnd)
+  const result: Date[] = []
+  let currentDay = new Date(lastDayOfPreviousMonth)
 
-  let lastWeekAdjusted = []
-  for (let i = 1; i <= 5; i++) {
-    const date = addDays(lastWeekOfPreviousMonthStart, i)
-    if (date < startOfCurrentMonth) {
-      lastWeekAdjusted.push(date)
-    }
+  // Go back to the Monday (or first day of the week) of the last week
+  const daysToSubtract = (currentDay.getDay() + 6) % 7
+  currentDay.setDate(currentDay.getDate() - daysToSubtract)
+
+  // Add days until we reach the first day of the current month
+  while (currentDay < firstDayOfCurrentMonth) {
+    result.push(new Date(currentDay))
+    currentDay.setDate(currentDay.getDate() + 1)
   }
-  return lastWeekAdjusted
+
+  return result
 }
 
 /**
@@ -64,11 +69,9 @@ const sortEvents = (events: Event[]): Event[] =>
  * @return {Event[]} The filtered list of events for the given date.
  */
 const filterEventsForDate = (events: Event[], date: Date): Event[] =>
-  events.filter(
-    (event) =>
-      isSameMonth(new Date(event.start_date), date) &&
-      isSameDay(new Date(event.start_date), date)
-  )
+  events.filter((event) => {
+    return isSameDay(new Date(event.start_date), date)
+  })
 
 function displayEvents(
   events: Event[],
@@ -90,14 +93,14 @@ function displayEvents(
 }
 
 export default function Calendar({
-  onDateClickCallback = () => {},
-  onEventClickCallback = () => {},
+  onDateClickCallback = (date: Date) => {},
+  onEventClickCallback = (event: Event) => {},
   children,
 }: CalendarProps) {
   const { date, selectedDate, setSelectedDate, events } = useCalendar()
   const totalDays = useMemo(() => getDaysInMonth(new Date(date)), [date])
   const previousMonthLastWeek = useMemo(
-    () => getPreviousMonthsLastWeekAdjusted(new Date(date)),
+    () => getPreviousMonthLastWeekToCurrent(date),
     [date]
   )
 
@@ -163,8 +166,12 @@ export default function Calendar({
               isSameMonth(new Date(), date)
                 ? 'text-red-400'
                 : 'text-neutral-400'
-            }
-            `}
+            }`}
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedDate(new Date(setDate(date, index + 1)))
+              onDateClickCallback(new Date(setDate(date, index + 1)))
+            }}
           >
             <p
               className={`absolute top-2 left-2 text-md sm:text-2xl select-none z-20`}
@@ -179,11 +186,6 @@ export default function Calendar({
                     ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-400/25 dark:hover:bg-yellow-400/50'
                     : 'hover:bg-yellow-200/50 dark:hover:bg-yellow-400/50'
                 } `}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedDate(new Date(setDate(date, index + 1)))
-                  onDateClickCallback(new Date(setDate(date, index + 1)))
-                }}
               />
               <div className='w-full absolute top-10 left-0 text-black font-bold px-2 max-h-[92px] overflow-y-auto'>
                 {displayEvents(
@@ -212,7 +214,7 @@ export default function Calendar({
             <div className='w-full absolute top-10 left-0 text-black font-bold px-2 max-h-[92px] overflow-y-auto'>
               {displayEvents(
                 events,
-                addMonths(new Date(date), 1),
+                addMonths(setDate(new Date(date), index + 1), 1),
                 onEventClickCallback
               )}
             </div>

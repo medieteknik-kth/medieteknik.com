@@ -12,6 +12,7 @@ from sqlalchemy import or_
 
 from models.content.event import Event
 from models.core.student import Student
+from services.content.event import generate_events, generate_ics
 from services.content.public.calendar import get_main_calendar
 from utility.translation import retrieve_languages
 
@@ -38,21 +39,34 @@ def get_calendar_ics():
     date = datetime.now()
 
     start_date = (date - timedelta(days=1)).replace(day=1)
-    _, next_month_end_day = monthrange(date.year, date.month + 1)
-    end_date = date.replace(day=next_month_end_day)  # Make end_date inclusive
+
+    # Handle year and month transition for the next month
+    if date.month == 12:
+        next_month = 1
+        next_month_year = date.year + 1
+    else:
+        next_month = date.month + 1
+        next_month_year = date.year
+
+    _, next_month_end_day = monthrange(next_month_year, next_month)
+    end_date = date.replace(
+        year=next_month_year, month=next_month, day=next_month_end_day
+    )  # Make end_date inclusive
 
     # Adjusted filter conditions for overlapping events and inclusivity
-    events: List[Event] = Event.query.filter(
+    events = Event.query.filter(
         Event.calendar_id == main_calendar.calendar_id,
         or_(
-            Event.start_date.between(start_date, end_date),  # Starts within range
-            Event.end_date.between(start_date, end_date),  # Ends within range
-            (Event.start_date < start_date)
-            & (Event.end_date > end_date),  # Spans the range
+            Event.start_date <= end_date,  # Starts before or on the end date
+            Event.start_date >= start_date,  # Starts after or on the start date
         ),
     ).all()
 
     return Response(
-        get_main_calendar().to_ics(events, provided_langauges[0]),
+        response=generate_ics(
+            calendar=main_calendar,
+            events=events,
+            language=provided_langauges[0],
+        ),
         mimetype="text/calendar",
     )

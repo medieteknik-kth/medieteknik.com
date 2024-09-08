@@ -1,9 +1,10 @@
 from calendar import monthrange
 from datetime import datetime, timedelta
 from typing import List
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, func, or_
 from models.content import Calendar, Event
-from models.content.event import RepeatableEvents
+from models.content.event import RepeatableEvent
+from services.content.event import generate_events
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 
@@ -48,39 +49,39 @@ def get_events_monthly(
     )  # Make end_date inclusive
 
     # Adjusted filter conditions for overlapping events and inclusivity
-    events: List[Event] = Event.query.filter(
+    events = Event.query.filter(
         Event.calendar_id == main_calendar.calendar_id,
         or_(
-            Event.start_date.between(start_date, end_date),  # Starts within range
-            Event.end_date.between(start_date, end_date),  # Ends within range
-            (Event.start_date < start_date)
-            & (Event.end_date > end_date),  # Spans the range
+            Event.start_date <= end_date,  # Starts before or on the end date
+            Event.start_date >= start_date,  # Starts after or on the start date
         ),
     ).all()
 
-    #repeatable_events: List[RepeatableEvents] = RepeatableEvents.query.all()
+    all_event_occurrences = []
+    for event in events:
+        if event.repeatable_event:
+            occurrences = generate_events(event, start_date, end_date)
+            all_event_occurrences.extend(occurrences)
 
-    event_dict = [
-        event_dict
-        for event in events
-        if (
-            event_dict := event.to_dict(
-                is_public_route=True, provided_languages=provided_languages
-            )
-        )
-        is not None
-    ]
-
-    #for repeatable_event in repeatable_events:
-    #    referenced_event = Event.query.get(repeatable_event.event_id)
-        
+        else:
+            if event.start_date >= start_date and event.start_date <= end_date:
+                all_event_occurrences.append(
+                    {
+                        "event": event,
+                        "start_date": event.start_date,
+                        "end_date": (
+                            event.start_date + timedelta(minutes=event.duration)
+                        ),
+                    }
+                )
 
     return [
         event_dict
-        for event in events
+        for event_occurrence in all_event_occurrences
         if (
-            event_dict := event.to_dict(
-                is_public_route=True, provided_languages=provided_languages
+            event_dict := event_occurrence["event"].to_dict(
+                provided_languages=provided_languages,
+                custom_start_date=event_occurrence["start_date"].strftime("%Y-%m-%d"),
             )
         )
         is not None

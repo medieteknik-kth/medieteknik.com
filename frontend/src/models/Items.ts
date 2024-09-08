@@ -65,7 +65,7 @@ export interface NewsTranslation {
 export interface Event extends Item {
   location: string
   start_date: string
-  end_date: string
+  duration: number,
   background_color: string
   translations: EventTranslation[]
 }
