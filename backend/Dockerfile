@@ -14,6 +14,7 @@ COPY . /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
+COPY env/service-account-file.json /app/service-account-file.json
 
 # Expose port 80
 EXPOSE 80

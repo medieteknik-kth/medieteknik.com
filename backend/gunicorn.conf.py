@@ -6,7 +6,7 @@ import multiprocessing
 import os
 from dotenv import load_dotenv
 
-loglevel = "debug"
+loglevel = os.environ.get("LOG_LEVEL", "info")
 workers = 3 * round(multiprocessing.cpu_count() / 2) + 1
 bind = "0.0.0.0:80"
 timeout = 120

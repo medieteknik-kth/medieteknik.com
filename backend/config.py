@@ -7,11 +7,13 @@ import os
 
 # App
 PREFERRED_URL_SCHEME = "https"
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = (
+    True if os.environ.get("FLASK_ENV", "development") == "production" else False
+)
 
 # Database
 SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = True if os.environ.get("SQLALCHEMY_ECHO") == "True" else False
 
 # Security
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -21,9 +23,15 @@ WTF_CSRF_CHECK_DEFAULT = False
 JWT_COOKIE_CSRF_PROTECT = False
 
 # JWT
-JWT_COOKIE_SECURE = True
+JWT_COOKIE_SECURE = (
+    True if os.environ.get("FLASK_ENV", "development") == "production" else False
+)
 JWT_TOKEN_LOCATION = ["cookies"]
-JWT_COOKIE_DOMAIN = ".medieteknik.com"
+JWT_COOKIE_DOMAIN = (
+    ".medieteknik.com"
+    if os.environ.get("FLASK_ENV", "development") == "production"
+    else "localhost"
+)
 JWT_SESSION_COOKIE = False
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
 JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
