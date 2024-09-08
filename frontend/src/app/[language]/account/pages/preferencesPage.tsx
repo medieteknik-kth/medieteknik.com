@@ -56,10 +56,10 @@ export default function PreferencesPage({ language }: { language: string }) {
                     >
                       <span
                         className={`fi fi-${
-                          LANGUAGES[language as LanguageCode].flag
+                          LANGUAGES[lang as LanguageCode].flag
                         } mr-2`}
                       />
-                      <p>{LANGUAGES[language as LanguageCode].name}</p>
+                      <p>{LANGUAGES[lang as LanguageCode].name}</p>
                     </Button>
                   </li>
                 ))}

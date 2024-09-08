@@ -102,7 +102,13 @@ function TranslatedInputs({
   )
 }
 
-export default function RecruitmentForm({ language }: { language: string }) {
+export default function RecruitmentForm({
+  language,
+  onSuccess,
+}: {
+  language: string
+  onSuccess: () => void
+}) {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { positions } = useCommitteeManagement()
   const { positions: studentPositions } = useAuthentication()
@@ -203,6 +209,8 @@ export default function RecruitmentForm({ language }: { language: string }) {
     if (!response.ok) {
       throw new Error('Failed to recruit position')
     }
+
+    onSuccess()
   }
 
   return (

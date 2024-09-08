@@ -57,6 +57,7 @@ export default function MembersPage({
   const [isLoading, setIsLoading] = useState(true)
   const [addPositionOpen, setAddPositionOpen] = useState(false)
   const [addMemberOpen, setAddMemberOpen] = useState(false)
+  const [recruitmentOpen, setRecruitmentOpen] = useState(false)
   const {
     members,
     positions,
@@ -195,7 +196,7 @@ export default function MembersPage({
                 />
               </Dialog>
 
-              <Dialog>
+              <Dialog open={recruitmentOpen} onOpenChange={setRecruitmentOpen}>
                 <DialogTrigger asChild>
                   <Button
                     variant={'outline'}
@@ -209,7 +210,13 @@ export default function MembersPage({
                     Recruit
                   </Button>
                 </DialogTrigger>
-                <RecruitmentForm language={language} />
+                <RecruitmentForm
+                  language={language}
+                  onSuccess={() => {
+                    setRecruitmentOpen(false)
+                    window.location.reload()
+                  }}
+                />
               </Dialog>
               <Dialog>
                 <DialogTrigger asChild>

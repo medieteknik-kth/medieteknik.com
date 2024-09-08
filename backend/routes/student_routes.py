@@ -182,6 +182,9 @@ def get_student_callback():
         if not position or not isinstance(position, CommitteePosition):
             continue
 
+        if not position.committee_id:
+            continue
+
         committee = Committee.query.get(position.committee_id)
         if not committee or not isinstance(committee, Committee):
             continue

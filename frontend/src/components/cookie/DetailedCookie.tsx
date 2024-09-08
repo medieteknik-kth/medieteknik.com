@@ -64,7 +64,7 @@ export default function DetailedCookiePopup({
   const availableCookies: string[] = Object.values(CookieConsent)
 
   return (
-    <div className='w-full lg:w-1/2 2xl:w-1/4 h-5/6 fixed top-20 rounded-3xl overflow-hidden bg-white border-r-2 border-black'>
+    <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white border-r-2 border-black'>
       <div className='w-full flex items-center py-4 border-b-2 border-black/50 mb-4 pl-8'>
         <Image src={Logo.src} alt='Company Logo' width='46' height='46' />
         <h1 className='text-3xl ml-4'>{commonTranslation('title')}</h1>

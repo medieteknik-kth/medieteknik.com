@@ -187,11 +187,12 @@ def update(request: Request, student: Student) -> Response:
     currentPassword = request.form.get("current_password")
     newPassword = request.form.get("new_password")
 
-    if not currentPassword:
-        return jsonify({"error": "No current password provided"}), 400
+    if not profile_picture or (not newPassword and not currentPassword):
+        return jsonify({"error": "Must specifiy atleast one field"}), 400
 
-    if not check_password_hash(getattr(student, "password_hash"), currentPassword):
-        return jsonify({"error": "Invalid current password"}), 400
+    if newPassword:
+        if not currentPassword:
+            return jsonify({"error": "Current password is required"}), 400
 
     file_extension = profile_picture.filename.split(".")[-1]
 
@@ -211,6 +212,12 @@ def update(request: Request, student: Student) -> Response:
         setattr(student, "profile_picture_url", result)
 
     if newPassword:
+        if not currentPassword:
+            return jsonify({"error": "Current password is required"}), 400
+
+        if not check_password_hash(getattr(student, "password_hash"), currentPassword):
+            return jsonify({"error": "Invalid current password"}), 400
+
         result = assign_password({"email": student.email, "password": newPassword})
         if not result:
             return jsonify({"error": "Failed to update password"}), 500

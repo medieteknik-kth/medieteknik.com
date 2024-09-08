@@ -7,7 +7,7 @@ from .author import Author, AuthorResource, AuthorType
 from .base import Item, PublishedStatus
 from .calendar import Calendar
 from .document import Document, DocumentTranslation
-from .event import Event, RepeatableEvents, EventTranslation
+from .event import Event, RepeatableEvent, EventTranslation, Frequency
 from .news import News, NewsTranslation
 from .tags import Tag, TagTranslation
 
@@ -22,8 +22,9 @@ __all__ = [
     "Document",
     "DocumentTranslation",
     "Event",
-    "RepeatableEvents",
+    "RepeatableEvent",
     "EventTranslation",
+    "Frequency",
     "Calendar",
     "News",
     "NewsTranslation",

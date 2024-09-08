@@ -4,6 +4,7 @@ Routes for the backend.
 All routes are registered here via the `register_routes` function.
 """
 
+import os
 import secrets
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, make_response, request, session, url_for
@@ -21,7 +22,7 @@ from models.core.student import Student, StudentMembership
 from services.core.student import get_permissions, retrieve_extra_claims
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
-from utility.authorization import oidc, oauth
+from utility.authorization import oauth
 from utility.database import db
 
 
@@ -117,9 +118,14 @@ def register_routes(app: Flask):
         """
         if request.method == "OPTIONS":
             response = make_response()
-            response.headers.add(
-                "Access-Control-Allow-Origin", "https://www.medieteknik.com"
-            )
+            if os.environ.get("FLASK_ENV", "development") == "development":
+                response.headers.add(
+                    "Access-Control-Allow-Origin", "http://localhost:3000"
+                )
+            else:
+                response.headers.add(
+                    "Access-Control-Allow-Origin", "https://www.medieteknik.com"
+                )
             response.headers.add(
                 "Access-Control-Allow-Headers",
                 "Content-Type,Authorization,X-CSRF-Token",
@@ -258,7 +264,7 @@ def register_routes(app: Flask):
         if not student:
             student = Student(
                 email=student_email,
-                first_name=student_data.get("username"),
+                first_name=student_email,
                 password_hash="",
             )
 
