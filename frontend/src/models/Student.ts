@@ -25,7 +25,7 @@ export default interface Student {
   student_id: string;
   email: string;
   first_name: string;
-  last_name: string;
+  last_name?: string;
   profile_picture_url?: string;
   reception_name?: string;
   reception_profile_picture_url?: string;

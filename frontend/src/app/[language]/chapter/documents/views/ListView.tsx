@@ -77,7 +77,7 @@ export default function ListView({ language, type }: Props) {
     switch (author.author_type) {
       case 'STUDENT':
         const student = author as Student
-        return student.first_name + ' ' + student.last_name
+        return student.first_name + ' ' + (student.last_name || '')
       case 'COMMITTEE':
         const committee = author as Committee
         return committee.translations[0].title

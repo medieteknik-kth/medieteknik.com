@@ -29,7 +29,7 @@ export function StudentTooltip({ student }: { student: Student }) {
             />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>
-          <p>{student.first_name + ' ' + student.last_name}</p>
+          <p>{student.first_name + ' ' + (student.last_name || '')}</p>
         </Link>
       </Button>
       <Button
@@ -39,10 +39,10 @@ export function StudentTooltip({ student }: { student: Student }) {
         <Link
           href={`mailto:${student.email}`}
           title={`Send email to ${
-            student.first_name + ' ' + student.last_name
+            student.first_name + ' ' + (student.last_name || '')
           }`}
           aria-label={`Send email to ${
-            student.first_name + ' ' + student.last_name
+            student.first_name + ' ' + (student.last_name || '')
           }`}
         >
           <span>{student.email}</span>

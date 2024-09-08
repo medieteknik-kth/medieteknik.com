@@ -82,8 +82,8 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
                   : newsItem.author.author_type === 'COMMITTEE_POSITION'
                   ? (newsItem.author as CommitteePosition).translations[0].title
                   : (newsItem.author as Student).first_name +
-                    ' ' +
-                    (newsItem.author as Student).last_name}
+                      ' ' +
+                      (newsItem.author as Student).last_name || ''}
               </HoverCardTrigger>
               <HoverCardContent>
                 {newsItem.author.author_type === 'COMMITTEE' ? (

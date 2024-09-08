@@ -51,7 +51,7 @@ export default async function StudentPage({
           </Avatar>
           <div className='w-[512px] relative h-full flex flex-col justify-center ml-12 '>
             <h1 className='text-5xl tracking-wide'>
-              {data.student.first_name + ' ' + data.student.last_name}
+              {data.student.first_name + ' ' + (data.student.last_name || '')}
             </h1>
             <Link
               href={`mailto:${data.student.email}`}

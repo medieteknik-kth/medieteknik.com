@@ -250,7 +250,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           <p className='text-xl max-h-14 overflow-hidden'>
                             {member.student.first_name +
                               ' ' +
-                              member.student.last_name}
+                              (member.student.last_name || '')}
                           </p>
                           <Link
                             href={`mailto:${member.position.email}`}

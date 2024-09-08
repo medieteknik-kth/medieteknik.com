@@ -262,7 +262,9 @@ export default function AccountForm({
                     <Input
                       {...field}
                       title='Contact an administrator to change your name'
-                      value={student.first_name + ' ' + student.last_name}
+                      value={
+                        student.first_name + ' ' + (student.last_name || '')
+                      }
                       readOnly
                       autoComplete='off'
                     />

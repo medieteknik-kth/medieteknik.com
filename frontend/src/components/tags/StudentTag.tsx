@@ -44,12 +44,12 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
               <Avatar className='w-10 h-10 mr-2'>
                 <AvatarImage
                   src={student.profile_picture_url || FallbackImage.src}
-                  alt={student.first_name + ' ' + student.last_name}
+                  alt={student.first_name + ' ' + (student.last_name || '')}
                 />
                 <AvatarFallback>
                   {student.first_name +
                     ' ' +
-                    student.last_name +
+                    (student.last_name || '') +
                     ' Profile Picture'}
                 </AvatarFallback>
               </Avatar>
@@ -59,7 +59,7 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                 {(includeAt ? '@ ' : '') +
                   student.first_name +
                   ' ' +
-                  student.last_name}
+                  (student.last_name || '')}
               </p>
               {children}
             </div>
