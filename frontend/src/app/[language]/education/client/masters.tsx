@@ -28,6 +28,7 @@ import ClassNames from 'embla-carousel-class-names'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Section } from '@/components/static/Static'
+import { useTranslation } from '@/app/i18n/client'
 
 interface CarouselItem {
   id: number
@@ -38,80 +39,25 @@ interface CarouselItem {
   keyAreas: string[]
 }
 
-const carouselItems: CarouselItem[] = [
-  {
-    id: 1,
-    title: 'Computer Science',
-    description:
-      'Computer Science is the study of computers and computational systems. Unlike electrical and computer engineers, computer scientists deal mostly with software and software systems; this includes their theory, design, development, and application.',
-    image: ComputerScienceBG,
-    kthLink: 'https://www.kth.se/en/studies/master/computer-science',
-    keyAreas: [
-      'AI',
-      'Networking and Communication',
-      'Security',
-      'Data Science',
-      'Algorithms and Complexity',
-    ],
-  },
-  {
-    id: 2,
-    title: 'Interactive Media Technology',
-    description:
-      "Interactive Media Technology is a two-year master's programme that focuses on Interactive Media, Computer Graphics and Computer Games. The programme offers a broad theoretical foundation in the field of interactive media technology, and the ability to apply this knowledge to create future interactive media.",
-    image: InteractiveMediaBG,
-    kthLink:
-      'https://www.kth.se/en/studies/master/interactive-media-technology',
-    keyAreas: [
-      'Graphics and Visualisation',
-      'Interactive Systems',
-      'User Experience',
-      'Sound and Music Computing',
-    ],
-  },
-  {
-    id: 3,
-    title: 'ICT Innovation',
-    description:
-      "ICT Innovation is a two-year master's programme that focuses on the analysis, design, use and development of complex software systems and services for the needs of industry and society. The programme offers a broad theoretical foundation in the field of software technology and the ability to apply this knowledge to solve real-world problems.",
-    image: ICTBG,
-    kthLink: 'https://www.kth.se/en/studies/master/ict-innovation/',
-    keyAreas: [
-      'Marketing and Market Analysis',
-      'Consulting and Management',
-      'Systems and Software',
-      'Entrepreneur',
-    ],
-  },
-  {
-    id: 4,
-    title: 'Machine Learning',
-    description:
-      "Machine Learning is a two-year master's programme that focuses on the theoretical foundation of machine learning and computational learning theory, as well as the practical application of machine learning methods to real-world problems.",
-    image: MachineLearingBG,
-    kthLink: 'https://www.kth.se/en/studies/master/machine-learning/',
-    keyAreas: ['Machine Learning', 'AI', 'Optimization', 'Computer Vision'],
-  },
-  {
-    id: 5,
-    title: 'Sustainable Digitalisation',
-    description:
-      'Digitalisation is a powerful driver of societal change; it offers the potential to build resilience for a volatile, uncertain, complex and ambiguous future. But digitalisation can also be problematic if it speeds up unsustainable trends.',
-    image: SustainableDigitalisationBG,
-    kthLink: 'https://www.kth.se/en/studies/master/sustainable-digitalisation',
-    keyAreas: [
-      'Sustainability',
-      'Digitalisation',
-      'Innovation',
-      'Strategic Leadership',
-    ],
-  },
-]
+interface Master {
+  title: string
+  description: string
+  kth_link: string
+  flags?: {
+    flag: string
+    description: string
+  }[]
+  tags: string[]
+}
 
-export default function Masters() {
+export default function Masters({ language }: { language: string }) {
+  const { t } = useTranslation(language, 'education')
+
+  const masters: Master[] = t('masters', { returnObjects: true })
+
   return (
     <Section
-      title='Masters'
+      title={t('master_programs')}
       metadata={{
         background: '#222222',
         textColor: '#ffffff',
@@ -127,9 +73,9 @@ export default function Masters() {
           plugins={[ClassNames({ inView: 'in-view', snapped: 'snapped' })]}
         >
           <CarouselContent className='w-full ml-0 xl:-pl-4'>
-            {carouselItems.map((item) => (
+            {masters.map((item) => (
               <CarouselItem
-                key={item.id}
+                key={item.title}
                 className='basis-full xl:basis-1/3 relative rounded-md overflow-hidden grid place-items-center pl-0 xl:pl-4'
               >
                 <div className='blurred w-full h-full z-20 absolute left-4 rounded-md' />
@@ -138,7 +84,7 @@ export default function Masters() {
                   <CardHeader className='w-fit'>
                     <CardTitle>{item.title}</CardTitle>
                     <div className='flex flex-wrap gap-1'>
-                      {item.keyAreas.map((keyArea, index) => (
+                      {item.tags.map((keyArea, index) => (
                         <Badge
                           key={index}
                           variant={
@@ -156,16 +102,15 @@ export default function Masters() {
                     </div>
                   </CardHeader>
                   <CardContent>{item.description}</CardContent>
-                  <CardFooter>
-                    <Button asChild size='icon' title='Read more at KTH'>
-                      <Link
-                        href={item.kthLink}
-                        target='_blank'
-                        className='w-fit'
-                      >
-                        <KTH className='w-10 h-10 rounded-md brightness-110' />
-                      </Link>
-                    </Button>
+                  <CardFooter className='flex justify-center sm:justify-start'>
+                    <Link
+                      href={item.kth_link}
+                      target='_blank'
+                      className='w-20 sm:w-full h-20 flex items-center justify-center sm:justify-start gap-2 hover:underline underline-offset-4 dark:decoration-yellow-400 decoration-sky-700 border rounded-md px-4 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    >
+                      <KTH className='w-10 h-10 rounded-md' />
+                      <p className='hidden sm:block'>{t('read_more')}</p>
+                    </Link>
                   </CardFooter>
                 </Card>
               </CarouselItem>

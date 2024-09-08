@@ -1,9 +1,6 @@
 {
     "profile": "Profile",
     "login": "Login",
-    "preferences": "Preferences",
-    "languagePreference": "Language",
-    "themePreference": "Theme",
     "notifications": "Notifications",
     "navs": [
         {

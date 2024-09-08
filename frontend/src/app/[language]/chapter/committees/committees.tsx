@@ -7,6 +7,7 @@ import {
   GetCommitteeCategories,
   GetCommitteeCategoryCommittees,
 } from '@/api/committee'
+import { useTranslation } from '@/app/i18n'
 
 interface CommitteeCategoryWithCommittees extends CommitteeCategory {
   committees: Committee[]
@@ -21,6 +22,7 @@ export default async function CommitteeList({
 }) {
   const committeeCategories = await GetCommitteeCategories(language)
   const categoriesWithCommittees: CommitteeCategoryWithCommittees[] = []
+  const { t } = await useTranslation(language, 'committee')
 
   if (!committeeCategories) {
     return (
@@ -59,12 +61,12 @@ export default async function CommitteeList({
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title='Committees' />
+      <Head title={t('title')} />
 
       <div className='w-fit flex flex-col gap-10 py-10 sm:px-16 xl:px-52 desktop:px-96 dark:bg-[#111]'>
         {categoriesWithCommittees.length === 0 && (
           <div className='w-full h-full flex justify-center items-center'>
-            <h2 className='text-2xl lg:text-4xl'>No committees found</h2>
+            <h2 className='text-2xl lg:text-4xl'>{t('not_found')}</h2>
           </div>
         )}
         {categoriesWithCommittees.length > 0 &&
@@ -81,7 +83,7 @@ export default async function CommitteeList({
                 className={`w-full sm:w-fit h-fit *:h-[200px] flex justify-center sm:justify-start flex-wrap py-4 gap-4`}
               >
                 {data.committees.length === 0 && (
-                  <p className='w-full text-center'>No committees found</p>
+                  <p className='w-full text-center'>{t('not_found')}</p>
                 )}
                 {data.committees.length > 0 &&
                   data.committees

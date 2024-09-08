@@ -1,6 +1,5 @@
 import Masters from './client/masters'
 import Courses from './client/courses'
-import BG from 'public/images/kth-landskap.jpg'
 import KTH from 'public/images/svg/kth.svg'
 import { Head, Section } from '@/components/static/Static'
 import Link from 'next/link'
@@ -11,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/app/i18n'
 
 interface Props {
   params: {
@@ -24,18 +24,16 @@ interface Props {
  *
  * @param {object} params - The dynamic route parameters
  * @param {string} params.language - The language of the page
- * @returns {JSX.Element} The education page
+ * @returns {Promise<JSX.Element>} The education page
  */
-export default function Education({
+export default async function Education({
   params: { language },
-}: Props): JSX.Element {
+}: Props): Promise<JSX.Element> {
+  const { t } = await useTranslation(language, 'education')
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head
-        title='Media Technology'
-        description='Medieteknikens roll i samhället växer, från nyhetssajter till virtuella miljöer, med potential att både motivera hållbara val och väcka frågor om etik och design.'
-      >
+      <Head title={t('title')} description={t('description')}>
         <div className='absolute left-20 bottom-4 flex gap-8'>
           <Button
             size={'icon'}
@@ -79,9 +77,9 @@ export default function Education({
 
       <Courses language={language} />
 
-      <Masters />
+      <Masters language={language} />
 
-      <Section title='Study Counciling'>
+      <Section title={t('study_counselor')}>
         <div className='w-full h-fit flex justify-center items-center py-10 gap-20 flex-wrap'>
           <div className='w-fit xl:w-[750px] h-3/4 flex flex-col justify-center px-10'>
             <p>
@@ -91,7 +89,7 @@ export default function Education({
               studievanor och studieteknik eller återupptag av studier efter
               studieuppehåll.
             </p>
-            <div className='grid auto-rows-max *:h-20'>
+            <div className='flex flex-col gap-4'>
               <div className='flex justify-start items-center flex-wrap gap-2'>
                 <div className='w-12 h-12 grid place-items-center rounded-full'>
                   <EnvelopeIcon className='w-8 h-8' />
@@ -119,7 +117,7 @@ export default function Education({
               <Link
                 href='https://www.kth.se/profile/lenasm'
                 target='_blank'
-                className='flex items-center gap-2 hover:underline underline-offset-4 dark:decoration-yellow-400 decoration-sky-700 border rounded-md px-4 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                className='flex h-20 items-center gap-2 hover:underline underline-offset-4 dark:decoration-yellow-400 decoration-sky-700 border rounded-md px-4 hover:bg-neutral-100 dark:hover:bg-neutral-800'
               >
                 <KTH className='w-10 h-10 rounded-md' />
                 Se hela profilen på KTH.se

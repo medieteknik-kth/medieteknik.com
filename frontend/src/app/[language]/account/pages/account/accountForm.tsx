@@ -1,7 +1,7 @@
 'use client'
 
 import Logo from 'public/images/logo.webp'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -26,6 +26,7 @@ import Image from 'next/image'
 import { API_BASE_URL } from '@/utility/Constants'
 import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
+import { useTranslation } from '@/app/i18n/client'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -42,16 +43,10 @@ export default function AccountForm({
 }: {
   params: { language: string }
 }) {
+  const { t } = useTranslation(language, 'account')
   const { student } = useAuthentication()
   const [profilePicturePreview, setProfilePicturePreview] =
     useState<File | null>()
-
-  const handleUploadImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = event.target.files
-    if (!selectedFiles) return
-
-    setProfilePicturePreview(selectedFiles[0])
-  }
 
   if (!student) return null
   const {
@@ -71,7 +66,7 @@ export default function AccountForm({
   ]
 
   const AccountFormSchema = z.object({
-    profilePicture: z.instanceof(window.File).optional(),
+    profilePicture: z.instanceof(window.File).optional().or(z.literal('')),
     emailTwo: z.string().email().optional().or(z.literal('')),
     emailThree: z.string().email().optional().or(z.literal('')),
     currentPassword: z.string().min(3).optional().or(z.literal('')),
@@ -187,7 +182,7 @@ export default function AccountForm({
             onSubmit={accountForm.handleSubmit(postAccountForm)}
           >
             <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
-              Account Settings
+              {t('tab_account_settings')}
             </h2>
             <FormField
               name='profilePicture'
@@ -208,11 +203,11 @@ export default function AccountForm({
                       </AvatarFallback>
                     </Avatar>
                     <div className='flex flex-col justify-center ml-2'>
-                      <FormLabel className='pb-1'>Profile Picture</FormLabel>
+                      <FormLabel className='pb-1'>
+                        {t('account_profile_picture')}
+                      </FormLabel>
                       <FormDescription>
-                        PNG or JPG up to 500kb
-                        <br />
-                        Aspect Ratio 1:1
+                        {t('account_profile_picture_requirements')}
                       </FormDescription>
                     </div>
                   </div>
@@ -262,7 +257,7 @@ export default function AccountForm({
               disabled
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t('account_name')}</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -272,7 +267,9 @@ export default function AccountForm({
                       autoComplete='off'
                     />
                   </FormControl>
-                  <FormDescription>Your full name</FormDescription>
+                  <FormDescription>
+                    {t('account_name_description')}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -283,7 +280,7 @@ export default function AccountForm({
                 disabled
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Emails</FormLabel>
+                    <FormLabel>{t('account_email')}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -330,7 +327,7 @@ export default function AccountForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Manage your accounts email for external services
+                      {t('account_email_description')}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -343,15 +340,15 @@ export default function AccountForm({
                 name='currentPassword'
                 render={({ field }) => (
                   <FormItem className='pr-2'>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t('account_password')}</FormLabel>
                     <FormDescription>
-                      Can be used to change your password
+                      {t('account_current_password_description')}
                     </FormDescription>
                     <FormControl>
                       <Input
                         {...field}
                         type='password'
-                        placeholder='Current Password'
+                        placeholder={t('account_current_password')}
                         autoComplete='current-password'
                       />
                     </FormControl>
@@ -365,13 +362,13 @@ export default function AccountForm({
                 render={({ field }) => (
                   <FormItem className='pl-2 mt-8'>
                     <FormDescription>
-                      Leave blank if you do not want to change your password
+                      {t('account_new_password_description')}
                     </FormDescription>
                     <FormControl>
                       <Input
                         {...field}
                         type='password'
-                        placeholder='New Password'
+                        placeholder={t('account_new_password')}
                         autoComplete='new-password'
                       />
                     </FormControl>
@@ -392,7 +389,7 @@ export default function AccountForm({
                 accountForm.setValue('csrf_token', csrf.token)
               }}
             >
-              Save
+              {t('save_changes')}
             </Button>
           </form>
         </div>
