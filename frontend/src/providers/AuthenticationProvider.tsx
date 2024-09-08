@@ -201,7 +201,11 @@ const initialState: AuthenticationState = {
 }
 
 interface AuthenticationContextType extends AuthenticationState {
-  login: (email: string, password: string, csrf_token: string) => void
+  login: (
+    email: string,
+    password: string,
+    csrf_token: string
+  ) => Promise<boolean>
   logout: () => void
   register: () => void
   setStudent: (student: Student) => void
@@ -242,7 +246,7 @@ const createAuthFunctions = (
     email: string,
     password: string,
     csrf_token: string
-  ): Promise<void> => {
+  ): Promise<boolean> => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
       const json_data = {
@@ -268,12 +272,15 @@ const createAuthFunctions = (
         dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
         dispatch({ type: 'SET_POSITIONS', payload: json.positions })
         dispatch({ type: 'LOGIN' })
+        return true
       } else {
         dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
+        return false
       }
     } catch (error) {
-      console.error(error)
       dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
+      console.error(error)
+      return false
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
@@ -389,7 +396,6 @@ export function AuthenticationProvider({
           dispatch({ type: 'LOGOUT' })
         }
       } catch (error) {
-        console.error(error)
         dispatch({ type: 'LOGOUT' })
         dispatch({
           type: 'SET_ERROR',

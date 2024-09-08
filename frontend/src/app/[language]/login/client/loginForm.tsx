@@ -78,18 +78,17 @@ export default function LoginForm({ language }: { language: string }) {
   }
 
   const submit = async (formData: z.infer<typeof FormSchema>) => {
-    await login(
+    const success = await login(
       formData.email,
       formData.password,
       formData.csrf_token || data.csrf_token
     )
 
-    if (authError) {
+    if (success) {
+      window.location.href = `${window.location.origin}/${language}`
+    } else {
       setErrorMessage(authError)
-      return
     }
-
-    window.location.href = `${window.location.origin}/${language}`
   }
 
   return (
