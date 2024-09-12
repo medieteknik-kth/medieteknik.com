@@ -57,7 +57,7 @@ export default function AccountForm({
 
   if (error) return <div>Failed to load</div>
 
-  const MAX_FILE_SIZE = 500 * 1024
+  const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',

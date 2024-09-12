@@ -19,7 +19,11 @@ export function StudentTooltip({ student }: { student: Student }) {
         variant='link'
         className='h-fit flex flex-col justify-center pb-0'
       >
-        <Link href='/' className='group' title='Go to profile page'>
+        <Link
+          href={`./student/${student.student_id}`}
+          className='group'
+          title='Go to profile page'
+        >
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
             <AvatarImage
               src={student.profile_picture_url || FallbackImage.src}

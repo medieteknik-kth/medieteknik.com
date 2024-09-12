@@ -282,7 +282,8 @@ export default function CalendarPage({ language }: { language: string }) {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.student && permissions.student.includes(
+                    {permissions.student &&
+                    permissions.student.includes(
                       Permission.CALENDAR_PRIVATE
                     ) ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
@@ -292,7 +293,8 @@ export default function CalendarPage({ language }: { language: string }) {
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.student && permissions.student.includes(
+                        {permissions.student &&
+                        permissions.student.includes(
                           Permission.CALENDAR_PRIVATE
                         )
                           ? 'can'
@@ -346,15 +348,15 @@ export default function CalendarPage({ language }: { language: string }) {
                   )}
                 <span className='font-bold'>{' - '}</span>
                 {selectedEvent &&
-                  new Date(selectedEvent.end_date).toLocaleDateString(
-                    language,
-                    {
-                      month: 'long',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                    }
-                  )}
+                  new Date(
+                    new Date(selectedEvent.start_date).getTime() +
+                      selectedEvent.duration * 60000
+                  ).toLocaleDateString(language, {
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  })}
               </p>
             </div>
             <div className='flex items-center gap-2'>

@@ -227,6 +227,7 @@ export default function Events({
                         : event.background_color,
                     }}
                   >
+                    <p className='text-white'>{event.start_date}</p>
                     <div className='w-full h-full rounded-r-xl'>
                       {event.translations[0].main_image_url && (
                         <Image
@@ -237,7 +238,7 @@ export default function Events({
                     </div>
                     <div className='absolute top-4 right-4 flex flex-col gap-2 items-end z-10'>
                       <div className='w-fit flex items-center px-2 py-0.5 bg-[#222] font-bold rounded-md justify-end'>
-                        <p className='text-yellow-200' title='Start time'>
+                        <p className='text-white' title='Start time'>
                           {new Date(event.start_date).toLocaleTimeString(
                             language,
                             {

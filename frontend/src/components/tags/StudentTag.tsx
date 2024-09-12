@@ -9,6 +9,7 @@ import { StudentTooltip } from '../tooltips/Tooltip'
 import { Button } from '@components/ui/button'
 import { forwardRef } from 'react'
 import FallbackImage from 'public/images/logo.webp'
+import Link from 'next/link'
 
 interface StudentTagProps {
   student: Student
@@ -39,30 +40,33 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
             className='h-fit text-inherit dark:text-yellow-400 py-0 px-1 max-w-full'
             style={{ fontSize: 'inherit' }}
             ref={ref}
+            asChild
           >
-            {includeImage && (
-              <Avatar className='w-10 h-10 mr-2'>
-                <AvatarImage
-                  src={student.profile_picture_url || FallbackImage.src}
-                  alt={student.first_name + ' ' + (student.last_name || '')}
-                />
-                <AvatarFallback>
-                  {student.first_name +
+            <Link href={`./student/${student.student_id}`}>
+              {includeImage && (
+                <Avatar className='w-10 h-10 mr-2'>
+                  <AvatarImage
+                    src={student.profile_picture_url || FallbackImage.src}
+                    alt={student.first_name + ' ' + (student.last_name || '')}
+                  />
+                  <AvatarFallback>
+                    {student.first_name +
+                      ' ' +
+                      (student.last_name || '') +
+                      ' Profile Picture'}
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              <div className='flex flex-col text-start overflow-hidden '>
+                <p className='truncate max-w-full'>
+                  {(includeAt ? '@ ' : '') +
+                    student.first_name +
                     ' ' +
-                    (student.last_name || '') +
-                    ' Profile Picture'}
-                </AvatarFallback>
-              </Avatar>
-            )}
-            <div className='flex flex-col text-start overflow-hidden '>
-              <p className='truncate max-w-full'>
-                {(includeAt ? '@ ' : '') +
-                  student.first_name +
-                  ' ' +
-                  (student.last_name || '')}
-              </p>
-              {children}
-            </div>
+                    (student.last_name || '')}
+                </p>
+                {children}
+              </div>
+            </Link>
           </Button>
         </HoverCardTrigger>
         <HoverCardContent className='z-40'>
