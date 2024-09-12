@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from http import HTTPStatus
 from flask import Blueprint, request, jsonify
 from models.content import News, Event, Document, Album, Author
 from models.content.author import AuthorType
@@ -162,11 +163,33 @@ def get_documents() -> dict:
         list[dict]: List of documents
     """
     provided_languages = retrieve_languages(request.args)
-    documents = Document.query.filter(
-        Document.is_public == True,  # noqa: E712
-        Document.created_at >= datetime.now() - timedelta(days=365),
-    ).all()
+    status = request.args.get("status", type=str, default="active")
+    documents_pagination = None
 
+    if status == "active":
+        documents_pagination = (
+            Document.query.order_by(
+                Document.is_pinned.desc(), Document.created_at.desc()
+            )
+            .filter(
+                Document.is_public == True,  # noqa: E712
+                Document.created_at >= datetime.now() - timedelta(days=365),
+            )
+            .paginate(per_page=30, max_per_page=30)
+        )
+    elif status == "archived":
+        documents_pagination = (
+            Document.query.order_by(
+                Document.is_pinned.desc(), Document.created_at.desc()
+            )
+            .filter(
+                Document.is_public == True,  # noqa: E712
+                Document.created_at < datetime.now() - timedelta(days=365),
+            )
+            .paginate(per_page=30, max_per_page=30)
+        )
+
+    documents = documents_pagination.items
     document_dict = [
         document_dict
         for document in documents
@@ -178,7 +201,15 @@ def get_documents() -> dict:
         is not None
     ]
 
-    return jsonify(document_dict), 200
+    return jsonify(
+        {
+            "items": document_dict,
+            "page": documents_pagination.page,
+            "per_page": documents_pagination.per_page,
+            "total_pages": documents_pagination.pages,
+            "total_items": documents_pagination.total,
+        }
+    ), HTTPStatus.OK
 
 
 @public_documents_bp.route("/<string:url>", methods=["GET"])

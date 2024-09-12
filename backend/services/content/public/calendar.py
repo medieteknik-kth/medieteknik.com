@@ -81,7 +81,7 @@ def get_events_monthly(
         if (
             event_dict := event_occurrence["event"].to_dict(
                 provided_languages=provided_languages,
-                custom_start_date=event_occurrence["start_date"].strftime("%Y-%m-%d"),
+                custom_start_date=event_occurrence["start_date"],
             )
         )
         is not None

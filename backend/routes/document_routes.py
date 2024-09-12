@@ -11,7 +11,6 @@ from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.content.author import Author
-from models.content.base import Item
 from models.content.document import Document, DocumentTranslation
 from models.core.permissions import Permissions, Role
 from models.core.student import Student
