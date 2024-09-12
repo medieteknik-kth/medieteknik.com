@@ -103,7 +103,7 @@ export default async function NewsPage({
         </BreadcrumbList>
       </Breadcrumb>
       <div className='flex flex-col items-center justify-start min-h-[1080px] h-fit px-4 sm:px-20 lg:px-0'>
-        <div className='w-full lg:w-[700px] h-fit'>
+        <div className='w-full lg:w-[700px] h-fit border-b-2 border-yellow-400 pb-1 mb-1'>
           <ul className='flex min-h-10 h-fit py-2'>
             {data.categories &&
               data.categories.map((category) => (
@@ -188,8 +188,7 @@ export default async function NewsPage({
             </p>
           )}
         </div>
-        <div className='w-full lg:w-[700px] h-[300px] bg-blue-500 my-8'></div>
-        <div className='w-full lg:w-[700px] -mt-4 mb-8'>
+        <div className='w-full lg:w-[700px] my-4 mb-8'>
           <Body body={data.translations[0].body} />
         </div>
       </div>
