@@ -31,7 +31,7 @@ export default async function StudentEvents({
   }
   return (
     <div className='flex flex-col'>
-      <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1'>
+      <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1 dark:text-white'>
         Published Events
       </h2>
       <div>
@@ -56,27 +56,33 @@ export default async function StudentEvents({
               .map((event, index) => (
                 <TableRow key={index}>
                   <TableCell
-                    className='max-w-[650px] truncate border-l-8'
+                    className='max-w-[650px] truncate border-l-8 dark:text-white'
                     style={{
                       borderLeftColor: event.background_color,
                     }}
                   >
                     {event.translations[0].title}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='dark:text-white'>
                     {new Date(event.created_at).toLocaleDateString(language, {
                       hour: 'numeric',
                       minute: 'numeric',
                     })}
                   </TableCell>
-                  <TableCell>
-                    {new Date(event.end_date) > new Date() &&
+                  <TableCell className='dark:text-white'>
+                    {new Date(
+                      new Date(event.start_date).getTime() +
+                        event.duration * 60000
+                    ) > new Date() &&
                     new Date(event.start_date) < new Date() ? (
                       <div className='flex h-full items-center gap-2'>
                         <div className='w-3 h-3 bg-lime-500 rounded-full animate-pulse' />
                         <span className=''>Ongoing</span>
                       </div>
-                    ) : new Date(event.end_date) < new Date() ? (
+                    ) : new Date(
+                        new Date(event.start_date).getTime() +
+                          event.duration * 60000
+                      ) < new Date() ? (
                       <div className='flex h-full items-center gap-2'>
                         <div className='w-3 h-3 bg-red-500 rounded-full' />
                         <span className=''>Ended</span>
@@ -88,19 +94,22 @@ export default async function StudentEvents({
                       </div>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='dark:text-white'>
                     {new Date(event.start_date).toLocaleDateString(language, {
                       hour: 'numeric',
                       minute: 'numeric',
                     })}
                   </TableCell>
-                  <TableCell>
-                    {new Date(event.end_date).toLocaleDateString(language, {
+                  <TableCell className='dark:text-white'>
+                    {new Date(
+                      new Date(event.start_date).getTime() +
+                        event.duration * 60000
+                    ).toLocaleDateString(language, {
                       hour: 'numeric',
                       minute: 'numeric',
                     })}
                   </TableCell>
-                  <TableCell className='flex gap-2'>
+                  <TableCell className='flex gap-2 dark:text-white'>
                     <Button
                       variant='outline'
                       size='icon'

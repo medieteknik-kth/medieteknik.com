@@ -50,12 +50,13 @@ export default async function StudentPage({
             </AvatarFallback>
           </Avatar>
           <div className='w-[512px] relative h-full flex flex-col justify-center ml-12 '>
-            <h1 className='text-5xl tracking-wide'>
+            <h1 className='text-5xl tracking-wide dark:text-white'>
               {data.student.first_name + ' ' + (data.student.last_name || '')}
             </h1>
             <Link
               href={`mailto:${data.student.email}`}
               className='text-xl tracking-wide hover:underline underline-offset-4 text-sky-700 dark:text-yellow-400'
+              title='Send an email'
             >
               {data.student.email}
             </Link>
