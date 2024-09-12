@@ -1,7 +1,10 @@
 {
     "title": "Documents",
-    "categories": "Categories",
-    "category.home": "Home",
+    "categories.status": "Status",
+    "categories.type": "Categories",
+    "category.time.active": "Active",
+    "category.time.archive": "Archived",
+    "category.all": "All",
     "category.documents": "Documents",
     "category.forms": "Forms",
     "no_preview": "No preview available",
@@ -10,6 +13,7 @@
     "view.list.name": "Name",
     "view.list.changed": "Changed",
     "view.list.author": "Author",
+    "view.list.metadata": "Metadata",
     "view.list.actions": "Actions",
     "search": "Search",
     "document_selected": "selected",
@@ -17,5 +21,6 @@
     "share": "Share",
     "download": "Download",
     "delete": "Delete",
-    "more_actions": "More actions"
+    "more_actions": "More actions",
+    "load_more": "Load more"
 }

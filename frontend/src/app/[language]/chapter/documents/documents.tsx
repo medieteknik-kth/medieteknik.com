@@ -8,24 +8,28 @@ import { useTranslation } from '@/app/i18n'
 
 type View = 'grid' | 'list'
 
-export default async function Documents({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+interface Props {
+  language: string
+}
+
+interface Params {
+  params: Props
+}
+
+export default async function Documents({ params: { language } }: Params) {
   const { t } = await useTranslation(language, 'document')
 
   return (
     <main>
       <div className='h-24 bg-black' />
       <Head title={t('title')} />
-      <Tabs orientation='vertical' defaultValue={t('category.home')}>
+      <Tabs orientation='vertical' defaultValue={t('category.all')}>
         <DocumentManagementProvider language={language}>
           <Sidebar language={language} />
           <Toolbar language={language} />
 
           <>
-            <TabsContent value={t('category.home')}>
+            <TabsContent value={t('category.all')}>
               <View language={language} type='all' />
             </TabsContent>
             <TabsContent value={t('category.documents')}>

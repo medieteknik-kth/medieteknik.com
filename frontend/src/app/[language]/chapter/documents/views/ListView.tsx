@@ -1,6 +1,7 @@
 'use client'
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -14,12 +15,16 @@ import { Document } from '@/models/Document'
 import { Author } from '@/models/Items'
 import Student from '@/models/Student'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
-import { DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import {
+  DocumentIcon,
+  DocumentTextIcon,
+  StarIcon,
+} from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
 import { MouseEvent, useCallback } from 'react'
 
-type Type = 'all' | 'documents' | 'forms'
+type Type = 'all' | 'documents' | 'forms' | 'archived'
 
 interface Props {
   language: string
@@ -30,8 +35,14 @@ export default function ListView({ language, type }: Props) {
   const reroute = (url: string) => {
     window.open(url, '_blank')
   }
-  const { documents, selectedDocuments, setSelectedDocuments } =
-    useDocumentManagement()
+  const {
+    documents,
+    selectedDocuments,
+    setSelectedDocuments,
+    page,
+    next,
+    total_pages,
+  } = useDocumentManagement()
 
   const { t } = useTranslation(language, 'document')
 
@@ -90,20 +101,24 @@ export default function ListView({ language, type }: Props) {
   }
 
   return (
-    <div className='pl-72 pr-20 mt-4'>
+    <div className='pl-72 pr-20 flex flex-col gap-4 my-4'>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className='w-96'>{t('view.list.name')}</TableHead>
             <TableHead className='w-40'>{t('view.list.changed')}</TableHead>
             <TableHead className='w-80'>{t('view.list.author')}</TableHead>
+            <TableHead className='text-right w-20'>
+              {t('view.list.metadata')}
+            </TableHead>
             <TableHead className='text-right w-40'>
               {t('view.list.actions')}
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {documents.length > 0 &&
+          {documents &&
+            documents.length > 0 &&
             documents
               .filter(
                 (document) =>
@@ -174,11 +189,30 @@ export default function ListView({ language, type }: Props) {
                       {authorName(document.author)}
                     </p>
                   </TableCell>
+                  <TableCell className=''>
+                    <div className='flex justify-end gap-2'>
+                      {document.is_pinned && (
+                        <StarIcon
+                          className='w-5 h-5 text-yellow-500 self-end'
+                          title='Pinned'
+                        />
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               ))}
         </TableBody>
       </Table>
+      {page < total_pages && (
+        <Button
+          className='w-full self-center'
+          variant={'secondary'}
+          onClick={() => next()}
+        >
+          {t('load_more')}
+        </Button>
+      )}
     </div>
   )
 }

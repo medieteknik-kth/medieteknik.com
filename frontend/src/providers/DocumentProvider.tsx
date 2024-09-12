@@ -1,5 +1,6 @@
 'use client'
 import { Document } from '@/models/Document'
+import { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
@@ -10,39 +11,49 @@ import {
 } from 'react'
 
 type View = 'grid' | 'list'
+type Status = 'active' | 'archived'
 
 interface DocumentState {
   documents: Document[]
+  page: number
+  total_pages: number
   selectedDocuments: Document[]
   view: View
+  status: Status
   isLoading: boolean
   error: string | null
 }
 
 type DocumentAction =
   | { type: 'SET_DOCUMENTS'; payload: Document[] }
-  | { type: 'ADD_DOCUMENT'; payload: Document }
-  | { type: 'REMOVE_DOCUMENT'; payload: Document }
+  | { type: 'ADD_DOCUMENTS'; payload: Document[] }
+  | { type: 'SET_PAGE'; payload: number }
+  | { type: 'NEXT_PAGE' }
+  | { type: 'SET_TOTAL_PAGES'; payload: number }
   | { type: 'SELECT_DOCUMENT'; payload: Document }
   | { type: 'SET_SELECTED_DOCUMENTS'; payload: Document[] }
   | { type: 'SET_VIEW'; payload: View }
+  | { type: 'SET_STATUS'; payload: Status }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
 
 const initialState: DocumentState = {
   documents: [],
+  page: 1,
+  total_pages: 1,
   selectedDocuments: [],
   view: 'grid',
+  status: 'active',
   isLoading: true,
   error: null,
 }
 
 interface DocumentContextType extends DocumentState {
-  addDocument: (document: Document) => void
-  removeDocument: (document: Document) => void
+  next: () => void
   selectDocument: (document: Document) => void
   setSelectedDocuments: (documents: Document[]) => void
   setView: (view: View) => void
+  setStatus: (status: Status) => void
 }
 
 const DocumentManagementContext = createContext<
@@ -56,15 +67,18 @@ const documentReducer = (
   switch (action.type) {
     case 'SET_DOCUMENTS':
       return { ...state, documents: action.payload, isLoading: false }
-    case 'ADD_DOCUMENT':
-      return { ...state, documents: [...state.documents, action.payload] }
-    case 'REMOVE_DOCUMENT':
+    case 'ADD_DOCUMENTS':
       return {
         ...state,
-        documents: state.documents.filter(
-          (document) => document !== action.payload
-        ),
+        documents: [...state.documents, ...action.payload],
+        isLoading: false,
       }
+    case 'SET_PAGE':
+      return { ...state, page: action.payload }
+    case 'NEXT_PAGE':
+      return { ...state, page: state.page + 1 }
+    case 'SET_TOTAL_PAGES':
+      return { ...state, total_pages: action.payload }
     case 'SELECT_DOCUMENT':
       return {
         ...state,
@@ -78,6 +92,8 @@ const documentReducer = (
       return { ...state, selectedDocuments: action.payload }
     case 'SET_VIEW':
       return { ...state, view: action.payload }
+    case 'SET_STATUS':
+      return { ...state, status: action.payload }
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload }
     case 'SET_ERROR':
@@ -102,11 +118,18 @@ export function DocumentManagementProvider({
       dispatch({ type: 'SET_ERROR', payload: null })
       try {
         const response = await fetch(
-          `${API_BASE_URL}/public/documents?language=${language}`
+          `${API_BASE_URL}/public/documents?language=${language}${
+            state.status === 'archived' ? '&status=archived' : ''
+          }&page=${state.page}`
         )
         if (response.ok) {
-          const json = (await response.json()) as Document[]
-          dispatch({ type: 'SET_DOCUMENTS', payload: json })
+          const json = (await response.json()) as DocumentPagination
+          dispatch({ type: 'SET_TOTAL_PAGES', payload: json.total_pages })
+          if (state.page === 1) {
+            dispatch({ type: 'SET_DOCUMENTS', payload: json.items })
+          } else {
+            dispatch({ type: 'ADD_DOCUMENTS', payload: json.items })
+          }
         }
       } catch (error) {
         console.error('Failed to retrieve documents:', error)
@@ -117,35 +140,13 @@ export function DocumentManagementProvider({
     }
 
     retrieveDocuments()
-  }, [])
+  }, [language, state.status, state.page])
 
   const contextValue = useMemo(
     () => ({
       ...state,
-      addDocument: (document: Document) => {
-        dispatch({ type: 'ADD_DOCUMENT', payload: document })
-      },
-      removeDocument: (document: Document) => async (document: Document) => {
-        dispatch({ type: 'SET_LOADING', payload: true })
-        dispatch({ type: 'SET_ERROR', payload: null })
-        try {
-          const response = await fetch(
-            `${API_BASE_URL}/documents/${document.document_id}`,
-            {
-              method: 'DELETE',
-              credentials: 'include',
-            }
-          )
-
-          if (response.ok) {
-            dispatch({ type: 'REMOVE_DOCUMENT', payload: document })
-          }
-        } catch (error) {
-          console.error('Failed to remove document:', error)
-          dispatch({ type: 'SET_ERROR', payload: 'Failed to remove document' })
-        } finally {
-          dispatch({ type: 'SET_LOADING', payload: false })
-        }
+      next: () => {
+        dispatch({ type: 'NEXT_PAGE' })
       },
       selectDocument: (document: Document) => {
         dispatch({ type: 'SELECT_DOCUMENT', payload: document })
@@ -155,6 +156,10 @@ export function DocumentManagementProvider({
       },
       setView: (view: View) => {
         dispatch({ type: 'SET_VIEW', payload: view })
+      },
+      setStatus: (status: Status) => {
+        dispatch({ type: 'SET_PAGE', payload: 1 })
+        dispatch({ type: 'SET_STATUS', payload: status })
       },
     }),
     [state]

@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { useDocumentManagement } from '@/providers/DocumentProvider'
 import { useState } from 'react'
 
-export default function SidebarAuth({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+export default function SidebarAuth({ language }: Props) {
   const [open, setOpen] = useState(false)
   const { student, permissions } = useAuthentication()
-  const { addDocument } = useDocumentManagement()
   return (
     <>
       {student &&
@@ -23,9 +25,12 @@ export default function SidebarAuth({ language }: { language: string }) {
               </DialogTrigger>
               <DocumentUpload
                 language={language}
-                addDocument={addDocument}
+                addDocument={() => {}}
                 author={student}
-                closeMenuCallback={() => setOpen(false)}
+                closeMenuCallback={() => {
+                  setOpen(false)
+                  window.location.reload()
+                }}
               />
             </Dialog>
             <Separator className='-my-0.5' />
