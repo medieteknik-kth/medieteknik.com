@@ -37,6 +37,7 @@ import { StudentTag } from '@/components/tags/StudentTag'
 import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
 import RemovePositionForm from '../forms/removePosition'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Role } from '@/models/Permission'
 
 /**
  * @name MembersPage
@@ -65,16 +66,19 @@ export default function MembersPage({
     error,
     recruitments,
     addPosition,
-    addMember,
   } = useCommitteeManagement()
-  const { positions: userPostions } = useAuthentication()
+  const { positions: studentPositions, role } = useAuthentication()
 
   const findPosition = (id: string) => {
     return positions.find((position) => position.committee_position_id === id)
   }
 
   const limit = (weight: number) => {
-    const positions = userPostions.map((userPosition) =>
+    if (role === Role.ADMIN) {
+      return true
+    }
+
+    const positions = studentPositions.map((userPosition) =>
       findPosition(userPosition.committee_position_id)
     )
 
