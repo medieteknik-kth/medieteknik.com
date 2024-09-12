@@ -5,7 +5,7 @@
     "tab_account_profile_settings": "Profile Settings",
     "tab_reception": "Reception",
     "account_profile_picture": "Profile Picture",
-    "account_profile_picture_requirements": "PNG or JPG. Max 500kb. Aspect ratio 1:1.",
+    "account_profile_picture_requirements": "PNG or JPG. Max 5MB. Aspect ratio 1:1.",
     "account_name": "Name",
     "account_name_description": "Your full name.",
     "account_email": "Emails",
