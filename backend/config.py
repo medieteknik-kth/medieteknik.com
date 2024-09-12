@@ -6,7 +6,9 @@ from datetime import timedelta
 import os
 
 # App
-PREFERRED_URL_SCHEME = "https"
+PREFERRED_URL_SCHEME = (
+    "https" if os.environ.get("FLASK_ENV", "development") == "production" else "http"
+)
 SESSION_COOKIE_SECURE = (
     True if os.environ.get("FLASK_ENV", "development") == "production" else False
 )

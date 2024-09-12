@@ -45,7 +45,7 @@ export default function ConnectSection(): JSX.Element {
             href='https://www.instagram.com/medieteknik_kth/'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full dark:fill-white'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='Instagram'
             aria-label="Links to Medieteknik's Instagram page"
           >
@@ -106,7 +106,7 @@ export default function ConnectSection(): JSX.Element {
             href='https://mediasbranschdag.com'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='MBD'
             aria-label='Links to MBD'
           >

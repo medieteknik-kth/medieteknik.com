@@ -72,7 +72,7 @@ export default function EventUpload({
   const FormSchema = z.object({
     date: z.string().date(),
     start_time: z.string().time(),
-    duration: z.number().int().min(1, 'Duration is required'),
+    duration: z.coerce.number().int().min(1, 'Duration is required'),
     repeats: z.boolean().optional().or(z.literal(false)),
     frequency: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']),
     end_date: z.string().date().optional().or(z.literal('')),
@@ -114,7 +114,7 @@ export default function EventUpload({
     },
   })
 
-  const { setValue, getValues } = eventForm
+  const { setValue } = eventForm
 
   if (!student) {
     return <></>

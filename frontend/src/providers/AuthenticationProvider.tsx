@@ -174,7 +174,6 @@ function authenticationReducer(
       }
 
     case 'SET_ERROR':
-      console.error(action.payload)
       return {
         ...state,
         error: action.payload,
@@ -279,7 +278,6 @@ const createAuthFunctions = (
       }
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
-      console.error(error)
       return false
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
@@ -303,7 +301,6 @@ const createAuthFunctions = (
         dispatch({ type: 'LOGOUT' })
       }
     } catch (error) {
-      console.error(error)
       dispatch({
         type: 'SET_ERROR',
         payload: 'Something went wrong! Please try again',
@@ -338,7 +335,6 @@ const createAuthFunctions = (
         throw new Error('Failed to refresh token')
       }
     } catch (error) {
-      console.error(error)
       dispatch({ type: 'LOGOUT' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
@@ -379,7 +375,6 @@ export function AuthenticationProvider({
 
         if (response.ok) {
           const json: AuthenticationResponse = await response.json()
-          // Update the authentication state with the retrieved data
           dispatch({
             type: 'SET_STUDENT',
             payload: {

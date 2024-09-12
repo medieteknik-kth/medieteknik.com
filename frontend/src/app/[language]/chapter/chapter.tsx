@@ -1,9 +1,4 @@
-import Link from 'next/link'
 import { Head } from '@/components/static/Static'
-import Image from 'next/image'
-import { EnvelopeIcon } from '@heroicons/react/24/outline'
-import BG from 'public/images/kth-landskap.webp'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { GetAllCommittees } from '@/api/committee'
 import CommitteeMembers from './members'
 import Committees from './committees'
@@ -32,7 +27,6 @@ export default async function Chapter({
       <Head
         title='Chapter'
         description="The Chapter's purpose is to satisfy the needs of Media Technology students during their time at KTH."
-        image={BG}
       />
 
       <Committees language={language} committees={data} />

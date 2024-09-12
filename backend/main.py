@@ -82,8 +82,12 @@ class ReverseProxied:
         return self.app(environ, start_response)
 
 
-app.wsgi_app = ReverseProxied(app.wsgi_app)
+if os.environ.get("FLASK_ENV", "development") == "production":
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    if os.environ.get("FLASK_ENV", "development") == "development":
+        app.run(debug=True)
+    else:
+        app.run()
