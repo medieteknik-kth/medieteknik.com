@@ -8,7 +8,6 @@ import { useTheme } from 'next-themes'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { useCookies } from 'next-client-cookies'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -22,6 +21,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cookieName } from '@/app/i18n/settings'
 import { LANGUAGES } from '@/utility/Constants'
+import { LanguageCode } from '@/models/Language'
+import DetailedCookiePopup from '../cookie/DetailedCookie'
 
 /**
  * OptionsMenu
@@ -37,9 +38,10 @@ export default function OptionsMenu({
 }): JSX.Element {
   const router = useRouter()
   const path = usePathname()
-  const { t } = useTranslation(language, 'header')
+  const { t } = useTranslation(language, 'preferences')
   const { theme, setTheme } = useTheme()
   const [isClient, setIsClient] = useState(false)
+  const [cookiesShown, setCookiesShown] = useState(false)
   const cookies = useCookies()
 
   useEffect(() => {
@@ -95,12 +97,12 @@ export default function OptionsMenu({
         <DropdownMenuContent asChild>
           <Card>
             <CardHeader>
-              <CardTitle>{t('preferences')}</CardTitle>
+              <CardTitle>{t('title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <DropdownMenuGroup>
                 <DropdownMenuLabel className='text-lg'>
-                  {t('languagePreference')}
+                  {t('language')}
                 </DropdownMenuLabel>
                 <DropdownMenuGroup className='flex'>
                   {supportedLanguages.map((lang) => {
@@ -111,8 +113,12 @@ export default function OptionsMenu({
                           className='mx-1 cursor-pointer'
                           variant={lang === language ? 'default' : 'ghost'}
                           disabled={lang === language}
-                          title={`Switch to ${LANGUAGES[lang].name}`}
-                          aria-label={`Switch to ${LANGUAGES[lang].name}`}
+                          title={`Switch to ${
+                            LANGUAGES[lang as LanguageCode].flag
+                          }`}
+                          aria-label={`Switch to ${
+                            LANGUAGES[lang as LanguageCode].name
+                          }`}
                         >
                           <div className='w-full h-full flex items-center px-4'>
                             <span
@@ -129,7 +135,7 @@ export default function OptionsMenu({
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuLabel className='text-lg flex items-center'>
-                  {t('themePreference')}
+                  {t('theme')}
                   <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
                     Beta
                   </sup>
@@ -141,12 +147,12 @@ export default function OptionsMenu({
                       className='mx-1 cursor-pointer'
                       variant={theme === 'light' ? 'default' : 'ghost'}
                       disabled={theme === 'light'}
-                      title='Switch to Light Theme'
-                      aria-label='Switch to Light Theme'
+                      title={t('light_theme')}
+                      aria-label={t('light_theme')}
                     >
                       <div className='w-full h-full flex items-center px-4'>
                         <SunIcon className='w-6 h-6' />
-                        <span className='ml-2'>Light</span>
+                        <span className='ml-2'>{t('light_theme')}</span>
                       </div>
                     </Button>
                   </DropdownMenuItem>
@@ -156,21 +162,44 @@ export default function OptionsMenu({
                       className='mx-1 cursor-pointer'
                       variant={theme === 'dark' ? 'default' : 'ghost'}
                       disabled={theme === 'dark'}
-                      title='Switch to Dark Theme'
-                      aria-label='Switch to Dark Theme'
+                      title={t('dark_theme')}
+                      aria-label={t('dark_theme')}
                     >
                       <div className='w-full h-full flex items-center px-4'>
                         <MoonIcon className='w-6 h-6' />
-                        <span className='ml-2'>Dark</span>
+                        <span className='ml-2'>{t('dark_theme')}</span>
                       </div>
                     </Button>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className='text-lg'>
+                  {t('privacy')}
+                </DropdownMenuLabel>
+                <DropdownMenuItem asChild>
+                  <Button
+                    onClick={() => setCookiesShown(true)}
+                    className='w-full'
+                    variant='secondary'
+                    title={t('cookie_settings')}
+                    aria-label={t('cookie_settings')}
+                  >
+                    {t('cookie_settings')}
+                  </Button>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </CardContent>
           </Card>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {cookiesShown && (
+        <div className='w-full h-screen fixed grid place-items-center left-0 top-0 bg-black/30 z-50'>
+          <DetailedCookiePopup params={{ language, popup: setCookiesShown }} />
+        </div>
+      )}
     </div>
   )
 }

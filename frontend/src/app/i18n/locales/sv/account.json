@@ -1,0 +1,19 @@
+{
+    "title": "Kontoinställningar",
+    "tab_account": "Konto",
+    "tab_account_settings": "Kontoinställningar",
+    "tab_account_profile_settings": "Profilinställningar",
+    "tab_reception": "Motagning",
+    "account_profile_picture": "Profilbild",
+    "account_profile_picture_requirements": "PNG or JPG. Max 5MB. Aspect ratio 1:1.",
+    "account_name": "Namn",
+    "account_name_description": "Ditt fullständiga namn.",
+    "account_email": "E-postar",
+    "account_email_description": "Hantera dina e-postadresser för externa tjänster.",
+    "account_password": "Lösenord",
+    "account_current_password": "Nuvarande lösenord",
+    "account_current_password_description": "Kan användas för att ändra ditt lösenord.",
+    "account_new_password": "Nytt lösenord",
+    "account_new_password_description": "Lämna tomt om du inte vill ändra ditt lösenord",
+    "save_changes": "Spara ändringar"
+}

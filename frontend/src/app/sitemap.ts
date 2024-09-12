@@ -9,47 +9,47 @@ import { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://localhost:3000/',
+      url: 'https://www.medieteknik.com/',
       lastModified: new Date(),
       priority: 1.0,
       alternates: {
         languages: {
-          en: 'https://localhost:3000/en',
-          sv: 'https://localhost:3000/sv'
+          en: 'https://www.medieteknik.com/en',
+          sv: 'https://www.medieteknik.com/sv'
         }
       }
     },
     {
-      url: 'https://localhost:3000/bulletin',
+      url: 'https://www.medieteknik.com/bulletin',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
       alternates: {
         languages: {
-          en: 'https://localhost:3000/en/bulletin',
-          sv: 'https://localhost:3000/sv/bulletin'
+          en: 'https://www.medieteknik.com/en/bulletin',
+          sv: 'https://www.medieteknik.com/sv/bulletin'
         }
       }
     },
     {
-      url: 'https://localhost:3000/chapter',
+      url: 'https://www.medieteknik.com/chapter',
       lastModified: new Date(),
       priority: 0.7,
       alternates: {
         languages: {
-          en: 'https://localhost:3000/en/chapter',
-          sv: 'https://localhost:3000/sv/chapter'
+          en: 'https://www.medieteknik.com/en/chapter',
+          sv: 'https://www.medieteknik.com/sv/chapter'
         }
       }
     },
     {
-      url: 'https://localhost:3000/education',
+      url: 'https://www.medieteknik.com/education',
       lastModified: new Date(),
       priority: 0.6,
       alternates: {
         languages: {
-          en: 'https://localhost:3000/en/education',
-          sv: 'https://localhost:3000/sv/education'
+          en: 'https://www.medieteknik.com/en/education',
+          sv: 'https://www.medieteknik.com/sv/education'
         }
       }
     }

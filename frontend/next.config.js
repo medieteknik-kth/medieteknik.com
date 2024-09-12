@@ -27,6 +27,30 @@ module.exports = {
                         key: 'X-Frame-Options',
                         value: 'DENY',
                     },
+                    {
+                        key: 'Content-Security-Policy',
+                        value: "default-src 'self' http://localhost:3000 https://medieteknik.com; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com; img-src 'self' https://storage.googleapis.com data:;",
+                    },
+                    {
+                        key: 'X-Content-Type-Options',
+                        value: 'nosniff',
+                    },
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'same-origin',
+                    },
+                    {
+                        key: 'Permissions-Policy',
+                        value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), fullscreen=(self), autoplay=(), payment=(self), push=(self)',
+                    },
+                    {
+                        key: 'Cross-Origin-Opener-Policy',
+                        value: 'same-origin',
+                    },
+                    {
+                        key: 'Cross-Origin-Resource-Policy',
+                        value: 'same-site',
+                    }
                 ],
             }
         ]

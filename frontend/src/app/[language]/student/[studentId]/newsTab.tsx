@@ -32,7 +32,7 @@ export default async function StudentNews({
 
   return (
     <div className='flex flex-col'>
-      <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1'>
+      <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1 dark:text-white'>
         Published News
       </h2>
       <div>
@@ -45,26 +45,29 @@ export default async function StudentNews({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {news.items.map((item) => (
-              <TableRow key={item.url}>
-                <TableCell className='max-w-[650px] truncate'>
-                  {item.translations[0].title}
-                </TableCell>
-                <TableCell>
-                  {new Date(item.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className='flex gap-2'>
-                  <CopyButton
-                    language={language}
-                    url={`/bulletin/news/${item.url}`}
-                  />
-                  <EditNewsButton
-                    language={language}
-                    currentStudent={student}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+            {news.items.map(
+              (item) =>
+                item && (
+                  <TableRow key={item.url}>
+                    <TableCell className='max-w-[650px] truncate dark:text-white'>
+                      {item.translations[0].title}
+                    </TableCell>
+                    <TableCell className='dark:text-white'>
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className='flex gap-2 dark:text-white'>
+                      <CopyButton
+                        language={language}
+                        url={`/bulletin/news/${item.url}`}
+                      />
+                      <EditNewsButton
+                        language={language}
+                        currentStudent={student}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+            )}
           </TableBody>
         </Table>
       </div>

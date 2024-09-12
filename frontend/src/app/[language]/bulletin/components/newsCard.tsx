@@ -27,7 +27,7 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
     >
       <CardHeader>
         <Link href={'./news/' + newsItem.url} className='group w-full h-fit'>
-          {newsItem.translations[0].main_image_url ? (
+          {newsItem.translations[0].main_image_url && (
             <Image
               src={newsItem.translations[0].main_image_url}
               alt={newsItem.translations[0].title + ' Image'}
@@ -35,8 +35,6 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
               height={100}
               className='object-cover w-full h-full'
             />
-          ) : (
-            <div className='w-full h-[100px] bg-blue-400' />
           )}
 
           <CardTitle className='py-2 underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline'>
@@ -82,8 +80,8 @@ export default function NewsCard({ newsItem }: { newsItem: News }) {
                   : newsItem.author.author_type === 'COMMITTEE_POSITION'
                   ? (newsItem.author as CommitteePosition).translations[0].title
                   : (newsItem.author as Student).first_name +
-                    ' ' +
-                    (newsItem.author as Student).last_name}
+                      ' ' +
+                      (newsItem.author as Student).last_name || ''}
               </HoverCardTrigger>
               <HoverCardContent>
                 {newsItem.author.author_type === 'COMMITTEE' ? (

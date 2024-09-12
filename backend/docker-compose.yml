@@ -3,7 +3,7 @@ services:
     container_name: medieteknik_web
     build: .
     ports:
-      - "8000:8000"
+      - "80:80"
     environment:
       - DATABASE_URL=${DATABASE_URL}
     depends_on:
@@ -23,3 +23,4 @@ services:
 
 volumes:
   postgres-data:
+

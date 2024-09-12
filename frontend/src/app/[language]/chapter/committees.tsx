@@ -19,7 +19,6 @@ import { Button } from '@/components/ui/button'
 import Autoplay from 'embla-carousel-autoplay'
 import ClassNames from 'embla-carousel-class-names'
 
-
 interface Props {
   language: string
   committees: Committee[]
@@ -93,7 +92,7 @@ export default function Committees({ language, committees }: Props) {
               .map((committee, index) => (
                 <CarouselItem
                   key={index}
-                  className='item h-[500px] md:h-[228px] relative rounded-md overflow-hidden ml-4'
+                  className='item h-[900px] md:h-[500px] relative rounded-md overflow-hidden ml-4'
                 >
                   <div className='blurred w-full h-full backdrop-blur-0 z-20 absolute left-0' />
 

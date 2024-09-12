@@ -22,20 +22,19 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 
-export default function Toolbar({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+export default function Toolbar({ language }: Props) {
   const { permissions } = useAuthentication()
-  const {
-    selectedDocuments,
-    setSelectedDocuments,
-    removeDocument: deleteDocument,
-    view,
-    setView,
-  } = useDocumentManagement()
+  const { selectedDocuments, setSelectedDocuments, view, setView } =
+    useDocumentManagement()
   const { t } = useTranslation(language, 'document')
 
   return (
     <>
-      <div className='w-full h-fit border-b ml-60 flex gap-4 items-center px-4 py-3'>
+      <div className='grow h-fit border-b ml-60 flex gap-4 items-center px-4 py-3'>
         <div className='w-fit rounded-md border flex items-center gap-1'>
           <Button
             variant={view === 'grid' ? 'default' : 'ghost'}
@@ -84,7 +83,9 @@ export default function Toolbar({ language }: { language: string }) {
             </div>
             <Separator orientation='vertical' className='h-6' />
             <div className='flex gap-2'>
-              {permissions.author.includes('DOCUMENT') &&
+              {permissions.author &&
+                permissions.student &&
+                permissions.author.includes('DOCUMENT') &&
                 permissions.student.includes('ITEMS_DELETE') && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -116,9 +117,7 @@ export default function Toolbar({ language }: { language: string }) {
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => {
-                            for (const document of selectedDocuments) {
-                              deleteDocument(document)
-                            }
+                            // TODO: Implement delete
                           }}
                         >
                           Continue

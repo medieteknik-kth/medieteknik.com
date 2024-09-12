@@ -140,7 +140,8 @@ export default function Events({
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.author.includes('EVENT') ? (
+                    {permissions.author &&
+                    permissions.author.includes('EVENT') ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -148,7 +149,8 @@ export default function Events({
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.author.includes('EVENT')
+                        {permissions.author &&
+                        permissions.author.includes('EVENT')
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}
@@ -170,7 +172,9 @@ export default function Events({
               </span>
             </p>
             <Separator className='my-4' />
-            {student && permissions.author.includes('EVENT') ? (
+            {student &&
+            permissions.author &&
+            permissions.author.includes('EVENT') ? (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger
                   className='w-auto h-[60px] aspect-square'
@@ -185,13 +189,15 @@ export default function Events({
                     <PlusIcon className='w-6 h-6' title='Add Event' />
                   </Button>
                 </DialogTrigger>
-                <EventUpload
-                  author={student}
-                  language={language}
-                  selectedDate={selectedDate}
-                  closeMenuCallback={() => setIsOpen(false)}
-                  addEvent={addEvent}
-                />
+                {isOpen && (
+                  <EventUpload
+                    author={student}
+                    language={language}
+                    selectedDate={selectedDate}
+                    closeMenuCallback={() => setIsOpen(false)}
+                    addEvent={addEvent}
+                  />
+                )}
               </Dialog>
             ) : null}
           </div>
@@ -221,6 +227,7 @@ export default function Events({
                         : event.background_color,
                     }}
                   >
+                    <p className='text-white'>{event.start_date}</p>
                     <div className='w-full h-full rounded-r-xl'>
                       {event.translations[0].main_image_url && (
                         <Image
@@ -231,7 +238,7 @@ export default function Events({
                     </div>
                     <div className='absolute top-4 right-4 flex flex-col gap-2 items-end z-10'>
                       <div className='w-fit flex items-center px-2 py-0.5 bg-[#222] font-bold rounded-md justify-end'>
-                        <p className='text-yellow-200' title='Start time'>
+                        <p className='text-white' title='Start time'>
                           {new Date(event.start_date).toLocaleTimeString(
                             language,
                             {
@@ -245,13 +252,13 @@ export default function Events({
                           className='h-4 mx-2'
                         />
                         <p className='text-fuchsia-200' title='End time'>
-                          {new Date(event.end_date).toLocaleTimeString(
-                            language,
-                            {
-                              hour: 'numeric',
-                              minute: 'numeric',
-                            }
-                          )}
+                          {new Date(
+                            new Date(event.start_date).getTime() +
+                              event.duration * 60000
+                          ).toLocaleTimeString(language, {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          })}
                         </p>
                         <ClockIcon className='w-6 h-6 ml-1' />
                       </div>
@@ -332,18 +339,22 @@ export default function Events({
                       <div className='absolute left-2 bottom-4 flex items-center'>
                         <div
                           className={`w-4 h-4 rounded-full mr-2 ${
-                            new Date(event.end_date) < new Date()
+                            new Date(event.start_date + event.duration) <
+                            new Date()
                               ? 'bg-red-500'
-                              : new Date(event.end_date) > new Date() &&
+                              : new Date(event.start_date + event.duration) >
+                                  new Date() &&
                                 new Date(event.start_date) < new Date()
                               ? 'bg-green-500'
                               : 'bg-yellow-500'
                           }`}
                         />
                         <p>
-                          {new Date(event.end_date) < new Date()
+                          {new Date(event.start_date + event.duration) <
+                          new Date()
                             ? t('event.ended')
-                            : new Date(event.end_date) > new Date() &&
+                            : new Date(event.start_date + event.duration) >
+                                new Date() &&
                               new Date(event.start_date) < new Date()
                             ? t('event.ongoing')
                             : t('event.upcoming')}

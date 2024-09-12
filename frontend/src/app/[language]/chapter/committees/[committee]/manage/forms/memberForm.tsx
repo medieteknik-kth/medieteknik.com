@@ -7,8 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import Student from '@/models/Student'
 import {
   ChevronUpDownIcon,
@@ -20,7 +18,6 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { cn } from '@/lib/utils'
 import {
   Command,
   CommandEmpty,
@@ -44,6 +41,7 @@ import {
 } from '@/components/ui/form'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Role } from '@/models/Permission'
 
 export function RemoveMemberForm({ language }: { language: string }) {
   const { committee, members } = useCommitteeManagement()
@@ -149,17 +147,33 @@ export function AddMemberForm({
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()
-  const { positions: studentPositions } = useAuthentication()
+  const { positions: studentPositions, role } = useAuthentication()
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
 
+  const findPosition = (id: string) => {
+    return positions.find((position) => position.committee_position_id === id)
+  }
+
   const positionOptions = positions
     .filter((position) => {
+      if (role === Role.ADMIN) return true
       if (!studentPositions) return false
-      if (studentPositions.length === 0) return true
+      if (studentPositions.length === 0) return false
+
+      // Find all relevant positions for the student
+      const positions = studentPositions
+        .map((studentPosition) =>
+          findPosition(studentPosition.committee_position_id)
+        )
+        .filter((position) => position !== undefined)
+
+      if (positions.length === 0) {
+        return false
+      }
 
       // Find students highest position (position with highest weight)
-      const studentHighestPosition = studentPositions.reduce((prev, current) =>
+      const studentHighestPosition = positions.reduce((prev, current) =>
         prev.weight > current.weight ? prev : current
       )
 

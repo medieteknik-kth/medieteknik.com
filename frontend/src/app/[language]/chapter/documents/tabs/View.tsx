@@ -2,9 +2,8 @@
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import GridView from '../views/GridView'
 import ListView from '../views/ListView'
-import { Document } from '@/models/Document'
 
-type Type = 'all' | 'documents' | 'forms'
+type Type = 'all' | 'documents' | 'forms' | 'archived'
 
 interface Props {
   language: string

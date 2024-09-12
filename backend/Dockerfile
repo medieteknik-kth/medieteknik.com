@@ -11,14 +11,13 @@ WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . /app
-COPY env/service-account-file.json /app/service-account-file.json
-
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
+COPY env/service-account-file.json /app/service-account-file.json
 
-# Expose port 8000
-EXPOSE 8000
+# Expose port 80
+EXPOSE 80
 
 # Run the application with gunicorn
 CMD ["gunicorn", "main:app"]

@@ -83,11 +83,6 @@ class Student(db.Model):
         "StudentPermission", back_populates="student", uselist=False
     )
 
-    def __init__(self):
-        from models.utility.audit import Audit  # noqa: F401
-
-        self.audit = db.relationship("Audit", back_populates="student")
-
     def __repr__(self):
         return "<Student %r>" % self.student_id
 

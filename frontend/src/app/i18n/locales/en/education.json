@@ -1,4 +1,6 @@
 {
+    "title": "Education",
+    "description": "Here you can find information about the courses and programs that are offered at the Media Technology programme.",
     "courses": "Courses",
     "categories": [
         {
@@ -74,5 +76,77 @@
                 "Degree Project in Media Technology"
             ]
         }
-    ]
+    ],
+    "master_programs": "Masters",
+    "read_more": "Read more on KTH's website",
+    "masters": [
+        {
+            "title": "Computer Science",
+            "description": "Computer Science is the study of computers and computational systems. Unlike electrical and computer engineers, computer scientists deal mostly with software and software systems; this includes their theory, design, development, and application.",
+            "kth_link": "https://www.kth.se/en/studies/master/computer-science",
+            "flags": [
+                {
+                    "flag": "closed",
+                    "description": "This program is no longer available to be applied to."
+                }
+            ],
+            "tags": [
+                "AI",
+                "Network and Communication",
+                "Data Science",
+                "Algorithms and Complexity"
+            ]
+        },
+        {
+            "title": "Interactive Media Technology",
+            "description": "Interactive Media Technology is a two-year master's programme that focuses on Interactive Media, Computer Graphics and Computer Games. The programme offers a broad theoretical foundation in the field of interactive media technology, and the ability to apply this knowledge to create future interactive media.",
+            "kth_link": "https://www.kth.se/en/studies/master/interactive-media-technology",
+            "tags": [
+                "Graphics and Visualization",
+                "Interactive Systems",
+                "Game Design",
+                "Sound and Music Computing"
+            ]
+        },
+        {
+            "title": "ICT Innovation",
+            "description": "ICT Innovation is a two-year master's programme that focuses on the analysis, design, use and development of complex software systems and services for the needs of industry and society. The programme offers a broad theoretical foundation in the field of software technology and the ability to apply this knowledge to solve real-world problems.",
+            "kth_link": "https://www.kth.se/en/studies/master/ict-innovation",
+            "tags": [
+                "Marketing and Market Analysis",
+                "Consulting",
+                "Systems and Software Engineering",
+                "Entrepreneurship"
+            ]
+        },
+        {
+            "title": "Machine Learning",
+            "description": "Machine Learning is a two-year master's programme that focuses on the theoretical foundation of machine learning and computational learning theory, as well as the practical application of machine learning methods to real-world problems.",
+            "kth_link": "https://www.kth.se/en/studies/master/machine-learning/",
+            "tags": [
+                "AI",
+                "Big Data",
+                "Algorithmic Data Analysis",
+                "Statistical Learning Theory"
+            ]
+        },
+        {
+            "title": "Sustainable Digitalisation",
+            "description": "Digitalisation is a powerful driver of societal change; it offers the potential to build resilience for a volatile, uncertain, complex and ambiguous future. But digitalisation can also be problematic if it speeds up unsustainable trends.",
+            "kth_link": "https://www.kth.se/en/studies/master/sustainable-digitalisation",
+            "flags": [
+                {
+                    "flag": "new",
+                    "description": "This program is new and has not yet started."
+                }
+            ],
+            "tags": [
+                "Sustainability",
+                "Future Innovation",
+                "Digital Transformation",
+                "Strategic Leadership"
+            ]
+        }
+    ],
+    "study_counselor": "Study Counselor"
 }

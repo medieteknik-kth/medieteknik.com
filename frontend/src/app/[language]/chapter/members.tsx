@@ -188,7 +188,9 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           !member.termination_date)
                     )
                     .sort((a, b) =>
-                      a.student.first_name.localeCompare(b.student.first_name)
+                      a.position.translations[0].title.localeCompare(
+                        b.position.translations[0].title
+                      )
                     )
                     .sort((a, b) => a.position.weight - b.position.weight)
                     .map((member, index) => (
@@ -213,7 +215,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           <div className='w-full h-20 absolute bottom-0 from-white from-20% dark:from-[#111] bg-gradient-to-t' />
                         </div>
                         <div className='flex gap-2 items-center px-2 absolute top-4 bg-white dark:bg-[#111] border border-l-0 rounded-r-md shadow-sm shadow-black/25 dark:shadow-white/25'>
-                          <Avatar className='w-6 h-6 rounded-full overflow-hidden'>
+                          <Avatar className='w-6 h-6 rounded-full overflow-hidden bg-white'>
                             <AvatarImage
                               src={member.position.committee?.logo_url}
                               alt={`${member.position.translations[0].title} logo`}
@@ -227,7 +229,7 @@ export default function CommitteeMembers({ language }: { language: string }) {
                                 alt='Fallback image'
                                 width={24}
                                 height={24}
-                                className='bg-white'
+                                className='w-6 bg-white rounded-full p-0.5'
                               />
                             </AvatarFallback>
                           </Avatar>
@@ -245,10 +247,10 @@ export default function CommitteeMembers({ language }: { language: string }) {
                           </p>
                         </div>
                         <div className='px-2 pb-2 h-24'>
-                          <p className='text-base sm:text-xl h-14 max-h-14 overflow-hidden'>
+                          <p className='text-xl max-h-14 overflow-hidden'>
                             {member.student.first_name +
                               ' ' +
-                              member.student.last_name}
+                              (member.student.last_name || '')}
                           </p>
                           <Link
                             href={`mailto:${member.position.email}`}

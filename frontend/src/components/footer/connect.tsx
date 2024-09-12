@@ -5,6 +5,7 @@ import YoutubeSVG from 'public/images/svg/youtube.svg'
 import MBDSVG from 'public/images/svg/mbd.svg'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { TFunction } from 'next-i18next'
 
 /**
  * Renders the connect section
@@ -13,11 +14,7 @@ import Link from 'next/link'
  * @param {TFunction} t - The translation function
  * @returns {JSX.Element} The connect section
  */
-export default function ConnectSection({
-  t,
-}: {
-  t: (key: string) => string
-}): JSX.Element {
+export default function ConnectSection(): JSX.Element {
   const linkStyle = '*:hover:fill-yellow-400 *:transition-colors'
 
   return (
@@ -48,7 +45,7 @@ export default function ConnectSection({
             href='https://www.instagram.com/medieteknik_kth/'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full dark:fill-white'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='Instagram'
             aria-label="Links to Medieteknik's Instagram page"
           >
@@ -109,7 +106,7 @@ export default function ConnectSection({
             href='https://mediasbranschdag.com'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='MBD'
             aria-label='Links to MBD'
           >

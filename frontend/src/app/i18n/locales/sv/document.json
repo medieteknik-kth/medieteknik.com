@@ -1,7 +1,10 @@
 {
     "title": "Dokument",
-    "categories": "Kategorier",
-    "category.home": "Hem",
+    "categories.status": "Status",
+    "categories.type": "Kategorier",
+    "category.time.active": "Aktiv",
+    "category.time.archive": "Arkiverad",
+    "category.all": "Alla",
     "category.documents": "Dokument",
     "category.forms": "Formulär",
     "no_preview": "Ingen förhandsvisning tillgänglig",
@@ -10,6 +13,7 @@
     "view.list.name": "Namn",
     "view.list.changed": "Ändrat",
     "view.list.author": "Skapad av",
+    "view.list.metadata": "Metadata",
     "view.list.actions": "Åtgärder",
     "search": "Sök",
     "document_selected": "vald",
@@ -17,5 +21,6 @@
     "share": "Dela",
     "download": "Nedladda",
     "delete": "Ta bort",
-    "more_actions": "Mer åtgärder"
+    "more_actions": "Mer åtgärder",
+    "load_more": "Ladda mer"
 }

@@ -113,12 +113,17 @@ export default async function Footer({
               <h2 className='text-2xl text-center xs:text-left tracking-wider font-bold'>
                 {t('connect')}
               </h2>
-              <ConnectSection t={t} />
+              <ConnectSection />
             </li>
           </ul>
         </div>
       </div>
-      <p className='pt-10 md:mt-4 xxs:mb-20 px-4 xs:px-20 xxs:px-10 text-xs grid place-items-center'>
+      <div>
+        <Button variant={'ghost'} asChild>
+          <Link href={`./privacy`}>Privacy Policy</Link>
+        </Button>
+      </div>
+      <p className='md:mt-4 xxs:mb-20 px-4 xs:px-20 xxs:px-10 text-xs grid place-items-center'>
         {t('copyright')}
       </p>
     </footer>

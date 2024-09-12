@@ -192,9 +192,15 @@ export default function EventPage({
                       {event.translations[0].title}
                     </TableCell>
                     <TableCell className='w-36'>
-                      {new Date(event.end_date) < new Date() ? (
+                      {new Date(
+                        new Date(event.start_date).getTime() +
+                          event.duration * 60000
+                      ) < new Date() ? (
                         <CompletedEventBadge language={language} />
-                      ) : new Date(event.end_date) > new Date() &&
+                      ) : new Date(
+                          new Date(event.start_date).getTime() +
+                            event.duration * 60000
+                        ) > new Date() &&
                         new Date(event.start_date) < new Date() ? (
                         <OngoingEventBadge language={language} />
                       ) : (
@@ -212,7 +218,10 @@ export default function EventPage({
                       })}
                     </TableCell>
                     <TableCell className='w-72'>
-                      {new Date(event.end_date).toLocaleDateString(language, {
+                      {new Date(
+                        new Date(event.start_date).getTime() +
+                          event.duration * 60000
+                      ).toLocaleDateString(language, {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',

@@ -31,7 +31,7 @@ from models.content import (
     News,  # noqa: F401
     NewsTranslation,  # noqa: F401
     Item,  # noqa: F401
-    RepeatableEvents,  # noqa: F401
+    RepeatableEvent,  # noqa: F401
     Tag,  # noqa: F401
     TagTranslation,  # noqa: F401
 )

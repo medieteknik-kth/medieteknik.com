@@ -23,7 +23,9 @@ function TableDisplay({
       {positions.length > 0 &&
         positions.map((position, index) => (
           <TableRow key={index}>
-            <TableCell>{position.position.translations[0].title}</TableCell>
+            <TableCell className='dark:text-white'>
+              {position.position.translations[0].title}
+            </TableCell>
             <TableCell className='flex items-center'>
               {position.position.committee ? (
                 <Avatar className='w-6 h-auto aspect-square mr-1'>
@@ -42,15 +44,15 @@ function TableDisplay({
                   </AvatarFallback>
                 </Avatar>
               ) : (
-                <p className='text-neutral-600 uppercase select-none px-2'>
+                <p className='text-neutral-600 dark:text-neutral-300 uppercase select-none px-2'>
                   Independent
                 </p>
               )}
             </TableCell>
-            <TableCell>
+            <TableCell className='dark:text-white'>
               {new Date(position.initiation_date).toLocaleDateString()}
             </TableCell>
-            <TableCell>
+            <TableCell className='dark:text-white'>
               {position.termination_date
                 ? new Date(position.termination_date).toLocaleDateString()
                 : 'N/A'}
@@ -89,7 +91,7 @@ export default function StudentPositions({
   return (
     <div className='flex'>
       <div className='mr-10'>
-        <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1'>
+        <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1 dark:text-white'>
           <b>{activePositions.length}</b> Active Positions
         </h2>
         <div className='max-h-[560.5px] overflow-hidden overflow-y-auto'>
@@ -108,7 +110,7 @@ export default function StudentPositions({
       </div>
 
       <div className='ml-10'>
-        <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1'>
+        <h2 className='text-2xl border-b-2 border-yellow-400 py-1 mb-1 dark:text-white'>
           <b>{previousPositions.length}</b> Past Positions
         </h2>
         <div className='max-h-[560.5px] overflow-hidden overflow-y-auto'>

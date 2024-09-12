@@ -58,16 +58,6 @@ export function Head({
   )
 }
 
-const defaultMetadata: {
-  height: string
-  background: string
-  textColor: string
-} = {
-  height: '400px',
-  background: '#fff',
-  textColor: '#000',
-}
-
 export function Section({
   title,
   children,
@@ -84,27 +74,16 @@ export function Section({
     marginTop?: string
   }
 }) {
-  if (!metadata || Object.keys(metadata).length === 0) {
-    metadata = defaultMetadata
-  }
-
-  Object.keys(defaultMetadata).forEach((key) => {
-    if (!metadata[key as keyof typeof metadata]) {
-      metadata[key as keyof typeof metadata] =
-        defaultMetadata[key as keyof typeof defaultMetadata]
-    }
-  })
-
   return (
     <section
-      className={`w-full h-fit border-b-2 border-neutral-200 dark:border-neutral-700  dark:bg-[#111]  ${
+      className={`w-full h-fit border-b-2 border-neutral-200 dark:border-neutral-700 dark:bg-[#111]  ${
         centeredChildren ? 'flex flex-col items-center' : ''
       }`}
       id={title?.toLowerCase().replace(' ', '-')}
       style={{
-        backgroundColor: metadata.background,
-        marginTop: metadata.marginTop,
-        color: metadata.textColor,
+        backgroundColor: metadata && metadata.background && metadata.background,
+        marginTop: metadata && metadata.marginTop && metadata.marginTop,
+        color: metadata && metadata.textColor && metadata.textColor,
       }}
     >
       {title && (

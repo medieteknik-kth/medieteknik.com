@@ -29,9 +29,11 @@ export async function generateStaticParams(): Promise<
 
 export const metadata: Metadata = {
   title: 'Medieteknik | KTH',
-  description: 'Medieteknik Site',
+  description:
+    'Student på KTH? Här hittar du allt du behöver veta om medieteknik på KTH.',
   other: {
     'msapplication-TileColor': '#ffffff',
+    'google-adsense-account': 'ca-pub-2106963438710910',
   },
 }
 

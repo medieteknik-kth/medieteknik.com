@@ -128,14 +128,6 @@ def create_news():
     Returns:
         dict: News item
     """
-    claims = get_jwt()
-    permissions = claims.get("permissions")
-
-    if not permissions:
-        return jsonify({}), 403
-
-    if "NEWS" not in permissions.get("author"):
-        return jsonify({}), 403
 
     data = request.get_json()
 
@@ -148,12 +140,23 @@ def create_news():
     if author is None:
         return jsonify({"error": "No author provided"}), 400
 
+    author_type = author.get("author_type")
+
     author_table = None
-    if author.get("author_type") == "STUDENT":
+    if author_type == "STUDENT":
+        claims = get_jwt()
+        permissions = claims.get("permissions")
+
+        if not permissions:
+            return jsonify({"error": "Not authorized"}), 401
+
+        if "NEWS" not in permissions.get("author"):
+            return jsonify({"error": "Not authorized"}), 401
+
         author_table = Student
-    elif author.get("author_type") == "COMMITTEE":
+    elif author_type == "COMMITTEE":
         author_table = Committee
-    elif author.get("author_type") == "COMMITTEE_POSITION":
+    elif author_type == "COMMITTEE_POSITION":
         author_table = CommitteePosition
     else:
         return jsonify({"error": "Invalid author type"}), 400
@@ -188,22 +191,27 @@ def update_news_by_url(identifier: str):
     Returns:
         dict: News item
     """
-
-    claims = get_jwt()
-    permissions = claims.get("permissions")
-
-    if not permissions:
-        return jsonify({"error": "Not authorized"}), 403
-
-    if "NEWS" not in permissions.get("author"):
-        return jsonify({"error": "Not authorized"}), 403
-
-    url_identifier: bool = request.args.get("url", type=bool)
     data = request.get_json()
-    langauge_code = retrieve_languages(request.args)
-
     if not data:
         return jsonify({"error": "No data provided"}), 400
+    json_data = json.loads(json.dumps(data))
+
+    if json_data.get("author") is None:
+        return jsonify({"error": "No author provided"}), 400
+
+    author_type = json_data.get("author").get("author_type")
+    if author_type == "STUDENT":
+        claims = get_jwt()
+        permissions = claims.get("permissions")
+
+        if not permissions:
+            return jsonify({"error": "Not authorized"}), 401
+
+        if "NEWS" not in permissions.get("author"):
+            return jsonify({"error": "Not authorized"}), 401
+
+    url_identifier: bool = request.args.get("url", type=bool)
+    langauge_code = retrieve_languages(request.args)
 
     news_item = None
     if url_identifier:
@@ -231,18 +239,25 @@ def update_news_by_url(identifier: str):
 def publish_news(identifier: str):
     """Publishes a news item."""
 
-    claims = get_jwt()
-    permissions = claims.get("permissions")
-
-    if not permissions:
-        return jsonify({}), 403
-
-    if "NEWS" not in permissions.get("author"):
-        return jsonify({}), 403
-
     data = request.get_json()
     if not data:
         return jsonify({"error": "No data provided"}), 400
+
+    json_data = json.loads(json.dumps(data))
+
+    if json_data.get("author") is None:
+        return jsonify({"error": "No author provided"}), 400
+
+    author_type = json_data.get("author").get("author_type")
+    if author_type == "STUDENT":
+        claims = get_jwt()
+        permissions = claims.get("permissions")
+
+        if not permissions:
+            return jsonify({}), 403
+
+        if "NEWS" not in permissions.get("author"):
+            return jsonify({}), 403
 
     news_item = News.query.get(identifier)
 

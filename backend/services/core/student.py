@@ -56,33 +56,9 @@ def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUA
             }
         ), 401
 
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
-    additional_claims = {
-        "role": permissions_and_role.get("role"),
-        "permissions": permissions_and_role.get("permissions"),
-    }
-
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter_by(
-        student_id=student.student_id
-    ).all()
-
-    for membership in student_memberships:
-        position = CommitteePosition.query.get(membership.committee_position_id)
-        if not position or not isinstance(position, CommitteePosition):
-            continue
-
-        committee = Committee.query.get(position.committee_id)
-        if not committee or not isinstance(committee, Committee):
-            continue
-
-        committees.append(committee.to_dict(provided_languages=provided_languages))
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
+    permissions_and_role, additional_claims, committees, committee_positions = (
+        retrieve_extra_claims(provided_languages, student)
+    )
 
     response = make_response(
         {
@@ -110,6 +86,43 @@ def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUA
     )
 
     return response
+
+
+def retrieve_extra_claims(
+    provided_languages: List[str] = AVAILABLE_LANGUAGES, student: Student | None = None
+):
+    if student is None:
+        return None
+    permissions_and_role = get_permissions(getattr(student, "student_id"))
+    additional_claims = {
+        "role": permissions_and_role.get("role"),
+        "permissions": permissions_and_role.get("permissions"),
+    }
+
+    committees = []
+    committee_positions = []
+    student_memberships = StudentMembership.query.filter_by(
+        student_id=student.student_id
+    ).all()
+
+    for membership in student_memberships:
+        position = CommitteePosition.query.get(membership.committee_position_id)
+        if not position or not isinstance(position, CommitteePosition):
+            continue
+
+        committee_positions.append(
+            position.to_dict(
+                provided_languages=provided_languages, is_public_route=False
+            )
+        )
+
+        committee = Committee.query.get(position.committee_id)
+        if not committee or not isinstance(committee, Committee):
+            continue
+
+        committees.append(committee.to_dict(provided_languages=provided_languages))
+
+    return permissions_and_role, additional_claims, committees, committee_positions
 
 
 def change_password(data: Dict[str, Any]):
@@ -174,11 +187,14 @@ def update(request: Request, student: Student) -> Response:
     currentPassword = request.form.get("current_password")
     newPassword = request.form.get("new_password")
 
-    if not currentPassword:
-        return jsonify({"error": "No current password provided"}), 400
+    if not profile_picture and not currentPassword and not newPassword:
+        return jsonify({"error": "At least one field is required"}), 400
 
-    if not check_password_hash(getattr(student, "password_hash"), currentPassword):
-        return jsonify({"error": "Invalid current password"}), 400
+    if newPassword:
+        if not currentPassword:
+            return jsonify(
+                {"error": "Current password is required to change passwords"}
+            ), 400
 
     file_extension = profile_picture.filename.split(".")[-1]
 
@@ -198,6 +214,12 @@ def update(request: Request, student: Student) -> Response:
         setattr(student, "profile_picture_url", result)
 
     if newPassword:
+        if not currentPassword:
+            return jsonify({"error": "Current password is required"}), 400
+
+        if not check_password_hash(getattr(student, "password_hash"), currentPassword):
+            return jsonify({"error": "Invalid current password"}), 400
+
         result = assign_password({"email": student.email, "password": newPassword})
         if not result:
             return jsonify({"error": "Failed to update password"}), 500

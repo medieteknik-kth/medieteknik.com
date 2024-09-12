@@ -37,6 +37,7 @@ import { StudentTag } from '@/components/tags/StudentTag'
 import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
 import RemovePositionForm from '../forms/removePosition'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Role } from '@/models/Permission'
 
 /**
  * @name MembersPage
@@ -57,6 +58,7 @@ export default function MembersPage({
   const [isLoading, setIsLoading] = useState(true)
   const [addPositionOpen, setAddPositionOpen] = useState(false)
   const [addMemberOpen, setAddMemberOpen] = useState(false)
+  const [recruitmentOpen, setRecruitmentOpen] = useState(false)
   const {
     members,
     positions,
@@ -64,16 +66,19 @@ export default function MembersPage({
     error,
     recruitments,
     addPosition,
-    addMember,
   } = useCommitteeManagement()
-  const { positions: userPostions } = useAuthentication()
+  const { positions: studentPositions, role } = useAuthentication()
 
   const findPosition = (id: string) => {
     return positions.find((position) => position.committee_position_id === id)
   }
 
   const limit = (weight: number) => {
-    const positions = userPostions.map((userPosition) =>
+    if (role === Role.ADMIN) {
+      return true
+    }
+
+    const positions = studentPositions.map((userPosition) =>
       findPosition(userPosition.committee_position_id)
     )
 
@@ -195,7 +200,7 @@ export default function MembersPage({
                 />
               </Dialog>
 
-              <Dialog>
+              <Dialog open={recruitmentOpen} onOpenChange={setRecruitmentOpen}>
                 <DialogTrigger asChild>
                   <Button
                     variant={'outline'}
@@ -209,7 +214,13 @@ export default function MembersPage({
                     Recruit
                   </Button>
                 </DialogTrigger>
-                <RecruitmentForm language={language} />
+                <RecruitmentForm
+                  language={language}
+                  onSuccess={() => {
+                    setRecruitmentOpen(false)
+                    window.location.reload()
+                  }}
+                />
               </Dialog>
               <Dialog>
                 <DialogTrigger asChild>

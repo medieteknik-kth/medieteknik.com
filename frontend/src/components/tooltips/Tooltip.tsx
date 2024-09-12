@@ -19,7 +19,11 @@ export function StudentTooltip({ student }: { student: Student }) {
         variant='link'
         className='h-fit flex flex-col justify-center pb-0'
       >
-        <Link href='/' className='group' title='Go to profile page'>
+        <Link
+          href={`./student/${student.student_id}`}
+          className='group'
+          title='Go to profile page'
+        >
           <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
             <AvatarImage
               src={student.profile_picture_url || FallbackImage.src}
@@ -29,7 +33,7 @@ export function StudentTooltip({ student }: { student: Student }) {
             />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>
-          <p>{student.first_name + ' ' + student.last_name}</p>
+          <p>{student.first_name + ' ' + (student.last_name || '')}</p>
         </Link>
       </Button>
       <Button
@@ -39,10 +43,10 @@ export function StudentTooltip({ student }: { student: Student }) {
         <Link
           href={`mailto:${student.email}`}
           title={`Send email to ${
-            student.first_name + ' ' + student.last_name
+            student.first_name + ' ' + (student.last_name || '')
           }`}
           aria-label={`Send email to ${
-            student.first_name + ' ' + student.last_name
+            student.first_name + ' ' + (student.last_name || '')
           }`}
         >
           <span>{student.email}</span>

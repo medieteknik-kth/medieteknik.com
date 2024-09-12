@@ -28,7 +28,6 @@ import {
 } from '@heroicons/react/24/outline'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import Dashboard from './pages/dashboard'
 import Link from 'next/link'
 
 export default function Admin({
@@ -72,9 +71,7 @@ export default function Admin({
           </TabsList>
         </section>
         <section className='grow h-[1080px] px-4'>
-          <TabsContent value='dashboard'>
-            <Dashboard language={language} />
-          </TabsContent>
+          <TabsContent value='dashboard'></TabsContent>
           <TabsContent value='students'>
             <div className='flex justify-between items-center py-2'>
               <h1 className='text-3xl tracking-tight font-bold'>

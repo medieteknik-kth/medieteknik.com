@@ -42,7 +42,7 @@ export default function UserLoggedIn({ language, t, student, logout }: Props) {
     returnObjects: true,
   })
 
-  let username = student.first_name + ' ' + student.last_name
+  let username = student.first_name + ' ' + (student.last_name || '')
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>

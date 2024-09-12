@@ -19,7 +19,7 @@ from decorators import csrf_protected
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
-from services.core.student import login, assign_password, get_permissions, update
+from services.core.student import login, get_permissions, update
 from utility.gc import delete_file, upload_file
 from utility.translation import retrieve_languages
 from utility.database import db
@@ -160,24 +160,6 @@ def get_student_permissions():
     return get_permissions(student_id)
 
 
-# TODO: Remove Later
-@student_bp.route(rule="/reset", methods=["POST"])
-def reset_password():
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
-
-    data: dict[str, Any] = json.loads(json.dumps(data))
-
-    result = assign_password(data)
-
-    if result is None:
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    return jsonify(result), 200
-
-
 @student_bp.route("/me", methods=["GET"])
 @jwt_required()
 def get_student_callback():
@@ -198,6 +180,9 @@ def get_student_callback():
     for membership in student_memberships:
         position = CommitteePosition.query.get(membership.committee_position_id)
         if not position or not isinstance(position, CommitteePosition):
+            continue
+
+        if not position.committee_id:
             continue
 
         committee = Committee.query.get(position.committee_id)

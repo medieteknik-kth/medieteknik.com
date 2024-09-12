@@ -47,7 +47,7 @@ export default function ReceptionForm({
     csrf_token: z.string().optional().or(z.literal('')),
   })
 
-  const MAX_FILE_SIZE = 500 * 1024
+  const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',
@@ -175,6 +175,10 @@ export default function ReceptionForm({
                           },
                         })
                         setReceptionPicturePreview(file)
+                      }
+                      img.onerror = () => {
+                        alert('Invalid image')
+                        URL.revokeObjectURL(img.src)
                       }
                     }}
                   />
