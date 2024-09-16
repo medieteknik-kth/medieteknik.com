@@ -1,12 +1,20 @@
 'use client'
 import { useState, Dispatch, SetStateAction } from 'react'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
-import { PlusIcon, MinusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  PlusIcon,
+  MinusIcon,
+  XMarkIcon,
+  UserIcon,
+  ComputerDesktopIcon,
+} from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n/client'
 import Logo from '/public/images/logo.webp'
+import BigLogo from 'public/images/logobig_light.jpg'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Switch } from '@/components/ui/switch'
+import { Button } from '../ui/button'
 
 interface AvailableCookieSettings {
   NECESSARY: boolean
@@ -64,10 +72,16 @@ export default function DetailedCookiePopup({
   const availableCookies: string[] = Object.values(CookieConsent)
 
   return (
-    <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white border-r-2 border-black'>
-      <div className='w-full flex items-center py-4 border-b-2 border-black/50 mb-4 pl-8'>
-        <Image src={Logo.src} alt='Company Logo' width='46' height='46' />
-        <h1 className='text-3xl ml-4'>{commonTranslation('title')}</h1>
+    <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white'>
+      <div className='w-full flex items-center pt-4 mb-4 pl-8'>
+        <Image
+          src={BigLogo.src}
+          alt='Company Logo'
+          width='700'
+          height='120'
+          className='h-20 object-contain'
+        />
+
         <button
           className='w-8 h-8 ml-auto mr-8'
           title='Close'
@@ -84,22 +98,59 @@ export default function DetailedCookiePopup({
           <XMarkIcon className='w-8 h-8 ' />
         </button>
       </div>
-      <div className='w-full h-5/6 px-8 overflow-y-scroll absolute flex flex-col'>
-        <div className='w-full mb-4'>
-          <h2 className='text-2xl'>{cookieTranslation('aboutPrivacy')}</h2>
-          <p className='text-sm'>{cookieTranslation('privacyStatement')}.</p>
-          <div className='w-full flex my-2'>
-            <Link href='/privacy#policy' className='text-blue-500 mr-4'>
-              {cookieTranslation('privacyPolicy')}
-            </Link>
-            <Link href='/privacy#cookies'>
-              {cookieTranslation('cookiePolicy')}
-            </Link>
+      <h1 className='text-center text-2xl px-8 py-4'>
+        Medieteknik asks for your consent to use your personal data to:
+      </h1>
+      <div className='ml-8 flex flex-col gap-4 mb-8'>
+        <div className='flex items-center gap-4'>
+          <UserIcon className='w-10 h-10 p-2 bg-yellow-400/50 rounded-full' />
+          <p className='text-sm w-9/12'>
+            Personalised advertising and content, advertising and content
+            measurement, audience research and services development
+          </p>
+        </div>
+        <div className='flex items-center gap-4'>
+          <ComputerDesktopIcon className='w-10 h-10 p-2 bg-yellow-400/50 rounded-full' />
+          <p className='text-sm w-9/12'>
+            Store and/or access information on a device
+          </p>
+        </div>
+      </div>
+      <div className='w-full h-[500px] px-8 overflow-y-scroll absolute flex flex-col'>
+        <div className='w-full flex flex-col gap-4'>
+          <div className='w-full flex my-2 gap-4'>
+            <Button variant={'ghost'} asChild>
+              <Link href='./privacy#policy'>
+                {cookieTranslation('privacyPolicy')}
+              </Link>
+            </Button>
+            <Button variant={'ghost'} asChild>
+              <Link href='./privacy#cookies'>
+                {cookieTranslation('cookiePolicy')}
+              </Link>
+            </Button>
           </div>
 
-          <div className='w-full flex justify-between'>
-            <button
-              className='w-40 h-10 text-sm border-2 border-transparent bg-yellow-600 text-white rounded-2xl mt-2 hover:bg-yellow-500'
+          <div className='w-full flex gap-8'>
+            <Button
+              variant={'outline'}
+              className='w-1/2'
+              onClick={() => {
+                saveCookieSettings({
+                  ...sliders,
+                  FUNCTIONAL: sliders.FUNCTIONAL || false,
+                  ANALYTICS: sliders.ANALYTICS || false,
+                  PERFORMANCE: sliders.PERFORMANCE || false,
+                  ADVERTISING: sliders.ADVERTISING || false,
+                  NECESSARY: sliders.NECESSARY || true,
+                })
+                return sliders
+              }}
+            >
+              {cookieTranslation('btn_save')}
+            </Button>
+            <Button
+              className='w-1/2'
               onClick={() => {
                 setSliders((prev) => {
                   const updatedSliders = {
@@ -116,26 +167,10 @@ export default function DetailedCookiePopup({
               }}
             >
               {cookieTranslation('btn_acceptAll')}
-            </button>
-            <button
-              className='w-40 h-10 text-sm border-2 border-yellow-500 bg-white text-black rounded-2xl mt-2 hover:bg-black/20'
-              onClick={() => {
-                saveCookieSettings({
-                  ...sliders,
-                  FUNCTIONAL: sliders.FUNCTIONAL || false,
-                  ANALYTICS: sliders.ANALYTICS || false,
-                  PERFORMANCE: sliders.PERFORMANCE || false,
-                  ADVERTISING: sliders.ADVERTISING || false,
-                  NECESSARY: sliders.NECESSARY || true,
-                })
-                return sliders
-              }}
-            >
-              {cookieTranslation('btn_save')}
-            </button>
+            </Button>
           </div>
         </div>
-        <div className='w-full flex flex-col'>
+        <div className='w-full h-fit flex flex-col pb-10'>
           {availableCookies.map((key, index) => {
             const cookie = key as
               | 'NECESSARY'
@@ -146,7 +181,7 @@ export default function DetailedCookiePopup({
             return (
               <div
                 key={index}
-                className='w-full flex flex-col mt-8 border-b-2 border-black/25 pb-4'
+                className='w-full flex flex-col mt-8 border-b-2 border-black/25 pb-4 last:border-0'
               >
                 <div className='w-full flex justify-between '>
                   <div className='w-fit flex items-center'>

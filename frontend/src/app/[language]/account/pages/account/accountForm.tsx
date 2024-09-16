@@ -245,10 +245,6 @@ export default function AccountForm({
                           })
                           setProfilePicturePreview(file)
                         }
-                        img.onerror = () => {
-                          alert('Invalid image')
-                          URL.revokeObjectURL(img.src)
-                        }
                       }}
                     />
                   </FormControl>

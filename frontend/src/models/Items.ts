@@ -63,6 +63,7 @@ export interface NewsTranslation {
  * @param {string} end_date - The end date of the event
  */
 export interface Event extends Item {
+  event_id: string
   location: string
   start_date: string
   duration: number,

@@ -74,7 +74,10 @@ export default function EventUpload({
     start_time: z.string().time(),
     duration: z.coerce.number().int().min(1, 'Duration is required'),
     repeats: z.boolean().optional().or(z.literal(false)),
-    frequency: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']),
+    frequency: z
+      .enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'])
+      .optional()
+      .or(z.literal('')),
     end_date: z.string().date().optional().or(z.literal('')),
     max_occurrences: z.coerce.number().optional().or(z.literal(0)),
     location: z.string().min(1, 'Location is required'),
@@ -128,6 +131,13 @@ export default function EventUpload({
   const publish = async (data: z.infer<typeof FormSchema>) => {
     const start_date = new Date(data.date + ' ' + data.start_time)
 
+    if (data.repeats) {
+      if (!data.frequency) {
+        setErrorMessage('Frequency is required')
+        return
+      }
+    }
+
     const json_data = {
       start_date: start_date.toISOString(),
       duration: data.duration,
@@ -152,11 +162,15 @@ export default function EventUpload({
       })
 
       if (response.ok) {
+        const json = (await response.json()) as {
+          id: string
+        }
         if (addEvent) {
           addEvent({
             start_date: start_date.toLocaleString(language, {
               timeZone: 'Europe/Stockholm',
             }),
+            event_id: json.id,
             duration: data.duration,
             background_color: data.background_color,
             location: data.location,
@@ -204,8 +218,8 @@ export default function EventUpload({
             </TabsTrigger>
           ))}
         </TabsList>
-        <form onSubmit={eventForm.handleSubmit(publish)}>
-          <Form {...eventForm}>
+        <Form {...eventForm}>
+          <form onSubmit={eventForm.handleSubmit(publish)}>
             <div className='grid grid-cols-2 grid-rows-2 gap-2 mt-2 relative'>
               <FormField
                 name='date'
@@ -254,8 +268,8 @@ export default function EventUpload({
                   <FormControl>
                     <Checkbox
                       id='repeats'
+                      type='button'
                       onClick={(e) => {
-                        console.log(e.currentTarget.value)
                         setIsRepeating(
                           e.currentTarget.value === 'on' && !isRepeating
                         )
@@ -377,10 +391,10 @@ export default function EventUpload({
             <Button type='submit' className='w-full mt-4'>
               {t('event.form.publish')}
             </Button>
-          </Form>
-        </form>
+          </form>
+        </Form>
       </Tabs>
-      {/* 
+      {/* TODO: Implement it, in a better UI 
       <CardFooter className='w-full h-fit mt-3 pt-3 border-t flex flex-col items-start px-0 pb-0'>
         <EventPreview
           language={language}

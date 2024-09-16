@@ -14,6 +14,7 @@ interface CommitteeTagProps {
   includeImage?: boolean
   includeAt?: boolean
   includeBackground?: boolean
+  reverseImage?: boolean
   children?: React.ReactNode
 }
 
@@ -36,6 +37,7 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
       includeImage = true,
       includeAt = true,
       includeBackground = true,
+      reverseImage = false,
       children,
     },
     ref
@@ -48,18 +50,22 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
         >
           <Button
             variant='link'
-            className={`h-fit text-inherit hover:bg-neutral-200 dark:hover:bg-neutral-800 ${
+            className={`h-fit text-inherit ${
               includeBackground
-                ? 'dark:text-yellow-400 bg-yellow-400/30 dark:bg-yellow-400/20 '
+                ? 'dark:text-yellow-400 bg-yellow-400/30 dark:bg-yellow-400/20 hover:bg-neutral-200 dark:hover:bg-neutral-800'
                 : ''
-            } py-0 px-1 max-w-full`}
+            } 
+              ${reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'}
+            py-0 px-1 max-w-full`}
             style={{ fontSize: 'inherit' }}
             ref={ref}
           >
             {includeImage && (
-              <Avatar className='w-10 h-10 mr-2 rounded-full bg-white'>
+              <Avatar className='bg-white rounded-full overflow-hidden'>
                 <AvatarImage
-                  className='p-1'
+                  className='h-10 w-auto aspect-square object-fill p-1.5'
+                  width={128}
+                  height={128}
                   src={committee.logo_url ?? ''}
                   alt={committee.translations[0].title}
                 />
