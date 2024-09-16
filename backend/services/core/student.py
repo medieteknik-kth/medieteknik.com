@@ -188,13 +188,15 @@ def update(request: Request, student: Student) -> Response:
     newPassword = request.form.get("new_password")
 
     if not profile_picture and not currentPassword and not newPassword:
-        return jsonify({"error": "At least one field is required"}), 400
+        return jsonify(
+            {"error": "At least one field is required"}
+        ), HTTPStatus.BAD_REQUEST
 
     if newPassword:
         if not currentPassword:
             return jsonify(
                 {"error": "Current password is required to change passwords"}
-            ), 400
+            ), HTTPStatus.BAD_REQUEST
 
     file_extension = profile_picture.filename.split(".")[-1]
 
@@ -205,9 +207,17 @@ def update(request: Request, student: Student) -> Response:
                 getattr(student, "profile_picture_url"),
             )
 
+        file_content = profile_picture.read()
+
+        if len(file_content) > 5 * 1024 * 1024:
+            return jsonify({"error": "File size is too large"}), HTTPStatus.BAD_REQUEST
+
+        profile_picture.seek(0)
+
         result = upload_file(
             file=profile_picture,
             file_name=f"{student.student_id}.{file_extension}",
+            timedelta=None,
             path="profile",
         )
 
@@ -215,14 +225,20 @@ def update(request: Request, student: Student) -> Response:
 
     if newPassword:
         if not currentPassword:
-            return jsonify({"error": "Current password is required"}), 400
+            return jsonify(
+                {"error": "Current password is required"}
+            ), HTTPStatus.BAD_REQUEST
 
         if not check_password_hash(getattr(student, "password_hash"), currentPassword):
-            return jsonify({"error": "Invalid current password"}), 400
+            return jsonify(
+                {"error": "Invalid current password"}
+            ), HTTPStatus.BAD_REQUEST
 
         result = assign_password({"email": student.email, "password": newPassword})
         if not result:
-            return jsonify({"error": "Failed to update password"}), 500
+            return jsonify(
+                {"error": "Failed to update password"}
+            ), HTTPStatus.INTERNAL_SERVER_ERROR
 
     db.session.commit()
     response = make_response()
