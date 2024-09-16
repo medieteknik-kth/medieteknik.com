@@ -1,3 +1,6 @@
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/react'
+
 interface Props {
   children: React.ReactNode
 }
@@ -14,8 +17,17 @@ export default function RootLayout({ children }: Props): React.ReactElement {
     <html suppressHydrationWarning>
       <head>
         <meta name='google-adsense-account' content='ca-pub-2106963438710910' />
+        <link
+          rel='preload'
+          href='https://storage.googleapis.com/medieteknik-static/static/landingpage.webp'
+          as='image'
+        />
       </head>
-      <body>{children}</body>
+      <body>
+        <SpeedInsights />
+        <Analytics />
+        {children}
+      </body>
     </html>
   )
 }
