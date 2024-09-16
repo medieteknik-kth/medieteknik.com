@@ -1,0 +1,6 @@
+{
+    "event.delete": "Ta bort ",
+    "event.delete_confirmation": "Är du säker på att du vill ta bort detta event? Detta kommer att ta bort alla förekomster av detta event.",
+    "event.cancel": "Avbryt",
+    "event.delete_confirm": "Ta bort"
+}

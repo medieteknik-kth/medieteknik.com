@@ -15,6 +15,7 @@ interface StudentTagProps {
   student: Student
   includeImage?: boolean
   includeAt?: boolean
+  reverseImage?: boolean
   children?: React.ReactNode
 }
 
@@ -31,21 +32,33 @@ interface StudentTagProps {
  * @returns {ForwardRefExoticComponent<StudentTagProps & RefAttributes<HTMLButtonElement>>} The component
  */
 export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
-  ({ student, includeImage = true, includeAt = true, children }, ref) => {
+  (
+    {
+      student,
+      includeImage = true,
+      includeAt = true,
+      reverseImage = false,
+      children,
+    },
+    ref
+  ) => {
     return (
       <HoverCard>
         <HoverCardTrigger className='flex items-center' asChild>
           <Button
             variant='link'
-            className='h-fit text-inherit dark:text-yellow-400 py-0 px-1 max-w-full'
+            className={`h-fit text-inherit dark:text-yellow-400 py-0 px-1 max-w-full ${
+              reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'
+            }`}
             style={{ fontSize: 'inherit' }}
             ref={ref}
             asChild
           >
             <Link href={`./student/${student.student_id}`}>
               {includeImage && (
-                <Avatar className='w-10 h-10 mr-2'>
+                <Avatar className='h-10 w-auto aspect-square bg-white rounded-full overflow-hidden'>
                   <AvatarImage
+                    className='h-10 w-auto aspect-square object-contain p-1.5 rounded-full'
                     src={student.profile_picture_url || FallbackImage.src}
                     alt={student.first_name + ' ' + (student.last_name || '')}
                   />

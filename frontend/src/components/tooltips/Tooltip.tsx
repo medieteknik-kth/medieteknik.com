@@ -13,7 +13,7 @@ import FallbackImage from 'public/images/logo.webp'
 
 export function StudentTooltip({ student }: { student: Student }) {
   return (
-    <div>
+    <>
       <Button
         asChild
         variant='link'
@@ -52,13 +52,13 @@ export function StudentTooltip({ student }: { student: Student }) {
           <span>{student.email}</span>
         </Link>
       </Button>
-    </div>
+    </>
   )
 }
 
 export function CommitteeTooltip({ committee }: { committee: Committee }) {
   return (
-    <div>
+    <>
       <Button
         asChild
         variant='link'
@@ -68,8 +68,14 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
           href={`/chapter/committees/${committee.translations[0].title.toLocaleLowerCase()}`}
           className='group'
         >
-          <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
-            <AvatarImage src={committee.logo_url} alt='Committee Logo' />
+          <Avatar className='w-24 h-24 bg-white group-hover:scale-105 transition-transform rounded-full overflow-hidden'>
+            <AvatarImage
+              src={committee.logo_url}
+              width={128}
+              height={128}
+              alt='Committee Logo'
+              className='h-24 w-auto object-contain p-3.5'
+            />
             <AvatarFallback>
               {committee.translations[0].title + ' logo'}
             </AvatarFallback>
@@ -89,8 +95,10 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
           <span>{committee.email}</span>
         </Link>
       </Button>
-      <p className='text-sm'>{committee.translations[0].description}</p>
-    </div>
+      <p className='text-sm text-wrap'>
+        {committee.translations[0].description}
+      </p>
+    </>
   )
 }
 
@@ -100,7 +108,7 @@ export function CommitteePositionTooltip({
   position: CommitteePosition
 }) {
   return (
-    <div>
+    <>
       <CardHeader className='flex flex-row items-center'>
         <Avatar className='mr-2'>
           <AvatarImage
@@ -120,6 +128,6 @@ export function CommitteePositionTooltip({
         <h3 className='text-lg font-bold'>Description</h3>
         <p>{position.translations[0].description}</p>
       </CardContent>
-    </div>
+    </>
   )
 }

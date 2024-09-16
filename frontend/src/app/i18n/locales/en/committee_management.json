@@ -1,0 +1,6 @@
+{
+    "event.delete": "Delete ",
+    "event.delete_confirmation": "Are you sure you want to delete this event? This will remove all occurrences of this event.",
+    "event.cancel": "Cancel",
+    "event.delete_confirm": "Delete"
+}

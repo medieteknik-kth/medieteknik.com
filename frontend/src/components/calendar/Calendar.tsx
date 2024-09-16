@@ -80,7 +80,7 @@ function displayEvents(
 ) {
   const filteredEvents = filterEventsForDate(sortEvents(events), date)
   return (
-    <ul className='flex flex-col gap-1'>
+    <ul className='flex flex-wrap gap-1'>
       {filteredEvents.map((event, index) => (
         <EventComponent
           key={index}
@@ -109,7 +109,7 @@ export default function Calendar({
   return (
     <div
       id='calendar'
-      className='w-full desktop:w-fit h-fit min-h-[750px] relative'
+      className='w-full desktop:w-[1345px] h-fit min-h-[750px] relative'
       aria-label='Calendar'
     >
       <div className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 font-bold text-lg border-l border-t rounded-t'>

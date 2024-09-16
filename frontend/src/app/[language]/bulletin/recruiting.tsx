@@ -5,14 +5,14 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import Committee, { CommitteePosition } from '@/models/Committee'
+import { CommitteePosition } from '@/models/Committee'
 import Link from 'next/link'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import { useTranslation } from '@/app/i18n/client'
-import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 
 interface Response {
   committee_position: CommitteePosition
@@ -44,7 +44,7 @@ export default function Recruitment({
       </h2>
       <div className='w-full h-5/6 flex items-center mb-20'>
         <div className='w-full h-full overflow-x-auto'>
-          <div className='w-full h-full flex flex-wrap gap-8'>
+          <div className='w-full h-full flex flex-wrap gap-4 justify-center'>
             {data.length === 0 && (
               <p
                 className='w-full h-[200px] grid place-items-center z-10 
@@ -62,11 +62,14 @@ export default function Recruitment({
                     new Date(b.end_date).getTime()
                 )
                 .map((recruit, index) => (
-                  <Card key={index} className='w-[500px] h-[220px] relative'>
+                  <Card
+                    key={index}
+                    className='w-full sm:w-[470px] h-fit md:h-[260px] relative flex flex-col justify-between'
+                  >
                     <CardHeader className='h-fit flex flex-row items-center justify-between'>
-                      <div className='flex items-center'>
+                      <div className='flex flex-col items-start'>
                         <div>
-                          <CardTitle className='text-xl'>
+                          <CardTitle className='text-sm xxs:text-base sm:text-xl'>
                             {recruit.committee_position.committee && (
                               <CommitteeTag
                                 committee={recruit.committee_position.committee}
@@ -101,11 +104,22 @@ export default function Recruitment({
                           </CardTitle>
                           <CardDescription className='flex items-center mt-1'></CardDescription>
                         </div>
+                        <span className='font-mono uppercase text-xs select-none'>
+                          Position:{' '}
+                          {recruit.committee_position.translations[0].title}
+                        </span>
                       </div>
+                    </CardHeader>
+
+                    <CardContent className='text-sm w-full max-w-[450px] text-pretty break-words'>
+                      <p>{recruit.translations[0].description}</p>
+                    </CardContent>
+                    <CardFooter>
                       <Button
                         title='Learn More'
                         aria-label='Learn More'
                         asChild
+                        className='w-full'
                       >
                         <Link
                           href={recruit.translations[0].link_url}
@@ -115,14 +129,7 @@ export default function Recruitment({
                           Learn More
                         </Link>
                       </Button>
-                    </CardHeader>
-                    <span className='font-mono uppercase text-xs px-6 absolute -my-4 select-none'>
-                      Position:{' '}
-                      {recruit.committee_position.translations[0].title}
-                    </span>
-                    <CardContent className='text-sm w-full max-w-[450px] text-pretty break-words'>
-                      <p>{recruit.translations[0].description}</p>
-                    </CardContent>
+                    </CardFooter>
                   </Card>
                 ))}
           </div>
