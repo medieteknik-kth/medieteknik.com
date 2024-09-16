@@ -1,9 +1,13 @@
 import Image from 'next/image'
-import About from './about'
-import Background from '/public/images/bg2.webp'
+import BlurredBG from 'public/images/landingpage_blurred.webp'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { useTranslation } from '@/app/i18n'
 import './home.css'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
+import Loading from '@/components/tooltips/Loading'
+import { useTranslation } from '../i18n'
+
+const About = dynamic(() => import('./about'), { ssr: true })
 
 interface Props {
   params: {
@@ -23,6 +27,7 @@ export default async function Home({
   params: { language },
 }: Props): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'common')
+
   return (
     <main>
       <div className='w-full h-screen min-h-[600px] max-h-[2400px]'>
@@ -32,13 +37,14 @@ export default async function Home({
         >
           <div className='w-full h-full bg-black/40 z-10' />
           <Image
-            src={Background}
+            src='https://storage.googleapis.com/medieteknik-static/static/landingpage.webp'
             alt='Background'
             fill
-            sizes='100vh'
+            sizes='(max-width: 768px) 100vw, 100vw'
             className='w-full h-full object-cover'
             priority
             placeholder='blur'
+            blurDataURL={BlurredBG.src}
             loading='eager'
           />
           <ChevronDownIcon
@@ -59,7 +65,9 @@ export default async function Home({
           </div>
         </div>
       </div>
-      <About language={language} />
+      <Suspense fallback={<Loading language={language} />}>
+        <About language={language} />
+      </Suspense>
     </main>
   )
 }
