@@ -29,7 +29,7 @@ module.exports = {
                     },
                     {
                         key: 'Content-Security-Policy',
-                        value: "default-src 'self' http://localhost:3000 https://medieteknik.com; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com; img-src 'self' https://storage.googleapis.com data:;",
+                        value: "default-src 'self' http://localhost:3000 https://medieteknik.com; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com https://vercel.live/api/event/tick; img-src 'self' https://storage.googleapis.com data: blob:; style-src 'self' 'unsafe-inline' https://vercel.live/fonts; font-src 'self'; frame-src 'self' https://vercel.live; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'self'; script-src-elem 'self' 'unsafe-inline' https://vercel.live;",
                     },
                     {
                         key: 'X-Content-Type-Options',
