@@ -70,7 +70,7 @@ export default function DocumentPage({
     total_documents,
     isLoading: isLoadingDocuments,
     error,
-    incrementDocuments,
+    setDocumentsTotal,
   } = useCommitteeManagement()
   const [openModal, setOpenModal] = useState(false)
 
@@ -117,7 +117,7 @@ export default function DocumentPage({
                 <DocumentUpload
                   language={language}
                   author={committee}
-                  addDocument={incrementDocuments}
+                  addDocument={() => setDocumentsTotal(total_documents + 1)}
                   closeMenuCallback={() => setOpenModal(false)}
                 />
               </Dialog>

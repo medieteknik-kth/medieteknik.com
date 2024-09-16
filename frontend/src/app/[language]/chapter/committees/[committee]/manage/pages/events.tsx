@@ -1,6 +1,17 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
   Card,
   CardContent,
   CardDescription,
@@ -16,7 +27,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { BookOpenIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
+import {
+  BookOpenIcon,
+  CalendarDaysIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
 import {
   Pagination,
   PaginationContent,
@@ -39,6 +54,8 @@ import { API_BASE_URL } from '@/utility/Constants'
 import Committee from '@/models/Committee'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import EventUpload from '@/components/dialogs/EventUpload'
+import { useTranslation } from '@/app/i18n/client'
+import { Event } from '@/models/Items'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -50,29 +67,31 @@ const fetcher = (url: string) =>
  * @description The page for managing a committees events
  *
  * @param {string} language - The language of the page
- * @param {Committee} committee - The committee to manage
  * @returns {JSX.Element} The rendered component
  */
 export default function EventPage({
   language,
-  committee,
 }: {
   language: string
-  committee: Committee
 }): JSX.Element {
   // TODO: Clean-up the code, separate the components into smaller components?
-  const [pageIndex, setPageIndex] = useState(1)
-  const [isLoading, setIsLoading] = useState(true)
-  const { data: events, error: swrError } = useSWR<EventPagniation>(
-    `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/events?language=${language}&page=${pageIndex}`,
-    fetcher
-  )
   const {
     total_events,
     isLoading: isLoadingEvents,
     error,
-    incrementEvents,
+    setEventsTotal,
+    committee,
   } = useCommitteeManagement()
+  const [pageIndex, setPageIndex] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
+  const { data: events, error: swrError } = useSWR<EventPagniation>(
+    `${API_BASE_URL}/committees/${
+      committee && committee.translations[0].title.toLowerCase()
+    }/events?language=${language}&page=${pageIndex}`,
+    fetcher
+  )
+  const { t } = useTranslation(language, 'committee_management')
+
   const [openModal, setOpenModal] = useState(false)
 
   useEffect(() => {
@@ -81,6 +100,10 @@ export default function EventPage({
     }
   }, [isLoadingEvents])
 
+  if (!committee) {
+    return <p>Loading...</p>
+  }
+
   if (swrError) {
     console.error(swrError)
     return <p>{swrError.message}</p>
@@ -88,6 +111,28 @@ export default function EventPage({
 
   if (!events) {
     return <p>Loading...</p>
+  }
+
+  const deleteEvent = async (event: Event) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/events/${event.event_id}?author_type=${event.author.author_type}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ author_email: committee.email }),
+        }
+      )
+
+      if (response.ok) {
+        setEventsTotal(total_events - 1)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
@@ -119,7 +164,7 @@ export default function EventPage({
                   language={language}
                   author={committee}
                   closeMenuCallback={() => setOpenModal(false)}
-                  addEvent={incrementEvents}
+                  addEvent={() => setEventsTotal(total_events + 1)}
                   selectedDate={new Date()}
                 />
               </Dialog>
@@ -186,51 +231,89 @@ export default function EventPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {events.items.map((event, index) => (
-                  <TableRow key={index}>
-                    <TableCell className='max-w-52'>
-                      {event.translations[0].title}
-                    </TableCell>
-                    <TableCell className='w-36'>
-                      {new Date(
-                        new Date(event.start_date).getTime() +
-                          event.duration * 60000
-                      ) < new Date() ? (
-                        <CompletedEventBadge language={language} />
-                      ) : new Date(
+                {events.items &&
+                  events.items.map((event, index) => (
+                    <TableRow key={index}>
+                      <TableCell className='max-w-52'>
+                        {event.translations[0].title}
+                      </TableCell>
+                      <TableCell className='w-36'>
+                        {new Date(
                           new Date(event.start_date).getTime() +
                             event.duration * 60000
-                        ) > new Date() &&
-                        new Date(event.start_date) < new Date() ? (
-                        <OngoingEventBadge language={language} />
-                      ) : (
-                        <UpcomingEventBadge language={language} />
-                      )}
-                    </TableCell>
-                    <TableCell className='max-w-96'>{event.location}</TableCell>
-                    <TableCell className='w-72'>
-                      {new Date(event.start_date).toLocaleDateString(language, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                      })}
-                    </TableCell>
-                    <TableCell className='w-72'>
-                      {new Date(
-                        new Date(event.start_date).getTime() +
-                          event.duration * 60000
-                      ).toLocaleDateString(language, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                      })}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        ) < new Date() ? (
+                          <CompletedEventBadge language={language} />
+                        ) : new Date(
+                            new Date(event.start_date).getTime() +
+                              event.duration * 60000
+                          ) > new Date() &&
+                          new Date(event.start_date) < new Date() ? (
+                          <OngoingEventBadge language={language} />
+                        ) : (
+                          <UpcomingEventBadge language={language} />
+                        )}
+                      </TableCell>
+                      <TableCell className='max-w-96'>
+                        {event.location}
+                      </TableCell>
+                      <TableCell className='w-72'>
+                        {new Date(event.start_date).toLocaleDateString(
+                          language,
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell className='w-72'>
+                        {new Date(
+                          new Date(event.start_date).getTime() +
+                            event.duration * 60000
+                        ).toLocaleDateString(language, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant={'destructive'} size={'icon'}>
+                              <TrashIcon className='w-6 h-6' />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                {t('event.delete') +
+                                  event.translations[0].title}
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                {t('event.delete_confirmation')}
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>
+                                {t('event.cancel')}
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => {
+                                  deleteEvent(event)
+                                }}
+                              >
+                                {t('event.delete_confirm')}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </CardContent>

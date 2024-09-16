@@ -46,8 +46,8 @@ export default function HomePage({
     total_news,
     total_documents,
     total_events,
-    incrementEvents,
-    incrementDocuments,
+    setEventsTotal,
+    setDocumentsTotal,
     isLoading: isLoadingCommittee,
   } = useCommitteeManagement()
 
@@ -165,7 +165,7 @@ export default function HomePage({
                   language={language}
                   author={committee}
                   closeMenuCallback={() => handleOpenModal(1, false)}
-                  addEvent={incrementEvents}
+                  addEvent={() => setEventsTotal(total_events + 1)}
                   selectedDate={new Date()}
                 />
               </Dialog>
@@ -177,7 +177,7 @@ export default function HomePage({
                   <Button variant={'secondary'}>Upload Documents</Button>
                 </DialogTrigger>
                 <DocumentUpload
-                  addDocument={incrementDocuments}
+                  addDocument={() => setDocumentsTotal(total_documents + 1)}
                   language={language}
                   author={committee}
                   closeMenuCallback={() => handleOpenModal(2, false)}

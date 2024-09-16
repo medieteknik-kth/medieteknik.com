@@ -46,7 +46,7 @@ export default function Content({
       </TabsContent>
       <TabsContent value='events'>
         <Suspense fallback={<Loading language={language} />}>
-          <EventPage language={language} committee={committee} />
+          <EventPage language={language} />
         </Suspense>
       </TabsContent>
       <TabsContent value='documents'>
