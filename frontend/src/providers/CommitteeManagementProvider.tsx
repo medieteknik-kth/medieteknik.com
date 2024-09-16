@@ -4,7 +4,7 @@ import Committee, {
   CommitteePositionRecruitment,
 } from '@/models/Committee'
 import { StudentMembershipPagination } from '@/models/Pagination'
-import Student, { StudentMembership } from '@/models/Student'
+import { StudentMembership } from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
@@ -37,9 +37,6 @@ type CommitteeManagementAction =
   | { type: 'SET_NEWS_TOTAL'; payload: number }
   | { type: 'SET_EVENTS_TOTAL'; payload: number }
   | { type: 'SET_DOCUMENTS_TOTAL'; payload: number }
-  | { type: 'INCREMENT_NEWS' }
-  | { type: 'INCREMENT_EVENTS' }
-  | { type: 'INCREMENT_DOCUMENTS' }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_LOADING'; payload: boolean }
 
@@ -67,9 +64,9 @@ interface CommitteeManagementContextType extends CommitteeManagementState {
   addMember: (member: StudentMembership) => void
   setPositions: (positions: CommitteePosition[]) => void
   addPosition: (position: CommitteePosition) => void
-  incrementNews: () => void
-  incrementEvents: () => void
-  incrementDocuments: () => void
+  setNewsTotal: (total: number) => void
+  setEventsTotal: (total: number) => void
+  setDocumentsTotal: (total: number) => void
 }
 
 const CommitteeManagementContext = createContext<
@@ -133,21 +130,6 @@ const committeeManagementReducer = (
       return {
         ...state,
         total_documents: action.payload,
-      }
-    case 'INCREMENT_NEWS':
-      return {
-        ...state,
-        total_news: state.total_news + 1,
-      }
-    case 'INCREMENT_EVENTS':
-      return {
-        ...state,
-        total_events: state.total_events + 1,
-      }
-    case 'INCREMENT_DOCUMENTS':
-      return {
-        ...state,
-        total_documents: state.total_documents + 1,
       }
     case 'SET_ERROR':
       return {
@@ -250,9 +232,6 @@ export function CommitteeManagementProvider({
         dispatch({ type: 'SET_EVENTS_TOTAL', payload: total }),
       setDocumentsTotal: (total: number) =>
         dispatch({ type: 'SET_DOCUMENTS_TOTAL', payload: total }),
-      incrementNews: () => dispatch({ type: 'INCREMENT_NEWS' }),
-      incrementEvents: () => dispatch({ type: 'INCREMENT_EVENTS' }),
-      incrementDocuments: () => dispatch({ type: 'INCREMENT_DOCUMENTS' }),
     }),
     [state]
   )
