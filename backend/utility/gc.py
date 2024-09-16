@@ -79,13 +79,12 @@ def upload_file(
             blob.content_type = content_type
 
         url = None
+        blob.upload_from_file(file)
         if timedelta is None:
             blob.make_public()
-            url = blob.public_url()
+            url = blob.public_url
         else:
             url = blob.generate_signed_url(expiration=timedelta)
-
-        blob.upload_from_file(file)
 
         return url
     except GoogleCloudError as e:

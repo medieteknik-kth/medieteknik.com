@@ -216,7 +216,6 @@ def register_routes(app: Flask):
     @app.route("/api/v1/csrf-token")
     def get_csrf_token():
         token = session.get("csrf_token")
-        print(token)
         if not token:
             new_token = generate_csrf()
             session["csrf_token"] = new_token

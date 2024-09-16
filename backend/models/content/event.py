@@ -123,7 +123,6 @@ class Event(Item):
         if not isinstance(translation, EventTranslation):
             return None
 
-        del data["event_id"]
         del data["calendar_id"]
         del data["parent_event_id"]
         del data["type"]
