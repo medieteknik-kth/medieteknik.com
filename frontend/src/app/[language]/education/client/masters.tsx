@@ -1,15 +1,9 @@
 'use client'
 import { StaticImageData } from 'next/image'
 import Link from 'next/link'
-import ComputerScienceBG from '/public/images/cs.jpg'
-import InteractiveMediaBG from '/public/images/imt.jpg'
-import ICTBG from '/public/images/ict.jpg'
-import MachineLearingBG from '/public/images/ml.jpg'
-import SustainableDigitalisationBG from '/public/images/sd.jpg'
 import KTH from 'public/images/svg/kth.svg'
 import {
   Carousel,
-  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -18,14 +12,12 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import './masters.css'
 import ClassNames from 'embla-carousel-class-names'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Section } from '@/components/static/Static'
 import { useTranslation } from '@/app/i18n/client'

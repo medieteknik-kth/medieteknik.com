@@ -1,7 +1,5 @@
 import { Bars3CenterLeftIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
-import LightLogo from 'public/images/logobig_light.jpg'
-import DarkLogo from 'public/images/logobig_dark.jpg'
 import {
   Sheet,
   SheetContent,
@@ -50,14 +48,14 @@ export default function NavigationMenu({
             <SheetTitle>Navigation Menu</SheetTitle>
           </VisuallyHidden.Root>
           <Image
-            src={LightLogo.src}
+            src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
             alt='logo'
             width={512}
             height={512}
             className='w-full h-auto xxs:px-4 xs:px-8 dark:hidden'
           />
           <Image
-            src={DarkLogo.src}
+            src='https://storage.googleapis.com/medieteknik-static/static/dark_logobig.webp'
             alt='logo'
             width={512}
             height={512}

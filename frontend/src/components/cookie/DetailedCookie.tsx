@@ -10,7 +10,6 @@ import {
 } from '@heroicons/react/24/outline'
 import { useTranslation } from '@/app/i18n/client'
 import Logo from '/public/images/logo.webp'
-import BigLogo from 'public/images/logobig_light.jpg'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Switch } from '@/components/ui/switch'
@@ -75,7 +74,7 @@ export default function DetailedCookiePopup({
     <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white'>
       <div className='w-full flex items-center pt-4 mb-4 pl-8'>
         <Image
-          src={BigLogo.src}
+          src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
           alt='Company Logo'
           width='700'
           height='120'

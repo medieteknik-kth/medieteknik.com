@@ -22,6 +22,10 @@
                 {
                     "title": "Dokument",
                     "link": "/chapter/documents"
+                },
+                {
+                    "title": "Grafisk Identitet",
+                    "link": "/chapter/graphic"
                 }
             ]
         },
