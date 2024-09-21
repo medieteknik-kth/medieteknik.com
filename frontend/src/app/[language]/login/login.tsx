@@ -3,8 +3,6 @@ import Image from 'next/image'
 import KTHSVG from 'public/images/svg/kth.svg'
 import Link from 'next/link'
 import LoginForm from './client/loginForm'
-import LightLogo from 'public/images/logobig_light.jpg'
-import DarkLogo from 'public/images/logobig_dark.jpg'
 import { Button } from '@/components/ui/button'
 
 interface Props {
@@ -37,7 +35,7 @@ export default function Login({ params: { language } }: Props): JSX.Element {
         <div className='w-full xs:w-1/2 h-3/4 max-w-[1440px] flex flex-col items-center'>
           <Link href='/' title='Home' aria-label='Home'>
             <Image
-              src={LightLogo}
+              src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
               alt='light logo'
               width={384}
               height={154}
@@ -45,7 +43,7 @@ export default function Login({ params: { language } }: Props): JSX.Element {
               className='w-auto h-16 xss:h-28 xs:h-auto xs:min-w-[384px] dark:hidden'
             />
             <Image
-              src={DarkLogo}
+              src='https://storage.googleapis.com/medieteknik-static/static/dark_logobig.webp'
               alt='dark logo'
               width={384}
               height={154}

@@ -1,8 +1,6 @@
 import React from 'react'
-import { useTranslation } from '../../app/i18n'
+import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
-import LightLogo from 'public/images/logobig_light.jpg'
-import DarkLogo from 'public/images/logobig_dark.jpg'
 import { Button } from '@components/ui/button'
 import {
   ArrowTopRightOnSquareIcon,
@@ -36,22 +34,20 @@ export default async function Footer({
           className='w-fit h-40 grid place-items-center'
         >
           <Image
-            src={DarkLogo}
+            src='https://storage.googleapis.com/medieteknik-static/static/dark_logobig.webp'
             alt='logo'
             width={320}
             height={128}
             loading={'lazy'}
             className='w-auto h-14 xxs:h-24 xs:h-auto hidden dark:block'
-            placeholder='blur'
           />
           <Image
-            src={LightLogo}
+            src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
             alt='logo'
             width={320}
             height={128}
             loading={'lazy'}
             className='w-auto h-14 xxs:h-24 xs:h-auto block dark:hidden'
-            placeholder='blur'
           />
         </Link>
         <div className='w-full h-fit relative xs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
@@ -120,7 +116,7 @@ export default async function Footer({
       </div>
       <div>
         <Button variant={'ghost'} asChild>
-          <Link href={`./privacy`}>Privacy Policy</Link>
+          <Link href={`/privacy`}>Privacy Policy</Link>
         </Button>
       </div>
       <p className='md:mt-4 xxs:mb-20 px-4 xs:px-20 xxs:px-10 text-xs grid place-items-center'>
