@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Loading from '@components/tooltips/Loading'
 import { useTranslation } from '@/app/i18n/client'
 const AccountForm = React.lazy(() => import('./account/accountForm'))
+const ProfileForm = React.lazy(() => import('./account/profileForm'))
 const ReceptionForm = React.lazy(() => import('./account/receptionForm'))
 
 export default function AccountPage({ language }: { language: string }) {
@@ -32,12 +33,15 @@ export default function AccountPage({ language }: { language: string }) {
           </TabsList>
           <TabsContent value='account'>
             <React.Suspense fallback={<Loading language={language} />}>
-              <AccountForm params={{ language }} />
+              <div className='grid grid-cols-1 2xl:grid-cols-2 gap-2 relative'>
+                <AccountForm language={language} />
+                <ProfileForm language={language} />
+              </div>
             </React.Suspense>
           </TabsContent>
           <TabsContent value='reception'>
             <React.Suspense fallback={<Loading language={language} />}>
-              <ReceptionForm params={{ language }} />
+              <ReceptionForm language={language} />
             </React.Suspense>
           </TabsContent>
         </Tabs>
