@@ -1,10 +1,16 @@
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
 import { fontFigtree } from './fonts'
-import Head from 'next/head'
+import { Metadata } from 'next'
 
 interface Props {
   children: React.ReactNode
+}
+
+export const metadata: Metadata = {
+  other: {
+    'google-adsense-account': 'ca-pub-2106963438710910',
+  },
 }
 
 /**
@@ -17,13 +23,6 @@ interface Props {
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
     <html suppressHydrationWarning>
-      <Head>
-        <meta
-          key='google-adsense'
-          name='google-adsense-account'
-          content='ca-pub-2106963438710910'
-        />
-      </Head>
       <body
         style={{
           fontFamily: "'Figtree', sans-serif",
