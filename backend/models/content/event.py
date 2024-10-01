@@ -162,7 +162,7 @@ class EventTranslation(db.Model):
     )
 
     title = Column(String(255))
-    description = Column(String(500))
+    description = Column(String(1024))
     main_image_url = Column(String(length=2096))
     sub_image_urls = Column(ARRAY(String))
 

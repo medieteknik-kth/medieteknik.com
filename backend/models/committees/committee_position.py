@@ -115,7 +115,9 @@ class CommitteePosition(db.Model):
         del data["committee_id"]
 
         data["translations"] = [
-            translation.to_dict() for translation in set(translations)
+            translation.to_dict()
+            for translation in set(translations)
+            if translation is not None
         ]
 
         if is_public_route:
