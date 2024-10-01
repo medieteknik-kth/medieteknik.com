@@ -1,7 +1,7 @@
 import React from 'react'
 import Image, { StaticImageData } from 'next/image'
 
-export function Head({
+export function HeadComponent({
   title,
   description,
   image,

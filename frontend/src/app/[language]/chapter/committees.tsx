@@ -18,6 +18,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { Button } from '@/components/ui/button'
 import Autoplay from 'embla-carousel-autoplay'
 import ClassNames from 'embla-carousel-class-names'
+import { useTranslation } from '@/app/i18n/client'
 
 interface Props {
   language: string
@@ -28,6 +29,7 @@ export default function Committees({ language, committees }: Props) {
   const [api, setApi] = useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({})
+  const { t } = useTranslation(language, 'chapter')
 
   const onThumbClick = (index: number) =>
     useCallback(() => {
@@ -68,7 +70,7 @@ export default function Committees({ language, committees }: Props) {
         href={`/${language}/chapter/committees`}
         className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 block border-b-2 border-yellow-400 pb-4 mb-10 transition-colors text-blue-500 hover:text-yellow-400'
       >
-        Committees
+        {t('committees')}
       </Link>
       <div className='w-full mt-10'>
         <Carousel
@@ -145,7 +147,7 @@ export default function Committees({ language, committees }: Props) {
                     </Link>
                     <div className='z-10 h-fit'>
                       <h3 className='text-lg tracking-wider my-1 font-semibold text-center md:text-start'>
-                        Description
+                        {t('committees.description')}
                       </h3>
                       <p className='h-fit text-pretty overflow-hidden break-words text-center md:text-start'>
                         {translation(committee)?.description || ''}

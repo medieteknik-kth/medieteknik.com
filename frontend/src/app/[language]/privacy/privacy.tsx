@@ -1,4 +1,4 @@
-import { Head } from '@/components/static/Static'
+import { HeadComponent } from '@/components/static/Static'
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ export default function Privacy() {
   return (
     <main className='pb-4'>
       <div className='h-24 bg-black' />
-      <Head title='Legal' />
+      <HeadComponent title='Legal' />
       <section id='policy' className='px-10 md:px-40 desktop:px-[500px]'>
         <h1 className='text-3xl tracking-wider py-4'>Privacy Policy</h1>
         <p>
