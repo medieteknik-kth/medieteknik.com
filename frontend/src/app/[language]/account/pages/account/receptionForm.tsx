@@ -31,11 +31,11 @@ const fetcher = (url: string) =>
       }>
   )
 
-export default function ReceptionForm({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+interface Props {
+  language: string
+}
+
+export default function ReceptionForm({ language }: Props) {
   const [receptionPicturePreview, setReceptionPicturePreview] =
     useState<File | null>(null)
   const { student } = useAuthentication()
