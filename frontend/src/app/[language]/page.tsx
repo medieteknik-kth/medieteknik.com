@@ -56,7 +56,7 @@ export default async function Home({
         </div>
         <div className='w-full h-full grid place-items-center'>
           <div className='w-9/12 h-[300px] lg:h-[200px] flex flex-col items-center justify-center text-center'>
-            <h1 className='w-fit  h-fit text-2xl xxs:text-4xl xs:text-6xl md:text-8xl text-yellow-400 font-semibold tracking-wide py-8 uppercase grid place-items-center'>
+            <h1 className='w-fit h-fit text-2xl xxs:text-4xl xs:text-6xl md:text-8xl text-yellow-400 font-semibold tracking-wide py-8 uppercase grid place-items-center'>
               {t('title')}
             </h1>
             <h2 className='w-full md:w-[600px] lg:w-[800px] h-8 text-md xxs:text-xl sm:text-2xl text-white tracking-widest uppercase'>
