@@ -1,11 +1,10 @@
 import { HeadComponent } from '@/components/static/Static'
 import { GetAllCommittees } from '@/api/committee'
-import CommitteeMembers from './members'
 import Committees from './committees'
 import { GetCommitteeMembers } from '@/api/student'
-import CommitteeMembersDisplay from './memberDisplay'
 import { Separator } from '@/components/ui/separator'
 import { useTranslation } from '@/app/i18n'
+import Officials from './officials'
 
 export default async function Chapter({
   params: { language },
@@ -43,9 +42,7 @@ export default async function Chapter({
           </h1>
           {/* TODO: Add Year Select */}
         </div>
-        {members && (
-          <CommitteeMembersDisplay language={language} members={members} />
-        )}
+        {members && <Officials language={language} members={members} />}
       </section>
     </main>
   )

@@ -17,7 +17,7 @@ export interface CommitteeCategoryTranslation {
   language_code: LanguageCode;
 }
 
-export type CommitteePositionCategory = 'STYRELSEN' | 'VALBEREDNINGEN' | 'STUDIENÄMNDEN' | 'NÄRINGSLIV OCH KOMMUNIKATION' | 'STUDIESOCIALT' | 'FANBORGEN';
+export type CommitteePositionCategory = 'STYRELSEN' | 'VALBEREDNINGEN' | 'UTBILDNING' | 'NÄRINGSLIV OCH KOMMUNIKATION' | 'STUDIESOCIALT' | 'FANBORGEN' | 'NONE';
 
 /**
  * @interface Committee
