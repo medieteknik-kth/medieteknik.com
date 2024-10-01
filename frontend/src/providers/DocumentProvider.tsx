@@ -1,7 +1,9 @@
 'use client'
+
 import { Document } from '@/models/Document'
 import { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
+import { useSearchParams } from 'next/navigation'
 import {
   createContext,
   useContext,
@@ -14,13 +16,46 @@ type View = 'grid' | 'list'
 type Status = 'active' | 'archived'
 
 interface DocumentState {
+  /**
+   * The list of documents to display.
+   */
   documents: Document[]
+
+  /**
+   * The current page of documents.
+   */
   page: number
+
+  /**
+   * The total number of pages of documents.
+   */
   total_pages: number
+
+  /**
+   * The list of selected documents.
+   */
   selectedDocuments: Document[]
+
+  /**
+   * The current view of the documents.
+   * @type {'grid' | 'list'}
+   */
   view: View
+
+  /**
+   * The current status of the documents.
+   * @type {'active' | 'archived'}
+   */
   status: Status
+
+  /**
+   * Whether the documents are currently loading.
+   */
   isLoading: boolean
+
+  /**
+   * The error message if an error occurred.
+   */
   error: string | null
 }
 
@@ -49,10 +84,43 @@ const initialState: DocumentState = {
 }
 
 interface DocumentContextType extends DocumentState {
+  /**
+   * Go to the next page of documents.
+   *
+   * @returns {void}
+   */
   next: () => void
+
+  /**
+   * Select a document.
+   *
+   * @param {Document} document - The document to select.
+   * @returns {void}
+   */
   selectDocument: (document: Document) => void
+
+  /**
+   * Batch select documents.
+   *
+   * @param {Document[]} documents - The documents to select.
+   * @returns {void}
+   */
   setSelectedDocuments: (documents: Document[]) => void
+
+  /**
+   * Set the view of the documents.
+   *
+   * @param {View} view - The view to set.
+   * @returns {void}
+   */
   setView: (view: View) => void
+
+  /**
+   * Set the status of the documents.
+   *
+   * @param {Status} status - The status to set.
+   * @returns {void}
+   */
   setStatus: (status: Status) => void
 }
 
@@ -60,6 +128,13 @@ const DocumentManagementContext = createContext<
   DocumentContextType | undefined
 >(undefined)
 
+/**
+ * Reducer function for the document management context.
+ *
+ * @param {DocumentState} state - The current state of the context.
+ * @param {DocumentAction} action - The action to perform on the state.
+ * @returns {DocumentState} The new state of the context.
+ */
 const documentReducer = (
   state: DocumentState,
   action: DocumentAction
@@ -103,6 +178,14 @@ const documentReducer = (
   }
 }
 
+/**
+ * @name DocumentManagementProvider
+ * @description A provider for managing documents.
+ *
+ * @param {string} language - The current language of the application.
+ * @param {React.ReactNode} children - The children of the provider.
+ * @returns {JSX.Element} The JSX code for the DocumentManagementProvider component.
+ */
 export function DocumentManagementProvider({
   language,
   children,
@@ -111,16 +194,20 @@ export function DocumentManagementProvider({
   children: React.ReactNode
 }): JSX.Element {
   const [state, dispatch] = useReducer(documentReducer, initialState)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const retrieveDocuments = async () => {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
       try {
+        const searchQuery = searchParams.get('q') || ''
         const response = await fetch(
           `${API_BASE_URL}/public/documents?language=${language}${
             state.status === 'archived' ? '&status=archived' : ''
-          }&page=${state.page}`
+          }&page=${state.page}${
+            searchQuery ? `&search=${encodeURI(searchQuery.toLowerCase())}` : ''
+          }`
         )
         if (response.ok) {
           const json = (await response.json()) as DocumentPagination
@@ -140,7 +227,7 @@ export function DocumentManagementProvider({
     }
 
     retrieveDocuments()
-  }, [language, state.status, state.page])
+  }, [language, state.status, state.page, searchParams])
 
   const contextValue = useMemo(
     () => ({
@@ -172,6 +259,13 @@ export function DocumentManagementProvider({
   )
 }
 
+/**
+ * @name useDocumentManagement
+ * @description A hook for using the document management context.
+ *
+ * @returns {DocumentContextType} The document management context.
+ * @throws {Error} Thrown if the hook is used outside of a DocumentProvider.
+ */
 export function useDocumentManagement() {
   const context = useContext(DocumentManagementContext)
   if (context === undefined) {

@@ -1,71 +1,45 @@
-'use client'
-import { useTranslation } from '@/app/i18n/client'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { useDocumentManagement } from '@/providers/DocumentProvider'
-import {
-  Bars3Icon,
-  Squares2X2Icon,
-  TrashIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
+import SearchBar from './toolbar/client/search'
+import ViewSelect from './toolbar/client/viewSelect'
+import CategorySelect from './toolbar/categorySelect'
+import StatusSelect from './toolbar/client/statusSelect'
+import SidebarAuth from './sidebar/client/sidebarAuth'
 
 interface Props {
   language: string
 }
 
-export default function Toolbar({ language }: Props) {
-  const { permissions } = useAuthentication()
-  const { selectedDocuments, setSelectedDocuments, view, setView } =
-    useDocumentManagement()
-  const { t } = useTranslation(language, 'document')
-
+/**
+ * @name Toolbar
+ * @description A component that displays the toolbar for the document management page.
+ *
+ * @param {Props} props - The props for the component.
+ * @param {string} props.language - The current language of the application.
+ * @returns {Promise<JSX.Element>} The JSX code for the Toolbar component.
+ */
+export default async function Toolbar({
+  language,
+}: Props): Promise<JSX.Element> {
   return (
     <>
-      <div className='grow h-fit border-b ml-60 flex gap-4 items-center px-4 py-3'>
-        <div className='w-fit rounded-md border flex items-center gap-1'>
-          <Button
-            variant={view === 'grid' ? 'default' : 'ghost'}
-            size='icon'
-            title={t('view.grid')}
-            onClick={() => {
-              if (view === 'grid') return
-              setView('grid')
-            }}
-          >
-            <Squares2X2Icon className='w-6 h-6' />
-          </Button>
-          <Separator orientation='vertical' className='h-6' />
-          <Button
-            variant={view === 'list' ? 'default' : 'ghost'}
-            size='icon'
-            title={t('view.list')}
-            onClick={() => {
-              if (view === 'list') return
-              setView('list')
-            }}
-          >
-            <Bars3Icon className='w-6 h-6' />
-          </Button>
+      <div className='grow h-fit border-b lg:ml-60 flex gap-4 items-center px-4 py-3 flex-wrap'>
+        <ViewSelect language={language} />
+        <div className='lg:hidden'>
+          <SidebarAuth language={language} />
         </div>
-        {/*
-          TODO: Add Search
+        <div className='lg:hidden flex gap-2 items-center flex-wrap'>
           <Separator orientation='vertical' className='h-8' />
-          <Input type='search' className='w-96' placeholder={t('search')} />*/}
+          <StatusSelect language={language} />
+        </div>
+        <div className='lg:hidden flex gap-2 items-center flex-wrap'>
+          <CategorySelect language={language} />
+        </div>
+        <Separator orientation='vertical' className='h-8 hidden lg:block' />
+        <Separator className='lg:hidden' />
+        <SearchBar language={language} />
       </div>
-      <div className='grow h-12 border-b ml-60 px-4'>
+      {/*
+      <div className='grow h-12 border-b lg:ml-60 px-4 hidden'>
         {selectedDocuments.length > 0 && (
           <div className='h-full flex gap-4 items-center'>
             <div className='flex items-center gap-2'>
@@ -130,6 +104,7 @@ export default function Toolbar({ language }: Props) {
           </div>
         )}
       </div>
+      */}
     </>
   )
 }

@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
-from http import HTTPStatus
 from flask import Blueprint, request, jsonify
-from models.content import News, Event, Document, Album, Author
+from models.content import News, Event, Album, Author
 from models.content.author import AuthorType
 from models.core.student import Student
 from services.content.author import get_author_from_email
@@ -15,7 +13,6 @@ from services.content.public.item import (
 
 public_news_bp = Blueprint("public_news", __name__)
 public_events_bp = Blueprint("public_events", __name__)
-public_documents_bp = Blueprint("public_documents", __name__)
 public_albums_bp = Blueprint("public_albums", __name__)
 
 
@@ -151,85 +148,6 @@ def get_events_by_url(url: str) -> dict:
     if not item:
         return jsonify({}), 404
     item: Event = item
-
-    return jsonify(item)
-
-
-@public_documents_bp.route("/", methods=["GET"])
-def get_documents() -> dict:
-    """Retrieves all documents
-
-    Returns:
-        list[dict]: List of documents
-    """
-    provided_languages = retrieve_languages(request.args)
-    status = request.args.get("status", type=str, default="active")
-    documents_pagination = None
-
-    if status == "active":
-        documents_pagination = (
-            Document.query.order_by(
-                Document.is_pinned.desc(), Document.created_at.desc()
-            )
-            .filter(
-                Document.is_public == True,  # noqa: E712
-                Document.created_at >= datetime.now() - timedelta(days=365),
-            )
-            .paginate(per_page=30, max_per_page=30)
-        )
-    elif status == "archived":
-        documents_pagination = (
-            Document.query.order_by(
-                Document.is_pinned.desc(), Document.created_at.desc()
-            )
-            .filter(
-                Document.is_public == True,  # noqa: E712
-                Document.created_at < datetime.now() - timedelta(days=365),
-            )
-            .paginate(per_page=30, max_per_page=30)
-        )
-
-    documents = documents_pagination.items
-    document_dict = [
-        document_dict
-        for document in documents
-        if (
-            document_dict := document.to_dict(
-                is_public_route=True, provided_languages=provided_languages
-            )
-        )
-        is not None
-    ]
-
-    return jsonify(
-        {
-            "items": document_dict,
-            "page": documents_pagination.page,
-            "per_page": documents_pagination.per_page,
-            "total_pages": documents_pagination.pages,
-            "total_items": documents_pagination.total,
-        }
-    ), HTTPStatus.OK
-
-
-@public_documents_bp.route("/<string:url>", methods=["GET"])
-def get_documents_by_url(url: str) -> dict:
-    """Retrieves a document item by URL
-
-    Args:
-        url (str): Document URL
-
-    Returns:
-        dict: Document item
-    """
-    provided_languages = retrieve_languages(request.args)
-
-    item = get_item_by_url(url, Document, provided_languages)
-
-    if not item:
-        return jsonify({}), 404
-
-    item: Document = item
 
     return jsonify(item)
 

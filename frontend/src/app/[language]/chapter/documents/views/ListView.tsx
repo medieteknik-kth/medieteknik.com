@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -24,14 +25,21 @@ import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
 import { MouseEvent, useCallback } from 'react'
 
-type Type = 'all' | 'documents' | 'forms' | 'archived'
-
 interface Props {
   language: string
-  type: Type
+  type: TypeOfDocument
 }
 
-export default function ListView({ language, type }: Props) {
+/**
+ * @name ListView
+ * @description A component that displays a list of documents.
+ *
+ * @param {Props} props - The props for the component.
+ * @param {string} props.language - The current language of the application.
+ * @param {Type} props.type - The type of documents to display.
+ * @returns {JSX.Element} The JSX code for the ListView component.
+ */
+export default function ListView({ language, type }: Props): JSX.Element {
   const reroute = (url: string) => {
     window.open(url, '_blank')
   }
@@ -101,7 +109,7 @@ export default function ListView({ language, type }: Props) {
   }
 
   return (
-    <div className='pl-72 pr-20 flex flex-col gap-4 my-4'>
+    <div className='lg:pl-72 px-4 lg:pr-20 flex flex-col gap-4 my-4'>
       <Table>
         <TableHeader>
           <TableRow>

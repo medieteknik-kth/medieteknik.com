@@ -44,9 +44,9 @@ def register_routes(app: Flask):
     from .public.item_routes import (
         public_news_bp,
         public_events_bp,
-        public_documents_bp,
         public_albums_bp,
     )
+    from .public.document_routes import public_documents_bp
     from .public.student_routes import public_student_bp
     from .calendar_routes import calendar_bp
     from .committee_routes import committee_bp

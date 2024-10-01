@@ -1,4 +1,5 @@
 'use client'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Document } from '@/models/Document'
@@ -14,14 +15,21 @@ import { useDocumentManagement } from '@/providers/DocumentProvider'
 import { TFunction } from 'next-i18next'
 import { Separator } from '@/components/ui/separator'
 
-type Type = 'all' | 'documents' | 'forms' | 'archived'
-
 interface Props {
   language: string
-  type: Type
+  type: TypeOfDocument
 }
 
-export default function GridView({ language, type }: Props) {
+/**
+ * @name GridView
+ * @description A component that displays a grid of documents.
+ *
+ * @param {Props} props - The props for the component.
+ * @param {string} props.language - The current language of the application.
+ * @param {Type} props.type - The type of documents to display.
+ * @returns {JSX.Element} The JSX code for the GridView component.
+ */
+export default function GridView({ language, type }: Props): JSX.Element {
   const reroute = (url: string) => {
     window.open(url, '_blank')
   }
@@ -86,7 +94,7 @@ export default function GridView({ language, type }: Props) {
     switch (author.author_type) {
       case 'STUDENT':
         const student = author as Student
-        return student.profile_picture_url
+        return student.profile_picture_url + '&w=40'
       case 'COMMITTEE':
         const committee = author as Committee
         return committee.logo_url
@@ -115,8 +123,8 @@ export default function GridView({ language, type }: Props) {
   }
 
   return (
-    <div className='pl-72 pr-20 mt-4 flex flex-col gap-6 mb-4'>
-      <div className='w-full flex flex-wrap gap-4'>
+    <div className='lg:pl-72 px-4 lg:pr-20 mt-4 flex flex-col gap-6 mb-4'>
+      <div className='w-full flex flex-wrap gap-4 justify-center sm:justify-start'>
         {documents &&
           documents.length > 0 &&
           documents
@@ -148,7 +156,7 @@ export default function GridView({ language, type }: Props) {
             })}
       </div>
       <Separator />
-      <div className='w-full flex flex-wrap gap-4'>
+      <div className='w-full flex flex-wrap gap-4 justify-center sm:justify-start'>
         {documents &&
           documents.length > 0 &&
           documents
@@ -192,6 +200,20 @@ export default function GridView({ language, type }: Props) {
   )
 }
 
+/**
+ * @name renderDocuments
+ * @description A function that renders a document in the grid view.
+ *
+ * @param {number} documentIndex - The index of the document in the list.
+ * @param {Document[]} selectedDocuments - The list of selected documents.
+ * @param {Document} document - The document to render.
+ * @param {(event: MouseEvent, document: Document) => void} handleDocumentClick - The function to handle a document click.
+ * @param {(event: KeyboardEvent, document: Document) => void} handleDocumentKeydown - The function to handle a document keydown.
+ * @param {TFunction} t - The translation function.
+ * @param {(author: Author) => string | null | undefined} authorImage - The function to get the author image.
+ * @param {(author: Author) => string} authorName - The function to get the author name.
+ * @returns {JSX.Element} The JSX code for the document.
+ */
 function renderDocuments(
   documentIndex: number,
   selectedDocuments: Document[],
@@ -206,7 +228,7 @@ function renderDocuments(
     <div
       key={documentIndex}
       tabIndex={0}
-      className={`w-60 h-fit rounded-md border cursor-pointer flex flex-col justify-between
+      className={`w-32 md:w-60 h-fit rounded-md border cursor-pointer flex flex-col justify-between
           ${
             selectedDocuments.includes(document)
               ? 'border-yellow-400 bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
@@ -222,10 +244,13 @@ function renderDocuments(
         handleDocumentKeydown(event, document)
       }}
     >
-      <div className='w-full h-fit flex items-center justify-between py-2 px-4 '>
+      <div className='w-full h-fit flex items-center justify-between py-2 px-1 md:px-4'>
         <div className='flex items-center gap-2 h-10'>
           {document.document_type === 'DOCUMENT' ? (
-            <DocumentIcon className='w-5 h-5 text-green-500' title='Document' />
+            <DocumentIcon
+              className='w-4 h-4 md:w-5 md:h-5 text-green-500'
+              title='Document'
+            />
           ) : (
             <DocumentTextIcon
               className='w-5 h-5 text-amber-500'
@@ -233,7 +258,7 @@ function renderDocuments(
             />
           )}
           <span className='sr-only'>Document type is a document</span>
-          <p className='tracking-wide text-sm max-w-44 place-self-center'>
+          <p className='tracking-wide text-xs md:text-sm max-w-20 md:max-w-44 place-self-center overflow-hidden'>
             {document.translations[0].title}
           </p>
         </div>
@@ -246,22 +271,29 @@ function renderDocuments(
           {t('no_preview')}
         </p>
       </div>*/}
-      <div className='w-full h-fit flex items-center py-2 gap-2 bg-neutral-50/5  px-4 '>
-        <Avatar className='bg-white'>
+      <div className='w-full h-fit flex items-center py-2 gap-2 bg-neutral-50/5 px-1 md:px-4'>
+        <Avatar className='bg-white h-5 md:h-fit w-auto aspect-square grid place-items-center'>
           <AvatarImage
             src={authorImage(document.author) || ''}
-            width={128}
-            height={128}
+            width={40}
+            height={40}
             alt={authorName(document.author)}
-            className='h-10 w-auto object-contain p-0.5 rounded-full'
+            loading='lazy'
+            fetchPriority='low'
+            className='h-5 w-auto md:h-10 aspect-square object-contain p-0.5 rounded-full'
           />
           <AvatarFallback className='bg-white p-1'>
-            <Image src={FallbackLogo} alt='Author: Firstname Lastname' />
+            <Image
+              src={FallbackLogo}
+              width={40}
+              height={40}
+              alt={authorName(document.author)}
+            />
           </AvatarFallback>
         </Avatar>
         <div className='flex flex-col'>
           <p
-            className='text-sm max-w-36 truncate'
+            className='text-xs md:text-sm max-w-36 truncate'
             title={authorName(document.author)}
           >
             {authorName(document.author)}
