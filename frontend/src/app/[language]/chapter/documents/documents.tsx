@@ -1,4 +1,4 @@
-import { Head } from '@/components/static/Static'
+import { HeadComponent } from '@/components/static/Static'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import View from './tabs/View'
 import { DocumentManagementProvider } from '@/providers/DocumentProvider'
@@ -22,7 +22,7 @@ export default async function Documents({ params: { language } }: Params) {
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title={t('title')} />
+      <HeadComponent title={t('title')} />
       <Tabs orientation='vertical' defaultValue={t('category.all')}>
         <DocumentManagementProvider language={language}>
           <Sidebar language={language} />

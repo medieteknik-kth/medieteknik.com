@@ -1,7 +1,7 @@
 import Masters from './client/masters'
 import Courses from './client/courses'
 import KTH from 'public/images/svg/kth.svg'
-import { Head, Section } from '@/components/static/Static'
+import { HeadComponent, Section } from '@/components/static/Static'
 import Link from 'next/link'
 import {
   EnvelopeIcon,
@@ -33,7 +33,7 @@ export default async function Education({
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title={t('title')} description={t('description')}>
+      <HeadComponent title={t('title')} description={t('description')}>
         <div className='absolute left-20 bottom-4 flex gap-8'>
           <Button
             size={'icon'}
@@ -73,7 +73,7 @@ export default async function Education({
             </Link>
           </Button>
         </div>
-      </Head>
+      </HeadComponent>
 
       <Courses language={language} />
 

@@ -1,6 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { SectionDescription, SectionDescriptionProps } from './utility/section'
-import { Head } from '@/components/static/Static'
+import { HeadComponent } from '@/components/static/Static'
 
 interface Props {
   params: {
@@ -26,7 +26,7 @@ export default async function Contact({
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title={t('title')} />
+      <HeadComponent title={t('title')} />
 
       <div className='w-full flex items-center flex-col py-10 text-black bg-white dark:bg-[#232323] dark:text-white'>
         {contactData.map((section, index) => (

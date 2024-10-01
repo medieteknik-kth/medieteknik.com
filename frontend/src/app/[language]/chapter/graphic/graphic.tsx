@@ -1,4 +1,4 @@
-import { Head } from '@/components/static/Static'
+import { HeadComponent } from '@/components/static/Static'
 import Colors from './client/colors'
 import Typography from './typography'
 import Iconography from './iconography'
@@ -36,7 +36,7 @@ export default async function GraphicalIdentity({
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title={t('title')} />
+      <HeadComponent title={t('title')} />
       <Documents language={language} />
       <Iconography language={language} />
       <Colors language={language} />

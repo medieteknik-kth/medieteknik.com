@@ -1,4 +1,4 @@
-import { Head } from '@/components/static/Static'
+import { HeadComponent } from '@/components/static/Static'
 import Logo from 'public/images/logo.webp'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,7 +28,7 @@ export default async function CommitteeList({
     return (
       <main>
         <div className='h-24 bg-black' />
-        <Head title='Committees' />
+        <HeadComponent title='Committees' />
         <h2 className='text-center text-2xl my-8'>No committees found</h2>
         <p className='text-center my-4'>
           Contact{' '}
@@ -61,7 +61,7 @@ export default async function CommitteeList({
   return (
     <main>
       <div className='h-24 bg-black' />
-      <Head title={t('title')} />
+      <HeadComponent title={t('title')} />
 
       <div className='w-fit flex flex-col gap-10 py-10 sm:px-16 xl:px-52 desktop:px-96 dark:bg-[#111]'>
         {categoriesWithCommittees.length === 0 && (
