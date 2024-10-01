@@ -24,12 +24,13 @@ export function StudentTooltip({ student }: { student: Student }) {
           className='group'
           title='Go to profile page'
         >
-          <Avatar className='w-24 h-24 bg-white rounded-full mb-2 group-hover:scale-110 transition-transform'>
+          <Avatar className='w-24 h-auto aspect-square bg-white rounded-full mb-2 group-hover:scale-110 transition-transform overflow-hidden'>
             <AvatarImage
               src={student.profile_picture_url || FallbackImage.src}
               alt='Profile Picture'
               width={96}
               height={96}
+              className='w-24 h-auto aspect-square object-fill p-1.5 rounded-full'
             />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>

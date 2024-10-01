@@ -206,7 +206,7 @@ export default function PositionForm({
     }
   }
 
-  const categories = [
+  const categories: { value: CommitteePositionCategory; label: string }[] = [
     {
       value: 'STYRELSEN',
       label: 'Styrelsen',
@@ -216,8 +216,8 @@ export default function PositionForm({
       label: 'Valberedningen',
     },
     {
-      value: 'STUDIENÄMNDEN',
-      label: 'Studienämnden',
+      value: 'UTBILDNING',
+      label: 'Utbildning',
     },
     {
       value: 'NÄRINGSLIV OCH KOMMUNIKATION',

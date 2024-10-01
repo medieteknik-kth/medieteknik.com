@@ -21,6 +21,34 @@ import { GetStudentPublic } from '@/api/student'
 import Image from 'next/image'
 import EditProfile from './client/editButton'
 
+function SocialMediaDisplay({
+  url,
+  socialMediaBaseURL,
+  icon,
+}: {
+  url: string
+  socialMediaBaseURL: string
+  icon: JSX.Element
+}) {
+  return (
+    <Button
+      asChild
+      variant='ghost'
+      className='hover:fill-yellow-400 justify-start'
+    >
+      <Link
+        href={`${url}`}
+        target='_blank'
+        rel='noreferrer noopener'
+        className='w-full flex gap-2 max-w-[238px] overflow-hidden'
+      >
+        {icon}
+        <p>{url.replace(socialMediaBaseURL, '').replace('/', '')}</p>
+      </Link>
+    </Button>
+  )
+}
+
 export default async function StudentPage({
   params: { language, studentId },
 }: {
@@ -70,44 +98,31 @@ export default async function StudentPage({
             <CardHeader>
               <CardTitle className='flex justify-between items-center'>
                 Profile
-                <EditProfile
-                  language={language}
-                  currentStudent={data.student}
-                />
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className='flex flex-col gap-2'>
-                <Button
-                  asChild
-                  size='icon'
-                  variant='ghost'
-                  className='hover:fill-yellow-400'
-                >
-                  <Link href='/'>
-                    <FacebookSVG className='w-6 h-6' />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size='icon'
-                  variant='ghost'
-                  className='hover:fill-yellow-400'
-                >
-                  <Link href='/'>
-                    <LinkedInSVG className='w-6 h-6' />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size='icon'
-                  variant='ghost'
-                  className='hover:fill-yellow-400'
-                >
-                  <Link href='/'>
-                    <InstagramSVG className='w-6 h-6' />
-                  </Link>
-                </Button>
+                {data.profile.facebook_url && (
+                  <SocialMediaDisplay
+                    socialMediaBaseURL='https://www.facebook.com/'
+                    url={data.profile.facebook_url}
+                    icon={<FacebookSVG className='w-6 h-6' />}
+                  />
+                )}
+                {data.profile.linkedin_url && (
+                  <SocialMediaDisplay
+                    socialMediaBaseURL='https://www.linkedin.com/in/'
+                    url={data.profile.linkedin_url}
+                    icon={<LinkedInSVG className='w-6 h-6' />}
+                  />
+                )}
+                {data.profile.instagram_url && (
+                  <SocialMediaDisplay
+                    socialMediaBaseURL='https://www.instagram.com/'
+                    url={data.profile.instagram_url}
+                    icon={<InstagramSVG className='w-6 h-6' />}
+                  />
+                )}
               </div>
             </CardContent>
           </Card>

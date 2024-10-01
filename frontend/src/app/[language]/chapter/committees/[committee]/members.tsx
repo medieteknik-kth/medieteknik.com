@@ -2,6 +2,7 @@ import Image from 'next/image'
 import FallbackImage from 'public/images/logo.webp'
 import { GetCommitteeMembers } from '@/api/committee'
 import Link from 'next/link'
+import { StudentTag } from '@/components/tags/StudentTag'
 
 export const revalidate = 60 * 60 * 24 * 30
 
@@ -81,11 +82,12 @@ export default async function CommitteeMembers({
                   {member.position.translations[0].title}
                 </p>
               </div>
-              <div className='px-2 pb-2 h-24'>
-                <p className='text-xl max-h-14 overflow-hidden'>
-                  {member.student.first_name + ' ' + member.student.last_name ||
-                    ''}
-                </p>
+              <div className='px-2 pb-2 h-24 flex flex-col gap-2 text-xl'>
+                <StudentTag
+                  student={member.student}
+                  includeAt={false}
+                  includeImage={false}
+                />
                 <Link
                   href={`mailto:${member.position.email}`}
                   target='_blank'

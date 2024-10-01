@@ -73,9 +73,9 @@ export default function MembersPage({
     return positions.find((position) => position.committee_position_id === id)
   }
 
-  const limit = (weight: number) => {
+  const limited = (weight: number) => {
     if (role === Role.ADMIN) {
-      return true
+      return false
     }
 
     const positions = studentPositions.map((userPosition) =>
@@ -83,12 +83,12 @@ export default function MembersPage({
     )
 
     if (!positions || positions.length === 0) {
-      return false
+      return true
     }
 
     return positions.some((position) => {
       if (!position) {
-        return false
+        return true
       }
 
       return position.weight >= weight
@@ -128,7 +128,7 @@ export default function MembersPage({
                 <DialogTrigger asChild>
                   <Button
                     variant={'outline'}
-                    disabled={error !== null || limit(300)}
+                    disabled={error !== null || limited(300)}
                     title='Add a new member to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
@@ -148,7 +148,9 @@ export default function MembersPage({
                   <Button
                     variant={'destructive'}
                     disabled={
-                      members.total_items === 0 || error !== null || limit(150)
+                      members.total_items === 0 ||
+                      error !== null ||
+                      limited(150)
                     }
                     title='Remove a member from the committee'
                   >
@@ -182,7 +184,7 @@ export default function MembersPage({
                   <Button
                     variant={'outline'}
                     className='mr-4'
-                    disabled={error !== null || limit(300)}
+                    disabled={error !== null || limited(300)}
                     title='Create a new position to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
@@ -206,7 +208,7 @@ export default function MembersPage({
                     variant={'outline'}
                     className='mr-4'
                     disabled={
-                      error !== null || positions.length === 0 || limit(400)
+                      error !== null || positions.length === 0 || limited(400)
                     }
                     title='Open a position for recruitment'
                   >
@@ -227,7 +229,7 @@ export default function MembersPage({
                   <Button
                     variant={'destructive'}
                     disabled={
-                      error !== null || positions.length <= 1 || limit(150)
+                      error !== null || positions.length <= 1 || limited(150)
                     }
                     title='Remove a position from the committee'
                   >

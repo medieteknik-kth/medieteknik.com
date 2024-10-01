@@ -42,6 +42,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Textarea } from '@/components/ui/textarea'
 
 function TranslatedInputs({
   index,
@@ -91,7 +92,7 @@ function TranslatedInputs({
               </span>
             </FormLabel>
             <FormControl>
-              <Input {...field} type='text' placeholder='Description' />
+              <Textarea {...field} placeholder='Description' />
             </FormControl>
             <FormDescription>Max 200 characters</FormDescription>
             <FormMessage className='text-xs font-bold' />

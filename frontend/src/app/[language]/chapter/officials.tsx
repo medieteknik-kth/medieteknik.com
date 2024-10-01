@@ -9,8 +9,9 @@ import Image from 'next/image'
 import FallbackImage from 'public/images/logo.webp'
 import Link from 'next/link'
 import Student from '@/models/Student'
+import { StudentTag } from '@/components/tags/StudentTag'
 
-export default async function CommitteeMembersDisplay({
+export default async function Officials({
   language,
   members,
 }: {
@@ -25,7 +26,7 @@ export default async function CommitteeMembersDisplay({
   const categories: CommitteePositionCategory[] = [
     'STYRELSEN',
     'VALBEREDNINGEN',
-    'STUDIENÄMNDEN',
+    'UTBILDNING',
     'NÄRINGSLIV OCH KOMMUNIKATION',
     'STUDIESOCIALT',
     'FANBORGEN',
@@ -45,7 +46,7 @@ export default async function CommitteeMembersDisplay({
   }
 
   return (
-    <div className='w-full flex flex-col gap-4'>
+    <section id='officials' className='w-full flex flex-col gap-4'>
       {categories.map((category, index) => (
         <div key={index}>
           <h2 className='text-center sm:text-start text-lg sm:text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
@@ -114,12 +115,12 @@ export default async function CommitteeMembersDisplay({
                           {member.position.translations[0].title}
                         </p>
                       </div>
-                      <div className='px-2 pb-2 h-24'>
-                        <p className='text-xl max-h-14 overflow-hidden'>
-                          {member.student.first_name +
-                            ' ' +
-                            (member.student.last_name || '')}
-                        </p>
+                      <div className='px-2 pb-2 h-24 flex flex-col gap-2 text-xl'>
+                        <StudentTag
+                          student={member.student}
+                          includeAt={false}
+                          includeImage={false}
+                        />
                         <Link
                           href={`mailto:${member.position.email}`}
                           target='_blank'
@@ -136,6 +137,6 @@ export default async function CommitteeMembersDisplay({
           <Separator className='w-full sm:w-1/3 mt-4 bg-yellow-400' />
         </div>
       ))}
-    </div>
+    </section>
   )
 }
