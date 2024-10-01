@@ -6,6 +6,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { TFunction } from 'next-i18next'
 
 interface Props {
@@ -68,12 +69,7 @@ export default function TranslatedInputs({
               </span>
             </FormLabel>
             <FormControl>
-              <Input
-                id='description'
-                type='text'
-                placeholder='Optional'
-                {...field}
-              />
+              <Textarea id='description' placeholder='Optional' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

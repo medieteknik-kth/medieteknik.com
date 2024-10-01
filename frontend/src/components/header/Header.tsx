@@ -48,10 +48,10 @@ export default async function Header({
       className='w-full h-24 text-black bg-white dark:bg-[#111] dark:text-white fixed backdrop-blur-md flex justify-between z-50 transition-all shadow-md dark:shadow-neutral-900'
     >
       <div className='w-fit h-full flex z-20'>
-        <Button variant={'ghost'} className='w-fit h-full hidden lg:block'>
+        <Button variant={'ghost'} className='hidden lg:block' asChild>
           <Link
             href={'/' + language}
-            className='w-fit h-full flex items-center z-10 relative'
+            className='w-full h-full flex items-center z-10 relative'
             title='Home'
             aria-label='Home Button'
           >

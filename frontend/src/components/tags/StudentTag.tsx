@@ -52,6 +52,7 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
             }`}
             style={{ fontSize: 'inherit' }}
             ref={ref}
+            tabIndex={-1}
             asChild
           >
             <Link href={`./student/${student.student_id}`}>

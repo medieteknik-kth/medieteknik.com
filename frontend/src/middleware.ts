@@ -5,6 +5,7 @@ import { NextRequest } from 'next/server';
 import { getCookies } from 'next-client-cookies/server';
 import { Cookies } from 'next-client-cookies';
 import { CookieConsent, ServerCookieConsent  } from './utility/CookieManager';
+import { LanguageCode } from './models/Language';
 
 acceptLanguage.languages(supportedLanguages);
 
@@ -30,7 +31,12 @@ function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: S
 
   language = cookies.get(cookieName)
   if(!language && typeof window !== 'undefined') { language = localStorage.getItem('i18nextLng') }
-  if(!language) { language = request.headers.get('Accept-Language')?.split(',')[0].split('-')[0] }
+  if(!language) { 
+    language = request.headers.get('Accept-Language')?.split(',')[0].split('-')[0]
+    if (language && !supportedLanguages.includes(language as LanguageCode)) {
+      language = null
+    }
+  }
   if(!language) { language = fallbackLanguage }
 
   // Non-specified language or language not supported

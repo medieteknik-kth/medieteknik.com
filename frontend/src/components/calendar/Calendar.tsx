@@ -80,7 +80,7 @@ function displayEvents(
 ) {
   const filteredEvents = filterEventsForDate(sortEvents(events), date)
   return (
-    <ul className='flex flex-wrap gap-1'>
+    <ul className='flex flex-row sm:flex-col flex-wrap gap-1 h-fit'>
       {filteredEvents.map((event, index) => (
         <EventComponent
           key={index}
@@ -109,7 +109,7 @@ export default function Calendar({
   return (
     <div
       id='calendar'
-      className='w-full desktop:w-[1345px] h-fit min-h-[750px] relative'
+      className='w-full desktop:w-[1345px] h-fit min-h-[750px] relative z-10'
       aria-label='Calendar'
     >
       <div className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 font-bold text-lg border-l border-t rounded-t'>
@@ -146,7 +146,7 @@ export default function Calendar({
               onDateClickCallback(mappedDate)
             }}
           >
-            <p className='absolute top-2 left-2 text-md sm:text-2xl text-neutral-400 select-none'>
+            <p className='absolute top-2 left-2 text-md sm:text-2xl text-neutral-600 dark:text-neutral-400 select-none'>
               {mappedDate.getDate()}
             </p>
             <div className='w-full absolute top-10 left-0 text-black font-bold px-2 max-h-[92px] overflow-y-auto opacity-50'>
@@ -164,8 +164,8 @@ export default function Calendar({
             className={`w-full desktop:w-48 h-36 border-r border-t relative bg-white dark:bg-[#111] ${
               new Date().getDate() === index + 1 &&
               isSameMonth(new Date(), date)
-                ? 'text-red-400'
-                : 'text-neutral-400'
+                ? 'text-red-700 dark:text-red-400'
+                : 'text-neutral-700 dark:text-neutral-300'
             }`}
             onClick={(e) => {
               e.stopPropagation()
@@ -208,7 +208,7 @@ export default function Calendar({
               onDateClickCallback(setDate(dateClicked, index + 1))
             }}
           >
-            <p className='absolute top-2 left-2 text-md sm:text-2xl text-neutral-400 select-none'>
+            <p className='absolute top-2 left-2 text-md sm:text-2xl text-neutral-600 dark:text-neutral-400 select-none'>
               {index + 1}
             </p>
             <div className='w-full absolute top-10 left-0 text-black font-bold px-2 max-h-[92px] overflow-y-auto'>
