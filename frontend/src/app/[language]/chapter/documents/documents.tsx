@@ -2,11 +2,9 @@ import { HeadComponent } from '@/components/static/Static'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import View from './tabs/View'
 import { DocumentManagementProvider } from '@/providers/DocumentProvider'
-import Toolbar from './client/toolbar'
+import Toolbar from './toolbar'
 import Sidebar from './sidebar'
 import { useTranslation } from '@/app/i18n'
-
-type View = 'grid' | 'list'
 
 interface Props {
   language: string
@@ -16,7 +14,17 @@ interface Params {
   params: Props
 }
 
-export default async function Documents({ params: { language } }: Params) {
+/**
+ * @name Documents
+ * @description The main component for the documents page.
+ *
+ * @param {Params} params - The dynamic parameters of the URL
+ * @param {string} params.language - The currently selected language
+ * @returns {Promise<JSX.Element>} The JSX code for the Documents component.
+ */
+export default async function Documents({
+  params: { language },
+}: Params): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'document')
 
   return (

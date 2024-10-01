@@ -1,4 +1,5 @@
 'use client'
+
 import DocumentUpload from '@/components/dialogs/DocumentUpload'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
@@ -10,7 +11,15 @@ interface Props {
   language: string
 }
 
-export default function SidebarAuth({ language }: Props) {
+/**
+ * @name SidebarAuth
+ * @description A component that displays the authenticated actions.
+ *
+ * @param {Props} props - The props for the component.
+ * @param {string} props.language - The current language of the application.
+ * @returns {JSX.Element} The JSX code for the SidebarAuth component.
+ */
+export default function SidebarAuth({ language }: Props): JSX.Element {
   const [open, setOpen] = useState(false)
   const { student, permissions } = useAuthentication()
   return (
@@ -33,7 +42,7 @@ export default function SidebarAuth({ language }: Props) {
                 }}
               />
             </Dialog>
-            <Separator className='-my-0.5' />
+            <Separator />
           </>
         )}
     </>
