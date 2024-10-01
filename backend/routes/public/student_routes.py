@@ -6,6 +6,7 @@ API Endpoint: '/api/v1/public/students'
 from typing import Any, Dict, List
 from flask import Blueprint, jsonify, request
 from models.core import Student, Profile
+from models.core.student import StudentMembership
 from services.core.public.student import (
     retrieve_all_committee_members,
     retrieve_student_membership_by_id,
@@ -82,6 +83,24 @@ def get_student_by_id(student_id: str):
     return jsonify(data)
 
 
+@public_student_bp.route("/<string:student_id>/profile", methods=["GET"])
+def get_student_profile(student_id: str):
+    """Retrieves a student profile
+
+    Args:
+        student_id (str): Student ID
+
+    Returns:
+        dict: Student profile
+    """
+    profile = Profile.query.filter_by(student_id=student_id).first()
+
+    if not profile and not isinstance(profile, Profile):
+        return jsonify({}), 404
+
+    return jsonify(profile.to_dict())
+
+
 @public_student_bp.route("/<string:email>", methods=["GET"])
 def get_student_by_email(email: str):
     """Retrieves a student by email
@@ -111,7 +130,7 @@ def get_committee_members():
     provided_languages = retrieve_languages(request.args)
 
     # Use a single query with join to fetch all data at once
-    committee_memberships = retrieve_all_committee_members(provided_languages)
+    committee_memberships: List[StudentMembership] = retrieve_all_committee_members(provided_languages)
 
     # Construct the result from the joined data
     committee_members: List[Dict[str, Any]] = [

@@ -5,7 +5,6 @@ from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import (
     Boolean,
     String,
-    Integer,
     Column,
     ForeignKey,
     DateTime,
@@ -181,10 +180,12 @@ class Profile(db.Model):
 
         columns = columns.mapper.column_attrs.keys()
 
-        data = {c.name: getattr(self, c.name) for c in columns}
-
-        if not data:
-            return {}
+        data = {}
+        for column in columns:
+            value = getattr(self, column)
+            if isinstance(value, enum.Enum):
+                value = value.value
+            data[column] = value
 
         if is_public_route:
             del data["phone_number"]
