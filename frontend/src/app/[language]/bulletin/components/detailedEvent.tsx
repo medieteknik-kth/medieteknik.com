@@ -88,7 +88,7 @@ export default function DetailedEvent({
       <DialogHeader>
         <DialogTitle>{event.translations[0].title}</DialogTitle>
         {event.translations[0].description && (
-          <DialogDescription>
+          <DialogDescription className='whitespace-pre-line'>
             {event.translations[0].description}
           </DialogDescription>
         )}

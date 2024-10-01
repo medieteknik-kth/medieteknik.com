@@ -71,14 +71,21 @@ export default function DetailedCookiePopup({
   const availableCookies: string[] = Object.values(CookieConsent)
 
   return (
-    <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white'>
+    <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white dark:bg-[#111]'>
       <div className='w-full flex items-center pt-4 mb-4 pl-8'>
         <Image
           src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
           alt='Company Logo'
           width='700'
-          height='120'
-          className='h-20 object-contain'
+          height='280'
+          className='h-20 object-contain dark:hidden'
+        />
+        <Image
+          src='https://storage.googleapis.com/medieteknik-static/static/dark_logobig.webp'
+          alt='Company Logo'
+          width='700'
+          height='280'
+          className='h-20 object-contain hidden dark:block'
         />
 
         <button
@@ -86,7 +93,7 @@ export default function DetailedCookiePopup({
           title='Close'
           onClick={() => {
             saveCookieSettings({
-              NECESSARY: false,
+              NECESSARY: true,
               FUNCTIONAL: sliders.FUNCTIONAL || false,
               ANALYTICS: sliders.ANALYTICS || false,
               PERFORMANCE: sliders.PERFORMANCE || false,
@@ -119,12 +126,12 @@ export default function DetailedCookiePopup({
         <div className='w-full flex flex-col gap-4'>
           <div className='w-full flex my-2 gap-4'>
             <Button variant={'ghost'} asChild>
-              <Link href='./privacy#policy'>
+              <Link href='/privacy#policy'>
                 {cookieTranslation('privacyPolicy')}
               </Link>
             </Button>
             <Button variant={'ghost'} asChild>
-              <Link href='./privacy#cookies'>
+              <Link href='/privacy#cookies'>
                 {cookieTranslation('cookiePolicy')}
               </Link>
             </Button>

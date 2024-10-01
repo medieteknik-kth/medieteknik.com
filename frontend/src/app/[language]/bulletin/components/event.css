@@ -1,0 +1,47 @@
+@media (min-width: 1920px) {
+  .event-title {
+    width: 158px;
+  }
+}
+
+@media (min-width: 2000px) {
+  .event-title {
+    width: 200px;
+  }
+}
+
+@media (min-width: 2100px) {
+  .event-title {
+    width: 250px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .event-title {
+    width: 300px;
+  }
+}
+
+@media (min-width: 2300px) {
+  .event-title {
+    width: 350px;
+  }
+}
+
+@media (min-width: 2400px) {
+  .event-title {
+    width: 400px;
+  }
+}
+
+@media (min-width: 2500px) {
+  .event-title {
+    width: 450px;
+  }
+}
+
+@media (min-width: 2600px) {
+  .event-title {
+    width: 500px;
+  }
+}

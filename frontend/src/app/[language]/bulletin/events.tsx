@@ -94,7 +94,7 @@ export default function Events({
         </p>
       </div>
 
-      <div className='w-full flex flex-col gap-4 desktop:flex-row relative'>
+      <div className='w-full flex flex-col gap-4 desktop:flex-row relative overflow-hidden'>
         <Calendar>
           <div className='absolute right-0 -top-12 flex gap-2'>
             {student && <CalendarExport student={student} />}
@@ -159,7 +159,7 @@ export default function Events({
             </Dialog>
           </div>
         </Calendar>
-        <Card className='grow min-h-[320px] dark:bg-[#111]'>
+        <Card className='flex-grow min-h-[320px] dark:bg-[#111] overflow-hidden'>
           <CardHeader className='relative'>
             <CardTitle>{t('events')}</CardTitle>
             <CardDescription>
@@ -195,8 +195,8 @@ export default function Events({
               )}
           </CardHeader>
 
-          <div className='max-h-[800px] overflow-y-auto px-4'>
-            <ul className='w-full grid grid-cols-2 gap-4'>
+          <div className='max-h-[800px] overflow-y-auto px-4 overflow-x-hidden'>
+            <ul className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
               {events
                 .filter((event) => {
                   return (

@@ -1,5 +1,7 @@
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
+import { fontFigtree } from './fonts'
+import Head from 'next/head'
 
 interface Props {
   children: React.ReactNode
@@ -15,15 +17,18 @@ interface Props {
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
     <html suppressHydrationWarning>
-      <head>
-        <meta name='google-adsense-account' content='ca-pub-2106963438710910' />
-        <link
-          rel='preload'
-          href='https://storage.googleapis.com/medieteknik-static/static/landingpage.webp'
-          as='image'
+      <Head>
+        <meta
+          key='google-adsense'
+          name='google-adsense-account'
+          content='ca-pub-2106963438710910'
         />
-      </head>
-      <body>
+      </Head>
+      <body
+        style={{
+          fontFamily: "'Figtree', sans-serif",
+        }}
+      >
         <SpeedInsights />
         <Analytics />
         {children}

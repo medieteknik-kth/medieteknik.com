@@ -1,39 +1,17 @@
 'use client'
+
 import { Event } from '@/models/Items'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import Student from '@/models/Student'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { StudentTag } from '@/components/tags/StudentTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { Separator } from '@/components/ui/separator'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { useTranslation } from '@/app/i18n/client'
-import { API_BASE_URL } from '@/utility/Constants'
-import { useCalendar } from '@/providers/CalendarProvider'
 import DetailedEvent from './detailedEvent'
+import './event.css'
 
 interface Props {
   language: string
@@ -41,6 +19,16 @@ interface Props {
   index: number
 }
 
+/**
+ * @name EventDialog
+ * @description A component that displays a dialog for an event.
+ *
+ * @param {Props} props - The props for the component.
+ * @param {string} props.language - The current language of the application.
+ * @param {Event} props.event - The event to display.
+ * @param {number} props.index - The index of the event in the list.
+ * @returns {JSX.Element} The JSX code for the EventDialog component.
+ */
 export default function EventDialog({
   language,
   event,
@@ -61,18 +49,21 @@ export default function EventDialog({
       <DialogTrigger asChild>
         <Button
           variant={'ghost'}
-          className={`w-full border-l-4 border-2 h-fit`}
+          className={`!w-full border-2 h-fit cursor-pointer`}
           title='Click to view event details'
           style={{
             borderColor: tinycolor(event.background_color).isDark()
               ? tinycolor(event.background_color).lighten(10).toString()
               : event.background_color,
           }}
+          onClick={(event) => {
+            event.stopPropagation()
+          }}
         >
-          <div className={`w-full flex flex-col gap-2`}>
-            <div className='flex flex-col px-2 py-2'>
+          <div className={`w-full flex flex-col gap-2 overflow-hidden`}>
+            <div className='event-header flex flex-col px-2 py-2'>
               <h3
-                className={`text-2xl font-bold text-start max-w-full truncate`}
+                className={`event-title text-2xl font-bold text-start truncate`}
                 title={event.translations[0].title}
               >
                 {event.translations[0].title}

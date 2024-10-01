@@ -25,7 +25,7 @@ export default function ConnectSection(): JSX.Element {
             href='http://www.facebook.com/medieteknik.kth'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='Facebook'
             aria-label="Links to Medieteknik's Facebook page"
           >
@@ -65,7 +65,7 @@ export default function ConnectSection(): JSX.Element {
             href='https://www.linkedin.com/company/sektionen-f%C3%B6r-medieteknik-%C2%A0kth/'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='LinkedIn'
             aria-label="Links to Medieteknik's LinkedIn page"
           >
@@ -85,7 +85,7 @@ export default function ConnectSection(): JSX.Element {
             href='https://www.youtube.com/channel/UCfd-63pepDHT9uZku8KbQTA'
             target='_blank'
             rel='noopener noreferrer'
-            className='w-full h-full'
+            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400'
             title='YouTube'
             aria-label="Links to Medieteknik's YouTube page"
           >

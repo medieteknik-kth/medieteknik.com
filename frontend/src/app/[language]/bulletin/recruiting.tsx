@@ -39,12 +39,12 @@ export default function Recruitment({
 
   return (
     <section className='w-full h-fit flex flex-col justify-between relative mt-10'>
-      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
+      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide text-center'>
         {t('recruitment')}
       </h2>
-      <div className='w-full h-5/6 flex items-center mb-20'>
-        <div className='w-full h-full overflow-x-auto'>
-          <div className='w-full h-full flex flex-wrap gap-4 justify-center'>
+      <div className='w-full h-fit flex items-center mb-20'>
+        <div className='w-full h-fit overflow-x-auto'>
+          <div className='w-full h-fit flex flex-wrap gap-4 justify-center'>
             {data.length === 0 && (
               <p
                 className='w-full h-[200px] grid place-items-center z-10 
@@ -64,7 +64,7 @@ export default function Recruitment({
                 .map((recruit, index) => (
                   <Card
                     key={index}
-                    className='w-full sm:w-[470px] h-fit md:h-[260px] relative flex flex-col justify-between'
+                    className='w-full sm:w-[470px] h-fit md:min-h-[260px] relative flex flex-col justify-between'
                   >
                     <CardHeader className='h-fit flex flex-row items-center justify-between'>
                       <div className='flex flex-col items-start'>
@@ -111,10 +111,10 @@ export default function Recruitment({
                       </div>
                     </CardHeader>
 
-                    <CardContent className='text-sm w-full max-w-[450px] text-pretty break-words'>
+                    <CardContent className='text-sm w-full max-w-[450px] text-pretty break-words whitespace-pre-line'>
                       <p>{recruit.translations[0].description}</p>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className='h-fit'>
                       <Button
                         title='Learn More'
                         aria-label='Learn More'
@@ -125,6 +125,7 @@ export default function Recruitment({
                           href={recruit.translations[0].link_url}
                           target='_blank'
                           rel='noopener noreferrer'
+                          title='Learn More About the Position'
                         >
                           Learn More
                         </Link>

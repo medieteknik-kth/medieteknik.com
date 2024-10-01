@@ -39,6 +39,7 @@ export default function CommitteePositionTag({
           variant='link'
           className='text-black dark:text-yellow-400 pl-0'
           style={{ fontSize: 'inherit' }}
+          tabIndex={-1}
         >
           {includeImage && (
             <Avatar className='w-8 h-8 mr-2'>

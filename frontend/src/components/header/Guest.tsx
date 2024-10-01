@@ -12,7 +12,7 @@ import { TFunction } from 'next-i18next'
  */
 export default function Guest({ t }: { t: TFunction }): JSX.Element {
   return (
-    <Button variant={'ghost'} className='w-full h-full rounded-none lg:mr-2'>
+    <Button variant={'ghost'} className='rounded-none lg:mr-2' asChild>
       <Link
         href='/login'
         className='w-full h-full flex justify-center xl:justify-end items-center'

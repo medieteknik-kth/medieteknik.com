@@ -59,6 +59,7 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
             py-0 px-1 max-w-full`}
             style={{ fontSize: 'inherit' }}
             ref={ref}
+            tabIndex={-1}
           >
             {includeImage && (
               <Avatar className='bg-white rounded-full overflow-hidden'>
