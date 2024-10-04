@@ -1,11 +1,11 @@
 'use client'
+
 import React from 'react'
 import {
   DocumentIcon,
   TagIcon,
   HandThumbUpIcon,
   CogIcon,
-  ArrowUpTrayIcon,
 } from '@heroicons/react/24/outline'
 import CommandBar from './commandBar'
 import { AutoSaveProvdier } from './autoSave'
@@ -25,11 +25,29 @@ const fetcher = (url: string) =>
     (res) => res.json() as Promise<News>
   )
 
+interface Props {
+  language: string
+  slug: string
+}
+
+interface Params {
+  params: Props
+}
+
+/**
+ * @name UploadNews
+ * @description The component that renders the upload news page
+ *
+ * @param {Params} params
+ * @param {Props} params.props - The parameters of the page
+ * @param {string} params.props.language - The language of the article
+ * @param {string} params.props.slug - The slug of the article
+ * @returns {JSX.Element} The upload news page
+ */
 export default function UploadNews({
   params: { language, slug },
-}: {
-  params: { language: string; slug: string }
-}) {
+}: Params): JSX.Element {
+  // TODO: Maybe a server component?
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/news/${slug}?language=${language}`,
     fetcher
