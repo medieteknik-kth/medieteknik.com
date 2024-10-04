@@ -1,3 +1,4 @@
+import { fontJetBrainsMono } from '@/app/fonts'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import { StudentTag } from '@/components/tags/StudentTag'
@@ -77,6 +78,7 @@ interface TextType {
   style: string
 }
 
+// TODO: Add translations for text types
 export const textTypes: TextType[] = [
   {
     label: 'Heading 1',
@@ -232,7 +234,8 @@ export const Element = ({
       return (
         <pre
           className={
-            textTypes.find((type) => type.value === element.type)?.style
+            textTypes.find((type) => type.value === element.type)?.style +
+            ` ${fontJetBrainsMono.className}`
           }
           {...attributes}
         >
@@ -244,7 +247,7 @@ export const Element = ({
         <code
           className={
             textTypes.find((type) => type.value === element.type)?.style +
-            ' inline-block'
+            ` inline-block ${fontJetBrainsMono.className}`
           }
           {...attributes}
         >
@@ -255,27 +258,29 @@ export const Element = ({
     case 'external link': {
       const { url } = element
       return (
-        <a
-          href={url}
-          className={`text-base underline underline-offset-4 inline-block cursor-pointer ${
-            element.type === 'internal link'
-              ? 'decoration-yellow-400'
-              : 'decoration-sky-600'
-          }`}
-          title={
-            element.type === 'internal link'
-              ? 'Internal Link'
-              : 'External Link (May not be secure)'
-          }
-          {...attributes}
-          onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
-          onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
-          onClick={() => {
-            window.open(url, '_blank')
-          }}
-        >
-          {children}
-        </a>
+        <span className='inline-block'>
+          <a
+            href={url}
+            className={`text-base underline underline-offset-4 inline-block cursor-pointer decoration-2 ${
+              element.type === 'internal link'
+                ? 'decoration-yellow-400'
+                : 'decoration-sky-600'
+            }`}
+            title={
+              element.type === 'internal link'
+                ? 'Internal Link'
+                : 'External Link (May not be secure)'
+            }
+            {...attributes}
+            onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
+            onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
+            onClick={() => {
+              window.open(url, '_blank')
+            }}
+          >
+            {children}
+          </a>
+        </span>
       )
     }
     case 'image':
@@ -295,7 +300,11 @@ export const Element = ({
         />
       )
     case 'line break':
-      return <p {...attributes}>{children}</p>
+      return (
+        <p className='h-[0.5px] block' {...attributes}>
+          {children}
+        </p>
+      )
     case 'student tag':
     case 'committee tag':
     case 'committee position tag': {

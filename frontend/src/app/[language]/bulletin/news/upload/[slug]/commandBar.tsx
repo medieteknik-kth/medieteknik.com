@@ -1,4 +1,5 @@
 'use client'
+
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -6,7 +7,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import {
@@ -24,13 +24,12 @@ import {
   EyeIcon,
   InboxIcon,
 } from '@heroicons/react/24/outline'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAutoSave, AutoSaveResult } from './autoSave'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Loading from '@/components/tooltips/Loading'
 import {
   Form,
   FormControl,
@@ -43,23 +42,30 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { useRouter } from 'next/navigation'
-import { News } from '@/models/Items'
 import { LanguageCode } from '@/models/Language'
 import { supportedLanguages } from '@/app/i18n/settings'
+import { useTranslation } from '@/app/i18n/client'
 
-export default function CommandBar({
-  language,
-  slug,
-}: {
+interface Props {
   language: string
   slug: string
-}) {
+}
+
+/**
+ * @name CommandBar
+ * @description The component that renders the command bar for the news upload page
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the article
+ * @param {string} props.slug - The slug of the article
+ * @returns {JSX.Element} The command bar for the news upload page
+ */
+export default function CommandBar({ language, slug }: Props): JSX.Element {
   const {
     saveCallback,
     notifications,
     addNotification,
     content,
-    updateContent,
     currentLanguage,
   } = useAutoSave()
 
@@ -69,6 +75,7 @@ export default function CommandBar({
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const { push } = useRouter()
+  const { t } = useTranslation(language, 'article')
 
   const formSchema = z.object({
     title: z.string(),
@@ -158,7 +165,7 @@ export default function CommandBar({
           <Breadcrumb className=''>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href='#'>Articles</BreadcrumbLink>
+                <BreadcrumbLink href='#'>{t('articles')}</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -166,15 +173,17 @@ export default function CommandBar({
                   {title}
                 </BreadcrumbLink>
                 <Badge className='ml-2' variant='outline'>
-                  Draft
+                  {t('drafts')}
                 </Badge>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
           <div className='flex items-center mt-2'>
             <div className='flex items-center relative'>
-              <DocumentTextIcon className='w-8 h-8 text-green-600 dark:text-green-500' />
-              <p className='absolute text-xs top-8'>News</p>
+              <div className='relative flex flex-col items-center'>
+                <DocumentTextIcon className='w-8 h-8 text-green-600 dark:text-green-500' />
+                <p className='text-xs'>{t('news')}</p>
+              </div>
               <Input
                 name='title'
                 id='title'
@@ -208,19 +217,19 @@ export default function CommandBar({
               <Button
                 className='ml-4'
                 variant={'outline'}
-                title='Save'
-                aria-label='Save'
+                title={t('save')}
+                aria-label={t('save')}
                 onClick={() => {
                   saveCallback(language, true).then((res) => {
                     if (res === AutoSaveResult.SUCCESS) {
-                      addNotification('Saved')
+                      addNotification(t('save.success'))
                     } else {
-                      addNotification('Failed to save')
+                      addNotification(t('save.error'))
                     }
                   })
                 }}
               >
-                Save
+                {t('save')}
               </Button>
               <span className='ml-4 text-xs uppercase font'>
                 {notifications}
@@ -246,19 +255,19 @@ export default function CommandBar({
                   saveCallback(language, true)
                 }}
               >
-                Publish
+                {t('publish')}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Publish</DialogTitle>
+                <DialogTitle>{t('publish')}</DialogTitle>
                 <DialogDescription>
-                  Finalize your article for publishing.
+                  {t('publish.description')}
                   <br />
                   <span className='text-red-500'>{error}</span>
                 </DialogDescription>
                 <div className='mb-4'>
-                  <p>Article Avaliablity</p>
+                  <p>{t('publish.availablility')}</p>
                   <ul className='flex'>
                     {supportedLanguages.map((lang) => (
                       <li key={lang} className='mr-4 last:mr-0'>
@@ -299,6 +308,7 @@ export default function CommandBar({
                     <FormField
                       control={form.control}
                       name='image'
+                      disabled
                       render={({ field }) => (
                         <FormItem className='mt-4'>
                           <FormLabel>Image</FormLabel>
@@ -314,12 +324,14 @@ export default function CommandBar({
                       name='short_description'
                       render={({ field }) => (
                         <FormItem className='mt-4'>
-                          <FormLabel>Short Description</FormLabel>
+                          <FormLabel>
+                            {t('publish.short_description')}
+                          </FormLabel>
                           <FormControl className='w-full'>
                             <Textarea placeholder='Description' {...field} />
                           </FormControl>
                           <FormDescription>
-                            Will be shown outside of the article
+                            {t('publish.short_description.description')}
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -330,7 +342,7 @@ export default function CommandBar({
                       type='submit'
                       disabled={loading}
                     >
-                      Submit
+                      {t('publish')}
                     </Button>
                   </form>
                 </Form>
