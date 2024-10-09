@@ -13,6 +13,10 @@ module.exports = {
             {
                 hostname: 'www.medieteknik.com',
                 protocol: 'https',
+            },
+            {
+                hostname: 'i.ytimg.com',
+                protocol: 'https',
             }
         ],
         dangerouslyAllowSVG: true,
@@ -31,7 +35,7 @@ module.exports = {
                     },
                     {
                         key: 'Content-Security-Policy',
-                        value: "default-src 'self' http://localhost:3000 https://medieteknik.com; script-src 'self' https://vercel.live 'unsafe-eval' 'unsafe-inline'; connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com https://vercel.live wss://ws-us3.pusher.com; img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com data: blob:; style-src 'self' https://vercel.live 'unsafe-inline'; font-src 'self' https://vercel.live https://assets.vercel.com; frame-src 'self' https://vercel.live; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'self'; script-src-elem 'self' 'unsafe-inline' https://vercel.live;",
+                        value: "default-src 'self' http://localhost:3000 https://medieteknik.com; script-src 'self' https://vercel.live 'unsafe-eval' 'unsafe-inline'; connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com https://vercel.live wss://ws-us3.pusher.com; img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com https://i.ytimg.com data: blob:; style-src 'self' https://vercel.live 'unsafe-inline'; font-src 'self' https://vercel.live https://assets.vercel.com; frame-src 'self' https://www.youtube-nocookie.com/ https://vercel.live; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'self'; script-src-elem 'self' 'unsafe-inline' https://vercel.live;",
                     },
                     {
                         key: 'X-Content-Type-Options',
@@ -43,7 +47,7 @@ module.exports = {
                     },
                     {
                         key: 'Permissions-Policy',
-                        value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), fullscreen=(self), autoplay=(), payment=(self), push=(self)',
+                        value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), fullscreen=(self "https://*.youtube-nocookie.com"), autoplay=(), payment=(self)',
                     },
                     {
                         key: 'Cross-Origin-Opener-Policy',
