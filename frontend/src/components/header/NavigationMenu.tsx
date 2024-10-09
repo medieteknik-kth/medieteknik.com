@@ -1,4 +1,3 @@
-import { Bars3CenterLeftIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -8,11 +7,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { HeaderElement } from './Header'
+import { Bars3CenterLeftIcon } from '@heroicons/react/24/outline'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import Image from 'next/image'
 import Link from 'next/link'
 import SubMenu from './client/SubMenu'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { HeaderElement } from './Header'
 
 interface Props {
   language: string

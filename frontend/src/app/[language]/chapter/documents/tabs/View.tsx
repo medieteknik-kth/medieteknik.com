@@ -3,6 +3,7 @@
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import GridView from '../views/GridView'
 import ListView from '../views/ListView'
+import { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
 
 interface Props {
   language: string
