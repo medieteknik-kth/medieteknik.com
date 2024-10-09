@@ -1,15 +1,15 @@
+import { StudentTag } from '@/components/tags/StudentTag'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import {
   CommitteePosition,
   CommitteePositionCategory,
 } from '@/models/Committee'
+import Student from '@/models/Student'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import Image from 'next/image'
-import FallbackImage from 'public/images/logo.webp'
 import Link from 'next/link'
-import Student from '@/models/Student'
-import { StudentTag } from '@/components/tags/StudentTag'
+import FallbackImage from 'public/images/logo.webp'
 
 export default async function Officials({
   language,
@@ -66,7 +66,7 @@ export default async function Officials({
                   .map((member, index) => (
                     <div
                       key={index}
-                      className='w-40 sm:w-72 h-fit border rounded-md relative dark:bg-[#111] shadow-sm shadow-black/25 dark:shadow-white/25'
+                      className='w-56 sm:w-72 h-fit border rounded-md relative dark:bg-[#111] shadow-sm shadow-black/25 dark:shadow-white/25'
                     >
                       <div className='relative'>
                         <Image
@@ -109,7 +109,7 @@ export default async function Officials({
                             !/\s/.test(member.position.translations[0].title)
                               ? 'text-xs'
                               : 'text-xs md:text-sm'
-                          } truncate lg:text-wrap lg:overflow-visible lg:whitespace-normal uppercase tracking-wider w-fit max-w-56 leading-4 py-0.5`}
+                          } truncate lg:text-wrap lg:overflow-visible lg:whitespace-normal uppercase tracking-wider w-fit max-w-36 sm:max-w-56 leading-4 py-0.5`}
                           title={member.position.translations[0].title}
                         >
                           {member.position.translations[0].title}

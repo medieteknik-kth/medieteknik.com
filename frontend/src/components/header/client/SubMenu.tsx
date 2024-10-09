@@ -1,9 +1,9 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 import { useState } from 'react'
 import { HeaderElement } from '../Header'
-import Link from 'next/link'
 
 /**
  * SubMenu
@@ -53,7 +53,7 @@ export default function SubMenu({
           <div key={subNav.title}>
             <Button
               variant={'ghost'}
-              className='w-10/12 h-full uppercase flex justify-start items-center ml-4 py-4 bg-neutral-50'
+              className='w-10/12 h-full uppercase flex justify-start items-center ml-4 py-4 bg-neutral-50 dark:bg-neutral-900'
             >
               <Link
                 key={subNav.title}

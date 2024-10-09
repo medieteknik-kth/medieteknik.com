@@ -20,7 +20,7 @@ interface Props {
 /**
  * @name SearchBar
  * @description A component that displays a search bar for documents.
- * 
+ *
  * @param {Props} props - The props for the component.
  * @param {string} props.language - The current language of the application.
  * @returns {JSX.Element} The JSX code for the SearchBar component.
@@ -89,7 +89,7 @@ export default function SearchBar({ language }: Props): JSX.Element {
       </Button>
       {search.length >= 2 && searchBarFocused && (
         <div
-          className='w-96 min-h-8 absolute left-0 top-10 border rounded-md bg-white py-2 z-20'
+          className='w-96 min-h-8 absolute left-0 top-10 border rounded-md bg-white dark:bg-[#111] py-2 z-20'
           onMouseDown={() => setMouseDown(true)}
           onMouseUp={() => setMouseDown(false)}
         >

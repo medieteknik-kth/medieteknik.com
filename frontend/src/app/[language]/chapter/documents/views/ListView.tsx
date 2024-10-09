@@ -1,5 +1,6 @@
 'use client'
 
+import { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
