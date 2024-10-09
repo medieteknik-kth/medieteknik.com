@@ -2,7 +2,7 @@ import AllNews from './allNews'
 import { News } from '@/models/Items'
 import { GetNewsPagniation } from '@/api/items'
 
-export const revalidate = 60 * 60 * 12
+export const revalidate = 43_200 // 12 hours
 
 export default async function NewsPage({
   params: { language },

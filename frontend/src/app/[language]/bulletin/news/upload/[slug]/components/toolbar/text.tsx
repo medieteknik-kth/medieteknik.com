@@ -1,13 +1,7 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { ElementType, textTypes } from '../../util/Text'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import {
   Command,
   CommandEmpty,
@@ -17,10 +11,16 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { useArticle } from '@/providers/ArticleProvider'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { useCallback, useState } from 'react'
 import { Editor, Transforms } from 'slate'
-import { useArticle } from '@/providers/ArticleProvider'
-import { useTranslation } from '@/app/i18n/client'
+import { ElementType, textTypes } from '../../util/Text'
 
 interface Props {
   language: string
@@ -32,6 +32,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the article
+ * 
  * @returns {JSX.Element} The text section of the toolbar
  */
 export default function ToolbarText({ language }: Props): JSX.Element {

@@ -1,9 +1,9 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useArticle } from '@/providers/ArticleProvider'
 import { BooleanMark, toggleMark } from '../../util/Text'
-import { useTranslation } from '@/app/i18n/client'
 
 interface Props {
   language: string
@@ -15,6 +15,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the article
+ *
  * @returns {JSX.Element} The marks section of the toolbar
  */
 export default function ToolbarMarks({ language }: Props): JSX.Element {

@@ -49,6 +49,21 @@ export type ElementType =
   | 'committee tag'
   | 'committee position tag'
 
+/**
+ * @interface CustomElement
+ * @description Interface for the custom element
+ *
+ * @property {ElementType} type - The type of the element
+ * @property {string} url - The URL of the element (if applicable)
+ * @property {object} image - The image of the element (if applicable)
+ * @property {string} image.src - The source of the image
+ * @property {string} image.alt - The alt text of the image
+ * @property {number} image.width - The width of the image
+ * @property {number} image.height - The height of the image
+ * @property {object} tag - The tag of the element (if applicable)
+ * @property {Author} tag.author - The author of the tag
+ * @property {Descendant[]} children - The children of the element
+ */
 export interface CustomElement {
   type: ElementType
   url?: string
@@ -258,29 +273,27 @@ export const Element = ({
     case 'external link': {
       const { url } = element
       return (
-        <span className='inline-block'>
-          <a
-            href={url}
-            className={`text-base underline underline-offset-4 inline-block cursor-pointer decoration-2 ${
-              element.type === 'internal link'
-                ? 'decoration-yellow-400'
-                : 'decoration-sky-600'
-            }`}
-            title={
-              element.type === 'internal link'
-                ? 'Internal Link'
-                : 'External Link (May not be secure)'
-            }
-            {...attributes}
-            onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
-            onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
-            onClick={() => {
-              window.open(url, '_blank')
-            }}
-          >
-            {children}
-          </a>
-        </span>
+        <a
+          href={url}
+          className={`text-base underline underline-offset-4 inline-block cursor-pointer decoration-2 ${
+            element.type === 'internal link'
+              ? 'decoration-yellow-400'
+              : 'decoration-sky-600'
+          }`}
+          title={
+            element.type === 'internal link'
+              ? 'Internal Link'
+              : 'External Link (May not be secure)'
+          }
+          {...attributes}
+          onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
+          onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
+          onClick={() => {
+            window.open(url, '_blank')
+          }}
+        >
+          {children}
+        </a>
       )
     }
     case 'image':
@@ -300,11 +313,7 @@ export const Element = ({
         />
       )
     case 'line break':
-      return (
-        <p className='h-[0.5px] block' {...attributes}>
-          {children}
-        </p>
-      )
+      return <br />
     case 'student tag':
     case 'committee tag':
     case 'committee position tag': {
@@ -358,7 +367,7 @@ export const Element = ({
         <p
           className={
             textTypes.find((type) => type.value === 'paragraph')?.style +
-            ' inline-block whitespace-pre-wrap break-words'
+            ' block whitespace-pre-wrap break-words'
           }
           {...attributes}
         >
