@@ -1,12 +1,12 @@
 'use client'
 
 import { News } from '@/models/Items'
+import { useArticle } from '@/providers/ArticleProvider'
 import { useCallback, useMemo } from 'react'
 import { Descendant, Editor, Transforms } from 'slate'
 import { Editable, RenderElementProps, Slate } from 'slate-react'
 import { AutoSaveResult, useAutoSave } from '../autoSave'
 import { Element, Leaf, toggleMark } from '../util/Text'
-import { useArticle } from '@/providers/ArticleProvider'
 
 interface Props {
   language: string
@@ -20,6 +20,7 @@ interface Props {
  * @param {Props} props
  * @param {string} props.language - The language of the article
  * @param {News} props.news_data - The news data
+ *
  * @returns {JSX.Element} The article editor
  */
 export default function ArticleRenderer({
@@ -132,16 +133,16 @@ export default function ArticleRenderer({
           className='w-[800px] h-[1000px] px-10 py-8'
           renderLeaf={Leaf}
           renderElement={renderElement}
-          onMouseUp={onMouseUp}
           onMouseOver={onMouseOver}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
               event.preventDefault()
-              editor.insertNode({
-                type: 'line break',
+
+              Transforms.insertNodes(editor, {
+                type: 'paragraph',
                 children: [{ text: '' }],
               })
-              editor.insertNode({ type: 'paragraph', children: [{ text: '' }] })
+
               setTextType('paragraph')
             } else if (event.key === 'b' && event.ctrlKey) {
               event.preventDefault()
@@ -155,20 +156,6 @@ export default function ArticleRenderer({
             } else if (event.key === 's' && event.ctrlKey) {
               event.preventDefault()
               toggleMark(editor, 'strikethrough')
-            } else if (event.key === ' ') {
-              if (
-                Editor.above(editor, {
-                  match: (n) =>
-                    'type' in n &&
-                    (n.type === 'external link' || n.type === 'internal link'),
-                })
-              ) {
-                event.preventDefault()
-                editor.insertNode({
-                  type: 'paragraph',
-                  children: [{ text: ' ' }],
-                })
-              }
             }
             updateActiveMarks()
           }}

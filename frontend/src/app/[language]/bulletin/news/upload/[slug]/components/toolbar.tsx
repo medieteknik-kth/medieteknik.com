@@ -1,13 +1,7 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
-import {
-  ArrowUturnLeftIcon,
-  ArrowUturnRightIcon,
-  LinkIcon,
-  PhotoIcon,
-  AtSymbolIcon,
-} from '@heroicons/react/24/outline'
 import {
   Command,
   CommandEmpty,
@@ -24,15 +18,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Separator } from '@/components/ui/separator'
-import { Transforms } from 'slate'
-import { useCallback } from 'react'
-import { CustomElement } from '../util/Text'
 import { Input } from '@/components/ui/input'
-import ToolbarText from './toolbar/text'
-import ToolbarMarks from './toolbar/marks'
+import { Separator } from '@/components/ui/separator'
 import { useArticle } from '@/providers/ArticleProvider'
-import { useTranslation } from '@/app/i18n/client'
+import {
+  ArrowUturnLeftIcon,
+  ArrowUturnRightIcon,
+  AtSymbolIcon,
+  LinkIcon,
+  PhotoIcon,
+} from '@heroicons/react/24/outline'
+import { useCallback } from 'react'
+import { Transforms } from 'slate'
+import { CustomElement } from '../util/Text'
+import ToolbarMarks from './toolbar/marks'
+import ToolbarText from './toolbar/text'
 
 interface Props {
   language: string
@@ -44,6 +44,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the news
+ * 
  * @returns {JSX.Element} The news toolbar
  */
 export default function NewsToolbar({ language }: Props): JSX.Element {
@@ -70,9 +71,13 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
             url: href,
             children: [{ text: name }],
           }
-          Transforms.insertNodes(editor, link, {
-            at: selection.focus,
-          })
+          editor.insertNodes(link, { at: selection.focus })
+
+          editor.collapse({ edge: 'end' })
+          editor.move({ distance: name.length, unit: 'character' })
+          editor.move({ distance: 1, unit: 'offset' })
+
+          editor.insertText(' ')
         }
       }
     },
@@ -112,6 +117,7 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
                 author_type: 'COMMITTEE',
                 email: '',
                 logo_url: '',
+                hidden: false,
                 translations: [
                   {
                     title: detail,
