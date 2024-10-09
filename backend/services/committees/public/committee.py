@@ -1,5 +1,5 @@
 """
-Public Committee
+Public Committee service
 """
 
 from typing import Any, Dict, List
@@ -10,7 +10,7 @@ from models.committees import (
     CommitteePosition,
     CommitteeTranslation,
 )
-from models.core.student import Student, StudentMembership
+from models.core.student import StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
 from .committee_position import get_committee_positions_by_committee_title
 from datetime import datetime
@@ -38,7 +38,7 @@ def get_all_committees(provided_languages: List[str]) -> List[Dict[str, Any]]:
     Returns:
         List[Dict[str, Any]]: A list of committee dictionaries.
     """
-    committees: List[Committee] = Committee.query.all()
+    committees: List[Committee] = Committee.query.filter_by(hidden=False).all()
 
     return [
         committee_dict
@@ -137,7 +137,7 @@ def get_committee_data_by_title(
                 position.committee_position_id for position in positions
             ),
             or_(
-                StudentMembership.termination_date == None,
+                StudentMembership.termination_date == None,  # noqa
                 StudentMembership.termination_date > datetime.now(),
             ),
         ).paginate(per_page=10, max_per_page=25)

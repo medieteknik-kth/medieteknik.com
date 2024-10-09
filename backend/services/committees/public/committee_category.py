@@ -89,7 +89,8 @@ def get_committee_category_by_title(
 
     if committee_category_settings.include_committees:
         committees: List[Committee] = Committee.query.filter_by(
-            committee_category_id=committee_category.committee_category_id
+            committee_category_id=committee_category.committee_category_id,
+            hidden=False,
         ).all()
 
         committee_category_dict["committees"] = [

@@ -47,12 +47,16 @@ def get_news_by_student(email: str):
 
     provided_languages = retrieve_languages(request.args)
 
+    author_student = get_author_from_email(entity_table=Student, email=email)
+
+    if not author_student:
+        return jsonify({}), 404
+
     return jsonify(
         get_items_from_author(
             Author.query.filter(
                 Author.author_type == AuthorType.STUDENT.value,
-                Author.student_id
-                == get_author_from_email(entity_table=Student, email=email).student_id,
+                Author.student_id == author_student.student_id,
             ).first_or_404(),
             News,
             provided_languages,

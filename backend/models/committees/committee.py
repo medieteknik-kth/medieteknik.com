@@ -1,6 +1,6 @@
 import uuid
 from typing import Any, Dict, List
-from sqlalchemy import String, Integer, Column, ForeignKey, inspect, text
+from sqlalchemy import Boolean, String, Integer, Column, ForeignKey, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
@@ -22,6 +22,7 @@ class Committee(db.Model):
     total_news = Column(Integer, nullable=False, default=0)
     total_events = Column(Integer, nullable=False, default=0)
     total_documents = Column(Integer, nullable=False, default=0)
+    hidden = Column(Boolean, nullable=False, default=False)
 
     # Foreign key
     committee_category_id = Column(
