@@ -1,12 +1,11 @@
-import React from 'react'
 import { useTranslation } from '@/app/i18n'
-import Link from 'next/link'
 import { Button } from '@components/ui/button'
 import {
   ArrowTopRightOnSquareIcon,
-  EnvelopeIcon,
   BuildingOffice2Icon,
+  EnvelopeIcon,
 } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 import Image from 'next/image'
 import ConnectSection from './connect'
@@ -53,9 +52,9 @@ export default async function Footer({
         <div className='w-full h-fit relative xs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
           <ul className='w-full h-fit xl:mt-2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
             <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4  px-0 text-center xs:text-left xxs:pl-4'>
-              <h2 className='text-2xl tracking-wider font-bold'>
+              <h4 className='text-2xl tracking-wider font-bold'>
                 {t('location')}
-              </h2>
+              </h4>
               <p className='mt-4'>
                 Drotting Kristinas väg 15 <br /> 100 44 Stockholm <br />{' '}
                 <span className='text-neutral-500 dark:text-neutral-300 text-sm'>
@@ -64,28 +63,25 @@ export default async function Footer({
               </p>
             </li>
             <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4 px-0 xxs:pl-4 grid xs:flex flex-col place-items-center items-start'>
-              <h2 className='w-fit h-fit'>
+              <h4 className='w-fit h-fit'>
                 <Button
                   asChild
                   variant='link'
                   className='text-2xl text-center xxs:text-left tracking-wider font-bold text-sky-800 dark:text-white -ml-4 -mt-2'
+                  title='Go to Contact Page'
+                  aria-label='Go to Contact Page'
                 >
-                  <Link
-                    href='/contact'
-                    className='w-fit flex items-center'
-                    title='Go to Contact Page'
-                    aria-label='Go to Contact Page'
-                  >
+                  <Link href='/contact' className='w-fit flex items-center'>
                     {t('contact')}
                     <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
                   </Link>
                 </Button>
-              </h2>
+              </h4>
               <Button asChild variant='link' className='-ml-4'>
                 <Link
                   href='mailto:styrelsen@medieteknik.com'
                   className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400'
-                  title='Email'
+                  title='Email styrelsen@medieteknik.com'
                   aria-label={`${t('contact')} email`}
                 >
                   <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
@@ -97,7 +93,7 @@ export default async function Footer({
                   href='tel:802411-5647'
                   className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400
                   '
-                  title='Organisation Number'
+                  title='Call organization number 802411-5647'
                   aria-label={`${t('contact')} phone`}
                 >
                   <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
@@ -106,9 +102,9 @@ export default async function Footer({
               </Button>
             </li>
             <li className='w-full h-fit xl:w-1/4 border-t-2 border-yellow-400 pt-4 pl-4'>
-              <h2 className='text-2xl text-center xs:text-left tracking-wider font-bold'>
+              <h4 className='text-2xl text-center xs:text-left tracking-wider font-bold'>
                 {t('connect')}
-              </h2>
+              </h4>
               <ConnectSection />
             </li>
           </ul>

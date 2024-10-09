@@ -63,9 +63,9 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
         className='absolute left-8 top-0 bottom-0 my-auto opacity-50 hidden md:block'
       />
       <div className='flex flex-col lg:flex-row justify-between items-center mb-10 desktop:mb-0'>
-        <h2 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
+        <h3 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
           {t('about')}
-        </h2>
+        </h3>
         <div className='w-full mb-2 lg:mb-0 py-2 xl:py-0 lg:w-[450px] desktop:w-[750px] justify-self-center text-md md:text-lg'>
           {t('description')}
         </div>

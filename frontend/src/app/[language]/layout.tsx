@@ -28,7 +28,10 @@ export async function generateStaticParams(): Promise<
 }
 
 export const metadata: Metadata = {
-  title: 'Medieteknik | KTH',
+  title: {
+    template: '%s | Medieteknik - KTH',
+    default: 'Medieteknik - KTH',
+  },
   description:
     'Student på KTH? Här hittar du allt du behöver veta om medieteknik på KTH.',
   other: {
@@ -81,7 +84,9 @@ export default function RootLayout({ children, params }: Props): JSX.Element {
             document.documentElement.lang = "${params.language}";
             document.documentElement.dir = "${dir(params.language)}";
             document.documentElement.className = "${fontFigtree.className}";
-            document.body.className = "min-w-full min-h-screen bg-background font-sans antialiased";
+            document.body.className = "${
+              fontFigtree.className
+            } min-w-full min-h-screen bg-background font-sans antialiased";
             `}
       </Script>
     </>

@@ -1,4 +1,4 @@
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
@@ -25,7 +25,7 @@ export default function InfographicCard({ card }: Props) {
       >
         <Image
           src={card.icon}
-          alt={card.title}
+          alt=''
           width={100}
           height={100}
           loading='lazy'
