@@ -1,5 +1,14 @@
 'use client'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useTranslation } from '@/app/i18n/client'
+import { supportedLanguages } from '@/app/i18n/settings'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -8,31 +17,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Checkbox } from '@/components/ui/checkbox'
-import { HexColorPicker } from 'react-colorful'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
-import { useState } from 'react'
-import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { Label } from '@/components/ui/label'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { supportedLanguages } from '@/app/i18n/settings'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
-import { useTranslation } from '@/app/i18n/client'
-import {
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Author, Event } from '@/models/Items'
 import { LanguageCode } from '@/models/Language'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { HexColorPicker } from 'react-colorful'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import RepeatingForm from './event/repeating'
 import TranslatedInputs from './event/translations'
+import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 interface EventFormProps {
   language: string
@@ -92,8 +92,15 @@ export default function EventUpload({
     translations: z.array(
       z.object({
         language_code: z.string().optional().or(z.literal('')),
-        title: z.string().min(1, 'Title is required'),
-        description: z.string().optional().or(z.literal('')),
+        title: z
+          .string()
+          .min(1, 'Title is required')
+          .max(255, 'Title is too long'),
+        description: z
+          .string()
+          .max(499, 'Description is too long')
+          .optional()
+          .or(z.literal('')),
       })
     ),
   })
