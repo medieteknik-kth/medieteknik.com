@@ -1,33 +1,25 @@
 'use client'
 
-import Logo from 'public/images/logo.webp'
-import { useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Checkbox } from '@/components/ui/checkbox'
+import Loading from '@/components/tooltips/Loading'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Profile } from '@/models/Student'
+import { API_BASE_URL } from '@/utility/Constants'
+import { zodResolver } from '@hookform/resolvers/zod'
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import Image from 'next/image'
-import { API_BASE_URL } from '@/utility/Constants'
+import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import Loading from '@/components/tooltips/Loading'
-import { useTranslation } from '@/app/i18n/client'
-import { Profile } from '@/models/Student'
+import { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -38,7 +30,16 @@ interface Props {
   language: string
 }
 
-export default function ProfileForm({ language }: Props) {
+/**
+ * @name ProfileForm
+ * @description The component that renders the profile form, allowing the user to update their social media links
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the profile form
+ *
+ * @returns {JSX.Element} The profile form
+ */
+export default function ProfileForm({ language }: Props): JSX.Element {
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/students/profile`,
     fetcher,
@@ -73,8 +74,6 @@ export default function ProfileForm({ language }: Props) {
         linkedin_url: data.linkedin === '' ? null : data.linkedin,
       }
 
-      console.log(json_data)
-
       const response = await fetch(`${API_BASE_URL}/students/profile`, {
         method: 'PUT',
         credentials: 'include',
@@ -97,10 +96,6 @@ export default function ProfileForm({ language }: Props) {
   return (
     <Form {...profileForm}>
       <div className='flex justify-center mb-8 2xl:mb-0 relative'>
-        <div className='z-50 bg-neutral-300/75 absolute w-full h-full grid place-items-center'>
-          <p className='text-xl font-bold'>TO BE ADDED</p>
-        </div>
-
         <form
           className='w-2/3 flex flex-col *:py-2'
           onSubmit={profileForm.handleSubmit(postProfileForm)}
