@@ -1,14 +1,13 @@
-import { API_BASE_URL } from '@/utility/Constants'
-import type Committee from '@/models/Committee'
-import { redirect } from 'next/navigation'
 import { GetCommitteePublic } from '@/api/committee'
-import { fallbackLanguage } from '@/app/i18n/settings'
+import type Committee from '@/models/Committee'
+import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 import FallbackImage from 'public/images/logo.webp'
 import CommitteeMembers from './members'
 //import ExploreMore from './client/explore'
-import ManageButton from './client/manage'
 import Link from 'next/link'
+import ManageButton from './client/manage'
 
 export const revalidate = 60 * 60 * 24 * 30
 
@@ -33,7 +32,7 @@ export async function generateStaticParams(): Promise<
 > {
   try {
     const response = await fetch(
-      API_BASE_URL + `/public/committees?language=${fallbackLanguage}`
+      API_BASE_URL + `/public/committees?language=sv`
     )
 
     if (response.ok) {
@@ -66,18 +65,21 @@ export async function generateStaticParams(): Promise<
 export default async function Committee({
   params: { language, committee },
 }: Props): Promise<JSX.Element> {
-  const data: Committee | null = await GetCommitteePublic(committee, language)
+  const committee_data: Committee | null = await GetCommitteePublic(
+    committee,
+    language
+  )
 
-  if (!data || Object.keys(data).length === 0) {
+  if (!committee_data || Object.keys(committee_data).length === 0) {
     redirect('/' + language + '/chapter/committees')
   }
 
-  if (!data.translations) {
+  if (!committee_data.translations || committee_data.hidden) {
     redirect('/' + language + '/chapter/committees')
   }
 
   const committeeName = decodeURIComponent(committee)
-  const hasGroupPhoto = !!data.group_photo_url
+  const hasGroupPhoto = !!committee_data.group_photo_url
 
   return (
     <main>
@@ -88,7 +90,7 @@ export default async function Committee({
       >
         {hasGroupPhoto ? (
           <Image
-            src={data.group_photo_url || ''}
+            src={committee_data.group_photo_url || ''}
             alt='img'
             fill
             className='object-cover'
@@ -109,7 +111,7 @@ export default async function Committee({
           mx-auto lg:ml-0 left-0 right-0 -top-24 lg:top-auto lg:left-auto lg:right-auto border-2 border-yellow-400'
           >
             <Image
-              src={data.logo_url || FallbackImage.src}
+              src={committee_data.logo_url || FallbackImage.src}
               alt='img'
               width={208}
               height={208}
@@ -127,14 +129,14 @@ export default async function Committee({
               {committeeName}
             </h1>
             <Link
-              href={`mailto:${data.email}`}
+              href={`mailto:${committee_data.email}`}
               target='_blank'
               className='absolute top-0 text-lg underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400 hover:text-yellow-400 hover:underline tracking-wide'
             >
-              {data.email}
+              {committee_data.email}
             </Link>
             <p className='max-w-[1000px] h-24 max-h-24 overflow-auto text-center xs:text-start'>
-              {data.translations[0].description}
+              {committee_data.translations[0].description}
             </p>
           </div>
           <div
@@ -142,7 +144,7 @@ export default async function Committee({
               hasGroupPhoto ? '-top-20' : '-top-24 lg:bottom-8 lg:top-auto'
             }`}
           >
-            <ManageButton language={language} committee={data} />
+            <ManageButton language={language} committee={committee_data} />
           </div>
         </div>
       </section>

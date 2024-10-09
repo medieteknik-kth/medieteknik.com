@@ -12,9 +12,8 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const value = decodeURI(params.committee)
 
-  const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   return {
-    title: capitalizedValue,
+    title: value.toUpperCase(),
   }
 }
 

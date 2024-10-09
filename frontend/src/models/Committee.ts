@@ -32,6 +32,7 @@ export default interface Committee {
   email: string;
   group_photo_url?: string;
   logo_url: string;
+  hidden: boolean;
   translations: CommitteeTranslation[];
 }
 

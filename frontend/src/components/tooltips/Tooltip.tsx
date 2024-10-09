@@ -1,14 +1,14 @@
-import Student from '@/models/Student'
-import Committee, { CommitteePosition } from '@/models/Committee'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Link from 'next/link'
+import Committee, { CommitteePosition } from '@/models/Committee'
+import Student from '@/models/Student'
 import { Button } from '@components/ui/button'
+import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
 export function StudentTooltip({ student }: { student: Student }) {
@@ -60,16 +60,34 @@ export function StudentTooltip({ student }: { student: Student }) {
 export function CommitteeTooltip({ committee }: { committee: Committee }) {
   return (
     <>
-      <Button
-        asChild
-        variant='link'
-        className='h-fit flex flex-col justify-center pb-0 z-40 cursor-pointer'
-      >
-        <Link
-          href={`/chapter/committees/${committee.translations[0].title.toLocaleLowerCase()}`}
-          className='group'
+      {!committee.hidden ? (
+        <Button
+          asChild
+          variant='link'
+          className='h-fit flex flex-col justify-center pb-0 z-40 cursor-pointer'
         >
-          <Avatar className='w-24 h-24 bg-white group-hover:scale-105 transition-transform rounded-full overflow-hidden'>
+          <Link
+            href={`/chapter/committees/${committee.translations[0].title.toLocaleLowerCase()}`}
+            className='group'
+          >
+            <Avatar className='w-24 h-24 bg-white group-hover:scale-105 transition-transform rounded-full overflow-hidden'>
+              <AvatarImage
+                src={committee.logo_url}
+                width={128}
+                height={128}
+                alt='Committee Logo'
+                className='h-24 w-auto object-contain p-3.5'
+              />
+              <AvatarFallback>
+                {committee.translations[0].title + ' logo'}
+              </AvatarFallback>
+            </Avatar>
+            <p>{committee.translations[0].title}</p>
+          </Link>
+        </Button>
+      ) : (
+        <div className='h-fit flex flex-col justify-center items-center pb-0 z-40'>
+          <Avatar className='w-24 h-24 bg-white rounded-full overflow-hidden'>
             <AvatarImage
               src={committee.logo_url}
               width={128}
@@ -82,8 +100,9 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
             </AvatarFallback>
           </Avatar>
           <p>{committee.translations[0].title}</p>
-        </Link>
-      </Button>
+        </div>
+      )}
+
       <Button
         variant='link'
         className='text-neutral-500 py-0 w-full left-0 right-0 mx-auto z-10'
