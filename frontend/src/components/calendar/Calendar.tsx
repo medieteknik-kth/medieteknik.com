@@ -11,42 +11,12 @@ import { useCalendar } from '@/providers/CalendarProvider'
 import './calendar.css'
 import { useMemo } from 'react'
 import EventComponent from './EventComponent'
+import { getPreviousMonthLastWeekToCurrent } from './util'
 
 interface CalendarProps {
   onDateClickCallback?: (date: Date) => void
   onEventClickCallback?: (event: Event) => void
   children?: React.ReactNode
-}
-
-/**
- * Returns an array of dates representing the last week of the previous month adjusted to include only dates that are before the start of the current month.
- *
- * @param {Date} currentDate - The current date.
- * @return {Date[]} An array of dates representing the last week of the previous month adjusted to include only dates that are before the start of the current month.
- */
-function getPreviousMonthLastWeekToCurrent(date: Date): Date[] {
-  const firstDayOfCurrentMonth = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    1
-  )
-  const lastDayOfPreviousMonth = new Date(firstDayOfCurrentMonth)
-  lastDayOfPreviousMonth.setDate(0)
-
-  const result: Date[] = []
-  let currentDay = new Date(lastDayOfPreviousMonth)
-
-  // Go back to the Monday (or first day of the week) of the last week
-  const daysToSubtract = (currentDay.getDay() + 6) % 7
-  currentDay.setDate(currentDay.getDate() - daysToSubtract)
-
-  // Add days until we reach the first day of the current month
-  while (currentDay < firstDayOfCurrentMonth) {
-    result.push(new Date(currentDay))
-    currentDay.setDate(currentDay.getDate() + 1)
-  }
-
-  return result
 }
 
 /**
