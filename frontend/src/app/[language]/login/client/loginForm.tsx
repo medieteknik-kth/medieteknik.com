@@ -1,10 +1,7 @@
 'use client'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '@/components/ui/input'
+import { useTranslation } from '@/app/i18n/client'
+import Loading from '@/components/tooltips/Loading'
 import { Button } from '@/components/ui/button'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   Form,
   FormControl,
@@ -13,15 +10,33 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { useState } from 'react'
-import useSWR from 'swr'
-import Loading from '@/components/tooltips/Loading'
+import { Input } from '@/components/ui/input'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { API_BASE_URL } from '@/utility/Constants'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import useSWR from 'swr'
+import { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())
 
-export default function LoginForm({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name LoginForm
+ * @description The login form, used for logging in with an email and password
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language code
+ * @returns {JSX.Element} The login form
+ */
+export default function LoginForm({ language }: Props): JSX.Element {
+  const { t } = useTranslation(language, 'login')
+
   const {
     login,
     error: authError,
@@ -67,9 +82,12 @@ export default function LoginForm({ language }: { language: string }) {
 
   if (error) {
     return (
-      <p className='text-red-500 font-bold mb-2 text-xl text-center'>
-        {error.message}
-      </p>
+      <div className='flex flex-col gap-0.5'>
+        <p className='text-red-500 font-bold text-xl text-center'>
+          {t('network_error')}
+        </p>
+        <p className='text-red-500 text-lg text-center'>{error.message}</p>
+      </div>
     )
   }
 
@@ -104,9 +122,13 @@ export default function LoginForm({ language }: { language: string }) {
             name='email'
             render={({ field }) => (
               <FormItem className='w-full mb-4'>
-                <FormLabel className='text-xl'>Email</FormLabel>
+                <FormLabel className='text-xl'>{t('email')}</FormLabel>
                 <FormControl>
-                  <Input placeholder='Email' autoComplete='email' {...field} />
+                  <Input
+                    placeholder={t('email')}
+                    autoComplete='email'
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,11 +139,11 @@ export default function LoginForm({ language }: { language: string }) {
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-xl'>Password</FormLabel>
+                <FormLabel className='text-xl'>{t('password')}</FormLabel>
                 <FormControl>
                   <Input
                     type='password'
-                    placeholder='Password'
+                    placeholder={t('password')}
                     autoComplete='current-password'
                     {...field}
                   />
@@ -146,7 +168,7 @@ export default function LoginForm({ language }: { language: string }) {
               setValue('csrf_token', data.token)
             }}
           >
-            Login
+            {t('login')}
           </Button>
         </form>
       </Form>

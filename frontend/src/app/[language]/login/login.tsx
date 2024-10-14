@@ -1,38 +1,35 @@
-'use client'
+import AlternativeLogin from '@/app/[language]/login/client/alternative'
+import { useTranslation } from '@/app/i18n'
 import Image from 'next/image'
-import KTHSVG from 'public/images/svg/kth.svg'
 import Link from 'next/link'
 import LoginForm from './client/loginForm'
-import { Button } from '@/components/ui/button'
 
 interface Props {
-  params: {
-    language: string
-  }
+  language: string
+}
+
+interface Params {
+  params: Props
 }
 
 /**
  * @name Login
- * @description The login page
+ * @description The login page with a login form and alternative login methods
  *
- * @param {object} params - The dynamic route parameters
+ * @param {Params} params - The dynamic URL parameters
  * @param {string} params.language - The language code
- * @returns {JSX.Element} The login page
+ * @returns {Promise<JSX.Element>} The login page
  */
-export default function Login({ params: { language } }: Props): JSX.Element {
-  const loginKTH = () => {
-    const redirectURL =
-      process.env.NODE_ENV === 'production'
-        ? 'https://api.medieteknik.com/auth'
-        : 'http://localhost:3000/auth'
-    window.location.href = `${redirectURL}`
-  }
+export default async function Login({
+  params: { language },
+}: Params): Promise<JSX.Element> {
+  const { t } = await useTranslation(language, 'login')
 
   return (
     <main>
       <div className='h-24 bg-black' />
       <div className='w-full h-[1080px] flex justify-center items-center dark:bg-[#111]'>
-        <div className='w-full xs:w-1/2 h-3/4 max-w-[1440px] flex flex-col items-center'>
+        <div className='w-full max-w-[1440px] h-3/4 flex flex-col items-center'>
           <Link href='/' title='Home' aria-label='Home'>
             <Image
               src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
@@ -51,38 +48,14 @@ export default function Login({ params: { language } }: Props): JSX.Element {
               className='w-auto h-16 xss:h-28 xs:h-auto xs:min-w-[384px] hidden dark:block'
             />
           </Link>
-          <div className='w-full xs:min-w-[300px] md:min-w-[600px] h-1/2 grid place-items-center'>
-            <h1 className='text-5xl uppercase font-bold tracking-wider text-[#111] dark:text-white'>
-              Login
+          <div className='w-11/12 h-1/2 xs:mx-20 xs:px-10 border-b mt-8'>
+            <h1 className='text-3xl md:text-5xl uppercase font-bold tracking-wider text-[#111] dark:text-white text-center mb-8'>
+              {t('login')}
             </h1>
             <LoginForm language={language} />
           </div>
 
-          <div className='w-full xs:min-w-[300px] md:min-w-[600px] flex flex-col items-center'>
-            <h2 className='w-full text-2xl text-center uppercase tracking-wider py-8 border-t-2 border-black dark:border-white'>
-              Alternative Login Methods
-            </h2>
-
-            <ul className='w-full grid grid-cols-1 place-items-center'>
-              <li className='text-center'>
-                <Button
-                  className='w-full h-full'
-                  title='KTH Login'
-                  aria-label='KTH Login'
-                  variant={'ghost'}
-                  size={'icon'}
-                  onClick={loginKTH}
-                >
-                  <KTHSVG
-                    width={80}
-                    height={80}
-                    aria-label='KTH Logo'
-                    name='KTH Logo'
-                  />
-                </Button>
-              </li>
-            </ul>
-          </div>
+          <AlternativeLogin language={language} />
         </div>
       </div>
     </main>

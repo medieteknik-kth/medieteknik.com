@@ -1,0 +1,8 @@
+{
+    "login": "Login",
+    "alternative_logins": "Alternate Login",
+    "kth_login": "KTH Login",
+    "email": "Email",
+    "password": "Password",
+    "network_error": "Network Error"
+}
