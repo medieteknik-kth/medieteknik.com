@@ -21,6 +21,34 @@ from utility.translation import retrieve_languages
 public_committee_position_bp = Blueprint("public_committee_position", __name__)
 
 
+@public_committee_position_bp.route("/", methods=["GET"])
+def get_all_positions():
+    """Retrieves all committee positions"""
+    position_type = request.args.get(
+        "type", type=str, default="committee"
+    )  # Possible values: committee, independent
+    provided_languages = retrieve_languages(request.args)
+
+    committee_positions = []
+    if position_type == "committee":
+        committee_positions: List[CommitteePosition] = CommitteePosition.query.filter(
+            CommitteePosition.committee_id != None,  # noqa
+            CommitteePosition.base != True,  # noqa
+            CommitteePosition.role != "MEMBER",
+        ).all()
+    elif position_type == "independent":
+        committee_positions: List[CommitteePosition] = CommitteePosition.query.filter(
+            CommitteePosition.committee_id == None  # noqa
+        ).all()
+
+    return jsonify(
+        [
+            position.to_dict(provided_languages=provided_languages, include_parent=True)
+            for position in committee_positions
+        ]
+    )
+
+
 @public_committee_position_bp.route("/recruiting", methods=["GET"])
 def get_all_committee_positions_recruitment():
     """Retrieves all committee positions with recruitment"""
