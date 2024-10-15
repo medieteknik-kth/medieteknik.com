@@ -1,7 +1,7 @@
-import { cache } from 'react';
-import api from './index';
 import Committee, { CommitteeCategory, CommitteePosition } from '@/models/Committee';
 import Student from '@/models/Student';
+import { cache } from 'react';
+import api from './index';
 
 export const GetCommitteePublic = cache(async (committee: string, language_code?: string) => {
   const response = await api.get(`/public/committees/${committee}${language_code ? `?language=${language_code}` : ``}`,);
@@ -134,6 +134,17 @@ export const GetRecruitment = cache(async (language_code: string) => {
       return []
     }
     return response.data as RecruitmentResponse[]
+  }
+
+  return []
+})
+
+
+export const GetCommitteePositions = cache(async (type: 'committee' | 'independent', language_code: string) => {
+  const response = await api.get(`/public/committee_positions?language=${language_code}&type=${type}`)
+
+  if (response.status === 200) {
+    return response.data as CommitteePosition[]
   }
 
   return []
