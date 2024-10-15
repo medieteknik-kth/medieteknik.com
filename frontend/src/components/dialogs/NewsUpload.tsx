@@ -1,19 +1,11 @@
 'use client'
+import Loading from '@/components/tooltips/Loading'
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Button } from '@components/ui/button'
-import { useState, useEffect } from 'react'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
-import { API_BASE_URL } from '@/utility/Constants'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Loading from '@/components/tooltips/Loading'
 import {
   Form,
   FormControl,
@@ -23,9 +15,18 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
 import { Author } from '@/models/Items'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { createNewsSchema } from '@/schemas/items/news'
+import { API_BASE_URL } from '@/utility/Constants'
+import { Button } from '@components/ui/button'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 interface NewsUploadProps {
   language: string
@@ -48,11 +49,6 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
   const { student } = useAuthentication()
   const { push } = useRouter()
 
-  const FormSchema = z.object({
-    title: z.string().optional().or(z.literal('')),
-    image: z.instanceof(window.File).optional().or(z.any()),
-  })
-
   const MAX_FILE_SIZE = 500 * 1024
   const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
@@ -61,8 +57,8 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
     'image/webp',
   ]
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof createNewsSchema>>({
+    resolver: zodResolver(createNewsSchema),
     defaultValues: {
       title: 'Untitled Article',
     },
@@ -78,7 +74,7 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
     return <></>
   }
 
-  const postForm = async (data: z.infer<typeof FormSchema>) => {
+  const postForm = async (data: z.infer<typeof createNewsSchema>) => {
     if (!student) {
       return
     }

@@ -1,12 +1,14 @@
 'use client'
-import Committee, {
-  CommitteePosition,
-  CommitteePositionCategory,
-} from '@/models/Committee'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { supportedLanguages } from '@/app/i18n/settings'
+import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   DialogContent,
   DialogDescription,
@@ -23,30 +25,28 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
-import { title } from 'process'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import Committee, {
+  CommitteePosition,
+  CommitteePositionCategory,
+} from '@/models/Committee'
 import { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Role } from '@/models/Permission'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { addPositionSchema } from '@/schemas/committee/position'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 function TranslatedInputs({
   index,
@@ -119,40 +119,9 @@ export default function PositionForm({
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [value, setValue] = useState('NONE')
   const { role } = useAuthentication()
-  const PositionFormSchema = z.object({
-    email: z
-      .string()
-      .email({ message: 'Invalid email' })
-      .optional()
-      .or(z.literal('')),
-    weight: z.number().or(z.string()).pipe(z.coerce.number()),
-    category: z.enum([
-      'STYRELSEN',
-      'VALBEREDNINGEN',
-      'STUDIENÄMNDEN',
-      'NÄRINGSLIV OCH KOMMUNIKATION',
-      'STUDIESOCIALT',
-      'FANBORGEN',
-      'UTBILDNING',
-      'NONE',
-    ]),
-    translations: z.array(
-      z.object({
-        language_code: z.string().optional().or(z.literal('')),
-        title: z
-          .string()
-          .min(3, { message: 'Title is required' })
-          .max(125, { message: 'Title is too long' }),
-        description: z
-          .string()
-          .min(1, { message: 'Description is required' })
-          .max(500, { message: 'Description is too long' }),
-      })
-    ),
-  })
 
-  const form = useForm<z.infer<typeof PositionFormSchema>>({
-    resolver: zodResolver(PositionFormSchema),
+  const form = useForm<z.infer<typeof addPositionSchema>>({
+    resolver: zodResolver(addPositionSchema),
     defaultValues: {
       email: '',
       weight: 1000,
@@ -165,7 +134,7 @@ export default function PositionForm({
     },
   })
 
-  const publish = async (data: z.infer<typeof PositionFormSchema>) => {
+  const publish = async (data: z.infer<typeof addPositionSchema>) => {
     const new_data = {
       ...data,
       committee_title: committee.translations[0].title.toLowerCase(),

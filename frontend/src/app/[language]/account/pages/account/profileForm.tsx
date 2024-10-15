@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Profile } from '@/models/Student'
+import { profileSchema } from '@/schemas/user/profile'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FacebookSVG from 'public/images/svg/facebook.svg'
@@ -50,14 +51,8 @@ export default function ProfileForm({ language }: Props): JSX.Element {
     }
   )
 
-  const ProfileFormSchema = z.object({
-    facebook: z.string().url().optional().or(z.literal('')),
-    instagram: z.string().url().optional().or(z.literal('')),
-    linkedin: z.string().url().optional().or(z.literal('')),
-  })
-
-  const profileForm = useForm<z.infer<typeof ProfileFormSchema>>({
-    resolver: zodResolver(ProfileFormSchema),
+  const profileForm = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       facebook: '',
       instagram: '',
@@ -66,7 +61,7 @@ export default function ProfileForm({ language }: Props): JSX.Element {
   })
   if (isLoading) return <Loading language={language} />
 
-  const postProfileForm = async (data: z.infer<typeof ProfileFormSchema>) => {
+  const postProfileForm = async (data: z.infer<typeof profileSchema>) => {
     try {
       const json_data = {
         facebook_url: data.facebook === '' ? null : data.facebook,

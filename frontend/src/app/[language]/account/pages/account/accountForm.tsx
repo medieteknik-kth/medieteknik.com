@@ -1,11 +1,9 @@
 'use client'
 
-import Logo from 'public/images/logo.webp'
-import { useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '@/components/ui/input'
+import { useTranslation } from '@/app/i18n/client'
+import Loading from '@/components/tooltips/Loading'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -15,19 +13,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { Button } from '@/components/ui/button'
-import FacebookSVG from 'public/images/svg/facebook.svg'
-import InstagramSVG from 'public/images/svg/instagram.svg'
-import LinkedInSVG from 'public/images/svg/linkedin.svg'
+import { Input } from '@/components/ui/input'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import Image from 'next/image'
+import { accountSchema } from '@/schemas/user/account'
 import { API_BASE_URL } from '@/utility/Constants'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Image from 'next/image'
+import Logo from 'public/images/logo.webp'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import Loading from '@/components/tooltips/Loading'
-import { useTranslation } from '@/app/i18n/client'
-import ProfileForm from './profileForm'
+import { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -66,39 +62,8 @@ export default function AccountForm({ language }: Props) {
     'image/webp',
   ]
 
-  const AccountFormSchema = z.object({
-    profilePicture: z.instanceof(window.File).optional().or(z.literal('')),
-    emailTwo: z.string().email().optional().or(z.literal('')),
-    emailThree: z.string().email().optional().or(z.literal('')),
-    currentPassword: z.string().min(3).optional().or(z.literal('')),
-    newPassword: z
-      .string()
-      .min(8)
-      .optional()
-      .or(z.literal(''))
-      .refine(
-        (value) => {
-          if (!value) return true
-          // At least one number
-          if (!/[0-9]/.test(value)) return false
-          // At least one lowercase character
-          if (!/[a-z]/.test(value)) return false
-          // At least one uppercase character
-          if (!/[A-Z]/.test(value)) return false
-          // At least one special character
-          if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) return false
-          return true
-        },
-        {
-          message:
-            'Password must be at least 8 characters, with at least one number, one uppercase character, one lowercase character, and one special character',
-        }
-      ),
-    csrf_token: z.string().optional().or(z.literal('')),
-  })
-
-  const accountForm = useForm<z.infer<typeof AccountFormSchema>>({
-    resolver: zodResolver(AccountFormSchema),
+  const accountForm = useForm<z.infer<typeof accountSchema>>({
+    resolver: zodResolver(accountSchema),
     defaultValues: {
       profilePicture: Logo as unknown as File,
       emailTwo: '',
@@ -112,7 +77,7 @@ export default function AccountForm({ language }: Props) {
   if (isLoading) return <Loading language={language} />
   if (!csrf) return null
 
-  const postAccountForm = async (data: z.infer<typeof AccountFormSchema>) => {
+  const postAccountForm = async (data: z.infer<typeof accountSchema>) => {
     const formData = new FormData()
 
     if (

@@ -36,7 +36,10 @@
       ],
       "@models/*": [
         "./src/models/*"
-      ]
+      ],
+      "@schemas/*": [
+        "./src/schemas/*"
+      ],
     }
   },
   "include": [

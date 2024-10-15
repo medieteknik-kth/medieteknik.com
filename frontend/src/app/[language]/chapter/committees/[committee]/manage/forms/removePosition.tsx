@@ -28,6 +28,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { removePositionSchema } from '@/schemas/committee/position'
 import { API_BASE_URL } from '@/utility/Constants'
 import { ChevronUpDownIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -55,18 +56,14 @@ export default function RemovePositionForm({
       value: position.committee_position_id,
     }))
 
-  const Schema = z.object({
-    position_id: z.string().uuid(),
-  })
-
-  const form = useForm<z.infer<typeof Schema>>({
-    resolver: zodResolver(Schema),
+  const form = useForm<z.infer<typeof removePositionSchema>>({
+    resolver: zodResolver(removePositionSchema),
     defaultValues: {
       position_id: '',
     },
   })
 
-  const publish = async (data: z.infer<typeof Schema>) => {
+  const publish = async (data: z.infer<typeof removePositionSchema>) => {
     const json_data = JSON.stringify(data)
 
     try {

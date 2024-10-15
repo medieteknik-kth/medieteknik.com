@@ -42,21 +42,13 @@ import {
 import { API_BASE_URL } from '@/utility/Constants'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Role } from '@/models/Permission'
+import { addMember } from '@/schemas/committee/member'
 
 export function RemoveMemberForm({ language }: { language: string }) {
   const { committee, members } = useCommitteeManagement()
-  const Schema = z.object({
-    students: z
-      .array(
-        z.object({
-          student_email: z.string().email(),
-        })
-      )
-      .min(1),
-  })
 
-  const form = useForm<z.infer<typeof Schema>>({
-    resolver: zodResolver(Schema),
+  const form = useForm<z.infer<typeof addMember>>({
+    resolver: zodResolver(addMember),
     defaultValues: {
       students: [],
     },
@@ -66,7 +58,7 @@ export function RemoveMemberForm({ language }: { language: string }) {
     return null
   }
 
-  const publish = async (data: z.infer<typeof Schema>) => {
+  const publish = async (data: z.infer<typeof addMember>) => {
     const json_data = JSON.stringify(data)
     try {
       const response = await fetch(

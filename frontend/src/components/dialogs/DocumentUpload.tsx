@@ -1,5 +1,14 @@
 'use client'
+import { supportedLanguages } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   DialogContent,
   DialogDescription,
@@ -15,19 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/components/ui/input'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
@@ -35,11 +32,15 @@ import {
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Document, DocumentTranslation } from '@/models/Document'
-import { useState } from 'react'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
-import { supportedLanguages } from '@/app/i18n/settings'
 import { Author } from '@/models/Items'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { documentUploadSchema } from '@/schemas/items/document'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 interface TranslatedInputProps {
   index: number
@@ -171,21 +172,11 @@ export default function DocumentUpload({
   const [value, setValue] = useState('DOCUMENT')
   const { student } = useAuthentication()
   const [files, setFiles] = useState<File[]>([])
-  const FormSchema = z.object({
-    type: z.enum(['DOCUMENT', 'FORM']),
-    translations: z.array(
-      z.object({
-        language_code: z.string().optional().or(z.literal('')),
-        title: z.string().min(1, { message: 'Required' }),
-        file: z.instanceof(window.File),
-      })
-    ),
-  })
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof documentUploadSchema>>({
+    resolver: zodResolver(documentUploadSchema),
     defaultValues: {
       type: 'DOCUMENT',
       translations: supportedLanguages.map((language) => ({
@@ -195,7 +186,7 @@ export default function DocumentUpload({
     },
   })
 
-  const postForm = async (data: z.infer<typeof FormSchema>) => {
+  const postForm = async (data: z.infer<typeof documentUploadSchema>) => {
     if (!student) {
       return
     }
