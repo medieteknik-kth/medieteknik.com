@@ -1,7 +1,8 @@
 'use client'
 
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/app/i18n/client'
+import { supportedLanguages } from '@/app/i18n/settings'
+import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,6 +10,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -17,19 +19,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import {
-  DocumentTextIcon,
-  EyeIcon,
-  InboxIcon,
-} from '@heroicons/react/24/outline'
-import { useState } from 'react'
-import { useAutoSave, AutoSaveResult } from './autoSave'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormControl,
@@ -39,12 +28,24 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
-import { useRouter } from 'next/navigation'
 import { LanguageCode } from '@/models/Language'
-import { supportedLanguages } from '@/app/i18n/settings'
-import { useTranslation } from '@/app/i18n/client'
+import { uploadNewsSchema } from '@/schemas/items/news'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import {
+  DocumentTextIcon,
+  EyeIcon,
+  InboxIcon,
+} from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { AutoSaveResult, useAutoSave } from './autoSave'
+import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 interface Props {
   language: string
@@ -77,12 +78,6 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
   const { push } = useRouter()
   const { t } = useTranslation(language, 'article')
 
-  const formSchema = z.object({
-    title: z.string(),
-    image: z.instanceof(window.File).optional().or(z.any()),
-    short_description: z.string().max(120, { message: 'Too long' }),
-  })
-
   const MAX_FILE_SIZE = 500 * 1024
   const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
@@ -91,15 +86,15 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
     'image/webp',
   ]
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof uploadNewsSchema>>({
+    resolver: zodResolver(uploadNewsSchema),
     defaultValues: {
       title: content.translations[0].title,
       image: content.translations[0].main_image_url,
     },
   })
 
-  const postForm = async (data: z.infer<typeof formSchema>) => {
+  const postForm = async (data: z.infer<typeof uploadNewsSchema>) => {
     await saveCallback(language, true)
 
     /*

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { loginSchema } from '@/schemas/authentication/login'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -48,37 +49,14 @@ export default function LoginForm({ language }: Props): JSX.Element {
     fetcher
   )
 
-  const FormSchema = z.object({
-    email: z
-      .string()
-      .min(1, { message: 'Please enter your email address' })
-      .email({ message: 'Please enter a valid email address' })
-      .refine(
-        (email) => {
-          return email.includes('@kth.se')
-        },
-        {
-          message: 'Please enter a valid student email address (@kth.se)',
-        }
-      ),
-    password: z
-      .string()
-      .min(1, { message: 'Please enter your password' })
-      .min(4, { message: 'Password must be at least 8 characters' }),
-
-    csrf_token: z.string().optional().or(z.literal('')),
-  })
-
-  const loginForm = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
       csrf_token: '',
     },
   })
-
-  const { setValue } = loginForm
 
   if (error) {
     return (
@@ -95,7 +73,7 @@ export default function LoginForm({ language }: Props): JSX.Element {
     return <Loading language={language} />
   }
 
-  const submit = async (formData: z.infer<typeof FormSchema>) => {
+  const submit = async (formData: z.infer<typeof loginSchema>) => {
     const success = await login(
       formData.email,
       formData.password,
@@ -165,7 +143,7 @@ export default function LoginForm({ language }: Props): JSX.Element {
             type='submit'
             className='w-full mt-4'
             onClick={() => {
-              setValue('csrf_token', data.token)
+              loginForm.setValue('csrf_token', data.token)
             }}
           >
             {t('login')}

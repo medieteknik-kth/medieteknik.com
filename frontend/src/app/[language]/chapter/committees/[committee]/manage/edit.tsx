@@ -1,7 +1,6 @@
 'use client'
+import { supportedLanguages } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
-import Committee from '@/models/Committee'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import {
   Dialog,
   DialogContent,
@@ -10,11 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { supportedLanguages } from '@/app/i18n/settings'
 import {
   Form,
   FormDescription,
@@ -25,12 +19,19 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
-import { useState } from 'react'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { Permission } from '@/models/Permission'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import Committee from '@/models/Committee'
+import { Permission } from '@/models/Permission'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { editCommitteeSchema } from '@/schemas/committee/edit'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 /**
  * @name TranslatedInputs
@@ -95,26 +96,9 @@ export default function EditCommittee({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const { permissions, positions } = useAuthentication()
-  const EditCommitteeSchema = z.object({
-    title: z
-      .string()
-      .min(3, { message: 'Title is required' })
-      .max(125, { message: 'Title is too long' }),
-    translations: z.array(
-      z.object({
-        language_code: z.string().optional().or(z.literal('')),
-        description: z
-          .string()
-          .min(1, { message: 'Description is required' })
-          .max(511, { message: 'Description is too long' }),
-      })
-    ),
-    logo: z.instanceof(window.File).optional().or(z.literal('')),
-    group_photo: z.instanceof(window.File).optional().or(z.literal('')),
-  })
 
-  const form = useForm<z.infer<typeof EditCommitteeSchema>>({
-    resolver: zodResolver(EditCommitteeSchema),
+  const form = useForm<z.infer<typeof editCommitteeSchema>>({
+    resolver: zodResolver(editCommitteeSchema),
     defaultValues: {
       title: committee.translations[0].title,
       translations: supportedLanguages.map((lang, index) => ({
@@ -144,7 +128,7 @@ export default function EditCommittee({
   const MAX_LOGO_FILE_SIZE = 1 * 1024 * 1024 // 1 MB
   const MAX_GROUP_PHOTO_FILE_SIZE = 15 * 1024 * 1024 // 15 MB
 
-  const postForm = async (data: z.infer<typeof EditCommitteeSchema>) => {
+  const postForm = async (data: z.infer<typeof editCommitteeSchema>) => {
     const formData = new FormData()
 
     // Add top-level fields

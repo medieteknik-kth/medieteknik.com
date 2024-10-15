@@ -1,13 +1,20 @@
 'use client'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { supportedLanguages } from '@/app/i18n/settings'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import useSWR from 'swr'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
-import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -18,31 +25,23 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { createRecruitmentSchema } from '@/schemas/committee/recruitment'
+import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 function TranslatedInputs({
   index,
@@ -142,38 +141,8 @@ export default function RecruitmentForm({
         .join(' '),
     }))
 
-  const RecruitmentSchema = z
-    .object({
-      position: z.string(),
-      start_date: z.coerce
-        .date()
-        .refine(
-          (date) =>
-            date.getTime() >= new Date().getTime() - 1000 * 60 * 60 * 24,
-          {
-            message: 'Start date must be today or later',
-          }
-        ),
-      end_date: z.coerce.date().refine((date) => date >= new Date(), {
-        message: 'Start date must be today or later',
-      }),
-      translations: z
-        .array(
-          z.object({
-            language_code: z.string().optional().or(z.literal('')),
-            link: z.string().url().max(512),
-            description: z.string().max(200),
-          })
-        )
-        .min(1),
-    })
-    .refine((data) => new Date(data.end_date) > new Date(data.start_date), {
-      message: 'End date must be after start date',
-      path: ['end_date'],
-    })
-
-  const form = useForm<z.infer<typeof RecruitmentSchema>>({
-    resolver: zodResolver(RecruitmentSchema),
+  const form = useForm<z.infer<typeof createRecruitmentSchema>>({
+    resolver: zodResolver(createRecruitmentSchema),
     defaultValues: {
       position: 'MEMBER',
       start_date: new Date(),
@@ -186,7 +155,7 @@ export default function RecruitmentForm({
     },
   })
 
-  const publish = async (data: z.infer<typeof RecruitmentSchema>) => {
+  const publish = async (data: z.infer<typeof createRecruitmentSchema>) => {
     const position = positions.find(
       (p) =>
         p.translations[0].title.toLowerCase() === data.position.toLowerCase()

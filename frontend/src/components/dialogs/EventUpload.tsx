@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Author, Event } from '@/models/Items'
 import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { eventUploadSchema } from '@/schemas/items/event'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -34,7 +35,7 @@ import RepeatingForm from './event/repeating'
 import TranslatedInputs from './event/translations'
 import '/node_modules/flag-icons/css/flag-icons.min.css'
 
-interface EventFormProps {
+interface Props {
   language: string
   selectedDate: Date
   closeMenuCallback: () => void
@@ -46,7 +47,7 @@ interface EventFormProps {
  * @name EventUpload
  * @description Upload an event
  *
- * @param {EventFormProps} props - The props for the component
+ * @param {Props} props - The props for the component
  * @param {string} props.language - The language of the event
  * @param {Date} props.selectedDate - The date of the event
  * @param {() => void} props.closeMenuCallback - The callback function to close the menu
@@ -60,7 +61,7 @@ export default function EventUpload({
   author,
   closeMenuCallback,
   addEvent,
-}: EventFormProps): JSX.Element {
+}: Props): JSX.Element {
   const { student } = useAuthentication()
   const { t } = useTranslation(language, 'bulletin')
   const [isRepeating, setIsRepeating] = useState(false)
@@ -69,44 +70,8 @@ export default function EventUpload({
   const [currentColor, setCurrentColor] = useState('#FFFFFF')
   const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6', '#EF4444']
 
-  const FormSchema = z.object({
-    date: z.string().date(),
-    start_time: z.string().time(),
-    duration: z.coerce.number().int().min(1, 'Duration is required'),
-    repeats: z.boolean().optional().or(z.literal(false)),
-    frequency: z
-      .enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'])
-      .optional()
-      .or(z.literal('')),
-    end_date: z.string().date().optional().or(z.literal('')),
-    max_occurrences: z.coerce.number().optional().or(z.literal(0)),
-    location: z.string().min(1, 'Location is required'),
-    background_color: z.string().refine(
-      (value) => {
-        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
-      },
-      {
-        message: 'Invalid color',
-      }
-    ),
-    translations: z.array(
-      z.object({
-        language_code: z.string().optional().or(z.literal('')),
-        title: z
-          .string()
-          .min(1, 'Title is required')
-          .max(255, 'Title is too long'),
-        description: z
-          .string()
-          .max(499, 'Description is too long')
-          .optional()
-          .or(z.literal('')),
-      })
-    ),
-  })
-
-  const eventForm = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const eventForm = useForm<z.infer<typeof eventUploadSchema>>({
+    resolver: zodResolver(eventUploadSchema),
     defaultValues: {
       translations: supportedLanguages.map((language) => {
         return {
@@ -135,7 +100,7 @@ export default function EventUpload({
     setCurrentColor(color)
   }
 
-  const publish = async (data: z.infer<typeof FormSchema>) => {
+  const publish = async (data: z.infer<typeof eventUploadSchema>) => {
     const start_date = new Date(data.date + ' ' + data.start_time)
 
     if (data.repeats) {

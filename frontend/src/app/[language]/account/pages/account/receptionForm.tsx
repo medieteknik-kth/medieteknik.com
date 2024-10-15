@@ -1,9 +1,6 @@
 'use client'
 
-import Logo from 'public/images/logo.webp'
-import { useEffect, useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Form,
   FormControl,
@@ -13,15 +10,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Logo from 'public/images/logo.webp'
+import { useEffect, useState } from 'react'
 
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { Button } from '@/components/ui/button'
-import { API_BASE_URL } from '@/utility/Constants'
-import useSWR from 'swr'
 import Loading from '@/components/tooltips/Loading'
+import { Button } from '@/components/ui/button'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { receptionSchema } from '@/schemas/user/reception'
+import { API_BASE_URL } from '@/utility/Constants'
+import { useForm } from 'react-hook-form'
+import useSWR from 'swr'
+import { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url).then(
@@ -41,12 +42,6 @@ export default function ReceptionForm({ language }: Props) {
   const { student } = useAuthentication()
   const [csrfToken, setCsrfToken] = useState<string | null>()
 
-  const FormSchema = z.object({
-    image: z.instanceof(window.File),
-    receptionName: z.string().optional().or(z.literal('')),
-    csrf_token: z.string().optional().or(z.literal('')),
-  })
-
   const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
@@ -55,8 +50,8 @@ export default function ReceptionForm({ language }: Props) {
     'image/webp',
   ]
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof receptionSchema>>({
+    resolver: zodResolver(receptionSchema),
     defaultValues: {
       image: Logo as unknown as File,
       receptionName: '',
@@ -81,7 +76,7 @@ export default function ReceptionForm({ language }: Props) {
   if (isLoading) return <Loading language={language} />
   if (!csrf) return null
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof receptionSchema>) => {
     const formData = new FormData()
 
     formData.append('reception_image', data.image)
