@@ -22,7 +22,7 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: 'favicon.ico',
-        sizes: '16x16',
+        sizes: '48x48',
         type: 'image/x-icon',
       },
       {
@@ -33,14 +33,18 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     screenshots: [
       {
-        src: 'screenshots/desktop.webp',
+        src: 'screenshots/desktop.jpg',
         sizes: '2560x1440',
         type: 'image/webp',
+        // @ts-ignore
+        form_factor: 'wide', 
       },
       {
-        src: 'screenshots/phone.webp',
-        sizes: '1078x2048',
+        src: 'screenshots/phone.jpg',
+        sizes: '430x932',
         type: 'image/webp',
+        // @ts-ignore
+        form_factor: 'narrow',
       },
     ],
     }
