@@ -1,20 +1,20 @@
 'use client'
 
-import React from 'react'
-import {
-  DocumentIcon,
-  TagIcon,
-  HandThumbUpIcon,
-  CogIcon,
-} from '@heroicons/react/24/outline'
-import CommandBar from './commandBar'
-import { AutoSaveProvdier } from './autoSave'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { API_BASE_URL } from '@/utility/Constants'
-import { redirect } from 'next/navigation'
 import Loading from '@/components/tooltips/Loading'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { News } from '@/models/Items'
+import { API_BASE_URL } from '@/utility/Constants'
+import {
+  CogIcon,
+  DocumentIcon,
+  HandThumbUpIcon,
+  TagIcon,
+} from '@heroicons/react/24/outline'
+import { redirect } from 'next/navigation'
+import React from 'react'
 import useSWR from 'swr'
+import { AutoSaveProvdier } from './autoSave'
+import CommandBar from './commandBar'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))
@@ -42,6 +42,7 @@ interface Params {
  * @param {Props} params.props - The parameters of the page
  * @param {string} params.props.language - The language of the article
  * @param {string} params.props.slug - The slug of the article
+ *
  * @returns {JSX.Element} The upload news page
  */
 export default function UploadNews({

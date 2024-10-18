@@ -1,15 +1,15 @@
 'use client'
 
-import { Event } from '@/models/Items'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import Student from '@/models/Student'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { StudentTag } from '@/components/tags/StudentTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import { StudentTag } from '@/components/tags/StudentTag'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import Committee, { CommitteePosition } from '@/models/Committee'
+import { Event } from '@/models/Items'
+import Student from '@/models/Student'
+import { ClockIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 import DetailedEvent from './detailedEvent'
 import './event.css'
 
@@ -27,6 +27,7 @@ interface Props {
  * @param {string} props.language - The current language of the application.
  * @param {Event} props.event - The event to display.
  * @param {number} props.index - The index of the event in the list.
+ *
  * @returns {JSX.Element} The JSX code for the EventDialog component.
  */
 export default function EventDialog({

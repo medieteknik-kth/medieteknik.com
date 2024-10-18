@@ -1,17 +1,30 @@
 import { Event } from '@/models/Items'
 
-interface EventProps {
+interface Props {
   event: Event
   onEventClick?: (event: Event) => void
 }
 
-export default function EventComponent({ event, onEventClick }: EventProps) {
+/**
+ * @name EventComponent
+ * @description This component is used to display an event in the calendar.
+ *
+ * @param {Props} props
+ * @param {Event} props.event - The event to display.
+ * @param {(event: Event) => void} props.onEventClick - The callback function when the event is clicked.
+ *
+ * @returns {JSX.Element} The event component.
+ */
+export default function EventComponent({
+  event,
+  onEventClick,
+}: Props): JSX.Element {
   const tinycolor = require('tinycolor2')
   const tinyEventColor = tinycolor(event.background_color)
 
   return (
     <li
-      className={`w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-10 rounded-2xl text-xs overflow-hidden
+      className={`w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-50 rounded-2xl text-xs overflow-hidden
         ${
           tinycolor(event.background_color).isDark()
             ? 'text-white'

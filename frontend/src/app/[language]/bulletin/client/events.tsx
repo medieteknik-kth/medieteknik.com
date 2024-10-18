@@ -1,16 +1,15 @@
 'use client'
-import { Event } from '@/models/Items'
+
+import { useTranslation } from '@/app/i18n/client'
 import Calendar from '@/components/calendar/Calendar'
-import { useState } from 'react'
+import EventUpload from '@/components/dialogs/EventUpload'
 import { Button } from '@/components/ui/button'
 import {
-  CheckIcon,
-  ClockIcon,
-  IdentificationIcon,
-  InformationCircleIcon,
-  PlusIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -19,19 +18,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { useCalendar } from '@/providers/CalendarProvider'
 import { Separator } from '@/components/ui/separator'
+import { Event } from '@/models/Items'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import CalendarExport from './components/calendarExport'
-import { useTranslation } from '@/app/i18n/client'
-import EventUpload from '@/components/dialogs/EventUpload'
-import EventDialog from './components/eventDialog'
+import { useCalendar } from '@/providers/CalendarProvider'
+import {
+  CheckIcon,
+  ClockIcon,
+  IdentificationIcon,
+  InformationCircleIcon,
+  PlusIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
+import { useState } from 'react'
+import CalendarExport from '../components/calendarExport'
+import EventDialog from '../components/eventDialog'
 
 /**
  * Get the ordinal suffix for a given number
@@ -39,7 +40,7 @@ import EventDialog from './components/eventDialog'
  * @param {number} number - The number to get the ordinal suffix for
  * @returns {string} The ordinal suffix for the given number
  */
-function getNumberWithOrdinal(number: number): string {
+function getNumberWithOrdinalEnglish(number: number): string {
   if (typeof number !== 'number' || isNaN(number)) {
     return 'Not a number'
   }
@@ -67,6 +68,7 @@ function getNumberWithOrdinal(number: number): string {
  * @description Renders the event section of the bulletin.
  *
  * @param {string} language - The language of the page
+ *
  * @returns {JSX.Element} The events section
  */
 export default function Events({
@@ -76,15 +78,15 @@ export default function Events({
 }): JSX.Element {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const { selectedDate, events, addEvent } = useCalendar()
-  const { student, permissions, role } = useAuthentication()
+  const { student, permissions } = useAuthentication()
 
   const { t } = useTranslation(language, 'bulletin')
 
   return (
-    <section className='w-full h-fit py-4'>
-      <div>
-        <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
-          {t('events')}
+    <section id='calendar' className='w-full h-fit'>
+      <>
+        <h2 className='uppercase text-neutral-600 dark:text-neutral-400 pt-2 pb-0.5 text-lg tracking-wide'>
+          {t('calendar')}
         </h2>
         <p className='text-lg mb-3'>
           {new Date().toLocaleDateString(language, {
@@ -92,10 +94,10 @@ export default function Events({
             month: 'long',
           })}
         </p>
-      </div>
+      </>
 
-      <div className='w-full flex flex-col gap-4 desktop:flex-row relative overflow-hidden'>
-        <Calendar>
+      <div className='w-full flex flex-col gap-4 desktop:flex-row relative '>
+        <Calendar language={language}>
           <div className='absolute right-0 -top-12 flex gap-2'>
             {student && <CalendarExport student={student} />}
             <Dialog>
@@ -163,7 +165,11 @@ export default function Events({
           <CardHeader className='relative'>
             <CardTitle>{t('events')}</CardTitle>
             <CardDescription>
-              {getNumberWithOrdinal(selectedDate.getDate()) + ' '}
+              {language === 'en'
+                ? getNumberWithOrdinalEnglish(selectedDate.getDate()) + ' '
+                : selectedDate.getDate() > 2
+                ? selectedDate.getDate() + ':e '
+                : selectedDate.getDate() + ':a '}
               <span className='capitalize'>
                 {selectedDate.toLocaleDateString(language, { month: 'long' })}
               </span>

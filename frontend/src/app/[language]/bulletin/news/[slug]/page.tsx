@@ -1,22 +1,36 @@
+import { GetNewsData } from '@/api/items'
 import NewsSlug from '@/app/[language]/bulletin/news/[slug]/slug'
 import { useTranslation } from '@/app/i18n'
 import { Metadata, ResolvingMetadata } from 'next'
 
 interface Params {
   language: string
-  committee: string
+  slug: string
 }
 
 export async function generateMetadata(
   { params }: { params: Params },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { t } = await useTranslation(params.language, 'bulletin')
-  const value = t('news')
+  const data = await GetNewsData(params.language, params.slug)
 
-  const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
+  if (!data) {
+    const { t } = await useTranslation(params.language, 'bulletin')
+    const value = t('title')
+
+    const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
+    return {
+      title: capitalizedValue,
+    }
+  }
+
+  let title = data.translations[0].title
+  if (title.length > 60) {
+    title = title.substring(0, 60) + '...'
+  }
+
   return {
-    title: capitalizedValue,
+    title: title,
   }
 }
 
