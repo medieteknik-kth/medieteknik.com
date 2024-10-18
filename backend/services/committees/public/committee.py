@@ -119,6 +119,7 @@ def get_committee_data_by_title(
         "total_news": committee.total_news,
         "total_events": committee.total_events,
         "total_documents": committee.total_documents,
+        "total_media": committee.total_media,
     }
 
     # Members

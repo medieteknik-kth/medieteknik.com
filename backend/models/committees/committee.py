@@ -22,6 +22,7 @@ class Committee(db.Model):
     total_news = Column(Integer, nullable=False, default=0)
     total_events = Column(Integer, nullable=False, default=0)
     total_documents = Column(Integer, nullable=False, default=0)
+    total_media = Column(Integer, nullable=False, default=0)
     hidden = Column(Boolean, nullable=False, default=False)
 
     # Foreign key
@@ -71,7 +72,6 @@ class Committee(db.Model):
             )
             translations.append(translation)
 
-        del data["committee_id"]
         del data["committee_category_id"]
 
         data["translations"] = [

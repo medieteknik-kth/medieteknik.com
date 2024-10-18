@@ -59,6 +59,7 @@ def create_document():
             path=f"documents/{convert_iso_639_1_to_bcp_47(language_code)}/{current_year}/{current_month}",
             language_code=language_code,
             content_disposition="inline",
+            timedelta=None,
             content_type="application/pdf",
         )
 
@@ -107,6 +108,10 @@ def create_document():
         return jsonify(
             {"error": "Failed to create item"}
         ), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    committee: Committee = Committee.query.filter_by(email=email).first_or_404()
+    setattr(committee, "total_documents", committee.total_documents + 1)
+    db.session.commit()
 
     return jsonify(
         {

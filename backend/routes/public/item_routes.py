@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.content import News, Event, Album, Author
+from models.content import News, Event, Media, Author
 from models.content.author import AuthorType
 from models.core.student import Student
 from services.content.author import get_author_from_email
@@ -13,7 +13,6 @@ from services.content.public.item import (
 
 public_news_bp = Blueprint("public_news", __name__)
 public_events_bp = Blueprint("public_events", __name__)
-public_albums_bp = Blueprint("public_albums", __name__)
 
 
 @public_news_bp.route("/", methods=["GET"])
@@ -152,42 +151,5 @@ def get_events_by_url(url: str) -> dict:
     if not item:
         return jsonify({}), 404
     item: Event = item
-
-    return jsonify(item)
-
-
-@public_albums_bp.route("/", methods=["GET"])
-def get_albums() -> dict:
-    """Retrieves all albums
-
-    Returns:
-        list[dict]: List of albums
-    """
-    provided_languages = retrieve_languages(request.args)
-    author_id = request.args.get("author")
-
-    if author_id:
-        return jsonify(get_items(Album, provided_languages, author_id=author_id)), 200
-
-    return jsonify(get_items(Album, provided_languages)), 200
-
-
-@public_albums_bp.route("/<string:url>", methods=["GET"])
-def get_albums_by_url(url: str) -> dict:
-    """Retrieves a album item by URL
-
-    Args:
-        url (str): Album URL
-
-    Returns:
-        dict: Album item
-    """
-    provided_languages = retrieve_languages(request.args)
-
-    item = get_item_by_url(url, Album, provided_languages)
-
-    if not item:
-        return jsonify({}), 404
-    item: Album = item
 
     return jsonify(item)

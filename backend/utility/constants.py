@@ -37,6 +37,6 @@ class ROUTES(enum.Enum):
     COMMITTEE_POSITIONS = "committee_positions"
     EVENTS = "events"
     NEWS = "news"
-    ALBUMS = "albums"
+    MEDIA = "media"
     DOCUMENTS = "documents"
     LANGUAGES = "languages"
