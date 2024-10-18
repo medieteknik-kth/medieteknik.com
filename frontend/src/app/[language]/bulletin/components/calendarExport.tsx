@@ -1,10 +1,6 @@
 'use client'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -13,18 +9,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
+import Student from '@/models/Student'
+import { API_BASE_URL } from '@/utility/Constants'
 import {
   ArrowPathRoundedSquareIcon,
   ArrowUpTrayIcon,
   ClipboardIcon,
 } from '@heroicons/react/24/outline'
-import Student from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 import Link from 'next/link'
-import { useToast } from '@/components/ui/use-toast'
 
-export default function CalendarExport({ student }: { student: Student }) {
+interface Props {
+  student: Student
+}
+
+/**
+ * @name CalendarExport
+ * @description This component is a dialog that allows the user to subscribe or export their calendar.
+ *
+ * @param {Props} props
+ * @param {Student} props.student - The student opening the dialog
+ *
+ * @returns {JSX.Element} The calendar export dialog
+ */
+export default function CalendarExport({ student }: Props): JSX.Element {
   const { toast } = useToast()
 
   return (

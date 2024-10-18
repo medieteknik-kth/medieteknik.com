@@ -1,8 +1,9 @@
 'use client'
-import { Event } from '@/models/Items'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
+
+import { useTranslation } from '@/app/i18n/client'
+import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
+import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import { StudentTag } from '@/components/tags/StudentTag'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,25 +15,42 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
-import Student from '@/models/Student'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { StudentTag } from '@/components/tags/StudentTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import { Separator } from '@/components/ui/separator'
+import Committee, { CommitteePosition } from '@/models/Committee'
+import { Event } from '@/models/Items'
+import Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { useTranslation } from '@/app/i18n/client'
-import { API_BASE_URL } from '@/utility/Constants'
 import { useCalendar } from '@/providers/CalendarProvider'
+import { API_BASE_URL } from '@/utility/Constants'
+import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
+
+const Status = {
+  UPCOMING: 'UPCOMING',
+  ONGOING: 'ONGOING',
+  ENDED: 'ENDED',
+} as const
+
+type Status = (typeof Status)[keyof typeof Status]
+
+function determineEventStatus(event: Event): Status {
+  const start_date = new Date(event.start_date)
+  const end_date = new Date(start_date.getTime() + event.duration * 60000)
+
+  if (end_date < new Date()) {
+    return Status.ENDED
+  } else if (start_date < new Date() && end_date > new Date()) {
+    return Status.ONGOING
+  }
+  return Status.UPCOMING
+}
 
 interface Props {
   language: string
@@ -40,6 +58,17 @@ interface Props {
   closeDialog: () => void
 }
 
+/**
+ * @name DetailedEvent
+ * @description This component is used to display a detailed event.
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the event
+ * @param {Event} props.event - The event to display
+ * @param {() => void} props.closeDialog - The function to close the dialog
+ *
+ * @returns {JSX.Element} The detailed event component
+ */
 export default function DetailedEvent({
   language,
   event,
@@ -87,11 +116,12 @@ export default function DetailedEvent({
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{event.translations[0].title}</DialogTitle>
-        {event.translations[0].description && (
-          <DialogDescription className='whitespace-pre-line'>
-            {event.translations[0].description}
-          </DialogDescription>
-        )}
+
+        <DialogDescription className='whitespace-pre-line'>
+          {event.translations[0].description
+            ? event.translations[0].description
+            : 'No description available'}
+        </DialogDescription>
       </DialogHeader>
       <Separator
         style={{
@@ -139,21 +169,22 @@ export default function DetailedEvent({
           <div className='flex items-center'>
             <div
               className={`w-3 h-3 rounded-full mr-2 ${
-                new Date(event.start_date + event.duration) < new Date()
-                  ? 'bg-red-500'
-                  : new Date(event.start_date + event.duration) > new Date() &&
-                    new Date(event.start_date) < new Date()
+                determineEventStatus(event) === 'UPCOMING'
+                  ? 'bg-yellow-500'
+                  : determineEventStatus(event) === 'ONGOING'
                   ? 'bg-green-500'
-                  : 'bg-yellow-500'
+                  : 'bg-red-500'
               }`}
             />
             <p>
-              {new Date(event.start_date + event.duration) < new Date()
-                ? t('event.ended')
-                : new Date(event.start_date + event.duration) > new Date() &&
-                  new Date(event.start_date) < new Date()
-                ? t('event.ongoing')
-                : t('event.upcoming')}
+              {t(
+                `event.${
+                  determineEventStatus(event).toLowerCase() as
+                    | 'upcoming'
+                    | 'ongoing'
+                    | 'ended'
+                }`
+              )}
             </p>
           </div>
         </div>

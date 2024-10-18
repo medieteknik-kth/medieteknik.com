@@ -36,7 +36,7 @@ export default function NewsRedirect({
     setIsLoading(false)
   }, [news_data, router])
 
-  if (!isLoading || !news_data) {
+  if (isLoading || !news_data) {
     return <Loading language={language} />
   }
 

@@ -44,7 +44,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the news
- * 
+ *
  * @returns {JSX.Element} The news toolbar
  */
 export default function NewsToolbar({ language }: Props): JSX.Element {
@@ -115,6 +115,11 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
             tag: {
               author: {
                 author_type: 'COMMITTEE',
+                committee_id: '',
+                total_documents: 0,
+                total_events: 0,
+                total_media: 0,
+                total_news: 0,
                 email: '',
                 logo_url: '',
                 hidden: false,

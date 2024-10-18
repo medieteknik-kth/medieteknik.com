@@ -1,3 +1,4 @@
+'use client'
 import { z } from 'zod';
 
 
@@ -8,7 +9,6 @@ import { z } from 'zod';
  */
 export const createNewsSchema = z.object({
   title: z.string().optional().or(z.literal('')),
-  image: z.instanceof(window.File).optional().or(z.any()),
 })
 
 /**
@@ -18,6 +18,6 @@ export const createNewsSchema = z.object({
  */
 export const uploadNewsSchema = z.object({
   title: z.string(),
-  image: z.instanceof(window.File).optional().or(z.any()),
+  image: z.instanceof(window.File).optional().or(z.literal(null)),
   short_description: z.string().max(120, { message: 'Too long' }),
 })

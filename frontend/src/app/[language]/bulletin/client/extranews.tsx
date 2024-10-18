@@ -1,13 +1,14 @@
 'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
 import { News } from '@/models/Items'
+import { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
-import ShortNews from './components/shortNews'
-import { NewsPagination } from '@/models/Pagination'
-import { useTranslation } from '@/app/i18n/client'
+import ShortNews from '../components/shortNews'
 
 /**
  * The fetcher function that fetches news data from the API.
@@ -89,7 +90,7 @@ function Page({ index, language }: { index: number; language: string }): {
       <>
         {data.items.map((item: News, index) => (
           <div key={index} className='relative'>
-            <ShortNews newsItem={item} />
+            <ShortNews language={language} newsItem={item} />
           </div>
         ))}
       </>
@@ -126,7 +127,7 @@ export default function ExtraNews({
 
   return (
     <section className='w-full h-fit pb-10'>
-      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
+      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide text-center'>
         {t('more_news')}
       </h2>
       <InfiniteScroll
@@ -135,16 +136,13 @@ export default function ExtraNews({
         loader={<Loading language={language} />}
         next={() => setPage(page + 1)}
         endMessage={
-          <p
-            className='text-center py-2 text-xl tracking-wider uppercase text-neutral-800 dark:text-neutral-300 
-          select-none'
-          >
+          <p className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide text-center select-none'>
             {t('end_news')}
           </p>
         }
       >
         {pages.map((page, index) => (
-          <div key={index} className='flex flex-wrap gap-4'>
+          <div key={index} className='flex flex-wrap gap-2 justify-center'>
             {page.jsx}
           </div>
         ))}

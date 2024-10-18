@@ -69,16 +69,16 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
     content,
     currentLanguage,
   } = useAutoSave()
+  const { push } = useRouter()
 
   const [title, setTitle] = useState(
     content.translations[0].title || 'Untitled Article'
   )
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const { push } = useRouter()
   const { t } = useTranslation(language, 'article')
 
-  const MAX_FILE_SIZE = 500 * 1024
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
   const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',
@@ -90,53 +90,35 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
     resolver: zodResolver(uploadNewsSchema),
     defaultValues: {
       title: content.translations[0].title,
-      image: content.translations[0].main_image_url,
     },
   })
 
   const postForm = async (data: z.infer<typeof uploadNewsSchema>) => {
     await saveCallback(language, true)
 
-    /*
     const formData = new window.FormData()
+
+    formData.append('author', JSON.stringify(content.author))
 
     supportedLanguages.forEach((lang, index) => {
       formData.append(`translations[${index}][language_code]`, lang)
       formData.append(`translations[${index}][title]`, data.title)
-      formData.append(`translations[${index}][main_image_url]`, data.image)
-      formData.append(
-        `translations[${index}][body]`,
-        content.translations[index].body
-      )
+      if (data.image) {
+        formData.append(`translations[${index}][main_image_url]`, data.image)
+      }
       formData.append(
         `translations[${index}][short_description]`,
         data.short_description
       )
-    })*/
-
-    const json_data = {
-      ...content,
-      translations: [
-        {
-          ...content.translations[0],
-          title: data.title,
-          main_image_url: data.image,
-          short_description: data.short_description,
-          language_code: currentLanguage,
-        },
-      ],
-    }
+    })
 
     try {
       const response = await fetch(
         `${API_BASE_URL}/news/${slug}/publish?language=${language}`,
         {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           credentials: 'include',
-          body: JSON.stringify(json_data),
+          body: formData,
         }
       )
 
@@ -276,17 +258,17 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                 </div>
                 <Separator />
 
-                <Form {...form}>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault()
-                      form.handleSubmit(postForm)()
-                      setLoading(true)
-                      setTimeout(() => {
-                        setLoading(false)
-                      }, 3000)
-                    }}
-                  >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    form.handleSubmit(postForm)()
+                    setLoading(true)
+                    setTimeout(() => {
+                      setLoading(false)
+                    }, 3000)
+                  }}
+                >
+                  <Form {...form}>
                     <FormField
                       control={form.control}
                       name='title'
@@ -301,15 +283,34 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                       )}
                     />
                     <FormField
-                      control={form.control}
                       name='image'
-                      disabled
                       render={({ field }) => (
                         <FormItem className='mt-4'>
                           <FormLabel>Image</FormLabel>
-                          <FormControl className='w-full'>
-                            <Input type='file' placeholder='Image' {...field} />
-                          </FormControl>
+                          <Input
+                            type='file'
+                            accept={ACCEPTED_IMAGE_TYPES.join(', ')}
+                            onChange={(event) => {
+                              const file = event.target.files
+                                ? event.target.files[0]
+                                : null
+
+                              if (!file) return
+
+                              if (file.size > MAX_FILE_SIZE) {
+                                setError('File is too large')
+                                event.target.value = ''
+                                return
+                              }
+
+                              field.onChange({
+                                target: {
+                                  name: field.name,
+                                  value: file,
+                                },
+                              })
+                            }}
+                          />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -339,8 +340,8 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                     >
                       {t('publish')}
                     </Button>
-                  </form>
-                </Form>
+                  </Form>
+                </form>
               </DialogHeader>
             </DialogContent>
           </Dialog>

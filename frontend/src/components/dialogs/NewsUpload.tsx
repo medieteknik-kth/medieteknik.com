@@ -49,14 +49,6 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
   const { student } = useAuthentication()
   const { push } = useRouter()
 
-  const MAX_FILE_SIZE = 500 * 1024
-  const ACCEPTED_IMAGE_TYPES = [
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/webp',
-  ]
-
   const form = useForm<z.infer<typeof createNewsSchema>>({
     resolver: zodResolver(createNewsSchema),
     defaultValues: {
@@ -152,46 +144,6 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
             )}
           />
 
-          <FormField
-            name='image'
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <Input
-                    id='image'
-                    type='file'
-                    value={field.value ? undefined : ''}
-                    accept={ACCEPTED_IMAGE_TYPES.join(',')}
-                    onChange={(event) => {
-                      const file = event.target.files
-                        ? event.target.files[0]
-                        : null
-
-                      if (!file) return
-
-                      if (file.size > MAX_FILE_SIZE) {
-                        alert('File is too large')
-                        return
-                      }
-
-                      field.onChange({
-                        target: {
-                          name: field.name,
-                          value: file,
-                        },
-                      })
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>
-                  The main image of your article, will be shown first
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button type='submit' className='w-full my-4' disabled={loading}>
             {loading ? <Loading language={language} /> : 'Upload'}
           </Button>

@@ -1,10 +1,10 @@
-import Events from './events'
-import Recruitment from './recruiting'
-import BreakingNews from './breakingNews'
-import CalendarProvider from '@/providers/CalendarProvider'
 import { GetRecruitment } from '@/api/committee'
 import { GetBreakingNews } from '@/api/items'
-import ExtraNewsObserver from './extranewsObserver'
+import CalendarProvider from '@/providers/CalendarProvider'
+import BreakingNews from './client/breakingNews'
+import Events from './client/events'
+import ExtraNewsObserver from './client/extranewsObserver'
+import Recruitment from './recruiting'
 
 export const revalidate = 60 * 60 * 24 // 1 day
 
@@ -14,6 +14,7 @@ export const revalidate = 60 * 60 * 24 // 1 day
  *
  * @param {object} params - The dynamic route parameters
  * @param {string} params.language - The language of the page
+ *
  * @returns {JSX.Element} The bulletin page
  */
 export default async function Bulletin({
@@ -25,7 +26,7 @@ export default async function Bulletin({
   const breakingNewsData = await GetBreakingNews(language)
 
   return (
-    <main className='px-12'>
+    <main className='px-12 flex flex-col gap-2'>
       <div className='h-24' />
       <BreakingNews language={language} data={breakingNewsData} />
       <CalendarProvider language={language}>

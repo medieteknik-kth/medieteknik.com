@@ -1,50 +1,39 @@
-'use client'
-import { ClockIcon } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { CommitteePosition } from '@/models/Committee'
-import Link from 'next/link'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { useTranslation } from '@/app/i18n/client'
+import RecruitmentCard from '@/app/[language]/bulletin/components/recruitmentCard'
+import { useTranslation } from '@/app/i18n'
+import { CommitteePositionRecruitment } from '@/models/Committee'
 
-interface Response {
-  committee_position: CommitteePosition
-  start_date: string
-  end_date: string
-  translations: { description: string; link_url: string }[]
+interface Props {
+  language: string
+  data: CommitteePositionRecruitment[]
 }
 
 /**
  * @name Recruitment
  * @description Renders the recruitment section of the bulletin.
  *
- * @param {string} language - The language of the bulletin.
- * @returns {JSX.Element} The recruitment section of the bulletin.
+ * @param {Props} props -
+ * @param {string} props.language - The language of the bulletin.
+ * @param {Response[]} props.data - The recruitment data.
+ *
+ * @returns {Promise<JSX.Element>} The recruitment section of the bulletin.
  */
-export default function Recruitment({
+export default async function Recruitment({
   language,
   data,
-}: {
-  language: string
-  data: Response[]
-}): JSX.Element {
-  const { t } = useTranslation(language, 'bulletin')
+}: Props): Promise<JSX.Element> {
+  const { t } = await useTranslation(language, 'bulletin')
 
   return (
-    <section className='w-full h-fit flex flex-col justify-between relative mt-10'>
-      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide text-center'>
+    <section
+      id='recruitment'
+      className='w-full h-fit flex flex-col justify-between relative mt-10'
+    >
+      <h2 className='uppercase text-neutral-600 dark:text-neutral-400 py-2 text-lg tracking-wide'>
         {t('recruitment')}
       </h2>
       <div className='w-full h-fit flex items-center mb-20'>
         <div className='w-full h-fit overflow-x-auto'>
-          <div className='w-full h-fit flex flex-wrap gap-4 justify-center'>
+          <div className='w-full h-fit flex flex-wrap gap-4'>
             {data.length === 0 && (
               <p
                 className='w-full h-[200px] grid place-items-center z-10 
@@ -62,76 +51,11 @@ export default function Recruitment({
                     new Date(b.end_date).getTime()
                 )
                 .map((recruit, index) => (
-                  <Card
+                  <RecruitmentCard
                     key={index}
-                    className='w-full sm:w-[470px] h-fit md:min-h-[260px] relative flex flex-col justify-between'
-                  >
-                    <CardHeader className='h-fit flex flex-row items-center justify-between'>
-                      <div className='flex flex-col items-start'>
-                        <div>
-                          <CardTitle className='text-sm xxs:text-base sm:text-xl'>
-                            {recruit.committee_position.committee && (
-                              <CommitteeTag
-                                committee={recruit.committee_position.committee}
-                                includeAt={false}
-                                includeBackground={false}
-                              >
-                                <span
-                                  className='text-sm flex items-center font-normal text-neutral-700 dark:text-neutral-300'
-                                  title={new Date(
-                                    recruit.end_date
-                                  ).toLocaleDateString(language, {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: 'numeric',
-                                    minute: 'numeric',
-                                  })}
-                                >
-                                  <ClockIcon className='w-4 h-4 mr-1' />
-                                  {Math.floor(
-                                    (new Date(recruit.end_date).getTime() -
-                                      Date.now()) /
-                                      1000 /
-                                      60 /
-                                      60 /
-                                      24
-                                  )}{' '}
-                                  days left
-                                </span>
-                              </CommitteeTag>
-                            )}
-                          </CardTitle>
-                          <CardDescription className='flex items-center mt-1'></CardDescription>
-                        </div>
-                        <span className='font-mono uppercase text-xs select-none'>
-                          Position:{' '}
-                          {recruit.committee_position.translations[0].title}
-                        </span>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className='text-sm w-full max-w-[450px] text-pretty break-words whitespace-pre-line'>
-                      <p>{recruit.translations[0].description}</p>
-                    </CardContent>
-                    <CardFooter className='h-fit'>
-                      <Button
-                        title='Learn More'
-                        aria-label='Learn More'
-                        asChild
-                        className='w-full'
-                      >
-                        <Link
-                          href={recruit.translations[0].link_url}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          title='Learn More About the Position'
-                        >
-                          Learn More
-                        </Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                    language={language}
+                    recruitment={recruit}
+                  />
                 ))}
           </div>
         </div>

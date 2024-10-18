@@ -288,7 +288,8 @@ export const Element = ({
           {...attributes}
           onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
           onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault() // Prevent default click behavior i.e. opening the link in the same tab
             window.open(url, '_blank')
           }}
         >

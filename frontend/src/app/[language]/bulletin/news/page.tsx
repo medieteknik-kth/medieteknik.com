@@ -1,28 +1,24 @@
-import AllNews from './allNews'
-import { News } from '@/models/Items'
-import { GetNewsPagniation } from '@/api/items'
+import NewsPage from '@/app/[language]/bulletin/news/news'
+import { useTranslation } from '@/app/i18n'
+import { Metadata, ResolvingMetadata } from 'next'
 
 export const revalidate = 43_200 // 12 hours
 
-export default async function NewsPage({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
-  const data = await GetNewsPagniation(language, 1)
-  if (!data) {
-    return (
-      <div className='h-96 grid place-items-center text-3xl'>No data...</div>
-    )
-  }
-
-  data.items = data.items as News[]
-
-  return (
-    <main className='grid place-items-center'>
-      <div className='h-24' />
-      <h1 className='text-4xl py-10'>News</h1>
-      <AllNews language={language} data={data} />
-    </main>
-  )
+interface Params {
+  language: string
 }
+
+export async function generateMetadata(
+  { params }: { params: Params },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { t } = await useTranslation(params.language, 'bulletin')
+  const value = t('title')
+
+  const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
+  return {
+    title: capitalizedValue,
+  }
+}
+
+export default NewsPage
