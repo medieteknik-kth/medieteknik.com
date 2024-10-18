@@ -5,11 +5,11 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import Student from '@/models/Student'
-import { StudentTooltip } from '../tooltips/Tooltip'
 import { Button } from '@components/ui/button'
-import { forwardRef } from 'react'
-import FallbackImage from 'public/images/logo.webp'
 import Link from 'next/link'
+import FallbackImage from 'public/images/logo.webp'
+import { forwardRef } from 'react'
+import { StudentTooltip } from '../tooltips/Tooltip'
 
 interface StudentTagProps {
   student: Student
@@ -55,7 +55,7 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
             tabIndex={-1}
             asChild
           >
-            <Link href={`./student/${student.student_id}`}>
+            <Link href={`/student/${student.student_id}`}>
               {includeImage && (
                 <Avatar className='h-10 w-auto aspect-square bg-white rounded-full overflow-hidden'>
                   <AvatarImage

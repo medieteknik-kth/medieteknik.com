@@ -1,25 +1,25 @@
-import React from 'react'
+import { GetStudentPublic } from '@/api/student'
+import Loading from '@/components/tooltips/Loading'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  CalendarDaysIcon,
+  DocumentTextIcon,
+  IdentificationIcon,
+} from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import Link from 'next/link'
+import Logo from 'public/images/logo.webp'
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
-import {
-  IdentificationIcon,
-  CalendarDaysIcon,
-  DocumentTextIcon,
-} from '@heroicons/react/24/outline'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import React from 'react'
+import EditProfile from './client/editButton'
 const StudentPositions = React.lazy(() => import('./positionsTab'))
 const StudentNews = React.lazy(() => import('./newsTab'))
 const StudentEvents = React.lazy(() => import('./eventTab'))
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import Logo from 'public/images/logo.webp'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Loading from '@/components/tooltips/Loading'
-import { GetStudentPublic } from '@/api/student'
-import Image from 'next/image'
-import EditProfile from './client/editButton'
 
 function SocialMediaDisplay({
   url,
@@ -144,6 +144,7 @@ export default async function StudentPage({
             <TabsTrigger
               value='news'
               className='text-black dark:text-white border-b-2 aria-selected:border-yellow-400'
+              disabled
             >
               <DocumentTextIcon className='w-6 h-6 mr-2' />
               <p>News</p>
@@ -151,6 +152,7 @@ export default async function StudentPage({
             <TabsTrigger
               value='posts'
               className='text-black dark:text-white border-b-2 aria-selected:border-yellow-400'
+              disabled
             >
               <CalendarDaysIcon className='w-6 h-6 mr-2' />
               <p>Events</p>

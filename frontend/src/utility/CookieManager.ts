@@ -38,23 +38,6 @@ function isCategoryAllowed(cookieSettings: CookieSettings, category: CookieConse
   }
 }
 
-function updateCookieSettings(cookieSettings: CookieSettings, category: CookieConsent, value: boolean): CookieSettings {
-  switch(category) {
-    case CookieConsent.NECESSARY:
-      return cookieSettings;
-    case CookieConsent.FUNCTIONAL:
-      return {...cookieSettings, FUNCTIONAL: value};
-    case CookieConsent.ANALYTICS:
-      return {...cookieSettings, ANALYTICS: value};
-    case CookieConsent.PERFORMANCE:
-      return {...cookieSettings, PERFORMANCE: value};
-    case CookieConsent.ADVERTISING:
-      return {...cookieSettings, ADVERTISING: value};
-    default:
-      return cookieSettings;  
-  }
-}
-
 interface CookieConsentProvider {
   /**
    * Retrieves the current cookie consent settings

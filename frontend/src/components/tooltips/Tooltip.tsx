@@ -115,7 +115,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
           <span>{committee.email}</span>
         </Link>
       </Button>
-      <p className='text-sm text-wrap'>
+      <p className='text-sm text-wrap font-normal'>
         {committee.translations[0].description}
       </p>
     </>
