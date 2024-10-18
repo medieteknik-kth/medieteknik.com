@@ -51,7 +51,7 @@ def get_item_by_url(
     if provided_languages is None:
         provided_languages = AVAILABLE_LANGUAGES
 
-    item = item_table.query.filter_by(url=url).first()
+    item = item_table.query.filter_by(url=unquote(url)).first()
 
     if not item:
         return None
