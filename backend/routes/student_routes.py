@@ -15,6 +15,7 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_jwt_cookies,
 )
+from sqlalchemy import func, or_
 from decorators import csrf_protected
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
@@ -168,7 +169,13 @@ def refresh_token():
 
     committees = []
     committee_positions = []
-    student_memberships = StudentMembership.query.filter_by(student_id=student_id).all()
+    student_memberships = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        or_(
+            StudentMembership.termination_date == None,  # noqa
+            StudentMembership.termination_date > func.now(),
+        ),
+    ).all()
 
     for membership in student_memberships:
         position = CommitteePosition.query.get(membership.committee_position_id)
@@ -231,7 +238,13 @@ def get_student_callback():
 
     committees = []
     committee_positions = []
-    student_memberships = StudentMembership.query.filter_by(student_id=student_id).all()
+    student_memberships = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        or_(
+            StudentMembership.termination_date == None,  # noqa
+            StudentMembership.termination_date > func.now(),
+        ),
+    ).all()
 
     for membership in student_memberships:
         position = CommitteePosition.query.get(membership.committee_position_id)

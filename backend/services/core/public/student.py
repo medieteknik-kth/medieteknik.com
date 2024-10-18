@@ -20,7 +20,10 @@ def retrieve_all_committee_members(languages):
             == CommitteePosition.committee_position_id,
         )
         .join(Student, StudentMembership.student_id == Student.student_id)
-        .filter(CommitteePosition.role == CommitteePositionsRole.COMMITTEE)
+        .filter(
+            CommitteePosition.role == CommitteePositionsRole.COMMITTEE,
+            StudentMembership.termination_date == None,  # noqa
+        )
         .options(
             joinedload(StudentMembership.student),  # type: ignore
             joinedload(StudentMembership.committee_position),  # type: ignore

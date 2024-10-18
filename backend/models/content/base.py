@@ -77,7 +77,7 @@ class Item(db.Model):
     news = db.relationship("News", back_populates="item", passive_deletes=True)
     event = db.relationship("Event", back_populates="item", passive_deletes=True)
     document = db.relationship("Document", back_populates="item", passive_deletes=True)
-    album = db.relationship("Album", back_populates="item", passive_deletes=True)
+    media = db.relationship("Media", back_populates="item", passive_deletes=True)
 
     # Polymorphism
     type = Column(String(50))

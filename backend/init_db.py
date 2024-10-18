@@ -20,8 +20,8 @@ from models.committees import (
     CommitteePositionRecruitmentTranslation,  # noqa: F401
 )
 from models.content import (
-    Album,  # noqa: F401
-    AlbumTranslation,  # noqa: F401
+    Media,  # noqa: F401
+    MediaTranslation,  # noqa: F401
     Author,  # noqa: F401
     Document,  # noqa: F401
     DocumentTranslation,  # noqa: F401

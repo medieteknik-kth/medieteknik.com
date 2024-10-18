@@ -4,9 +4,10 @@ Item Service (News, Event, Album, Document)
 
 from datetime import datetime
 from typing import Any, Dict, List, Type
+from urllib.parse import quote, unquote
 from models.content import (
     Item,
-    AlbumTranslation,
+    MediaTranslation,
     PublishedStatus,
     DocumentTranslation,
     EventTranslation,
@@ -15,8 +16,9 @@ from models.content import (
     News,
     Document,
     Event,
-    Album,
+    Media,
 )
+from models.content.author import AuthorType
 from models.core import Student
 from models.committees import Committee, CommitteePosition
 from services.content.author import get_author_from_email
@@ -195,9 +197,9 @@ def create_item(
         elif isinstance(item_table, Event) or item_table is Event:
             authors_items_ids = [a.event_id for a in all_authors_items]
             translation_table = EventTranslation
-        elif isinstance(item_table, Album) or item_table is Album:
-            authors_items_ids = [a.album_id for a in all_authors_items]
-            translation_table = AlbumTranslation
+        elif isinstance(item_table, Media) or item_table is Media:
+            authors_items_ids = [a.media_id for a in all_authors_items]
+            translation_table = MediaTranslation
         elif isinstance(item_table, Document) or item_table is Document:
             authors_items_ids = [a.document_id for a in all_authors_items]
             translation_table = DocumentTranslation
@@ -279,9 +281,9 @@ def create_item(
                 language_code=language_code,
                 **translation,
             )
-        elif isinstance(item, Album):
-            translation = AlbumTranslation(
-                album_id=item.album_id,
+        elif isinstance(item, Media):
+            translation = MediaTranslation(
+                media_id=item.media_id,
                 language_code=language_code,
                 **translation,
             )
@@ -296,6 +298,17 @@ def create_item(
 
         db.session.add(translation)
 
+        if author.author_type == AuthorType.COMMITTEE:
+            committee: Committee = Committee.query.filter_by(email=email).first_or_404()
+            if isinstance(item, Media):
+                setattr(committee, "total_media", committee.total_media + 1)
+            elif isinstance(item, Document):
+                setattr(committee, "total_documents", committee.total_documents + 1)
+            elif isinstance(item, Event):
+                setattr(committee, "total_events", committee.total_events + 1)
+            elif isinstance(item, News):
+                setattr(committee, "total_news", committee.total_news + 1)
+
     db.session.commit()
 
     return str(item.item_id)
@@ -304,7 +317,7 @@ def create_item(
 def update_translations(
     original_item: Item,
     translation_table: Type[
-        NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
+        NewsTranslation | EventTranslation | MediaTranslation | DocumentTranslation
     ],
     translations: List[Dict[str, Any]],
 ):
@@ -317,7 +330,7 @@ def update_translations(
     fk_map = {
         NewsTranslation: "news_id",
         EventTranslation: "event_id",
-        AlbumTranslation: "album_id",
+        MediaTranslation: "album_id",
         DocumentTranslation: "document_id",
     }
 
@@ -360,7 +373,7 @@ def update_item(previous_item: Item, data: Dict[str, Any]):
 def publish(
     item: Item,
     translation_table: Type[
-        NewsTranslation | EventTranslation | AlbumTranslation | DocumentTranslation
+        NewsTranslation | EventTranslation | MediaTranslation | DocumentTranslation
     ],
     translations: List[Dict[str, Any]],
 ) -> str | bool:
@@ -395,6 +408,8 @@ def publish(
         )
         seo_friendly_url = seo_friendly_url.lower()
 
+        seo_friendly_url = quote(seo_friendly_url)
+
         setattr(item, "url", str(seo_friendly_url))
 
     setattr(item, "is_public", True)
@@ -408,7 +423,7 @@ def publish(
 
 
 def delete_item(
-    item_table: type[News] | type[Event] | type[Album] | type[Document],
+    item_table: type[News] | type[Event] | type[Media] | type[Document],
     item_id: str,
 ):
     """
@@ -421,7 +436,7 @@ def delete_item(
     model_translation_map = {
         News: (NewsTranslation, "news_id"),
         Event: (EventTranslation, "event_id"),
-        Album: (AlbumTranslation, "album_id"),
+        Media: (MediaTranslation, "album_id"),
         Document: (DocumentTranslation, "document_id"),
     }
 

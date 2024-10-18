@@ -44,8 +44,8 @@ def register_routes(app: Flask):
     from .public.item_routes import (
         public_news_bp,
         public_events_bp,
-        public_albums_bp,
     )
+    from .public.media_routes import public_media_bp
     from .public.document_routes import public_documents_bp
     from .public.student_routes import public_student_bp
     from .calendar_routes import calendar_bp
@@ -55,6 +55,7 @@ def register_routes(app: Flask):
     from .news_routes import news_bp
     from .event_routes import events_bp
     from .document_routes import documents_bp
+    from .media_routes import media_bp
     from .student_routes import student_bp
 
     # Public Routes
@@ -87,7 +88,7 @@ def register_routes(app: Flask):
         public_documents_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}"
     )
     app.register_blueprint(
-        public_albums_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.ALBUMS.value}"
+        public_media_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.MEDIA.value}"
     )
 
     # Protected Routes
@@ -105,6 +106,9 @@ def register_routes(app: Flask):
     )
     app.register_blueprint(
         documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
+    )
+    app.register_blueprint(
+        media_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.MEDIA.value}"
     )
     app.register_blueprint(author_bp, url_prefix=f"{PROTECTED_PATH}/authors")
     app.register_blueprint(
