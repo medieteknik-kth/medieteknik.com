@@ -1,7 +1,7 @@
 'use client'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { AuthorResource } from '@/models/Items'
-import { Role, Permission } from '@/models/Permission'
+import { Permission, Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
@@ -230,7 +230,15 @@ interface Props {
  */
 const createAuthFunctions = (
   dispatch: React.Dispatch<AuthenticationAction>
-) => ({
+): {
+  login: (
+    email: string,
+    password: string,
+    csrf_token: string
+  ) => Promise<boolean>
+  logout: () => void
+  refreshToken: () => void
+} => ({
   /**
    * Login function that makes a POST request to the server to login the user.
    * @async
@@ -247,6 +255,7 @@ const createAuthFunctions = (
     csrf_token: string
   ): Promise<boolean> => {
     dispatch({ type: 'SET_LOADING', payload: true })
+    let success = false
     try {
       const json_data = {
         email: email,
@@ -271,18 +280,18 @@ const createAuthFunctions = (
         dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
         dispatch({ type: 'SET_POSITIONS', payload: json.positions })
         dispatch({ type: 'LOGIN' })
-        return true
+        success = true
       } else {
         dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
-        return false
       }
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
-      return false
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
+      return success
     }
   },
+
   /**
    * Logout function that makes a POST request to the server to logout the user.
    * @async
@@ -309,6 +318,7 @@ const createAuthFunctions = (
       dispatch({ type: 'SET_LOADING', payload: false })
     }
   },
+
   /**
    * Refresh token function that makes a POST request to the server to refresh the JWT Token.
    * @async
@@ -355,15 +365,17 @@ export function AuthenticationProvider({
   children,
 }: Props): JSX.Element {
   const [state, dispatch] = useReducer(authenticationReducer, initialState)
-  const authFunctions = useMemo(() => createAuthFunctions(dispatch), [])
+  const authFunctions = useMemo(() => createAuthFunctions(dispatch), [dispatch])
 
   useEffect(() => {
     /**
-     * Checks if the user is authenticated and updates the authentication state accordingly.
+     * @description Retrieves the user data from the server and sets it in the authentication state. If the user is not authenticated, it does nothing.
+     *        This function is called when the component is mounted, i.e. for each page load.
      * @async
      */
-    const checkAuth = async () => {
+    const checkUserData = async () => {
       dispatch({ type: 'SET_LOADING', payload: true })
+
       try {
         const response = await fetch(
           `${API_BASE_URL}/students/me?language=${language}`,
@@ -389,6 +401,10 @@ export function AuthenticationProvider({
           dispatch({ type: 'LOGIN' })
         } else {
           dispatch({ type: 'LOGOUT' })
+          dispatch({
+            type: 'SET_ERROR',
+            payload: 'Failed to authenticate. Please try again.',
+          })
         }
       } catch (error) {
         dispatch({ type: 'LOGOUT' })
@@ -401,12 +417,13 @@ export function AuthenticationProvider({
       }
     }
 
-    checkAuth()
+    checkUserData()
   }, [])
 
   const contextValue = useMemo(() => {
     return {
       ...state,
+
       register: () => dispatch({ type: 'REGISTER' }),
 
       /**
@@ -464,7 +481,7 @@ export function AuthenticationProvider({
      * Refreshes the access token every 30 minutes.
      */
     const refreshTimer = setInterval(() => {
-      if (state.student) {
+      if (state.isAuthenticated) {
         dispatch({ type: 'REFRESH_TOKEN' })
         authFunctions.refreshToken()
       } else {
@@ -494,6 +511,7 @@ export function AuthenticationProvider({
 export function useAuthentication() {
   const context = useContext(AuthenticationContext)
   if (!context) {
+    // Should never happen since the hook is globally used in the application.
     throw new Error(
       '`useAuthentication` must be used within an `AuthenticationProvider`'
     )

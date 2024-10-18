@@ -1,4 +1,4 @@
-import Committee, { CommitteeCategory, CommitteePosition } from '@/models/Committee';
+import Committee, { CommitteeCategory, CommitteePosition, CommitteePositionRecruitment } from '@/models/Committee';
 import Student from '@/models/Student';
 import { cache } from 'react';
 import api from './index';
@@ -119,13 +119,6 @@ export const GetCommitteeMembers = cache(async (committee: string, language_code
   return null
 })
 
-interface RecruitmentResponse {
-  committee_position: CommitteePosition
-  start_date: string
-  end_date: string
-  translations: { description: string; link_url: string }[]
-}
-
 export const GetRecruitment = cache(async (language_code: string) => {
   const response = await api.get(`/public/committee_positions/recruiting?language=${language_code}`)
 
@@ -133,7 +126,7 @@ export const GetRecruitment = cache(async (language_code: string) => {
     if (typeof response.data === 'object' && Object.keys(response.data).length === 0) {
       return []
     }
-    return response.data as RecruitmentResponse[]
+    return response.data as CommitteePositionRecruitment[]
   }
 
   return []

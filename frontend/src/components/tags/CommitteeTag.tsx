@@ -4,13 +4,14 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
+import Committee from '@/models/Committee'
 import { CommitteeTooltip } from '@components/tooltips/Tooltip'
 import { Button } from '@components/ui/button'
-import Committee from '@/models/Committee'
 import { forwardRef } from 'react'
 
 interface CommitteeTagProps {
   committee: Committee
+  allowHover?: boolean
   includeImage?: boolean
   includeAt?: boolean
   includeBackground?: boolean
@@ -34,6 +35,7 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
   (
     {
       committee,
+      allowHover = true,
       includeImage = true,
       includeAt = true,
       includeBackground = true,
@@ -50,14 +52,14 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
         >
           <Button
             variant='link'
-            className={`h-fit text-inherit ${
+            className={`h-fit text-inherit flex justify-start text-start ${
               includeBackground
                 ? 'dark:text-yellow-400 bg-yellow-400/30 dark:bg-yellow-400/20 hover:bg-neutral-200 dark:hover:bg-neutral-800'
                 : ''
             } 
               ${reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'}
             py-0 px-1 max-w-full`}
-            style={{ fontSize: 'inherit' }}
+            style={{ fontSize: 'inherit', width: 'inherit' }}
             ref={ref}
             tabIndex={-1}
           >
