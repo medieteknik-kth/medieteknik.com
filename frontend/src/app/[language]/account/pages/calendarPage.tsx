@@ -1,5 +1,19 @@
 'use client'
+import Calendar from '@/components/calendar/Calendar'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
+import { Event } from '@/models/Items'
+import { Permission } from '@/models/Permission'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useCalendar } from '@/providers/CalendarProvider'
 import {
   ArrowPathRoundedSquareIcon,
   ArrowUpTrayIcon,
@@ -24,20 +38,6 @@ import {
   subWeeks,
 } from 'date-fns'
 import { useCallback, useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import Calendar from '@/components/calendar/Calendar'
-import { useCalendar } from '@/providers/CalendarProvider'
-import { Separator } from '@/components/ui/separator'
-import { Event } from '@/models/Items'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { Permission } from '@/models/Permission'
 
 function getPreviousMonthsLastWeekAdjusted(currentDate: Date) {
   const startOfCurrentMonth = startOfMonth(currentDate)
@@ -170,6 +170,7 @@ export default function CalendarPage({ language }: { language: string }) {
           </div>
         </div>
         <Calendar
+          language={language}
           onEventClickCallback={(event) => {
             setSelectedEvent(event)
             setOpenEvent(true)

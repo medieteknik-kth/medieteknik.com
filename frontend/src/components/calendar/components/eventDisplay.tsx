@@ -1,4 +1,5 @@
 import { Event } from '@/models/Items'
+import tinycolor from 'tinycolor2'
 
 interface Props {
   event: Event
@@ -19,12 +20,11 @@ export default function EventComponent({
   event,
   onEventClick,
 }: Props): JSX.Element {
-  const tinycolor = require('tinycolor2')
   const tinyEventColor = tinycolor(event.background_color)
 
   return (
     <li
-      className={`w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-50 rounded-2xl text-xs overflow-hidden
+      className={`w-2 h-4 sm:w-full sm:h-fit px-2 py-0.5 z-30 rounded-2xl text-xs overflow-hidden
         ${
           tinycolor(event.background_color).isDark()
             ? 'text-white'

@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Logo from 'public/images/logo.webp'
 import { useEffect, useState } from 'react'
-
 import Loading from '@/components/tooltips/Loading'
 import { Button } from '@/components/ui/button'
 import { useAuthentication } from '@/providers/AuthenticationProvider'

@@ -1,6 +1,7 @@
 import { useTranslation } from '@/app/i18n/client'
 import { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
+import tinycolor from 'tinycolor2'
 
 interface Props {
   language: string
@@ -23,7 +24,6 @@ export default function EventPreview({
   currentColor,
   translations,
 }: Props): JSX.Element {
-  const tinycolor = require('tinycolor2')
   const { t } = useTranslation(language, 'bulletin')
 
   return (

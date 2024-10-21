@@ -88,10 +88,7 @@ export default function Calendar({
             events={events}
             currentMonth
             onEventClickCallback={onEventClickCallback}
-            onDateClickCallback={(date) => {
-              setSelectedDate(date)
-              onDateClickCallback(date)
-            }}
+            onDateClickCallback={(date) => onDateClickCallback(date)}
             key={index + previousMonthLastWeek.length}
           />
         ))}
@@ -101,10 +98,7 @@ export default function Calendar({
             events={events}
             currentMonth={false}
             onEventClickCallback={onEventClickCallback}
-            onDateClickCallback={(date) => {
-              setSelectedDate(date)
-              onDateClickCallback(date)
-            }}
+            onDateClickCallback={(date) => onDateClickCallback(date)}
             key={index + previousMonthLastWeek.length + totalDays}
           />
         ))}

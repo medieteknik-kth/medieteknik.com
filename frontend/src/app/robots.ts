@@ -12,11 +12,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['*/chapter/*', '*/documents/*'],
+        disallow: ['*/profile/*', '*/account/*', '*/manage/*', '*/admin/*'],
         crawlDelay: 2,
       },
     ],
     sitemap: 'https://www.medieteknik.com/sitemap.xml',
-    host: 'www.medieteknik.com',
+    host: 'https://www.medieteknik.com',
   };
 }
