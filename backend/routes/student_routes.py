@@ -247,18 +247,19 @@ def get_student_callback():
     ).all()
 
     for membership in student_memberships:
-        position = CommitteePosition.query.get(membership.committee_position_id)
-        if not position or not isinstance(position, CommitteePosition):
-            continue
+        position = CommitteePosition.query.get_or_404(membership.committee_position_id)
 
         if not position.committee_id:
             continue
 
-        committee = Committee.query.get(position.committee_id)
-        if not committee or not isinstance(committee, Committee):
+        committee: Committee = Committee.query.get_or_404(position.committee_id)
+
+        committee_dict = committee.to_dict(provided_languages=provided_languages)
+
+        if committee_dict in committees:
             continue
 
-        committees.append(committee.to_dict(provided_languages=provided_languages))
+        committees.append(committee_dict)
         committee_positions.append(
             position.to_dict(
                 provided_languages=provided_languages, is_public_route=False

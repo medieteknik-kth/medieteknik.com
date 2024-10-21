@@ -68,12 +68,14 @@ def create_media():
 
         current_year = date.today().strftime("%Y")
         current_month = date.today().strftime("%m")
+        file_extension = img.filename.split(".")[-1]
         result = upload_file(
             file=img,
             file_name=f"{img.filename}",
             path=f"media/{current_year}/{current_month}",
             timedelta=None,
             content_disposition="inline",
+            content_type=f"image/{file_extension}",
         )
 
         if not result:
