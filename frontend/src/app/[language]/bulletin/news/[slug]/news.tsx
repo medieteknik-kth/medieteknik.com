@@ -1,6 +1,7 @@
 import NewsAuth from '@/app/[language]/bulletin/news/[slug]/client/auth'
 import Body from '@/app/[language]/bulletin/news/[slug]/client/body'
 import { assignCorrectAuthor } from '@/app/[language]/bulletin/news/[slug]/util'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import { CommitteeTag } from '@/components/tags/CommitteeTag'
 import { StudentTag } from '@/components/tags/StudentTag'
@@ -45,7 +46,7 @@ export default function NewsDisplay({
 
   return (
     <>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <Breadcrumb className='w-full h-fit border-b px-4 py-2'>
         <BreadcrumbList>
           <BreadcrumbItem>

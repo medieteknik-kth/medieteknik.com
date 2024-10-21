@@ -1,11 +1,16 @@
 'use client'
+import HeaderGap from '@/components/header/components/HeaderGap'
+import Loading from '@/components/tooltips/Loading'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import CalendarProvider from '@/providers/CalendarProvider'
 import {
-  UserIcon,
+  CalendarIcon,
   DocumentDuplicateIcon,
   LifebuoyIcon,
   UserGroupIcon,
-  CalendarIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React, {
   ForwardRefExoticComponent,
   LazyExoticComponent,
@@ -14,11 +19,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Loading from '@/components/tooltips/Loading'
-import CalendarProvider from '@/providers/CalendarProvider'
 import Sidebar from './sidebar'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
 const AccountPage = React.lazy(() => import('./pages/accountPage'))
 const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
 const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
@@ -119,7 +120,7 @@ export default function Base({
 
   return (
     <main className='relative'>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <div className='w-full h-full relative'>
         <Sidebar
           accountPages={accountPages}

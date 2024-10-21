@@ -1,5 +1,6 @@
 import { GetNewsPagniation } from '@/api/items'
 import AllNews from '@/app/[language]/bulletin/news/client/allNews'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import { News } from '@/models/Items'
 
 interface Props {
@@ -35,7 +36,7 @@ export default async function NewsPage({
 
   return (
     <main className='grid place-items-center'>
-      <div className='h-24' />
+      <HeaderGap />
       <h1 className='text-4xl py-10'>News</h1>
       <AllNews language={language} data={data} />
     </main>

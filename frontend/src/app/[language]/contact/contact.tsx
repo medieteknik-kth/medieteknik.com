@@ -1,6 +1,7 @@
 import { useTranslation } from '@/app/i18n'
 import { SectionDescription, SectionDescriptionProps } from './utility/section'
 import { HeadComponent } from '@/components/static/Static'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Props {
   params: {
@@ -25,7 +26,7 @@ export default async function Contact({
   })
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} />
 
       <div className='w-full flex items-center flex-col py-10 text-black bg-white dark:bg-[#232323] dark:text-white'>

@@ -1,4 +1,5 @@
 {
+    "home": "Hem",
     "profile": "Profil",
     "login": "Logga In",
     "notifications": "Notifikationer",
@@ -12,19 +13,42 @@
             "link": "/chapter",
             "subNavs": [
                 {
+                    "icon": "https://storage.googleapis.com/medieteknik-static/committees/styrelsen.svg",
+                    "title": "Styrelsen",
+                    "description": "Sektionens högsta beslutande organ",
+                    "link": "/chapter/committees/styrelsen"
+                },
+                {
                     "title": "Om Sektionen",
+                    "description": "Information om sektionen",
                     "link": "/chapter"
-                }, 
+                },
                 {
                     "title": "Nämnder och Projekter",
                     "link": "/chapter/committees"
-                }, 
+                },
                 {
                     "title": "Dokument",
+                    "description": "Dokument och protokoll",
                     "link": "/chapter/documents"
                 },
                 {
+                    "title": "Jämnställdhet",
+                    "link": "/chapter/equality"
+                },
+                {
+                    "title": "Positioner",
+                    "description": "Funktionärsposter",
+                    "link": "/chapter/positions"
+                },
+                {
+                    "title": "Media",
+                    "description": "Sektionens media.",
+                    "link": "/chapter/media"
+                },
+                {
                     "title": "Grafisk Identitet",
+                    "description": "Sektionens grafiska identitet",
                     "link": "/chapter/graphic"
                 }
             ]
@@ -34,18 +58,7 @@
             "link": "/education"
         } 
     ],
-    "profileNavs": [
-        {
-            "title": "Profil",
-            "link": "/profile"
-        },
-        {
-            "title": "Konto Inställningar",
-            "link": "/account"
-        },
-        {
-            "title": "Logga Ut",
-            "link": "/logout"
-        }
-    ]
+    "account_settings": "Kontoinställningar",
+    "committees": "Dina nämnder",
+    "logout": "Logga ut"
 }

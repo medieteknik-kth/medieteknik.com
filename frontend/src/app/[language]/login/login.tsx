@@ -3,6 +3,7 @@ import { useTranslation } from '@/app/i18n'
 import Image from 'next/image'
 import Link from 'next/link'
 import LoginForm from './client/loginForm'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Props {
   language: string
@@ -27,7 +28,7 @@ export default async function Login({
 
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <div className='w-full h-[1080px] flex justify-center items-center dark:bg-[#111]'>
         <div className='w-full max-w-[1440px] h-3/4 flex flex-col items-center'>
           <Link href='/' title='Home' aria-label='Home'>

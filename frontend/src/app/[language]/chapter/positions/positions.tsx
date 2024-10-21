@@ -2,6 +2,7 @@ import { GetCommitteePositions } from '@/api/committee'
 import Search from '@/app/[language]/chapter/positions/client/search'
 import PositionDisplay from '@/app/[language]/chapter/positions/position'
 import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import {
   Accordion,
@@ -45,7 +46,7 @@ export default async function Positions({
 
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Search
         language={language}

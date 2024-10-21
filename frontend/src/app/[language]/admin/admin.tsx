@@ -1,4 +1,4 @@
-import { Head } from '@/components/static/Static'
+import { HeadComponent } from '@/components/static/Static'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Breadcrumb,
@@ -29,6 +29,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 export default function Admin({
   params: { language },
@@ -37,7 +38,7 @@ export default function Admin({
 }) {
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <Tabs
         defaultValue='dashboard'
         className='w-full flex h-fit px-2'

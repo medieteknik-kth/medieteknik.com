@@ -5,6 +5,7 @@ import BreakingNews from './client/breakingNews'
 import Events from './client/events'
 import ExtraNewsObserver from './client/extranewsObserver'
 import Recruitment from './recruiting'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 export const revalidate = 60 * 60 * 24 // 1 day
 
@@ -27,7 +28,7 @@ export default async function Bulletin({
 
   return (
     <main className='px-12 flex flex-col gap-2'>
-      <div className='h-24' />
+      <HeaderGap />
       <BreakingNews language={language} data={breakingNewsData} />
       <CalendarProvider language={language}>
         <Events language={language} />

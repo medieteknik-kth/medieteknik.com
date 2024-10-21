@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation'
 import FallbackImage from 'public/images/logo.webp'
 import CommitteeMembers from './members'
 //import ExploreMore from './client/explore'
+import ExploreMore from '@/app/[language]/chapter/committees/[committee]/client/explore'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import Link from 'next/link'
 import ManageButton from './client/manage'
 
@@ -86,7 +88,7 @@ export default async function Committee({
       <section
         className={`${
           hasGroupPhoto ? 'min-h-[1080px] h-screen' : 'h-fit'
-        } relative bg-[#EEE]`}
+        } relative bg-[#EEE] dark:bg-[#333]`}
       >
         {hasGroupPhoto ? (
           <Image
@@ -96,7 +98,7 @@ export default async function Committee({
             className='object-cover'
           />
         ) : (
-          <div className='w-full h-24 bg-black' />
+          <HeaderGap />
         )}
 
         <div
@@ -149,7 +151,7 @@ export default async function Committee({
         </div>
       </section>
       <CommitteeMembers language={language} committee={committee} />
-      {/*<ExploreMore language={language} committee={committee} />*/}
+      <ExploreMore language={language} committee={committee} />
     </main>
   )
 }

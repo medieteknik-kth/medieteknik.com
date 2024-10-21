@@ -5,6 +5,7 @@ import { DocumentManagementProvider } from '@/providers/DocumentProvider'
 import Toolbar from './toolbar'
 import Sidebar from './sidebar'
 import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Props {
   language: string
@@ -29,7 +30,7 @@ export default async function Documents({
 
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Tabs orientation='vertical' defaultValue={t('category.all')}>
         <DocumentManagementProvider language={language}>
