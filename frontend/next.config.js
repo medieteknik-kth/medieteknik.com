@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-
 module.exports = {
     productionBrowserSourceMaps: true,
     images: {
@@ -63,6 +62,9 @@ module.exports = {
     },
 
     webpack(config) {
+        config.infrastructureLogging = {
+            level: "error",
+        };
 
         const fileLoaderRule = config.module.rules.find((rule) =>
             rule.test?.test?.('.svg')
