@@ -1,11 +1,9 @@
 'use client'
-import {
-  NewspaperIcon,
-  CalendarDaysIcon,
-  DocumentDuplicateIcon,
-  ArrowTopRightOnSquareIcon,
-  UsersIcon,
-} from '@heroicons/react/24/outline'
+import DocumentUpload from '@/components/dialogs/DocumentUpload'
+import EventUpload from '@/components/dialogs/EventUpload'
+import MediaUpload from '@/components/dialogs/MediaUpload'
+import { NewsUpload } from '@/components/dialogs/NewsUpload'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -15,13 +13,17 @@ import {
 } from '@/components/ui/card'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
-import { NewsUpload } from '@/components/dialogs/NewsUpload'
 import Committee from '@/models/Committee'
-import EventUpload from '@/components/dialogs/EventUpload'
-import DocumentUpload from '@/components/dialogs/DocumentUpload'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import {
+  ArrowTopRightOnSquareIcon,
+  CalendarDaysIcon,
+  DocumentDuplicateIcon,
+  NewspaperIcon,
+  PhotoIcon,
+  UsersIcon,
+} from '@heroicons/react/24/outline'
+import { useEffect, useState } from 'react'
 
 /**
  * @name HomePage
@@ -46,6 +48,7 @@ export default function HomePage({
     total_news,
     total_documents,
     total_events,
+    total_media,
     setEventsTotal,
     setDocumentsTotal,
     isLoading: isLoadingCommittee,
@@ -134,6 +137,22 @@ export default function HomePage({
               )}
             </CardContent>
           </Card>
+          <Card className='w-64 relative'>
+            <CardHeader>
+              <CardTitle>Media</CardTitle>
+              <CardDescription>
+                <PhotoIcon className='absolute top-6 right-4 w-5 h-5 mr-2' />
+                Total Media
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <Skeleton className='w-32 h-8' />
+              ) : (
+                <p className='text-2xl'>{total_media}</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
         <div>
           <Card className='w-fit relative'>
@@ -182,6 +201,12 @@ export default function HomePage({
                   author={committee}
                   closeMenuCallback={() => handleOpenModal(2, false)}
                 />
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant={'outline'}>Upload Media</Button>
+                </DialogTrigger>
+                <MediaUpload language={language} author={committee} />
               </Dialog>
             </CardContent>
           </Card>

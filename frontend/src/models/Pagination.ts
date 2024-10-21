@@ -1,5 +1,5 @@
 import { Document } from './Document'
-import { Event, News } from './Items'
+import { Event, Media, News } from './Items'
 import Student, { StudentMembership } from './Student'
 
 interface Pagniation {
@@ -27,4 +27,8 @@ export interface EventPagniation extends Pagniation {
 
 export interface DocumentPagination extends Pagniation {
   items: Document[]
+}
+
+export interface MediaPagination extends Pagniation {
+  items: Media[]
 }

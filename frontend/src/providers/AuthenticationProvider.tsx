@@ -394,9 +394,18 @@ export function AuthenticationProvider({
               author_type: 'STUDENT',
             },
           })
+          const uniqueCommittees = Array.from(
+            new Set(json.committees.map((c) => c.committee_id))
+          ).map((id) => json.committees.find((c) => c.committee_id === id))
+
           dispatch({ type: 'SET_ROLE', payload: json.role })
           dispatch({ type: 'SET_PERMISSIONS', payload: json.permissions })
-          dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
+          dispatch({
+            type: 'SET_COMMITTEES',
+            payload: uniqueCommittees.filter(
+              (c): c is Committee => c !== undefined
+            ),
+          })
           dispatch({ type: 'SET_POSITIONS', payload: json.positions })
           dispatch({ type: 'LOGIN' })
         } else {

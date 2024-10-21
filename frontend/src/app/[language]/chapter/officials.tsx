@@ -20,7 +20,7 @@ export default async function Officials({
     position: CommitteePosition
     student: Student
     initiation_date: string
-    termination_date: string
+    termination_date?: string
   }[]
 }) {
   const categories: CommitteePositionCategory[] = [
@@ -61,6 +61,12 @@ export default async function Officials({
                     a.position.translations[0].title.localeCompare(
                       b.position.translations[0].title
                     )
+                  )
+                  .filter(
+                    (member) =>
+                      member.termination_date === null ||
+                      (member.termination_date &&
+                        new Date(member.termination_date) > new Date())
                   )
                   .sort((a, b) => a.position.weight - b.position.weight)
                   .map((member, index) => (
