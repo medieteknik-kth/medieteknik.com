@@ -22,6 +22,7 @@ interface CommitteeManagementState {
   total_news: number
   total_events: number
   total_documents: number
+  total_media: number
   error: string | null
   isLoading: boolean
 }
@@ -37,6 +38,7 @@ type CommitteeManagementAction =
   | { type: 'SET_NEWS_TOTAL'; payload: number }
   | { type: 'SET_EVENTS_TOTAL'; payload: number }
   | { type: 'SET_DOCUMENTS_TOTAL'; payload: number }
+  | { type: 'SET_MEDIA_TOTAL'; payload: number }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_LOADING'; payload: boolean }
 
@@ -54,6 +56,7 @@ const initialState: CommitteeManagementState = {
   total_news: 0,
   total_events: 0,
   total_documents: 0,
+  total_media: 0,
   error: null,
   isLoading: true,
 }
@@ -67,6 +70,7 @@ interface CommitteeManagementContextType extends CommitteeManagementState {
   setNewsTotal: (total: number) => void
   setEventsTotal: (total: number) => void
   setDocumentsTotal: (total: number) => void
+  setMediaTotal: (total: number) => void
 }
 
 const CommitteeManagementContext = createContext<
@@ -131,6 +135,11 @@ const committeeManagementReducer = (
         ...state,
         total_documents: action.payload,
       }
+    case 'SET_MEDIA_TOTAL':
+      return {
+        ...state,
+        total_media: action.payload,
+      }
     case 'SET_ERROR':
       return {
         ...state,
@@ -152,6 +161,7 @@ interface CommitteeDataResponse {
   total_news: number
   total_events: number
   total_documents: number
+  total_media: number
 }
 
 export function CommitteeManagementProvider({
@@ -200,6 +210,7 @@ export function CommitteeManagementProvider({
             type: 'SET_DOCUMENTS_TOTAL',
             payload: jsonData.total_documents,
           })
+          dispatch({ type: 'SET_MEDIA_TOTAL', payload: jsonData.total_media })
           dispatch({ type: 'SET_RECRUITMENTS', payload: jsonRecruitment })
         }
       } catch (error) {
@@ -232,6 +243,8 @@ export function CommitteeManagementProvider({
         dispatch({ type: 'SET_EVENTS_TOTAL', payload: total }),
       setDocumentsTotal: (total: number) =>
         dispatch({ type: 'SET_DOCUMENTS_TOTAL', payload: total }),
+      setMediaTotal: (total: number) =>
+        dispatch({ type: 'SET_MEDIA_TOTAL', payload: total }),
     }),
     [state]
   )

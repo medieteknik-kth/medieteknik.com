@@ -28,10 +28,15 @@ export type CommitteePositionCategory = 'STYRELSEN' | 'VALBEREDNINGEN' | 'UTBILD
  * @param {string} logo_url - Committee logo URL (optional)
  */
 export default interface Committee {
+  committee_id: string;
   author_type: 'COMMITTEE';
   email: string;
   group_photo_url?: string;
   logo_url: string;
+  total_documents: number;
+  total_events: number;
+  total_media: number;
+  total_news: number;
   hidden: boolean;
   translations: CommitteeTranslation[];
 }
