@@ -1,5 +1,8 @@
+'use client'
+
 import EventComponent from '@/components/calendar/components/eventDisplay'
 import { Event } from '@/models/Items'
+import { useCalendar } from '@/providers/CalendarProvider'
 import { isSameDay, isSameMonth } from 'date-fns'
 
 interface Props {
@@ -55,16 +58,26 @@ export default function DateComponent({
   onDateClickCallback,
 }: Props): JSX.Element {
   const currentDate = new Date()
+  const { selectedDate, setSelectedDate } = useCalendar()
 
   return (
     <li
       className={`w-full desktop:w-48 h-32 border-r relative cursor-pointer ${
         currentMonth
-          ? 'bg-white dark:bg-[#111] hover:bg-neutral-200/75 dark:hover:bg-neutral-700/75'
-          : 'bg-neutral-100 dark:bg-[#222] hover:bg-neutral-300/75 dark:hover:bg-neutral-700/75'
+          ? `${
+              isSameDay(selectedDate, date)
+                ? 'bg-yellow-400/25 hover:bg-yellow-400/40'
+                : 'bg-white dark:bg-[#111] hover:bg-neutral-200/75 dark:hover:bg-neutral-700/75'
+            } `
+          : `${
+              isSameDay(selectedDate, date)
+                ? 'bg-yellow-400/25 hover:bg-yellow-400/40'
+                : 'bg-neutral-100 dark:bg-[#222] hover:bg-neutral-300/75 dark:hover:bg-neutral-700/75'
+            }`
       }`}
       onClick={(event) => {
         event.stopPropagation()
+        setSelectedDate(date)
         onDateClickCallback(date)
       }}
     >

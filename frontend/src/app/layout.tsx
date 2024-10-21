@@ -1,6 +1,5 @@
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
-import { fontFigtree } from './fonts'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Metadata } from 'next'
 
 interface Props {
@@ -23,11 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
     <html suppressHydrationWarning>
-      <body
-        style={{
-          fontFamily: "'Figtree', sans-serif",
-        }}
-      >
+      <body>
         <SpeedInsights />
         <Analytics />
         {children}

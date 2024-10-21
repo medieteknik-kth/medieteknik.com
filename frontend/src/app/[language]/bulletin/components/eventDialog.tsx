@@ -10,6 +10,7 @@ import { Event } from '@/models/Items'
 import Student from '@/models/Student'
 import { ClockIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
+import tinycolor from 'tinycolor2'
 import DetailedEvent from './detailedEvent'
 import './event.css'
 
@@ -35,7 +36,6 @@ export default function EventDialog({
   event,
   index,
 }: Props): JSX.Element {
-  const tinycolor = require('tinycolor2')
   const [isEventOpen, setIsEventOpen] = useState<boolean[]>([false])
 
   return (

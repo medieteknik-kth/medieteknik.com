@@ -1,18 +1,17 @@
 'use client'
-import { useState, Dispatch, SetStateAction } from 'react'
+import { useTranslation } from '@/app/i18n/client'
+import { Switch } from '@/components/ui/switch'
 import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import {
-  PlusIcon,
-  MinusIcon,
-  XMarkIcon,
-  UserIcon,
   ComputerDesktopIcon,
+  MinusIcon,
+  PlusIcon,
+  UserIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { useTranslation } from '@/app/i18n/client'
-import Logo from '/public/images/logo.webp'
-import Link from 'next/link'
 import Image from 'next/image'
-import { Switch } from '@/components/ui/switch'
+import Link from 'next/link'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from '../ui/button'
 
 interface AvailableCookieSettings {
@@ -71,8 +70,8 @@ export default function DetailedCookiePopup({
   const availableCookies: string[] = Object.values(CookieConsent)
 
   return (
-    <div className='w-full lg:w-1/2 2xl:w-1/4 h-[800px] fixed top-20 rounded-3xl overflow-hidden bg-white dark:bg-[#111]'>
-      <div className='w-full flex items-center pt-4 mb-4 pl-8'>
+    <div className='w-full lg:w-[750px] 2xl:w-[1000px] h-[800px] fixed top-28 rounded-3xl overflow-hidden bg-white dark:bg-[#111]'>
+      <div className='w-full flex items-center justify-center pt-4 mb-4 relative'>
         <Image
           src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
           alt='Company Logo'
@@ -88,9 +87,11 @@ export default function DetailedCookiePopup({
           className='h-20 object-contain hidden dark:block'
         />
 
-        <button
-          className='w-8 h-8 ml-auto mr-8'
+        <Button
+          className='absolute right-8'
           title='Close'
+          variant={'ghost'}
+          size={'icon'}
           onClick={() => {
             saveCookieSettings({
               NECESSARY: true,
@@ -102,7 +103,7 @@ export default function DetailedCookiePopup({
           }}
         >
           <XMarkIcon className='w-8 h-8 ' />
-        </button>
+        </Button>
       </div>
       <h1 className='text-center text-2xl px-8 py-4'>
         Medieteknik asks for your consent to use your personal data to:

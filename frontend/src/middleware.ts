@@ -1,11 +1,10 @@
-import { NextResponse } from 'next/server';
 import acceptLanguage from 'accept-language';
-import { fallbackLanguage, supportedLanguages, cookieName } from './app/i18n/settings';
-import { NextRequest } from 'next/server';
-import { getCookies } from 'next-client-cookies/server';
 import { Cookies } from 'next-client-cookies';
-import { CookieConsent, ServerCookieConsent  } from './utility/CookieManager';
+import { getCookies } from 'next-client-cookies/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { cookieName, fallbackLanguage, supportedLanguages } from './app/i18n/settings';
 import { LanguageCode } from './models/Language';
+import { CookieConsent, ServerCookieConsent } from './utility/CookieManager';
 
 acceptLanguage.languages(supportedLanguages);
 

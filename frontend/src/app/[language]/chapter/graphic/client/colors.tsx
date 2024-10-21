@@ -3,7 +3,8 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
+import tinycolor from 'tinycolor2'
 
 /**
  * @interface Props
@@ -24,7 +25,6 @@ interface Props {
 export default function Colors({ language }: Props): JSX.Element {
   const [mac, setMac] = useState(false)
   const { toast } = useToast()
-  const tinycolor = require('tinycolor2')
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { t } = useTranslation(language, 'graphic')
   const allColors = [
