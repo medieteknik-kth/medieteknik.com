@@ -21,6 +21,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Content from './content'
 import EditCommittee from './edit'
 import Committee from '@/models/Committee'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Props {
   language: string
@@ -35,7 +36,7 @@ export default function CommitteeLandingPage({
 }: Props) {
   return (
     <>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <Breadcrumb className='w-full h-fit border-b px-4 py-2'>
         <BreadcrumbList>
           <BreadcrumbItem>

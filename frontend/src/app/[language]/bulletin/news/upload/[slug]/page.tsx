@@ -15,6 +15,7 @@ import React from 'react'
 import useSWR from 'swr'
 import { AutoSaveProvdier } from './autoSave'
 import CommandBar from './commandBar'
+import HeaderGap from '@/components/header/components/HeaderGap'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))
@@ -72,7 +73,7 @@ export default function UploadNews({
 
   return (
     <main className='relative'>
-      <div className='h-24' />
+      <HeaderGap />
       <AutoSaveProvdier slug={slug} news_item={data} language_code={language}>
         <CommandBar language={language} slug={slug} />
         <div className='h-[1500px] flex relative z-10'>

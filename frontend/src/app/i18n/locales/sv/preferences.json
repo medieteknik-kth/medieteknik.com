@@ -1,5 +1,6 @@
 {
     "title": "Inställningar",
+    "description": "Ändra tema, språk och integritetsinställningar här.",
     "language": "Språk",
     "privacy": "Integritet",
     "cookie_settings": "Kakinställningar",

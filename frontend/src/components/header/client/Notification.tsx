@@ -1,5 +1,8 @@
 'use client'
-import { BellIcon, Cog8ToothIcon } from '@heroicons/react/24/outline'
+
+import { useTranslation } from '@/app/i18n/client'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -13,27 +16,26 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import Logo from 'public/images/logo.webp'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
+import { BellIcon, Cog8ToothIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { useTranslation } from '@/app/i18n/client'
+import Logo from 'public/images/logo.webp'
+
+interface Props {
+  language: string
+}
 
 /**
- * NotificationMenu
+ * @name NotificationMenu
  * @description Renderes a dropdown menu with notifications for logged in users
  *
  * @param {string} language - The current language of the page
  * @returns {JSX.Element} The dropdown menu
  */
-export default function NotificationMenu({
-  language,
-}: {
-  language: string
-}): JSX.Element {
+export default function NotificationMenu({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'header')
   const notifications: number = 0
+
   return (
     <div className='w-20 z-10'>
       <DropdownMenu modal={false}>

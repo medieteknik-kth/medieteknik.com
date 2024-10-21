@@ -8,6 +8,7 @@ import {
   GetCommitteeCategoryCommittees,
 } from '@/api/committee'
 import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface CommitteeCategoryWithCommittees extends CommitteeCategory {
   committees: Committee[]
@@ -27,7 +28,7 @@ export default async function CommitteeList({
   if (!committeeCategories) {
     return (
       <main>
-        <div className='h-24 bg-black' />
+        <HeaderGap />
         <HeadComponent title='Committees' />
         <h2 className='text-center text-2xl my-8'>No committees found</h2>
         <p className='text-center my-4'>
@@ -60,7 +61,7 @@ export default async function CommitteeList({
 
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} />
 
       <div className='w-fit flex flex-col gap-10 py-10 sm:px-16 xl:px-52 desktop:px-96 dark:bg-[#111]'>

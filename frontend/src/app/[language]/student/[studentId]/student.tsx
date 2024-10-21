@@ -17,6 +17,7 @@ import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
 import React from 'react'
 import EditProfile from './client/editButton'
+import HeaderGap from '@/components/header/components/HeaderGap'
 const StudentPositions = React.lazy(() => import('./positionsTab'))
 const StudentNews = React.lazy(() => import('./newsTab'))
 const StudentEvents = React.lazy(() => import('./eventTab'))
@@ -60,7 +61,7 @@ export default async function StudentPage({
 
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <section
         id='details'
         className='h-96 bg-[#EEE] dark:bg-[#222] border-b-4 border-yellow-400 relative flex items-center justify-between px-44'

@@ -1,0 +1,3 @@
+.content {
+  grid-template-columns: repeat(auto-fill, minmax(192px, auto));
+}

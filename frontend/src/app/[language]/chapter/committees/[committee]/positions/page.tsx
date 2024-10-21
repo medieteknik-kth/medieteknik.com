@@ -1,3 +1,4 @@
+import HeaderGap from '@/components/header/components/HeaderGap';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,7 +15,7 @@ export default function CommitteePositions({
 }) {
   return (
     <main className='relative'>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <Breadcrumb className='w-fit h-fit absolute top-28 left-4'>
         <BreadcrumbList>
           <BreadcrumbItem>

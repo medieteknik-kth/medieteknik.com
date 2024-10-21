@@ -1,5 +1,6 @@
 {
     "title": "Preferences",
+    "description": "Change theme, language and privacy settings here.",
     "language": "Language",
     "privacy": "Privacy",
     "cookie_settings": "Cookie Settings",

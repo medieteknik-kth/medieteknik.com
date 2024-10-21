@@ -11,11 +11,12 @@ import {
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import CookieSection from './cookie'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 export default function Privacy() {
   return (
     <main className='pb-4'>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title='Legal' />
       <section id='policy' className='px-10 md:px-40 desktop:px-[500px]'>
         <h1 className='text-3xl tracking-wider py-4'>Privacy Policy</h1>

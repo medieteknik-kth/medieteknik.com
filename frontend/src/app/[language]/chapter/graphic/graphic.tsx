@@ -4,6 +4,7 @@ import Typography from './typography'
 import Iconography from './iconography'
 import Documents from './documents'
 import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 /**
  * @interface Props
@@ -35,7 +36,7 @@ export default async function GraphicalIdentity({
   const { t } = await useTranslation(language, 'graphic')
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Documents language={language} />
       <Iconography language={language} />

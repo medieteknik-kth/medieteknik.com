@@ -1,23 +1,24 @@
 'use client'
+
+import { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useState } from 'react'
-import { HeaderElement } from '../Header'
+
+interface Props {
+  element: HeaderElement
+}
 
 /**
- * SubMenu
+ * @name SubMenu
  * @description Renders a sub menu for navigation elements with sub elements
  *
  * @param {HeaderElement} element - The element to render
  * @returns {JSX.Element} The rendered sub menu
  * @throws {Error} If the element does not have subNavs
  */
-export default function SubMenu({
-  element,
-}: {
-  element: HeaderElement
-}): JSX.Element {
+export default function SubMenu({ element }: Props): JSX.Element {
   if (!element.subNavs) {
     throw new Error('Element must have subNavs')
   }
@@ -45,21 +46,18 @@ export default function SubMenu({
         />
       </Button>
       <nav
-        className={`w-full h-full bg-accent rounded-b-md flex flex-col gap-2 pb-2 ${
+        className={`w-full h-full bg-accent rounded-b-md flex flex-col gap-2 pb-4 ${
           isOpen ? 'block' : 'hidden'
         } `}
       >
         {element.subNavs.map((subNav) => (
           <div key={subNav.title}>
             <Button
-              variant={'ghost'}
+              variant={'outline'}
               className='w-10/12 h-full uppercase flex justify-start items-center ml-4 py-4 bg-neutral-50 dark:bg-neutral-900'
+              asChild
             >
-              <Link
-                key={subNav.title}
-                href={subNav.link}
-                className='w-full h-fit text-start text-xs xxs:text-sm'
-              >
+              <Link key={subNav.title} href={subNav.link}>
                 {subNav.title}
               </Link>
             </Button>

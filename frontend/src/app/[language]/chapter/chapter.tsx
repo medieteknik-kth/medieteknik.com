@@ -5,6 +5,7 @@ import { GetCommitteeMembers } from '@/api/student'
 import { Separator } from '@/components/ui/separator'
 import { useTranslation } from '@/app/i18n'
 import Officials from './officials'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 export default async function Chapter({
   params: { language },
@@ -30,7 +31,7 @@ export default async function Chapter({
         scrollMarginTop: '-20rem !important',
       }}
     >
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} description={t('description')} />
 
       <Committees language={language} committees={data} />

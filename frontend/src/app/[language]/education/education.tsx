@@ -11,6 +11,7 @@ import {
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Props {
   params: {
@@ -32,7 +33,7 @@ export default async function Education({
   const { t } = await useTranslation(language, 'education')
   return (
     <main>
-      <div className='h-24 bg-black' />
+      <HeaderGap />
       <HeadComponent title={t('title')} description={t('description')}>
         <div className='absolute left-20 bottom-4 flex gap-8'>
           <Button

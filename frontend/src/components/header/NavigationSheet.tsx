@@ -1,3 +1,4 @@
+import { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -8,11 +9,10 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Bars3CenterLeftIcon } from '@heroicons/react/24/outline'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { Root } from '@radix-ui/react-visually-hidden'
 import Image from 'next/image'
 import Link from 'next/link'
 import SubMenu from './client/SubMenu'
-import { HeaderElement } from './Header'
 
 interface Props {
   language: string
@@ -20,7 +20,7 @@ interface Props {
 }
 
 /**
- * NavigationMenu
+ * @name NavigationMenu
  * @description Renders the navigation menu for smaller screens < 1024px
  *
  * @param {Props} props - The component props.
@@ -28,10 +28,11 @@ interface Props {
  * @param {HeaderElement[]} props.headerElements - The elements in the header.
  * @returns {JSX.Element} The rendered navigation menu.
  */
-export default function NavigationMenu({
+export default function NavigationSheet({
   language,
   headerElements,
 }: Props): JSX.Element {
+  // TODO: Close the navigation menu when a link is clicked
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -39,14 +40,14 @@ export default function NavigationMenu({
           variant={'ghost'}
           className='w-fit h-full lg:hidden rounded-none'
         >
-          <Bars3CenterLeftIcon className='w-10 h-10' />
+          <Bars3CenterLeftIcon className='w-7 h-7' />
         </Button>
       </SheetTrigger>
       <SheetContent side={'left'} className='overflow-y-auto dark:bg-[#111]'>
         <SheetHeader>
-          <VisuallyHidden.Root asChild>
+          <Root asChild>
             <SheetTitle>Navigation Menu</SheetTitle>
-          </VisuallyHidden.Root>
+          </Root>
           <Image
             src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
             alt='logo'

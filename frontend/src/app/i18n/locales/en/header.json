@@ -1,4 +1,5 @@
 {
+    "home": "Home",
     "profile": "Profile",
     "login": "Login",
     "notifications": "Notifications",
@@ -12,16 +13,38 @@
             "link": "/chapter",
             "subNavs": [
                 {
-                    "title": "About the Chapter",
-                    "link": "/chapter"
-                }, 
+                    "icon": "https://storage.googleapis.com/medieteknik-static/committees/styrelsen.svg",
+                    "title": "Styrelsen",
+                    "description": "The chapter's highest decision-making body",
+                    "link": "/chapter/committees/styrelsen"
+                },
                 {
-                    "title": "Committees",
+                    "title": "About the Chapter",
+                    "description": "Information about the chapter",
+                    "link": "/chapter"
+                },
+                {
+                    "title": "Committees and Projects",
                     "link": "/chapter/committees"
-                }, 
+                },
                 {
                     "title": "Documents",
+                    "description": "Documents and protocols",
                     "link": "/chapter/documents"
+                },
+                {
+                    "title": "Equality",
+                    "link": "/chapter/equality"
+                },
+                {
+                    "title": "Positions",
+                    "description": "Official positions",
+                    "link": "/chapter/positions"
+                },
+                {
+                    "title": "Media",
+                    "description": "Images and videos",
+                    "link": "/chapter/media"
                 },
                 {
                     "title": "Graphical Identity",
@@ -34,18 +57,7 @@
             "link": "/education"
         }
     ],
-    "profileNavs": [
-        {
-            "title": "Profile",
-            "link": "/profile"
-        },
-        {
-            "title": "Account Settings",
-            "link": "/account"
-        },
-        {
-            "title": "Logout",
-            "link": "/logout"
-        }
-    ]
+    "account_settings": "Account settings",
+    "committees": "Your committees",
+    "logout": "Logout"
 }
