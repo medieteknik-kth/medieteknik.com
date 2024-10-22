@@ -14,6 +14,8 @@ import { fontFigtree } from '../fonts'
 import { supportedLanguages } from '../i18n/settings'
 import './globals.css'
 
+import type { JSX } from 'react'
+
 /**
  * @name generateStaticParams
  * @description Generates the static paths for each language ({@link LanguageCode})
@@ -52,7 +54,7 @@ interface Params {
 
 interface Props {
   children: React.ReactNode
-  params: Params
+  params: Promise<Params>
 }
 
 /**
@@ -66,8 +68,11 @@ interface Props {
  *
  * @returns {JSX.Element} The root layout component
  */
-export default function RootLayout({ children, params }: Props): JSX.Element {
-  children
+export default async function RootLayout(props: Props): Promise<JSX.Element> {
+  const params = await props.params
+
+  const { children } = props
+
   return (
     <>
       <ServerProviders>
@@ -75,7 +80,7 @@ export default function RootLayout({ children, params }: Props): JSX.Element {
           <Header language={params.language} />
           <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>
           <Footer language={params.language} />
-          <CookiePopup params={params} />
+          <CookiePopup language={params.language} />
           <Toaster />
         </ClientProviders>
       </ServerProviders>

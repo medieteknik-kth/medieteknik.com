@@ -14,7 +14,7 @@ import { DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
 import { TFunction } from 'next-i18next'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
-import { KeyboardEvent, MouseEvent, useCallback } from 'react'
+import { KeyboardEvent, MouseEvent, useCallback, type JSX } from 'react';
 
 interface Props {
   language: string

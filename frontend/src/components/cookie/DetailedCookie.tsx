@@ -1,7 +1,12 @@
 'use client'
 import { useTranslation } from '@/app/i18n/client'
 import { Switch } from '@/components/ui/switch'
-import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
+import {
+  COOKIE_CONSENT_STORAGE_KEY,
+  CookieConsent,
+  CookieSettings,
+  DEFAULT_COOKIE_SETTINGS,
+} from '@/utility/CookieManager'
 import {
   ComputerDesktopIcon,
   MinusIcon,
@@ -13,15 +18,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from '../ui/button'
-
-interface AvailableCookieSettings {
-  NECESSARY: boolean
-  FUNCTIONAL: boolean
-  ANALYTICS: boolean
-  PERFORMANCE: boolean
-  ADVERTISING: boolean
-}
-
 export default function DetailedCookiePopup({
   params: { language, popup },
 }: {
@@ -30,12 +26,8 @@ export default function DetailedCookiePopup({
   const cookieTranslation = useTranslation(language, 'cookies').t
   const commonTranslation = useTranslation(language, 'common').t
 
-  const previousCookies = new ClientCookieConsent(
-    window
-  ).retrieveCookieSettings()
-
   const [sliders, setSliders] = useState({
-    ...previousCookies,
+    ...DEFAULT_COOKIE_SETTINGS,
   })
 
   const [dropdowns, setDropdowns] = useState({
@@ -47,9 +39,9 @@ export default function DetailedCookiePopup({
   })
 
   const updateSlider = (sliderName: CookieConsent, value: boolean) => {
-    if (sliderName === 'NECESSARY') return
     setSliders((prev) => ({
       ...prev,
+      NECESSARY: true,
       [sliderName]: value,
     }))
   }
@@ -61,10 +53,12 @@ export default function DetailedCookiePopup({
     }))
   }
 
-  function saveCookieSettings(newSettings: AvailableCookieSettings) {
+  async function saveCookieSettings(newSettings: CookieSettings) {
     popup(false)
-    const clientCookies = new ClientCookieConsent(window)
-    clientCookies.updateCookieSettings(newSettings)
+    window.localStorage.setItem(
+      COOKIE_CONSENT_STORAGE_KEY,
+      JSON.stringify(newSettings)
+    )
   }
 
   const availableCookies: string[] = Object.values(CookieConsent)
@@ -151,7 +145,6 @@ export default function DetailedCookiePopup({
                   ADVERTISING: sliders.ADVERTISING || false,
                   NECESSARY: sliders.NECESSARY || true,
                 })
-                return sliders
               }}
             >
               {cookieTranslation('btn_save')}
@@ -159,18 +152,15 @@ export default function DetailedCookiePopup({
             <Button
               className='w-1/2'
               onClick={() => {
-                setSliders((prev) => {
-                  const updatedSliders = {
-                    ...prev,
-                    FUNCTIONAL: true,
-                    ANALYTICS: true,
-                    PERFORMANCE: true,
-                    ADVERTISING: true,
-                    NECESSARY: true,
-                  }
-                  saveCookieSettings(updatedSliders)
-                  return updatedSliders
-                })
+                const updatedSliders = {
+                  FUNCTIONAL: true,
+                  ANALYTICS: true,
+                  PERFORMANCE: true,
+                  ADVERTISING: true,
+                  NECESSARY: true,
+                }
+                setSliders(updatedSliders)
+                saveCookieSettings(updatedSliders)
               }}
             >
               {cookieTranslation('btn_acceptAll')}

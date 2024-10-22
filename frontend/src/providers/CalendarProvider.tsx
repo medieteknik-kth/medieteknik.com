@@ -8,7 +8,8 @@ import {
   useMemo,
   useReducer,
   useRef,
-} from 'react'
+  type JSX,
+} from 'react';
 
 interface CalendarState {
   date: Date

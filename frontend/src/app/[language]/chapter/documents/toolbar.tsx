@@ -5,6 +5,8 @@ import CategorySelect from './toolbar/categorySelect'
 import StatusSelect from './toolbar/client/statusSelect'
 import SidebarAuth from './sidebar/client/sidebarAuth'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
 }

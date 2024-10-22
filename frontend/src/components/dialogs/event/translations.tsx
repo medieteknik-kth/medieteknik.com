@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { TFunction } from 'next-i18next'
 
+import type { JSX } from "react";
+
 interface Props {
   index: number
   language: string

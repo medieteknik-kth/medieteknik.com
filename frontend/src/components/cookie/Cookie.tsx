@@ -1,41 +1,43 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { ClientCookieConsent } from '@/utility/CookieManager'
+
 import { useTranslation } from '@/app/i18n/client'
+import {
+  COOKIE_CONSENT_STORAGE_KEY,
+  DEFAULT_COOKIE_SETTINGS,
+} from '@/utility/CookieManager'
+import { useEffect, useState } from 'react'
 import DetailedCookiePopup from './DetailedCookie'
 
-export default function CookiePopup({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+export default function CookiePopup({ language }: { language: string }) {
   const { t } = useTranslation(language, 'cookies')
-  let clientCookies = undefined
+
   const [showPopup, setShowPopup] = useState(false)
   const [showDetailedPopup, setShowDetailedPopup] = useState(false)
 
-  function saveSettings(allowedAll: boolean = false) {
-    clientCookies = new ClientCookieConsent(window)
-
+  async function saveSettings(allowedAll: boolean = false) {
     if (!allowedAll) {
-      clientCookies.updateCookieSettings(clientCookies.getDefaultSettings())
-      return
+      window.localStorage.setItem(
+        COOKIE_CONSENT_STORAGE_KEY,
+        JSON.stringify(DEFAULT_COOKIE_SETTINGS)
+      )
     }
 
-    clientCookies.updateCookieSettings({
+    const settings = {
       NECESSARY: true,
       FUNCTIONAL: true,
       ANALYTICS: true,
       PERFORMANCE: true,
       ADVERTISING: true,
-    })
+    }
+    window.localStorage.setItem(
+      COOKIE_CONSENT_STORAGE_KEY,
+      JSON.stringify(settings)
+    )
   }
 
   useEffect(() => {
-    const clientCookies = new ClientCookieConsent(window)
-    const cookieSettings = clientCookies.retrieveCookieSettings()
-    if (cookieSettings) return
-    setShowPopup(true)
+    window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY) === null &&
+      setShowPopup(true)
   }, [setShowPopup])
 
   if (!showPopup) return <></>

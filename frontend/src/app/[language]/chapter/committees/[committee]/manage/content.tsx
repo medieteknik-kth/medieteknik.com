@@ -3,7 +3,7 @@ import Loading from '@/components/tooltips/Loading'
 import { TabsContent } from '@/components/ui/tabs'
 import Committee from '@/models/Committee'
 import { CommitteeManagementProvider } from '@/providers/CommitteeManagementProvider'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, type JSX } from 'react';
 const HomePage = lazy(() => import('./pages/home'))
 const MembersPage = lazy(() => import('./pages/members'))
 const NewsPage = lazy(() => import('./pages/news'))

@@ -15,6 +15,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
   newsItem: News

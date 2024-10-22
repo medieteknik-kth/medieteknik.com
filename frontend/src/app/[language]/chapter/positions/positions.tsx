@@ -1,6 +1,6 @@
 import { GetCommitteePositions } from '@/api/committee'
 import Search from '@/app/[language]/chapter/positions/client/search'
-import PositionDisplay from '@/app/[language]/chapter/positions/position'
+import PositionDisplay from '@/app/[language]/chapter/positions/positionDisplay'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
@@ -11,12 +11,14 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-interface Props {
+import type { JSX } from 'react'
+
+interface Params {
   language: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 export const revalidate = 2_592_000
@@ -30,9 +32,8 @@ export const revalidate = 2_592_000
  *
  * @returns {Promise<JSX.Element>} The positions page
  */
-export default async function Positions({
-  params: { language },
-}: Params): Promise<JSX.Element> {
+export default async function Positions(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
   const committeePositions = await GetCommitteePositions('committee', language)
   const independentPositions = await GetCommitteePositions(
     'independent',

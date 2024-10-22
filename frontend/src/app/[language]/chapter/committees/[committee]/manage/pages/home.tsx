@@ -23,7 +23,7 @@ import {
   PhotoIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react';
 
 /**
  * @name HomePage

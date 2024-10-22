@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
@@ -31,13 +32,14 @@ import {
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Author } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { mediaUploadSchema } from '@/schemas/items/media'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -189,7 +191,8 @@ export default function MediaUpload({ language, author }: Props) {
         </DialogDescription>
       </DialogHeader>
       <Tabs defaultValue={language}>
-        <TabsList>
+        <Label>Language</Label>
+        <TabsList className='overflow-x-auto h-fit w-full justify-start'>
           {supportedLanguages.map((language) => (
             <TabsTrigger
               key={language}
@@ -197,7 +200,9 @@ export default function MediaUpload({ language, author }: Props) {
               className='w-fit'
               title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${LANGUAGES[language].flag}`} />
+              <span className='w-6 h-6'>
+                {LANGUAGES[language as LanguageCode].flag_icon}
+              </span>
             </TabsTrigger>
           ))}
         </TabsList>

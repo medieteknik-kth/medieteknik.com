@@ -3,6 +3,8 @@ import { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import tinycolor from 'tinycolor2'
 
+import type { JSX } from 'react'
+
 interface Props {
   language: string
   currentColor: string
@@ -64,11 +66,9 @@ export default function EventPreview({
               }}
             >
               <div className='w-2 absolute -left-6'>
-                <span
-                  className={`fi fi-${
-                    LANGUAGES[translation.language_code as LanguageCode].flag
-                  } mr-1`}
-                />
+                <span className='w-6 h-6 ml-1'>
+                  {LANGUAGES[language as LanguageCode].flag_icon}
+                </span>
               </div>
               <p className='truncate'>{translation.title}</p>
             </div>

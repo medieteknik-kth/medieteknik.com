@@ -7,6 +7,8 @@ import {
 import { Button } from '@components/ui/button'
 import { CommitteePosition } from '@/models/Committee'
 
+import type { JSX } from "react";
+
 interface CommitteePositionTagProps {
   committeePosition: CommitteePosition
   includeImage?: boolean

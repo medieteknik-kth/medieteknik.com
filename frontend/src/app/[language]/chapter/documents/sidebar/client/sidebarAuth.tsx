@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { useState } from 'react'
+import { useState, type JSX } from 'react';
 
 interface Props {
   language: string

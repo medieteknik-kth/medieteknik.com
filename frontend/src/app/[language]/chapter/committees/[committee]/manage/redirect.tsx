@@ -4,7 +4,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import CommitteeManage from './manage'
 import Loading from '@/components/tooltips/Loading'
 import { Permission, Role } from '@/models/Permission'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react';
 import { useRouter } from 'next/navigation'
 import Committee from '@/models/Committee'
 import CommitteeLandingPage from './landing'

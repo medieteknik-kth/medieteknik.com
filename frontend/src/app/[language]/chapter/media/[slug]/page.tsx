@@ -7,10 +7,8 @@ interface Params {
   language: string
 }
 
-export async function generateMetadata(
-  { params }: { params: Params },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<Params> }, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const { t } = await useTranslation(params.language, 'media')
   const value = t('title')
   const slug = decodeURI(params.slug)

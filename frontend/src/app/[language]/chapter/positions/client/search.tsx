@@ -1,12 +1,12 @@
 'use client'
 
-import PositionDisplay from '@/app/[language]/chapter/positions/position'
+import PositionDisplay from '@/app/[language]/chapter/positions/positionDisplay'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CommitteePosition } from '@/models/Committee'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useState, type JSX } from 'react'
 
 interface Props {
   language: string

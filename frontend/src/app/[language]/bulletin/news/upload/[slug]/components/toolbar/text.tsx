@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/popover'
 import { useArticle } from '@/providers/ArticleProvider'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, type JSX } from 'react';
 import { Editor, Transforms } from 'slate'
 import { ElementType, textTypes } from '../../util/Text'
 

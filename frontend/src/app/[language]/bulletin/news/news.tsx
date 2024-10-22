@@ -3,12 +3,14 @@ import AllNews from '@/app/[language]/bulletin/news/client/allNews'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { News } from '@/models/Items'
 
-interface Props {
+import type { JSX } from 'react'
+
+interface Params {
   language: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 export const revalidate = 43_200 // 12 hours
@@ -22,10 +24,10 @@ export const revalidate = 43_200 // 12 hours
  *
  * @returns {JSX.Element} The news page
  */
-export default async function NewsPage({
-  params: { language },
-}: Params): Promise<JSX.Element> {
+export default async function NewsPage(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
   const data = await GetNewsPagniation(language, 1)
+  
   if (!data) {
     return (
       <div className='h-96 grid place-items-center text-3xl'>No data...</div>

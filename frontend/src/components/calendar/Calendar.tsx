@@ -3,7 +3,7 @@ import { Event } from '@/models/Items'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { LANGUAGES } from '@/utility/Constants'
 import { addMonths, getDaysInMonth, setDate } from 'date-fns'
-import { useMemo } from 'react'
+import { useMemo, type JSX } from 'react';
 import './calendar.css'
 import { getPreviousMonthLastWeekToCurrent } from './util'
 

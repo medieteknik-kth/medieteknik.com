@@ -1,4 +1,5 @@
 import { GetStudentPublic } from '@/api/student'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -15,9 +16,8 @@ import Logo from 'public/images/logo.webp'
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
-import React from 'react'
+import React, { type JSX } from 'react'
 import EditProfile from './client/editButton'
-import HeaderGap from '@/components/header/components/HeaderGap'
 const StudentPositions = React.lazy(() => import('./positionsTab'))
 const StudentNews = React.lazy(() => import('./newsTab'))
 const StudentEvents = React.lazy(() => import('./eventTab'))
@@ -50,11 +50,17 @@ function SocialMediaDisplay({
   )
 }
 
-export default async function StudentPage({
-  params: { language, studentId },
-}: {
-  params: { language: string; studentId: string }
-}) {
+interface Params {
+  language: string
+  studentId: string
+}
+
+interface Props {
+  params: Promise<Params>
+}
+
+export default async function StudentPage(props: Props) {
+  const { language, studentId } = await props.params
   const data = await GetStudentPublic(studentId, language, true)
   // TODO: Fix data return type
   if (!data) return <></>

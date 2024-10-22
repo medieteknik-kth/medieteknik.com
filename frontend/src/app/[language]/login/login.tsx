@@ -1,16 +1,18 @@
 import AlternativeLogin from '@/app/[language]/login/client/alternative'
 import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import Image from 'next/image'
 import Link from 'next/link'
 import LoginForm from './client/loginForm'
-import HeaderGap from '@/components/header/components/HeaderGap'
 
-interface Props {
+import type { JSX } from 'react'
+
+interface Params {
   language: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 /**
@@ -21,9 +23,8 @@ interface Params {
  * @param {string} params.language - The language code
  * @returns {Promise<JSX.Element>} The login page
  */
-export default async function Login({
-  params: { language },
-}: Params): Promise<JSX.Element> {
+export default async function Login(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
   const { t } = await useTranslation(language, 'login')
 
   return (

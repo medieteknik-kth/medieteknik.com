@@ -8,11 +8,18 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 
-export default function CommitteePositions({
-  params: { language, committee },
-}: {
-  params: { language: string; committee: string }
-}) {
+export default async function CommitteePositions(
+  props: {
+    params: Promise<{ language: string; committee: string }>
+  }
+) {
+  const params = await props.params;
+
+  const {
+    language,
+    committee
+  } = params;
+
   return (
     <main className='relative'>
       <HeaderGap />

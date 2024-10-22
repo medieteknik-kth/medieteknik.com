@@ -1,16 +1,18 @@
-import { HeadComponent } from '@/components/static/Static'
-import Colors from './client/colors'
-import Typography from './typography'
-import Iconography from './iconography'
-import Documents from './documents'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import { HeadComponent } from '@/components/static/Static'
+import Colors from './client/colors'
+import Documents from './documents'
+import Iconography from './iconography'
+import Typography from './typography'
+
+import type { JSX } from 'react'
 
 /**
  * @interface Props
  * @property {string} language - The currently selected language
  */
-interface Props {
+interface Params {
   language: string
 }
 
@@ -18,8 +20,8 @@ interface Props {
  * @interface Params
  * @property {Props} params - The dynamic parameters of the URL
  */
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 /**
@@ -30,9 +32,10 @@ interface Params {
  * @param {string} params.language - The currently selected language
  * @returns {Promise<JSX.Element>} The graphical identity of the chapter
  */
-export default async function GraphicalIdentity({
-  params: { language },
-}: Params): Promise<JSX.Element> {
+export default async function GraphicalIdentity(
+  props: Props
+): Promise<JSX.Element> {
+  const { language } = await props.params
   const { t } = await useTranslation(language, 'graphic')
   return (
     <main>

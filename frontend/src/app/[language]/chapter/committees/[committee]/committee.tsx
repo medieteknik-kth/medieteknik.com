@@ -10,6 +10,8 @@ import HeaderGap from '@/components/header/components/HeaderGap'
 import Link from 'next/link'
 import ManageButton from './client/manage'
 
+import type { JSX } from 'react'
+
 export const revalidate = 60 * 60 * 24 * 30
 
 interface Params {
@@ -18,7 +20,7 @@ interface Params {
 }
 
 interface Props {
-  params: Params
+  params: Promise<Params>
 }
 
 /**
@@ -55,7 +57,7 @@ export async function generateStaticParams(): Promise<
 }
 
 /**
- * @name Committee
+ * @name CommitteePage
  * @description The page for displaying a committee
  *
  * @param {object} param - The dynamic URL parameters
@@ -63,9 +65,10 @@ export async function generateStaticParams(): Promise<
  * @param {string} param.committee - The committee name to display
  * @returns {Promise<JSX.Element>} The rendered server component
  */
-export default async function Committee({
-  params: { language, committee },
-}: Props): Promise<JSX.Element> {
+export default async function CommitteePage(
+  props: Props
+): Promise<JSX.Element> {
+  const { language, committee } = await props.params
   const committee_data: Committee | null = await GetCommitteePublic(
     committee,
     language

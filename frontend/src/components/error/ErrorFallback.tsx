@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import type { JSX } from "react";
+
 /**
  * Renders the error fallback UI.
  * @name ErrorFallback

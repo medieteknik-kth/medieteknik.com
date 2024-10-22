@@ -8,6 +8,8 @@ import Logo from 'public/images/logo.webp'
 import LoginSection from './client/LoginSection'
 import NavigationSheet from './NavigationSheet'
 
+import type { JSX } from 'react'
+
 interface Props {
   language: string
 }

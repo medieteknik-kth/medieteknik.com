@@ -1,7 +1,4 @@
 'use client'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { AccountPage, Tabs } from './base'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
   ChevronLeftIcon,
@@ -10,13 +7,16 @@ import {
   LockOpenIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { AccountPages, Tabs } from './account'
 
 export default function Sidebar({
   accountPages,
   currentTab,
   setCurrentTab,
 }: {
-  accountPages: AccountPage[]
+  accountPages: AccountPages[]
   currentTab: Tabs | null
   setCurrentTab: Dispatch<SetStateAction<Tabs | null>>
 }) {

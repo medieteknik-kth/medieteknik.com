@@ -16,11 +16,12 @@ import React, {
   LazyExoticComponent,
   Suspense,
   SVGProps,
+  use,
   useEffect,
   useState,
 } from 'react'
 import Sidebar from './sidebar'
-const AccountPage = React.lazy(() => import('./pages/accountPage'))
+const AccountProfile = React.lazy(() => import('./pages/accountPage'))
 const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
 const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
 const ItemsPage = React.lazy(() => import('./pages/itemPage'))
@@ -33,7 +34,7 @@ export type Tabs =
   | 'items'
   | 'calendar'
 
-export interface AccountPage {
+export interface AccountPages {
   name: Tabs
   icon: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>
   page: LazyExoticComponent<
@@ -41,14 +42,19 @@ export interface AccountPage {
   >
 }
 
-export default function Base({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+interface Params {
+  language: string
+}
+
+interface Props {
+  params: Promise<Params>
+}
+
+export default function AccountPage(props: Props) {
+  const { language } = use(props.params)
   const [currentTab, setCurrentTab] = useState<Tabs | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [accountPages, setAccountPages] = useState<AccountPage[]>([])
+  const [accountPages, setAccountPages] = useState<AccountPages[]>([])
   const router = useRouter()
 
   const {
@@ -69,11 +75,11 @@ export default function Base({
   }, [student, language, router, authLoading])
 
   useEffect(() => {
-    const defaultPages: AccountPage[] = [
+    const defaultPages: AccountPages[] = [
       {
         name: 'account',
         icon: UserIcon,
-        page: AccountPage,
+        page: AccountProfile,
       },
       {
         name: 'preferences',
@@ -87,7 +93,7 @@ export default function Base({
       },
     ]
 
-    const additionalPages: AccountPage[] = []
+    const additionalPages: AccountPages[] = []
     if (permissions.author && permissions.author.length >= 1) {
       additionalPages.push({
         name: 'items',

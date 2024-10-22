@@ -1,5 +1,7 @@
 import { useTranslation } from '@/app/i18n'
 
+import type { JSX } from "react";
+
 /**
  * @interface Props
  * @property {string} language - The currently selected language

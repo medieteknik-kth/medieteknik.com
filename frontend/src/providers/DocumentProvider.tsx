@@ -4,13 +4,7 @@ import { Document } from '@/models/Document'
 import { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useSearchParams } from 'next/navigation'
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-} from 'react'
+import { createContext, useContext, useEffect, useMemo, useReducer, type JSX } from 'react';
 
 type View = 'grid' | 'list'
 type Status = 'active' | 'archived'

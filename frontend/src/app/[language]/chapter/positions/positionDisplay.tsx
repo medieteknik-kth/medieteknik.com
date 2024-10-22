@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/card'
 import { CommitteePosition } from '@/models/Committee'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
   position: CommitteePosition

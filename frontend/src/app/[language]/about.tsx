@@ -3,6 +3,8 @@ import Logo from 'public/images/logo.webp'
 import { useTranslation } from '@/app/i18n'
 import InfographicCard from '@/components/cards/Infographic'
 
+import type { JSX } from "react";
+
 interface CardElement {
   title: string
   description: string

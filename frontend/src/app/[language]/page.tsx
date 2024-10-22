@@ -1,18 +1,18 @@
+import Loading from '@/components/tooltips/Loading'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import BlurredBG from 'public/images/landingpage_blurred.webp'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import './home.css'
-import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
-import Loading from '@/components/tooltips/Loading'
+import { Suspense, type JSX } from 'react'
 import { useTranslation } from '../i18n'
+import './home.css'
 
 const About = dynamic(() => import('./about'), { ssr: true })
 
 interface Props {
-  params: {
+  params: Promise<{
     language: string
-  }
+  }>
 }
 
 /**
@@ -23,9 +23,9 @@ interface Props {
  * @param {string} params.language - The language code
  * @returns {Promise<JSX.Element>} The home page
  */
-export default async function Home({
-  params: { language },
-}: Props): Promise<JSX.Element> {
+export default async function Home(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
+
   const { t } = await useTranslation(language, 'common')
 
   return (

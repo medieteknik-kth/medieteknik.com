@@ -25,6 +25,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
@@ -33,12 +34,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Document, DocumentTranslation } from '@/models/Document'
 import { Author } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -266,7 +268,8 @@ export default function DocumentUpload({
         )}
       </DialogHeader>
       <Tabs defaultValue={language} className='mb-2'>
-        <TabsList>
+        <Label>Language</Label>
+        <TabsList className='overflow-x-auto h-fit w-full justify-start'>
           {supportedLanguages.map((language) => (
             <TabsTrigger
               key={language}
@@ -274,7 +277,9 @@ export default function DocumentUpload({
               className='w-fit'
               title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${LANGUAGES[language].flag}`} />
+              <span className='w-6 h-6'>
+                {LANGUAGES[language as LanguageCode].flag_icon}
+              </span>
             </TabsTrigger>
           ))}
         </TabsList>

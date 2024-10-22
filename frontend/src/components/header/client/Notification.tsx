@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -20,6 +19,8 @@ import { Separator } from '@/components/ui/separator'
 import { BellIcon, Cog8ToothIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
+
+import type { JSX } from "react";
 
 interface Props {
   language: string

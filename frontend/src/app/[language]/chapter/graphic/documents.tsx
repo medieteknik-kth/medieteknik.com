@@ -4,6 +4,8 @@ import { LANGUAGES } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import type { JSX } from "react";
+
 /**
  * @interface Props
  * @property {string} language - The currently selected language

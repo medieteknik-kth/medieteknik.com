@@ -1,18 +1,20 @@
-import { HeadComponent } from '@/components/static/Static'
-import { Tabs, TabsContent } from '@/components/ui/tabs'
-import View from './tabs/View'
-import { DocumentManagementProvider } from '@/providers/DocumentProvider'
-import Toolbar from './toolbar'
-import Sidebar from './sidebar'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import { HeadComponent } from '@/components/static/Static'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
+import { DocumentManagementProvider } from '@/providers/DocumentProvider'
+import Sidebar from './sidebar'
+import View from './tabs/View'
+import Toolbar from './toolbar'
 
-interface Props {
+import type { JSX } from 'react'
+
+interface Params {
   language: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 /**
@@ -23,9 +25,8 @@ interface Params {
  * @param {string} params.language - The currently selected language
  * @returns {Promise<JSX.Element>} The JSX code for the Documents component.
  */
-export default async function Documents({
-  params: { language },
-}: Params): Promise<JSX.Element> {
+export default async function Documents(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
   const { t } = await useTranslation(language, 'document')
 
   return (

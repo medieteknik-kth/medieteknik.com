@@ -1,14 +1,14 @@
-import { CookiesProvider } from 'next-client-cookies/server'
+interface Props {
+  children: React.ReactNode
+}
 
 /**
  * A React component that provides all the server providers for the application.
  *
- * @returns {JSX.Element} The rendered component.
+ * @returns {Promise<React.ReactNode>} The rendered component.
  */
-export default function ServerProviders({
+export default async function ServerProviders({
   children,
-}: {
-  children: React.ReactNode
-}): JSX.Element {
-  return <CookiesProvider>{children}</CookiesProvider>
+}: Props): Promise<React.ReactNode> {
+  return children
 }

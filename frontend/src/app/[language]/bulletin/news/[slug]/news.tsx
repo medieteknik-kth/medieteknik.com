@@ -17,6 +17,8 @@ import type { News } from '@/models/Items'
 import Student, { StudentType } from '@/models/Student'
 import Image from 'next/image'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
   news_data: News

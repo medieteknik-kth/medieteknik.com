@@ -2,7 +2,7 @@
 
 import { News } from '@/models/Items'
 import { useArticle } from '@/providers/ArticleProvider'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, type JSX } from 'react';
 import { Descendant, Editor, Transforms } from 'slate'
 import { Editable, RenderElementProps, Slate } from 'slate-react'
 import { AutoSaveResult, useAutoSave } from '../autoSave'

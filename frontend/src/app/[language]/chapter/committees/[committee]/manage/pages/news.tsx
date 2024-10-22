@@ -32,7 +32,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { DraftBadge, PublishedBadge } from '@/components/badges/Items'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react';
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import Committee from '@/models/Committee'

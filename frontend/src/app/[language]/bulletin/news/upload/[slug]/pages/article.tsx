@@ -3,7 +3,7 @@
 import { News } from '@/models/Items'
 import { ArticleProvider } from '@/providers/ArticleProvider'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, type JSX } from 'react';
 import { BaseEditor, createEditor } from 'slate'
 import { ReactEditor, withReact } from 'slate-react'
 import ArticleRenderer from '../components/articleRenderer'

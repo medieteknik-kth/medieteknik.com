@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useState, type JSX } from 'react';
 
 interface Props {
   language: string
@@ -54,17 +54,17 @@ export default function SearchBar({ language }: Props): JSX.Element {
   )
 
   return (
-    <form
-      className='w-full lg:w-fit flex gap-2 items-center relative'
-      onSubmit={(e) => {
-        e.preventDefault()
-        if (search.length < 2) {
-          router.push(`${pathname}`)
-        } else {
-          router.push(`${pathname}?${createQuery(search.toLowerCase())}`)
-        }
-      }}
-    >
+    (<form
+        className='w-full lg:w-fit flex gap-2 items-center relative'
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (search.length < 2) {
+            router.push(`${pathname}`)
+          } else {
+            router.push(`${pathname}?${createQuery(search.toLowerCase())}`)
+          }
+        }}
+      >
       <Input
         type='search'
         className='flex-grow lg:w-96'
@@ -144,6 +144,6 @@ export default function SearchBar({ language }: Props): JSX.Element {
           </ul>
         </div>
       )}
-    </form>
-  )
+    </form>)
+  );
 }

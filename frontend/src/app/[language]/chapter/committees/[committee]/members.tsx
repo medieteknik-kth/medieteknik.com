@@ -4,6 +4,8 @@ import { GetCommitteeMembers } from '@/api/committee'
 import Link from 'next/link'
 import { StudentTag } from '@/components/tags/StudentTag'
 
+import type { JSX } from "react";
+
 export const revalidate = 60 * 60 * 24 * 30
 
 interface Props {
@@ -44,7 +46,7 @@ export default async function CommitteeMembers({
   }
 
   return (
-    <section className='min-h-96 h-fit relative'>
+    (<section className='min-h-96 h-fit relative'>
       <div className='pt-12 mb-10 grid place-items-center'>
         <h2 className='text-3xl capitalize'>
           Meet <span className='font-bold'>{committeeName}</span>
@@ -100,6 +102,6 @@ export default async function CommitteeMembers({
             </div>
           ))}
       </div>
-    </section>
-  )
+    </section>)
+  );
 }
