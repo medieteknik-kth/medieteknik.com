@@ -14,26 +14,36 @@ export const CookieConsent = {
   ANALYTICS: 'ANALYTICS',
   PERFORMANCE: 'PERFORMANCE',
   ADVERTISING: 'ADVERTISING',
+  THIRD_PARTY: 'THIRD_PARTY',
 } as const;
 
+/**
+ * @name DEFAULT_COOKIE_SETTINGS
+ * @description The default cookie settings, where only necessary cookies are allowed
+ */
 export const DEFAULT_COOKIE_SETTINGS: CookieSettings = {
   NECESSARY: true,
   FUNCTIONAL: false,
   ANALYTICS: false,
   PERFORMANCE: false,
   ADVERTISING: false,
+  THIRD_PARTY: false,
 } as const;
 
 export type CookieConsent = typeof CookieConsent[keyof typeof CookieConsent];
 
-export const COOKIE_CONSENT_STORAGE_KEY = 'cookieSettings';
-
+/**
+ * @interface CookieSettings
+ * @description An interface of the different cookie settings
+ * @see {@link CookieConsent}
+ */
 export interface CookieSettings {
   NECESSARY: boolean;
   FUNCTIONAL: boolean;
   ANALYTICS: boolean;
   PERFORMANCE: boolean;
   ADVERTISING: boolean;
+  THIRD_PARTY: boolean;
 }
 
 /**
@@ -54,6 +64,7 @@ export function decodeCookieSettings(cookieSettings: string | undefined): Cookie
     ANALYTICS: boolean;
     PERFORMANCE: boolean;
     ADVERTISING: boolean;
+    THIRD_PARTY: boolean;
   } = JSON.parse(cookieSettings)
   return {
     NECESSARY: settings.NECESSARY,
@@ -61,9 +72,18 @@ export function decodeCookieSettings(cookieSettings: string | undefined): Cookie
     ANALYTICS: settings.ANALYTICS,
     PERFORMANCE: settings.PERFORMANCE,
     ADVERTISING: settings.ADVERTISING,
+    THIRD_PARTY: settings.THIRD_PARTY,
   }
 }
 
+/**
+ * @name isCookieCategoryAllowed
+ * @description Checks if a specific cookie category is allowed based on the cookie settings
+ * 
+ * @param {CookieSettings | string} cookieSettings - The cookie settings as an object or a JSON string
+ * @param {CookieConsent} category - The category of the cookie to check
+ * @returns {boolean} Whether the cookie category is allowed or not
+ */
 export function isCookieCategoryAllowed(cookieSettings: CookieSettings | string, category: CookieConsent): boolean {
   if (typeof cookieSettings === 'string') {
     cookieSettings = decodeCookieSettings(cookieSettings);
@@ -71,6 +91,7 @@ export function isCookieCategoryAllowed(cookieSettings: CookieSettings | string,
 
   switch(category) {
     case CookieConsent.NECESSARY:
+      // Necessary cookies are always allowed
       return true;
     case CookieConsent.FUNCTIONAL:
       return cookieSettings.FUNCTIONAL;

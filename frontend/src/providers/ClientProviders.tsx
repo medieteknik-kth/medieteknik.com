@@ -6,6 +6,7 @@
 import { ThemeProvider } from 'next-themes'
 import { useEffect, useState, type JSX } from 'react'
 import { AuthenticationProvider } from './AuthenticationProvider'
+import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 
 interface Props {
   language: string
@@ -26,11 +27,11 @@ export default function ClientProviders({
   const [standardTheme, setStandardTheme] = useState('light')
 
   const getTheme = () => {
-    return window.localStorage.getItem('theme')
+    return window.localStorage.getItem(LOCAL_STORAGE_THEME)
   }
 
   const setTheme = (theme: string) => {
-    window.localStorage.setItem('theme', theme)
+    window.localStorage.setItem(LOCAL_STORAGE_THEME, theme)
     setStandardTheme(theme)
   }
 

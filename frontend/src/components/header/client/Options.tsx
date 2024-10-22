@@ -188,7 +188,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
 
       {cookiesShown && (
         <div className='w-full h-screen fixed grid place-items-center left-0 top-0 bg-black/30 z-50'>
-          <DetailedCookiePopup params={{ language, popup: setCookiesShown }} />
+          <DetailedCookiePopup language={language} popup={setCookiesShown} />
         </div>
       )}
     </div>
