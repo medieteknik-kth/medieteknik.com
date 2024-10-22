@@ -28,7 +28,7 @@ import {
   LinkIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline'
-import { useCallback } from 'react'
+import { useCallback, type JSX } from 'react';
 import { Transforms } from 'slate'
 import { CustomElement } from '../util/Text'
 import ToolbarMarks from './toolbar/marks'

@@ -4,15 +4,16 @@ import MediaGridView from './view/committee'
 import RecentMedia from './view/recent'
 import HeaderGap from '@/components/header/components/HeaderGap'
 
-interface Props {
+interface Params {
   language: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
-export default async function Media({ params: { language } }: Params) {
+export default async function Media(props: Props) {
+  const { language } = await props.params
   const committees = await GetAllCommittees('sv')
 
   if (!committees) {

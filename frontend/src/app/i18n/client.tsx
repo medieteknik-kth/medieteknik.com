@@ -1,16 +1,15 @@
 'use client'
-import { useEffect, useState } from 'react'
+
 import i18next from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+import resourcesToBackend from 'i18next-resources-to-backend'
+import { useEffect, useState } from 'react'
 import {
   initReactI18next,
   useTranslation as useTranslationOrg,
   UseTranslationResponse,
 } from 'react-i18next'
-import { useCookies } from 'next-client-cookies'
-import resourcesToBackend from 'i18next-resources-to-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
-import { getOptions, supportedLanguages, cookieName } from './settings'
-import { CookieConsent, ClientCookieConsent } from '@/utility/CookieManager'
+import { getOptions, supportedLanguages } from './settings'
 
 const isRunningOnServer = typeof window === 'undefined'
 
@@ -47,11 +46,9 @@ export function useTranslation(
   namespace: string,
   options: { keyPrefix?: string | undefined } = {}
 ): UseTranslationResponse<string, string> {
-  const cookies = useCookies()
   const ret = useTranslationOrg(namespace, options)
   const { i18n } = ret
   const [activeLanguage, setActiveLanguage] = useState(i18n.resolvedLanguage)
-  const cookieDependecies = [language, cookies.get(cookieName), cookies]
 
   // Set the active language
   useEffect(() => {
@@ -66,13 +63,14 @@ export function useTranslation(
   }, [language, i18n.resolvedLanguage, i18n])
 
   // Set the language cookie
-  useEffect(() => {
-    const clientCookieConsent = new ClientCookieConsent(window)
-    if (!clientCookieConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) return
-    if (cookies.get(cookieName) === language) return
+  const setLanguage = () => {
+    if (!language) return
+    window.localStorage.setItem('language', language)
+  }
 
-    cookies.set(cookieName, language, { path: '/' })
-  }, [cookies, language])
+  useEffect(() => {
+    setLanguage()
+  }, [language])
 
   if (isRunningOnServer && language && i18n.resolvedLanguage !== language) {
     i18n.changeLanguage(language)

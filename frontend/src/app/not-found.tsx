@@ -1,5 +1,7 @@
 import './error.css'
 
+import type { JSX } from "react";
+
 /**
  * @name NotFound
  * @description The 404 page

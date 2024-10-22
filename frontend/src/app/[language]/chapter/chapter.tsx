@@ -1,17 +1,21 @@
-import { HeadComponent } from '@/components/static/Static'
 import { GetAllCommittees } from '@/api/committee'
-import Committees from './committees'
 import { GetCommitteeMembers } from '@/api/student'
-import { Separator } from '@/components/ui/separator'
 import { useTranslation } from '@/app/i18n'
-import Officials from './officials'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import { HeadComponent } from '@/components/static/Static'
+import Committees from './committees'
+import Officials from './officials'
 
-export default async function Chapter({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+interface Params {
+  language: string
+}
+
+interface Props {
+  params: Promise<Params>
+}
+
+export default async function Chapter(props: Props) {
+  const { language } = await props.params
   const data = await GetAllCommittees()
   const members = await GetCommitteeMembers(language, '2024-2025')
   const { t } = await useTranslation(language, 'chapter')

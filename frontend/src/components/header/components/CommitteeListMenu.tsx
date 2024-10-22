@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -14,6 +13,8 @@ import {
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { SquaresPlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+
+import type { JSX } from "react";
 
 interface Props {
   language: string

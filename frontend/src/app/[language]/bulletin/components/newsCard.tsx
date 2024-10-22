@@ -13,6 +13,8 @@ import Student from '@models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import type { JSX } from "react";
+
 interface Props {
   newsItem: News
 }

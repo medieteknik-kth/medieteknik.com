@@ -45,7 +45,7 @@ import {
   OngoingEventBadge,
   UpcomingEventBadge,
 } from '@/components/badges/Items'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react';
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { EventPagniation } from '@/models/Pagination'

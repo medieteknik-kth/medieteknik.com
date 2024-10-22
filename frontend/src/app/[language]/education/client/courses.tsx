@@ -1,6 +1,6 @@
 'use client'
 import { Section } from '@/components/static/Static'
-import { useState } from 'react'
+import { useState, type JSX } from 'react';
 import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
 import {

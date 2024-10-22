@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { type JSX } from 'react';
 import { Button } from '@/components/ui/button'
 import { EnvelopeIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'

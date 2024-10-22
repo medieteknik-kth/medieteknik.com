@@ -1,10 +1,9 @@
 import acceptLanguage from 'accept-language';
-import { Cookies } from 'next-client-cookies';
-import { getCookies } from 'next-client-cookies/server';
+import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+import { NextURL } from 'next/dist/server/web/next-url';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookieName, fallbackLanguage, supportedLanguages } from './app/i18n/settings';
+import { fallbackLanguage, supportedLanguages } from './app/i18n/settings';
 import { LanguageCode } from './models/Language';
-import { CookieConsent, ServerCookieConsent } from './utility/CookieManager';
 
 acceptLanguage.languages(supportedLanguages);
 
@@ -22,28 +21,42 @@ export const Config = {
  * @param {ServerCookieConsent} serverConsent - The server cookie consent object.
  * @return {NextResponse} The response object with redirection or next response.
  */
-function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent): NextResponse {
+async function handleLanguage(request: NextRequest, cookies: RequestCookies): Promise<NextResponse> {
   let language;
 
   // Blacklisted URLs, which should not be redirected
-  const blacklistedURLs = ['/_next', '/_vercel', '/static', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png', '/react_devtools_backend_compact.js.map', '/installHook.js.map', '/ads.txt']
+  const blacklistedURLs = ['/_next', '/_vercel', '/static', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon', '/screenshots', '/apple-icon.png', '/react_devtools_backend_compact.js.map', '/installHook.js.map', '/ads.txt', '/__nextjs']
 
-  language = cookies.get(cookieName)
-  if(!language && typeof window !== 'undefined') { language = localStorage.getItem('i18nextLng') }
+  language = null
+  
+  // Check client side language
+  if(!language && typeof window !== 'undefined') { language = localStorage.getItem('language') }
+
+  // Check the browsers language
   if(!language) { 
     language = request.headers.get('Accept-Language')?.split(',')[0].split('-')[0]
     if (language && !supportedLanguages.includes(language as LanguageCode)) {
       language = null
     }
   }
+
+  // If no language is found, use the fallback language
   if(!language) { language = fallbackLanguage }
 
   // Non-specified language or language not supported
-  if(!supportedLanguages.some((locale) => request.nextUrl.pathname.startsWith(`/${locale}`)) && !blacklistedURLs.some((url) => request.nextUrl.pathname.startsWith(url))) {
-    const response = NextResponse.redirect(new URL(`/${language}${request.nextUrl.pathname}`, request.nextUrl))
-    if(serverConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
-      response.cookies.set(cookieName, language, { path: '/' })
+  if(!supportedLanguages.some((locale) => request.nextUrl.pathname.startsWith(`/${locale}`)) 
+      && !blacklistedURLs.some((url) => request.nextUrl.pathname.startsWith(url))) {
+    if (isDevelopment) {
+      console.log(`Redirecting to ${language}${request.nextUrl.pathname}`)
     }
+    
+    const response = NextResponse.redirect(new NextURL(`/${language}${request.nextUrl.pathname}`, request.nextUrl))
+    
+    /**
+     * if(serverConsent.isCategoryAllowed(CookieConsent.)) {
+      response.cookies.set(cookieName, language as string, { path: '/' })
+    }
+     */
 
     return response;
   }
@@ -53,10 +66,9 @@ function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: S
     const refererUrl = new URL(request.headers.get('Referer') as string)
     const language = supportedLanguages.find((locale) => refererUrl.pathname.startsWith(`/${locale}`))
     const response = NextResponse.next()
+
     if(language) {
-      if(serverConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
-        response.cookies.set(cookieName, language, { path: '/' })
-      }
+      //localStorage.setItem('language', language)
     }
     return response;
   }
@@ -64,56 +76,10 @@ function handleLanguage(request: NextRequest, cookies: Cookies, serverConsent: S
   return NextResponse.next();
 }
 
-/**
- * Handle analytics and performance tracking
- * @param request The request object
- * @param cookies The cookies present in the request 
- * @param serverConsent The server cookie consent object
- * @returns The next response object
- */
-function handleAnalytics(request: NextRequest, cookies: Cookies, serverConsent: ServerCookieConsent): NextResponse {
-  if(window === undefined) return NextResponse.next();
+export async function middleware(request: NextRequest): Promise<NextResponse> {
+  const cookieStore = request.cookies
 
-  if(serverConsent.isCategoryAllowed(CookieConsent.ANALYTICS)) {
-    try {
-      fetch('https://.../analytics', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-
-      })
-    })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  if(serverConsent.isCategoryAllowed(CookieConsent.PERFORMANCE)) {
-    try {
-      fetch('https://.../performance', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-
-      })
-    })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  return NextResponse.next();
-}
-
-export function middleware(request: NextRequest) {
-  const cookies = getCookies();
-  const serverConsent = new ServerCookieConsent(request);
-  
-  let response = handleLanguage(request, cookies, serverConsent);
+  let response = handleLanguage(request, cookieStore);
   // response = handleAnalytics(request, cookies, serverConsent);
   
 

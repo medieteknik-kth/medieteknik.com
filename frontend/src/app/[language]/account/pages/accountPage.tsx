@@ -7,7 +7,7 @@ const AccountForm = React.lazy(() => import('./account/accountForm'))
 const ProfileForm = React.lazy(() => import('./account/profileForm'))
 const ReceptionForm = React.lazy(() => import('./account/receptionForm'))
 
-export default function AccountPage({ language }: { language: string }) {
+export default function AccountProfile({ language }: { language: string }) {
   const { t } = useTranslation(language, 'account')
   return (
     <section className='grow h-fit dark:bg-[#111]'>

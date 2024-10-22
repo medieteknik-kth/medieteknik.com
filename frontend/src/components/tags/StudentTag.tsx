@@ -47,7 +47,7 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
         <HoverCardTrigger className='h-fit w-fit flex items-center' asChild>
           <Button
             variant='link'
-            className={`h-fit text-inherit dark:text-yellow-400 py-0 px-0 max-w-full ${
+            className={`h-fit text-inherit  py-0 px-0 max-w-full ${
               reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'
             }`}
             style={{ fontSize: 'inherit' }}

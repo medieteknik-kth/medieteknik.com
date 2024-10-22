@@ -6,6 +6,8 @@ import {
 } from '@/components/ui/navigation-menu'
 import Link from 'next/link'
 
+import type { JSX } from "react";
+
 interface Props {
   headerElement: HeaderElement
 }

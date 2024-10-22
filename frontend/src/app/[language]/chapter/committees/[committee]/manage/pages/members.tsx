@@ -27,7 +27,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react';
 import { Skeleton } from '@/components/ui/skeleton'
 import PositionForm from '../forms/positionForm'
 import Committee from '@/models/Committee'

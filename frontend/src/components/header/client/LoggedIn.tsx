@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import { useTranslation } from '@/app/i18n/client'
 import AdminButton from '@/components/header/components/AdminButton'
 import CommitteeListMenu from '@/components/header/components/CommitteeListMenu'
@@ -17,6 +16,8 @@ import {
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 import Logo from 'public/images/logo.webp'
+
+import type { JSX } from "react";
 
 interface Props {
   language: string

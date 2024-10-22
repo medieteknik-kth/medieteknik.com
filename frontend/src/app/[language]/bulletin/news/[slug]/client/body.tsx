@@ -1,6 +1,7 @@
-'use client'
-
+'use client';
 import { SlateDisplay } from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
+
+import type { JSX } from "react";
 
 interface Props {
   body: string

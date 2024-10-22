@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import Loading from '@/components/tooltips/Loading'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +20,8 @@ import LinkedInSVG from 'public/images/svg/linkedin.svg'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'
+
+import type { JSX } from "react";
 
 const fetcher = (url: string) =>
   fetch(url, {

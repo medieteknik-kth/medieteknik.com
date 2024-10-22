@@ -1,14 +1,14 @@
-import { HeadComponent } from '@/components/static/Static'
-import Logo from 'public/images/logo.webp'
-import Image from 'next/image'
-import Link from 'next/link'
-import Committee, { CommitteeCategory } from '@/models/Committee'
 import {
   GetCommitteeCategories,
   GetCommitteeCategoryCommittees,
 } from '@/api/committee'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import { HeadComponent } from '@/components/static/Static'
+import Committee, { CommitteeCategory } from '@/models/Committee'
+import Image from 'next/image'
+import Link from 'next/link'
+import Logo from 'public/images/logo.webp'
 
 interface CommitteeCategoryWithCommittees extends CommitteeCategory {
   committees: Committee[]
@@ -16,11 +16,16 @@ interface CommitteeCategoryWithCommittees extends CommitteeCategory {
 
 export const revalidate = 60 * 60 * 24 * 30 * 3 // 3 months
 
-export default async function CommitteeList({
-  params: { language },
-}: {
-  params: { language: string }
-}) {
+interface Params {
+  language: string
+}
+
+interface Props {
+  params: Promise<Params>
+}
+
+export default async function CommitteeList(props: Props) {
+  const { language } = await props.params
   const committeeCategories = await GetCommitteeCategories(language)
   const categoriesWithCommittees: CommitteeCategoryWithCommittees[] = []
   const { t } = await useTranslation(language, 'committee')

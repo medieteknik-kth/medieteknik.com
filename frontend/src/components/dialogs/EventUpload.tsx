@@ -27,13 +27,12 @@ import { eventUploadSchema } from '@/schemas/items/event'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, type JSX } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import RepeatingForm from './event/repeating'
 import TranslatedInputs from './event/translations'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 interface Props {
   language: string
@@ -178,7 +177,7 @@ export default function EventUpload({
       {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
       <Tabs defaultValue={language} className='mb-2'>
         <Label>{t('event.form.language')}</Label>
-        <TabsList className='overflow-x-auto w-full justify-start'>
+        <TabsList className='overflow-x-auto h-fit w-full justify-start'>
           {supportedLanguages.map((language) => (
             <TabsTrigger
               key={language}
@@ -186,7 +185,9 @@ export default function EventUpload({
               className='w-fit'
               title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${LANGUAGES[language].flag}`} />
+              <span className='w-6 h-6'>
+                {LANGUAGES[language as LanguageCode].flag_icon}
+              </span>
             </TabsTrigger>
           ))}
         </TabsList>

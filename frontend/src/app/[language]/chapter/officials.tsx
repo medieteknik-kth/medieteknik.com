@@ -46,7 +46,7 @@ export default async function Officials({
   }
 
   return (
-    <section id='officials' className='w-full flex flex-col gap-4'>
+    (<section id='officials' className='w-full flex flex-col gap-4'>
       {categories.map((category, index) => (
         <div key={index}>
           <h2 className='text-center sm:text-start text-lg sm:text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
@@ -143,6 +143,6 @@ export default async function Officials({
           <Separator className='w-full sm:w-1/3 mt-4 bg-yellow-400' />
         </div>
       ))}
-    </section>
-  )
+    </section>)
+  );
 }

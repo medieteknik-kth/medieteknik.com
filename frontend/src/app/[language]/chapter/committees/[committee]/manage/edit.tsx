@@ -28,10 +28,9 @@ import { editCommitteeSchema } from '@/schemas/committee/edit'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, type JSX } from 'react';
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 /**
  * @name TranslatedInputs

@@ -6,10 +6,8 @@ interface Params {
   committee: string
 }
 
-export async function generateMetadata(
-  { params }: { params: Params },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<Params> }, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const value = decodeURI(params.committee)
 
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)

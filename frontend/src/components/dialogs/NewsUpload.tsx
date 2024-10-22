@@ -23,10 +23,9 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { Button } from '@components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react';
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 interface NewsUploadProps {
   language: string

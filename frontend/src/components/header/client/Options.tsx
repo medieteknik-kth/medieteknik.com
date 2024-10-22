@@ -17,14 +17,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
-import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
 import { Cog8ToothIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { useCookies } from 'next-client-cookies'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type JSX } from 'react'
 import DetailedCookiePopup from '../../cookie/DetailedCookie'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
 
 interface Props {
   language: string
@@ -45,7 +42,6 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const { theme, setTheme } = useTheme()
   const [isClient, setIsClient] = useState(false)
   const [cookiesShown, setCookiesShown] = useState(false)
-  const cookies = useCookies()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -61,10 +57,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const switchLanguage = useCallback(
     (newLanguage: string) => {
       const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
-      const clientCookiesConsent = new ClientCookieConsent(window)
-      if (clientCookiesConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
-        cookies.set(cookieName, newLanguage, { path: '/' })
-      }
+      window.localStorage.setItem(cookieName, newLanguage)
       router.push(newPath)
     },
     [path, router]
@@ -79,17 +72,9 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const switchTheme = useCallback(
     (newTheme: string) => {
       void setTheme(newTheme)
-      const clientCookies = new ClientCookieConsent(window)
-      if (clientCookies.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
-        cookies.set('theme', newTheme, {
-          path: '/',
-          expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-          sameSite: 'lax',
-          secure: true,
-        })
-      }
+      window.localStorage.setItem('theme', newTheme)
     },
-    [setTheme, cookies]
+    [setTheme]
   )
 
   if (!isClient) {
@@ -129,17 +114,15 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                       switchLanguage(lang)
                     }}
                     className='mx-1 cursor-pointer'
-                    variant={lang === language ? 'default' : 'ghost'}
+                    variant={lang === language ? 'default' : 'secondary'}
                     disabled={lang === language}
-                    title={`Switch to ${LANGUAGES[lang as LanguageCode].flag}`}
-                    aria-label={`Switch to ${
-                      LANGUAGES[lang as LanguageCode].name
-                    }`}
+                    title={`Switch to ${LANGUAGES[lang].name}`}
+                    aria-label={`Switch to ${LANGUAGES[lang].name}`}
                   >
                     <div className='w-full h-full flex items-center px-4'>
-                      <span
-                        className={`fi fi-${LANGUAGES[lang].flag} w-6 h-6`}
-                      />
+                      <span className='w-6 h-6'>
+                        {LANGUAGES[lang as LanguageCode].flag_icon}
+                      </span>
                       <span className='ml-2'>{LANGUAGES[lang].name}</span>
                     </div>
                   </Button>
@@ -156,7 +139,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                 <Button
                   onClick={() => switchTheme('light')}
                   className='mx-1 cursor-pointer'
-                  variant={theme === 'light' ? 'default' : 'ghost'}
+                  variant={theme === 'light' ? 'default' : 'secondary'}
                   disabled={theme === 'light'}
                   title={t('light_theme')}
                   aria-label={t('light_theme')}

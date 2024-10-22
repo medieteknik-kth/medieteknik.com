@@ -1,5 +1,21 @@
-/** @type {import('next').NextConfig} */
-module.exports = {
+import { NextConfig } from 'next';
+import { ExperimentalConfig, NextJsWebpackConfig } from 'next/dist/server/config-shared';
+
+const experimentalConfig: ExperimentalConfig = {
+    turbo: {
+        moduleIdStrategy: 'named',
+        rules: {
+            '*.svg': {
+                loaders: ['@svgr/webpack'],
+                as: '*.ts',
+            },
+        },
+    },
+}
+
+const nextConfig: NextConfig = {
+    experimental: experimentalConfig,
+
     productionBrowserSourceMaps: true,
     images: {
         remotePatterns: [
@@ -61,12 +77,19 @@ module.exports = {
         ]
     },
 
-    webpack(config) {
+    webpack(config: any): NextJsWebpackConfig {
         config.infrastructureLogging = {
             level: "error",
         };
 
-        const fileLoaderRule = config.module.rules.find((rule) =>
+        interface FileLoaderRule {
+            test?: RegExp;
+            issuer?: any;
+            exclude?: RegExp;
+            resourceQuery?: any;
+        }
+
+        const fileLoaderRule: FileLoaderRule | undefined = config.module.rules.find((rule: FileLoaderRule) =>
             rule.test?.test?.('.svg')
         );
 
@@ -91,4 +114,6 @@ module.exports = {
         }
         return config;
     }
-};
+} satisfies NextConfig;
+
+export default nextConfig;

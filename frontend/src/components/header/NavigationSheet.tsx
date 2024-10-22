@@ -14,6 +14,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import SubMenu from './client/SubMenu'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
   headerElements: HeaderElement[]

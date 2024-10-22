@@ -1,3 +1,3 @@
-import Base from './base'
+import AccountPage from './account'
 
-export default Base
+export default AccountPage

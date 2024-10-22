@@ -1,5 +1,5 @@
-import React from 'react'
 import { GetCommitteePublic } from '@/api/committee'
+import { type JSX } from 'react'
 import CommitteeRedirect from './redirect'
 
 interface Params {
@@ -8,7 +8,7 @@ interface Params {
 }
 
 interface Props {
-  params: Params
+  params: Promise<Params>
 }
 
 /**
@@ -20,9 +20,10 @@ interface Props {
  * @param {string} param.committee - The committee name to manage
  * @returns {Promise<JSX.Element>} The rendered component
  */
-export default async function CommitteeManage({
-  params: { language, committee },
-}: Props): Promise<JSX.Element> {
+export default async function CommitteeManage(
+  props: Props
+): Promise<JSX.Element> {
+  const { language, committee } = await props.params
   const decodedCommittee = decodeURIComponent(committee)
   const committeeData = await GetCommitteePublic(decodedCommittee)
 

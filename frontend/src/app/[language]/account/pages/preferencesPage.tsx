@@ -1,17 +1,14 @@
 'use client'
-import '/node_modules/flag-icons/css/flag-icons.min.css'
 import { supportedLanguages } from '@/app/i18n/settings'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState } from 'react'
-import { useTheme } from 'next-themes'
 import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
-import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
-import { cookieName } from '@/app/i18n/settings'
-import { useCookies } from 'next-client-cookies'
-import { LANGUAGES } from '@/utility/Constants'
 import { LanguageCode } from '@/models/Language'
+import { LANGUAGES } from '@/utility/Constants'
+import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import { useTheme } from 'next-themes'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 
 export default function PreferencesPage({ language }: { language: string }) {
   const router = useRouter()
@@ -19,28 +16,21 @@ export default function PreferencesPage({ language }: { language: string }) {
   const path = usePathname()
   const [cookiesShown, setCookiesShown] = useState(false)
   const { theme, setTheme } = useTheme()
-  const cookies = useCookies()
 
-  const switchLanguage = useCallback(
-    (newLanguage: string) => {
-      const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
-      const category = params.get('category') || 'account'
-      const clientCookiesConsent = new ClientCookieConsent(window)
-      if (clientCookiesConsent.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
-        cookies.set(cookieName, newLanguage, { path: '/' })
-      }
-      router.replace(newPath + '?' + new URLSearchParams({ category }))
-    },
-    [path, params, router]
-  )
+  const switchLanguage = async (newLanguage: string) => {
+    const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
+    const category = params.get('category') || 'account'
+    window.localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLanguage)
+    router.replace(newPath + '?' + new URLSearchParams({ category }))
+  }
 
   return (
     <section className='grow min-h-[1080px] h-full bg-white dark:bg-[#111] text-black dark:text-white'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
         <h1 className='text-2xl py-4'>Preferences</h1>
       </div>
-      <div className='w-full h-full flex flex-col lg:flex-row mt-10 px-10'>
-        <section className='w-fit flex items-center flex-col justify-between mr-10 '>
+      <div className='w-full h-full flex flex-col gap-4 mt-10 px-10'>
+        <section className='w-fit flex items-center flex-col justify-between '>
           <div>
             <h2 className='text-2xl font-bold mb-2'>Language</h2>
             <div>
@@ -49,16 +39,16 @@ export default function PreferencesPage({ language }: { language: string }) {
                   <li key={lang} className='w-32 xs:mr-4 first:mb-2 xs:mb-0'>
                     <Button
                       title='Switch Language'
-                      onClick={() => switchLanguage(lang)}
+                      onClick={() => {
+                        switchLanguage(lang)
+                      }}
                       className='w-full'
                       disabled={lang === language}
                       variant={lang === language ? 'default' : 'secondary'}
                     >
-                      <span
-                        className={`fi fi-${
-                          LANGUAGES[lang as LanguageCode].flag
-                        } mr-2`}
-                      />
+                      <span className='w-5 h-5 mr-1'>
+                        {LANGUAGES[lang as LanguageCode].flag_icon}
+                      </span>
                       <p>{LANGUAGES[lang as LanguageCode].name}</p>
                     </Button>
                   </li>
@@ -68,7 +58,7 @@ export default function PreferencesPage({ language }: { language: string }) {
           </div>
         </section>
 
-        <section className='w-fit flex items-center flex-col justify-between mt-10 lg:mt-0 mr-10'>
+        <section className='w-fit flex items-center flex-col justify-between'>
           <div>
             <h2 className='text-2xl font-bold mb-2'>Privacy</h2>
             <div>
@@ -83,7 +73,7 @@ export default function PreferencesPage({ language }: { language: string }) {
           </div>
         </section>
 
-        <section className='w-fit flex items-center flex-col justify-between mt-10 lg:mt-0 mr-10'>
+        <section className='w-fit flex items-center flex-col justify-between'>
           <div>
             <h2 className='text-2xl font-bold mb-2 flex items-center'>
               Theme

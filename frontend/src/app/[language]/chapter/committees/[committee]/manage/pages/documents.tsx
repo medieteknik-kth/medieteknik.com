@@ -1,4 +1,5 @@
 'use client'
+import DocumentUpload from '@/components/dialogs/DocumentUpload'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -8,20 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
-  ArrowUpTrayIcon,
-  CheckBadgeIcon,
-  DocumentDuplicateIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   Pagination,
   PaginationContent,
@@ -30,19 +18,32 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { DocumentPagination } from '@/models/Pagination'
-import useSWR from 'swr'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import Committee from '@/models/Committee'
+import { DocumentPagination } from '@/models/Pagination'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import DocumentUpload from '@/components/dialogs/DocumentUpload'
+import {
+  ArrowUpTrayIcon,
+  CheckBadgeIcon,
+  DocumentDuplicateIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
+import { useEffect, useState, type JSX } from 'react'
+import useSWR from 'swr'
 
 const fetcher = (url: string) =>
   fetch(url, {
     credentials: 'include',
+    cache: 'force-cache',
   }).then((res) => res.json() as Promise<DocumentPagination>)
 
 /**

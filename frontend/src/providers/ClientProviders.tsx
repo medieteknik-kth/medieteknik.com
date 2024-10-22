@@ -2,11 +2,10 @@
  * This file contains all the client providers that are used in the application.
  */
 'use client'
-import { AuthenticationProvider } from './AuthenticationProvider'
+
 import { ThemeProvider } from 'next-themes'
-import { useState, useEffect } from 'react'
-import { ClientCookieConsent, CookieConsent } from '@/utility/CookieManager'
-import { useCookies } from 'next-client-cookies'
+import { useEffect, useState, type JSX } from 'react'
+import { AuthenticationProvider } from './AuthenticationProvider'
 
 interface Props {
   language: string
@@ -25,16 +24,20 @@ export default function ClientProviders({
 }: Props): JSX.Element | null {
   const [isClient, setIsClient] = useState(false)
   const [standardTheme, setStandardTheme] = useState('light')
-  const cookies = useCookies()
+
+  const getTheme = () => {
+    return window.localStorage.getItem('theme')
+  }
+
+  const setTheme = (theme: string) => {
+    window.localStorage.setItem('theme', theme)
+    setStandardTheme(theme)
+  }
 
   useEffect(() => {
     setIsClient(true)
-    const clientCookies = new ClientCookieConsent(window)
-    if (clientCookies.isCategoryAllowed(CookieConsent.FUNCTIONAL)) {
-      const storedTheme = cookies.get('theme') ?? 'light'
-      setStandardTheme(storedTheme)
-    }
-  }, [cookies])
+    setTheme(getTheme() || 'light')
+  }, [])
 
   if (!isClient) {
     return null

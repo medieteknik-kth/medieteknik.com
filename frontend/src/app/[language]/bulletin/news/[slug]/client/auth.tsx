@@ -25,6 +25,8 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon } from '@heroicons/react/24/outline'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
   news_data: News

@@ -1,9 +1,10 @@
-'use client'
-
+'use client';
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import { ClockIcon, HomeIcon } from '@heroicons/react/24/outline'
+
+import type { JSX } from "react";
 
 interface Props {
   language: string

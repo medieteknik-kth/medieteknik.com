@@ -15,7 +15,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, type JSX } from 'react';
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'

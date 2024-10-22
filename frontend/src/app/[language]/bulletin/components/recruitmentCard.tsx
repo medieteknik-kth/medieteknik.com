@@ -12,6 +12,8 @@ import { CommitteePositionRecruitment } from '@/models/Committee'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
+import type { JSX } from "react";
+
 interface Props {
   language: string
   recruitment: CommitteePositionRecruitment

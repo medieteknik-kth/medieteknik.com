@@ -1,10 +1,11 @@
-'use client'
-
+'use client';
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import Guest from './Guest'
 import UserLoggedIn from './LoggedIn'
 import NotificationMenu from './Notification'
 import OptionsMenu from './Options'
+
+import type { JSX } from "react";
 
 interface Props {
   language: string

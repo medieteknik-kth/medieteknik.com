@@ -1,9 +1,10 @@
-'use client'
-
+'use client';
 import { useTranslation } from '@/app/i18n/client'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useArticle } from '@/providers/ArticleProvider'
 import { BooleanMark, toggleMark } from '../../util/Text'
+
+import type { JSX } from "react";
 
 interface Props {
   language: string

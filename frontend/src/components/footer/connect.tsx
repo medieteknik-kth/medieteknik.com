@@ -1,20 +1,19 @@
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
-import YoutubeSVG from 'public/images/svg/youtube.svg'
 import MBDSVG from 'public/images/svg/mbd.svg'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { TFunction } from 'next-i18next'
+import YoutubeSVG from 'public/images/svg/youtube.svg'
+import { JSX } from 'react'
 
 /**
- * Renders the connect section
  * @name ConnectSection
+ * @description Renders the connect section
  *
- * @param {TFunction} t - The translation function
- * @returns {JSX.Element} The connect section
+ * @returns {Promise<JSX.Element>} The connect section
  */
-export default function ConnectSection(): JSX.Element {
+export default async function ConnectSection(): Promise<JSX.Element> {
   const linkStyle = '*:hover:fill-yellow-400 *:transition-colors'
 
   return (
@@ -99,7 +98,6 @@ export default function ConnectSection(): JSX.Element {
           </Link>
         </Button>
       </li>
-
       <li className={linkStyle} title='Mediesbransch Dag'>
         <Button asChild size='icon' variant='ghost'>
           <Link

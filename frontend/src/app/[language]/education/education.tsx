@@ -1,22 +1,28 @@
-import Masters from './client/masters'
-import Courses from './client/courses'
-import KTH from 'public/images/svg/kth.svg'
-import { HeadComponent, Section } from '@/components/static/Static'
-import Link from 'next/link'
-import {
-  EnvelopeIcon,
-  PhoneIcon,
-  MapPinIcon,
-} from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import { HeadComponent, Section } from '@/components/static/Static'
+import { Button } from '@/components/ui/button'
+import {
+  EnvelopeIcon,
+  MapPinIcon,
+  PhoneIcon,
+} from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import Link from 'next/link'
+import KTH from 'public/images/svg/kth.svg'
+import Courses from './client/courses'
+import Masters from './client/masters'
+
+import type { JSX } from 'react'
+
+export const dynamic = 'force-static'
+
+interface Params {
+  language: string
+}
 
 interface Props {
-  params: {
-    language: string
-  }
+  params: Promise<Params>
 }
 
 /**
@@ -27,9 +33,8 @@ interface Props {
  * @param {string} params.language - The language of the page
  * @returns {Promise<JSX.Element>} The education page
  */
-export default async function Education({
-  params: { language },
-}: Props): Promise<JSX.Element> {
+export default async function Education(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
   const { t } = await useTranslation(language, 'education')
   return (
     <main>

@@ -1,5 +1,6 @@
 'use client'
 
+import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { News } from '@/models/Items'
@@ -11,11 +12,10 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline'
 import { redirect } from 'next/navigation'
-import React from 'react'
+import React, { use, type JSX } from 'react'
 import useSWR from 'swr'
 import { AutoSaveProvdier } from './autoSave'
 import CommandBar from './commandBar'
-import HeaderGap from '@/components/header/components/HeaderGap'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))
@@ -26,13 +26,13 @@ const fetcher = (url: string) =>
     (res) => res.json() as Promise<News>
   )
 
-interface Props {
+interface Params {
   language: string
   slug: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 /**
@@ -46,9 +46,11 @@ interface Params {
  *
  * @returns {JSX.Element} The upload news page
  */
-export default function UploadNews({
-  params: { language, slug },
-}: Params): JSX.Element {
+export default function UploadNews(props: Props): JSX.Element {
+  const params = use(props.params)
+
+  const { language, slug } = params
+
   // TODO: Maybe a server component?
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/news/${slug}?language=${language}`,

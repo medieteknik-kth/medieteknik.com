@@ -1,13 +1,23 @@
 import { GetRecruitment } from '@/api/committee'
 import { GetBreakingNews } from '@/api/items'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import CalendarProvider from '@/providers/CalendarProvider'
 import BreakingNews from './client/breakingNews'
 import Events from './client/events'
 import ExtraNewsObserver from './client/extranewsObserver'
 import Recruitment from './recruiting'
-import HeaderGap from '@/components/header/components/HeaderGap'
+
+import type { JSX } from 'react'
 
 export const revalidate = 60 * 60 * 24 // 1 day
+
+interface Params {
+  language: string
+}
+
+interface Props {
+  params: Promise<Params>
+}
 
 /**
  * @name Bulletin
@@ -18,11 +28,8 @@ export const revalidate = 60 * 60 * 24 // 1 day
  *
  * @returns {JSX.Element} The bulletin page
  */
-export default async function Bulletin({
-  params: { language },
-}: {
-  params: { language: string }
-}): Promise<JSX.Element> {
+export default async function Bulletin(props: Props): Promise<JSX.Element> {
+  const { language } = await props.params
   const recruitmentData = await GetRecruitment(language)
   const breakingNewsData = await GetBreakingNews(language)
 

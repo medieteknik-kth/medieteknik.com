@@ -1,7 +1,7 @@
 'use client'
 
 import Loading from '@/components/tooltips/Loading'
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState, type JSX } from 'react';
 
 const ExtraNews = React.lazy(() => import('./extranews'))
 
