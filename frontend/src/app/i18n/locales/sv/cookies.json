@@ -1,6 +1,6 @@
 {
     "title": "🍪 Kakor",
-    "description": "Denna webbplats använder kakor för att säkerställa att du får den bästa upplevelsen på vår webbplats.",
+    "description": "Denna webbplats använder kakor för att säkerställa att du får den bästa upplevelsen på vår webbplats. Granska dina inställningar via kugghjulsikonen i det övre högra hörnet.",
     
     "cookie_ADVERTISING": "Reklam",
     "cookie_ADVERTISING_description": "Dessa kakor kan ställas in genom vår webbplats av våra annonspartners. De kan användas av dessa företag för att skapa en profil av dina intressen och visa dig relevanta annonser på andra webbplatser. De lagrar inte direkt personlig information",
@@ -12,12 +12,20 @@
     "cookie_NECESSARY_description": "Dessa kakor är nödvändiga för att webbplatsen ska fungera och kan inte stängas av i våra system. De ställs vanligtvis endast in som svar på åtgärder som du har gjort och som utgör en begäran om tjänster, till exempel att ställa in dina integritetsinställningar, logga in eller fylla i formulär. Du kan ställa in din webbläsare att blockera eller varna dig om",
     "cookie_PERFORMANCE": "Prestanda",
     "cookie_PERFORMANCE_description": "Dessa kakor tillåter oss att räkna besök och trafikkällor så att vi kan mäta och förbättra prestandan på vår webbplats. De hjälper oss att veta vilka sidor som är mest och minst populära och se hur besökare rör sig på webbplatsen. All information som dessa kakor samlar in är aggregerad och därför anonym. Om du inte tillåter dessa kakor kommer vi inte att veta när du har besökt vår webbplats och kommer inte att kunna övervaka dess prestanda.",
+    "cookie_THIRD_PARTY": "Tredjeparts",
+    "cookie_THIRD_PARTY_description": "Dessa kakor används för att integrera innehåll från tredje part, såsom sociala medier, videor eller andra tjänster. Vi har ingen kontroll över hur dessa kakor används eller hur de samlar in information. För mer information, läs vår integritetspolicy.",
 
     "btn_save": "Spara inställningar",
     "btn_acceptAll": "Tillåt alla kakor",
     "btn_personalize": "Anpassa",
     "btn_acceptNecessary": "Tillåt nödvändiga kakor",
+
+    "outdated": "En eller flera kakainställningar saknas/är föråldrade. Granska dina inställningar.",
     
+    "consent": "Medieteknik ber om ditt samtycke att använda dina personuppgifter för att:",
+    "personalized": "Personlig reklam och innehåll, reklam och innehållsmätning, publikforskning och tjänsteutveckling",
+    "store": "Lagra och/eller komma åt information på en enhet",
+
     "aboutPrivacy": "Om din integritet",
     "privacyStatement": "Vi behandlar personuppgifter som samlas in när du besöker webbplatsen. Behandlingen av data syftar till att integrera innehåll, externa tjänster och element från tredje part, statistisk analys/mätning, personlig reklam och integration av sociala medier. Detta tjänar till att skydda våra legitima intressen i optimering och ekonomisk drift av vår webbplats, i enlighet med Art. 6(1) lit. f i den allmänna dataskyddsförordningen (GDPR)",
     "privacyPolicy": "Integritetspolicy",

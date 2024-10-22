@@ -1,23 +1,40 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import {
-  COOKIE_CONSENT_STORAGE_KEY,
-  DEFAULT_COOKIE_SETTINGS,
-} from '@/utility/CookieManager'
-import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { DEFAULT_COOKIE_SETTINGS } from '@/utility/CookieManager'
+import { LOCAL_STORAGE_COOKIE_CONSENT } from '@/utility/LocalStorage'
+import { JSX, useEffect, useState } from 'react'
 import DetailedCookiePopup from './DetailedCookie'
 
-export default function CookiePopup({ language }: { language: string }) {
-  const { t } = useTranslation(language, 'cookies')
+interface Props {
+  language: string
+}
 
+/**
+ * @name CookiePopup
+ * @description The basic cookie popup that asks the user to accept cookies, or to personalize their cookie settings.
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the application.
+ * @returns {JSX.Element} The CookiePopup component.
+ */
+export default function CookiePopup({ language }: Props): JSX.Element {
+  const { t } = useTranslation(language, 'cookies')
   const [showPopup, setShowPopup] = useState(false)
+  const [message, setMessage] = useState('')
   const [showDetailedPopup, setShowDetailedPopup] = useState(false)
 
-  async function saveSettings(allowedAll: boolean = false) {
+  /**
+   * @name saveSettings
+   * @description Saves the cookie settings to the local storage.
+   *
+   * @param {boolean} allowedAll - Whether all cookies are allowed or not. Defaults to false.
+   */
+  function saveSettings(allowedAll: boolean = false) {
     if (!allowedAll) {
       window.localStorage.setItem(
-        COOKIE_CONSENT_STORAGE_KEY,
+        LOCAL_STORAGE_COOKIE_CONSENT,
         JSON.stringify(DEFAULT_COOKIE_SETTINGS)
       )
     }
@@ -28,16 +45,30 @@ export default function CookiePopup({ language }: { language: string }) {
       ANALYTICS: true,
       PERFORMANCE: true,
       ADVERTISING: true,
+      THIRD_PARTY: true,
     }
     window.localStorage.setItem(
-      COOKIE_CONSENT_STORAGE_KEY,
+      LOCAL_STORAGE_COOKIE_CONSENT,
       JSON.stringify(settings)
     )
   }
 
   useEffect(() => {
-    window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY) === null &&
+    const cookieSettings = window.localStorage.getItem(
+      LOCAL_STORAGE_COOKIE_CONSENT
+    )
+    if (!cookieSettings) {
       setShowPopup(true)
+    } else {
+      // Check if cookie settings contains all necessary keys
+      const settings = JSON.parse(cookieSettings)
+      const keys = Object.keys(DEFAULT_COOKIE_SETTINGS)
+      const hasAllKeys = keys.every((key) => settings.hasOwnProperty(key))
+      if (!hasAllKeys) {
+        setMessage(t('outdated'))
+        setShowPopup(true)
+      }
+    }
   }, [setShowPopup])
 
   if (!showPopup) return <></>
@@ -48,48 +79,50 @@ export default function CookiePopup({ language }: { language: string }) {
       aria-modal='true'
       className={`w-full h-screen fixed grid place-items-center top-0 bg-black/30 z-50`}
     >
-      <div className='w-full sm:w-[512px] h-[512px] fixed bg-white border-2 border-black/50 rounded-2xl'>
-        <div className='flex flex-col mx-8 h-full justify-between'>
-          <div className='h-1/2 flex flex-col justify-evenly'>
+      <div className='w-full sm:w-[512px] h-fit fixed bg-white dark:bg-[#111] border-2 border-black/50 dark:border-yellow-400/50 rounded-md'>
+        <div className='flex flex-col px-8 gap-4'>
+          <div className='h-fit flex flex-col gap-4 pt-8'>
             <h2 id='cookie-title' className='font-bold text-4xl'>
               {t('title')}
             </h2>
-            <p id='cookie-description' className='text-xl'>
+            <p id='cookie-description' className=''>
               {t('description')}
             </p>
+            {message && <p className='text-red-500 text-sm'>{message}</p>}
           </div>
-          <div className='h-5/6 flex flex-col items-start justify-evenly'>
-            <button
-              className='w-full h-16 border-2 border-transparent bg-yellow-600 text-white rounded-2xl'
+          <div className='h-fit flex flex-col gap-4 items-start pb-8'>
+            <Button
+              className='w-full h-16'
               onClick={() => {
                 saveSettings(true)
                 setShowPopup(false)
               }}
             >
               {t('btn_acceptAll')}
-            </button>
-            <button
-              className='w-full h-16 border-2 border-transparent bg-yellow-600 text-white rounded-2xl'
+            </Button>
+            <Button
+              className='w-full h-16'
               onClick={() => {
                 setShowDetailedPopup(true)
               }}
             >
               {t('btn_personalize')}
-            </button>
-            <button
-              className='w-full h-16 border-2 border-black bg-white text-black rounded-2xl'
+            </Button>
+            <Button
+              variant={'secondary'}
+              className='w-full h-16 '
               onClick={() => {
                 saveSettings()
                 setShowPopup(false)
               }}
             >
               {t('btn_acceptNecessary')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
       {showDetailedPopup && (
-        <DetailedCookiePopup params={{ language, popup: setShowPopup }} />
+        <DetailedCookiePopup language={language} popup={setShowPopup} />
       )}
     </div>
   )

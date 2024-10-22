@@ -6,7 +6,6 @@ import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/toaster'
 import { LanguageCode } from '@/models/Language'
 import ClientProviders from '@/providers/ClientProviders'
-import ServerProviders from '@/providers/ServerProviders'
 import { dir } from 'i18next'
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
@@ -75,15 +74,13 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
 
   return (
     <>
-      <ServerProviders>
-        <ClientProviders language={params.language}>
-          <Header language={params.language} />
-          <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>
-          <Footer language={params.language} />
-          <CookiePopup language={params.language} />
-          <Toaster />
-        </ClientProviders>
-      </ServerProviders>
+      <ClientProviders language={params.language}>
+        <Header language={params.language} />
+        <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>
+        <Footer language={params.language} />
+        <CookiePopup language={params.language} />
+        <Toaster />
+      </ClientProviders>
       <Script id='language-attributes'>
         {`
             document.documentElement.lang = "${params.language}";

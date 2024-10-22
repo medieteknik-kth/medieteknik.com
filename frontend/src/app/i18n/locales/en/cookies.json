@@ -1,6 +1,6 @@
 {
     "title": "🍪 Cookies",
-    "description": "This website uses cookies to ensure you get the best experience on our website.",
+    "description": "This website uses cookies to ensure you get the best experience on our website. Review your settings via the cog icon in the top right.",
     
     "cookie_ADVERTISING": "Advertising",
     "cookie_ADVERTISING_description": "These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites. They do not store directly personal information, but are based on uniquely identifying your browser and internet device. If you do not allow these cookies, you will experience less targeted advertising.",
@@ -12,11 +12,19 @@
     "cookie_NECESSARY_description": "These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as setting your privacy preferences, logging in or filling in forms. You can set your browser to block or alert you about these cookies, but some parts of the site will not then work. These cookies do not store any personally identifiable information.",
     "cookie_PERFORMANCE": "Performance",
     "cookie_PERFORMANCE_description": "These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site. All information these cookies collect is aggregated and therefore anonymous. If you do not allow these cookies we will not know when you have visited our site, and will not be able to monitor its performance.",
+    "cookie_THIRD_PARTY": "Third Party",
+    "cookie_THIRD_PARTY_description": "These cookies are used to integrate third party content, such as social media, videos or other services. We have no control over how these cookies are used or how they collect information. For more information read our privacy policy.",
 
     "btn_save": "Save preferences",
     "btn_acceptAll": "Accept all",
     "btn_personalize": "Personalize",
     "btn_acceptNecessary": "Accept necessary cookies only",
+
+    "outdated": "One or more cookie settings are missing/outdated. Review your settings.",
+
+    "consent": "Medieteknik asks for your consent to use your personal data to:",
+    "personalized": "Personalised advertising and content, advertising and content measurement, audience research and services development",
+    "store": "Store and/or access information on a device",
 
     "aboutPrivacy": "About Your Privacy",
     "privacyStatement": "We process personal data collected when visiting the website. The processing of data serves to integrate content, external services and elements of third parties, statistical analysis / measurement, personalized advertising and the integration of social media. This serves the protection of our legitimate interests in the optimization and the economic operation of our website, in accordance with Art. 6(1) lit. f of the General Data Protection Regulation (GDPR)",
