@@ -1,9 +1,18 @@
 'use client'
 
+import getCroppedImg from '@/app/[language]/account/util/cropImage'
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -14,13 +23,18 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { accountSchema } from '@/schemas/user/account'
 import { API_BASE_URL } from '@/utility/Constants'
+import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
-import { useState } from 'react'
+import { JSX, useMemo, useState } from 'react'
+import Dropzone from 'react-dropzone'
+import Cropper from 'react-easy-crop'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'
@@ -39,18 +53,47 @@ interface Props {
   language: string
 }
 
-export default function AccountForm({ language }: Props) {
+/**
+ * @name AccountForm
+ * @description The component that renders the account form, allowing the user to update their account settings
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the account form
+ *
+ * @returns {JSX.Element} The account form
+ */
+export default function AccountForm({ language }: Props): JSX.Element {
+  // TODO: Improve the state management.
+  // TODO: Split the form into smaller components.
   const { t } = useTranslation(language, 'account')
   const { student } = useAuthentication()
   const [profilePicturePreview, setProfilePicturePreview] =
     useState<File | null>()
+  const [successfulProfilePictureUpload, setSuccessfulProfilePictureUpload] =
+    useState(false)
+  const [uploadImageDialogOpen, setUploadImageDialogOpen] = useState(false)
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<{
+    x: number
+    y: number
+    width: number
+    height: number
+  } | null>(null)
+  const [croppedImage, setCroppedImage] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string>('')
 
-  if (!student) return null
+  if (!student) return <></> // TODO: Something better?
   const {
     data: csrf,
     error,
     isLoading,
   } = useSWR(`${API_BASE_URL}/csrf-token`, fetcher)
+
+  const profilePreviewURL = useMemo(() => {
+    if (!profilePicturePreview) return null
+    return URL.createObjectURL(profilePicturePreview)
+  }, [profilePicturePreview])
 
   if (error) return <div>Failed to load</div>
 
@@ -75,7 +118,7 @@ export default function AccountForm({ language }: Props) {
   })
 
   if (isLoading) return <Loading language={language} />
-  if (!csrf) return null
+  if (!csrf) return <Loading language={language} />
 
   const postAccountForm = async (data: z.infer<typeof accountSchema>) => {
     const formData = new FormData()
@@ -118,6 +161,49 @@ export default function AccountForm({ language }: Props) {
     }
   }
 
+  const onCropChange = (crop: { x: number; y: number }) => {
+    setCrop(crop)
+  }
+
+  const onCropComplete = (
+    croppedArea: any,
+    croppedAreaPixels: {
+      x: number
+      y: number
+      width: number
+      height: number
+    }
+  ) => {
+    setCroppedAreaPixels(croppedAreaPixels)
+  }
+
+  const onZoomChange = (zoom: number) => {
+    setZoom(zoom)
+  }
+
+  const showCroppedImage = async () => {
+    try {
+      if (!profilePreviewURL) return
+      if (!croppedAreaPixels) return
+      const croppedImage = await getCroppedImg(
+        profilePreviewURL,
+        croppedAreaPixels,
+        0
+      )
+      if (!croppedImage) return
+      accountForm.setValue(
+        'profilePicture',
+        new File([croppedImage], 'profilePicture', {
+          type: 'image/jpeg',
+        })
+      )
+      setCroppedImage(croppedImage)
+      setSuccessfulProfilePictureUpload(true)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <Form {...accountForm}>
       <div className='flex justify-center mb-8 2xl:mb-0'>
@@ -128,37 +214,175 @@ export default function AccountForm({ language }: Props) {
           <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
             {t('tab_account_settings')}
           </h2>
+
+          <div className='flex mb-1'>
+            <Avatar className='w-24 h-24 border-2 border-black'>
+              <AvatarImage
+                src={
+                  croppedImage && successfulProfilePictureUpload
+                    ? croppedImage
+                    : student.profile_picture_url
+                }
+                alt='Preview Profile Picture'
+              />
+              <AvatarFallback>
+                <Image src={Logo} alt='Logo' width={96} height={96} />
+              </AvatarFallback>
+            </Avatar>
+            <div className='flex flex-col justify-center ml-2'>
+              <FormLabel className='pb-1'>
+                {t('account_profile_picture')}
+              </FormLabel>
+              <FormDescription>
+                {t('account_profile_picture_requirements')}
+              </FormDescription>
+            </div>
+          </div>
+          <Dialog
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                setProfilePicturePreview(null)
+                setCrop({ x: 0, y: 0 })
+                setZoom(1)
+                setSuccessfulProfilePictureUpload(false)
+                setUploadImageDialogOpen(false)
+              } else {
+                setUploadImageDialogOpen(true)
+              }
+            }}
+            open={uploadImageDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button variant={'outline'}>
+                {t('account_change_profile_picture')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('account_change_profile_picture')}</DialogTitle>
+                <DialogDescription>
+                  {t('account_change_profile_picture.description')}
+                </DialogDescription>
+              </DialogHeader>
+              {profilePicturePreview && profilePreviewURL ? (
+                <div className='flex flex-col gap-4'>
+                  <div className='relative h-96'>
+                    <Cropper
+                      image={profilePreviewURL}
+                      crop={crop}
+                      zoom={zoom}
+                      aspect={1 / 1}
+                      cropShape='round'
+                      onCropChange={onCropChange}
+                      onCropComplete={onCropComplete}
+                      onZoomChange={onZoomChange}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-2'>
+                    <Label>{t('account_change_profile_picture.zoom')}</Label>
+                    <Slider
+                      min={1}
+                      max={3}
+                      step={0.1}
+                      value={[zoom]}
+                      onValueChange={([newZoom]) => setZoom(newZoom)}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-2'>
+                    <Button
+                      variant={'destructive'}
+                      onClick={() => {
+                        setProfilePicturePreview(null)
+                      }}
+                    >
+                      {t('account_change_profile_picture.cancel')}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        showCroppedImage()
+                        setUploadImageDialogOpen(false)
+                      }}
+                    >
+                      {t('account_change_profile_picture.save')}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Dropzone
+                  onDrop={(acceptedFiles) => {
+                    setProfilePicturePreview(acceptedFiles[0])
+                  }}
+                  accept={{
+                    'image/jpeg': ['.jpeg', '.jpg'],
+                    'image/png': ['.png'],
+                    'image/webp': ['.webp'],
+                  }}
+                  maxSize={MAX_FILE_SIZE}
+                  onDropRejected={(files) => {
+                    const file = files[0]
+                    if (file.errors[0].code === 'file-too-large') {
+                      setUploadError(
+                        t('account_change_profile_picture.error.large')
+                      )
+                    } else if (file.errors[0].code === 'file-invalid-type') {
+                      setUploadError(
+                        t('account_change_profile_picture.error.incorrect')
+                      )
+                    }
+                  }}
+                >
+                  {({ getRootProps, getInputProps }) => (
+                    <div {...getRootProps()}>
+                      {uploadError && (
+                        <p className='text-sm text-red-500'>{uploadError}</p>
+                      )}
+                      <input {...getInputProps()} />
+
+                      <div
+                        className='h-96 flex flex-col items-center justify-center gap-2 hover:!bg-neutral-200 dark:hover:!bg-neutral-800 rounded-md transition-colors cursor-pointer'
+                        onDragEnter={(event) => {
+                          // Check HTML element type class name for dark mode
+                          if (
+                            document.documentElement.classList.contains('dark')
+                          ) {
+                            event.currentTarget.style.backgroundColor =
+                              '#262626'
+                          } else {
+                            event.currentTarget.style.backgroundColor =
+                              '#E5E5E5'
+                          }
+                        }}
+                        onDragLeave={(event) => {
+                          if (
+                            document.documentElement.classList.contains('dark')
+                          ) {
+                            event.currentTarget.style.backgroundColor =
+                              '#0C0A09'
+                          } else {
+                            event.currentTarget.style.backgroundColor = 'white'
+                          }
+                        }}
+                      >
+                        <ArrowUpOnSquareIcon className='w-8 h-8' />
+                        <p>
+                          {t(
+                            'account_change_profile_picture.upload_profile_picture'
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </Dropzone>
+              )}
+            </DialogContent>
+          </Dialog>
           <FormField
             name='profilePicture'
             render={({ field }) => (
               <FormItem className='flex flex-col justify-around'>
-                <div className='flex mb-1'>
-                  <Avatar className='w-24 h-24 border-2 border-black'>
-                    <AvatarImage
-                      src={
-                        profilePicturePreview
-                          ? URL.createObjectURL(profilePicturePreview)
-                          : student.profile_picture_url
-                      }
-                      alt='Preview Profile Picture'
-                    />
-                    <AvatarFallback>
-                      <Image src={Logo} alt='Logo' width={96} height={96} />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className='flex flex-col justify-center ml-2'>
-                    <FormLabel className='pb-1'>
-                      {t('account_profile_picture')}
-                    </FormLabel>
-                    <FormDescription>
-                      {t('account_profile_picture_requirements')}
-                    </FormDescription>
-                  </div>
-                </div>
-
                 <FormControl>
                   <Input
-                    type='file'
+                    type='hidden'
                     accept={ACCEPTED_IMAGE_TYPES.join(',')}
                     value={field.value ? undefined : ''}
                     onChange={(event) => {
@@ -247,6 +471,7 @@ export default function AccountForm({ language }: Props) {
                   <FormControl>
                     <Input
                       {...field}
+                      type='hidden'
                       placeholder='Second Email (optional)'
                       title='This email is optional'
                       autoComplete='email'
@@ -265,6 +490,7 @@ export default function AccountForm({ language }: Props) {
                   <FormControl>
                     <Input
                       {...field}
+                      type='hidden'
                       placeholder='Third Email (optional)'
                       title='This email is optional'
                       autoComplete='email'
@@ -278,14 +504,14 @@ export default function AccountForm({ language }: Props) {
               )}
             />
           </div>
-          <div className='flex *:w-1/2'>
+          <div className='flex flex-col lg:flex-row lg:*:w-1/2'>
             <FormField
               control={accountForm.control}
               name='currentPassword'
               render={({ field }) => (
                 <FormItem className='pr-2'>
                   <FormLabel>{t('account_password')}</FormLabel>
-                  <FormDescription>
+                  <FormDescription className='h-10'>
                     {t('account_current_password_description')}
                   </FormDescription>
                   <FormControl>
@@ -304,8 +530,8 @@ export default function AccountForm({ language }: Props) {
               control={accountForm.control}
               name='newPassword'
               render={({ field }) => (
-                <FormItem className='pl-2 mt-8'>
-                  <FormDescription>
+                <FormItem className='lg:pl-2 mt-2 lg:mt-8'>
+                  <FormDescription className='min-h-10'>
                     {t('account_new_password_description')}
                   </FormDescription>
                   <FormControl>

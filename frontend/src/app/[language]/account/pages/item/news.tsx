@@ -1,8 +1,10 @@
 'use client'
+
 import { NewsUpload } from '@/components/dialogs/NewsUpload'
+import Loading from '@/components/tooltips/Loading'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   Tooltip,
   TooltipContent,
@@ -22,20 +24,33 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { JSX, useState } from 'react'
 import useSWR from 'swr'
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => res.json() as Promise<NewsPagination>)
 
-export default function AccountNewsPage({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name AccountNewsPage
+ * @description The component that renders the news page, allowing the user to view and manage their news
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the news page
+ *
+ * @returns {JSX.Element} The news page
+ */
+export default function AccountNewsPage({ language }: Props): JSX.Element {
   const [copiedLink, setCopiedLink] = useState(-1)
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/news?author=1&language=${language}`,
     fetcher
   )
   const { student } = useAuthentication()
-  if (!student) return null
+  if (!student) return <></> // TODO: Something better?
 
   if (error)
     return (
@@ -43,7 +58,7 @@ export default function AccountNewsPage({ language }: { language: string }) {
         Failed to load, try again later!
       </div>
     )
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <Loading language={language} />
 
   const handleCopyLink = (index: number) => {
     if (!data) return

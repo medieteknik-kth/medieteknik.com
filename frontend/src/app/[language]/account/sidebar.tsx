@@ -1,4 +1,5 @@
 'use client'
+
 import { Button } from '@/components/ui/button'
 import {
   ChevronLeftIcon,
@@ -8,18 +9,31 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, JSX, SetStateAction, useEffect, useState } from 'react'
 import { AccountPages, Tabs } from './account'
 
+interface Props {
+  accountPages: AccountPages[]
+  currentTab: Tabs | null
+  setCurrentTab: Dispatch<SetStateAction<Tabs | null>>
+}
+
+/**
+ * @name Sidebar
+ * @description The component that renders the sidebar for the account page
+ *
+ * @param {Props} props
+ * @param {AccountPages[]} props.accountPages - The pages to display in the sidebar
+ * @param {Tabs | null} props.currentTab - The current tab
+ * @param {Dispatch<SetStateAction<Tabs | null>>} props.setCurrentTab - The function to set the current tab
+ *
+ * @returns {JSX.Element} The sidebar
+ */
 export default function Sidebar({
   accountPages,
   currentTab,
   setCurrentTab,
-}: {
-  accountPages: AccountPages[]
-  currentTab: Tabs | null
-  setCurrentTab: Dispatch<SetStateAction<Tabs | null>>
-}) {
+}: Props): JSX.Element {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const [isLocked, setIsLocked] = useState(false)

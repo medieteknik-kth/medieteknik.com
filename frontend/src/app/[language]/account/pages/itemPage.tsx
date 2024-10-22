@@ -1,7 +1,21 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { JSX } from 'react'
 import AccountNewsPage from './item/news'
 
-export default function ItemsPage({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name ItemsPage
+ * @description The component that renders the items page, allowing the user to view news, documents and albums
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the items page
+ *
+ * @returns {JSX.Element} The items page
+ */
+export default function ItemsPage({ language }: Props): JSX.Element {
   return (
     <section className='grow h-full relative dark:bg-[#111]'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
