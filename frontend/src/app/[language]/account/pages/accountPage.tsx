@@ -1,13 +1,27 @@
 'use client'
-import React from 'react'
+
+import { useTranslation } from '@/app/i18n/client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Loading from '@components/tooltips/Loading'
-import { useTranslation } from '@/app/i18n/client'
+import React, { JSX } from 'react'
 const AccountForm = React.lazy(() => import('./account/accountForm'))
 const ProfileForm = React.lazy(() => import('./account/profileForm'))
 const ReceptionForm = React.lazy(() => import('./account/receptionForm'))
 
-export default function AccountProfile({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name AccountProfile
+ * @description The component that renders the account profile page, allowing the user to view and edit their account and profile settings
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the account profile page
+ *
+ * @returns {JSX.Element} The account profile page
+ */
+export default function AccountProfile({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'account')
   return (
     <section className='grow h-fit dark:bg-[#111]'>

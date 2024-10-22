@@ -1,11 +1,7 @@
 'use client'
-import {
-  ArrowTopRightOnSquareIcon,
-  Square2StackIcon,
-  Bars3Icon,
-  Cog8ToothIcon,
-} from '@heroicons/react/24/outline'
-import { useState } from 'react'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -13,10 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import Logo from 'public/images/logo.webp'
-import Link from 'next/link'
 import {
   Table,
   TableBody,
@@ -26,6 +18,15 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import {
+  ArrowTopRightOnSquareIcon,
+  Bars3Icon,
+  Cog8ToothIcon,
+  Square2StackIcon,
+} from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import Logo from 'public/images/logo.webp'
+import { JSX, useState } from 'react'
 
 const committeeData = [
   {
@@ -94,8 +95,22 @@ const committeeData = [
   },
 ]
 
-export default function CommitteesPage({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name CommitteesPage
+ * @description This is the page for the user to view their committee affiliations.
+ *
+ * @param {Props} props
+ * @param {string} props.language The language of the page.
+ *
+ * @returns {JSX.Element} The page for the user to view their committee affiliations.
+ */
+export default function CommitteesPage({ language }: Props): JSX.Element {
   const { committees } = useAuthentication()
+  // TODO: Redesign this component.
 
   if (committees.length === 0) {
     return (

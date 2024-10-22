@@ -1,4 +1,6 @@
 'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import { supportedLanguages } from '@/app/i18n/settings'
 import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
 import { Button } from '@/components/ui/button'
@@ -8,14 +10,28 @@ import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { JSX, useState } from 'react'
 
-export default function PreferencesPage({ language }: { language: string }) {
+interface Props {
+  language: string
+}
+
+/**
+ * @name PreferencesPage
+ * @description The component that renders the preferences page, allowing the user to change their language, theme and privacy settings
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the preferences page
+ *
+ * @returns {JSX.Element} The preferences page
+ */
+export default function PreferencesPage({ language }: Props): JSX.Element {
   const router = useRouter()
   const params = useSearchParams()
   const path = usePathname()
   const [cookiesShown, setCookiesShown] = useState(false)
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation(language, 'preferences')
 
   const switchLanguage = async (newLanguage: string) => {
     const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
@@ -27,12 +43,12 @@ export default function PreferencesPage({ language }: { language: string }) {
   return (
     <section className='grow min-h-[1080px] h-full bg-white dark:bg-[#111] text-black dark:text-white'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>
-        <h1 className='text-2xl py-4'>Preferences</h1>
+        <h1 className='text-2xl py-4'>{t('title')}</h1>
       </div>
       <div className='w-full h-full flex flex-col gap-4 mt-10 px-10'>
         <section className='w-fit flex items-center flex-col justify-between '>
           <div>
-            <h2 className='text-2xl font-bold mb-2'>Language</h2>
+            <h2 className='text-2xl font-bold mb-2'>{t('language')}</h2>
             <div>
               <ul className='flex flex-col xs:flex-row'>
                 {supportedLanguages.map((lang) => (
@@ -60,14 +76,14 @@ export default function PreferencesPage({ language }: { language: string }) {
 
         <section className='w-fit flex items-center flex-col justify-between'>
           <div>
-            <h2 className='text-2xl font-bold mb-2'>Privacy</h2>
+            <h2 className='text-2xl font-bold mb-2'>{t('privacy')}</h2>
             <div>
               <Button
-                title='Cookie Settings'
+                title={t('cookie_settings')}
                 onClick={() => setCookiesShown(true)}
                 variant='secondary'
               >
-                Cookie Settings
+                {t('cookie_settings')}
               </Button>
             </div>
           </div>
@@ -76,7 +92,7 @@ export default function PreferencesPage({ language }: { language: string }) {
         <section className='w-fit flex items-center flex-col justify-between'>
           <div>
             <h2 className='text-2xl font-bold mb-2 flex items-center'>
-              Theme
+              {t('theme')}
               <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
                 Beta
               </sup>
@@ -90,7 +106,7 @@ export default function PreferencesPage({ language }: { language: string }) {
                 variant={theme === 'light' ? 'default' : 'secondary'}
               >
                 <SunIcon className='w-6 h-6 mr-2' />
-                Light Theme
+                {t('light_theme')}
               </Button>
 
               <Button
@@ -101,7 +117,7 @@ export default function PreferencesPage({ language }: { language: string }) {
                 variant={theme === 'dark' ? 'default' : 'secondary'}
               >
                 <MoonIcon className='w-6 h-6 mr-2' />
-                Dark Theme
+                {t('dark_theme')}
               </Button>
             </div>
           </div>

@@ -1,4 +1,5 @@
 'use client'
+
 import Calendar from '@/components/calendar/Calendar'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,58 +29,23 @@ import {
   MapPinIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import {
-  addDays,
-  addMonths,
-  getDay,
-  startOfMonth,
-  startOfWeek,
-  subMonths,
-  subWeeks,
-} from 'date-fns'
-import { useCallback, useState } from 'react'
+import { addMonths, subMonths } from 'date-fns'
+import { JSX, useCallback, useState } from 'react'
 
-function getPreviousMonthsLastWeekAdjusted(currentDate: Date) {
-  const startOfCurrentMonth = startOfMonth(currentDate)
-  const startOfCurrentMonthDay = getDay(startOfCurrentMonth) // 0 (Sunday) to 6 (Saturday)
-
-  const lastWeekOfPreviousMonthEnd = subWeeks(startOfCurrentMonth, 0) // One week before the start of this month
-  const lastWeekOfPreviousMonthStart = startOfWeek(lastWeekOfPreviousMonthEnd)
-
-  // Adjust to get the days Monday to Friday
-  let lastWeekAdjusted = []
-  for (let i = 1; i <= 5; i++) {
-    const date = addDays(lastWeekOfPreviousMonthStart, i)
-    if (date < startOfCurrentMonth) {
-      lastWeekAdjusted.push(date)
-    }
-  }
-  return lastWeekAdjusted
+interface Props {
+  language: string
 }
 
-function getNumberWithOrdinal(number: number) {
-  if (typeof number !== 'number' || isNaN(number)) {
-    return 'Not a number'
-  }
-
-  // Handle special cases for 11, 12, 13
-  if (number % 100 >= 11 && number % 100 <= 13) {
-    return number + 'th'
-  }
-
-  switch (number % 10) {
-    case 1:
-      return number + 'st'
-    case 2:
-      return number + 'nd'
-    case 3:
-      return number + 'rd'
-    default:
-      return number + 'th'
-  }
-}
-
-export default function CalendarPage({ language }: { language: string }) {
+/**
+ * @name CalendarPage
+ * @description The component that renders the calendar page, allowing the user to view and manage their calendar
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the calendar page
+ *
+ * @returns {JSX.Element} The calendar page
+ */
+export default function CalendarPage({ language }: Props): JSX.Element {
   const [openEvent, setOpenEvent] = useState<boolean>(false)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const { date, setDate } = useCalendar()

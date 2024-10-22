@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import Loading from '@/components/tooltips/Loading'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,7 +21,8 @@ import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'
 
-import type { JSX } from "react";
+import { useTranslation } from '@/app/i18n/client'
+import type { JSX } from 'react'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -51,6 +52,8 @@ export default function ProfileForm({ language }: Props): JSX.Element {
       shouldRetryOnError: false,
     }
   )
+
+  const { t } = useTranslation(language, 'account')
 
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -97,7 +100,7 @@ export default function ProfileForm({ language }: Props): JSX.Element {
           onSubmit={profileForm.handleSubmit(postProfileForm)}
         >
           <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
-            Profile Settings
+            {t('tab_account_profile_settings')}
           </h2>
           <FormField
             control={profileForm.control}
@@ -193,7 +196,7 @@ export default function ProfileForm({ language }: Props): JSX.Element {
             )}
           />
 
-          <Button type='submit'>Save</Button>
+          <Button type='submit'>{t('save_changes')}</Button>
         </form>
       </div>
     </Form>

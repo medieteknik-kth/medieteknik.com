@@ -1,6 +1,9 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
+import Loading from '@/components/tooltips/Loading'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -11,14 +14,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Logo from 'public/images/logo.webp'
-import { useEffect, useState } from 'react'
-import Loading from '@/components/tooltips/Loading'
-import { Button } from '@/components/ui/button'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { receptionSchema } from '@/schemas/user/reception'
 import { API_BASE_URL } from '@/utility/Constants'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Logo from 'public/images/logo.webp'
+import { JSX, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'
@@ -35,11 +36,21 @@ interface Props {
   language: string
 }
 
-export default function ReceptionForm({ language }: Props) {
+/**
+ * @name ReceptionForm
+ * @description The component that renders the reception form, allowing the user to update their reception (mottagning) settings
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the reception form
+ *
+ * @returns {JSX.Element} The reception form
+ */
+export default function ReceptionForm({ language }: Props): JSX.Element {
   const [receptionPicturePreview, setReceptionPicturePreview] =
     useState<File | null>(null)
   const { student } = useAuthentication()
   const [csrfToken, setCsrfToken] = useState<string | null>()
+  const { t } = useTranslation(language, 'account')
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ACCEPTED_IMAGE_TYPES = [
@@ -70,10 +81,10 @@ export default function ReceptionForm({ language }: Props) {
     }
   })
 
-  if (!student) return null
+  if (!student) return <></> // TODO: Something better?
   if (error) return <div>Failed to load</div>
   if (isLoading) return <Loading language={language} />
-  if (!csrf) return null
+  if (!csrf) return <Loading language={language} />
 
   const onSubmit = async (data: z.infer<typeof receptionSchema>) => {
     const formData = new FormData()
@@ -110,7 +121,7 @@ export default function ReceptionForm({ language }: Props) {
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
-            Reception Settings
+            {t('tab_reception')}
           </h2>
           <FormField
             name='image'

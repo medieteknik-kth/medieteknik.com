@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useTranslation } from '@/app/i18n/client'
 import AdminButton from '@/components/header/components/AdminButton'
 import CommitteeListMenu from '@/components/header/components/CommitteeListMenu'
@@ -17,7 +17,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 import Logo from 'public/images/logo.webp'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string
@@ -40,17 +40,18 @@ export default function UserLoggedIn({ language }: Props): JSX.Element {
   }
 
   let username = student.first_name + ' ' + (student.last_name || '')
+  username = username.length > 28 ? username.slice(0, 28) + '...' : username
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
-          className='w-full h-full flex justify-center xl:justify-end items-center rounded-none'
+          className='w-full h-full flex justify-center xl:justify-end items-center rounded-none gap-2'
           variant={'ghost'}
         >
-          <p className='text-sm hidden flex-col items-end mr-4 uppercase xl:flex'>
+          <p className='text-base hidden xl:flex max-w-[248px] overflow-hidden tracking-wide'>
             {username}
           </p>
-          <Avatar className='xl:mr-4 border border-white rounded-full bg-white'>
+          <Avatar className='border border-white rounded-full bg-white'>
             <AvatarImage
               src={student.profile_picture_url || Logo.src}
               width={64}

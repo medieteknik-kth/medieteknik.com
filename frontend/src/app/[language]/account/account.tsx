@@ -1,4 +1,5 @@
 'use client'
+
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
@@ -7,12 +8,12 @@ import {
   CalendarIcon,
   DocumentDuplicateIcon,
   LifebuoyIcon,
-  UserGroupIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, {
   ForwardRefExoticComponent,
+  JSX,
   LazyExoticComponent,
   Suspense,
   SVGProps,
@@ -50,7 +51,17 @@ interface Props {
   params: Promise<Params>
 }
 
-export default function AccountPage(props: Props) {
+/**
+ * @name AccountPage
+ * @description The component that renders the account page, allowing the user to view and edit their account settings
+ *
+ * @param {Props} props
+ * @param {Promise<Params>} props.params - The parameters of the account page
+ * @param {string} props.params.language - The language of the account page
+ *
+ * @returns {JSX.Element} The account page
+ */
+export default function AccountPage(props: Props): JSX.Element {
   const { language } = use(props.params)
   const [currentTab, setCurrentTab] = useState<Tabs | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -102,13 +113,14 @@ export default function AccountPage(props: Props) {
       })
     }
 
+    /*
     if (committees.length >= 1) {
       additionalPages.push({
         name: 'committees',
         icon: UserGroupIcon,
         page: CommitteesPage,
       })
-    }
+    }*/
 
     setAccountPages([...defaultPages, ...additionalPages])
   }, [committees, permissions])
