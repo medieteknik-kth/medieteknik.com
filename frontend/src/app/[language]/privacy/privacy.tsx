@@ -1,4 +1,7 @@
+import { useTranslation } from '@/app/i18n'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -8,38 +11,47 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import CookieSection from './cookie'
-import HeaderGap from '@/components/header/components/HeaderGap'
 
-export default function Privacy() {
+interface Params {
+  language: string
+}
+
+interface Props {
+  params: Promise<Params>
+}
+
+export default async function Privacy(props: Props) {
+  const { language } = await props.params
+  const { t } = await useTranslation(language, 'legal')
+
   return (
     <main className='pb-4'>
       <HeaderGap />
-      <HeadComponent title='Legal' />
+      <HeadComponent title={t('title')} />
+      <p className='text-center py-1 text-neutral-600 dark:text-neutral-300'>
+        {t('lastUpdated')} <span className='font-bold'>2024-10-23</span>
+      </p>
       <section id='policy' className='px-10 md:px-40 desktop:px-[500px]'>
-        <h1 className='text-3xl tracking-wider py-4'>Privacy Policy</h1>
+        <h1 className='text-3xl tracking-wider py-4'>{t('privacyPolicy')}</h1>
         <p>
-          Your privacy is important to us. It is our policy to respect your
-          privacy regarding any information we may collect from you across our
-          website{' '}
+          {t('privacyPolicy.description')}
           <a
             href='https://medieteknik.com'
             target='_blank'
-            className='text-sky-800'
+            className='text-sky-800 hover:text-sky-900 dark:text-sky-400 dark:hover:text-sky-500 transition-colors'
           >
             https://medieteknik.com
           </a>
         </p>
         <br />
         <p>
-          For any other issue or concern not addressed in this policy, please do
-          not hesitate to contact us at{' '}
+          {t('privacyPolicy.other')}
           <a
             href='mailto:webmaster@medieteknik.com'
             target='_blank'
-            className='text-sky-800'
+            className='text-sky-800 hover:text-sky-900 dark:text-sky-400 dark:hover:text-sky-500 transition-colors'
           >
             webmaster@medieteknik.com
           </a>
@@ -48,77 +60,56 @@ export default function Privacy() {
           id='collection'
           className='text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
         >
-          Information we collect
+          {t('informationCollection')}
         </h2>
         <Table className='w-[1000px]'>
-          <TableCaption>Information we collect</TableCaption>
+          <TableCaption>{t('informationCollection')}</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className='font-bold w-96'>
-                Why and How we process data
+                {t('informationCollection.why')}
               </TableHead>
               <TableHead className='font-bold w-96'>
-                What data is processed
+                {t('informationCollection.what')}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell>
-                We obtain your data when you sign up for an account on our site
-                using KTH SSO (Single Sign-On), for the purpose of user
-                identification and authentication.
-              </TableCell>
-              <TableCell>
-                KTH unique user ID and subsequent email assoicated with the ID
-              </TableCell>
+              <TableCell>{t('informationCollection.table.sso')}</TableCell>
+              <TableCell>{t('informationCollection.table.sso_data')}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                At will, you are able to provide us with additional information
-                about yourself. This information is optional and can be changed
-                or deleted at any time by request to{' '}
+                {t('informationCollection.table.personal')}
                 <a
                   href='mailto:webmaster@medieteknik.com?subject=Data%20Deletion%20Request&body=Please%20delete%20my%20account%20and%20all%20associated%20data%20from%20medieteknik.com%0AMy%20email:%20%3Cyour%20email%20here%3E@kth.se'
                   target='_blank'
-                  className='text-sky-800'
+                  className='text-sky-800 hover:text-sky-900 dark:text-sky-400 dark:hover:text-sky-500 transition-colors'
                 >
                   webmaster@medieteknik.com
                 </a>
                 .
               </TableCell>
-              <TableCell>
-                First Name and Last Name
-                <br />
-                Profile Picture
-                <br />
-                Social Media Links
-                <br />
-                Passwords (hashed and salted)
+              <TableCell className='whitespace-pre-line'>
+                {t('informationCollection.table.personal_data')}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                Priviliged users are able to upload documents, create news
-                posts, and host events. This information is stored for
-                historical records.
+                {t('informationCollection.table.priviliged')}
               </TableCell>
-              <TableCell>
-                News articles
-                <br />
-                Hosted events
-                <br />
-                Uploaded documents
+              <TableCell className='whitespace-pre-line'>
+                {t('informationCollection.table.priviliged_data')}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                We collect information about your committee memberships to
-                provide you with the ability to manage your memberships. This
-                information is stored for historical records. And will be
-                anonymized upon request or when deleting an account.
+                {t('informationCollection.table.committee')}
               </TableCell>
-              <TableCell>Committee Memberships</TableCell>
+              <TableCell className='whitespace-pre-line'>
+                {t('informationCollection.table.committee_data')}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -126,63 +117,42 @@ export default function Privacy() {
           id='rights'
           className='text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
         >
-          Your Rights
+          {t('rights')}
         </h2>
         <ul className='list-disc mb-2'>
+          <li>{t('rights.access')}</li>
           <li>
-            You have the right to request access to your personal data stored on
-            our site.
-          </li>
-          <li>
-            You have the right to request the deletion of your personal data
-            stored on our site.
+            {t('rights.deletion')}
             <br />
             <span className='text-sm text-red-500'>
-              Note: Deletion of your account will result in the loss of all data
-              however, all user-generated content will remain alongside
-              committee membership assoiciations. This data will be anonymized
-              for historical records.
+              {t('rights.deletion.note')}
             </span>
           </li>
-          <li>
-            You have the right to request the correction of your personal data
-            stored on our site.
-          </li>
-          <li>
-            You have the right to request the restriction of processing your
-            personal data stored on our site.
-          </li>
-          <li>
-            You have the right to object to the processing of your personal data
-            stored on our site.
-          </li>
-          <li>
-            You have the right to request the transfer of your personal data
-            stored on our site.
-          </li>
+          <li>{t('rights.correction')}</li>
+          <li>{t('rights.restriction')}</li>
+          <li>{t('rights.processing')}</li>
+          <li>{t('rights.transfer')}</li>
         </ul>
-        All requests can be made by contacting and providing proof of persons,
-        this includes first name, last name, and school email address (ending in
-        @kth.se) to{' '}
+        {t('rights.proof')}
         <a
           href='mailto:webmaster@medieteknik.com'
           target='_blank'
-          className='text-sky-800'
+          className='text-sky-800 hover:text-sky-900 dark:text-sky-400 dark:hover:text-sky-500 transition-colors'
         >
           webmaster@medieteknik.com
         </a>
         <h2
           id='3rd-party'
-          className='text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
+          className='hidden text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
         >
           3rd Party Data Processors
         </h2>
-        <p>
+        <p className='hidden'>
           We use third-party services for the following purposes to process your
           data:
         </p>
         <br />
-        <ul className='list-disc'>
+        <ul className='list-disc hidden'>
           <li>
             <p className='font-bold'>Google AdSense</p>
             <span>
@@ -225,7 +195,7 @@ export default function Privacy() {
           </li>
         </ul>
       </section>
-      <CookieSection />
+      <CookieSection language={language} />
     </main>
   )
 }

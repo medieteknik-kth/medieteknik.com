@@ -1,3 +1,11 @@
+import { fontJetBrainsMono } from '@/app/fonts'
+import { useTranslation } from '@/app/i18n'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import {
   Table,
   TableBody,
@@ -7,53 +15,47 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { fontJetBrainsMono } from '@/app/fonts'
 
-export default function CookieSection() {
+interface Props {
+  language: string
+}
+
+export default async function CookieSection({ language }: Props) {
+  const { t } = await useTranslation(language, 'legal')
   return (
     <section id='cookies' className='px-10 md:px-40 desktop:px-[500px]'>
-      <h1 className='text-3xl tracking-wider py-4'>Cookies</h1>
-      <p>
-        We use "cookies" to collect information about you and your activity
-        across our site. A cookie is a small piece of data that our website
-        stores on your computer, and accesses each time you visit, so we can
-        understand how you use our site. This helps us serve you content based
-        on preferences you have specified.
-      </p>
+      <h1 className='text-3xl tracking-wider py-4'>{t('cookies')}</h1>
+      <p>{t('cookies.description')}</p>
       <h2
         id='necessary'
         className='text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
       >
-        Necessary Cookies
+        {t('cookies.necessary')}
       </h2>
-      <p>
-        We use some cookies that are required for the site to function properly.
-        These necessary cookies are required to use the site and provide a
-        better experience.
-      </p>
+      <p>{t('cookies.necessary.description')}</p>
       <Accordion type='single' collapsible>
         <AccordionItem value='necessary'>
           <AccordionTrigger>
             <p className=''>
-              List of 1st Party Necessary Cookies{' '}
+              {t('cookies.necessary.list')}
               <ChevronUpDownIcon className='h-6 w-6 inline' />
             </p>
           </AccordionTrigger>
           <AccordionContent>
             <Table className='w-[1000px]'>
-              <TableCaption>Necessary Cookies</TableCaption>
+              <TableCaption>{t('cookies.necessary')}</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='font-bold w-96'>Cookie Name</TableHead>
-                  <TableHead className='font-bold w-96'>Purpose</TableHead>
-                  <TableHead className='font-bold w-32'>Duration</TableHead>
+                  <TableHead className='font-bold w-96'>
+                    {t('cookies.table.name')}
+                  </TableHead>
+                  <TableHead className='font-bold w-96'>
+                    {t('cookies.table.purpose')}
+                  </TableHead>
+                  <TableHead className='font-bold w-32'>
+                    {t('cookies.table.duration')}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -63,18 +65,37 @@ export default function CookieSection() {
                       session
                     </code>
                   </TableCell>
-                  <TableCell>
-                    This cookie is used to identify your session on the site. It
-                    includes your session ID and is used to maintain your login
-                    state.
-                  </TableCell>
+                  <TableCell>{t('cookies.necessary.list.session')}</TableCell>
                   <TableCell>session</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <code className={`${fontJetBrainsMono.className}`}>
+                      access_token_cookie
+                    </code>
+                  </TableCell>
+                  <TableCell>
+                    {t('cookies.necessary.list.access_token')}
+                  </TableCell>
+                  <TableCell>1h</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <code className={`${fontJetBrainsMono.className}`}>
+                      refresh_token_cookie
+                    </code>
+                  </TableCell>
+                  <TableCell>
+                    {t('cookies.necessary.list.refresh_token')}
+                  </TableCell>
+                  <TableCell>30d</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+      {/* 
       <h2
         id='functional'
         className='text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
@@ -135,7 +156,7 @@ export default function CookieSection() {
             </Table>
           </AccordionContent>
         </AccordionItem>
-      </Accordion>
+      </Accordion>*/}
       {/*
         TODO: When the following cookies are implemented, uncomment this section
         <h2 className='text-xl py-2 tracking-wide font-bold'>
