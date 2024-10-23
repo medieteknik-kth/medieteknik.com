@@ -112,7 +112,7 @@ export default async function Footer({
       </div>
       <div>
         <Button variant={'ghost'} asChild>
-          <Link href={`/privacy`}>Privacy Policy</Link>
+          <Link href={`/${language}/privacy`}>Privacy Policy</Link>
         </Button>
       </div>
       <p className='md:mt-4 xxs:mb-20 px-4 xs:px-20 xxs:px-10 text-xs grid place-items-center'>
