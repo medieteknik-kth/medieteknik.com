@@ -32,6 +32,7 @@ class Language(db.Model):
     )
 
     media_translations = db.relationship("MediaTranslation", back_populates="language")
+    album_translations = db.relationship("AlbumTranslation", back_populates="language")
     document_translations = db.relationship(
         "DocumentTranslation", back_populates="language"
     )

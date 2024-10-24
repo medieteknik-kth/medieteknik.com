@@ -130,15 +130,17 @@ def get_committee_members():
     provided_languages = retrieve_languages(request.args)
 
     # Use a single query with join to fetch all data at once
-    committee_memberships: List[StudentMembership] = retrieve_all_committee_members(provided_languages)
+    committee_memberships: List[StudentMembership] = retrieve_all_committee_members(
+        provided_languages
+    )
 
     # Construct the result from the joined data
     committee_members: List[Dict[str, Any]] = [
         {
+            "student": membership.student.to_dict(),
             "position": membership.committee_position.to_dict(
                 provided_languages=provided_languages, include_parent=True
             ),
-            "student": membership.student.to_dict(),
             "initiation_date": membership.initiation_date,
             "termination_date": membership.termination_date,
         }

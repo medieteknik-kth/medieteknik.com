@@ -41,6 +41,7 @@ def register_routes(app: Flask):
     from .public.calendar_routes import public_calendar_bp
     from .public.dynamic_routes import public_dynamic_routes_bp
     from .public.general_routes import public_bp
+    from .public.album_routes import public_album_bp
     from .public.item_routes import (
         public_news_bp,
         public_events_bp,
@@ -56,6 +57,7 @@ def register_routes(app: Flask):
     from .event_routes import events_bp
     from .document_routes import documents_bp
     from .media_routes import media_bp
+    from .album_routes import album_bp
     from .student_routes import student_bp
 
     # Public Routes
@@ -90,6 +92,9 @@ def register_routes(app: Flask):
     app.register_blueprint(
         public_media_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.MEDIA.value}"
     )
+    app.register_blueprint(
+        public_album_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.ALBUMS.value}"
+    )
 
     # Protected Routes
     app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
@@ -109,6 +114,9 @@ def register_routes(app: Flask):
     )
     app.register_blueprint(
         media_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.MEDIA.value}"
+    )
+    app.register_blueprint(
+        album_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
     )
     app.register_blueprint(author_bp, url_prefix=f"{PROTECTED_PATH}/authors")
     app.register_blueprint(

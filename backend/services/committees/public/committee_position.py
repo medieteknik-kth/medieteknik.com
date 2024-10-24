@@ -173,10 +173,10 @@ def get_all_committee_members(
     return {
         "items": [
             {
+                "student": membership.student.to_dict(),
                 "position": membership.committee_position.to_dict(
                     provided_languages=provided_languages
                 ),
-                "student": membership.student.to_dict(),
                 "initiation_date": membership.initiation_date,
                 "termination_date": membership.termination_date,
             }

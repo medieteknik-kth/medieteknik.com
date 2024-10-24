@@ -2,6 +2,7 @@
 Content Models
 """
 
+from .album import Album, AlbumTranslation
 from .media import Media, MediaTranslation
 from .author import Author, AuthorResource, AuthorType
 from .base import Item, PublishedStatus
@@ -12,6 +13,8 @@ from .news import News, NewsTranslation
 from .tags import Tag, TagTranslation
 
 __all__ = [
+    "Album",
+    "AlbumTranslation",
     "Media",
     "MediaTranslation",
     "Author",
