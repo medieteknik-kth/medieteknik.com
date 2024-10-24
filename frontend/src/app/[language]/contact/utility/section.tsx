@@ -1,8 +1,7 @@
-import React, { type JSX } from 'react';
 import { Button } from '@/components/ui/button'
 import { EnvelopeIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { ForwardRefExoticComponent, SVGProps } from 'react'
+import React, { ForwardRefExoticComponent, SVGProps, type JSX } from 'react'
 
 export interface SectionDescriptionProps {
   title: string

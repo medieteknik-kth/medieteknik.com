@@ -1,4 +1,4 @@
-import { IndividualCommitteePosition } from '@/models/Student'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Table,
   TableBody,
@@ -7,9 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import FallbackLogo from 'public/images/logo.webp'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { IndividualCommitteePosition } from '@/models/Student'
 import Image from 'next/image'
+import FallbackLogo from 'public/images/logo.webp'
 
 function TableDisplay({
   positions,

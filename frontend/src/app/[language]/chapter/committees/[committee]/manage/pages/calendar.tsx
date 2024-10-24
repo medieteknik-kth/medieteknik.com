@@ -1,7 +1,7 @@
-'use client';
+'use client'
 import Calendar from '@/components/calendar/Calendar'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 /**
  * @name CalendarPage
@@ -21,7 +21,7 @@ export default function CalendarPage({
       <h2 className='text-2xl py-3 border-b-2 border-yellow-400 mb-4'>
         Calendar
       </h2>
-      <Calendar />
+      <Calendar language={language} />
     </section>
   )
 }

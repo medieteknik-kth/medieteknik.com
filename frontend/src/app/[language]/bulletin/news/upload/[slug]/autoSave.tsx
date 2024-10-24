@@ -1,5 +1,8 @@
 'use client'
 
+import { News } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
+import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
   useCallback,
@@ -7,9 +10,6 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { API_BASE_URL } from '@/utility/Constants'
-import { News } from '@/models/Items'
-import { LanguageCode } from '@/models/Language'
 
 export const AutoSaveResult = {
   SUCCESS: 'Saved',
@@ -100,38 +100,30 @@ export function AutoSaveProvdier({
           return AutoSaveResult.FAILED_RETRY
         }
       } catch (error) {
+        console.error(error)
         return AutoSaveResult.FAILED
       }
     },
     [autoSavePossible, errorCount, slug, content]
   )
 
-  const updateContent = useCallback(
-    (newContent: News) => {
-      setContent(newContent)
-    },
-    [content]
-  )
+  const updateContent = useCallback((newContent: News) => {
+    setContent(newContent)
+  }, [])
 
-  const addNotification = useCallback(
-    (message: string) => {
-      setNotification(message)
+  const addNotification = useCallback((message: string) => {
+    setNotification(message)
 
-      setTimeout(() => {
-        setNotification((prevNotification) =>
-          prevNotification === message ? '' : prevNotification
-        )
-      }, 5000)
-    },
-    [notification]
-  )
+    setTimeout(() => {
+      setNotification((prevNotification) =>
+        prevNotification === message ? '' : prevNotification
+      )
+    }, 5000)
+  }, [])
 
-  const switchCurrentLanguage = useCallback(
-    (language: LanguageCode) => {
-      setCurrentLanguage(language)
-    },
-    [currentLanguage]
-  )
+  const switchCurrentLanguage = useCallback((language: LanguageCode) => {
+    setCurrentLanguage(language)
+  }, [])
 
   useEffect(() => {
     setInterval(() => {

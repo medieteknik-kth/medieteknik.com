@@ -236,7 +236,7 @@ export default function EventUpload({
 
             <FormField
               name='repeats'
-              render={({ field }) => (
+              render={() => (
                 <FormItem className='flex items-center mt-1'>
                   <FormControl>
                     <Checkbox

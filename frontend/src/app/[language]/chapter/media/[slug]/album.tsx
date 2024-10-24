@@ -1,5 +1,6 @@
 import { GetCommitteePublic } from '@/api/committee'
 import { GetMediaData } from '@/api/items'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Breadcrumb,
@@ -21,20 +22,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 import AlbumToolbar from './components/toolbar'
 import Video from './components/video'
-import HeaderGap from '@/components/header/components/HeaderGap'
 
-interface Props {
+interface Params {
   language: string
   slug: string
 }
 
-interface Params {
-  params: Props
+interface Props {
+  params: Promise<Params>
 }
 
 //TODO: Genrate static paths
 
-export default async function Album({ params: { language, slug } }: Params) {
+export default async function Album(props: Props) {
+  const { language, slug } = await props.params
   const committee_data: Committee | null = await GetCommitteePublic(
     slug,
     language

@@ -237,7 +237,7 @@ export function ArticleProvider({
       setFontSize: (size: number) =>
         dispatch({ type: 'SET_FONT_SIZE', payload: size }),
     }
-  }, [state])
+  }, [state, editor, setActiveMarks, updateActiveMarks])
 
   return (
     <ArticleContext.Provider value={contextValue}>

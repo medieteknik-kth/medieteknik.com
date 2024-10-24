@@ -1,8 +1,8 @@
-'use client';
+'use client'
 import { useTranslation } from '@/app/i18n/client'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +31,7 @@ import { useCalendar } from '@/providers/CalendarProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 const Status = {
   UPCOMING: 'UPCOMING',

@@ -1,4 +1,5 @@
-import Student from '@/models/Student'
+import { GetStudentEvents } from '@/api/student'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -7,9 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
+import Student from '@/models/Student'
 import { TagIcon } from '@heroicons/react/24/outline'
-import { GetStudentEvents } from '@/api/student'
 
 export default async function StudentEvents({
   language,

@@ -26,7 +26,9 @@ export default async function Header({
   language,
 }: Props): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'header')
-  const headerElements: HeaderElement[] = t('navs', { returnObjects: true })
+  const headerElements: HeaderElement[] = t('navs', {
+    returnObjects: true,
+  }) as HeaderElement[]
 
   return (
     <header

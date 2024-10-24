@@ -31,7 +31,7 @@ export default function Profile(props: Props): JSX.Element {
     } else {
       router.push(`/${language}/student/${student.student_id}`)
     }
-  }, [student, router])
+  }, [student, router, language])
 
   return <Loading language={language} />
 }

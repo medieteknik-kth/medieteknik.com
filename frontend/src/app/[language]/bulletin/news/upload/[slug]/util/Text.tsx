@@ -1,12 +1,12 @@
 import { fontJetBrainsMono } from '@/app/fonts'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { Author } from '@/models/Items'
 import Student from '@/models/Student'
 import Image from 'next/image'
-import { useCallback, useMemo } from 'react'
+import { JSX, Ref, useCallback, useMemo } from 'react'
 import { createEditor, Descendant, Editor, Text, Transforms } from 'slate'
 import { Editable, RenderElementProps, Slate, withReact } from 'slate-react'
 
@@ -79,6 +79,14 @@ export interface CustomElement {
   children: Descendant[]
 }
 
+export interface CustomText {
+  text: string
+  bold?: boolean
+  italic?: boolean
+  underline?: boolean
+  strikethrough?: boolean
+}
+
 /**
  * @interface TextType
  * @description Interface for the text type
@@ -137,12 +145,14 @@ export const textTypes: TextType[] = [
   },
 ]
 
-export const isMarkActive = (editor: Editor, format: string) => {
-  const marks: any = Editor.marks(editor)
-  return marks ? marks[format] === true : false
+export const isMarkActive = (editor: Editor, format: BooleanMark) => {
+  const marks: Omit<Text, 'text'> | null = Editor.marks(editor)
+  return marks
+    ? (marks as Record<BooleanMark, boolean>)[format] === true
+    : false
 }
 
-export const toggleMark = (editor: Editor, format: string) => {
+export const toggleMark = (editor: Editor, format: BooleanMark) => {
   const isActive = isMarkActive(editor, format)
   Transforms.setNodes(
     editor,
@@ -156,10 +166,12 @@ export const Leaf = ({
   children,
   leaf,
 }: {
-  attributes: any
-  children: any
-  leaf: any
-}) => {
+  attributes: {
+    'data-slate-leaf': true
+  }
+  children: React.ReactNode
+  leaf: CustomText
+}): JSX.Element => {
   if (leaf.bold) {
     children = <strong>{children}</strong>
   }
@@ -173,22 +185,24 @@ export const Leaf = ({
     children = <s>{children}</s>
   }
 
-  if (leaf.fontSize) {
-    children = <span className={`text-[${leaf.fontSize}px]`}>{children}</span>
-  }
-
   return <span {...attributes}>{children}</span>
 }
 
-export const Element = ({
+export const ElementDisplay = ({
   attributes,
   children,
   element,
 }: {
-  attributes: any
+  attributes: {
+    'data-slate-node': 'element'
+    'data-slate-inline'?: true
+    'data-slate-void'?: true
+    dir?: 'rtl'
+    ref: Ref<HTMLElement | null> | undefined
+  }
   children: React.ReactNode
   element: CustomElement
-}) => {
+}): JSX.Element => {
   switch (element.type) {
     case 'h1':
       return (
@@ -197,6 +211,7 @@ export const Element = ({
             textTypes.find((type) => type.value === element.type)?.style
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLHeadingElement> | undefined}
         >
           {children}
         </h1>
@@ -208,6 +223,7 @@ export const Element = ({
             textTypes.find((type) => type.value === element.type)?.style
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLHeadingElement> | undefined}
         >
           {children}
         </h2>
@@ -219,6 +235,7 @@ export const Element = ({
             textTypes.find((type) => type.value === element.type)?.style
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLHeadingElement> | undefined}
         >
           {children}
         </h3>
@@ -230,6 +247,7 @@ export const Element = ({
             textTypes.find((type) => type.value === element.type)?.style
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLHeadingElement> | undefined}
         >
           {children}
         </h4>
@@ -241,6 +259,7 @@ export const Element = ({
             textTypes.find((type) => type.value === element.type)?.style
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLQuoteElement> | undefined}
         >
           {children}
         </blockquote>
@@ -253,6 +272,7 @@ export const Element = ({
             ` ${fontJetBrainsMono.className}`
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLPreElement> | undefined}
         >
           <code>{children}</code>
         </pre>
@@ -286,6 +306,7 @@ export const Element = ({
               : 'External Link (May not be secure)'
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLAnchorElement> | undefined}
           onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
           onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
           onClick={(event) => {
@@ -311,6 +332,7 @@ export const Element = ({
           layout='responsive'
           loading='lazy'
           {...attributes}
+          ref={attributes.ref as Ref<HTMLImageElement> | undefined}
         />
       )
     case 'line break':
@@ -332,6 +354,7 @@ export const Element = ({
               includeAt={true}
               includeImage={false}
               {...attributes}
+              ref={attributes.ref as Ref<HTMLButtonElement> | undefined}
             >
               {children}
             </StudentTag>
@@ -344,6 +367,7 @@ export const Element = ({
             includeAt={true}
             includeImage={false}
             {...attributes}
+            ref={attributes.ref as Ref<HTMLButtonElement> | undefined}
           >
             {children}
           </CommitteeTag>
@@ -352,7 +376,7 @@ export const Element = ({
         return (
           <span>
             <CommitteePositionTag
-              committee_position={tag.author as CommitteePosition}
+              committeePosition={tag.author as CommitteePosition}
               includeAt={true}
               includeImage={false}
               {...attributes}
@@ -371,6 +395,7 @@ export const Element = ({
             ' block whitespace-pre-wrap break-words'
           }
           {...attributes}
+          ref={attributes.ref as Ref<HTMLParagraphElement> | undefined}
         >
           {children}
         </p>
@@ -381,7 +406,7 @@ export const Element = ({
 export const SlateDisplay = ({ value }: { value: Descendant[] }) => {
   const editor = useMemo(() => withReact(createEditor()), [])
   const renderElement = useCallback((props: RenderElementProps) => {
-    return <Element {...props} />
+    return <ElementDisplay {...props} />
   }, [])
 
   return (

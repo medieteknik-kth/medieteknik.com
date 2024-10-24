@@ -28,7 +28,7 @@ import { editCommitteeSchema } from '@/schemas/committee/edit'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -100,7 +100,7 @@ export default function EditCommittee({
     resolver: zodResolver(editCommitteeSchema),
     defaultValues: {
       title: committee.translations[0].title,
-      translations: supportedLanguages.map((lang, index) => ({
+      translations: supportedLanguages.map((lang) => ({
         language_code: lang,
         description:
           committee.translations.find(

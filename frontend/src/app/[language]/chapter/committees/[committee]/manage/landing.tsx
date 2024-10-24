@@ -1,14 +1,4 @@
-import Logo from 'public/images/logo.webp'
-import {
-  HomeIcon,
-  UserGroupIcon,
-  DocumentDuplicateIcon,
-  NewspaperIcon,
-  CalendarDaysIcon,
-} from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,10 +8,19 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import Committee from '@/models/Committee'
+import {
+  CalendarDaysIcon,
+  DocumentDuplicateIcon,
+  HomeIcon,
+  NewspaperIcon,
+  UserGroupIcon,
+} from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import Link from 'next/link'
+import Logo from 'public/images/logo.webp'
 import Content from './content'
 import EditCommittee from './edit'
-import Committee from '@/models/Committee'
-import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Props {
   language: string

@@ -1,35 +1,12 @@
-import { HeadComponent } from '@/components/static/Static'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  ArrowTrendingUpIcon,
   ChevronDownIcon,
-  Cog8ToothIcon,
-  NewspaperIcon,
   PresentationChartLineIcon,
-  ServerStackIcon,
   UserGroupIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import HeaderGap from '@/components/header/components/HeaderGap'
 
 export default function Admin({
   params: { language },

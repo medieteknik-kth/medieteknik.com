@@ -1,12 +1,11 @@
 'use client'
 
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import CommitteeManage from './manage'
 import Loading from '@/components/tooltips/Loading'
-import { Permission, Role } from '@/models/Permission'
-import { useEffect, useState, type JSX } from 'react';
-import { useRouter } from 'next/navigation'
 import Committee from '@/models/Committee'
+import { Permission, Role } from '@/models/Permission'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState, type JSX } from 'react'
 import CommitteeLandingPage from './landing'
 
 interface Props {
@@ -56,7 +55,16 @@ export default function CommitteeRedirect({
     } else {
       setIsLoading(false)
     }
-  }, [committees, role, permissions])
+  }, [
+    committees,
+    role,
+    permissions,
+    authLoading,
+    committee,
+    committeeData.email,
+    language,
+    router,
+  ])
 
   if (isLoading || authLoading) {
     return <Loading language={language} />

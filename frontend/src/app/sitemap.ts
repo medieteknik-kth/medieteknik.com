@@ -1,10 +1,10 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next'
 
 /**
  * @name sitemap
  * @description Generate the sitemap.xml file for the site
- * 
- * @returns {MetadataRoute.Sitemap} The sitemap.xml configuration 
+ *
+ * @returns {MetadataRoute.Sitemap} The sitemap.xml configuration
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -14,9 +14,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en',
-          'sv-SE': 'https://www.medieteknik.com/sv'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/bulletin',
@@ -25,9 +25,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/bulletin',
-          'sv-SE': 'https://www.medieteknik.com/sv/bulletin'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/bulletin',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/bulletin/news',
@@ -36,9 +36,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/bulletin/news',
-          'sv-SE': 'https://www.medieteknik.com/sv/bulletin/news'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/bulletin/news',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/chapter',
@@ -46,9 +46,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/chapter',
-          'sv-SE': 'https://www.medieteknik.com/sv/chapter'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/chapter',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/chapter/committees',
@@ -56,9 +56,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/chapter/committees',
-          'sv-SE': 'https://www.medieteknik.com/sv/chapter/committees'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/chapter/committees',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/chapter/positions',
@@ -66,9 +66,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/chapter/positions',
-          'sv-SE': 'https://www.medieteknik.com/sv/chapter/positions'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/chapter/positions',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/chapter/documents',
@@ -76,9 +76,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/chapter/documents',
-          'sv-SE': 'https://www.medieteknik.com/sv/chapter/documents'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/chapter/documents',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/chapter/graphic',
@@ -86,9 +86,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/chapter/graphic',
-          'sv-SE': 'https://www.medieteknik.com/sv/chapter/graphic'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/chapter/graphic',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/chapter/media',
@@ -96,9 +96,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/chapter/media',
-          'sv-SE': 'https://www.medieteknik.com/sv/chapter/media'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/chapter/media',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/education',
@@ -106,18 +106,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/education',
-          'sv-SE': 'https://www.medieteknik.com/sv/education'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/education',
+        },
+      },
     },
     {
       url: 'https://www.medieteknik.com/login',
       alternates: {
         languages: {
           'en-GB': 'https://www.medieteknik.com/en/login',
-          'sv-SE': 'https://www.medieteknik.com/sv/login'
-        }
-      }
+          'sv-SE': 'https://www.medieteknik.com/sv/login',
+        },
+      },
     },
   ]
 }

@@ -69,7 +69,7 @@ export default function CookiePopup({ language }: Props): JSX.Element {
         setShowPopup(true)
       }
     }
-  }, [setShowPopup])
+  }, [t, setShowPopup])
 
   if (!showPopup) return <></>
 

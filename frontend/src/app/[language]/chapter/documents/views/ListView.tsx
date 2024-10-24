@@ -24,7 +24,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
-import { MouseEvent, useCallback, type JSX } from 'react';
+import { MouseEvent, useCallback, type JSX } from 'react'
 
 interface Props {
   language: string
@@ -87,7 +87,7 @@ export default function ListView({ language, type }: Props): JSX.Element {
         return committee.logo_url
       case 'COMMITTEE_POSITION':
         const committeePosition = author as CommitteePosition
-        return null
+        return committeePosition.committee?.logo_url || ''
       default:
         throw new Error('Unknown author type')
     }

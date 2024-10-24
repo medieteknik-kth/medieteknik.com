@@ -1,11 +1,8 @@
-import { StudentTag } from '@/components/tags/StudentTag'
+import StudentTag from '@/components/tags/StudentTag'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import {
-  CommitteePosition,
-  CommitteePositionCategory,
-} from '@/models/Committee'
-import Student from '@/models/Student'
+import { CommitteePositionCategory } from '@/models/Committee'
+import { StudentMembership } from '@/models/Student'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -16,12 +13,7 @@ export default async function Officials({
   members,
 }: {
   language: string
-  members: {
-    position: CommitteePosition
-    student: Student
-    initiation_date: string
-    termination_date?: string
-  }[]
+  members: StudentMembership[]
 }) {
   const categories: CommitteePositionCategory[] = [
     'STYRELSEN',
@@ -41,12 +33,12 @@ export default async function Officials({
     }
   })
 
-  const hasImage = (member: any) => {
+  const hasImage = (member: StudentMembership) => {
     return !!member.student.profile_picture_url
   }
 
   return (
-    (<section id='officials' className='w-full flex flex-col gap-4'>
+    <section id='officials' className='w-full flex flex-col gap-4'>
       {categories.map((category, index) => (
         <div key={index}>
           <h2 className='text-center sm:text-start text-lg sm:text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
@@ -143,6 +135,6 @@ export default async function Officials({
           <Separator className='w-full sm:w-1/3 mt-4 bg-yellow-400' />
         </div>
       ))}
-    </section>)
-  );
+    </section>
+  )
 }

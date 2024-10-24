@@ -1,14 +1,6 @@
 'use client'
-import { Section } from '@/components/static/Static'
-import { useState, type JSX } from 'react';
-import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
-import {
-  getLink,
-  getHP,
-  getCategoryColor,
-  getCategoryPercentage,
-} from '../constants'
+import { Section } from '@/components/static/Static'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,6 +10,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import Link from 'next/link'
+import { useState, type JSX } from 'react'
+import {
+  getCategoryColor,
+  getCategoryPercentage,
+  getHP,
+  getLink,
+} from '../constants'
 
 /**
  * @interface Course
@@ -84,9 +84,11 @@ export default function Courses({
   const [detailedViewOpen, setDetailedViewOpen] = useState(false)
   const [currentView, setCurrentView] = useState<FrontendCategory | null>(null)
   const { t } = useTranslation(language, 'education')
-  const categories: BackendCategory[] = t('categories', { returnObjects: true })
+  const categories: BackendCategory[] = t('categories', {
+    returnObjects: true,
+  }) as BackendCategory[]
 
-  let categoryMetadataMap: FrontendCategory[] = categories.map((category) => {
+  const categoryMetadataMap: FrontendCategory[] = categories.map((category) => {
     if (!category.courses)
       return {
         title: category.title,

@@ -104,7 +104,7 @@ function TranslatedInputs({
 }
 
 export default function MediaUpload({ language, author }: Props) {
-  const [value, setValue] = useState('image')
+  const [value, _] = useState('image')
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { student } = useAuthentication()
   const { setMediaTotal, total_media } = useCommitteeManagement()

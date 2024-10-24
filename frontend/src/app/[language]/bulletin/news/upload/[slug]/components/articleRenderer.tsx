@@ -2,14 +2,13 @@
 
 import { News } from '@/models/Items'
 import { useArticle } from '@/providers/ArticleProvider'
-import { useCallback, useMemo, type JSX } from 'react';
+import { useCallback, useMemo, type JSX } from 'react'
 import { Descendant, Editor, Transforms } from 'slate'
 import { Editable, RenderElementProps, Slate } from 'slate-react'
 import { AutoSaveResult, useAutoSave } from '../autoSave'
-import { Element, Leaf, toggleMark } from '../util/Text'
+import { ElementDisplay, Leaf, toggleMark } from '../util/Text'
 
 interface Props {
-  language: string
   news_data: News
 }
 
@@ -23,10 +22,7 @@ interface Props {
  *
  * @returns {JSX.Element} The article editor
  */
-export default function ArticleRenderer({
-  language,
-  news_data,
-}: Props): JSX.Element {
+export default function ArticleRenderer({ news_data }: Props): JSX.Element {
   const { editor, setTextType, setActiveMarks, updateActiveMarks } =
     useArticle()
   const {
@@ -35,14 +31,13 @@ export default function ArticleRenderer({
     updateContent,
     addNotification,
     currentLanguage,
-    switchCurrentLanguage,
   } = useAutoSave()
 
-  if (!editor) {
-    return <></>
-  }
-
   const onMouseUp = useCallback(() => {
+    if (!editor) {
+      return
+    }
+
     const { selection } = editor
     if (selection) {
       if (selection.anchor.path[0] !== selection.focus.path[0]) {
@@ -52,7 +47,8 @@ export default function ArticleRenderer({
         const text = Editor.string(editor, { anchor, focus })
         if (text.trim() === '') {
           const linkNode = Editor.above(editor, {
-            match: (n) => 'type' in n && Editor.isInline(editor, n),
+            match: (n) =>
+              'type' in n && 'children' in n && Editor.isInline(editor, n),
             mode: 'highest',
           })
           if (linkNode) {
@@ -67,6 +63,9 @@ export default function ArticleRenderer({
   }, [editor, setActiveMarks, updateActiveMarks])
 
   const onMouseOver = useCallback(() => {
+    if (!editor) {
+      return
+    }
     const { selection } = editor
     if (!selection) {
       updateActiveMarks()
@@ -74,7 +73,7 @@ export default function ArticleRenderer({
   }, [editor, updateActiveMarks])
 
   const initialValue = useMemo(() => {
-    let correctedContent = content.translations[0].body
+    const correctedContent = content.translations[0].body
     if (correctedContent && correctedContent.length > 0) {
       return JSON.parse(correctedContent)
     }
@@ -84,11 +83,15 @@ export default function ArticleRenderer({
         children: [{ text: 'Enter a heading' }],
       },
     ]
-  }, [])
+  }, [content.translations])
 
   const renderElement = useCallback((props: RenderElementProps) => {
-    return <Element {...props} />
+    return <ElementDisplay {...props} />
   }, [])
+
+  if (!editor) {
+    return <></>
+  }
 
   return (
     <div
@@ -134,6 +137,7 @@ export default function ArticleRenderer({
           renderLeaf={Leaf}
           renderElement={renderElement}
           onMouseOver={onMouseOver}
+          onMouseUp={onMouseUp}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
               event.preventDefault()

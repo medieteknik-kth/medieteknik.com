@@ -15,7 +15,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'
@@ -38,11 +38,7 @@ interface Props {
 export default function LoginForm({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'login')
 
-  const {
-    login,
-    error: authError,
-    isLoading: authLoading,
-  } = useAuthentication()
+  const { login, error: authError } = useAuthentication()
   const [errorMessage, setErrorMessage] = useState(authError)
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/csrf-token`,

@@ -1,6 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 /**
  * @interface Props

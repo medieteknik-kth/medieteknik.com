@@ -2,23 +2,6 @@
 import SearchStudent from '@/components/dialogs/SearchStudent'
 import { Button } from '@/components/ui/button'
 import {
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import Student from '@/models/Student'
-import {
-  ChevronUpDownIcon,
-  MinusIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline'
-import { useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -27,10 +10,11 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -39,24 +23,36 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { API_BASE_URL } from '@/utility/Constants'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Role } from '@/models/Permission'
+import Student from '@/models/Student'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { addMember } from '@/schemas/committee/member'
+import { API_BASE_URL } from '@/utility/Constants'
+import {
+  ChevronUpDownIcon,
+  MinusIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 export function RemoveMemberForm({ language }: { language: string }) {
   const { committee, members } = useCommitteeManagement()
-
+  const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
   const form = useForm<z.infer<typeof addMember>>({
     resolver: zodResolver(addMember),
     defaultValues: {
       students: [],
     },
   })
-
-  if (!committee) {
-    return null
-  }
 
   const publish = async (data: z.infer<typeof addMember>) => {
     const json_data = JSON.stringify(data)
@@ -83,7 +79,9 @@ export function RemoveMemberForm({ language }: { language: string }) {
     }
   }
 
-  const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
+  if (!committee) {
+    return null
+  }
   return (
     <DialogContent>
       <DialogHeader>

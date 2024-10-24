@@ -1,13 +1,6 @@
 'use client'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import StudentTag from '@/components/tags/StudentTag'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -16,6 +9,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import Committee from '@/models/Committee'
+import { Role } from '@/models/Permission'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import {
   BuildingOffice2Icon,
   CircleStackIcon,
@@ -26,18 +33,11 @@ import {
   TrashIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import { useEffect, useState, type JSX } from 'react';
-import { Skeleton } from '@/components/ui/skeleton'
-import PositionForm from '../forms/positionForm'
-import Committee from '@/models/Committee'
-import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import RecruitmentForm from '../forms/recruitmentForm'
-import { StudentTag } from '@/components/tags/StudentTag'
+import { useEffect, useState, type JSX } from 'react'
 import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
+import PositionForm from '../forms/positionForm'
+import RecruitmentForm from '../forms/recruitmentForm'
 import RemovePositionForm from '../forms/removePosition'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { Role } from '@/models/Permission'
 
 /**
  * @name MembersPage
@@ -268,8 +268,12 @@ export default function MembersPage({
                     )
                   })
                   .sort((a, b) => {
-                    const positionA = findPosition(a.committee_position_id)
-                    const positionB = findPosition(b.committee_position_id)
+                    const positionA = findPosition(
+                      a.position.committee_position_id
+                    )
+                    const positionB = findPosition(
+                      b.position.committee_position_id
+                    )
                     return (
                       (positionA ? positionA.weight : 0) -
                       (positionB ? positionB.weight : 0)
@@ -287,11 +291,14 @@ export default function MembersPage({
                         {isLoading ? (
                           <Skeleton className='w-32 h-8' />
                         ) : (
-                          findPosition(member.committee_position_id) && (
+                          findPosition(
+                            member.position.committee_position_id
+                          ) && (
                             <p>
                               {
-                                findPosition(member.committee_position_id)!
-                                  .translations[0].title
+                                findPosition(
+                                  member.position.committee_position_id
+                                )!.translations[0].title
                               }
                             </p>
                           )

@@ -4,7 +4,14 @@ import { AuthorResource } from '@/models/Items'
 import { Permission, Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
-import { createContext, useContext, useEffect, useMemo, useReducer, type JSX } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  type JSX,
+} from 'react'
 
 interface AuthenticationState {
   /**
@@ -278,7 +285,7 @@ const createAuthFunctions = (
       } else {
         dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
       }
-    } catch (error) {
+    } catch (_) {
       dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
@@ -303,7 +310,7 @@ const createAuthFunctions = (
       if (response.ok) {
         dispatch({ type: 'LOGOUT' })
       }
-    } catch (error) {
+    } catch (_) {
       dispatch({
         type: 'SET_ERROR',
         payload: 'Something went wrong! Please try again',
@@ -338,7 +345,7 @@ const createAuthFunctions = (
         dispatch({ type: 'LOGOUT' })
         throw new Error('Failed to refresh token')
       }
-    } catch (error) {
+    } catch (_) {
       dispatch({ type: 'LOGOUT' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
@@ -409,7 +416,7 @@ export function AuthenticationProvider({
             payload: 'Failed to authenticate. Please try again.',
           })
         }
-      } catch (error) {
+      } catch (_) {
         dispatch({ type: 'LOGOUT' })
         dispatch({
           type: 'SET_ERROR',
@@ -421,7 +428,7 @@ export function AuthenticationProvider({
     }
 
     checkUserData()
-  }, [])
+  }, [language])
 
   const contextValue = useMemo(() => {
     return {

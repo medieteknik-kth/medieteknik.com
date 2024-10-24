@@ -1,4 +1,4 @@
-import Student from '@/models/Student'
+import { GetStudentNews } from '@/api/student'
 import {
   Table,
   TableBody,
@@ -7,9 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { GetStudentNews } from '@/api/student'
-import EditNewsButton from './client/editNewsButton'
+import Student from '@/models/Student'
 import CopyButton from './client/copyButton'
+import EditNewsButton from './client/editNewsButton'
 
 export default async function StudentNews({
   language,

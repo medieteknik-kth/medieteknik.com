@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/popover'
 import { useArticle } from '@/providers/ArticleProvider'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { useCallback, useState, type JSX } from 'react';
+import { useCallback, useState, type JSX } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ElementType, textTypes } from '../../util/Text'
 
@@ -32,7 +32,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the article
- * 
+ *
  * @returns {JSX.Element} The text section of the toolbar
  */
 export default function ToolbarText({ language }: Props): JSX.Element {
@@ -40,14 +40,13 @@ export default function ToolbarText({ language }: Props): JSX.Element {
   const { fontSize, setFontSize, setTextType, currentType, editor } =
     useArticle()
 
-  if (!editor) {
-    return <></>
-  }
-
   const { t } = useTranslation(language, 'article')
 
   const toggleTextType = useCallback(
     (type: ElementType) => {
+      if (!editor) {
+        return
+      }
       Transforms.setNodes(
         editor,
         { type: type },
@@ -55,8 +54,12 @@ export default function ToolbarText({ language }: Props): JSX.Element {
       )
       setTextType(type)
     },
-    [editor]
+    [editor, setTextType]
   )
+
+  if (!editor) {
+    return <></>
+  }
 
   // TODO: Implement variable font sizes
   const updateFontSize = (size: number) => {

@@ -79,7 +79,7 @@ export default function ReceptionForm({ language }: Props): JSX.Element {
       setCsrfToken(csrf.token)
       form.setValue('csrf_token', csrf.token)
     }
-  })
+  }, [csrf, form])
 
   if (!student) return <></> // TODO: Something better?
   if (error) return <div>Failed to load</div>
@@ -109,6 +109,7 @@ export default function ReceptionForm({ language }: Props): JSX.Element {
       }
     } catch (error) {
       alert('Failed to save')
+      console.error(error)
       return
     }
   }

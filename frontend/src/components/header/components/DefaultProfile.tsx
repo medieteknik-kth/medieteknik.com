@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -12,7 +12,7 @@ import { Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string
@@ -34,7 +34,7 @@ export default function DefaultProfile({ language }: Props): JSX.Element {
     return <></>
   }
 
-  let username = student.first_name + ' ' + (student.last_name || '')
+  const username = student.first_name + ' ' + (student.last_name || '')
 
   return (
     <>

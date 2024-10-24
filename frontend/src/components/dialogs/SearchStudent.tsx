@@ -1,29 +1,25 @@
 'use client'
+import StudentTag from '@/components/tags/StudentTag'
 import { Button } from '@/components/ui/button'
-import Student, { StudentMembership } from '@/models/Student'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
 } from '@/components/ui/pagination'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { StudentPagination } from '@/models/Pagination'
+import Student from '@/models/Student'
+import { API_BASE_URL } from '@/utility/Constants'
 import {
-  CheckBadgeIcon,
   CheckIcon,
   MagnifyingGlassIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
-import { API_BASE_URL } from '@/utility/Constants'
-import {
-  StudentMembershipPagination,
-  StudentPagination,
-} from '@/models/Pagination'
-import useSWR from 'swr'
 import { Dispatch, SetStateAction, useRef, useState } from 'react'
+import useSWR from 'swr'
 import { Skeleton } from '../ui/skeleton'
-import { StudentTag } from '../tags/StudentTag'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 

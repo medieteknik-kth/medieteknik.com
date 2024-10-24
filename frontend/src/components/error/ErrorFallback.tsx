@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 /**
  * Renders the error fallback UI.
@@ -16,8 +16,8 @@ export default function ErrorFallback(): JSX.Element {
         <span className='text-red-600'>Oops! </span>Something went wrong.
       </h1>
       <p className='text-lg'>
-        We're sorry for the inconvenience. Please try refreshing the page or
-        contact{' '}
+        We&apos;re sorry for the inconvenience. Please try refreshing the page
+        or contact{' '}
         <Link
           href='mailto:webmaster@medieteknik.com'
           className='text-blue-600 underline underline-offset-4'

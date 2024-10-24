@@ -1,6 +1,6 @@
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import {
   Card,
   CardDescription,
@@ -15,7 +15,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

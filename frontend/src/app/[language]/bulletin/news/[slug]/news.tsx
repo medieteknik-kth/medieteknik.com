@@ -3,8 +3,8 @@ import Body from '@/app/[language]/bulletin/news/[slug]/client/body'
 import { assignCorrectAuthor } from '@/app/[language]/bulletin/news/[slug]/util'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,10 +14,10 @@ import {
 } from '@/components/ui/breadcrumb'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import type { News } from '@/models/Items'
-import Student, { StudentType } from '@/models/Student'
+import Student from '@/models/Student'
 import Image from 'next/image'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string
@@ -38,13 +38,10 @@ export default function NewsDisplay({
   language,
   news_data,
 }: Props): JSX.Element {
-  let correctedAuthor = assignCorrectAuthor(news_data.author)
+  const correctedAuthor = assignCorrectAuthor(news_data.author)
   if (!correctedAuthor) {
     return <div>Not found author</div>
   }
-  let student_type: StudentType | false =
-    correctedAuthor.author_type === 'STUDENT' &&
-    (correctedAuthor as Student).student_type
 
   return (
     <>

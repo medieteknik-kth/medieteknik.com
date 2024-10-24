@@ -5,7 +5,7 @@ import Loading from '@/components/tooltips/Loading'
 import { News } from '@/models/Items'
 import { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from '../components/shortNews'

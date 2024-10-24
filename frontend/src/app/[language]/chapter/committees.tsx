@@ -1,11 +1,7 @@
 'use client'
-import './committees.css'
+import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Committee from '@/models/Committee'
-import Image from 'next/image'
-import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
-import { useCallback, useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Carousel,
   CarouselApi,
@@ -14,11 +10,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import useEmblaCarousel from 'embla-carousel-react'
-import { Button } from '@/components/ui/button'
+import Committee from '@/models/Committee'
 import Autoplay from 'embla-carousel-autoplay'
 import ClassNames from 'embla-carousel-class-names'
-import { useTranslation } from '@/app/i18n/client'
+import useEmblaCarousel from 'embla-carousel-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import FallbackImage from 'public/images/logo.webp'
+import { useCallback, useEffect, useState } from 'react'
+import './committees.css'
 
 interface Props {
   language: string
@@ -27,7 +27,7 @@ interface Props {
 
 export default function Committees({ language, committees }: Props) {
   const [api, setApi] = useState<CarouselApi>()
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [_, setSelectedIndex] = useState(0)
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({})
   const { t } = useTranslation(language, 'chapter')
 
@@ -37,7 +37,7 @@ export default function Committees({ language, committees }: Props) {
         return
       }
       api.scrollTo(index)
-    }, [api, emblaThumbsApi])
+    }, [index])
 
   const onSelect = useCallback(() => {
     if (!api || !emblaThumbsApi) {
@@ -53,7 +53,7 @@ export default function Committees({ language, committees }: Props) {
     }
     onSelect()
     api.on('select', onSelect).on('reInit', onSelect)
-  }, [api, onSelect])
+  }, [api, onSelect, emblaThumbsApi])
 
   const hasGroupPhoto = (committee: Committee) => !!committee.group_photo_url
 

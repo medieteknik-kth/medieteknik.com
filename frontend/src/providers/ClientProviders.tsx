@@ -3,10 +3,10 @@
  */
 'use client'
 
+import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 import { ThemeProvider } from 'next-themes'
 import { useEffect, useState, type JSX } from 'react'
 import { AuthenticationProvider } from './AuthenticationProvider'
-import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 
 interface Props {
   language: string

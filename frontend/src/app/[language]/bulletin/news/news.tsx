@@ -27,7 +27,7 @@ export const revalidate = 43_200 // 12 hours
 export default async function NewsPage(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
   const data = await GetNewsPagniation(language, 1)
-  
+
   if (!data) {
     return (
       <div className='h-96 grid place-items-center text-3xl'>No data...</div>

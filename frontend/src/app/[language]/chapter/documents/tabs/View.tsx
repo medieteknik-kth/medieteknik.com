@@ -1,10 +1,10 @@
-'use client';
+'use client'
+import { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import GridView from '../views/GridView'
 import ListView from '../views/ListView'
-import { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

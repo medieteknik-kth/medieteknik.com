@@ -1,11 +1,11 @@
 import { Separator } from '@/components/ui/separator'
-import SearchBar from './toolbar/client/search'
-import ViewSelect from './toolbar/client/viewSelect'
-import CategorySelect from './toolbar/categorySelect'
-import StatusSelect from './toolbar/client/statusSelect'
 import SidebarAuth from './sidebar/client/sidebarAuth'
+import CategorySelect from './toolbar/categorySelect'
+import SearchBar from './toolbar/client/search'
+import StatusSelect from './toolbar/client/statusSelect'
+import ViewSelect from './toolbar/client/viewSelect'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

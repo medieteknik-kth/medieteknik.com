@@ -1,19 +1,23 @@
 'use client'
 
+import {
+  CustomElement,
+  CustomText,
+} from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
 import { News } from '@/models/Items'
 import { ArticleProvider } from '@/providers/ArticleProvider'
 import { useRouter } from 'next/navigation'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import { BaseEditor, createEditor } from 'slate'
 import { ReactEditor, withReact } from 'slate-react'
 import ArticleRenderer from '../components/articleRenderer'
 import NewsToolbar from '../components/toolbar'
-import { CustomElement } from '../util/Text'
 
 declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor
     Element: CustomElement
+    Text: CustomText
   }
 }
 
@@ -69,7 +73,7 @@ export default function ArticlePage({
     <ArticleProvider language={language} editor={editor}>
       <section className='w-full h-fit flex justify-center relative'>
         <NewsToolbar language={language} />
-        <ArticleRenderer language={language} news_data={news_data} />
+        <ArticleRenderer news_data={news_data} />
       </section>
     </ArticleProvider>
   )

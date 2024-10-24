@@ -1,7 +1,6 @@
 import { Event } from '@/models/Items'
+import { JSX } from 'react'
 import tinycolor from 'tinycolor2'
-
-import type { JSX } from "react";
 
 interface Props {
   event: Event

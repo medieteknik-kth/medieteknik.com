@@ -23,4 +23,4 @@ export const loginSchema = z.object({
     .min(4, { message: 'Password must be at least 8 characters' }),
 
   csrf_token: z.string().optional().or(z.literal('')),
-}) 
+})

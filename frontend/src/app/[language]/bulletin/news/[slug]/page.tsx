@@ -1,15 +1,17 @@
 import { GetNewsData } from '@/api/items'
 import NewsSlug from '@/app/[language]/bulletin/news/[slug]/slug'
 import { useTranslation } from '@/app/i18n'
-import { Metadata, ResolvingMetadata } from 'next'
+import { Metadata } from 'next'
 
 interface Params {
   language: string
   slug: string
 }
 
-export async function generateMetadata(props: { params: Promise<Params> }, parent: ResolvingMetadata): Promise<Metadata> {
-  const params = await props.params;
+export async function generateMetadata(props: {
+  params: Promise<Params>
+}): Promise<Metadata> {
+  const params = await props.params
   const data = await GetNewsData(params.language, params.slug)
 
   if (!data) {

@@ -31,11 +31,10 @@ interface CommitteeTagProps {
  *
  * @returns {ForwardRefExoticComponent<CommitteeTagProps & RefAttributes<HTMLButtonElement>>} The component
  */
-export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
+const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
   (
     {
       committee,
-      allowHover = true,
       includeImage = true,
       includeAt = true,
       includeBackground = true,
@@ -92,3 +91,5 @@ export const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
     )
   }
 )
+CommitteeTag.displayName = 'CommitteeTag'
+export default CommitteeTag

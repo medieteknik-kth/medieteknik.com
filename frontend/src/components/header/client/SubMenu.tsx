@@ -4,7 +4,7 @@ import { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 
 interface Props {
   element: HeaderElement

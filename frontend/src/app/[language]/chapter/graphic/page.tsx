@@ -1,13 +1,15 @@
-import GraphicalIdentity from './graphic'
-import { Metadata, ResolvingMetadata } from 'next'
 import { useTranslation } from '@/app/i18n'
+import { Metadata } from 'next'
+import GraphicalIdentity from './graphic'
 
 interface Params {
   language: string
 }
 
-export async function generateMetadata(props: { params: Promise<Params> }, parent: ResolvingMetadata): Promise<Metadata> {
-  const params = await props.params;
+export async function generateMetadata(props: {
+  params: Promise<Params>
+}): Promise<Metadata> {
+  const params = await props.params
   const { t } = await useTranslation(params.language, 'graphic')
   const value = t('title')
 

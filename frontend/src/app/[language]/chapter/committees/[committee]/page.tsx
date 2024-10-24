@@ -1,4 +1,4 @@
-import { Metadata, ResolvingMetadata } from 'next'
+import { Metadata } from 'next'
 import CommitteePage from './committee'
 
 interface Params {
@@ -6,10 +6,9 @@ interface Params {
   committee: string
 }
 
-export async function generateMetadata(
-  props: { params: Promise<Params> },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<Params>
+}): Promise<Metadata> {
   const params = await props.params
   const value = decodeURI(params.committee)
 

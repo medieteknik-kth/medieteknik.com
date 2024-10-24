@@ -1,10 +1,10 @@
-'use client';
+'use client'
 import NewsCard from '@/app/[language]/bulletin/components/newsCard'
 import { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import useSWR from 'swr'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 

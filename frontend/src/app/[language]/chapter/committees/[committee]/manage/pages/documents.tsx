@@ -70,7 +70,6 @@ export default function DocumentPage({
   const {
     total_documents,
     isLoading: isLoadingDocuments,
-    error,
     setDocumentsTotal,
   } = useCommitteeManagement()
   const [openModal, setOpenModal] = useState(false)

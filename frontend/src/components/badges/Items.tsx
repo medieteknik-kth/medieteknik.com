@@ -43,9 +43,9 @@ function CompletedEventBadge({ language }: { language: string }) {
 }
 
 export {
+  CompletedEventBadge,
   DraftBadge,
+  OngoingEventBadge,
   PublishedBadge,
   UpcomingEventBadge,
-  OngoingEventBadge,
-  CompletedEventBadge,
 }

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   student: Student
