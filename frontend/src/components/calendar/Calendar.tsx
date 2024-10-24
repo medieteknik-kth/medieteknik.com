@@ -3,7 +3,7 @@ import { Event } from '@/models/Items'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { LANGUAGES } from '@/utility/Constants'
 import { addMonths, getDaysInMonth, setDate } from 'date-fns'
-import { useMemo, type JSX } from 'react';
+import { useMemo, type JSX } from 'react'
 import './calendar.css'
 import { getPreviousMonthLastWeekToCurrent } from './util'
 
@@ -28,8 +28,8 @@ interface Props {
  */
 export default function Calendar({
   language,
-  onDateClickCallback = (date: Date) => {},
-  onEventClickCallback = (event: Event) => {},
+  onDateClickCallback,
+  onEventClickCallback,
   children,
 }: Props): JSX.Element {
   const { date, setSelectedDate, events } = useCalendar()
@@ -74,10 +74,16 @@ export default function Calendar({
             date={mappedDate}
             events={events}
             currentMonth={false}
-            onEventClickCallback={onEventClickCallback}
+            onEventClickCallback={(event) => {
+              if (onEventClickCallback) {
+                onEventClickCallback(event)
+              }
+            }}
             onDateClickCallback={(date) => {
               setSelectedDate(date)
-              onDateClickCallback(date)
+              if (onDateClickCallback) {
+                onDateClickCallback(date)
+              }
             }}
             key={index}
           />
@@ -87,8 +93,16 @@ export default function Calendar({
             date={setDate(date, index + 1)}
             events={events}
             currentMonth
-            onEventClickCallback={onEventClickCallback}
-            onDateClickCallback={(date) => onDateClickCallback(date)}
+            onEventClickCallback={(event) => {
+              if (onEventClickCallback) {
+                onEventClickCallback(event)
+              }
+            }}
+            onDateClickCallback={(date) => {
+              if (onDateClickCallback) {
+                onDateClickCallback(date)
+              }
+            }}
             key={index + previousMonthLastWeek.length}
           />
         ))}
@@ -97,8 +111,16 @@ export default function Calendar({
             date={setDate(addMonths(date, 1), index + 1)}
             events={events}
             currentMonth={false}
-            onEventClickCallback={onEventClickCallback}
-            onDateClickCallback={(date) => onDateClickCallback(date)}
+            onEventClickCallback={(event) => {
+              if (onEventClickCallback) {
+                onEventClickCallback(event)
+              }
+            }}
+            onDateClickCallback={(date) => {
+              if (onDateClickCallback) {
+                onDateClickCallback(date)
+              }
+            }}
             key={index + previousMonthLastWeek.length + totalDays}
           />
         ))}

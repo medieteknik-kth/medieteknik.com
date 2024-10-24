@@ -83,7 +83,6 @@ export default function AccountForm({ language }: Props): JSX.Element {
   const [croppedImage, setCroppedImage] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string>('')
 
-  if (!student) return <></> // TODO: Something better?
   const {
     data: csrf,
     error,
@@ -94,8 +93,6 @@ export default function AccountForm({ language }: Props): JSX.Element {
     if (!profilePicturePreview) return null
     return URL.createObjectURL(profilePicturePreview)
   }, [profilePicturePreview])
-
-  if (error) return <div>Failed to load</div>
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ACCEPTED_IMAGE_TYPES = [
@@ -117,6 +114,8 @@ export default function AccountForm({ language }: Props): JSX.Element {
     },
   })
 
+  if (error) return <div>Failed to load</div>
+  if (!student) return <></> // TODO: Something better?
   if (isLoading) return <Loading language={language} />
   if (!csrf) return <Loading language={language} />
 
@@ -166,7 +165,12 @@ export default function AccountForm({ language }: Props): JSX.Element {
   }
 
   const onCropComplete = (
-    croppedArea: any,
+    croppedArea: {
+      x: number
+      y: number
+      width: number
+      height: number
+    },
     croppedAreaPixels: {
       x: number
       y: number

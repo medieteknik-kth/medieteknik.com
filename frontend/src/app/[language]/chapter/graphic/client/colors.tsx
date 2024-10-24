@@ -3,7 +3,7 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { useRef, useState, type JSX } from 'react';
+import { useRef, useState, type JSX } from 'react'
 import tinycolor from 'tinycolor2'
 
 /**

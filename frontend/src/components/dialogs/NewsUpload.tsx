@@ -23,7 +23,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { Button } from '@components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -69,7 +69,7 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
     if (!student) {
       return
     }
-    let json = {
+    const json = {
       published_status: 'DRAFT',
       translations: [
         {

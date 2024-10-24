@@ -31,7 +31,7 @@ interface StudentTagProps {
  *
  * @returns {ForwardRefExoticComponent<StudentTagProps & RefAttributes<HTMLButtonElement>>} The component
  */
-export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
+const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
   (
     {
       student,
@@ -90,3 +90,6 @@ export const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
     )
   }
 )
+
+StudentTag.displayName = 'StudentTag'
+export default StudentTag

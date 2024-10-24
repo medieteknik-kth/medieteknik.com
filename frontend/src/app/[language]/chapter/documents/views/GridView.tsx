@@ -14,7 +14,7 @@ import { DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
 import { TFunction } from 'next-i18next'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
-import { KeyboardEvent, MouseEvent, useCallback, type JSX } from 'react';
+import { KeyboardEvent, MouseEvent, useCallback, type JSX } from 'react'
 
 interface Props {
   language: string
@@ -88,7 +88,7 @@ export default function GridView({ language, type }: Props): JSX.Element {
         }
       }
     },
-    []
+    [selectedDocuments, setSelectedDocuments]
   )
 
   const authorImage = (author: Author) => {
@@ -101,7 +101,7 @@ export default function GridView({ language, type }: Props): JSX.Element {
         return committee.logo_url
       case 'COMMITTEE_POSITION':
         const committeePosition = author as CommitteePosition
-        return null
+        return committeePosition.committee?.logo_url || null
       default:
         throw new Error('Unknown author type')
     }

@@ -30,7 +30,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { addMonths, subMonths } from 'date-fns'
-import { JSX, useCallback, useState } from 'react'
+import { JSX, useCallback, useMemo, useState } from 'react'
 
 interface Props {
   language: string
@@ -50,21 +50,23 @@ export default function CalendarPage({ language }: Props): JSX.Element {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const { date, setDate } = useCalendar()
   const { permissions } = useAuthentication()
-  const range = [subMonths(new Date(), 3), addMonths(new Date(), 3)]
+  const range = useMemo(() => {
+    return [subMonths(new Date(), 3), addMonths(new Date(), 3)]
+  }, [])
 
   const addMonth = useCallback(() => {
     if (addMonths(new Date(date), 1) > addMonths(new Date(range[1]), 1)) {
       return
     }
     setDate(addMonths(new Date(date), 1))
-  }, [date])
+  }, [date, range, setDate])
 
   const subtractMonth = useCallback(() => {
     if (subMonths(new Date(date), 1) < subMonths(new Date(range[0]), 1)) {
       return
     }
     setDate(subMonths(new Date(date), 1))
-  }, [date])
+  }, [date, range, setDate])
 
   return (
     <section className='w-full h-fit relative grow dark:bg-[#111]'>

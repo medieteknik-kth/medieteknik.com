@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { TFunction } from 'next-i18next'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 /**
  * @name TypeOfDocument

@@ -4,7 +4,7 @@ import NewsDisplay from '@/app/[language]/bulletin/news/[slug]/news'
 import Loading from '@/components/tooltips/Loading'
 import { News } from '@/models/Items'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react'
 
 interface Props {
   language: string
@@ -34,7 +34,7 @@ export default function NewsRedirect({
       return
     }
     setIsLoading(false)
-  }, [news_data, router])
+  }, [news_data, router, language])
 
   if (isLoading || !news_data) {
     return <Loading language={language} />

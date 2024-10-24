@@ -1,10 +1,11 @@
-import Image from 'next/image'
-import FallbackImage from 'public/images/logo.webp'
 import { GetCommitteeMembers } from '@/api/committee'
+import StudentTag from '@/components/tags/StudentTag'
+import Image from 'next/image'
 import Link from 'next/link'
-import { StudentTag } from '@/components/tags/StudentTag'
+import FallbackImage from 'public/images/logo.webp'
 
-import type { JSX } from "react";
+import { StudentMembership } from '@/models/Student'
+import type { JSX } from 'react'
 
 export const revalidate = 60 * 60 * 24 * 30
 
@@ -41,12 +42,12 @@ export default async function CommitteeMembers({
     )
   }
 
-  const hasImage = (member: any) => {
+  const hasImage = (member: StudentMembership) => {
     return !!member.student.profile_picture_url
   }
 
   return (
-    (<section className='min-h-96 h-fit relative'>
+    <section className='min-h-96 h-fit relative'>
       <div className='pt-12 mb-10 grid place-items-center'>
         <h2 className='text-3xl capitalize'>
           Meet <span className='font-bold'>{committeeName}</span>
@@ -102,6 +103,6 @@ export default async function CommitteeMembers({
             </div>
           ))}
       </div>
-    </section>)
-  );
+    </section>
+  )
 }

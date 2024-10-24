@@ -9,7 +9,7 @@ import {
   useReducer,
   useRef,
   type JSX,
-} from 'react';
+} from 'react'
 
 interface CalendarState {
   date: Date
@@ -143,7 +143,7 @@ export default function CalendarProvider({
     }
 
     retrieveEvents(state.date)
-  }, [state.date])
+  }, [state.date, language])
 
   const contextValue = useMemo(
     () => ({

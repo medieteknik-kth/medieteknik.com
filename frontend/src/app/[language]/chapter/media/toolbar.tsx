@@ -1,8 +1,4 @@
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { PhotoIcon, VideoCameraIcon } from '@heroicons/react/24/outline'
 
 export default function MediaToolbar() {
   return (

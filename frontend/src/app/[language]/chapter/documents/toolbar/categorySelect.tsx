@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { documentCategories } from '../utility/util'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

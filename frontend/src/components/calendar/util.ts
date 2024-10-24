@@ -13,22 +13,22 @@ export function getPreviousMonthLastWeekToCurrent(date: Date): Date[] {
   const lastDayOfPreviousMonth = new Date(firstDayOfCurrentMonth)
   lastDayOfPreviousMonth.setDate(0)
   const result: Date[] = []
-  
+
   // If the first day of the month is also the first day of the week, return an empty array
   if (firstDayOfCurrentMonth.getDay() === 1) {
-    return result;
+    return result
   }
-  
-  let currentDay = new Date(lastDayOfPreviousMonth)
+
+  const currentDay = new Date(lastDayOfPreviousMonth)
   // Go back to the Monday (or first day of the week) of the last week
   const daysToSubtract = (currentDay.getDay() + 6) % 7
   currentDay.setDate(currentDay.getDate() - daysToSubtract)
-  
+
   // Add days until we reach the first day of the current month
   while (currentDay < firstDayOfCurrentMonth) {
     result.push(new Date(currentDay))
     currentDay.setDate(currentDay.getDate() + 1)
   }
-  
+
   return result
 }

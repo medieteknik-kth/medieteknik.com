@@ -1,10 +1,10 @@
-'use client';
+'use client'
 import EventComponent from '@/components/calendar/components/eventDisplay'
 import { Event } from '@/models/Items'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { isSameDay, isSameMonth } from 'date-fns'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   date: Date

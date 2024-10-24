@@ -1,6 +1,5 @@
 'use client'
-import { z } from 'zod';
-
+import { z } from 'zod'
 
 /**
  * @name createNewsSchema

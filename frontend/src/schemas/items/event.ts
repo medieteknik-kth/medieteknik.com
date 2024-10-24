@@ -19,7 +19,7 @@ export const eventUploadSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   background_color: z.string().refine(
     (value) => {
-      return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value);
+      return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
     },
     {
       message: 'Invalid color',

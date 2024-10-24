@@ -171,7 +171,7 @@ export default function DocumentUpload({
 }: DocumentUploadProps): JSX.Element {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
-  const [value, setValue] = useState('DOCUMENT')
+  const [value, _] = useState('DOCUMENT')
   const { student } = useAuthentication()
   const [files, setFiles] = useState<File[]>([])
 

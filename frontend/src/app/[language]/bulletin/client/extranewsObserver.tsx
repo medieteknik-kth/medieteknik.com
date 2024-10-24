@@ -1,7 +1,7 @@
 'use client'
 
 import Loading from '@/components/tooltips/Loading'
-import React, { Suspense, useEffect, useRef, useState, type JSX } from 'react';
+import React, { Suspense, useEffect, useRef, useState, type JSX } from 'react'
 
 const ExtraNews = React.lazy(() => import('./extranews'))
 
@@ -23,6 +23,7 @@ export default function ExtraNewsObserver({ language }: Props): JSX.Element {
   const ref = useRef(null)
 
   useEffect(() => {
+    const current = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -35,13 +36,13 @@ export default function ExtraNewsObserver({ language }: Props): JSX.Element {
       }
     )
 
-    if (ref.current) {
-      observer.observe(ref.current)
+    if (current) {
+      observer.observe(current)
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current)
+      if (current) {
+        observer.unobserve(current)
       }
     }
   }, [ref])

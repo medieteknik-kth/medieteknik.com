@@ -1,14 +1,7 @@
 'use client'
-import { StaticImageData } from 'next/image'
-import Link from 'next/link'
-import KTH from 'public/images/svg/kth.svg'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
+import { useTranslation } from '@/app/i18n/client'
+import { Section } from '@/components/static/Static'
+import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
@@ -16,11 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import './masters.css'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
 import ClassNames from 'embla-carousel-class-names'
-import { Badge } from '@/components/ui/badge'
-import { Section } from '@/components/static/Static'
-import { useTranslation } from '@/app/i18n/client'
+import { StaticImageData } from 'next/image'
+import Link from 'next/link'
+import KTH from 'public/images/svg/kth.svg'
+import './masters.css'
 
 interface CarouselItem {
   id: number
@@ -45,7 +45,7 @@ interface Master {
 export default function Masters({ language }: { language: string }) {
   const { t } = useTranslation(language, 'education')
 
-  const masters: Master[] = t('masters', { returnObjects: true })
+  const masters: Master[] = t('masters', { returnObjects: true }) as Master[]
 
   return (
     <Section

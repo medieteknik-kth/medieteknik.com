@@ -1,8 +1,8 @@
 'use client'
 
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { Event } from '@/models/Items'

@@ -1,13 +1,15 @@
-import { Metadata, ResolvingMetadata } from 'next'
-import Contact from './contact'
 import { useTranslation } from '@/app/i18n'
+import { Metadata } from 'next'
+import Contact from './contact'
 
 interface Params {
   language: string
 }
 
-export async function generateMetadata(props: { params: Promise<Params> }, parent: ResolvingMetadata): Promise<Metadata> {
-  const params = await props.params;
+export async function generateMetadata(props: {
+  params: Promise<Params>
+}): Promise<Metadata> {
+  const params = await props.params
   const { t } = await useTranslation(params.language, 'contact')
   const value = t('title')
 

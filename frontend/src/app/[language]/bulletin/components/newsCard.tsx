@@ -1,5 +1,5 @@
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import {
   Card,
   CardDescription,
@@ -13,7 +13,7 @@ import Student from '@models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   newsItem: News

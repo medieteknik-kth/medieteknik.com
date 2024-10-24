@@ -1,8 +1,8 @@
 import { GetAllCommittees } from '@/api/committee'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import MediaGridView from './view/committee'
 import RecentMedia from './view/recent'
-import HeaderGap from '@/components/header/components/HeaderGap'
 
 interface Params {
   language: string

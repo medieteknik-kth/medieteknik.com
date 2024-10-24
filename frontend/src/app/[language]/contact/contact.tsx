@@ -28,7 +28,7 @@ export default async function Contact(props: Props): Promise<JSX.Element> {
   const contactData: SectionDescriptionProps[] = t('sections', {
     returnObjects: true,
   }) as SectionDescriptionProps[]
-  
+
   return (
     <main>
       <HeaderGap />

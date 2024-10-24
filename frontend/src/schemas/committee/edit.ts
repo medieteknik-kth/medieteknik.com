@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 /**
  * @name editCommitteeSchema
@@ -6,7 +6,8 @@ import { z } from 'zod';
  *  - src/app/[language]/chapter/committees/[committee]/manage/edit.tsx
  */
 export const editCommitteeSchema = z.object({
-  title: z.string()
+  title: z
+    .string()
     .min(3, { message: 'Title is required' })
     .max(125, { message: 'Title is too long' }),
   translations: z.array(

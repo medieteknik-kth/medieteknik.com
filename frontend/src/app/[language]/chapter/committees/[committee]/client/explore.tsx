@@ -1,4 +1,5 @@
 'use client'
+import { useTranslation } from '@/app/i18n/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { UsersIcon } from '@heroicons/react/24/outline'
 
@@ -10,11 +11,12 @@ export default function ExploreMore({
   committee: string
 }) {
   const committeeName = decodeURIComponent(committee)
+  const { t } = useTranslation(language, 'committee')
 
   return (
     <section className='h-fit'>
       <div className='pt-12 mb-10 grid place-items-center'>
-        <h2 className='text-3xl capitalize'>Explore More</h2>
+        <h2 className='text-3xl capitalize'>{t('explore_more')}</h2>
         <div className='flex flex-wrap gap-12 justify-center my-8'>
           <Card
             className='bg-yellow-100 dark:bg-yellow-300 hover:scale-110 transition-transform cursor-pointer dark:text-black'

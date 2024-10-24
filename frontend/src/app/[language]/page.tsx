@@ -1,10 +1,10 @@
+import { useTranslation } from '@/app/i18n'
 import Loading from '@/components/tooltips/Loading'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import BlurredBG from 'public/images/landingpage_blurred.webp'
 import { Suspense, type JSX } from 'react'
-import { useTranslation } from '../i18n'
 import './home.css'
 
 const About = dynamic(() => import('./about'), { ssr: true })

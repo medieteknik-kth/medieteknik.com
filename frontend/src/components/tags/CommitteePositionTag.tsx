@@ -4,10 +4,10 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import { Button } from '@components/ui/button'
 import { CommitteePosition } from '@/models/Committee'
+import { Button } from '@components/ui/button'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface CommitteePositionTagProps {
   committeePosition: CommitteePosition

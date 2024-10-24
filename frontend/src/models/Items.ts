@@ -5,7 +5,7 @@ import Student from './Student'
 /**
  * @type Author
  * @description Author type
- * 
+ *
  * @param {Student} Student - Student author
  * @param {Committee} Committee - Committee author
  */
@@ -26,8 +26,8 @@ export interface Item {
 /**
  * @interface Item
  * @description Base News Model
- * 
- * 
+ *
+ *
  * @param {Author} author - The author of the news item
  * @param {string} title - The title of the news item
  * @param {string} body - The body of the news item
@@ -57,7 +57,7 @@ export interface NewsTranslation {
 /**
  * @interface Event
  * @description Event model
- * 
+ *
  * @param {string} location - The location of the event
  * @param {string} start_date - The start date of the event
  * @param {string} end_date - The end date of the event
@@ -66,7 +66,7 @@ export interface Event extends Item {
   event_id: string
   location: string
   start_date: string
-  duration: number,
+  duration: number
   background_color: string
   translations: EventTranslation[]
 }

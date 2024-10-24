@@ -111,6 +111,7 @@ interface Props {
 export default function CommitteesPage({ language }: Props): JSX.Element {
   const { committees } = useAuthentication()
   // TODO: Redesign this component.
+  const [display, setDisplay] = useState('card')
 
   if (committees.length === 0) {
     return (
@@ -131,7 +132,6 @@ export default function CommitteesPage({ language }: Props): JSX.Element {
     )
   }
 
-  const [display, setDisplay] = useState('card')
   return (
     <section className='grow h-full min-h-[1080px] relative dark:bg-[#111] overflow-hidden'>
       <div className='w-full flex items-center justify-center border-b-2 border-yellow-400'>

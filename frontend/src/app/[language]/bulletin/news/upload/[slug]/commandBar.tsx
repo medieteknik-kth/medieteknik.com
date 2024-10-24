@@ -41,7 +41,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AutoSaveResult, useAutoSave } from './autoSave'
@@ -61,13 +61,8 @@ interface Props {
  * @returns {JSX.Element} The command bar for the news upload page
  */
 export default function CommandBar({ language, slug }: Props): JSX.Element {
-  const {
-    saveCallback,
-    notifications,
-    addNotification,
-    content,
-    currentLanguage,
-  } = useAutoSave()
+  const { saveCallback, notifications, addNotification, content } =
+    useAutoSave()
   const { push } = useRouter()
 
   const [title, setTitle] = useState(

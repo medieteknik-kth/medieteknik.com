@@ -1,5 +1,6 @@
 'use client'
 
+import { CustomElement } from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,9 +29,8 @@ import {
   LinkIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline'
-import { useCallback, type JSX } from 'react';
+import { useCallback, type JSX } from 'react'
 import { Transforms } from 'slate'
-import { CustomElement } from '../util/Text'
 import ToolbarMarks from './toolbar/marks'
 import ToolbarText from './toolbar/text'
 
@@ -50,11 +50,6 @@ interface Props {
 export default function NewsToolbar({ language }: Props): JSX.Element {
   // TODO: Reduce file length
   const { editor } = useArticle()
-
-  if (!editor) {
-    return <></>
-  }
-
   const { t } = useTranslation(language, 'article')
 
   // Trusted domains
@@ -63,6 +58,9 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
   // TODO: Separate?
   const insertLink = useCallback(
     (href: string, name: string, external: boolean) => {
+      if (!editor) {
+        return
+      }
       if (href) {
         const { selection } = editor
         if (selection) {
@@ -84,29 +82,14 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
     [editor]
   )
 
-  const insertImage = useCallback(
-    (src: string, alt: string, width: number, height: number) => {
-      const { selection } = editor
-      if (selection) {
-        const image: CustomElement = {
-          type: 'image',
-          image: { src, alt, width, height },
-          children: [{ text: '' }],
-        }
-        // TODO: Upload image ?
-        Transforms.insertNodes(editor, image, {
-          at: selection.focus,
-        })
-      }
-    },
-    [editor]
-  )
-
   const insertTag = useCallback(
     (
       detail: string,
       tagType: 'committee' | 'committee position' | 'student'
     ) => {
+      if (!editor) {
+        return
+      }
       const { selection } = editor
       if (selection) {
         if (tagType === 'committee') {
@@ -190,6 +173,10 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
     },
     [editor]
   )
+
+  if (!editor) {
+    return <></>
+  }
 
   return (
     <div className='w-full h-20 bg-white dark:bg-[#141414] fixed flex items-center px-20 top-48 left-0 z-10'>

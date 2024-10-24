@@ -1,12 +1,12 @@
+import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SidebarAuth from './sidebar/client/sidebarAuth'
 import SidebarStatus from './sidebar/client/sidebarStatus'
-import { useTranslation } from '@/app/i18n'
 import { documentCategories } from './utility/util'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

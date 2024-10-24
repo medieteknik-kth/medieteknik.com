@@ -1,10 +1,10 @@
-'use client';
+'use client'
 import { useTranslation } from '@/app/i18n/client'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useArticle } from '@/providers/ArticleProvider'
 import { BooleanMark, toggleMark } from '../../util/Text'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string
@@ -21,12 +21,11 @@ interface Props {
  */
 export default function ToolbarMarks({ language }: Props): JSX.Element {
   const { marks, setActiveMarks, editor } = useArticle()
+  const { t } = useTranslation(language, 'article')
 
   if (!editor) {
     return <></>
   }
-
-  const { t } = useTranslation(language, 'article')
 
   return (
     <ToggleGroup

@@ -30,7 +30,7 @@ import {
   PlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import CalendarExport from '../components/calendarExport'
 import EventDialog from '../components/eventDialog'
 

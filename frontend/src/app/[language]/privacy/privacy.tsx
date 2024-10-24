@@ -158,8 +158,8 @@ export default async function Privacy(props: Props) {
             <span>
               Our website uses Google AdSense, a service for including
               advertisements provided by Google. Google may use cookies or
-              similar technologies to serve ads based on a user's prior visits
-              to our website or other websites.
+              similar technologies to serve ads based on a user&apos;s prior
+              visits to our website or other websites.
             </span>
             <br />
             <div className='flex gap-2 flex-wrap'>
@@ -169,7 +169,7 @@ export default async function Privacy(props: Props) {
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  Google's Privacy Policy
+                  Google&apos;s Privacy Policy
                 </Link>
               </Button>
               <Button variant={'secondary'} asChild>
@@ -178,7 +178,7 @@ export default async function Privacy(props: Props) {
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  Google's Ad Settings
+                  Google&apos;s Ad Settings
                 </Link>
               </Button>
 
@@ -188,7 +188,7 @@ export default async function Privacy(props: Props) {
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  Google's Partner Sites
+                  Google&apos;s Partner Sites
                 </Link>
               </Button>
             </div>

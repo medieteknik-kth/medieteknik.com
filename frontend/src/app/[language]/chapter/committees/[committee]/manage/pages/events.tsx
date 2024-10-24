@@ -1,5 +1,11 @@
 'use client'
-import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/app/i18n/client'
+import {
+  CompletedEventBadge,
+  OngoingEventBadge,
+  UpcomingEventBadge,
+} from '@/components/badges/Items'
+import EventUpload from '@/components/dialogs/EventUpload'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -19,19 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
-  BookOpenIcon,
-  CalendarDaysIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   Pagination,
   PaginationContent,
@@ -40,22 +35,26 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import {
-  CompletedEventBadge,
-  OngoingEventBadge,
-  UpcomingEventBadge,
-} from '@/components/badges/Items'
-import { useEffect, useState, type JSX } from 'react';
 import { Skeleton } from '@/components/ui/skeleton'
-import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { EventPagniation } from '@/models/Pagination'
-import useSWR from 'swr'
-import { API_BASE_URL } from '@/utility/Constants'
-import Committee from '@/models/Committee'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import EventUpload from '@/components/dialogs/EventUpload'
-import { useTranslation } from '@/app/i18n/client'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { Event } from '@/models/Items'
+import { EventPagniation } from '@/models/Pagination'
+import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { API_BASE_URL } from '@/utility/Constants'
+import {
+  BookOpenIcon,
+  CalendarDaysIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
+import { useEffect, useState, type JSX } from 'react'
+import useSWR from 'swr'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -78,7 +77,6 @@ export default function EventPage({
   const {
     total_events,
     isLoading: isLoadingEvents,
-    error,
     setEventsTotal,
     committee,
   } = useCommitteeManagement()

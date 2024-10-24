@@ -24,7 +24,7 @@ import React, {
 import Sidebar from './sidebar'
 const AccountProfile = React.lazy(() => import('./pages/accountPage'))
 const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
-const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
+//const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
 const ItemsPage = React.lazy(() => import('./pages/itemPage'))
 const CalendarPage = React.lazy(() => import('./pages/calendarPage'))
 

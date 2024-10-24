@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import Logo from 'public/images/logo.webp'
 import { useTranslation } from '@/app/i18n'
 import InfographicCard from '@/components/cards/Infographic'
+import Image from 'next/image'
+import Logo from 'public/images/logo.webp'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface CardElement {
   title: string

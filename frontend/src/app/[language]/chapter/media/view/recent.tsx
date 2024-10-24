@@ -1,6 +1,6 @@
 import { GetLatestMedia } from '@/api/items'
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
-import { StudentTag } from '@/components/tags/StudentTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
+import StudentTag from '@/components/tags/StudentTag'
 import { PhotoIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'

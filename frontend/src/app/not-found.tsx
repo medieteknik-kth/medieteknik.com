@@ -1,6 +1,8 @@
+import Link from 'next/link'
 import './error.css'
 
-import type { JSX } from "react";
+import Image from 'next/image'
+import type { JSX } from 'react'
 
 /**
  * @name NotFound
@@ -11,22 +13,24 @@ import type { JSX } from "react";
 export default async function NotFound(): Promise<JSX.Element> {
   return (
     <main aria-label='Page not found'>
-      <img
+      <Image
         src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
         alt='logo'
         aria-label='logo'
+        width={200}
+        height={200}
       />
       <div>
         <h1>404 - Page Not Found</h1>
 
         <h2>
-          Go back to the <a href='/'>homepage</a>.
+          Go back to the <Link href='/'>homepage</Link>.
         </h2>
         <p>
           If you believe this to be an error, please mail us at{' '}
-          <a href='mailto:webmaster@medieteknik.com'>
+          <Link href='mailto:webmaster@medieteknik.com'>
             webmaster@medieteknik.com
-          </a>
+          </Link>
         </p>
       </div>
     </main>

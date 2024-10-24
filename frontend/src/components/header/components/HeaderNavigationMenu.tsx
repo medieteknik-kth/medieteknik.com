@@ -11,7 +11,7 @@ import {
 import Link from 'next/link'
 import './headerNavigationMenu.css'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   headerElements: HeaderElement[]

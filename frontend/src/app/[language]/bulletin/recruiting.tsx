@@ -2,7 +2,7 @@ import RecruitmentCard from '@/app/[language]/bulletin/components/recruitmentCar
 import { useTranslation } from '@/app/i18n'
 import { CommitteePositionRecruitment } from '@/models/Committee'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

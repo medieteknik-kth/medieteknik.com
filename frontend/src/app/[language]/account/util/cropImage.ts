@@ -1,4 +1,3 @@
-
 export const createImage = (url: string) =>
   new Promise((resolve, reject) => {
     const image = new Image()

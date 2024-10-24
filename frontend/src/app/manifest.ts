@@ -3,8 +3,8 @@ import { MetadataRoute } from 'next'
 /**
  * @name manifest
  * @description Generate the web app manifest for the site, mainly for PWA
- * 
- * @returns {MetadataRoute.Manifest} The web app manifest configuration 
+ *
+ * @returns {MetadataRoute.Manifest} The web app manifest configuration
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -13,7 +13,8 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ['education', 'news', 'social'],
     id: '/',
     start_url: '.',
-    description: 'Website for the Media Technology programme at KTH (Royal Institute of Technology).',
+    description:
+      'Website for the Media Technology programme at KTH (Royal Institute of Technology).',
     theme_color: '#FACC15',
     background_color: '#ffffff',
     orientation: 'portrait-primary',
@@ -24,28 +25,32 @@ export default function manifest(): MetadataRoute.Manifest {
         src: 'favicon.ico',
         sizes: '48x48',
         type: 'image/x-icon',
+        purpose: 'maskable',
       },
       {
         src: 'apple-icon.png',
         sizes: '180x180',
         type: 'image/png',
-      }
+        purpose: 'maskable',
+      },
     ],
     screenshots: [
       {
         src: 'screenshots/desktop.jpg',
         sizes: '2560x1440',
         type: 'image/webp',
-        // @ts-ignore
-        form_factor: 'wide', 
+        label: 'Desktop',
+        platform: 'windows',
+        form_factor: 'wide',
       },
       {
         src: 'screenshots/phone.jpg',
         sizes: '430x932',
         type: 'image/webp',
-        // @ts-ignore
+        label: 'Phone',
+        platform: 'android',
         form_factor: 'narrow',
       },
     ],
-    }
   }
+}

@@ -28,15 +28,12 @@ export default function Search({ language, data }: Props): JSX.Element {
   const [search, setSearch] = useState('')
   const { t } = useTranslation(language, 'positions')
 
-  const updateSearchInput = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (!e) {
-        return
-      }
-      setSearchInput(e.currentTarget.value)
-    },
-    [searchInput]
-  )
+  const updateSearchInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    if (!e) {
+      return
+    }
+    setSearchInput(e.currentTarget.value)
+  }, [])
 
   const updateSearch = useCallback(() => {
     if (searchInput.length < 3) {

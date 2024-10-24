@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useTranslation } from '@/app/i18n/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,7 @@ import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import ShortNews from '../components/shortNews'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 /**
  * Renders the latest breaking news.
@@ -121,7 +121,7 @@ export default function BreakingNews({
                 </li>
               ))}
           </ul>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { CommitteeTag } from '@/components/tags/CommitteeTag'
+import CommitteeTag from '@/components/tags/CommitteeTag'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -12,7 +12,7 @@ import { CommitteePositionRecruitment } from '@/models/Committee'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
 interface Props {
   language: string

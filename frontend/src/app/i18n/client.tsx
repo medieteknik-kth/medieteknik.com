@@ -62,14 +62,9 @@ export function useTranslation(
     i18n.changeLanguage(language)
   }, [language, i18n.resolvedLanguage, i18n])
 
-  // Set the language cookie
-  const setLanguage = () => {
+  useEffect(() => {
     if (!language) return
     window.localStorage.setItem('language', language)
-  }
-
-  useEffect(() => {
-    setLanguage()
   }, [language])
 
   if (isRunningOnServer && language && i18n.resolvedLanguage !== language) {

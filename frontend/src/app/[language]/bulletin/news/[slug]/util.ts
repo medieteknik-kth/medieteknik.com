@@ -5,7 +5,7 @@ import Student from '@/models/Student'
 /**
  * @name assignCorrectAuthor
  * @description Assigns the correct author type to the author object
- * 
+ *
  * @param {Author} author - The author object
  * @returns {Author | null} The author object with the correct author type or null if the author type is not found
  */

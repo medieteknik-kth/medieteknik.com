@@ -1,10 +1,10 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next'
 
 /**
  * @name robots
  * @description Generate the robots.txt file for the site
- * 
- * @returns {MetadataRoute.Robots} The robots.txt configuration 
+ *
+ * @returns {MetadataRoute.Robots} The robots.txt configuration
  */
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -18,5 +18,5 @@ export default function robots(): MetadataRoute.Robots {
     ],
     sitemap: 'https://www.medieteknik.com/sitemap.xml',
     host: 'https://www.medieteknik.com',
-  };
+  }
 }

@@ -222,7 +222,7 @@ export function CommitteeManagementProvider({
     }
 
     retrieveData(committee)
-  }, [committee])
+  }, [committee, language])
 
   const contextValue = useMemo(
     () => ({

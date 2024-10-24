@@ -18,7 +18,7 @@ import {
   ChevronRightIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react';
+import { useState, type JSX } from 'react'
 import NewsCard from '../../components/newsCard'
 
 interface Props {
@@ -41,7 +41,7 @@ export default function AllNews({ language, data }: Props): JSX.Element {
   const [pageIndex, setPageIndex] = useState(1)
 
   return (
-    (<Card className='w-fit desktop:w-[1784px] mb-24'>
+    <Card className='w-fit desktop:w-[1784px] mb-24'>
       <CardHeader className='h-24 hidden'>
         {/* TODO: Add filtes, sorting, etc! */}
       </CardHeader>
@@ -68,7 +68,7 @@ export default function AllNews({ language, data }: Props): JSX.Element {
         ) : null}
         {pageIndex === 1 ? (
           // SSR data
-          (data.items.map((newsItem, index) => (
+          data.items.map((newsItem, index) => (
             <div key={index} className='relative'>
               {Object.keys(newsItem).length === 0 ? (
                 <Skeleton className='w-full h-full' />
@@ -78,10 +78,10 @@ export default function AllNews({ language, data }: Props): JSX.Element {
                 </>
               )}
             </div>
-          )))
+          ))
         ) : (
           // CSR data
-          (<NewsPaginationPage language={language} index={pageIndex} />)
+          <NewsPaginationPage language={language} index={pageIndex} />
         )}
       </CardContent>
       <CardFooter className='flex justify-center'>
@@ -133,6 +133,6 @@ export default function AllNews({ language, data }: Props): JSX.Element {
           </PaginationContent>
         </Pagination>
       </CardFooter>
-    </Card>)
-  );
+    </Card>
+  )
 }
