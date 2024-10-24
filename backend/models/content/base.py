@@ -59,7 +59,7 @@ class Item(db.Model):
     created_at = Column(DateTime, default=func.now(), server_default=func.now())
     last_updated = Column(
         DateTime,
-        default=datetime.now(timezone.utc),
+        default=func.now(),
         onupdate=datetime.now(timezone.utc),
     )
     categories = Column(ARRAY(String), default=[])

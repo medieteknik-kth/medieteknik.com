@@ -298,16 +298,16 @@ def create_item(
 
         db.session.add(translation)
 
-        if author.author_type == AuthorType.COMMITTEE:
-            committee: Committee = Committee.query.filter_by(email=email).first_or_404()
-            if isinstance(item, Media):
-                setattr(committee, "total_media", committee.total_media + 1)
-            elif isinstance(item, Document):
-                setattr(committee, "total_documents", committee.total_documents + 1)
-            elif isinstance(item, Event):
-                setattr(committee, "total_events", committee.total_events + 1)
-            elif isinstance(item, News):
-                setattr(committee, "total_news", committee.total_news + 1)
+    if author.author_type == AuthorType.COMMITTEE:
+        committee: Committee = Committee.query.filter_by(email=email).first_or_404()
+        if isinstance(item, Media):
+            setattr(committee, "total_media", committee.total_media + 1)
+        elif isinstance(item, Document):
+            setattr(committee, "total_documents", committee.total_documents + 1)
+        elif isinstance(item, Event):
+            setattr(committee, "total_events", committee.total_events + 1)
+        elif isinstance(item, News):
+            setattr(committee, "total_news", committee.total_news + 1)
 
     db.session.commit()
 

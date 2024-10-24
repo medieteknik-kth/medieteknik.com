@@ -30,6 +30,7 @@ class ROUTES(enum.Enum):
         LANGUAGES: The route for languages.
     """
 
+    ALBUMS = "albums"
     DYNAMIC = "dynamic"
     STUDENTS = "students"
     COMMITTEES = "committees"

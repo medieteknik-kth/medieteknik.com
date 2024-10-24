@@ -2,7 +2,9 @@ from datetime import date
 from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt, jwt_required
+from sqlalchemy import func
 from models.committees.committee import Committee
+from models.content.album import Album
 from models.content.media import Media
 from models.core.student import Student
 from services.content.item import create_item
@@ -53,6 +55,8 @@ def create_media():
 
     if author_table is None:
         return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
+
+    album_id = form_data.get("album_id")
 
     url = ""
 
@@ -112,6 +116,7 @@ def create_media():
             "media_url": url,
             "media_type": media_type.upper(),
             "author": {"author_type": author_type, "email": email},
+            **({"album_id": album_id} if album_id else {}),
             "translations": [
                 {
                     "language_code": convert_iso_639_1_to_bcp_47(
@@ -133,8 +138,17 @@ def create_media():
             {"error": "Failed to create item"}
         ), HTTPStatus.INTERNAL_SERVER_ERROR
 
-    committee: Committee = Committee.query.filter_by(email=email).first_or_404()
-    setattr(committee, "total_media", committee.total_media + 1)
+    if album_id is not None:
+        album: Album = Album.query.get_or_404(album_id)
+        media: Media = Media.query.get_or_404(item_id)
+
+        setattr(album, "last_updated", func.now())
+        if media_type == "image":
+            setattr(album, "preview_media_id", media.media_id)
+            setattr(album, "total_photos", album.total_photos + 1)
+        elif media_type == "video":
+            setattr(album, "total_videos", album.total_videos + 1)
+
     db.session.commit()
 
     return jsonify({"message": "Media created successfully"}), HTTPStatus.CREATED

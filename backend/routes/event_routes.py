@@ -147,14 +147,6 @@ def create_event():
         public=True,
     )
 
-    # Increment the event count for the committee
-    if author.get("author_type") == "COMMITTEE":
-        committee: Committee = Committee.query.filter_by(
-            email=author_email
-        ).first_or_404()
-        committee.total_events += 1
-        db.session.commit()
-
     repeatable = data.get("repeats")
 
     if repeatable:

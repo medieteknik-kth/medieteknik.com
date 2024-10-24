@@ -30,9 +30,11 @@ class Media(Item):
 
     # Foreign keys
     item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
+    album_id = Column(UUID(as_uuid=True), ForeignKey("album.album_id"), nullable=True)
 
     # Relationships
     item = db.relationship("Item", back_populates="media")
+    album = db.relationship("Album", back_populates="media")
     translations = db.relationship("MediaTranslation", back_populates="media")
 
     __mapper_args__ = {"polymorphic_identity": "media"}
