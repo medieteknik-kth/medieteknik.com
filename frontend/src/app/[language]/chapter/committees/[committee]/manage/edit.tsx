@@ -1,4 +1,6 @@
 'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import { supportedLanguages } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,6 +24,7 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { editCommitteeSchema } from '@/schemas/committee/edit'
@@ -32,21 +35,27 @@ import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+interface Props {
+  language: string
+  committee: Committee
+}
+
+interface TranslatedProps {
+  index: number
+  language: string
+}
+
 /**
  * @name TranslatedInputs
  * @description A component for rendering the translated inputs for a committee.
  *
- * @param {number} index - The index of the translation
- * @param {string} language - The language of the translation
+ * @param {TranslatedProps} props
+ * @param {number} props.index - The index of the translation
+ * @param {string} props.language - The language of the translation
+ *
  * @returns {JSX.Element} The rendered component
  */
-function TranslatedInputs({
-  index,
-  language,
-}: {
-  index: number
-  language: string
-}): JSX.Element {
+function TranslatedInputs({ index, language }: TranslatedProps): JSX.Element {
   return (
     <>
       <FormField
@@ -81,20 +90,20 @@ function TranslatedInputs({
  * @name EditCommittee
  * @description A component for editing the public details of a committee.
  *
- * @param {string} language - The language of the page
- * @param {Committee} committee - The committee to edit
+ * @param {Props} props
+ * @param {string} props.language - The language of the page
+ * @param {Committee} props.committee - The committee to edit
+ *
  * @returns {JSX.Element} The rendered component
  */
 export default function EditCommittee({
   language,
   committee,
-}: {
-  language: string
-  committee: Committee
-}): JSX.Element {
+}: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const { permissions, positions } = useAuthentication()
+  const { t } = useTranslation(language, 'committee_management')
 
   const form = useForm<z.infer<typeof editCommitteeSchema>>({
     resolver: zodResolver(editCommitteeSchema),
@@ -176,30 +185,37 @@ export default function EditCommittee({
       <DialogTrigger asChild>
         <Button
           variant={'outline'}
-          title='Edit the public details of the committee.'
+          title={t('edit_public_details.description')}
         >
           <PencilSquareIcon className='w-6 h-6 mr-2' />
-          <p>Edit Public Details</p>
+          <p>{t('edit_public_details')}</p>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Committee</DialogTitle>
+          <DialogTitle>{t('edit_public_details')}</DialogTitle>
           <DialogDescription>
-            Edit the public details of the committee.
+            {t('edit_public_details.description')}
           </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue={language}>
           <TabsList>
             {supportedLanguages.map((language) => (
-              <TabsTrigger key={language} value={language}>
-                <span className={`fi fi-${LANGUAGES[language].flag}`} />
+              <TabsTrigger
+                key={language}
+                value={language}
+                className='w-fit'
+                title={LANGUAGES[language].name}
+              >
+                <span className='w-6 h-6'>
+                  {LANGUAGES[language as LanguageCode].flag_icon}
+                </span>
               </TabsTrigger>
             ))}
           </TabsList>
           {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
           <div>
-            <Label>Email</Label>
+            <Label>{t('edit_public_details.form.email')}</Label>
             <Input
               value={committee.email}
               disabled
@@ -214,7 +230,7 @@ export default function EditCommittee({
                 name='title'
                 render={({ field }) => (
                   <FormItem className='mb-4'>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>{t('edit_public_details.form.title')}</FormLabel>
                     <Input id='title' placeholder='Title' {...field} />
                     <FormMessage className='text-xs font-bold' />
                   </FormItem>
@@ -235,7 +251,7 @@ export default function EditCommittee({
                 name='logo'
                 render={({ field }) => (
                   <FormItem className='mb-4'>
-                    <FormLabel>Logo</FormLabel>
+                    <FormLabel>{t('edit_public_details.form.logo')}</FormLabel>
                     <Input
                       id='logo'
                       accept='image/svg+xml'
@@ -262,7 +278,7 @@ export default function EditCommittee({
                       }}
                     />
                     <FormDescription>
-                      Max file size 1MB. SVG only.
+                      {t('edit_public_details.form.logo.requirements')}
                     </FormDescription>
                     <FormMessage className='text-xs font-bold' />
                   </FormItem>
@@ -274,7 +290,9 @@ export default function EditCommittee({
                 name='group_photo'
                 render={({ field }) => (
                   <FormItem className='mb-4'>
-                    <FormLabel>Group Photo</FormLabel>
+                    <FormLabel>
+                      {t('edit_public_details.form.group_photo')}
+                    </FormLabel>
                     <Input
                       id='logo'
                       accept='image/*'
@@ -300,7 +318,9 @@ export default function EditCommittee({
                         })
                       }}
                     />
-                    <FormDescription>Max file size 15MB.</FormDescription>
+                    <FormDescription>
+                      {t('edit_public_details.form.group_photo.requirements')}
+                    </FormDescription>
                     <FormMessage className='text-xs font-bold' />
                   </FormItem>
                 )}

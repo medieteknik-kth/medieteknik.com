@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import {
   Breadcrumb,
@@ -18,7 +21,9 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import Logo from 'public/images/logo.webp'
+import { JSX, useCallback } from 'react'
 import Content from './content'
 import EditCommittee from './edit'
 
@@ -28,11 +33,39 @@ interface Props {
   committeeName: string
 }
 
+/**
+ * @name CommitteeLandingPage
+ * @description The landing page for managing a committee, after the redirect component
+ *
+ * @param {Props} props
+ * @param {string} props.language - The language of the page
+ * @param {Committee} props.committeeData - The committee data
+ * @param {string} props.committeeName - The committee name
+ *
+ * @returns {JSX.Element} The rendered component
+ */
 export default function CommitteeLandingPage({
   language,
   committeeData,
   committeeName,
-}: Props) {
+}: Props): JSX.Element {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const tab = searchParams.get('tab') || 'home'
+  const router = useRouter()
+  const { t } = useTranslation(language, 'committee_management')
+
+  const createTabString = useCallback(
+    (tab: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+
+      params.set('tab', tab)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+
   return (
     <>
       <HeaderGap />
@@ -40,7 +73,7 @@ export default function CommitteeLandingPage({
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href={'/' + language + '/chapter'} className='py-2'>
-              Chapter
+              {t('chapter')}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -49,7 +82,7 @@ export default function CommitteeLandingPage({
               href={'/' + language + '/chapter/committees'}
               className='py-2'
             >
-              Committees
+              {t('committees')}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -63,12 +96,12 @@ export default function CommitteeLandingPage({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Manage</BreadcrumbPage>
+            <BreadcrumbPage>{t('manage')}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className='w-full h-fit mt-32 relative'>
-        <div className='flex items-center absolute left-16 gap-8 -top-28'>
+      <div className='w-full h-fit sm:mt-32 relative'>
+        <div className='flex flex-wrap flex-col sm:flex-row items-center sm:absolute left-16 gap-4 -top-28'>
           <Link
             href={`/chapter/committees/${committeeName}`}
             target='_blank'
@@ -93,50 +126,67 @@ export default function CommitteeLandingPage({
               className='w-28 h-auto object-cover p-2'
             />
           </Link>
-          <h1 className='capitalize tracking-wide text-3xl'>
-            {decodeURIComponent(committeeName)}
-          </h1>
-          <EditCommittee committee={committeeData} language={language} />
+          <div className='flex flex-wrap flex-col sm:flex-row gap-4 items-center'>
+            <h1 className='capitalize tracking-wide text-3xl'>
+              {decodeURIComponent(committeeName)}
+            </h1>
+            <EditCommittee committee={committeeData} language={language} />
+          </div>
         </div>
-        <div className='flex mb-10 mt-16'>
-          <div className='w-full h-fit flex px-20'>
-            <Tabs defaultValue='home' className='w-full h-fit mt-8'>
-              <TabsList className='h-fit flex space-x-1 justify-start ml-36 z-30 absolute -top-4'>
+        <div className='flex mb-10 sm:mt-16'>
+          <div className='w-full h-fit flex px-8 md:px-20'>
+            <Tabs defaultValue={tab} className='w-full h-fit mt-8'>
+              <TabsList className='h-fit flex flex-wrap space-x-1 justify-start lg:ml-32 z-30 lg:absolute -top-4'>
                 <TabsTrigger
                   value='home'
                   className='w-36 h-10 flex justify-start items-center'
+                  onClick={() =>
+                    router.push(pathname + '?' + createTabString('home'))
+                  }
                 >
                   <HomeIcon className='w-6 h-6 mr-2' />
-                  <span>Home</span>
+                  <span>{t('tab.home')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value='members'
                   className='w-36 h-10 flex justify-start items-center'
+                  onClick={() =>
+                    router.push(pathname + '?' + createTabString('members'))
+                  }
                 >
                   <UserGroupIcon className='w-6 h-6 mr-2' />
 
-                  <span>Members</span>
+                  <span>{t('tab.members')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value='news'
                   className='w-36 h-10 flex justify-start items-center'
+                  onClick={() =>
+                    router.push(pathname + '?' + createTabString('news'))
+                  }
                 >
                   <NewspaperIcon className='w-6 h-6 mr-2' />
-                  <span>News</span>
+                  <span>{t('tab.news')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value='events'
                   className='w-36 h-10 flex justify-start items-center'
+                  onClick={() =>
+                    router.push(pathname + '?' + createTabString('events'))
+                  }
                 >
                   <CalendarDaysIcon className='w-6 h-6 mr-2' />
-                  <span>Events</span>
+                  <span>{t('tab.events')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value='documents'
                   className='w-36 h-10 flex justify-start items-center'
+                  onClick={() =>
+                    router.push(pathname + '?' + createTabString('documents'))
+                  }
                 >
                   <DocumentDuplicateIcon className='w-6 h-6 mr-2' />
-                  <span>Documents</span>
+                  <span>{t('tab.documents')}</span>
                 </TabsTrigger>
               </TabsList>
               <Content language={language} committee={committeeData} />

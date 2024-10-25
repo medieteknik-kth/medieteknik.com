@@ -18,6 +18,7 @@ interface Props {
  * @param {object} param - The dynamic URL parameters
  * @param {string} param.language - The language of the page
  * @param {string} param.committee - The committee name to manage
+ *
  * @returns {Promise<JSX.Element>} The rendered component
  */
 export default async function CommitteeManage(

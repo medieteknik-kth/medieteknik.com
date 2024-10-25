@@ -1,6 +1,21 @@
 {
-    "event.delete": "Ta bort ",
-    "event.delete_confirmation": "Är du säker på att du vill ta bort detta event? Detta kommer att ta bort alla förekomster av detta event.",
-    "event.cancel": "Avbryt",
-    "event.delete_confirm": "Ta bort"
+    "manage": "Hantera",
+    "chapter": "Sektionen",
+    "committees": "Nämnder och Projekt",
+    "edit_public_details": "Ändra offentliga detaljer",
+    "edit_public_details.description": "Ändra nämndens offentliga detaljer.",
+    "edit_public_details.form.email": "E-post",
+    "edit_public_details.form.title": "Titel",
+    "edit_public_details.form.description": "Beskrivning",
+    "edit_public_details.form.logo": "Logotyp",
+    "edit_public_details.form.logo.requirements": "Max filstorlek 1MB. Endast SVG.",
+    "edit_public_details.form.group_photo": "Gruppfoto",
+    "edit_public_details.form.group_photo.requirements": "Max filstorlek 15MB.",
+    "edit_public_details.form.save": "Spara",
+    "tab.home": "Hem",
+    "tab.members": "Medlemmar",
+    "tab.news": "Nyheter",
+    "tab.events": "Händelser",
+    "tab.documents": "Dokument",
+    "tab.media": "Media"
 }

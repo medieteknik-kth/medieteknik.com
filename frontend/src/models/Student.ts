@@ -48,7 +48,8 @@ export interface Profile {
  */
 export interface StudentMembership {
   student: Student
-  position: CommitteePosition
+  student_membership_id: string
+  committee_position_id: string
   initiation_date: string
   termination_date: string
 }

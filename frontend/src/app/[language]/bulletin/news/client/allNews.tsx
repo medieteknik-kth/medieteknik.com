@@ -91,7 +91,7 @@ export default function AllNews({ language, data }: Props): JSX.Element {
               <Button
                 className='w-10 h-10'
                 size={'icon'}
-                disabled={pageIndex === data.total_pages}
+                disabled={pageIndex === 1}
                 onClick={() => {
                   setPageIndex((prev) => (prev - 1 > 0 ? prev - 1 : 1))
                 }}

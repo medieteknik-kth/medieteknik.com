@@ -1,0 +1,15 @@
+{
+    "title": "Documents",
+    "total_documents.description": "Amount of Uploaded Documents",
+    "upload_document": "Upload Document",
+    "all_documents": "All Documents (20 per page)",
+    "table.title": "Title",
+    "table.is_public": "Public",
+    "table.actions": "Actions",
+    "open_document": "Open in a new tab",
+    "pin_unpin": "Pin/Unpin",
+    "delete_document": "Delete Document",
+    "delete_document.confirmation": "Are you sure you want to delete this document?",
+    "delete_document.warning": "Warning: This action cannot be undone.",
+    "delete_document.cancel": "Cancel"
+}

@@ -14,7 +14,7 @@ export async function generateMetadata(props: {
 
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   return {
-    title: capitalizedValue + ' Management',
+    title: capitalizedValue + ' - Management',
   }
 }
 

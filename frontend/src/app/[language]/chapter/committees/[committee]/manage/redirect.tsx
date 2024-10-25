@@ -22,6 +22,7 @@ interface Props {
  * @param {object} param - The dynamic URL parameters
  * @param {string} param.language - The language of the page
  * @param {string} param.committee - The committee name to manage
+ *
  * @returns {JSX.Element} The rendered component
  */
 export default function CommitteeRedirect({

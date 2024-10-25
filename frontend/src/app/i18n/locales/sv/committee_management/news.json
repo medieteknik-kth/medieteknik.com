@@ -1,0 +1,12 @@
+{
+    "title": "Nyheter",
+    "total_news": "Total antal nyheter",
+    "total_news.description": "Antal artiklar skapade",
+    "create_news": "Skapa en nyhetsartikel",
+    "news_articles": "Nyhetsartiklar",
+    "all_news": "Alla nyheter (20 per sida)",
+    "table.title": "Titel",
+    "table.status": "Status",
+    "table.is_public": "Är offentlig",
+    "table.actions": "Åtgärder"
+}

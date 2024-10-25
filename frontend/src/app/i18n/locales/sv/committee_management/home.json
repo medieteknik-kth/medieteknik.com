@@ -1,0 +1,23 @@
+{
+    "tab.home": "Hem",
+    "members": "Medlemmar",
+    "total_members": "Totalt antal aktiva medlemmar",
+    "news": "Nyheter",
+    "total_news": "Totalt antal nyhetsartiklar",
+    "events": "Händelser",
+    "total_events": "Totalt antal händelser",
+    "documents": "Dokument",
+    "total_documents": "Totalt antal dokument",
+    "media": "Media",
+    "total_media": "Totalt antal media",
+    "quick_actions": "Snabbåtgärder",
+    "quick_actions.description": "Snabbtillgång till de vanligaste åtgärderna.",
+    "quick_actions.create_news": "Skapa nyhet",
+    "quick_actions.create_event": "Skapa händelse",
+    "quick_actions.upload_document": "Ladda upp dokument",
+    "quick_actions.upload_media": "Ladda upp media",
+    "event.delete": "Radera ",
+    "event.delete_confirmation": "Är du säker på att du vill radera denna händelse? Detta kommer att ta bort alla förekomster av denna händelse.",
+    "event.cancel": "Avbryt",
+    "event.delete_confirm": "Ta bort"
+}

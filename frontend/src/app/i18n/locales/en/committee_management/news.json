@@ -1,0 +1,12 @@
+{
+    "title": "News",
+    "total_news": "Total News",
+    "total_news.description": "Amount of Articles Created",
+    "create_news": "Create a News Article",
+    "news_articles": "News Articles",
+    "all_news": "All News (20 per page)",
+    "table.title": "Title",
+    "table.status": "Status",
+    "table.is_public": "Is Public",
+    "table.actions": "Actions"
+}

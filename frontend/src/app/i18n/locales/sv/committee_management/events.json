@@ -1,0 +1,13 @@
+{
+    "title": "Händelser",
+    "hosted_events": "Arrangerade händelser",
+    "hosted_events.description": "Antal arrangerade händelser",
+    "create_event": "Skapa händelse",
+    "all_events": "Alla händelser (20 per sida)",
+    "table.title": "Titel",
+    "table.status": "Status",
+    "table.location": "Plats",
+    "table.start_date": "Startdatum",
+    "table.end_date": "Slutdatum",
+    "table.actions": "Åtgärder"
+}
