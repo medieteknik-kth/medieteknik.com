@@ -5,15 +5,14 @@ API Endpoint: '/api/v1/documents'
 
 from datetime import date
 from http import HTTPStatus
-from typing import Any, Dict, List
+from typing import List
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.content.author import Author
 from models.content.document import Document, DocumentTranslation
-from models.core.permissions import Permissions, Role
-from models.core.student import Student
+from models.core.student import Student, StudentMembership
 from services.content.item import create_item
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.gc import upload_file, delete_file
@@ -130,31 +129,73 @@ def create_document():
     ), HTTPStatus.CREATED
 
 
+@documents_bp.route("/<string:document_id>/pin", methods=["PUT"])
+@jwt_required()
+def pin_document(document_id: str):
+    student_id = get_jwt_identity()
+
+    document: Document = Document.query.filter_by(
+        document_id=document_id
+    ).first_or_404()
+
+    author: Author = Author.query.filter_by(author_id=document.author_id).first_or_404()
+
+    if author.committee_id:
+        membership = (
+            StudentMembership.query.join(
+                CommitteePosition,
+                StudentMembership.committee_position_id
+                == CommitteePosition.committee_position_id,
+            )
+            .filter(
+                CommitteePosition.committee_id == author.committee_id,
+                StudentMembership.student_id == student_id,
+                StudentMembership.termination_date.is_(None),
+            )
+            .first()
+        )
+
+        if not membership:
+            return jsonify({}), HTTPStatus.UNAUTHORIZED
+    else:
+        return jsonify({}), HTTPStatus.NOT_IMPLEMENTED
+
+    document.is_pinned = not document.is_pinned
+    db.session.commit()
+
+    return jsonify({}), HTTPStatus.NO_CONTENT
+
+
 @documents_bp.route("/<string:document_id>", methods=["DELETE"])
 @jwt_required()
 def delete_document(document_id: str):
     student_id = get_jwt_identity()
-    claims = get_jwt()
-    permissions: Dict[str, Any] | None = claims.get("permissions")
-    role: List[str] | None = claims.get("role")
 
-    if not permissions or not role:
-        return jsonify({}), HTTPStatus.UNAUTHORIZED
-
-    # Check ownership
-    author = Author.query.filter_by(student_id=student_id).first()
-    # TODO: Check committee ownership
-
-    if author is None:
-        # Check if the user is allowed to delete any document
-        if (
-            Permissions.ITEMS_DELETE.value not in permissions.get("student")
-            and Role.ADMIN.value not in role
-        ):
-            return jsonify({}), HTTPStatus.UNAUTHORIZED
     document: Document = Document.query.filter_by(
         document_id=document_id
     ).first_or_404()
+
+    author: Author = Author.query.filter_by(author_id=document.author_id).first_or_404()
+
+    if author.committee_id:
+        membership = (
+            StudentMembership.query.join(
+                CommitteePosition,
+                StudentMembership.committee_position_id
+                == CommitteePosition.committee_position_id,
+            )
+            .filter(
+                CommitteePosition.committee_id == author.committee_id,
+                StudentMembership.student_id == student_id,
+                StudentMembership.termination_date.is_(None),
+            )
+            .first()
+        )
+
+        if not membership:
+            return jsonify({}), HTTPStatus.UNAUTHORIZED
+    else:
+        return jsonify({}), HTTPStatus.NOT_IMPLEMENTED
 
     translations: List[DocumentTranslation] = DocumentTranslation.query.filter_by(
         document_id=str(document_id)
@@ -165,6 +206,7 @@ def delete_document(document_id: str):
             {"error": "Document translation not found"}
         ), HTTPStatus.NOT_FOUND
 
+    db.session.begin()
     for translation in translations:
         result = delete_file(translation.url)
 
