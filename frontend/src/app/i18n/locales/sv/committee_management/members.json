@@ -1,0 +1,23 @@
+{
+    "title": "Medlemmar och poster",
+    "actions": "Åtgärder",
+    "members": "Medlemmar",
+    "members.description": "Hantera medlemmarna i nämnden.",
+    "members.add": "Lägg till medlem",
+    "members.remove": "Ta bort medlem",
+    "positions": "Positioner",
+    "positions.description": "Hantera nämndens positioner.",
+    "positions.view": "Visa aktuella positioner",
+    "positions.add": "Lägg till position",
+    "positions.recruit": "Rekrytera medlem",
+    "positions.remove": "Ta bort position",
+    "current_members": "Nuvarande medlemmar",
+    "current_members.description": "Visa nämndens nuvarande medlemmar.",
+    "student_name": "Studentnamn",
+    "position": "Position",
+    "initiation_date": "Initieringsdatum",
+    "recruitments": "Aktiv rekrytering",
+    "recruitments.description": "Hantera rekryteringen av medlemmar till nämnden.",
+    "recruitments.start_date": "Startdatum",
+    "recruitments.end_date": "Slutdatum"
+}

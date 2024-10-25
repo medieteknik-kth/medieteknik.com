@@ -1,0 +1,15 @@
+{
+    "title": "Dokument",
+    "total_documents.description": "Antal uppladdade dokument",
+    "upload_document": "Ladda upp dokument",
+    "all_documents": "Alla dokument (20 per sida)",
+    "table.title": "Titel",
+    "table.is_public": "Publik",
+    "table.actions": "Åtgärder",
+    "open_document": "Öppna i ny flik",
+    "pin_unpin": "Fäst/Avfäst",
+    "delete_document": "Ta bort dokument",
+    "delete_document.confirmation": "Är du säker på att du vill ta bort detta dokument?",
+    "delete_document.warning": "OBS: Denna åtgärd kan inte ångras.",
+    "delete_document.cancel": "Avbryt"
+}

@@ -1,0 +1,23 @@
+{
+    "title": "Members & Positions",
+    "actions": "Actions",
+    "members": "Members",
+    "members.description": "Manage the members of the committee.",
+    "members.add": "Add Member",
+    "members.remove": "Remove Member",
+    "positions": "Positions",
+    "positions.description": "Manage the positions of the committee.",
+    "positions.view": "View current positions",
+    "positions.add": "Add Position",
+    "positions.recruit": "Recruit Member",
+    "positions.remove": "Remove Position",
+    "current_members": "Current Members",
+    "current_members.description": "View the current members of the committee.",
+    "student_name": "Student Name",
+    "position": "Position",
+    "initiation_date": "Initiation Date",
+    "recruitments": "Active Recruitment",
+    "recruitments.description": "Manage the recruitment of members for the committee.",
+    "recruitments.start_date": "Start Date",
+    "recruitments.end_date": "End Date"
+}

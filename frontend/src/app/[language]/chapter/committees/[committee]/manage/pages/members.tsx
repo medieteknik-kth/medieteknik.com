@@ -1,4 +1,6 @@
 'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import StudentTag from '@/components/tags/StudentTag'
 import { Button } from '@/components/ui/button'
 import {
@@ -39,21 +41,25 @@ import PositionForm from '../forms/positionForm'
 import RecruitmentForm from '../forms/recruitmentForm'
 import RemovePositionForm from '../forms/removePosition'
 
+interface Props {
+  language: string
+  committee: Committee
+}
+
 /**
  * @name MembersPage
  * @description The page for managing a committees members
  *
- * @param {string} language - The language of the page
- * @param {Committee} committee - The committee to manage
+ * @param {Props} props
+ * @param {string} props.language - The language of the page
+ * @param {Committee} props.committee - The committee data
+ *
  * @returns {JSX.Element} The rendered component
  */
 export default function MembersPage({
   committee,
   language,
-}: {
-  committee: Committee
-  language: string
-}): JSX.Element {
+}: Props): JSX.Element {
   // TODO: Clean-up the code, separate the components into smaller components?
   const [isLoading, setIsLoading] = useState(true)
   const [addPositionOpen, setAddPositionOpen] = useState(false)
@@ -68,6 +74,7 @@ export default function MembersPage({
     addPosition,
   } = useCommitteeManagement()
   const { positions: studentPositions, role } = useAuthentication()
+  const { t } = useTranslation(language, 'committee_management/members')
 
   const findPosition = (id: string) => {
     return positions.find((position) => position.committee_position_id === id)
@@ -103,17 +110,17 @@ export default function MembersPage({
 
   return (
     <section className='grow'>
-      <h2 className='text-2xl py-3 border-b-2 border-yellow-400'>
-        Members & Positions
+      <h2 className='text-2xl py-3 border-b-2 border-yellow-400 tracking-wide'>
+        {t('title')}
       </h2>
       <div className='flex flex-col mt-4 gap-4'>
         <div className='flex'>
           <Card className='w-fit relative mr-4'>
             <CardHeader>
-              <CardTitle>Members</CardTitle>
+              <CardTitle>{t('members')}</CardTitle>
               <CardDescription>
                 <UsersIcon className='absolute top-6 right-4 w-5 h-5 mr-2' />
-                Total Active Students
+                {t('members.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -132,7 +139,7 @@ export default function MembersPage({
                     title='Add a new member to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
-                    Add
+                    {t('members.add')}
                   </Button>
                 </DialogTrigger>
                 <AddMemberForm
@@ -155,7 +162,7 @@ export default function MembersPage({
                     title='Remove a member from the committee'
                   >
                     <TrashIcon className='w-5 h-5 mr-2' />
-                    Remove
+                    {t('members.remove')}
                   </Button>
                 </DialogTrigger>
                 <RemoveMemberForm language={language} />
@@ -165,10 +172,10 @@ export default function MembersPage({
 
           <Card className='w-fit relative mr-4'>
             <CardHeader>
-              <CardTitle>Positions</CardTitle>
+              <CardTitle>{t('positions')}</CardTitle>
               <CardDescription>
                 <IdentificationIcon className='absolute top-6 right-4 w-5 h-5 mr-2' />
-                Total Positions in the committee
+                {t('positions.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -188,7 +195,7 @@ export default function MembersPage({
                     title='Create a new position to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
-                    Create
+                    {t('positions.add')}
                   </Button>
                 </DialogTrigger>
                 <PositionForm
@@ -213,7 +220,7 @@ export default function MembersPage({
                     title='Open a position for recruitment'
                   >
                     <ClockIcon className='w-5 h-5 mr-2' />
-                    Recruit
+                    {t('positions.recruit')}
                   </Button>
                 </DialogTrigger>
                 <RecruitmentForm
@@ -234,7 +241,7 @@ export default function MembersPage({
                     title='Remove a position from the committee'
                   >
                     <TrashIcon className='w-5 h-5 mr-2' />
-                    Remove
+                    {t('positions.remove')}
                   </Button>
                 </DialogTrigger>
                 <RemovePositionForm language={language} onSuccess={() => {}} />
@@ -244,20 +251,20 @@ export default function MembersPage({
         </div>
         <Card className='relative'>
           <CardHeader>
-            <CardTitle>Active Members</CardTitle>
+            <CardTitle>{t('current_members')}</CardTitle>
             <CardDescription>
               <BuildingOffice2Icon className='absolute top-6 right-4 w-5 h-5 mr-2' />
-              Current members in the committee
+              {t('current_members.description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Initiated</TableHead>
-                  <TableHead className='text-right'>Actions</TableHead>
+                  <TableHead>{t('student_name')}</TableHead>
+                  <TableHead>{t('position')}</TableHead>
+                  <TableHead>{t('initiation_date')}</TableHead>
+                  <TableHead className='text-right'>{t('actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -268,12 +275,9 @@ export default function MembersPage({
                     )
                   })
                   .sort((a, b) => {
-                    const positionA = findPosition(
-                      a.position.committee_position_id
-                    )
-                    const positionB = findPosition(
-                      b.position.committee_position_id
-                    )
+                    console.log(a, b)
+                    const positionA = findPosition(a.committee_position_id)
+                    const positionB = findPosition(b.committee_position_id)
                     return (
                       (positionA ? positionA.weight : 0) -
                       (positionB ? positionB.weight : 0)
@@ -291,14 +295,11 @@ export default function MembersPage({
                         {isLoading ? (
                           <Skeleton className='w-32 h-8' />
                         ) : (
-                          findPosition(
-                            member.position.committee_position_id
-                          ) && (
+                          findPosition(member.committee_position_id) && (
                             <p>
                               {
-                                findPosition(
-                                  member.position.committee_position_id
-                                )!.translations[0].title
+                                findPosition(member.committee_position_id)!
+                                  .translations[0].title
                               }
                             </p>
                           )
@@ -334,10 +335,10 @@ export default function MembersPage({
         <div className='flex gap-4 flex-wrap'>
           <Card className='w-96 relative'>
             <CardHeader>
-              <CardTitle>Positions</CardTitle>
+              <CardTitle>{t('positions')}</CardTitle>
               <CardDescription>
                 <CircleStackIcon className='absolute top-6 right-4 w-5 h-5 mr-2' />
-                All positions in the committee
+                {t('positions.view')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -357,20 +358,20 @@ export default function MembersPage({
           </Card>
           <Card className='relative grow min-w-[875px]'>
             <CardHeader>
-              <CardTitle>Active Recruitment</CardTitle>
+              <CardTitle>{t('recruitments')}</CardTitle>
               <CardDescription>
                 <BuildingOffice2Icon className='absolute top-6 right-4 w-5 h-5 mr-2' />
-                Currently recruiting positions
+                {t('recruitments.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Position</TableHead>
-                    <TableHead>Start Date</TableHead>
-                    <TableHead>End Date</TableHead>
-                    <TableHead className='text-right'>Actions</TableHead>
+                    <TableHead>{t('position')}</TableHead>
+                    <TableHead>{t('recruitments.start_date')}</TableHead>
+                    <TableHead>{t('recruitments.end_date')}</TableHead>
+                    <TableHead className='text-right'>{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

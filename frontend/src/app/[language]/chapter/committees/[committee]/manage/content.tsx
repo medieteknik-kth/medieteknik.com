@@ -1,32 +1,33 @@
 'use client'
+
 import Loading from '@/components/tooltips/Loading'
 import { TabsContent } from '@/components/ui/tabs'
 import Committee from '@/models/Committee'
 import { CommitteeManagementProvider } from '@/providers/CommitteeManagementProvider'
 import { lazy, Suspense, type JSX } from 'react'
-const HomePage = lazy(() => import('./pages/home'))
+const HomePage = lazy(() => import('./pages/home/home'))
 const MembersPage = lazy(() => import('./pages/members'))
-const NewsPage = lazy(() => import('./pages/news'))
-const EventPage = lazy(() => import('./pages/events'))
-const DocumentPage = lazy(() => import('./pages/documents'))
+const NewsPage = lazy(() => import('./pages/news/news'))
+const EventPage = lazy(() => import('./pages/events/events'))
+const DocumentPage = lazy(() => import('./pages/documents/documents'))
+
+interface Props {
+  language: string
+  committee: Committee
+}
 
 /**
  * @name Content
  * @description The content for the committee management page, with tabs for different sections
  *
- * @param {string} language - The language of the page
- * @param {Committee} committee - The committee to manage
- * @returns {JSX.Element} The rendered component
+ * @param {Props} props
+ * @param {string} props.language - The language of the page
+ * @param {Committee} props.committee - The committee data
  *
+ * @returns {JSX.Element} The rendered component
  * @see {@link CommitteeManagementProvider}
  */
-export default function Content({
-  language,
-  committee,
-}: {
-  language: string
-  committee: Committee
-}): JSX.Element {
+export default function Content({ language, committee }: Props): JSX.Element {
   return (
     <CommitteeManagementProvider committee={committee} language={language}>
       <TabsContent value='home'>

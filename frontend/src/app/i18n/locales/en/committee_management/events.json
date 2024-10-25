@@ -1,0 +1,13 @@
+{
+    "title": "Events",
+    "hosted_events": "Hosted Events",
+    "hosted_events.description": "Amount of events hosted",
+    "create_event": "Create Event",
+    "all_events": "All Events (20 per page)",
+    "table.title": "Title",
+    "table.status": "Status",
+    "table.location": "Location",
+    "table.start_date": "Start Date",
+    "table.end_date": "End Date",
+    "table.actions": "Actions"
+}

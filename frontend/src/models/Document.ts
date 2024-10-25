@@ -14,5 +14,5 @@ export interface DocumentTranslation {
   title: string
   categories?: string[]
   url: string
-  language_code: LanguageCode
+  language_code: string
 }

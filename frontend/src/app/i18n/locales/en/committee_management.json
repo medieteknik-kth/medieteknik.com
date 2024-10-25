@@ -1,6 +1,21 @@
 {
-    "event.delete": "Delete ",
-    "event.delete_confirmation": "Are you sure you want to delete this event? This will remove all occurrences of this event.",
-    "event.cancel": "Cancel",
-    "event.delete_confirm": "Delete"
+    "manage": "Manage",
+    "chapter": "Chapter",
+    "committees": "Committees",
+    "edit_public_details": "Edit Public Details",
+    "edit_public_details.description": "Edit the public details of the committee.",
+    "edit_public_details.form.email": "Email",
+    "edit_public_details.form.title": "Title",
+    "edit_public_details.form.description": "Description",
+    "edit_public_details.form.logo": "Logo",
+    "edit_public_details.form.logo.requirements": "Max file size 1MB. SVG only.",
+    "edit_public_details.form.group_photo": "Group Photo",
+    "edit_public_details.form.group_photo.requirements": "Max file size 15MB.",
+    "edit_public_details.form.save": "Save",
+    "tab.home": "Home",
+    "tab.members": "Members",
+    "tab.news": "News",
+    "tab.events": "Events",
+    "tab.documents": "Documents",
+    "tab.media": "Media"
 }
