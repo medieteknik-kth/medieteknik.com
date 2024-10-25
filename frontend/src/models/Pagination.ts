@@ -1,3 +1,4 @@
+import Album from '@/models/Album'
 import { Document } from './Document'
 import { Event, Media, News } from './Items'
 import Student, { StudentMembership } from './Student'
@@ -31,4 +32,8 @@ export interface DocumentPagination extends Pagniation {
 
 export interface MediaPagination extends Pagniation {
   items: Media[]
+}
+
+export interface AlbumPagination extends Pagniation {
+  items: Album[]
 }

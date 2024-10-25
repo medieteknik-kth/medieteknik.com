@@ -9,19 +9,23 @@ import api from './index'
 
 export const GetCommitteePublic = cache(
   async (committee: string, language_code?: string) => {
-    const response = await api.get(
-      `/public/committees/${committee}${
-        language_code ? `?language=${language_code}` : ``
-      }`
-    )
+    try {
+      const response = await api.get(
+        `/public/committees/${committee}${
+          language_code ? `?language=${language_code}` : ``
+        }`
+      )
 
-    if (response.status === 200) {
-      const data = response.data
-      data.author_type = 'COMMITTEE'
-      return data as Committee
+      if (response.status === 200) {
+        const data = response.data
+        data.author_type = 'COMMITTEE'
+        return data as Committee
+      }
+
+      return null
+    } catch (error: any) {
+      return null
     }
-
-    return null
   }
 )
 

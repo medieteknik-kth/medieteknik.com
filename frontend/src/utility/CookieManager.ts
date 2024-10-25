@@ -1,3 +1,5 @@
+import { LOCAL_STORAGE_COOKIE_CONSENT } from '@/utility/LocalStorage'
+
 /**
  * @name CookieConsent
  * @description The different categories of cookies that can be consented to
@@ -53,7 +55,7 @@ export interface CookieSettings {
  * @returns {CookieSettings} The cookie settings as an object
  */
 export function decodeCookieSettings(
-  cookieSettings: string | undefined
+  cookieSettings: string | undefined | null
 ): CookieSettings {
   if (!cookieSettings) {
     return DEFAULT_COOKIE_SETTINGS
@@ -75,6 +77,17 @@ export function decodeCookieSettings(
     ADVERTISING: settings.ADVERTISING,
     THIRD_PARTY: settings.THIRD_PARTY,
   }
+}
+
+/**
+ * @name retrieveCookieSettings
+ * @description Retrieves the cookie settings from the local storage
+ *
+ * @returns {CookieSettings} The cookie settings as an object
+ */
+export function retrieveCookieSettings(): CookieSettings {
+  const cookieSettings = localStorage.getItem(LOCAL_STORAGE_COOKIE_CONSENT)
+  return decodeCookieSettings(cookieSettings)
 }
 
 /**
@@ -105,6 +118,8 @@ export function isCookieCategoryAllowed(
       return cookieSettings.PERFORMANCE
     case CookieConsent.ADVERTISING:
       return cookieSettings.ADVERTISING
+    case CookieConsent.THIRD_PARTY:
+      return cookieSettings.THIRD_PARTY
     default:
       return false
   }

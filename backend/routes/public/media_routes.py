@@ -20,14 +20,14 @@ def get_all_media():
     return jsonify(get_items(Media, provided_languages)), 200
 
 
-@public_media_bp.route("/author/<string:unknown_id>")
-def get_media_by_author(unknown_id: str):
+@public_media_bp.route("/author/<string:author_id>")
+def get_media_by_author(author_id: str):
     provided_languages = retrieve_languages(request.args)
 
-    author = Author.query.filter_by(student_id=unknown_id).first()
+    author = Author.query.filter_by(student_id=author_id).first()
 
     if not author:
-        author = Author.query.filter_by(committee_id=unknown_id).first()
+        author = Author.query.filter_by(committee_id=author_id).first()
 
     if not author:
         return jsonify({}), 404
