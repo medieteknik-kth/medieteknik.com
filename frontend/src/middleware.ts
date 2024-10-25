@@ -37,6 +37,7 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
     '/react_devtools_backend_compact.js.map',
     '/installHook.js.map',
     '/ads.txt',
+    '/__nextjs_original-stack-frame',
   ]
 
   language = null

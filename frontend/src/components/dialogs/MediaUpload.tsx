@@ -1,4 +1,5 @@
 'use client'
+
 import { supportedLanguages } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
@@ -31,10 +32,10 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import Album from '@/models/Album'
 import { Author } from '@/models/Items'
 import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { mediaUploadSchema } from '@/schemas/items/media'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
@@ -46,6 +47,8 @@ import { z } from 'zod'
 interface Props {
   language: string
   author: Author
+  album: Album | null
+  callback: () => void
 }
 
 interface TranslatedInputsProps {
@@ -103,11 +106,15 @@ function TranslatedInputs({
   )
 }
 
-export default function MediaUpload({ language, author }: Props) {
+export default function MediaUpload({
+  language,
+  author,
+  album,
+  callback,
+}: Props) {
   const [value, _] = useState('image')
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { student } = useAuthentication()
-  const { setMediaTotal, total_media } = useCommitteeManagement()
 
   const form = useForm<z.infer<typeof mediaUploadSchema>>({
     resolver: zodResolver(mediaUploadSchema),
@@ -132,6 +139,10 @@ export default function MediaUpload({ language, author }: Props) {
     formData.append('media_type', data.media_type)
     formData.append('author[author_type]', author.author_type)
     formData.append('author[email]', author.email || '')
+    if (album) {
+      formData.append('album_id', album.album_id)
+    }
+
     if (data.media_type === 'image' && data.media) {
       formData.append('media', data.media)
     }
@@ -163,7 +174,7 @@ export default function MediaUpload({ language, author }: Props) {
 
       if (response.ok) {
         alert('Media uploaded successfully')
-        setMediaTotal(total_media + 1)
+        callback()
         form.reset()
       } else {
         alert('Failed to upload media')
@@ -178,7 +189,12 @@ export default function MediaUpload({ language, author }: Props) {
     { label: 'Video', value: 'video' },
   ]
 
-  const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif']
+  const ACCEPTED_FILE_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+  ]
   const MAX_FILE_SIZE = 10 * 1024 * 1024
 
   return (

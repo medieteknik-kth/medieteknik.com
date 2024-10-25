@@ -26,7 +26,7 @@ class Album(db.Model):
         default=uuid.uuid4,
         server_default=text("gen_random_uuid()"),
     )
-    total_photos = Column(Integer, default=0)
+    total_images = Column(Integer, default=0)
     total_videos = Column(Integer, default=0)
     preview_media_id = Column(UUID(as_uuid=True))
     updated_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
@@ -50,7 +50,7 @@ class Album(db.Model):
 
         data["translations"] = [translation.to_dict() for translation in translations]
         data["album_id"] = self.album_id
-        data["total_photos"] = self.total_photos
+        data["total_images"] = self.total_images
         data["total_videos"] = self.total_videos
         data["updated_at"] = self.updated_at
 

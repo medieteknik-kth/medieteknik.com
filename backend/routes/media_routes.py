@@ -145,7 +145,7 @@ def create_media():
         setattr(album, "last_updated", func.now())
         if media_type == "image":
             setattr(album, "preview_media_id", media.media_id)
-            setattr(album, "total_photos", album.total_photos + 1)
+            setattr(album, "total_images", album.total_images + 1)
         elif media_type == "video":
             setattr(album, "total_videos", album.total_videos + 1)
 
