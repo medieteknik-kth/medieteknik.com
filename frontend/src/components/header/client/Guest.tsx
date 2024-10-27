@@ -3,6 +3,7 @@ import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { UserIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import type { JSX } from 'react'
 
@@ -20,6 +21,11 @@ interface Props {
  */
 export default function Guest({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'header')
+  const pathname = usePathname()
+  const loginUrl = `/${language}/login${
+    pathname !== '/' ? `?return_url=${pathname}` : ''
+  }`
+
   return (
     <Button
       variant={'ghost'}
@@ -27,7 +33,7 @@ export default function Guest({ language }: Props): JSX.Element {
       asChild
     >
       <Link
-        href='/login'
+        href={loginUrl}
         className='w-16 lg:w-full h-full flex justify-center xl:justify-end items-center'
         title={t('login')}
         aria-label={t('login')}

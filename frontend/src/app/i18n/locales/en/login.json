@@ -4,5 +4,6 @@
     "kth_login": "KTH Login",
     "email": "Email",
     "password": "Password",
-    "network_error": "Network Error"
+    "network_error": "Network Error",
+    "login_failed": "Login Failed, Please Try Again Later"
 }

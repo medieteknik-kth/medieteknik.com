@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
 import { Button } from '@/components/ui/button'
@@ -15,6 +16,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -33,17 +35,19 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language code
+ *
  * @returns {JSX.Element} The login form
  */
 export default function LoginForm({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'login')
 
   const { login, error: authError } = useAuthentication()
-  const [errorMessage, setErrorMessage] = useState(authError)
+  const [errorMessage, setErrorMessage] = useState('')
   const { data, error, isLoading } = useSWR(
     `${API_BASE_URL}/csrf-token`,
     fetcher
   )
+  const router = useRouter()
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -55,6 +59,7 @@ export default function LoginForm({ language }: Props): JSX.Element {
   })
 
   if (error) {
+    setErrorMessage(t('network_error'))
     return (
       <div className='flex flex-col gap-0.5'>
         <p className='text-red-500 font-bold text-xl text-center'>
@@ -77,9 +82,13 @@ export default function LoginForm({ language }: Props): JSX.Element {
     )
 
     if (success) {
-      window.location.href = `${window.location.origin}/${language}`
+      router.back()
     } else {
-      setErrorMessage(authError)
+      if (authError) {
+        setErrorMessage(authError)
+      } else {
+        setErrorMessage(t('login_failed'))
+      }
     }
   }
 
