@@ -7,6 +7,7 @@ All routes are registered here via the `register_routes` function.
 import os
 import secrets
 from datetime import datetime, timedelta
+import urllib.parse
 from flask import Flask, jsonify, make_response, request, session, url_for
 from flask_jwt_extended import (
     create_access_token,
@@ -16,6 +17,7 @@ from flask_jwt_extended import (
     set_refresh_cookies,
     create_refresh_token,
 )
+import urllib
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
@@ -241,6 +243,9 @@ def register_routes(app: Flask):
         """
         nonce = secrets.token_urlsafe(32)
 
+        return_url = request.args.get("return_url", type=str, default="/")
+        return_url = urllib.parse.quote(return_url)
+        session["return_url"] = return_url
         session["oauth_nonce"] = nonce
 
         redirect_uri = url_for(endpoint="oidc_auth", _external=True)
@@ -310,5 +315,9 @@ def register_routes(app: Flask):
             encoded_refresh_token=create_refresh_token(identity=student),
             max_age=timedelta(days=30).seconds,
         )
-        response.headers.add("Location", "https://www.medieteknik.com")
+        return_url = session.pop("return_url", default=None)
+        if return_url:
+            response.headers.add("Location", f"https://www.medieteknik.com{return_url}")
+        else:
+            response.headers.add("Location", "https://www.medieteknik.com")
         return response

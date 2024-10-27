@@ -1,4 +1,5 @@
 'use client'
+
 import KTHSVG from 'public/images/svg/kth.svg'
 
 import { useTranslation } from '@/app/i18n/client'
@@ -8,6 +9,7 @@ import type { JSX } from 'react'
 
 interface Props {
   language: string
+  return_url?: string | null
 }
 
 /**
@@ -16,22 +18,30 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language code
+ *
  * @returns {JSX.Element} The alternative login methods
  */
-export default function AlternativeLogin({ language }: Props): JSX.Element {
+export default function AlternativeLogin({
+  language,
+  return_url,
+}: Props): JSX.Element {
   const { t } = useTranslation(language, 'login')
 
   const loginKTH = () => {
     const redirectURL =
       process.env.NODE_ENV === 'production'
-        ? 'https://api.medieteknik.com/auth'
-        : 'http://localhost:3000/auth'
+        ? `https://api.medieteknik.com/auth${
+            return_url && `?return_url=${return_url}`
+          }`
+        : `http://localhost:8080/auth${
+            return_url && `?return_url=${return_url}`
+          }`
     window.location.href = `${redirectURL}`
   }
 
   return (
-    <div className='w-full xs:min-w-[300px] md:min-w-[600px] flex flex-col items-center'>
-      <h2 className='w-full text-lg md:text-2xl text-center uppercase tracking-wider py-8'>
+    <div className='w-full  flex flex-col items-center'>
+      <h2 className='w-full text-lg  text-center uppercase tracking-wider mb-2'>
         {t('alternative_logins')}
       </h2>
 
@@ -50,6 +60,7 @@ export default function AlternativeLogin({ language }: Props): JSX.Element {
               height={80}
               aria-label='KTH Logo'
               name='KTH Logo'
+              className='rounded-lg'
             />
           </Button>
         </li>

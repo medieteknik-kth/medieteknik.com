@@ -54,6 +54,7 @@ interface Params {
 interface Props {
   children: React.ReactNode
   params: Promise<Params>
+  modal: React.ReactNode
 }
 
 /**
@@ -70,7 +71,7 @@ interface Props {
 export default async function RootLayout(props: Props): Promise<JSX.Element> {
   const params = await props.params
 
-  const { children } = props
+  const { children, modal } = props
 
   return (
     <>
@@ -80,6 +81,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
         <Footer language={params.language} />
         <CookiePopup language={params.language} />
         <Toaster />
+        {modal}
       </ClientProviders>
       <Script id='language-attributes'>
         {`
