@@ -28,6 +28,7 @@ interface Props {
  * @param {Props} props - The component props.
  * @param {string} props.language - The current language of the page.
  * @param {HeaderElement[]} props.headerElements - The elements in the header.
+ *
  * @returns {JSX.Element} The rendered navigation menu.
  */
 export default function NavigationSheet({

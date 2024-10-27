@@ -14,7 +14,9 @@ interface Props {
  * @name SubMenu
  * @description Renders a sub menu for navigation elements with sub elements
  *
- * @param {HeaderElement} element - The element to render
+ * @param {Props} props
+ * @param {HeaderElement} props.element - The element to render
+ * 
  * @returns {JSX.Element} The rendered sub menu
  * @throws {Error} If the element does not have subNavs
  */

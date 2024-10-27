@@ -1,4 +1,5 @@
 import { useTranslation } from '@/app/i18n'
+import { Button } from '@/components/ui/button'
 import { AlbumPagination } from '@/models/Pagination'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -41,47 +42,37 @@ export default async function Album({
               new Date(b.updated_at).getTime()
           )
           .map((album) => (
-            <li
-              key={album.album_id}
-              className='group w-72 cursor-pointer relative hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-500 rounded-md'
-            >
-              <Link href={`/${language}/chapter/media/album/${album.album_id}`}>
-                <div className='group rounded-md group-hover:scale-105 transition-transform duration-500'>
-                  {album.preview_media ? (
-                    <Image
-                      src={album.preview_media.media_url}
-                      alt={album.translations[0].title}
-                      width={288}
-                      height={288}
-                      className='w-72 h-auto aspect-video rounded-md object-cover'
-                    />
-                  ) : (
-                    <Image
-                      src={FallbackImage}
-                      alt={album.translations[0].title}
-                      width={288}
-                      height={288}
-                      className='w-72 h-auto aspect-video p-8'
-                    />
-                  )}
-                </div>
-                <div className='group px-1 py-2'>
-                  <h3 className='text-lg tracking-wide leading-tight font-semibold'>
-                    {album.translations[0].title}
-                  </h3>
-                  <p className='text-sm text-neutral-600 dark:text-neutral-300 leading-tight'>
-                    {album.translations[0].description}
-                  </p>
-                  <div className='flex gap-4 my-1 text-sm px-1'>
-                    <span>
-                      {album.total_images} {t('images')}
-                    </span>
-                    <span>
-                      {album.total_videos} {t('videos')}
-                    </span>
+            <li key={album.album_id}>
+              <Button variant={'ghost'} asChild>
+                <Link
+                  href={`/${language}/chapter/media/album/${album.album_id}`}
+                  className='w-96 aspect-video h-fit relative hover:scale-105 transition-transform overflow-hidden'
+                >
+                  <Image
+                    src={album.preview_media?.media_url || FallbackImage}
+                    alt={album.translations[0].title}
+                    width={288}
+                    height={288}
+                    className='w-full h-auto aspect-video rounded-md object-cover absolute left-0 top-0'
+                  />
+
+                  <div className='w-full h-full absolute bg-black/35 top-0 left-0 rounded-md' />
+                  <div className='z-20 absolute left-2 bottom-2 truncate max-w-80'>
+                    <h3 className='text-lg tracking-wider font-semibold text-white'>
+                      {album.translations[0].title}
+                    </h3>
+                    <p className='text-neutral-200 tracking-wide'>
+                      <span>
+                        {album.total_images} {t('images')}
+                      </span>{' '}
+                      |{' '}
+                      <span>
+                        {album.total_videos} {t('videos')}
+                      </span>
+                    </p>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </Button>
             </li>
           ))}
       </ul>

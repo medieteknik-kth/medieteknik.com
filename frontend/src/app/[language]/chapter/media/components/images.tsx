@@ -1,5 +1,5 @@
+import { Button } from '@/components/ui/button'
 import { Media } from '@/models/Items'
-import { PhotoIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import { JSX } from 'react'
@@ -26,24 +26,30 @@ export default async function ImageDisplay({
   }
 
   return (
-    <Link href={image.media_url} target='_blank'>
-      <Image
-        src={image.media_url}
-        alt='thumbnail'
-        width={356}
-        height={356}
-        priority
-        loading='eager'
-        className='absolute top-0 left-0 w-72 h-auto aspect-square object-cover bottom-0 my-auto rounded-md'
-      />
-      <div className='w-full h-full grid p-2 grid-cols-8 grid-rows-8'>
-        <div className='w-full h-full col-start-8 p-1.5 bg-black/65 rounded-md z-10 place-self-center text-white'>
-          <PhotoIcon />
+    <Button asChild variant={'ghost'}>
+      <Link
+        href={image.media_url}
+        target='_blank'
+        className='w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
+      >
+        <Image
+          src={image.media_url}
+          alt={image.translations[0].title}
+          width={288}
+          height={288}
+          priority
+          loading='eager'
+          className='w-full h-auto aspect-video object-cover rounded-lg'
+        />
+        <div className='w-full h-fit flex flex-col px-1 pb-1'>
+          <p className='text-lg font-semibold mt-1 max-w-60 truncate'>
+            {image.translations[0].title}
+          </p>
+          <p className='text-neutral-600 dark:text-neutral-300 text-sm max-w-60 truncate'>
+            {image.translations[0].description}
+          </p>
         </div>
-        <div className='w-full h-full row-start-8 col-span-8 p-2 bg-black/65 rounded-md text-sm z-10 place-self-center text-white'>
-          <p>{image.translations[0].title}</p>
-        </div>
-      </div>
-    </Link>
+      </Link>
+    </Button>
   )
 }

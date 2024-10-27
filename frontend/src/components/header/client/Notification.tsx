@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -30,7 +31,9 @@ interface Props {
  * @name NotificationMenu
  * @description Renderes a dropdown menu with notifications for logged in users
  *
- * @param {string} language - The current language of the page
+ * @param {Props} props
+ * @param {string} props.language - The current language of the site
+ *
  * @returns {JSX.Element} The dropdown menu
  */
 export default function NotificationMenu({ language }: Props): JSX.Element {

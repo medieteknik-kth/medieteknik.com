@@ -1,10 +1,9 @@
 import { GetLatestMedia } from '@/api/items'
+import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import { useTranslation } from '@/app/i18n'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
 import { PhotoIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import Link from 'next/link'
 import { JSX } from 'react'
 
 interface Props {
@@ -50,26 +49,9 @@ export default async function RecentMedia({
                   new Date(a.created_at).getTime()
               )
               .map((item, index) => (
-                <li key={index} className='group'>
-                  <Link
-                    href={item.media_url}
-                    target='_blank'
-                    className='group w-72 h-auto aspect-video relative rounded-md block hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-500'
-                  >
-                    <Image
-                      src={item.media_url}
-                      alt={item.translations[0].title}
-                      width={288}
-                      height={288}
-                      priority
-                      loading='eager'
-                      className='group w-full h-auto aspect-video object-cover group-hover:scale-105 transition-transform duration-500 rounded-md'
-                    />
-                  </Link>
-                  <div className='group w-full h-fit flex flex-col px-1 pb-1'>
-                    <p className='text-lg font-semibold py-1'>
-                      {item.translations[0].title}
-                    </p>
+                <li key={index} className='flex flex-col gap-2'>
+                  <ImageDisplay image={item} />
+                  <div className='px-3'>
                     {item.author.author_type === 'STUDENT' ? (
                       <StudentTag student={item.author} />
                     ) : item.author.author_type === 'COMMITTEE' ? (

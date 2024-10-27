@@ -1,4 +1,5 @@
 'use client'
+
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import Guest from './Guest'
 import UserLoggedIn from './LoggedIn'
@@ -17,6 +18,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the current page
+ *
  * @returns {JSX.Element} The login section
  */
 export default function LoginSection({ language }: Props): JSX.Element {

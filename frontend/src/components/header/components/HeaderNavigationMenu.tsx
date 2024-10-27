@@ -14,6 +14,7 @@ import './headerNavigationMenu.css'
 import type { JSX } from 'react'
 
 interface Props {
+  language: string
   headerElements: HeaderElement[]
 }
 
@@ -23,9 +24,11 @@ interface Props {
  *
  * @param {Props} props
  * @param {HeaderElement[]} props.headerElements - The elements in the header.
+ *
  * @returns {Promise<JSX.Element>} The rendered navigation menu.
  */
 export default async function HeaderNavigationMenu({
+  language,
   headerElements,
 }: Props): Promise<JSX.Element> {
   return (
@@ -40,7 +43,7 @@ export default async function HeaderNavigationMenu({
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className='px-2 py-2'>
                   <ul className='content w-[800px] h-fit grid grid-rows-3'>
-                    <MegaMenu headerElement={element} />
+                    <MegaMenu language={language} headerElement={element} />
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -49,7 +52,7 @@ export default async function HeaderNavigationMenu({
         ) : (
           <Button key={element.title} variant={'ghost'} asChild>
             <Link
-              href={element.link}
+              href={`/${language}${element.link}`}
               className='w-fit min-w-28 h-full grid place-items-center uppercase rounded-none'
             >
               {element.title}

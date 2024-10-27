@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import AdminButton from '@/components/header/components/AdminButton'
 import CommitteeListMenu from '@/components/header/components/CommitteeListMenu'
@@ -29,6 +30,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the application.
+ *
  * @returns {JSX.Element} The UserLoggedIn component.
  */
 export default function UserLoggedIn({ language }: Props): JSX.Element {

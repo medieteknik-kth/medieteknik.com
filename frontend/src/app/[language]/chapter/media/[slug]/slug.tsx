@@ -157,7 +157,7 @@ export default async function MediaSlug(props: Props): Promise<JSX.Element> {
               <VideoCameraIcon className='w-6 h-6' />
               <h3 className='text-lg font-semibold'>{t('videos')}</h3>
             </div>
-            <ul className='h-[160px] flex flex-wrap gap-4 text-white'>
+            <ul className='h-fit flex flex-wrap gap-4 text-white'>
               {videos
                 .sort(
                   (a, b) =>
@@ -186,10 +186,7 @@ export default async function MediaSlug(props: Props): Promise<JSX.Element> {
                     new Date(a.created_at).getTime()
                 )
                 .map((image, index) => (
-                  <li
-                    key={index}
-                    className='w-72 h-auto aspect-square border rounded-md transition-transform hover:scale-105 relative'
-                  >
+                  <li key={index}>
                     <ImageDisplay image={image} />
                   </li>
                 ))}

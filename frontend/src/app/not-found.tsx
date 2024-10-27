@@ -17,8 +17,13 @@ export default async function NotFound(): Promise<JSX.Element> {
         src='https://storage.googleapis.com/medieteknik-static/static/light_logobig.webp'
         alt='logo'
         aria-label='logo'
-        width={200}
+        width={400}
         height={200}
+        priority
+        loading='eager'
+        style={{
+          objectFit: 'contain',
+        }}
       />
       <div>
         <h1>404 - Page Not Found</h1>
