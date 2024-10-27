@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { createRecruitmentSchema } from '@/schemas/committee/recruitment'
@@ -201,7 +202,9 @@ export default function RecruitmentForm({
               className='w-fit'
               title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${LANGUAGES[language].flag}`} />
+              <span className='w-6 h-6'>
+                {LANGUAGES[language as LanguageCode].flag_icon}
+              </span>
             </TabsTrigger>
           ))}
         </TabsList>

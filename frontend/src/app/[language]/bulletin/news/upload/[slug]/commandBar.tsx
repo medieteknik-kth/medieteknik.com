@@ -242,9 +242,9 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                   <ul className='flex'>
                     {supportedLanguages.map((lang) => (
                       <li key={lang} className='mr-4 last:mr-0'>
-                        <span
-                          className={`fi fi-${LANGUAGES[lang].flag} mr-2 text-sm`}
-                        />
+                        <span className='w-6 h-6 mr-2'>
+                          {LANGUAGES[language as LanguageCode].flag_icon}
+                        </span>
                         <span className='text-sm'>{LANGUAGES[lang].name}</span>
                       </li>
                     ))}
