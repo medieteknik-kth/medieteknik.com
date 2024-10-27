@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -26,6 +27,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the application.
+ *
  * @returns {JSX.Element} The CommitteeListMenu component.
  */
 export default function CommitteeListMenu({ language }: Props): JSX.Element {

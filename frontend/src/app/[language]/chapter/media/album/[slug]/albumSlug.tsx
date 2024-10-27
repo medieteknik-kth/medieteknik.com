@@ -100,7 +100,7 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
             <VideoCameraIcon className='w-6 h-6' />
             <h3 className='text-lg font-semibold'>{t('videos')}</h3>
           </div>
-          <ul className='h-[160px] flex flex-wrap gap-4 text-white'>
+          <ul className='h-fit flex flex-wrap gap-4'>
             {videos.map((video, index) => (
               <li key={index}>
                 <VideoDisplay language={language} video={video} />
@@ -116,12 +116,9 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
             <PhotoIcon className='w-6 h-6' />
             <h3 className='text-lg font-semibold'>{t('images')}</h3>
           </div>
-          <ul className='flex flex-wrap gap-4 text-white'>
+          <ul className='flex flex-wrap gap-4'>
             {images.map((image, index) => (
-              <li
-                key={index}
-                className='w-72 h-auto aspect-square border rounded-md transition-transform hover:scale-105 relative'
-              >
+              <li key={index} className=''>
                 <ImageDisplay image={image} />
               </li>
             ))}

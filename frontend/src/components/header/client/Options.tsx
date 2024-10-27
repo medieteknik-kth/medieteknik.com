@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { cookieName, supportedLanguages } from '@/app/i18n/settings'
+import { supportedLanguages } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
+import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { Cog8ToothIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
@@ -33,6 +34,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The current language of the page
+ *
  * @returns {JSX.Element} The options menu
  */
 export default function OptionsMenu({ language }: Props): JSX.Element {
@@ -57,7 +59,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const switchLanguage = useCallback(
     (newLanguage: string) => {
       const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
-      window.localStorage.setItem(cookieName, newLanguage)
+      window.localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLanguage)
       router.push(newPath)
     },
     [path, router]

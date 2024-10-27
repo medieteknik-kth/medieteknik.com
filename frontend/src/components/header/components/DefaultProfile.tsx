@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -24,6 +25,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the application.
+ *
  * @returns {JSX.Element} The DefaultProfile component.
  */
 export default function DefaultProfile({ language }: Props): JSX.Element {

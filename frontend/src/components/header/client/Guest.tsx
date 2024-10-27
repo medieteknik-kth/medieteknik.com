@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { UserIcon } from '@heroicons/react/24/outline'
@@ -17,6 +18,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The current language of the page
+ * 
  * @returns {JSX.Element} The guest display
  */
 export default function Guest({ language }: Props): JSX.Element {

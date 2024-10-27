@@ -8,7 +8,7 @@ import {
   isCookieCategoryAllowed,
   retrieveCookieSettings,
 } from '@/utility/CookieManager'
-import { VideoCameraIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { JSX, useState } from 'react'
 
@@ -45,7 +45,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
   return (
     <>
       <Button
-        className='relative w-72 h-[160px] border rounded-md transition-transform hover:scale-105 p-0'
+        className='relative w-72 h-auto aspect-video rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
         variant={'ghost'}
         onClick={() => {
           if (
@@ -66,18 +66,22 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
           src={`https:/i.ytimg.com/vi/${youtube_url(
             video.media_url
           )}/maxresdefault.jpg`}
-          alt='thumbnail'
+          alt={video.translations[0].title}
           width={288}
-          height={162}
-          className='absolute top-0 left-0 w-full h-auto object-fill bottom-0 my-auto rounded-md'
+          height={288}
+          priority
+          loading='eager'
+          className='w-full h-auto aspect-video object-cover rounded-lg'
         />
-        <div className='w-full h-full grid p-2 grid-cols-12 grid-rows-9'>
-          <div className='w-fit h-full col-start-11 col-span-2 row-span-2 p-1.5 text-white bg-black/75 rounded-md z-10 place-self-end'>
-            <VideoCameraIcon className='h-full aspect-square' />
-          </div>
-          <div className='w-full h-full text-start text-white row-start-8 row-span-2 col-span-12 p-2 bg-black/75 rounded-md text-sm z-10 place-self-center overflow-hidden'>
-            <p>{video.translations[0].title}</p>
-          </div>
+        <div className='w-full h-fit flex flex-col px-1 pb-1'>
+          <p className='text-lg font-semibold py-1 max-w-60 truncate text-start'>
+            {video.translations[0].title}
+          </p>
+          <p className='text-start leading-tight text-sm text-neutral-600 dark:text-neutral-300 max-w-60 truncate'>
+            {video.translations[0].description.length > 50
+              ? `${video.translations[0].description.slice(0, 50)}...`
+              : video.translations[0].description}
+          </p>
         </div>
       </Button>
 

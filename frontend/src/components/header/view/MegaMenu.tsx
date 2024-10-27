@@ -9,6 +9,7 @@ import Link from 'next/link'
 import type { JSX } from 'react'
 
 interface Props {
+  language: string
   headerElement: HeaderElement
 }
 
@@ -21,6 +22,7 @@ interface Props {
  * @returns {Promise<JSX.Element[]>} The rendered mega menu
  */
 export default async function MegaMenu({
+  language,
   headerElement,
 }: Props): Promise<JSX.Element[]> {
   if (!headerElement.subNavs) {
@@ -30,7 +32,7 @@ export default async function MegaMenu({
   return headerElement.subNavs.map((subNav) =>
     subNav.icon ? (
       <li key={subNav.title} className='row-span-3'>
-        <Link href={subNav.link} legacyBehavior passHref>
+        <Link href={`/${language}${subNav.link}`} legacyBehavior passHref>
           <NavigationMenuLink
             className={`${navigationMenuTriggerStyle()} h-full flex flex-col justify-center`}
           >
@@ -51,9 +53,8 @@ export default async function MegaMenu({
       </li>
     ) : (
       <li key={subNav.title} className='flex flex-col justify-center h-16'>
-        <Link href={subNav.link} legacyBehavior passHref>
+        <Link href={`/${language}${subNav.link}`} legacyBehavior passHref>
           <NavigationMenuLink
-            href={subNav.link}
             className={`${navigationMenuTriggerStyle()} !w-full h-full flex flex-col !items-start`}
           >
             <p>{subNav.title}</p>

@@ -54,13 +54,11 @@ export default function NewsCard({ newsItem }: Props): JSX.Element {
               {newsItem.translations[0].title}
             </CardTitle>
           </div>
-          <CardDescription className='h-12 overflow-hidden group-hover:underline !no-underline py-1'>
-            <p className='*:w-1/2 xl:*:w-9/12 text-xs'>
-              {newsItem.translations[0].short_description.length > 80
-                ? newsItem.translations[0].short_description.substring(0, 80) +
-                  '...'
-                : newsItem.translations[0].short_description}
-            </p>
+          <CardDescription className='h-12 overflow-hidden group-hover:underline !no-underline py-1 text-xs'>
+            {newsItem.translations[0].short_description.length > 80
+              ? newsItem.translations[0].short_description.substring(0, 80) +
+                '...'
+              : newsItem.translations[0].short_description}
           </CardDescription>
         </Link>
       </CardHeader>

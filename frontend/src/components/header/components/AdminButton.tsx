@@ -1,4 +1,5 @@
 'use client'
+
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -20,6 +21,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The language of the application.
+ *
  * @returns {JSX.Element} The AdminButton component.
  */
 export default function AdminButton({ language }: Props): JSX.Element {

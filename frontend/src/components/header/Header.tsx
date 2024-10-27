@@ -20,6 +20,7 @@ interface Props {
  *
  * @param {Props} props
  * @param {string} props.language - The current language of the page
+ *
  * @returns {Promise<JSX.Element>} - The header of the page
  */
 export default async function Header({
@@ -53,7 +54,10 @@ export default async function Header({
           </Link>
         </Button>
         <NavigationSheet language={language} headerElements={headerElements} />
-        <HeaderNavigationMenu headerElements={headerElements} />
+        <HeaderNavigationMenu
+          language={language}
+          headerElements={headerElements}
+        />
       </div>
       <LoginSection language={language} />
     </header>

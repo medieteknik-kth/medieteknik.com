@@ -1,7 +1,16 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Carousel,
   CarouselApi,
@@ -12,20 +21,31 @@ import {
 } from '@/components/ui/carousel'
 import Committee from '@/models/Committee'
 import Autoplay from 'embla-carousel-autoplay'
-import ClassNames from 'embla-carousel-class-names'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
-import { useCallback, useEffect, useState } from 'react'
-import './committees.css'
+import { JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
   language: string
   committees: Committee[]
 }
 
-export default function Committees({ language, committees }: Props) {
+/**
+ * @name Committees
+ * @description Renders the committees section, with a carousel of the public committees
+ *
+ * @param {Props} props
+ * @param {string} props.language - The current language of the page
+ * @param {Committee[]} props.committees - The committees to render
+ *
+ * @returns {JSX.Element} The rendered committees section
+ */
+export default function Committees({
+  language,
+  committees,
+}: Props): JSX.Element {
   const [api, setApi] = useState<CarouselApi>()
   const [_, setSelectedIndex] = useState(0)
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({})
@@ -55,17 +75,13 @@ export default function Committees({ language, committees }: Props) {
     api.on('select', onSelect).on('reInit', onSelect)
   }, [api, onSelect, emblaThumbsApi])
 
-  const hasGroupPhoto = (committee: Committee) => !!committee.group_photo_url
-
   const translation = (committee: Committee) =>
     committee.translations.find(
       (t) => t.language_code.substring(0, 2) === language
     )
-  const link = (committee: Committee) =>
-    committee.translations.find((t) => t.language_code.substring(0, 2) === 'sv')
 
   return (
-    <section className='px-4 sm:px-20 h-fit my-10 relative' id='tab-committees'>
+    <section className='px-4 sm:px-20 h-fit my-10 relative' id='committees'>
       <Link
         href={`/${language}/chapter/committees`}
         className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 block border-b-2 border-yellow-400 pb-4 mb-10 transition-colors text-blue-500 hover:text-yellow-400'
@@ -74,19 +90,16 @@ export default function Committees({ language, committees }: Props) {
       </Link>
       <div className='w-full mt-10'>
         <Carousel
-          className='carousel w-full'
+          className='w-full'
           setApi={setApi}
           opts={{
             loop: true,
             align: 'center',
             watchDrag: true,
           }}
-          plugins={[
-            Autoplay({ delay: 5000 }),
-            ClassNames({ inView: 'in-view', snapped: 'snapped' }),
-          ]}
+          plugins={[Autoplay({ delay: 5000 })]}
         >
-          <CarouselContent className='flex -pl-4'>
+          <CarouselContent className='-ml-4'>
             {committees
               .sort((a, b) =>
                 a.translations[0].title.localeCompare(b.translations[0].title)
@@ -94,102 +107,96 @@ export default function Committees({ language, committees }: Props) {
               .map((committee, index) => (
                 <CarouselItem
                   key={index}
-                  className='item h-[900px] md:h-[500px] relative rounded-md overflow-hidden ml-4'
+                  className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[400px] pl-4'
                 >
-                  <div className='blurred w-full h-full backdrop-blur-0 z-20 absolute left-0' />
-
-                  {hasGroupPhoto(committee) && (
-                    <div className='rounded-md'>
-                      <Image
-                        src={committee.group_photo_url || ''}
-                        alt={`${committee.translations[0].title} group photo`}
-                        width={1000}
-                        height={500}
-                        className='w-full h-full object-cover absolute'
-                      />
-                      <div className='w-full h-full bg-black/75 z-10 absolute' />
-                    </div>
-                  )}
-                  <div
-                    className={`p-4 h-fit flex flex-col gap-4 ${
-                      hasGroupPhoto(committee) && 'text-white'
-                    }`}
-                  >
-                    <Link
-                      href={`/${language}/chapter/committees/${
-                        link(committee) && link(committee)?.title.toLowerCase()
-                      }`}
-                      title={translation(committee)?.title + ' page' || ''}
-                      className='flex flex-col items-start md:flex-row md:items-center z-10 border-yellow-400 hover:text-yellow-400 pb-2'
-                    >
-                      <Avatar className='bg-white w-16 h-16 z-10'>
-                        <AvatarImage
-                          src={committee.logo_url}
-                          alt={`${committee.translations[0].title} logo`}
-                          width={64}
-                          height={64}
-                          className='w-auto h-16 aspect-square object-contain p-2'
-                        />
-                        <AvatarFallback>
-                          <Image
-                            src={FallbackImage}
-                            alt='Committee Fallback image'
-                            width={100}
-                            height={100}
+                  <Card className='h-full flex flex-col justify-between'>
+                    <CardHeader>
+                      <CardTitle className='flex flex-col gap-2 text-lg sm:text-xl md:text-2xl'>
+                        <Avatar className='bg-white w-16 h-16 z-10'>
+                          <AvatarImage
+                            src={committee.logo_url}
+                            width={64}
+                            height={64}
+                            className='w-auto h-16 aspect-square object-contain p-2'
                           />
-                        </AvatarFallback>
-                      </Avatar>
-                      <p
-                        className={`text-lg uppercase font-bold md:ml-4 tracking-wider z-10 text-center md:text-start`}
-                      >
-                        {translation(committee)?.title}
+                          <AvatarFallback>
+                            <Image
+                              src={FallbackImage}
+                              alt='Committee Fallback image'
+                              width={100}
+                              height={100}
+                            />
+                          </AvatarFallback>
+                        </Avatar>
+                        {committee.translations[0].title}
+                      </CardTitle>
+                      <CardDescription>
+                        <Link
+                          href={`mailto:${committee.email}`}
+                          className='text-blue-500 hover:text-yellow-400 text-xs xs:text-sm'
+                        >
+                          {committee.email}
+                        </Link>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className='select-none'>
+                      <p className='text-xs xs:text-sm text-neutral-700 dark:text-neutral-300'>
+                        {translation(committee)?.description}
                       </p>
-                    </Link>
-                    <div className='z-10 h-fit'>
-                      <h3 className='text-lg tracking-wider my-1 font-semibold text-center md:text-start'>
-                        {t('committees.description')}
-                      </h3>
-                      <p className='h-fit text-pretty overflow-hidden break-words text-center md:text-start'>
-                        {translation(committee)?.description || ''}
-                      </p>
-                    </div>
-                  </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button asChild>
+                        <Link
+                          href={`/${language}/chapter/committees/${committee.translations[0].title}`}
+                        >
+                          {t('readMore')}
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </CarouselItem>
               ))}
           </CarouselContent>
-          <CarouselPrevious title='previous' aria-label='previous committee' />
-          <CarouselNext title='next' aria-label='next committee' />
+          <CarouselPrevious
+            title='previous'
+            aria-label='previous committee'
+            className='hidden md:flex'
+          />
+          <CarouselNext
+            title='next'
+            aria-label='next committee'
+            className='hidden md:flex'
+          />
         </Carousel>
-        <div>
-          <div
-            ref={emblaThumbsRef}
-            className='w-full flex flex-wrap gap-4 justify-center py-2'
-          >
-            {committees
-              .sort((a, b) =>
-                a.translations[0].title.localeCompare(b.translations[0].title)
-              )
-              .map((committee, index) => (
-                <Button
-                  key={index}
-                  variant='outline'
-                  size='icon'
-                  className={`w-16 h-auto aspect-square p-2.5 overflow-visible relative hover:brightness-95 bg-white hover:bg-white ${
-                    api?.selectedScrollSnap() === index && 'brightness-95'
-                  }`}
-                  onClick={onThumbClick(index)}
-                  title={translation(committee)?.title + ' thumbnail' || ''}
-                >
-                  <Image
-                    src={committee.logo_url}
-                    alt={`${committee.translations[0].title} logo`}
-                    width={64}
-                    height={64}
-                    className='w-auto h-full object-contain overflow-visible'
-                  />
-                </Button>
-              ))}
-          </div>
+
+        <div
+          ref={emblaThumbsRef}
+          className='w-full flex flex-wrap gap-4 justify-center py-2'
+        >
+          {committees
+            .sort((a, b) =>
+              a.translations[0].title.localeCompare(b.translations[0].title)
+            )
+            .map((committee, index) => (
+              <Button
+                key={index}
+                variant='outline'
+                size='icon'
+                className={`w-16 h-auto aspect-square p-2.5 overflow-visible relative hover:brightness-95 bg-white hover:bg-white ${
+                  api?.selectedScrollSnap() === index && 'brightness-95'
+                }`}
+                onClick={onThumbClick(index)}
+                title={translation(committee)?.title + ' thumbnail' || ''}
+              >
+                <Image
+                  src={committee.logo_url}
+                  alt={`${committee.translations[0].title} logo`}
+                  width={64}
+                  height={64}
+                  className='w-auto h-full object-contain overflow-visible'
+                />
+              </Button>
+            ))}
         </div>
       </div>
     </section>
