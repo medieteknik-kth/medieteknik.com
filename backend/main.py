@@ -8,7 +8,7 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from utility.database import db
-from utility.authorization import jwt, oauth, oidc
+from utility.authorization import jwt, oauth
 from utility.csrf import csrf
 from routes import register_routes
 import secrets
@@ -64,9 +64,6 @@ oauth.register(
         "nonce": lambda: secrets.token_urlsafe(32),
     },
 )
-
-# OIDC
-oidc.init_app(app)
 
 # Register routes (blueprints)
 register_routes(app)
