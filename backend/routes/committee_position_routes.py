@@ -7,11 +7,10 @@ from http import HTTPStatus
 import json
 from typing import Any, Dict, List
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func
 from models.committees.committee_position import (
     CommitteePosition,
-    CommitteePositionCategory,
     CommitteePositionRecruitment,
     CommitteePositionRecruitmentTranslation,
     CommitteePositionTranslation,
@@ -164,16 +163,39 @@ def soft_delete_committee_position(committee_position_id):
 
 
 @committee_position_bp.route(
-    "/<string:committee_position_id>/recruit", methods=["POST"]
+    "/<string:committee_position_id>/recruit", methods=["POST", "DELETE"]
 )
 @jwt_required()
 def recruit_for_position(committee_position_id):
     committee_position = CommitteePosition.query.filter_by(
         committee_position_id=committee_position_id
-    ).one_or_none()
+    ).first_or_404()
+    student_id = get_jwt_identity()
 
-    if not committee_position:
-        return jsonify({"error": "Committee position not found"}), 404
+    student_membership: List[StudentMembership] = StudentMembership.query.filter_by(
+        student_id=student_id,
+    ).all()
+
+    for membership in student_membership:
+        if (
+            membership.committee_position.committee_id
+            == committee_position.committee_id
+        ):
+            break
+        else:
+            return jsonify({"error": "Student not part of committee"}), 403
+
+    if request.method == "DELETE":
+        recruitment: CommitteePositionRecruitment = (
+            CommitteePositionRecruitment.query.filter_by(
+                committee_position_id=committee_position.committee_position_id
+            ).first_or_404()
+        )
+
+        recruitment.end_date = func.now()
+        db.session.commit()
+
+        return jsonify({}), HTTPStatus.OK
 
     data = request.get_json()
 
