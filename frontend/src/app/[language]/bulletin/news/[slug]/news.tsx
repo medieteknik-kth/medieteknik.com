@@ -74,7 +74,7 @@ export default function NewsDisplay({
         </BreadcrumbList>
       </Breadcrumb>
       <div className='flex flex-col items-center justify-start min-h-[1080px] h-fit px-4 sm:px-20 xl:px-96 relative'>
-        <div className='w-full h-fit border-b-2 border-yellow-400 pb-1 mb-1'>
+        <div className='md:min-w-[600px] w-full max-w-[700px] h-fit border-b-2 border-yellow-400 pb-1 mb-1'>
           <ul className='flex min-h-10 h-fit py-2'>
             {news_data.categories &&
               news_data.categories.map((category) => (
@@ -96,7 +96,7 @@ export default function NewsDisplay({
                 height={520}
                 quality={80}
                 priority
-                className='object-fill w-auto h-full max-h-80 rounded-md'
+                className='object-fill w-full h-auto md:w-auto md:h-full max-h-80 rounded-md md:max-w-[700px]'
               />
             </div>
           )}
@@ -133,7 +133,7 @@ export default function NewsDisplay({
               </p>
             )}
         </div>
-        <div className='w-full my-4 mb-8'>
+        <div className='md:min-w-[600px] w-full max-w-[700px] my-4 mb-8'>
           <Body body={news_data.translations[0].body} />
         </div>
         <NewsAuth language={language} news_data={news_data} />

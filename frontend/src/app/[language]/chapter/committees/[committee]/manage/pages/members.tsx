@@ -25,6 +25,7 @@ import Committee from '@/models/Committee'
 import { Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
+import { API_BASE_URL } from '@/utility/Constants'
 import {
   BuildingOffice2Icon,
   CircleStackIcon,
@@ -100,6 +101,27 @@ export default function MembersPage({
 
       return position.weight >= weight
     })
+  }
+
+  const deleteRecruitment = async (id: string) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/committee_positions/${id}/recruit`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        }
+      )
+
+      if (!response.ok) {
+        alert('Failed to delete recruitment')
+        throw new Error('Failed to delete recruitment')
+      } else {
+        window.location.reload()
+      }
+    } catch (error: any) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
@@ -275,7 +297,6 @@ export default function MembersPage({
                     )
                   })
                   .sort((a, b) => {
-                    console.log(a, b)
                     const positionA = findPosition(a.committee_position_id)
                     const positionB = findPosition(b.committee_position_id)
                     return (
@@ -406,11 +427,17 @@ export default function MembersPage({
                       </TableCell>
                       <TableCell className='text-right'>
                         <Button
-                          variant={'outline'}
+                          variant={'destructive'}
                           size={'icon'}
-                          title='View recruitment'
+                          title='Delete recruitment'
+                          onClick={() =>
+                            deleteRecruitment(
+                              recruitment.committee_position
+                                .committee_position_id
+                            )
+                          }
                         >
-                          <Cog6ToothIcon className='w-5 h-5' />
+                          <TrashIcon className='w-5 h-5' />
                         </Button>
                       </TableCell>
                     </TableRow>

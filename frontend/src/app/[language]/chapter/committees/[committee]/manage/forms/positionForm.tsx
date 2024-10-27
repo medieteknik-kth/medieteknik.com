@@ -224,7 +224,9 @@ export default function PositionForm({
               className='w-fit'
               title={LANGUAGES[language].name}
             >
-              <span className={`fi fi-${LANGUAGES[language].flag}`} />
+              <span className='w-6 h-6'>
+                {LANGUAGES[language as LanguageCode].flag_icon}
+              </span>
             </TabsTrigger>
           ))}
         </TabsList>
