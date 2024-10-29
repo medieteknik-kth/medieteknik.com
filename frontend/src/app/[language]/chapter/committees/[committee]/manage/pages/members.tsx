@@ -119,7 +119,7 @@ export default function MembersPage({
       } else {
         window.location.reload()
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error)
     }
   }

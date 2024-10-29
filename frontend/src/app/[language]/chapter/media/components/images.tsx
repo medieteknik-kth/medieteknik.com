@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Media } from '@/models/Items'
+import { Media } from '@/models/items/Media'
 import Image from 'next/image'
 import Link from 'next/link'
 import { JSX } from 'react'
@@ -30,7 +30,7 @@ export default async function ImageDisplay({
       <Link
         href={image.media_url}
         target='_blank'
-        className='w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
+        className='group w-44 sm:w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
       >
         <Image
           src={image.media_url}
@@ -39,13 +39,13 @@ export default async function ImageDisplay({
           height={288}
           priority
           loading='eager'
-          className='w-full h-auto aspect-video object-cover rounded-lg'
+          className='group w-full h-auto aspect-video object-cover rounded-lg'
         />
-        <div className='w-full h-fit flex flex-col px-1 pb-1'>
-          <p className='text-lg font-semibold mt-1 max-w-60 truncate'>
+        <div className='group w-full h-fit opacity-0 hidden md:flex flex-col px-1.5 pb-1.5 group-hover:opacity-100 transition-opacity'>
+          <p className='text-lg font-semibold mt-1 max-w-60 truncate leading-tight'>
             {image.translations[0].title}
           </p>
-          <p className='text-neutral-600 dark:text-neutral-300 text-sm max-w-60 truncate'>
+          <p className='text-neutral-600 dark:text-neutral-300 text-sm max-w-60 truncate leading-tight'>
             {image.translations[0].description}
           </p>
         </div>

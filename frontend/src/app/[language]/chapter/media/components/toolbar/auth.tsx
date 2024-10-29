@@ -54,7 +54,7 @@ export default function ToolbarAuth({ language }: Props): JSX.Element {
   }
 
   return (
-    <div className='flex gap-2 items-center'>
+    <div className='flex flex-wrap gap-2 items-center'>
       <Dialog>
         <DialogTrigger asChild>
           <Button

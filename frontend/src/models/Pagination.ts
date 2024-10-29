@@ -1,7 +1,8 @@
 import Album from '@/models/Album'
-import { Document } from './Document'
-import { Event, Media, News } from './Items'
+import { Event, News } from './Items'
+import { Document } from './items/Document'
 import Student, { StudentMembership } from './Student'
+import { Media } from '@/models/items/Media'
 
 interface Pagniation {
   page: number

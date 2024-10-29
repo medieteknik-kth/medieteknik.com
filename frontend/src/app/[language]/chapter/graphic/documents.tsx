@@ -1,5 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
+import { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -34,7 +35,7 @@ export default async function Documents({
       previewImage:
         'https://storage.googleapis.com/medieteknik-static/static/graphical_identity/graphics.webp',
       lastUpdated: '2018-09-17',
-      supportedLanguages: [LANGUAGES.sv],
+      supportedLanguages: ['sv'],
     },
   ]
 
@@ -60,11 +61,9 @@ export default async function Documents({
             </Button>
             <p className='tracking-wide text-lg'>
               {document.supportedLanguages.map((lang) => (
-                <span
-                  key={lang.name}
-                  className={`mr-2 fi fi-${lang.flag} rounded-sm`}
-                  title={lang.name}
-                />
+                <span key={lang} className='w-6 h-6 mr-2'>
+                  {LANGUAGES[lang as LanguageCode].flag_icon}
+                </span>
               ))}
               {document.name}
             </p>

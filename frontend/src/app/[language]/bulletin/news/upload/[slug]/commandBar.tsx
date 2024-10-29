@@ -179,11 +179,9 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                 aria-label='Language'
                 disabled // TODO: Enable when language is ready
               >
-                <span
-                  className={`fi fi-${
-                    LANGUAGES[language as LanguageCode].flag
-                  }`}
-                />
+                <span className='w-6 h-6'>
+                  {LANGUAGES['sv' as LanguageCode].flag_icon}
+                </span>
               </Button>
               <Button
                 className='ml-4'

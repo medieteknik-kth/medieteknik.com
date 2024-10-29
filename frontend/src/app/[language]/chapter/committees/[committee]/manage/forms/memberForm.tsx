@@ -70,12 +70,12 @@ export function RemoveMemberForm({ language }: { language: string }) {
       )
 
       if (response.ok) {
-        console.log('success')
+        window.location.reload()
       } else {
-        console.error('error')
+        throw new Error('Failed to remove member')
       }
-    } catch (error) {
-      console.error(error)
+    } catch (_) {
+      alert('Failed to remove member')
     }
   }
 

@@ -46,7 +46,7 @@ export default async function Album({
               <Button variant={'ghost'} asChild>
                 <Link
                   href={`/${language}/chapter/media/album/${album.album_id}`}
-                  className='w-96 aspect-video h-fit relative hover:scale-105 transition-transform overflow-hidden'
+                  className='w-52 sm:w-96 aspect-video h-fit relative hover:scale-105 transition-transform overflow-hidden'
                 >
                   <Image
                     src={album.preview_media?.media_url || FallbackImage}

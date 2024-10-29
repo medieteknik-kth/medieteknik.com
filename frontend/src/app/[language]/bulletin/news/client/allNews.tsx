@@ -61,7 +61,13 @@ export default function AllNews({ language, data }: Props): JSX.Element {
                     <PlusIcon className='w-6 h-6' />
                   </div>
                 </DialogTrigger>
-                <NewsUpload language={language} author={student} />
+                <NewsUpload
+                  language={language}
+                  author={{
+                    ...student,
+                    author_type: 'STUDENT',
+                  }}
+                />
               </Dialog>
             </CardContent>
           </Card>

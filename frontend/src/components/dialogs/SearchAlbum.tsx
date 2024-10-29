@@ -33,10 +33,17 @@ export default function SearchAlbum({ language, albums, callback }: Props) {
   const searchRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation(language, 'media')
 
+  const { data, error, isLoading } = useSWR<AlbumPagination>(
+    `${API_BASE_URL}/public/albums?page=${pageIndex}${
+      searchQuery ? `&q=${searchQuery}` : ''
+    }`,
+    fetcher
+  )
+
   if (albums) {
     return (
       <RadioGroup>
-        {albums.map((album, index) => (
+        {albums.map((album) => (
           <div key={album.album_id} className='flex gap-2 items-center'>
             <RadioGroupItem
               value={album.album_id}
@@ -51,13 +58,6 @@ export default function SearchAlbum({ language, albums, callback }: Props) {
       </RadioGroup>
     )
   }
-
-  const { data, error, isLoading } = useSWR<AlbumPagination>(
-    `${API_BASE_URL}/public/albums?page=${pageIndex}${
-      searchQuery ? `&q=${searchQuery}` : ''
-    }`,
-    fetcher
-  )
 
   if (!data) {
     return <Skeleton />

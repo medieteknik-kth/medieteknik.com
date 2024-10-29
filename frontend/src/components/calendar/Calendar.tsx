@@ -50,7 +50,7 @@ export default function Calendar({
       aria-label='Calendar'
     >
       <ul className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 font-bold text-lg border-l border-t rounded-t'>
-        {language === LANGUAGES.en.name
+        {language === LANGUAGES.en.short_name
           ? en_days.map((day, index) => (
               <li
                 key={index}

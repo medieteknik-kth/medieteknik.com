@@ -1,4 +1,4 @@
-import { Media } from '@/models/Items'
+import { Media } from '@/models/items/Media'
 
 export default interface Album {
   album_id: string

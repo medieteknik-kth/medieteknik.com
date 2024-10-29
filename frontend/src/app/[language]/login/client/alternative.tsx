@@ -40,8 +40,13 @@ export default function AlternativeLogin({
   }
 
   return (
-    <div className='w-full  flex flex-col items-center'>
-      <h2 className='w-full text-lg  text-center uppercase tracking-wider mb-2'>
+    <div
+      className='w-full flex flex-col items-center'
+      style={{
+        fontSize: 'inherit',
+      }}
+    >
+      <h2 className='w-full text-center uppercase tracking-wider mb-2'>
         {t('alternative_logins')}
       </h2>
 

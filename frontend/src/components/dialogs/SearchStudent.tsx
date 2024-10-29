@@ -30,7 +30,7 @@ function render(
   setSelectedStudents: Dispatch<SetStateAction<Student[]>>
 ) {
   return students.map((student, index) => (
-    <li key={student.email} className='w-full flex justify-between'>
+    <li key={student.email + index} className='w-full flex justify-between'>
       <div className='max-w-[400px]'>
         <StudentTag key={index} student={student} includeAt={false} />
       </div>
@@ -68,6 +68,13 @@ export default function SearchStudent({
   const searchRef = useRef<HTMLInputElement>(null)
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
 
+  const { data, error, isLoading } = useSWR<StudentPagination>(
+    `${API_BASE_URL}/public/students?page=${pageIndex}${
+      searchQuery ? `&q=${searchQuery}` : ''
+    }`,
+    fetcher
+  )
+
   if (students) {
     return (
       <ul className='flex flex-col gap-1 h-[440px] overflow-y-auto'>
@@ -80,13 +87,6 @@ export default function SearchStudent({
       </ul>
     )
   }
-
-  const { data, error, isLoading } = useSWR<StudentPagination>(
-    `${API_BASE_URL}/public/students?page=${pageIndex}${
-      searchQuery ? `&q=${searchQuery}` : ''
-    }`,
-    fetcher
-  )
 
   if (!data) {
     return <Skeleton />
@@ -123,13 +123,13 @@ export default function SearchStudent({
       </form>
       <div>
         {isLoading ? (
-          <Skeleton />
+          <Skeleton className='w-full h-[440px]' />
         ) : error ? (
-          <div>Error</div>
+          <div className='h-[440px]'>Error</div>
         ) : (
           <ul className='flex flex-col gap-1 h-[440px]'>
             {data.total_items === 0 && (
-              <li className='text-center'>No students found</li>
+              <li className='text-center h-[440px]'>No students found</li>
             )}
             {render(
               data.items,
@@ -151,18 +151,26 @@ export default function SearchStudent({
               {'< '}Previous
             </Button>
           </PaginationItem>
-          {[...Array(data.total_pages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <Button
-                disabled={pageIndex === index + 1}
-                onClick={() => setPageIndex(index + 1)}
-                variant={'ghost'}
-              >
-                <span>{index + 1}</span>
-              </Button>
-            </PaginationItem>
-          ))}
-          {pageIndex + 3 < data.total_pages && <PaginationEllipsis />}
+          <PaginationItem></PaginationItem>
+          {[...Array(data.total_pages)].map((_, index) =>
+            pageIndex + 2 === index || pageIndex - 2 === index ? (
+              <PaginationEllipsis key={index} />
+            ) : (
+              pageIndex + 2 > index &&
+              pageIndex - 2 < index && (
+                <PaginationItem key={index}>
+                  <Button
+                    disabled={pageIndex === index + 1}
+                    onClick={() => setPageIndex(index + 1)}
+                    variant={'ghost'}
+                  >
+                    <span>{index + 1}</span>
+                  </Button>
+                </PaginationItem>
+              )
+            )
+          )}
+
           <PaginationItem>
             <Button
               disabled={pageIndex === data.total_pages}

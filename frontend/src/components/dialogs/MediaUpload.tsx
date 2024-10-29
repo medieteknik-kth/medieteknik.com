@@ -19,6 +19,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,6 +33,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 import Album from '@/models/Album'
 import { Author } from '@/models/Items'
 import { LanguageCode } from '@/models/Language'
@@ -91,13 +93,16 @@ function TranslatedInputs({
         name={`translations.${index}.description`}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>
+            <FormLabel className='leading-tight'>
               Description{' '}
               <span className='uppercase text-xs tracking-wide'>
                 [{language}]
               </span>
             </FormLabel>
-            <Input id='description' placeholder='Description' {...field} />
+            <Textarea id='description' placeholder='Description' {...field} />
+            <FormDescription>
+              Max length: 255 characters, optional
+            </FormDescription>
             <FormMessage className='text-xs font-bold' />
           </FormItem>
         )}
@@ -176,6 +181,7 @@ export default function MediaUpload({
         alert('Media uploaded successfully')
         callback()
         form.reset()
+        window.location.reload()
       } else {
         alert('Failed to upload media')
       }
@@ -187,15 +193,16 @@ export default function MediaUpload({
   const mediaTypes = [
     { label: 'Image', value: 'image' },
     { label: 'Video', value: 'video' },
-  ]
+  ] as const
 
   const ACCEPTED_FILE_TYPES = [
     'image/jpeg',
     'image/png',
     'image/gif',
     'image/webp',
-  ]
-  const MAX_FILE_SIZE = 10 * 1024 * 1024
+  ] as const
+
+  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
 
   return (
     <DialogContent>
@@ -257,8 +264,8 @@ export default function MediaUpload({
                     </PopoverTrigger>
                     <PopoverContent>
                       <Command>
-                        <CommandInput placeholder='Search document type' />
-                        <CommandEmpty>No documents found.</CommandEmpty>
+                        <CommandInput placeholder='Search media type' />
+                        <CommandEmpty>None found.</CommandEmpty>
                         <CommandList>
                           <CommandGroup>
                             {mediaTypes.map((mediaType) => (
@@ -319,6 +326,9 @@ export default function MediaUpload({
                         })
                       }}
                     />
+                    <FormDescription>
+                      Max file size: {MAX_FILE_SIZE / 1024 / 1024} MB
+                    </FormDescription>
                     <FormMessage className='text-xs font-bold' />
                   </FormItem>
                 )}

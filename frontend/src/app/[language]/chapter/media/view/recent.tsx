@@ -40,7 +40,7 @@ export default async function RecentMedia({
             <PhotoIcon className='w-6 h-6' />
             <h3 className='text-lg font-semibold'>{t('images')}</h3>
           </div>
-          <ul className='w-fit flex gap-4 pb-4'>
+          <ul className='w-fit flex flex-wrap gap-4 pb-4'>
             {latest
               .filter((item) => item.media_type === 'image')
               .sort(
@@ -51,7 +51,7 @@ export default async function RecentMedia({
               .map((item, index) => (
                 <li key={index} className='flex flex-col gap-2'>
                   <ImageDisplay image={item} />
-                  <div className='px-3'>
+                  <div className='px-3 hidden'>
                     {item.author.author_type === 'STUDENT' ? (
                       <StudentTag student={item.author} />
                     ) : item.author.author_type === 'COMMITTEE' ? (
