@@ -148,6 +148,7 @@ def register_routes(app: Flask):
             response.headers.add(
                 "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
             )
+            response.status_code = 200
             return response
 
     @app.after_request
