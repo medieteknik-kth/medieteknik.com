@@ -107,9 +107,12 @@ def retrieve_extra_claims(
     ).all()
 
     for membership in student_memberships:
-        position: CommitteePosition = CommitteePosition.query.get_or_404(
+        position: CommitteePosition = CommitteePosition.query.get(
             membership.committee_position_id
         )
+
+        if not position:
+            continue
 
         committee_positions.append(
             position.to_dict(
@@ -117,7 +120,10 @@ def retrieve_extra_claims(
             )
         )
 
-        committee: Committee = Committee.query.get_or_404(position.committee_id)
+        committee: Committee = Committee.query.get(position.committee_id)
+
+        if not committee:
+            continue
 
         committee_dict = committee.to_dict(provided_languages=provided_languages)
 

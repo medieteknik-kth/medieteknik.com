@@ -2,7 +2,7 @@
 The utility package. Imports all the utility modules.
 """
 
-from .authorization import jwt, oauth
+from .authorization import jwt, oauth, oidc
 from .csrf import csrf, validate_csrf
 
 from .constants import API_VERSION
@@ -24,6 +24,7 @@ from .translation import update_translation_or_create
 __all__ = [
     "jwt",
     "oauth",
+    "oidc",
     "csrf",
     "validate_csrf",
     "API_VERSION",
