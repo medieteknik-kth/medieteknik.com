@@ -4,6 +4,7 @@ Routes for the backend.
 All routes are registered here via the `register_routes` function.
 """
 
+from http import HTTPStatus
 import os
 import secrets
 from datetime import datetime, timedelta
@@ -257,7 +258,10 @@ def register_routes(app: Flask):
         """
         OIDC route.
         """
-        token = oauth.kth.authorize_access_token()
+        try:
+            token = oauth.kth.authorize_access_token()
+        except Exception as e:
+            return jsonify({"error": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
         if not token:
             return jsonify({"error": "Invalid credentials"}), 401
@@ -288,18 +292,7 @@ def register_routes(app: Flask):
             db.session.add(student)
             db.session.commit()
 
-        permissions_and_role, additional_claims, committees, committee_positions = (
-            retrieve_extra_claims(student=student)
-        )
-        response = make_response(
-            {
-                "student": student.to_dict(is_public_route=False),
-                "committees": committees,
-                "committee_positions": committee_positions,
-                "permissions": permissions_and_role.get("permissions"),
-                "role": permissions_and_role.get("role"),
-            }
-        )
+        response = make_response({"student": student.to_dict(is_public_route=False)})
 
         response.status_code = 302
         set_access_cookies(
@@ -307,7 +300,6 @@ def register_routes(app: Flask):
             encoded_access_token=create_access_token(
                 identity=student,
                 fresh=timedelta(minutes=20),
-                additional_claims=additional_claims,
             ),
             max_age=timedelta(hours=1),
         )

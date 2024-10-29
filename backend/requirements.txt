@@ -4,6 +4,7 @@ Flask
 Flask-SQLAlchemy
 Flask-CORS
 Flask-Limiter
+Flask-OIDC
 Flask-WTF
 Flask-JWT-Extended
 authlib
