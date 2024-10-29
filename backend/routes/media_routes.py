@@ -67,7 +67,7 @@ def create_media():
             return jsonify({"error": "No image provided"}), HTTPStatus.BAD_REQUEST
 
         # Check if the file size is too large
-        if img.content_length > 15 * 1024 * 1024:
+        if img.content_length > 10 * 1024 * 1024:
             return jsonify({"error": "File size too large"}), HTTPStatus.BAD_REQUEST
 
         current_year = date.today().strftime("%Y")

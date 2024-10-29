@@ -91,8 +91,8 @@ class MediaTranslation(db.Model):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
 
-    title = Column(String(255))
-    description = Column(String(2500))
+    title = Column(String(255), nullable=False)
+    description = Column(String(255))
 
     # Foreign keys
     media_id = Column(UUID(as_uuid=True), ForeignKey("media.media_id"))
