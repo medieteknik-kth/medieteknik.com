@@ -19,8 +19,11 @@ export default function InfographicCard({ card }: Props) {
       <Link
         href={`${card.href}`}
         title={card.linkText}
-        target={card.href.startsWith('http') ? '_blank' : '_self'}
-        rel={card.href.startsWith('http') ? 'noopener noreferrer' : ''}
+        target={
+          card.href.startsWith('https://www.medieteknik.com')
+            ? '_self'
+            : '_blank'
+        }
         className='w-full h-fit lg:h-[100px] flex flex-col lg:flex-row items-center underline-offset-4 text-sky-600 hover:text-sky-700 hover:underline'
       >
         <Image

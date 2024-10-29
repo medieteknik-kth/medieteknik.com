@@ -3,7 +3,7 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { Media } from '@/models/Items'
+import { Media } from '@/models/items/Media'
 import {
   isCookieCategoryAllowed,
   retrieveCookieSettings,

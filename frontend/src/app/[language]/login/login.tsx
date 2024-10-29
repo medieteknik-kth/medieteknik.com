@@ -50,14 +50,16 @@ export default async function Login(props: Props): Promise<JSX.Element> {
               className='w-auto h-16 xss:h-28 xs:h-auto xs:min-w-[384px] hidden dark:block'
             />
           </Link>
-          <div className='w-11/12 h-1/2 xs:mx-20 xs:px-10 border-b mt-8'>
+          <div className='w-11/12 h-fit pb-4 xs:mx-20 xs:px-10 border-b mt-8 text-lg'>
             <h1 className='text-3xl md:text-5xl uppercase font-bold tracking-wider text-[#111] dark:text-white text-center mb-8'>
               {t('login')}
             </h1>
             <LoginForm language={language} />
           </div>
 
-          <AlternativeLogin language={language} />
+          <div className='text-lg mt-4'>
+            <AlternativeLogin language={language} />
+          </div>
         </div>
       </div>
     </main>

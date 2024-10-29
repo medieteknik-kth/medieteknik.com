@@ -1,5 +1,4 @@
-import { Author, Item } from './Items'
-import { LanguageCode } from './Language'
+import { Author, Item } from '../Items'
 
 export type DocumentType = 'DOCUMENT' | 'FORM'
 

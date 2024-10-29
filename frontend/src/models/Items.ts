@@ -78,15 +78,3 @@ export interface EventTranslation {
   sub_image_urls?: string[]
   language_code: LanguageCode
 }
-
-export interface Media extends Item {
-  media_url: string
-  media_type: 'image' | 'video'
-  translations: MediaTranslation[]
-}
-
-export interface MediaTranslation {
-  title: string
-  description: string
-  language_code: LanguageCode
-}

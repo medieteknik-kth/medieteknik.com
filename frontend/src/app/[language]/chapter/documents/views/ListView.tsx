@@ -13,8 +13,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Committee, { CommitteePosition } from '@/models/Committee'
-import { Document } from '@/models/Document'
 import { Author } from '@/models/Items'
+import { Document } from '@/models/items/Document'
 import Student from '@/models/Student'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import {

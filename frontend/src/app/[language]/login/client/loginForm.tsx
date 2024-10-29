@@ -59,19 +59,14 @@ export default function LoginForm({ language }: Props): JSX.Element {
   })
 
   if (error) {
-    setErrorMessage(t('network_error'))
     return (
       <div className='flex flex-col gap-0.5'>
         <p className='text-red-500 font-bold text-xl text-center'>
           {t('network_error')}
         </p>
-        <p className='text-red-500 text-lg text-center'>{error.message}</p>
+        <p className='text-red-500 text-lg text-center'>{t('network_error')}</p>
       </div>
     )
-  }
-
-  if (isLoading) {
-    return <Loading language={language} />
   }
 
   const submit = async (formData: z.infer<typeof loginSchema>) => {
@@ -92,6 +87,10 @@ export default function LoginForm({ language }: Props): JSX.Element {
     }
   }
 
+  if (isLoading) {
+    return <Loading language={language} />
+  }
+
   return (
     <div className='w-full'>
       {errorMessage && (
@@ -105,7 +104,13 @@ export default function LoginForm({ language }: Props): JSX.Element {
             name='email'
             render={({ field }) => (
               <FormItem className='w-full mb-4'>
-                <FormLabel className='text-xl'>{t('email')}</FormLabel>
+                <FormLabel
+                  style={{
+                    fontSize: 'inherit',
+                  }}
+                >
+                  {t('email')}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={t('email')}
@@ -122,7 +127,13 @@ export default function LoginForm({ language }: Props): JSX.Element {
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-xl'>{t('password')}</FormLabel>
+                <FormLabel
+                  style={{
+                    fontSize: 'inherit',
+                  }}
+                >
+                  {t('password')}
+                </FormLabel>
                 <FormControl>
                   <Input
                     type='password'

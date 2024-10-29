@@ -27,7 +27,7 @@ export const mediaUploadSchema = z
           .max(100, { message: 'Max 100 characters' }),
         description: z
           .string()
-          .max(500, { message: 'Max 500 characters' })
+          .max(254, { message: 'Max 255 characters' })
           .optional()
           .or(z.literal('')),
       })

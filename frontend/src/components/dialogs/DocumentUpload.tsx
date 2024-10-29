@@ -32,8 +32,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Document, DocumentTranslation } from '@/models/Document'
 import { Author } from '@/models/Items'
+import { Document, DocumentTranslation } from '@/models/items/Document'
 import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'

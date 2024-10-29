@@ -3,7 +3,7 @@ import Committee, {
   CommitteePosition,
   CommitteePositionRecruitment,
 } from '@/models/Committee'
-import { StudentMembership } from '@/models/Student'
+import { StudentCommitteePosition } from '@/models/Student'
 import { cache } from 'react'
 import api from './index'
 
@@ -23,7 +23,7 @@ export const GetCommitteePublic = cache(
       }
 
       return null
-    } catch (error: any) {
+    } catch (_) {
       return null
     }
   }
@@ -131,12 +131,12 @@ export const GetCommitteeMembers = cache(
     per_page: number = 25
   ) => {
     const response = await api.get(
-      `public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}`
+      `/public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}`
     )
 
     if (response.status === 200) {
       return response.data as {
-        items: StudentMembership[]
+        items: StudentCommitteePosition[]
         page: number
         per_page: number
         total_pages: number
@@ -168,14 +168,19 @@ export const GetRecruitment = cache(async (language_code: string) => {
 
 export const GetCommitteePositions = cache(
   async (type: 'committee' | 'independent', language_code: string) => {
-    const response = await api.get(
-      `/public/committee_positions?language=${language_code}&type=${type}`
-    )
+    try {
+      const response = await api.get(
+        `/public/committee_positions?language=${language_code}&type=${type}`
+      )
 
-    if (response.status === 200) {
-      return response.data as CommitteePosition[]
+      if (response.status === 200) {
+        return response.data as CommitteePosition[]
+      }
+
+      return []
+    } catch (error) {
+      console.error(error)
+      return []
     }
-
-    return []
   }
 )

@@ -57,6 +57,7 @@ export default function CreateAlbum({ language, callback }: Props) {
 
       if (response.ok) {
         callback()
+        window.location.reload()
       } else {
         throw new Error('Failed to create album')
       }

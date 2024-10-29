@@ -2,19 +2,18 @@ import StudentTag from '@/components/tags/StudentTag'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { CommitteePositionCategory } from '@/models/Committee'
-import { StudentMembership } from '@/models/Student'
+import { StudentCommitteePosition } from '@/models/Student'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
-export default async function Officials({
-  language,
-  members,
-}: {
+interface Props {
   language: string
-  members: StudentMembership[]
-}) {
+  members: StudentCommitteePosition[]
+}
+
+export default async function Officials({ language, members }: Props) {
   const categories: CommitteePositionCategory[] = [
     'STYRELSEN',
     'VALBEREDNINGEN',
@@ -33,7 +32,7 @@ export default async function Officials({
     }
   })
 
-  const hasImage = (member: StudentMembership) => {
+  const hasImage = (member: StudentCommitteePosition) => {
     return !!member.student.profile_picture_url
   }
 

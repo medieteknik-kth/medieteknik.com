@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
-import { StudentMembership } from '@/models/Student'
+import { StudentCommitteePosition } from '@/models/Student'
 import type { JSX } from 'react'
 
 export const revalidate = 60 * 60 * 24 * 30
@@ -42,7 +42,7 @@ export default async function CommitteeMembers({
     )
   }
 
-  const hasImage = (member: StudentMembership) => {
+  const hasImage = (member: StudentCommitteePosition) => {
     return !!member.student.profile_picture_url
   }
 

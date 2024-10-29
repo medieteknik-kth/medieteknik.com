@@ -54,6 +54,13 @@ export interface StudentMembership {
   termination_date: string
 }
 
+export interface StudentCommitteePosition {
+  student: Student
+  position: CommitteePosition
+  initiation_date: string
+  termination_date: string
+}
+
 export interface IndividualCommitteePosition {
   position: CommitteePosition
   initiation_date: string

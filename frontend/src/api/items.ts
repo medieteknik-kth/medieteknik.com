@@ -1,10 +1,11 @@
 import Album from '@/models/Album'
-import { Media, News } from '@/models/Items'
+import { News } from '@/models/Items'
 import {
   AlbumPagination,
   MediaPagination,
   NewsPagination,
 } from '@/models/Pagination'
+import { Media } from '@models/items/Media'
 import { cache } from 'react'
 import api from './index'
 
@@ -75,20 +76,25 @@ export const GetMediaData = cache(
       }
       return null
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (_) {
       return null
     }
   }
 )
 
 export const GetAlbums = cache(async (language_code: string) => {
-  const response = await api.get(`/public/albums?language=${language_code}`)
+  try {
+    const response = await api.get(`/public/albums?language=${language_code}`)
 
-  if (response.status === 200) {
-    return response.data as AlbumPagination
+    if (response.status === 200) {
+      return response.data as AlbumPagination
+    }
+
+    return null
+  } catch (error) {
+    console.error(error)
+    return null
   }
-
-  return null
 })
 
 export const GetAlbum = cache(async (language_code: string, slug: string) => {
@@ -104,19 +110,24 @@ export const GetAlbum = cache(async (language_code: string, slug: string) => {
       }
     }
     return null
-  } catch (error: any) {
+  } catch (_) {
     return null
   }
 })
 
 export const GetLatestMedia = cache(async (language_code: string) => {
-  const response = await api.get(
-    `/public/media/latest?language=${language_code}`
-  )
+  try {
+    const response = await api.get(
+      `/public/media/latest?language=${language_code}`
+    )
 
-  if (response.status === 200) {
-    return response.data as Media[]
+    if (response.status === 200) {
+      return response.data as Media[]
+    }
+
+    return null
+  } catch (error) {
+    console.error(error)
+    return null
   }
-
-  return null
 })

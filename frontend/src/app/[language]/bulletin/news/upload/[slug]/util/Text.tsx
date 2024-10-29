@@ -6,7 +6,7 @@ import Committee, { CommitteePosition } from '@/models/Committee'
 import { Author } from '@/models/Items'
 import Student from '@/models/Student'
 import Image from 'next/image'
-import { JSX, Ref, useCallback, useMemo } from 'react'
+import { HTMLAttributes, JSX, Ref, useCallback, useMemo } from 'react'
 import { createEditor, Descendant, Editor, Text, Transforms } from 'slate'
 import { Editable, RenderElementProps, Slate, withReact } from 'slate-react'
 
@@ -98,7 +98,7 @@ export interface CustomText {
 interface TextType {
   label: string
   value: ElementType
-  style: string
+  style: HTMLAttributes<HTMLElement>['className']
 }
 
 // TODO: Add translations for text types
@@ -106,22 +106,22 @@ export const textTypes: TextType[] = [
   {
     label: 'Heading 1',
     value: 'h1',
-    style: 'text-3xl mb-2 mt-4',
+    style: 'text-3xl mb-1.5 mt-2 leading-tight font-bold',
   },
   {
     label: 'Heading 2',
     value: 'h2',
-    style: 'text-2xl mb-2 mt-3',
+    style: 'text-2xl mb-1 mt-2',
   },
   {
     label: 'Heading 3',
     value: 'h3',
-    style: 'text-xl mb-1 mt-2 font-bold',
+    style: 'text-xl mb-1 mt-1 font-bold',
   },
   {
     label: 'Heading 4',
     value: 'h4',
-    style: 'text-lg mt-1 font-bold',
+    style: 'text-lg mt-1',
   },
   {
     label: 'Paragraph',

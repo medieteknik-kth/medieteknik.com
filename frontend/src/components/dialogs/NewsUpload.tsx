@@ -69,7 +69,15 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
     if (!student) {
       return
     }
-    const json = {
+
+    const json: {
+      published_status: string
+      translations: {
+        title: string
+        language_code: string
+      }[]
+      author: Author
+    } = {
       published_status: 'DRAFT',
       translations: [
         {

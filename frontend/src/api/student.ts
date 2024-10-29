@@ -6,6 +6,7 @@ import {
 import Student, {
   IndividualCommitteePosition,
   Profile,
+  StudentCommitteePosition,
   StudentMembership,
 } from '@/models/Student'
 import { cache } from 'react'
@@ -74,7 +75,7 @@ export const GetCommitteeMembers = cache(
     )
 
     if (response.status === 200) {
-      return response.data as StudentMembership[]
+      return response.data as StudentCommitteePosition[]
     }
 
     return null

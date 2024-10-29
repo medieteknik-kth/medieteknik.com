@@ -46,9 +46,9 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
     {
       title: 'International Students',
       description:
-        'Are you an international student? Click above to learn more about META. Our joint coordination between Computer Science and Media Technology programmes at KTH.',
+        'Are you an international student? Click above to learn more about META. The joint coordination between Computer Science and Media Technology programmes at KTH.',
       icon: 'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg',
-      href: 'https://meta-internationals.mailchimpsites.com/',
+      href: 'https://metastudent.se/',
       linkText: t('international_link_text'),
     },
   ]

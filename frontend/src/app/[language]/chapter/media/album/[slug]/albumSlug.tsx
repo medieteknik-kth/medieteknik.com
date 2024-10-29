@@ -101,11 +101,17 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
             <h3 className='text-lg font-semibold'>{t('videos')}</h3>
           </div>
           <ul className='h-fit flex flex-wrap gap-4'>
-            {videos.map((video, index) => (
-              <li key={index}>
-                <VideoDisplay language={language} video={video} />
-              </li>
-            ))}
+            {videos
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              )
+              .map((video, index) => (
+                <li key={index}>
+                  <VideoDisplay language={language} video={video} />
+                </li>
+              ))}
           </ul>
         </section>
       )}
@@ -117,11 +123,17 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
             <h3 className='text-lg font-semibold'>{t('images')}</h3>
           </div>
           <ul className='flex flex-wrap gap-4'>
-            {images.map((image, index) => (
-              <li key={index} className=''>
-                <ImageDisplay image={image} />
-              </li>
-            ))}
+            {images
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              )
+              .map((image, index) => (
+                <li key={index} className=''>
+                  <ImageDisplay image={image} />
+                </li>
+              ))}
           </ul>
         </section>
       )}
