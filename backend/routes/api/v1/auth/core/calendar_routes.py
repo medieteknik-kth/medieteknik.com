@@ -5,23 +5,26 @@ API Endpoint: '/api/v1/calendar'
 
 from calendar import monthrange
 from datetime import datetime, timedelta
-from http import HTTPStatus
-from typing import List
 from flask import Blueprint, Response, jsonify, request
+from http import HTTPStatus
 from sqlalchemy import or_
-
-from models.content.event import Event
-from models.core.student import Student
-from services.content.event import generate_events, generate_ics
-from services.content.public.calendar import get_main_calendar
-from utility.translation import retrieve_languages
+from models.content import Event
+from models.core import Student
+from services.content import generate_ics
+from services.content.public import get_main_calendar
+from utility import retrieve_languages
 
 
 calendar_bp = Blueprint("calendar", __name__)
 
 
 @calendar_bp.route("/ics")
-def get_calendar_ics():
+def get_calendar_ics() -> Response:
+    """
+    Retrieves the calendar in iCalendar format
+        :return: Response - The response object,  404 if the student is not found, 400 if the student is not provided, 200 if successful
+    """
+
     student = request.args.get("u", type=str)
 
     if not student:

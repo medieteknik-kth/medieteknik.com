@@ -1,6 +1,9 @@
+"""
+Student service that handles the student's login, permissions, and role.
+"""
+
 from datetime import timedelta
 from http import HTTPStatus
-import json
 from flask import Request, Response, jsonify, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import (
@@ -10,25 +13,24 @@ from flask_jwt_extended import (
     set_refresh_cookies,
 )
 from typing import Any, Dict, List
-from models.committees.committee import Committee
-from models.committees.committee_position import CommitteePosition
-from models.content.author import Author, AuthorType
-from models.core.permissions import StudentPermission
-from models.core.student import Student, StudentMembership
+from models.committees import Committee
+from models.committees import CommitteePosition
+from models.core import Author, AuthorType
+from models.core import StudentPermission
+from models.core import Student, StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from utility.gc import delete_file, upload_file
 
 
-def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUAGES):
+def login(
+    data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUAGES
+) -> Response:
     """
     Login function that validates the user's credentials and generates an access token.
-
-    Args:
-        data (Dict[str, Any]): A dictionary containing user data with "email" and "password" keys.
-
-    Returns:
-        dict: A dictionary containing the "access_token" if the login is successful, otherwise None.
+        :param data: Dict[str, Any] - The data containing the user's email and password.
+        :param provided_languages: List[str] - The list of languages that the user can view.
+        :return: Response - The response object containing the user's data and the access token.
 
     """
     email = data.get("email")
@@ -48,14 +50,14 @@ def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUA
             {
                 "message": "Invalid credentials",
             }
-        ), 401
+        ), HTTPStatus.UNAUTHORIZED
 
     if not check_password_hash(getattr(student, "password_hash"), password):
         return jsonify(
             {
                 "message": "Invalid credentials",
             }
-        ), 401
+        ), HTTPStatus.UNAUTHORIZED
 
     permissions_and_role, additional_claims, committees, committee_positions = (
         retrieve_extra_claims(provided_languages, student)
@@ -70,7 +72,7 @@ def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUA
             "role": permissions_and_role.get("role"),
         }
     )
-    response.status_code = 200
+    response.status_code = HTTPStatus.OK
     set_access_cookies(
         response=response,
         encoded_access_token=create_access_token(
@@ -91,7 +93,13 @@ def login(data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUA
 
 def retrieve_extra_claims(
     provided_languages: List[str] = AVAILABLE_LANGUAGES, student: Student | None = None
-):
+) -> tuple[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """
+    Retrieves the student's permissions, role, committees, and committee positions, if they exist.
+        :param provided_languages: List[str] - The list of languages that the user can view.
+        :param student: Student - The student object.
+        :return: Tuple[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]] - The permissions and role, additional claims, committees, and committee positions.
+    """
     if student is None:
         return None
     permissions_and_role = get_permissions(getattr(student, "student_id"))
@@ -136,43 +144,23 @@ def retrieve_extra_claims(
     return permissions_and_role, additional_claims, committees, committee_positions
 
 
-def change_password(data: Dict[str, Any]):
-    """ """
+def assign_password(data: Dict[str, Any]) -> bool:
+    """
+    Assigns a new password to the student.
+        :param data: Dict[str, Any] - The data containing the student's email and password.
+        :return: bool - True if the password was successfully updated, False otherwise.
+    """
 
     email = data.get("email")
     password = data.get("password")
 
     if email is None or password is None:
-        return None
+        return False
 
     student = Student.query.filter_by(email=email).first()
 
     if student is None:
-        return None
-
-    if not check_password_hash(student.password_hash, password):
-        return None
-
-    setattr(student, "password_hash", generate_password_hash(password))
-
-    db.session.commit()
-
-    return True
-
-
-def assign_password(data: Dict[str, Any]):
-    """ """
-
-    email = data.get("email")
-    password = data.get("password")
-
-    if email is None or password is None:
-        return None
-
-    student = Student.query.filter_by(email=email).first()
-
-    if student is None:
-        return None
+        return False
 
     setattr(student, "password_hash", generate_password_hash(password))
 
@@ -183,14 +171,10 @@ def assign_password(data: Dict[str, Any]):
 
 def update(request: Request, student: Student) -> Response:
     """
-    Updates the student's profile picture and password.
-
-    Args:
-        request (Request): The request object.
-        student (Student): The student object.
-
-    Returns:
-        response (Response): The response object.
+    Updates the student's data, which includes the profile picture and password.
+        :param request: Request - The request object.
+        :param student: Student - The student object.
+        :return: Response - The response object containing the updated student's data.
 
     """
 
@@ -276,6 +260,11 @@ def update(request: Request, student: Student) -> Response:
 
 
 def get_permissions(student_id: str) -> Dict[str, Any]:
+    """
+    Gets the student's permissions and role.
+        :param student_id: str - The student's ID.
+        :return: Dict[str, Any] - The student's permissions and role.
+    """
     all_permissions_and_role = {
         "role": None,
         "permissions": {},
@@ -308,10 +297,3 @@ def get_permissions(student_id: str) -> Dict[str, Any]:
                 )
 
     return all_permissions_and_role
-
-
-def get_student(token: str):
-    if token == "" or token is None:
-        return None
-
-    return Student.query.filter_by(student_id=token).first()

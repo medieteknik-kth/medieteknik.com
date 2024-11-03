@@ -4,25 +4,24 @@ API Endpoint: '/api/v1/public/documents'
 """
 
 from datetime import datetime, timedelta
+from flask import Blueprint, Response, jsonify, request
 from http import HTTPStatus
-from flask import Blueprint, jsonify, request
 from sqlalchemy import or_
-
-from models.content.document import Document, DocumentTranslation
-from services.content.public.item import get_item_by_url
-from utility.translation import retrieve_languages
+from models.content import Document, DocumentTranslation
+from services.content.public import get_item_by_url
+from utility import retrieve_languages
 
 
 public_documents_bp = Blueprint("public_documents", __name__)
 
 
 @public_documents_bp.route("/", methods=["GET"])
-def get_documents() -> dict:
-    """Retrieves all documents
-
-    Returns:
-        list[dict]: List of documents
+def get_documents() -> Response:
     """
+    Retrieves all documents with optional search and status filters
+        :return: Response - The response object, 200 if successful
+    """
+
     provided_languages = retrieve_languages(request.args)
     status = request.args.get("status", type=str, default="active")
     search = request.args.get("search", type=str, default=None)
@@ -91,22 +90,20 @@ def get_documents() -> dict:
 
 
 @public_documents_bp.route("/<string:url>", methods=["GET"])
-def get_documents_by_url(url: str) -> dict:
-    """Retrieves a document item by URL
-
-    Args:
-        url (str): Document URL
-
-    Returns:
-        dict: Document item
+def get_documents_by_url(url: str) -> Response:
     """
+    Retrieves a document by URL
+        :param url: str - The URL of the document
+        :return: Response - The response object, 404 if the document is not found, 200 if successful
+    """
+
     provided_languages = retrieve_languages(request.args)
 
     item = get_item_by_url(url, Document, provided_languages)
 
     if not item:
-        return jsonify({}), 404
+        return jsonify({}), HTTPStatus.NOT_FOUND
 
     item: Document = item
 
-    return jsonify(item)
+    return jsonify(item), HTTPStatus.OK

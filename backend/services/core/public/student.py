@@ -3,11 +3,11 @@ The public service for student related queries
 """
 
 from sqlalchemy.orm import joinedload
-from models.committees.committee_position import (
+from models.committees import (
     CommitteePosition,
     CommitteePositionsRole,
 )
-from models.core.student import Student, StudentMembership
+from models.core import Student, StudentMembership
 from utility.database import db
 
 

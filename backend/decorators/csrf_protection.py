@@ -4,26 +4,29 @@ CSRF Protection
 Decorator for CSRF protection.
 """
 
+from flask import Response, jsonify, request
 from functools import wraps
 from http import HTTPStatus
+from types import FunctionType
 from utility.csrf import validate_csrf
 
-from flask import Response, jsonify, request
 
-
-def csrf_protected(f):
+def csrf_protected(f: FunctionType) -> FunctionType:
     """
     Decorator for CSRF protection. Validates the CSRF token in the request from either a JSON or Form.
-
-    Args:
-        f: The function to be wrapped with CSRF protection.
-
-    Returns:
-        The wrapped function that checks for CSRF token validity before calling the original function.
+        :param f: function - The function to wrap.
+        :return: function - The wrapped function.
     """
 
     @wraps(f)
     def wrap(*args, **kwargs):
+        """
+        Wrapper function for the CSRF protection decorator.
+            :param args: tuple - The arguments passed to the function.
+            :param kwargs: dict - The keyword arguments passed to the function.
+            :return: Response | bool - The response from the wrapped function, or a boolean depending on the CSRF validation.
+        """
+
         if not request:
             raise ValueError(
                 "Request object is missing! Make sure you're using the decorator in a endpoint."

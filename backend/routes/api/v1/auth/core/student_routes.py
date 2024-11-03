@@ -4,9 +4,7 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from http import HTTPStatus
-from typing import Any
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, Response, jsonify, make_response, request
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -15,26 +13,30 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_jwt_cookies,
 )
+from http import HTTPStatus
+from typing import Any
 from sqlalchemy import func, or_
 from decorators import csrf_protected
-from models.committees.committee import Committee
-from models.committees.committee_position import CommitteePosition
-from models.core.student import Profile, Student, StudentMembership
-from services.core.student import login, get_permissions, update
-from utility.gc import delete_file, upload_file
-from utility.translation import retrieve_languages
-from utility.database import db
+from models.committees import Committee, CommitteePosition
+from models.core import Profile, Student, StudentMembership
+from services.core import login, get_permissions, update
+from utility import delete_file, upload_file, retrieve_languages, db
 
 student_bp = Blueprint("student", __name__)
 
 
 @student_bp.route("/login", methods=["POST"])
 @csrf_protected
-def student_login():
+def student_login() -> Response:
+    """
+    Logs in a student
+        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
+    """
+
     data = request.get_json()
 
     if not data:
-        return jsonify({"error": "No data provided"}), 400
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     provided_languages = retrieve_languages(request.args)
 
@@ -46,14 +48,19 @@ def student_login():
 @student_bp.route("/", methods=["PUT"])
 @csrf_protected
 @jwt_required(refresh=True)
-def update_student():
+def update_student() -> Response:
+    """
+    Updates a student
+        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
+    """
+
     student_id = get_jwt_identity()
     student: Student | None = Student.query.filter_by(
         student_id=student_id
     ).one_or_none()
 
     if not student or not isinstance(student, Student):
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
 
     return update(
         request=request,
@@ -63,27 +70,29 @@ def update_student():
 
 @student_bp.route("/profile", methods=["PUT", "GET"])
 @jwt_required()
-def update_profile():
+def update_profile() -> Response:
+    """
+    Updates the student profile
+        :return: Response - The response object, 404 if the profile doesn't exist, 401 if the credentials are invalid, 400 if no data is provided, 201 if created (PUT), 200 if successful (GET)
+    """
+
     student_id = get_jwt_identity()
     student: Student | None = Student.query.filter_by(
         student_id=student_id
     ).one_or_none()
 
     if not student or not isinstance(student, Student):
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
 
     if request.method == "GET":
-        profile = Profile.query.filter_by(student_id=student_id).one_or_none()
+        profile = Profile.query.filter_by(student_id=student_id).one_or_404()
 
-        if not profile or not isinstance(profile, Profile):
-            return jsonify({}), 404
-
-        return jsonify(profile.to_dict()), 200
+        return jsonify(profile.to_dict()), HTTPStatus.OK
 
     data = request.get_json()
 
     if not data:
-        return jsonify({"error": "Invalid data"}), 400
+        return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
 
     data_dict: dict[str, Any] = json.loads(json.dumps(data))
 
@@ -94,11 +103,11 @@ def update_profile():
     linkedin_url = data_dict.get("linkedin_url")
 
     if facebook_url and not facebook_url.startswith("https://www.facebook.com/"):
-        return jsonify({"error": "Invalid Facebook URL"}), 400
+        return jsonify({"error": "Invalid Facebook URL"}), HTTPStatus.BAD_REQUEST
     if instagram_url and not instagram_url.startswith("https://www.instagram.com/"):
-        return jsonify({"error": "Invalid Instagram URL"}), 400
+        return jsonify({"error": "Invalid Instagram URL"}), HTTPStatus.BAD_REQUEST
     if linkedin_url and not linkedin_url.startswith("https://www.linkedin.com/"):
-        return jsonify({"error": "Invalid LinkedIn URL"}), 400
+        return jsonify({"error": "Invalid LinkedIn URL"}), HTTPStatus.BAD_REQUEST
 
     if not profile or not isinstance(profile, Profile):
         profile = Profile(student_id=student_id, **data_dict)
@@ -112,24 +121,29 @@ def update_profile():
             setattr(profile, key, value)
 
     db.session.commit()
-    return jsonify(profile.to_dict()), 201
+    return jsonify(profile.to_dict()), HTTPStatus.CREATED
 
 
 @student_bp.route("/reception", methods=["PUT"])
 @csrf_protected
 @jwt_required()
-def update_reception():
+def update_reception() -> Response:
+    """
+    Updates the student reception profile picture
+        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 201 if successful
+    """
+
     student_id = get_jwt_identity()
     student = Student.query.filter_by(student_id=student_id).one_or_none()
 
     if not student or not isinstance(student, Student):
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
 
     reception_image = request.files.get("reception_image")
     reception_name = request.form.get("reception_name")
 
     if not reception_image:
-        return jsonify({"error": "Invalid data"}), 400
+        return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
 
     file_extension = reception_image.filename.split(".")[-1]
 
@@ -145,25 +159,30 @@ def update_reception():
     )
 
     if not result:
-        return jsonify({"error": "Failed to upload"}), 400
+        return jsonify({"error": "Failed to upload"}), HTTPStatus.BAD_REQUEST
 
     setattr(student, "reception_profile_picture_url", result)
     setattr(student, "reception_name", reception_name)
 
     db.session.commit()
 
-    return jsonify({"url": result}), 201
+    return jsonify({"url": result}), HTTPStatus.CREATED
 
 
 @student_bp.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
-def refresh_token():
+def refresh_token() -> Response:
+    """
+    Refreshes the student token
+        :return: Response - The response object, 401 if the credentials are invalid, 200 if successful
+    """
+
     student_id = get_jwt_identity()
     student = Student.query.filter_by(student_id=student_id).one_or_none()
     provided_languages = retrieve_languages(request.args)
 
     if not student:
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
 
     permissions_and_role = get_permissions(getattr(student, "student_id"))
 
@@ -209,7 +228,12 @@ def refresh_token():
 
 
 @student_bp.route("/logout", methods=["POST"])
-def student_logout():
+def student_logout() -> Response:
+    """
+    Logs out a student
+        :return: Response - The response object, 200 if successful
+    """
+
     response = make_response()
     unset_jwt_cookies(response)
     response.status_code = HTTPStatus.OK
@@ -218,21 +242,28 @@ def student_logout():
 
 @student_bp.route("/permissions", methods=["GET"])
 @jwt_required(fresh=True)
-def get_student_permissions():
+def get_student_permissions() -> Response:
+    """
+    Retrieves the student permissions
+        :return: Response - The response object, 200 if successful
+    """
+
     student_id = get_jwt_identity()
-    return get_permissions(student_id)
+    return jsonify(get_permissions(student_id)), HTTPStatus.OK
 
 
 @student_bp.route("/me", methods=["GET"])
 @jwt_required()
-def get_student_callback():
+def get_student_callback() -> Response:
+    """
+    Retrieves the student information
+        :return: Response - The response object, 404 if the student doesn't exist, 200 if successful
+    """
+
     provided_languages = retrieve_languages(request.args)
     student_id = get_jwt_identity()
 
-    student = Student.query.get(student_id)
-
-    if not student or not isinstance(student, Student):
-        return jsonify({}), 404
+    student = Student.query.get_or_404(student_id)
 
     permissions_and_role = get_permissions(getattr(student, "student_id"))
 
@@ -274,4 +305,4 @@ def get_student_callback():
             "committees": committees,
             "positions": committee_positions,
         }
-    ), 200
+    ), HTTPStatus.OK

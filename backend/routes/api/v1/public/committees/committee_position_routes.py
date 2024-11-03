@@ -3,27 +3,32 @@ Public Committee Position Routes
 API Endpoint: '/api/v1/public/committee_positions'
 """
 
+from http import HTTPStatus
+from flask import Blueprint, Response, jsonify, request
 from typing import List
-from flask import Blueprint, jsonify, request
 from sqlalchemy import func
-from models.committees.committee import Committee
-from models.committees.committee_position import (
+from models.committees import (
+    Committee,
     CommitteePosition,
     CommitteePositionRecruitment,
 )
-from services.committees.public.committee import get_committee_by_title
-from services.committees.public.committee_position import (
+from services.committees.public import (
+    get_committee_by_title,
     get_committee_position_by_title,
 )
-from utility.translation import retrieve_languages
+from utility import retrieve_languages
 
 
 public_committee_position_bp = Blueprint("public_committee_position", __name__)
 
 
 @public_committee_position_bp.route("/", methods=["GET"])
-def get_all_positions():
-    """Retrieves all committee positions"""
+def get_all_positions() -> Response:
+    """
+    Retrieves all committee positions
+        :return: Response - The response object, 200 if successful
+    """
+
     position_type = request.args.get(
         "type", type=str, default="committee"
     )  # Possible values: committee, independent
@@ -46,12 +51,16 @@ def get_all_positions():
             position.to_dict(provided_languages=provided_languages, include_parent=True)
             for position in committee_positions
         ]
-    )
+    ), HTTPStatus.OK
 
 
 @public_committee_position_bp.route("/recruiting", methods=["GET"])
-def get_all_committee_positions_recruitment():
-    """Retrieves all committee positions with recruitment"""
+def get_all_committee_positions_recruitment() -> Response:
+    """
+    Retrieves all committee positions that are currently recruiting
+        :return: Response - The response object, 200 if successful
+    """
+
     provided_languages = retrieve_languages(request.args)
     committee_name = request.args.get("committee", type=str, default="all")
 
@@ -73,7 +82,7 @@ def get_all_committee_positions_recruitment():
                 )
                 is not None
             ]
-        )
+        ), HTTPStatus.OK
 
     found_committee: Committee | None = get_committee_by_title(
         committee_name,
@@ -102,20 +111,21 @@ def get_all_committee_positions_recruitment():
         is not None
     ]
 
-    return jsonify(recruitment_dicts)
+    return jsonify(recruitment_dicts), HTTPStatus.OK
 
 
 @public_committee_position_bp.route("/<string:position_title>", methods=["GET"])
-def get_committee_position_by_name(position_title: str):
-    """Retrieves a committee position by title
-
-    Args:
-        position_title (str): Committee position title
+def get_committee_position_by_name(position_title: str) -> Response:
     """
+    Retrieves a committee position by title
+        :param position_title: str - The title of the committee position
+        :return: Response - The response object, 404 if the committee position is not found, 200 if successful
+    """
+
     provided_languages = retrieve_languages(request.args)
 
     return jsonify(
         get_committee_position_by_title(
             provided_languages=provided_languages, title=position_title
         )
-    )
+    ), HTTPStatus.OK

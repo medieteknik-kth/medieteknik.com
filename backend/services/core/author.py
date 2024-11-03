@@ -7,10 +7,7 @@ from typing import Type
 from sqlalchemy import or_
 from models.core.student import Student
 from models.committees import Committee, CommitteePosition
-from models.content import AuthorType, Author
-from utility import database
-
-db = database.db
+from models.core import AuthorType, Author
 
 
 def get_author_from_email(

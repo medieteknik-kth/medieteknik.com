@@ -1,8 +1,8 @@
 from calendar import Calendar
 from datetime import timedelta
 from textwrap import dedent
-from typing import Any, Dict, List
-from models.content.event import Event, EventTranslation, Frequency
+from typing import List
+from models.content import Event, EventTranslation, Frequency
 from utility.translation import get_translation
 
 

@@ -3,24 +3,22 @@ Author Routes (Protected)
 API Endpoint: '/api/v1/authors'
 """
 
-from html import escape
-from flask import Blueprint, request, jsonify
+from http import HTTPStatus
+from flask import Blueprint, Response, request, jsonify
 from flask_jwt_extended import jwt_required
-from models.content import Author, AuthorType, AuthorResource
-from utility import database
+from html import escape
+from models.core import Author, AuthorType, AuthorResource
 
-db = database.db
 
 author_bp = Blueprint("author", __name__)
 
 
 @author_bp.route("/", methods=["GET"])
 @jwt_required()
-def get_authors():
-    """Get all authors
-
-    Returns:
-        dict: List of authors
+def get_authors() -> Response:
+    """
+    Retrieves a list of authors based on the provided query parameters
+        :return: Response - The response object, 400 if the author type is invalid, 200 if successful
     """
 
     author_type = request.args.get("type", type=str)
@@ -28,7 +26,7 @@ def get_authors():
 
     if author_type:
         if author_type.upper() not in AuthorType.__members__:
-            return jsonify({"error": "Invalid author type"}), 400
+            return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
 
         author_type = escape(author_type)
 
@@ -40,10 +38,10 @@ def get_authors():
     if resources:
         for resource in resources:
             if resource.upper() not in [resource.value for resource in AuthorResource]:
-                return jsonify({"error": "Invalid resource"}), 400
+                return jsonify({"error": "Invalid resource"}), HTTPStatus.BAD_REQUEST
 
             if not isinstance(resource, str):
-                return jsonify({"error": "Invalid resource"}), 400
+                return jsonify({"error": "Invalid resource"}), HTTPStatus.BAD_REQUEST
 
             resource = escape(resource)
             santized_resources.append(resource.upper())
@@ -56,9 +54,4 @@ def get_authors():
 
     authors = authors.all()
 
-    return jsonify([author.to_dict() for author in authors])
-
-
-# @author_bp.route("/", methods=["POST"])
-# def create_author():
-# pass
+    return jsonify([author.to_dict() for author in authors]), HTTPStatus.OK

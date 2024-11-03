@@ -3,21 +3,21 @@ Committee Position Routes
 API Endpoint: '/api/v1/committee_positions'
 """
 
-from http import HTTPStatus
 import json
-from typing import Any, Dict, List
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from http import HTTPStatus
 from sqlalchemy import func
-from models.committees.committee_position import (
+from typing import Any, Dict, List
+from models.committees import (
     CommitteePosition,
     CommitteePositionRecruitment,
     CommitteePositionRecruitmentTranslation,
     CommitteePositionTranslation,
     CommitteePositionsRole,
 )
-from models.core.student import Student, StudentMembership
-from services.committees.public.committee import get_committee_by_title
+from models.core import Student, StudentMembership
+from services.committees.public import get_committee_by_title
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import convert_iso_639_1_to_bcp_47
@@ -28,11 +28,16 @@ committee_position_bp = Blueprint("committee_position", __name__)
 
 @committee_position_bp.route("/", methods=["POST"])
 @jwt_required()
-def create_committee_position():
+def create_committee_position() -> Response:
+    """
+    Creates a new committee position
+        :return: Response - The response object, 400 if no data is provided, 404 if the committee is not found, 201 if successful
+    """
+
     data = request.get_json()
 
     if not data:
-        return jsonify({"error": "No JSON provided"}), 400
+        return jsonify({"error": "No JSON provided"}), HTTPStatus.BAD_REQUEST
 
     data: Dict[str, Any] = json.loads(json.dumps(data))
 
@@ -43,12 +48,12 @@ def create_committee_position():
     committee_title = data.get("committee_title")
 
     if not category or not weight or not translations or not committee_title:
-        return jsonify({"error": "No data provided"}), 400
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     committee = get_committee_by_title(committee_title)
 
     if not committee:
-        return jsonify({"error": "Committee not found"}), 404
+        return jsonify({"error": "Committee not found"}), HTTPStatus.NOT_FOUND
 
     new_position = CommitteePosition(
         email=email if email else None,
@@ -69,10 +74,14 @@ def create_committee_position():
         language_code = convert_iso_639_1_to_bcp_47(translation.get("language_code"))
 
         if not title or not description or not language_code:
-            return jsonify({"error": "No translation data provided"}), 400
+            return jsonify(
+                {"error": "No translation data provided"}
+            ), HTTPStatus.BAD_REQUEST
 
         if language_code not in AVAILABLE_LANGUAGES:
-            return jsonify({"error": "Language code not supported"}), 400
+            return jsonify(
+                {"error": "Language code not supported"}
+            ), HTTPStatus.BAD_REQUEST
 
         db.session.add(
             CommitteePositionTranslation(
@@ -92,24 +101,29 @@ def create_committee_position():
 
 @committee_position_bp.route("/assign", methods=["POST", "DELETE"])
 @jwt_required()
-def assign_student_to_committee_position():
+def assign_student_to_committee_position() -> Response:
+    """
+    Assigns a student to a committee position
+        :return: Response - The response object, 400 if no data is provided, 404 if the student or committee position is not found, 200 if successful
+    """
+
     data = request.get_json()
 
     if not data:
-        return jsonify({"error": "No JSON provided"}), 400
+        return jsonify({"error": "No JSON provided"}), HTTPStatus.BAD_REQUEST
 
     data: Dict[str, Any] = json.loads(json.dumps(data))
 
     students: List[Dict[str, Any]] = data.get("students")
 
     if not students:
-        return jsonify({"error": "No data provided"}), 400
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     for student in students:
         student_email = student.get("student_email")
 
         if not student_email:
-            return jsonify({"error": "No student id provided"}), 400
+            return jsonify({"error": "No student id provided"}), HTTPStatus.BAD_REQUEST
 
         student = Student.query.filter_by(email=student_email).one_or_404()
 
@@ -129,7 +143,7 @@ def assign_student_to_committee_position():
             if not committee_position:
                 return jsonify(
                     {"error": "Student or committee position not found"}
-                ), 404
+                ), HTTPStatus.NOT_FOUND
             membership = StudentMembership(
                 student_id=student.student_id,
                 committee_position_id=committee_position.committee_position_id,
@@ -144,16 +158,21 @@ def assign_student_to_committee_position():
 
 @committee_position_bp.route("/<string:committee_position_id>", methods=["DELETE"])
 @jwt_required()
-def soft_delete_committee_position(committee_position_id):
+def soft_delete_committee_position(committee_position_id) -> Response:
+    """
+    Soft deletes a committee position.
+        :param committee_position_id: str - The committee position id
+        :return: Response - The response object, 404 if the committee position is not found, 400 if the committee position is a base position, 200 if successful
+    """
+
     committee_position: CommitteePosition | None = CommitteePosition.query.filter_by(
         committee_position_id=committee_position_id
-    ).one_or_none()
-
-    if not committee_position or not isinstance(committee_position, CommitteePosition):
-        return jsonify({"error": "Committee position not found"}), 404
+    ).one_or_404(description="Committee position not found")
 
     if committee_position.base:
-        return jsonify({"error": "Cannot delete base committee position"}), 400
+        return jsonify(
+            {"error": "Cannot delete base committee position"}
+        ), HTTPStatus.BAD_REQUEST
 
     setattr(committee_position, "active", False)
 
@@ -166,7 +185,13 @@ def soft_delete_committee_position(committee_position_id):
     "/<string:committee_position_id>/recruit", methods=["POST", "DELETE"]
 )
 @jwt_required()
-def recruit_for_position(committee_position_id):
+def recruit_for_position(committee_position_id) -> Response:
+    """
+    Recruits for a committee position, both creating and deleting recruitment
+        :param committee_position_id: str - The committee position id
+        :return: Response - The response object, 403 if the student is not part of the committee, 400 if no data is provided, 404 if the committee position is not found, 200 if successful
+    """
+
     committee_position = CommitteePosition.query.filter_by(
         committee_position_id=committee_position_id
     ).first_or_404()
@@ -183,7 +208,9 @@ def recruit_for_position(committee_position_id):
         ):
             break
         else:
-            return jsonify({"error": "Student not part of committee"}), 403
+            return jsonify(
+                {"error": "Student not part of committee"}
+            ), HTTPStatus.FORBIDDEN
 
     if request.method == "DELETE":
         recruitment: CommitteePositionRecruitment = (
@@ -200,7 +227,7 @@ def recruit_for_position(committee_position_id):
     data = request.get_json()
 
     if not data:
-        return jsonify({"error": "No data provided"}), 400
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     data: Dict[str, Any] = json.loads(json.dumps(data))
 
@@ -209,7 +236,7 @@ def recruit_for_position(committee_position_id):
     translations: List[Dict[str, Any]] = data.get("translations")
 
     if not start_date or not end_date or not translations:
-        return jsonify({"error": "No data provided"}), 400
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     recruitment = CommitteePositionRecruitment(
         start_date=start_date,
@@ -226,10 +253,14 @@ def recruit_for_position(committee_position_id):
         language_code = convert_iso_639_1_to_bcp_47(translation.get("language_code"))
 
         if not link_url or not description or not language_code:
-            return jsonify({"error": "No translation data provided"}), 400
+            return jsonify(
+                {"error": "No translation data provided"}
+            ), HTTPStatus.BAD_REQUEST
 
         if language_code not in AVAILABLE_LANGUAGES:
-            return jsonify({"error": "Language code not supported"}), 400
+            return jsonify(
+                {"error": "Language code not supported"}
+            ), HTTPStatus.BAD_REQUEST
 
         db.session.add(
             CommitteePositionRecruitmentTranslation(

@@ -4,20 +4,21 @@ API Endpoint: '/api/v1/documents'
 """
 
 from datetime import date
+from flask import Blueprint, Response, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import List
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from models.committees.committee import Committee
-from models.committees.committee_position import CommitteePosition
-from models.content.author import Author
-from models.content.document import Document, DocumentTranslation
-from models.core.student import Student, StudentMembership
-from services.content.item import create_item
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.gc import upload_file, delete_file
-from utility.translation import convert_iso_639_1_to_bcp_47
-from utility.database import db
+from models.committees import Committee, CommitteePosition
+from models.content import Document, DocumentTranslation
+from models.core import Student, StudentMembership, Author
+from services.content import create_item
+from utility import (
+    AVAILABLE_LANGUAGES,
+    upload_file,
+    delete_file,
+    convert_iso_639_1_to_bcp_47,
+    db,
+)
 
 
 documents_bp = Blueprint("documents", __name__)
@@ -25,7 +26,12 @@ documents_bp = Blueprint("documents", __name__)
 
 @documents_bp.route("/", methods=["POST"])
 @jwt_required()
-def create_document():
+def create_document() -> Response:
+    """
+    Creates a new document
+        :return: Response - The response object, 500 if it fails to upload the files, 400 if no data is provided, 201 if successful
+    """
+
     document_type = request.form.get("document_type")
     author_type = request.form.get("author[author_type]")
     email = request.form.get("author[email]")
@@ -77,10 +83,10 @@ def create_document():
     elif author_type == "COMMITTEE_POSITION":
         author_table = CommitteePosition
     else:
-        return jsonify({"error": "Invalid author type"}), 400
+        return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
 
     if author_table is None:
-        return jsonify({"error": "Invalid author type"}), 400
+        return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
 
     id = create_item(
         author_table=author_table,
@@ -131,7 +137,13 @@ def create_document():
 
 @documents_bp.route("/<string:document_id>/pin", methods=["PUT"])
 @jwt_required()
-def pin_document(document_id: str):
+def pin_document(document_id: str) -> Response:
+    """
+    Pins a document
+        :param document_id: str - The document id
+        :return: Response - The response object, 501 if the author type is not supported, 404 if the document is not found, 401 if the student is not authorized, 204 if successful
+    """
+
     student_id = get_jwt_identity()
 
     document: Document = Document.query.filter_by(
@@ -168,7 +180,13 @@ def pin_document(document_id: str):
 
 @documents_bp.route("/<string:document_id>", methods=["DELETE"])
 @jwt_required()
-def delete_document(document_id: str):
+def delete_document(document_id: str) -> Response:
+    """
+    Deletes a document
+        :param document_id: str - The document id
+        :return: Response - The response object, 500 if it fails to delete the file, 404 if the document is not found, 401 if the student is not authorized, 204 if successful
+    """
+
     student_id = get_jwt_identity()
 
     document: Document = Document.query.filter_by(

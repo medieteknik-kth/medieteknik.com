@@ -4,20 +4,18 @@ A Utility module for handling translations and everything language related
 
 import unicodedata
 from typing import Any, Type, Optional, List, Dict
-from werkzeug.datastructures import MultiDict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Query
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+from werkzeug.datastructures import MultiDict
+from utility import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 
 def convert_iso_639_1_to_bcp_47(code: str) -> str:
-    """Converts an ISO 639-1 code to BCP 47
+    """
+    Converts an ISO 639-1 code to BCP 47
 
-    Args:
-        code (str): ISO 639-1 code
-
-    Returns:
-        str: BCP 47 code
+        :param code: str - The ISO 639-1 code
+        :return: str - The BCP 47 code
     """
 
     for language in AVAILABLE_LANGUAGES:
@@ -30,14 +28,13 @@ def convert_iso_639_1_to_bcp_47(code: str) -> str:
 
 
 def retrieve_languages(args: MultiDict[str, str] | None) -> List[str]:
-    """Retrieves the language from the request arguments
-
-    Args:
-        args (MultiDict): Request arguments
-
-    Returns:
-        List[str]: Language codes
     """
+    Retrieves the language from the request arguments
+
+        :param args: MultiDict[str, str] - The request arguments
+        :return: List[str] - The list of languages or the available languages if none are found
+    """
+
     if args is None:
         return AVAILABLE_LANGUAGES
 
@@ -57,15 +54,11 @@ def get_translation(
     Retrieves a translation object from the given translation table based on
         the provided filter columns and values.
 
-    Args:
-        translation_table (Type[object]): The translation table to query.
-        filter_columns (List[str]): The columns to filter by.
-        filter_values (Dict[str, any]): The filter values for each column.
-        language_code (str, optional): The language code to filter by.
-            Defaults to DEFAULT_LANGUAGE_CODE.
-
-    Returns:
-        Optional[object]: The translation object if found, otherwise None.
+        :param translation_table: Type[object] - The translation table to query.
+        :param filter_columns: List[str] - The columns to filter by.
+        :param filter_values: Dict[str, Any] - The values to filter by.
+        :param language_code: str - The language code to filter by.
+        :return: Optional[object] - The translation object or None if not found
     """
 
     # Check if the column exists in the table
@@ -116,14 +109,16 @@ def update_translation_or_create(
     translation_table: Type[object],
     entries: Dict[str, str],
 ) -> None:
-    """Updates a translation object in the given translation table
+    """
+    Updates a translation object in the given translation table
         or creates a new one if it doesn't exist
 
-    Args:
-        language_code (str): The language code to filter by.
-        translation_table (Type[object]): The translation table to query.
-        entries (Dict[str, str]): The entries to update.
+        :param db: SQLAlchemy - The database session
+        :param translation_table: Type[object] - The translation table to query.
+        :param entries: Dict[str, str] - The columns and values to update or create
+        :return: None
     """
+
     language_code = entries.get("language_code")
     translation_entry = (
         db.session.query(translation_table)
@@ -142,13 +137,12 @@ def update_translation_or_create(
 
 
 def normalize_to_ascii(text: str) -> str:
-    """Converts non-ASCII characters to their closest ASCII equivalents.
-
-    Args:
-        text (str): The text to normalize.
-
-    Returns:
-        str: The normalized text.
     """
+    Converts non-ASCII characters to their closest ASCII equivalents.
+
+        :param text: str - The text to normalize
+        :return: str - The normalized text
+    """
+
     normalized = unicodedata.normalize("NFKD", text)
     return "".join(c for c in normalized if not unicodedata.combining(c))

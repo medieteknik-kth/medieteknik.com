@@ -29,44 +29,18 @@ def upload_file(
     content_disposition: str | None = None,
     content_type: str | None = None,
     timedelta: timedelta | None = timedelta(days=365),
-):
+) -> str | None:
     """
     Uploads a file to the bucket and returns its URL
-
-    :type file: file
-    :param file:
-        File to upload
-
-    :type file_name: str
-    :param file_name:
-        Name of the file
-
-    :type path: str
-    :param path:
-        Path of the file
-
-    :type language_code: str
-    :param language_code:
-        (Optional) Language code of the file, fallback to None
-
-    :type content_disposition: str
-    :param content_disposition:
-        (Optional) Content disposition of the file, fallback to None
-
-    :type content_type: str
-    :param content_type:
-        (Optional) Content type of the file, fallback to None
-
-    :type timedelta: timedelta
-    :param timedelta:
-        (Optional) Expiration time of the file, fallback to 365 days
-
-    :rtype: str
-    :returns:
-        URL of the uploaded file
-
-    :raises: :class:`~google.cloud.exceptions.GoogleCloudError`
-        if the upload response returns an error status.
+        :param file: any - The file to upload
+        :param file_name: str - The name of the file
+        :param path: str - The path to store the file in, defaults to the root of the bucket
+        :param language_code: str - The language code of the file, defaults to None
+        :param content_disposition: str - The content disposition of the file, defaults to None
+        :param content_type: str - The content type of the file, defaults to None
+        :param timedelta: timedelta - The expiration time of the file, defaults to 365 days, None for public
+        :return: str - The URL of the file if successful, None otherwise
+        :raises GoogleCloudError: If an error occurs during the upload
     """
 
     try:
@@ -92,16 +66,14 @@ def upload_file(
         return None
 
 
-def delete_file(url: str):
+def delete_file(url: str) -> bool:
     """
-    Deletes a file from the bucket
-
-    Args:
-        url (str): URL of the file
-
-    Returns:
-        None
+    Deletes a file from the bucket and returns True if successful
+        :param url: str - The URL of the file to delete
+        :return: bool - True if successful, False otherwise
+        :raises GoogleCloudError: If an error occurs during the deletion
     """
+
     try:
         parsed_url = urlparse(url)
         blob_name = unquote(parsed_url.path.lstrip("/"))

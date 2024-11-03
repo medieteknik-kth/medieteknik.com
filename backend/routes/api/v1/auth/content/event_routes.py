@@ -5,29 +5,34 @@ API Endpoint: '/api/v1/events'
 
 import json
 import uuid
+from flask import Blueprint, Response, request, jsonify
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import Any
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from models.committees.committee import Committee
-from models.committees.committee_position import CommitteePosition
-from models.content.author import Author
-from models.content.event import Event, RepeatableEvent
-from models.core.student import Student, StudentMembership
-from services.content.item import (
+from sqlalchemy.exc import SQLAlchemyError
+from models.committees import Committee, CommitteePosition
+from models.content import Event, RepeatableEvent
+from models.core import Student, StudentMembership, Author
+from services.content import (
     create_item,
     delete_item,
 )
-from services.content.public.calendar import get_main_calendar
+from services.content.public import get_main_calendar
 from utility.database import db
-from sqlalchemy.exc import SQLAlchemyError
+
 
 events_bp = Blueprint("events", __name__)
 
 
 @events_bp.route("/<string:event_id>", methods=["DELETE"])
 @jwt_required()
-def delete_event(event_id: str):
+def delete_event(event_id: str) -> Response:
+    """
+    Deletes an event by ID
+        :param event_id: str - The event ID
+        :return: Response - The response object, 400 if the event ID is invalid, 404 if the event is not found, 401 if the user is not authorized, 204 if successful
+    """
+
     student_id = get_jwt_identity()
     claims = get_jwt()
     is_admin = claims.get("role") == "ADMIN"
@@ -106,18 +111,23 @@ def delete_event(event_id: str):
 
 @events_bp.route("/", methods=["POST"])
 @jwt_required()
-def create_event():
+def create_event() -> Response:
+    """
+    Creates an event
+        :return: Response - The response object, 400 if data provided is invalid, 201 if successful
+    """
+
     data = request.get_json()
 
     if not data:
-        return jsonify({"error": "No data provided"}), 400
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     data: dict[str, Any] = json.loads(json.dumps(data))
 
     author = data.get("author")
 
     if author is None:
-        return jsonify({"error": "No author provided"}), 400
+        return jsonify({"error": "No author provided"}), HTTPStatus.BAD_REQUEST
 
     author_table = None
     if author.get("author_type") == "STUDENT":
@@ -127,15 +137,15 @@ def create_event():
     elif author.get("author_type") == "COMMITTEE_POSITION":
         author_table = CommitteePosition
     else:
-        return jsonify({"error": "Invalid author type"}), 400
+        return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
 
     if author_table is None:
-        return jsonify({"error": "Invalid author type"}), 400
+        return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
 
     author_email = author.get("email")
 
     if author_email is None:
-        return jsonify({"error": "No email provided"}), 400
+        return jsonify({"error": "No email provided"}), HTTPStatus.BAD_REQUEST
 
     data["calendar_id"] = get_main_calendar().calendar_id
 
@@ -165,4 +175,4 @@ def create_event():
         db.session.add(repeatable_event)
         db.session.commit()
 
-    return {"id": id}, 201
+    return {"id": id}, HTTPStatus.CREATED

@@ -1,11 +1,15 @@
-from http import HTTPStatus
+"""
+Album Routes
+API Endpoint: '/api/v1/albums'
+"""
+
 import json
-from typing import Any, Dict, List
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import jwt_required
-from utility.database import db
-from models.content.album import Album, AlbumTranslation
-from utility.translation import convert_iso_639_1_to_bcp_47
+from http import HTTPStatus
+from typing import Any, Dict, List
+from models.content import Album, AlbumTranslation
+from utility import db, convert_iso_639_1_to_bcp_47
 
 
 album_bp = Blueprint("album", __name__)
@@ -13,7 +17,12 @@ album_bp = Blueprint("album", __name__)
 
 @album_bp.route("/", methods=["POST"])
 @jwt_required()
-def create_album():
+def create_album() -> Response:
+    """
+    Creates a new album
+        :return: Response - The response object, 400 if no data is provided, 201 if successful
+    """
+
     data = request.get_json()
 
     if not data:

@@ -1,13 +1,24 @@
-from flask import Blueprint, jsonify, request
-from models.content.album import Album, AlbumTranslation
-from utility.translation import retrieve_languages
+"""
+Public Album Routes
+API Endpoint: '/api/v1/public/albums'
+"""
+
+from http import HTTPStatus
+from flask import Blueprint, Response, jsonify, request
+from models.content import Album, AlbumTranslation
+from utility import retrieve_languages
 
 
 public_album_bp = Blueprint("public_album", __name__)
 
 
 @public_album_bp.route("/", methods=["GET"])
-def get_albums():
+def get_albums() -> Response:
+    """
+    Retrieves all albums
+        :return: Response - The response object, 200 if successful
+    """
+
     provided_languages = retrieve_languages(args=request.args)
     search_query = request.args.get("q", type=str, default=None)
 
@@ -45,11 +56,17 @@ def get_albums():
             "total_pages": paginated_albums.pages,
             "total_items": paginated_albums.total,
         }
-    )
+    ), HTTPStatus.OK
 
 
 @public_album_bp.route("/<string:album_id>", methods=["GET"])
-def get_album(album_id):
+def get_album(album_id) -> Response:
+    """
+    Retrieves an album by ID
+        :param album_id: str - The ID of the album
+        :return: Response - The response object, 404 if the album is not found, 200 if successful
+    """
+
     provided_languages = retrieve_languages(args=request.args)
 
     album = Album.query.get_or_404(album_id)
@@ -59,4 +76,4 @@ def get_album(album_id):
         media.to_dict(provided_languages=provided_languages) for media in album.media
     ]
 
-    return jsonify({"album": album_dict, "media": media_dicts})
+    return jsonify({"album": album_dict, "media": media_dicts}), HTTPStatus.OK

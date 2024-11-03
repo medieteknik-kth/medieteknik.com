@@ -1,17 +1,18 @@
+"""
+Media Routes
+API Endpoint: '/api/v1/media'
+"""
+
+from flask import Blueprint, Response, jsonify, request
+from flask_jwt_extended import get_jwt, jwt_required
 from datetime import date
 from http import HTTPStatus
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt, jwt_required
 from sqlalchemy import func
-from models.committees.committee import Committee
-from models.content.album import Album
-from models.content.media import Media
-from models.core.student import Student
-from services.content.item import create_item
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.gc import upload_file
-from utility.translation import convert_iso_639_1_to_bcp_47
-from utility.database import db
+from models.committees import Committee
+from models.content import Album, Media
+from models.core import Student
+from services.content import create_item
+from utility import AVAILABLE_LANGUAGES, upload_file, convert_iso_639_1_to_bcp_47, db
 
 
 media_bp = Blueprint("media", __name__)
@@ -19,7 +20,12 @@ media_bp = Blueprint("media", __name__)
 
 @media_bp.route("/", methods=["POST"])
 @jwt_required()
-def create_media():
+def create_media() -> Response:
+    """
+    Creates a new media item
+        :return: Response - The response object, 400 if no data is provided, 401 if the user is not authorized, 500 if it fails to upload the files, 201 if successful
+    """
+
     form_data = request.form
 
     if not form_data:

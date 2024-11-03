@@ -6,7 +6,7 @@ from models.committees import (
     CommitteePosition,
     CommitteePositionTranslation,
 )
-from models.core.student import Student, StudentMembership
+from models.core import Student, StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from sqlalchemy.orm import joinedload
