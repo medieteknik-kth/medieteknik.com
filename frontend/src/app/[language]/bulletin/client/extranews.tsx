@@ -142,7 +142,7 @@ export default function ExtraNews({
         }
       >
         {pages.map((page, index) => (
-          <div key={index} className='flex flex-wrap gap-2 justify-center'>
+          <div key={index} className='flex flex-wrap gap-2'>
             {page.jsx}
           </div>
         ))}
