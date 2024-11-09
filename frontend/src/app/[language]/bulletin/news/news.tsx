@@ -1,7 +1,7 @@
 import { GetNewsPagniation } from '@/api/items'
 import AllNews from '@/app/[language]/bulletin/news/client/allNews'
 import HeaderGap from '@/components/header/components/HeaderGap'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 
 import type { JSX } from 'react'
 
@@ -12,8 +12,6 @@ interface Params {
 interface Props {
   params: Promise<Params>
 }
-
-export const revalidate = 43_200 // 12 hours
 
 /**
  * @name NewsPage

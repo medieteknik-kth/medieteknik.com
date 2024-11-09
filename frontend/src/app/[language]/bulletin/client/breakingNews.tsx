@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/popover'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useToast } from '@/components/ui/use-toast'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import ShortNews from '../components/shortNews'

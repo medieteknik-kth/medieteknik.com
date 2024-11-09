@@ -1,4 +1,4 @@
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
 import { cache } from 'react'
 import api from './index'
 

@@ -1,11 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import Student from '@/models/Student'
-import { Button } from '@components/ui/button'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 import { forwardRef } from 'react'

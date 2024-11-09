@@ -1,3 +1,5 @@
+'use client'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +22,7 @@ import {
 } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import Committee from '@/models/Committee'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon } from '@heroicons/react/24/outline'

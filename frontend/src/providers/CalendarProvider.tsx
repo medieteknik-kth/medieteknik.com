@@ -1,6 +1,6 @@
 'use client'
 import { GetEvents } from '@/api/calendar'
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
 import {
   createContext,
   useContext,
@@ -97,8 +97,6 @@ interface CalendarContextType extends CalendarState {
 const CalendarContext = createContext<CalendarContextType | undefined>(
   undefined
 )
-
-export const revalidate = 60 * 60 * 24
 
 /**
  * Renders the CalendarProvider component with the provided children.

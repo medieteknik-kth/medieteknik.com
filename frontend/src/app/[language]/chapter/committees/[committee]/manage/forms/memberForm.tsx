@@ -28,7 +28,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'

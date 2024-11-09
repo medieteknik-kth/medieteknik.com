@@ -1,4 +1,5 @@
 'use client'
+
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { AuthorResource } from '@/models/Items'
 import { Permission, Role } from '@/models/Permission'
@@ -81,7 +82,7 @@ type AuthenticationAction =
 
 interface AuthenticationResponse {
   student: Student
-  role: Role
+  role: 'OTHER'
   permissions: {
     author: AuthorResource[]
     student: Permission[]

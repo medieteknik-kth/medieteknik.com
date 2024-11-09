@@ -22,7 +22,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Committee from '@/models/Committee'
-import { Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'

@@ -12,8 +12,6 @@ interface Props {
   params: Promise<Params>
 }
 
-export const revalidate = 31_536_000 // 1 year
-
 /**
  * @name NewsSlug
  * @description This is the news slug page, it will render the redirect component if the news data is not available

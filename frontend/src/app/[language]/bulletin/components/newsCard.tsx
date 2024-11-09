@@ -7,9 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { News } from '@/models/Items'
-import Committee from '@models/Committee'
-import Student from '@models/Student'
+import Committee from '@/models/Committee'
+import News from '@/models/items/News'
+import Student from '@/models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
 

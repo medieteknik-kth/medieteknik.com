@@ -24,7 +24,8 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import Committee, { CommitteePosition } from '@/models/Committee'
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
+import { Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
@@ -80,7 +81,7 @@ export default function DetailedEvent({
   const { removeEvent } = useCalendar()
 
   const canDelete = () => {
-    if (role === 'ADMIN') return true
+    if (role === Role.ADMIN) return true
     if (event.author.author_type === 'STUDENT') {
       if (!student) return false
       return student.email === event.author.email

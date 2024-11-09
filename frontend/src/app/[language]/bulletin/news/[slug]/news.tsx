@@ -13,7 +13,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import Committee, { CommitteePosition } from '@/models/Committee'
-import type { News } from '@/models/Items'
+import News from '@/models/items/News'
 import Student from '@/models/Student'
 import Image from 'next/image'
 

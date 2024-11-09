@@ -1,6 +1,6 @@
 'use client'
 
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { useArticle } from '@/providers/ArticleProvider'
 import { useCallback, useMemo, type JSX } from 'react'
 import { Descendant, Editor, Transforms } from 'slate'

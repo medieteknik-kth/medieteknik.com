@@ -10,7 +10,6 @@ export const LANGUAGES: Language = {
   sv: {
     short_name: 'sv',
     name: 'Svenska',
-    flag: 'se',
     flag_icon: (
       <SE
         style={{
@@ -23,7 +22,6 @@ export const LANGUAGES: Language = {
   en: {
     short_name: 'en',
     name: 'English',
-    flag: 'gb',
     flag_icon: (
       <GB
         style={{

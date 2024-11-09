@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Media } from '@/models/items/Media'
+import Media from '@/models/items/Media'
 import Image from 'next/image'
 import Link from 'next/link'
 import { JSX } from 'react'

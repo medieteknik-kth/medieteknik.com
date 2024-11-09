@@ -21,7 +21,7 @@ interface Props {
   params: Promise<Params>
 }
 
-export const revalidate = 2_592_000
+export const revalidate = 2_592_000 // 30 days
 
 /**
  * @name Positions

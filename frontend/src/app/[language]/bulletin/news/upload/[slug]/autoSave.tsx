@@ -1,6 +1,6 @@
 'use client'
 
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { LanguageCode } from '@/models/Language'
 import { API_BASE_URL } from '@/utility/Constants'
 import {

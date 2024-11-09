@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   CardContent,
   CardDescription,
@@ -7,7 +8,6 @@ import {
 } from '@/components/ui/card'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import Student from '@/models/Student'
-import { Button } from '@components/ui/button'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 

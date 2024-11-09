@@ -1,11 +1,11 @@
 import Album from '@/models/Album'
-import { News } from '@/models/Items'
+import Media from '@/models/items/Media'
+import News from '@/models/items/News'
 import {
   AlbumPagination,
   MediaPagination,
   NewsPagination,
 } from '@/models/Pagination'
-import { Media } from '@models/items/Media'
 import { cache } from 'react'
 import api from './index'
 

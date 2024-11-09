@@ -2,7 +2,7 @@
 
 import NewsDisplay from '@/app/[language]/bulletin/news/[slug]/news'
 import Loading from '@/components/tooltips/Loading'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type JSX } from 'react'
 

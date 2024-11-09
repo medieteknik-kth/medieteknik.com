@@ -8,13 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { News } from '@/models/Items'
-import Committee, { CommitteePosition } from '@models/Committee'
-import Student from '@models/Student'
+import Committee, { CommitteePosition } from '@/models/Committee'
+import News from '@/models/items/News'
+import Student from '@/models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
-
 import type { JSX } from 'react'
 
 interface Props {

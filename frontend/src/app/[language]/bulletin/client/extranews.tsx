@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useState, type JSX } from 'react'

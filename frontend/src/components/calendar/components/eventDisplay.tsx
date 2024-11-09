@@ -1,4 +1,4 @@
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
 import { JSX } from 'react'
 import tinycolor from 'tinycolor2'
 

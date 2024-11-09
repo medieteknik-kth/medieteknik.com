@@ -1,6 +1,6 @@
 'use client'
 
-import { Document } from '@/models/items/Document'
+import Document from '@/models/items/Document'
 import { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useSearchParams } from 'next/navigation'

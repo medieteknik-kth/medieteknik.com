@@ -3,7 +3,7 @@
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CogIcon,

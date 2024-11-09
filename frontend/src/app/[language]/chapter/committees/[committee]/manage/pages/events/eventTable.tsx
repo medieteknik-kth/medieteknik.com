@@ -40,7 +40,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Committee from '@/models/Committee'
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
 import { EventPagniation } from '@/models/Pagination'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'

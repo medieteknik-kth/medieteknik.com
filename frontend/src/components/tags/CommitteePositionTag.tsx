@@ -1,11 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { CommitteePosition } from '@/models/Committee'
-import { Button } from '@components/ui/button'
 
 import type { JSX } from 'react'
 

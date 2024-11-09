@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n'
-import { Button } from '@components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   ArrowTopRightOnSquareIcon,
   BuildingOffice2Icon,

@@ -1,6 +1,6 @@
 'use client'
 import EventComponent from '@/components/calendar/components/eventDisplay'
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { isSameDay, isSameMonth } from 'date-fns'
 

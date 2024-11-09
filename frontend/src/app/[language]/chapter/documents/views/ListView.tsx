@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/table'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { Author } from '@/models/Items'
-import { Document } from '@/models/items/Document'
+import Document from '@/models/items/Document'
 import Student from '@/models/Student'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import {

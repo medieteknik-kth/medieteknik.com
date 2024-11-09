@@ -4,7 +4,7 @@ import {
   CustomElement,
   CustomText,
 } from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
-import { News } from '@/models/Items'
+import News from '@/models/items/News'
 import { ArticleProvider } from '@/providers/ArticleProvider'
 import { useRouter } from 'next/navigation'
 import { useState, type JSX } from 'react'

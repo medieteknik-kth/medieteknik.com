@@ -28,18 +28,6 @@
       "@/*": [
         "./src/*"
       ],
-      "@providers/*": [
-        "./src/providers/*"
-      ],
-      "@components/*": [
-        "./src/components/*"
-      ],
-      "@models/*": [
-        "./src/models/*"
-      ],
-      "@schemas/*": [
-        "./src/schemas/*"
-      ],
     }
   },
   "include": [

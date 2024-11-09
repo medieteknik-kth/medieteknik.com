@@ -1,12 +1,12 @@
+import { CommitteeTooltip } from '@/components/tooltips/Tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import Committee from '@/models/Committee'
-import { CommitteeTooltip } from '@components/tooltips/Tooltip'
-import { Button } from '@components/ui/button'
 import { forwardRef } from 'react'
 
 interface CommitteeTagProps {

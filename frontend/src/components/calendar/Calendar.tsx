@@ -1,5 +1,5 @@
 import DateComponent from '@/components/calendar/components/dateDisplay'
-import { Event } from '@/models/Items'
+import Event from '@/models/items/Event'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { LANGUAGES } from '@/utility/Constants'
 import { addMonths, getDaysInMonth, setDate } from 'date-fns'

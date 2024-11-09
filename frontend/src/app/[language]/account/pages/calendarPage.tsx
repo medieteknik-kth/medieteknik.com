@@ -11,8 +11,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { Event } from '@/models/Items'
-import { Permission } from '@/models/Permission'
+import Event from '@/models/items/Event'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import {

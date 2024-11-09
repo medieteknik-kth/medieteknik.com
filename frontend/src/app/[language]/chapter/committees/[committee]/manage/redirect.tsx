@@ -2,7 +2,6 @@
 
 import Loading from '@/components/tooltips/Loading'
 import Committee from '@/models/Committee'
-import { Permission, Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type JSX } from 'react'

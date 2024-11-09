@@ -1,8 +1,8 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import Loading from '@components/tooltips/Loading'
 import React, { JSX } from 'react'
 const AccountForm = React.lazy(() => import('./account/accountForm'))
 const ProfileForm = React.lazy(() => import('./account/profileForm'))

@@ -2,8 +2,6 @@ import NewsPage from '@/app/[language]/bulletin/news/news'
 import { useTranslation } from '@/app/i18n'
 import { Metadata } from 'next'
 
-export const revalidate = 43_200 // 12 hours
-
 interface Params {
   language: string
 }
