@@ -47,7 +47,6 @@ export default function CommitteePositionTag({
             <Avatar className='w-8 h-8 mr-2'>
               <AvatarImage
                 src={committeePosition.committee?.logo_url ?? ''}
-                alt={committeePosition.translations[0].title}
               />
               <AvatarFallback>
                 {committeePosition.translations[0].title + ' Profile Picture'}

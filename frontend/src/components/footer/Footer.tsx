@@ -82,7 +82,7 @@ export default async function Footer({
                   href='mailto:styrelsen@medieteknik.com'
                   className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400'
                   title='Email styrelsen@medieteknik.com'
-                  aria-label={`${t('contact')} email`}
+                  aria-label={`Email styrelsen@medieteknik.com`}
                 >
                   <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>styrelsen@medieteknik.com</span>
@@ -94,7 +94,7 @@ export default async function Footer({
                   className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400
                   '
                   title='Call organization number 802411-5647'
-                  aria-label={`${t('contact')} phone`}
+                  aria-label={`Call organization number 802411-5647`}
                 >
                   <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>802411-5647</span>

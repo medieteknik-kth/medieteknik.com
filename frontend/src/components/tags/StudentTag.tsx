@@ -59,7 +59,7 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
               {includeImage && (
                 <Avatar className='h-10 w-auto aspect-square bg-white rounded-full overflow-hidden'>
                   <AvatarImage
-                    className='h-10 w-auto aspect-square object-contain p-1.5 rounded-full'
+                    className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full'
                     src={student.profile_picture_url || FallbackImage.src}
                     alt={student.first_name + ' ' + (student.last_name || '')}
                   />

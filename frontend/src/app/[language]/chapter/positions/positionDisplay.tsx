@@ -30,12 +30,15 @@ export default function PositionDisplay({
   position,
 }: Props): JSX.Element {
   return (
-    <Card>
+    <Card className='h-full'>
       <CardHeader>
         <CardTitle className='flex gap-2 items-center truncate'>
           {position.committee && (
             <Avatar className='p-2 bg-white'>
-              <AvatarImage src={position.committee.logo_url} />
+              <AvatarImage
+                src={position.committee.logo_url}
+                alt={`${position.committee.translations[0].title} logo`}
+              />
               <AvatarFallback>Fallback</AvatarFallback>
             </Avatar>
           )}

@@ -30,7 +30,7 @@ export function StudentTooltip({ student }: { student: Student }) {
               alt='Profile Picture'
               width={96}
               height={96}
-              className='w-24 h-auto aspect-square object-fill p-1.5 rounded-full'
+              className='w-24 h-auto aspect-square object-fill p-0.5 rounded-full'
             />
             <AvatarFallback>Profile Picture</AvatarFallback>
           </Avatar>
@@ -75,7 +75,6 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
                 src={committee.logo_url}
                 width={128}
                 height={128}
-                alt='Committee Logo'
                 className='h-24 w-auto object-contain p-3.5'
               />
               <AvatarFallback>
@@ -92,7 +91,6 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
               src={committee.logo_url}
               width={128}
               height={128}
-              alt='Committee Logo'
               className='h-24 w-auto object-contain p-3.5'
             />
             <AvatarFallback>

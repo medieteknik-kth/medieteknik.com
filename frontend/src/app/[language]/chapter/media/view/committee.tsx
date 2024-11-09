@@ -64,7 +64,6 @@ export default async function MediaGridView({
                     width={128}
                     height={128}
                     src={committee.logo_url ?? ''}
-                    alt={committee.translations[0].title}
                   />
                   <AvatarFallback>
                     {committee.translations[0].title + ' Profile Picture'}

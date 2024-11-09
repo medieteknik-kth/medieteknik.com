@@ -102,7 +102,6 @@ export default async function CommitteeList(props: Props) {
                       <Link
                         href={`./committees/${committee.translations[0].title.toLowerCase()}`}
                         title={committee.translations[0].title}
-                        aria-label={committee.translations[0].title}
                         key={index}
                         className='min-w-[240px] w-fit relative rounded-t-lg border transition-transform hover:scale-110 hover:hover:font-bold bg-white'
                       >

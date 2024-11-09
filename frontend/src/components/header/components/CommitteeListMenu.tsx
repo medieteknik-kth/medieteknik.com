@@ -53,8 +53,9 @@ export default function CommitteeListMenu({ language }: Props): JSX.Element {
                 <DropdownMenuItem key={committee.committee_id} asChild>
                   <Link
                     href={`/${language}/chapter/committees/${committee.translations[0].title.toLowerCase()}`}
-                    className='w-full flex items-center gap-2 pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
+                    className='w-full flex items-center gap-2 pr-2 py-2 cursor-pointer'
                     title={committee.translations[0].title}
+                    aria-label={`Go to ${committee.translations[0].title}'s page`}
                   >
                     <Avatar className='w-8 h-8 bg-white rounded-full overflow-hidden'>
                       <AvatarImage
@@ -62,7 +63,6 @@ export default function CommitteeListMenu({ language }: Props): JSX.Element {
                         width={32}
                         height={32}
                         src={committee.logo_url ?? ''}
-                        alt={committee.translations[0].title}
                       />
                     </Avatar>
                     <p>{committee.translations[0].title}</p>

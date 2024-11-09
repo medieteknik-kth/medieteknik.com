@@ -16,6 +16,7 @@ import Committee, { CommitteePosition } from '@/models/Committee'
 import News from '@/models/items/News'
 import Student from '@/models/Student'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import type { JSX } from 'react'
 
@@ -49,27 +50,19 @@ export default function NewsDisplay({
       <Breadcrumb className='w-full h-fit border-b px-4 py-2'>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink
-              href={'/' + language + '/bulletin'}
-              className='py-2'
-            >
-              Bulletin
+            <BreadcrumbLink asChild className='py-2'>
+              <Link href={`/${language}/bulletin`}>Bulletin</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink
-              href={'/' + language + '/bulletin/news'}
-              className='py-2'
-            >
-              News
+            <BreadcrumbLink asChild className='py-2'>
+              <Link href={`/${language}/bulletin/news`}>News</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink className='capitalize py-2 italic'>
-              {news_data.translations[0].title}
-            </BreadcrumbLink>
+          <BreadcrumbItem className='py-2'>
+            {news_data.translations[0].title}
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -84,7 +77,7 @@ export default function NewsDisplay({
               ))}
           </ul>
           <h1 className='text-4xl'>{news_data.translations[0].title}</h1>
-          <p className='text-neutral-600 text-sm'>
+          <p className='text-sm text-muted-foreground'>
             {news_data.translations[0].short_description}
           </p>
           {news_data.translations[0].main_image_url && (

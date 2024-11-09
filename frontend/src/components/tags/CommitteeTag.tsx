@@ -68,8 +68,8 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
                   className='h-10 w-auto aspect-square object-fill p-1.5'
                   width={128}
                   height={128}
-                  src={committee.logo_url ?? ''}
-                  alt={committee.translations[0].title}
+                  src={committee.logo_url}
+                  alt=''
                 />
                 <AvatarFallback>
                   {committee.translations[0].title + ' Profile Picture'}

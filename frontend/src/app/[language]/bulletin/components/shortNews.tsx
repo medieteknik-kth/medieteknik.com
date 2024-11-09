@@ -83,7 +83,7 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
               includeAt={false}
               includeBackground={false}
             >
-              <span className='text-xs text-neutral-700'>
+              <span className='text-xs text-neutral-700 dark:text-neutral-300'>
                 {new Date(newsItem.created_at).toLocaleDateString(language, {
                   year: 'numeric',
                   month: 'long',

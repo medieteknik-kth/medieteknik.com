@@ -55,6 +55,7 @@ export default function Search({ language, data }: Props): JSX.Element {
           size={'icon'}
           onClick={updateSearch}
           disabled={searchInput.length < 3}
+          title={t('search')}
         >
           <MagnifyingGlassIcon className='w-5 h-5' />
         </Button>
