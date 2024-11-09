@@ -67,7 +67,7 @@ export default async function Footer({
                 <Button
                   asChild
                   variant='link'
-                  className='text-2xl text-center xxs:text-left tracking-wider font-bold text-sky-800 dark:text-white -ml-4 -mt-2'
+                  className='text-2xl text-center xxs:text-left tracking-wider font-bold -ml-4 -mt-2 text-blue-600 dark:text-primary'
                   title='Go to Contact Page'
                   aria-label='Go to Contact Page'
                 >
@@ -77,10 +77,14 @@ export default async function Footer({
                   </Link>
                 </Button>
               </h4>
-              <Button asChild variant='link' className='-ml-4'>
+              <Button
+                asChild
+                variant='link'
+                className='-ml-4 text-blue-600 dark:text-primary'
+              >
                 <Link
                   href='mailto:styrelsen@medieteknik.com'
-                  className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400'
+                  className='flex items-center text-center mt-1'
                   title='Email styrelsen@medieteknik.com'
                   aria-label={`Email styrelsen@medieteknik.com`}
                 >
@@ -88,10 +92,14 @@ export default async function Footer({
                   <span>styrelsen@medieteknik.com</span>
                 </Link>
               </Button>
-              <Button asChild variant='link' className='-ml-4'>
+              <Button
+                asChild
+                variant='link'
+                className='-ml-4 text-blue-600 dark:text-primary'
+              >
                 <Link
                   href='tel:802411-5647'
-                  className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400
+                  className='flex items-center text-center mt-1
                   '
                   title='Call organization number 802411-5647'
                   aria-label={`Call organization number 802411-5647`}

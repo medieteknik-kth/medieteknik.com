@@ -35,6 +35,14 @@ export const metadata: Metadata = {
   },
   description:
     'Student på KTH? Här hittar du allt du behöver veta om medieteknik på KTH.',
+  keywords: 'KTH, Medieteknik, Media Technology, Kungliga Tekniska Högskolan',
+  alternates: {
+    canonical: 'https://www.medieteknik.com',
+    languages: {
+      sv: 'https://www.medieteknik.com/sv',
+      en: 'https://www.medieteknik.com/en',
+    },
+  },
   other: {
     'msapplication-TileColor': '#ffffff',
     'google-adsense-account': 'ca-pub-2106963438710910',

@@ -51,7 +51,7 @@ export default async function Education(props: Props): Promise<JSX.Element> {
             <Link
               href={`https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150`}
               target='_blank'
-              rel='noreferrer noopenner'
+              rel='external'
             >
               <KTH className='w-10 h-10 rounded-md' />
             </Link>
@@ -63,9 +63,9 @@ export default async function Education(props: Props): Promise<JSX.Element> {
             asChild
           >
             <Link
-              href={`https://meta-internationals.mailchimpsites.com/`}
+              href={`https://metastudent.se/`}
               target='_blank'
-              rel='noopener noreferrer'
+              rel='external'
             >
               <Image
                 src={

@@ -295,9 +295,9 @@ export const ElementDisplay = ({
       return (
         <a
           href={url}
-          className={`text-base underline underline-offset-4 inline-block cursor-pointer decoration-2 ${
+          className={`text-base hover:underline underline-offset-4 inline-block cursor-pointer transition-all text-blue-600 dark:text-primary ${
             element.type === 'internal link'
-              ? 'decoration-yellow-400'
+              ? 'decoration-yellow-400 decoration-2'
               : 'decoration-sky-600'
           }`}
           title={
@@ -309,10 +309,12 @@ export const ElementDisplay = ({
           ref={attributes.ref as Ref<HTMLAnchorElement> | undefined}
           onMouseDown={(event) => event.preventDefault()} // Prevent default mouse down behavior
           onDragStart={(event) => event.preventDefault()} // Prevent dragging the link
-          onClick={(event) => {
-            event.preventDefault() // Prevent default click behavior i.e. opening the link in the same tab
-            window.open(url, '_blank')
-          }}
+          target='_blank'
+          rel={
+            element.type === 'external link'
+              ? 'external nofollow noopener noreferrer'
+              : 'me'
+          }
         >
           {children}
         </a>

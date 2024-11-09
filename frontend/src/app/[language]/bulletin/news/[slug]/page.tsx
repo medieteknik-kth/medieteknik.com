@@ -33,6 +33,34 @@ export async function generateMetadata(props: {
 
   return {
     title: title,
+    openGraph: {
+      title: title,
+      description: data.translations[0].short_description,
+      locale: params.language === 'sv' ? 'sv_SE' : 'en_GB',
+      siteName: 'Medieteknik - KTH',
+      countryName: 'Sweden',
+      url:
+        'https://www.medieteknik.com/' +
+        params.language +
+        '/bulletin/news/' +
+        params.slug,
+      type: 'article',
+      publishedTime: data.created_at,
+      modifiedTime: data.last_updated || data.created_at,
+      images: data.translations[0].main_image_url && {
+        url: data.translations[0].main_image_url,
+        type: 'image/' + data.translations[0].main_image_url.split('.').pop(),
+        width: 700,
+        height: 320,
+        alt: data.translations[0].title,
+      },
+      authors:
+        data.author.author_type === 'COMMITTEE'
+          ? data.author.translations[0].title
+          : data.author.author_type === 'STUDENT'
+          ? data.author.first_name + ' ' + data.author.last_name
+          : null,
+    },
   }
 }
 
