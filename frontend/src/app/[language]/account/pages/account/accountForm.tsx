@@ -402,7 +402,10 @@ export default function AccountForm({ language }: Props): JSX.Element {
                       }
 
                       const img = new window.Image()
-                      img.src = URL.createObjectURL(file)
+                      const file_url = URL.createObjectURL(
+                        new Blob([file], { type: file.type })
+                      )
+                      img.src = file_url
                       img.onload = () => {
                         if (img.width !== img.height) {
                           alert('Aspect ratio must be 1:1')
@@ -416,6 +419,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
                           },
                         })
                         setProfilePicturePreview(file)
+                        URL.revokeObjectURL(file_url)
                       }
                     }}
                   />

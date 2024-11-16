@@ -34,7 +34,7 @@ export default async function Contact(props: Props): Promise<JSX.Element> {
       <HeaderGap />
       <HeadComponent title={t('title')} />
 
-      <div className='w-full flex items-center flex-col py-10 text-black bg-white dark:bg-[#232323] dark:text-white'>
+      <div className='w-full flex items-center flex-col py-10'>
         {contactData.map((section, index) => (
           <SectionDescription
             key={index}

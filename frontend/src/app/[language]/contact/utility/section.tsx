@@ -58,14 +58,17 @@ export function SectionDescription({
         >
           {links.map((link, index) => (
             <div key={index} className='w-full pb-4 flex justify-start'>
-              <Button asChild variant='link' className='-ml-4 xs:text-md'>
+              <Button
+                asChild
+                variant='link'
+                className='-ml-4 xs:text-md hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+              >
                 <Link
                   href={link.href}
                   target='_blank'
                   {...(!link.href.startsWith('mailto') && {
                     rel: 'noreferrer',
                   })}
-                  className='text-sky-800 dark:text-sky-400 underline underline-offset-2'
                   title={
                     link.href.startsWith('mailto')
                       ? 'Mail: ' + link.text

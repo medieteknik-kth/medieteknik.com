@@ -6,6 +6,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type JSX } from 'react'
 import CommitteeLandingPage from './landing'
+import { Permission, Role } from '@/models/Permission'
 
 interface Props {
   language: string

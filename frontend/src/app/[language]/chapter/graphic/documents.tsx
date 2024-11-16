@@ -59,9 +59,9 @@ export default async function Documents({
                 {t('documents.download')} {document.name}
               </Link>
             </Button>
-            <p className='tracking-wide text-lg'>
+            <p className='tracking-wide text-lg flex items-center gap-2'>
               {document.supportedLanguages.map((lang) => (
-                <span key={lang} className='w-6 h-6 mr-2'>
+                <span key={lang} className='w-6 h-6'>
                   {LANGUAGES[lang as LanguageCode].flag_icon}
                 </span>
               ))}

@@ -52,15 +52,11 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
   ]
 
   return (
-    <section className='w-full h-fit desktop:h-[640px] relative bg-white dark:bg-[#111] px-4 lg:px-20 2xl:px-56 py-10 border-t-2 flex flex-col desktop:justify-around gap-8 border-black/75 dark:border-white/75'>
-      <div className='flex flex-wrap xl:justify-between items-center'>
-        <h3 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
-          {t('about')}
-        </h3>
-        <div className='w-full mb-2 lg:mb-0 py-2 xl:py-0 xl:w-[450px] desktop:w-[750px] justify-self-center text-md md:text-lg'>
-          {t('description')}
-        </div>
-      </div>
+    <section className='w-full h-fit relative bg-white dark:bg-[#111] px-4 lg:px-20 2xl:px-56 py-20 border-t-2 flex flex-col gap-20 border-black/75 dark:border-white/75'>
+      <h3 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
+        {t('about')}
+      </h3>
+
       <ul className='grid grid-cols-1 grid-rows-3 xl:grid-rows-1 xl:grid-cols-3 gap-4'>
         {cards.map((card) => (
           <li key={card.title}>

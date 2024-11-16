@@ -1,5 +1,6 @@
 import { fontJetBrainsMono } from '@/app/fonts'
 import { useTranslation } from '@/app/i18n'
+import StaticHeading from '@/components/static/StaticHeading'
 import {
   Accordion,
   AccordionContent,
@@ -15,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
 
 interface Props {
   language: string
@@ -24,24 +24,39 @@ interface Props {
 export default async function CookieSection({ language }: Props) {
   const { t } = await useTranslation(language, 'legal')
   return (
-    <section id='cookies' className='px-10 md:px-40 desktop:px-[500px]'>
-      <h1 className='text-3xl tracking-wider py-4'>{t('cookies')}</h1>
+    <section id='cookies' className='px-10 md:px-40 desktop:px-[475px]'>
+      <StaticHeading
+        title={t('cookies')}
+        id='cookies'
+        style={{
+          fontSize: '1.875rem',
+          lineHeight: '2.25rem',
+          letterSpacing: '0.05em',
+          paddingTop: '1rem',
+          paddingBottom: '1rem',
+        }}
+      />
       <p>{t('cookies.description')}</p>
-      <h2
+      <StaticHeading
+        title={t('cookies.necessary')}
         id='necessary'
-        className='text-xl pb-2 mb-2 pt-4 tracking-wide border-b-2 border-yellow-400'
-      >
-        {t('cookies.necessary')}
-      </h2>
+        headingLevel='h3'
+        style={{
+          width: '100%',
+          fontSize: '1.25rem',
+          lineHeight: '1.75rem',
+          letterSpacing: '0.025em',
+          paddingTop: '1rem',
+          paddingBottom: '0.5rem',
+          marginBottom: '0.5rem',
+          borderBottomWidth: '2px',
+          borderColor: 'rgb(250 204 21)',
+        }}
+      />
       <p>{t('cookies.necessary.description')}</p>
       <Accordion type='single' collapsible>
         <AccordionItem value='necessary'>
-          <AccordionTrigger>
-            <p className=''>
-              {t('cookies.necessary.list')}
-              <ChevronUpDownIcon className='h-6 w-6 inline' />
-            </p>
-          </AccordionTrigger>
+          <AccordionTrigger>{t('cookies.necessary.list')}</AccordionTrigger>
           <AccordionContent>
             <Table className='w-[1000px]'>
               <TableCaption>{t('cookies.necessary')}</TableCaption>

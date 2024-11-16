@@ -47,7 +47,7 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
         <HoverCardTrigger className='h-fit w-fit flex items-center' asChild>
           <Button
             variant='link'
-            className={`h-fit text-inherit  py-0 px-0 max-w-full ${
+            className={`h-fit text-inherit py-0 px-0 max-w-full ${
               reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'
             }`}
             style={{ fontSize: 'inherit' }}
@@ -71,14 +71,17 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                   </AvatarFallback>
                 </Avatar>
               )}
-              <div className='flex flex-col text-start overflow-hidden'>
-                <p className='h-fit pb-0.5 truncate max-w-full'>
+              <div className='flex flex-col items-center text-start overflow-hidden'>
+                <p
+                  className='h-fit truncate max-w-full'
+                  title={student.first_name + ' ' + (student.last_name || '')}
+                >
                   {(includeAt ? '@ ' : '') +
                     student.first_name +
                     ' ' +
                     (student.last_name || '')}
                 </p>
-                {children}
+                <div className={`${children && 'pt-0.5'}`}>{children}</div>
               </div>
             </Link>
           </Button>

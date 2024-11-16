@@ -40,6 +40,7 @@ import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
 import PositionForm from '../forms/positionForm'
 import RecruitmentForm from '../forms/recruitmentForm'
 import RemovePositionForm from '../forms/removePosition'
+import { Role } from '@/models/Permission'
 
 interface Props {
   language: string

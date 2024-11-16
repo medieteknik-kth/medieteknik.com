@@ -81,14 +81,17 @@ export default function Committees({
     )
 
   return (
-    <section className='px-4 sm:px-20 h-fit my-10 relative' id='committees'>
+    <section
+      className='px-4 sm:px-20 h-fit my-10 relative flex flex-col gap-4'
+      id='committees'
+    >
       <Link
         href={`/${language}/chapter/committees`}
-        className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 block border-b-2 border-yellow-400 pb-4 mb-10 transition-colors text-blue-500 hover:text-yellow-400'
+        className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
       >
         {t('committees')}
       </Link>
-      <div className='w-full mt-10'>
+      <div className='w-full'>
         <Carousel
           className='w-full'
           setApi={setApi}
@@ -133,7 +136,7 @@ export default function Committees({
                       <CardDescription>
                         <Link
                           href={`mailto:${committee.email}`}
-                          className='text-blue-500 hover:text-yellow-400 text-xs xs:text-sm'
+                          className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
                         >
                           {committee.email}
                         </Link>
