@@ -12,10 +12,12 @@ from utility import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 def convert_iso_639_1_to_bcp_47(code: str) -> str:
     """
-    Converts an ISO 639-1 code to BCP 47
+    Converts an ISO 639-1 language code to a BCP 47 language code
 
-        :param code: str - The ISO 639-1 code
-        :return: str - The BCP 47 code
+    :param code: The ISO 639-1 language code (e.g., 'en')
+    :type code: str
+    :return: The BCP 47 language code (e.g., 'en-US')
+    :rtype: str
     """
 
     for language in AVAILABLE_LANGUAGES:
@@ -29,10 +31,12 @@ def convert_iso_639_1_to_bcp_47(code: str) -> str:
 
 def retrieve_languages(args: MultiDict[str, str] | None) -> List[str]:
     """
-    Retrieves the language from the request arguments
+    Retrieves the languages from the request arguments.
 
-        :param args: MultiDict[str, str] - The request arguments
-        :return: List[str] - The list of languages or the available languages if none are found
+    :param args: The request arguments
+    :type args: MultiDict[str, str], optional
+    :return: The list of languages or all available languages if none are provided
+    :rtype: List[str]
     """
 
     if args is None:
@@ -51,14 +55,18 @@ def get_translation(
     language_code: str = DEFAULT_LANGUAGE_CODE,
 ) -> Optional[object]:
     """
-    Retrieves a translation object from the given translation table based on
-        the provided filter columns and values.
+    Retrieves a translation object from the translation table based on the filter columns and values
 
-        :param translation_table: Type[object] - The translation table to query.
-        :param filter_columns: List[str] - The columns to filter by.
-        :param filter_values: Dict[str, Any] - The values to filter by.
-        :param language_code: str - The language code to filter by.
-        :return: Optional[object] - The translation object or None if not found
+    :param translation_table: The translation table to query
+    :type translation_table: Type[object]
+    :param filter_columns: The columns to filter by
+    :type filter_columns: List[str]
+    :param filter_values: The values to filter by
+    :type filter_values: Dict[str, Any]
+    :param language_code: The language code to filter by
+    :type language_code: str, optional
+    :return: The translation object or None if not found
+    :rtype: Optional[object]
     """
 
     # Check if the column exists in the table
@@ -110,13 +118,14 @@ def update_translation_or_create(
     entries: Dict[str, str],
 ) -> None:
     """
-    Updates a translation object in the given translation table
-        or creates a new one if it doesn't exist
+    Updates a translation entry or creates a new one if it does not exist
 
-        :param db: SQLAlchemy - The database session
-        :param translation_table: Type[object] - The translation table to query.
-        :param entries: Dict[str, str] - The columns and values to update or create
-        :return: None
+    :param db: The SQLAlchemy database object
+    :type db: SQLAlchemy
+    :param translation_table: The translation table to query
+    :type translation_table: Type[object]
+    :param entries: The entries to update or create
+    :type entries: Dict[str, str]
     """
 
     language_code = entries.get("language_code")
@@ -138,10 +147,12 @@ def update_translation_or_create(
 
 def normalize_to_ascii(text: str) -> str:
     """
-    Converts non-ASCII characters to their closest ASCII equivalents.
+    Normalizes a text to ASCII characters, removing diacritics and accents (e.g., é -> e)
 
-        :param text: str - The text to normalize
-        :return: str - The normalized text
+    :param text: The text to normalize
+    :type text: str
+    :return: The normalized text
+    :rtype: str
     """
 
     normalized = unicodedata.normalize("NFKD", text)

@@ -14,8 +14,10 @@ def validate_csrf(csrf_token: str) -> Response | bool:
     """
     Validates CSRF tokens via the X-CSRF-Token header, the session CSRF token, and the given CSRF token.
 
-        :param csrf_token: str - The CSRF token to validate
-        :return: Response | bool - The response if the CSRF token is invalid, True otherwise
+    :param csrf_token: The CSRF token to validate
+    :type csrf_token: str
+    :return: True if the CSRF token is valid, otherwise a response with an error message
+    :rtype: Response | bool
     """
 
     header_csrf_token = request.headers.get("X-CSRF-Token")

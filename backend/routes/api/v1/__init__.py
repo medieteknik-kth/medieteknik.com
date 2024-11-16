@@ -263,7 +263,10 @@ def register_v1_routes(app: Flask):
         try:
             token = oauth.kth.authorize_access_token()
         except Exception as e:
-            return jsonify({"error": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+            app.logger.error(f"OIDC authorization error: {str(e)}")
+            return jsonify(
+                {"error": "An internal error has occurred."}
+            ), HTTPStatus.INTERNAL_SERVER_ERROR
 
         if not token:
             return jsonify({"error": "Invalid credentials"}), 401

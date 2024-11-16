@@ -14,17 +14,24 @@ from utility.csrf import validate_csrf
 def csrf_protected(f: FunctionType) -> FunctionType:
     """
     Decorator for CSRF protection. Validates the CSRF token in the request from either a JSON or Form.
-        :param f: function - The function to wrap.
-        :return: function - The wrapped function.
+
+    :param f: The function to wrap.
+    :type f: FunctionType
+    :return: The wrapped function.
+    :rtype: FunctionType
     """
 
     @wraps(f)
     def wrap(*args, **kwargs):
         """
         Wrapper function for the CSRF protection decorator.
-            :param args: tuple - The arguments passed to the function.
-            :param kwargs: dict - The keyword arguments passed to the function.
-            :return: Response | bool - The response from the wrapped function, or a boolean depending on the CSRF validation.
+
+        :param *args: The arguments passed to the function.
+        :type *args: tuple
+        :param **kwargs: The keyword arguments passed to the function.
+        :type **kwargs: dict
+        :return: The response from the wrapped function, or a boolean depending on the CSRF validation.
+        :rtype: Response | bool
         """
 
         if not request:
