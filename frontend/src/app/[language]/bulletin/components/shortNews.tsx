@@ -33,10 +33,10 @@ interface Props {
  */
 export default function ShortNews({ language, newsItem }: Props): JSX.Element {
   return (
-    <Card className='w-[350px] md:w-[500px] h-[100px] md:h-[164px] flex items-center md:items-start'>
+    <Card className='w-[300px] md:w-[492px] h-[100px] md:h-[164px] grid grid-cols-3 gap-2'>
       <Link
         href={`./bulletin/news/${newsItem.url}`}
-        className='w-fit max-w-44 h-full p-5 pr-0 relative overflow-hidden'
+        className='group w-auto h-full aspect-square p-2 relative overflow-hidden'
         title={newsItem.translations[0].title}
         aria-label={newsItem.translations[0].title}
       >
@@ -47,26 +47,28 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
           height={175}
           priority
           loading='eager'
-          className='h-full w-auto aspect-square rounded-md object-cover'
+          className={`h-full w-full rounded-md object-cover ${
+            newsItem.translations[0].main_image_url ? '' : 'p-4'
+          }`}
         />
       </Link>
 
-      <div className='grow flex flex-col justify-between'>
-        <CardHeader className='w-fit h-fit p-0'>
+      <div className='h-full flex-grow flex flex-col max-w-max justify-center md:justify-between col-span-2'>
+        <CardHeader className='w-fit h-fit p-2 pl-0'>
           <Link
             href={`./bulletin/news/${newsItem.url}`}
-            className='group mt-3 pt-3 px-6 pb-6 max-w-[350px]'
+            className='group max-w-[190px] md:max-w-[320px] max-h-24 overflow-hidden'
           >
             <CardTitle className='w-full text-base md:text-xl underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline truncate'>
               {newsItem.translations[0].title}
             </CardTitle>
-            <CardDescription className='w-full group-hover:underline !no-underline truncate'>
+            <CardDescription className='w-full group-hover:underline !no-underline'>
               {newsItem.translations[0].short_description}
             </CardDescription>
           </Link>
         </CardHeader>
 
-        <CardFooter className='w-full hidden md:flex justify-between items-center pb-0 mb-6 max-w-[325px]'>
+        <CardFooter className='w-full hidden md:flex justify-between items-center max-w-[325px] p-0 mb-2'>
           {newsItem.author.author_type === 'STUDENT' ? (
             <StudentTag student={newsItem.author as Student} includeAt={false}>
               <span className='text-xs text-neutral-700 dark:text-neutral-300'>

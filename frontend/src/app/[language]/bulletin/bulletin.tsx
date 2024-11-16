@@ -1,7 +1,7 @@
 import { GetRecruitment } from '@/api/committee'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import CalendarProvider from '@/providers/CalendarProvider'
-import BreakingNews from './client/breakingNews'  
+import BreakingNews from './client/breakingNews'
 import Events from './client/events'
 import ExtraNewsObserver from './client/extranewsObserver'
 import Recruitment from './recruiting'
@@ -32,7 +32,7 @@ export default async function Bulletin(props: Props): Promise<JSX.Element> {
   const recruitmentData = await GetRecruitment(language)
 
   return (
-    <main className='px-12 flex flex-col gap-2'>
+    <main className='px-4 sm:px-12 flex flex-col gap-2'>
       <HeaderGap />
       <BreakingNews language={language} />
       <CalendarProvider language={language}>

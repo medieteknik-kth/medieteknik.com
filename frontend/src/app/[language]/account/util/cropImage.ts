@@ -1,9 +1,21 @@
+const isValidObjectURL = (url: string) => {
+  try {
+    const objUrl = new URL(url);
+    return objUrl.protocol === 'blob:';
+  } catch (e) {
+    return false;
+  }
+};
+
 export const createImage = (url: string) =>
   new Promise((resolve, reject) => {
+    if (!url || !isValidObjectURL(url)) {
+      reject(new Error('The given URL is not an object URL.'));
+      return;
+    }
     const image = new Image()
     image.addEventListener('load', () => resolve(image))
     image.addEventListener('error', (error) => reject(error))
-    image.setAttribute('crossOrigin', 'anonymous') // needed to avoid cross-origin issues on CodeSandbox
     image.src = url
   }) as Promise<HTMLImageElement>
 

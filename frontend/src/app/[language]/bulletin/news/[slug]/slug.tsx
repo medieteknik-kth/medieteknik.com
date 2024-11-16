@@ -27,7 +27,7 @@ export default async function NewsSlug(props: Props): Promise<JSX.Element> {
   const data = await GetNewsData(language, slug)
 
   return (
-    <main>
+    <main className='w-full grid place-items-center'>
       <NewsRedirect language={language} news_data={data} />
     </main>
   )
