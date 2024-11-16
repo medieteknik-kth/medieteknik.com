@@ -16,6 +16,16 @@ export async function generateMetadata(props: {
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   return {
     title: capitalizedValue,
+    keywords: t('keywords'),
+    description: t('description'),
+    alternates: {
+      canonical: `https://www.medieteknik.com/${language}/chapter/media`,
+      languages: {
+        sv: 'https://www.medieteknik.com/sv/chapter/media',
+        en: 'https://www.medieteknik.com/en/chapter/media',
+        'x-default': 'https://www.medieteknik.com/chapter/media',
+      },
+    },
   }
 }
 

@@ -13,6 +13,7 @@ import { fontFigtree } from '../fonts'
 import { supportedLanguages } from '../i18n/settings'
 import './globals.css'
 
+import { useTranslation } from '@/app/i18n'
 import type { JSX } from 'react'
 
 /**
@@ -28,35 +29,45 @@ export async function generateStaticParams(): Promise<
   return supportedLanguages.map((language) => ({ language }))
 }
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | Medieteknik - KTH',
-    default: 'Medieteknik - KTH',
-  },
-  description:
-    'Student på KTH? Här hittar du allt du behöver veta om medieteknik på KTH.',
-  keywords: 'KTH, Medieteknik, Media Technology, Kungliga Tekniska Högskolan',
-  alternates: {
-    canonical: 'https://www.medieteknik.com',
-    languages: {
-      sv: 'https://www.medieteknik.com/sv',
-      en: 'https://www.medieteknik.com/en',
+interface Params {
+  language: LanguageCode
+}
+
+export async function generateMetadata(props: {
+  params: Promise<Params>
+}): Promise<Metadata> {
+  const params = await props.params
+  const { t } = await useTranslation(params.language, 'common')
+  const value = t('title')
+
+  const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
+  return {
+    title: {
+      default: capitalizedValue + ' - KTH',
+      template: `%s | ${capitalizedValue} - KTH`,
     },
-  },
-  other: {
-    'msapplication-TileColor': '#ffffff',
-    'google-adsense-account': 'ca-pub-2106963438710910',
-  },
+    keywords: t('keywords'),
+    description: t('description'),
+    alternates: {
+      canonical: `https://www.medieteknik.com/${params.language}`,
+      languages: {
+        sv: 'https://www.medieteknik.com/sv',
+        en: 'https://www.medieteknik.com/en',
+        'x-default': 'https://www.medieteknik.com',
+      },
+    },
+
+    other: {
+      'msapplication-TileColor': '#ffffff',
+      'google-adsense-account': 'ca-pub-2106963438710910',
+    },
+  }
 }
 
 export const viewport: Viewport = {
   colorScheme: 'light',
   width: 'device-width',
   initialScale: 1,
-}
-
-interface Params {
-  language: LanguageCode
 }
 
 interface Props {
@@ -83,6 +94,13 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
 
   return (
     <>
+      <noscript>
+        <div className='fixed top-0 left-0 w-full h-full bg-[#090909] dark:bg-white text-white dark:text-black flex items-center justify-center z-50'>
+          <h1 className='text-2xl'>
+            You need to enable JavaScript to use this site.
+          </h1>
+        </div>
+      </noscript>
       <ClientProviders language={params.language}>
         <Header language={params.language} />
         <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>

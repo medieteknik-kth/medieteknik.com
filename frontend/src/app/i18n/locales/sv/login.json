@@ -1,4 +1,6 @@
 {
+    "keywords": "inloggning, kth sso, e-post och lösenord, autentisering",
+    "description": "Inloggningssidan, där användare kan logga in på applikationen via KTH eller e-post och lösenord om de har ett konto.",
     "login": "Logga in",
     "alternative_logins": "Alternativ inloggningsmetoder",
     "kth_login": "KTH-inloggning",

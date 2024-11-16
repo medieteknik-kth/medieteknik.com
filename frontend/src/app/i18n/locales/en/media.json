@@ -1,5 +1,7 @@
 {
     "title": "Media",
+    "description": "View and upload images and videos from the Chapter, for public and internal use.",
+    "keywords": "Media, Images, Videos, Albums, Committees",
     "home": "Home",
     "chapter": "Chapter",
     "images": "Images",

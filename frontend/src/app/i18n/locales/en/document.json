@@ -1,5 +1,7 @@
 {
     "title": "Documents",
+    "description": "Here you will find all documents and forms that are related to the chapters daily functions.",
+    "keywords": "documents, forms, categories, status, organizational functions",
     "categories.status": "Status",
     "categories.type": "Categories",
     "category.time.active": "Active",

@@ -1,4 +1,6 @@
 {
+    "keywords": "login, kth sso, email and password, authentication",
+    "description": "The login page, where users can log in to the application via KTH or email and password if they have an account.",
     "login": "Login",
     "alternative_logins": "Alternate Login",
     "kth_login": "KTH Login",

@@ -1,5 +1,7 @@
 {
     "title": "Nyheter & Events",
+    "description": "Här kan du läsa om de senaste nyheterna, kommande events och rekryteringar inom sektionen.",
+    "keywords": "Nyheter, Events, Kalender, Rekryteringar, Student liv",
     "breaking_news": "Just nu",
     "no_breaking_news": "Inga nyheter",
     "all_news": "Se alla nyheter",

@@ -33,6 +33,22 @@ export async function generateMetadata(props: {
 
   return {
     title: title,
+    description: data.translations[0].short_description,
+    keywords: `${data.translations[0].title}, news, ${
+      data.author.author_type === 'COMMITTEE'
+        ? data.author.translations[0].title
+        : data.author.author_type === 'STUDENT'
+        ? data.author.first_name + ' ' + (data.author.last_name || '')
+        : ''
+    }`,
+    alternates: {
+      canonical: `https://www.medieteknik.com/${params.language}/bulletin/news/${params.slug}`,
+      languages: {
+        sv: `https://www.medieteknik.com/sv/bulletin/news/${params.slug}`,
+        en: `https://www.medieteknik.com/en/bulletin/news/${params.slug}`,
+        'x-default': `https://www.medieteknik.com/bulletin/news/${params.slug}`,
+      },
+    },
     openGraph: {
       title: title,
       description: data.translations[0].short_description,

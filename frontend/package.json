@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.59.5",
+  "version": "1.6.05",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
@@ -43,16 +43,17 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "country-flag-icons": "^1.5.13",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "embla-carousel-autoplay": "^8.1.7",
     "embla-carousel-class-names": "^8.1.7",
     "embla-carousel-react": "^8.1.5",
+    "i18next": "^23.16.5",
     "i18next-browser-languagedetector": "^7.2.1",
     "i18next-resources-to-backend": "^1.2.1",
     "lucide-react": "^0.376.0",
-    "next": "15.0.1",
+    "next": "^15.0.3",
     "next-i18next": "^15.2.0",
-    "next-themes": "^0.3.0",
+    "next-themes": "^0.4.3",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-colorful": "^5.6.1",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
@@ -94,6 +95,7 @@
   },
   "overrides": {
     "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
   }
 }

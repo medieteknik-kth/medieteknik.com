@@ -7,6 +7,13 @@ interface Props {
 }
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://www.medieteknik.com',
+    languages: {
+      sv: 'https://www.medieteknik.com/sv',
+      en: 'https://www.medieteknik.com/en',
+    },
+  },
   other: {
     'google-adsense-account': 'ca-pub-2106963438710910',
   },

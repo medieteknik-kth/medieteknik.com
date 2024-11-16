@@ -19,6 +19,16 @@ export async function generateMetadata(props: {
   const capitalizedSlug = slugTitle.charAt(0).toUpperCase() + slugTitle.slice(1)
   return {
     title: capitalizedValue + ' - ' + capitalizedSlug,
+    keywords: t('keywords'),
+    description: t('description'),
+    alternates: {
+      canonical: `https://www.medieteknik.com/${language}/chapter/media/${slug}`,
+      languages: {
+        sv: `https://www.medieteknik.com/sv/chapter/media/${slug}`,
+        en: `https://www.medieteknik.com/en/chapter/media/${slug}`,
+        'x-default': `https://www.medieteknik.com/chapter/media/${slug}`,
+      },
+    },
   }
 }
 

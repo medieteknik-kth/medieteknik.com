@@ -1,5 +1,7 @@
 {
     "title": "Nämnder och Projekt",
+    "description": "Här kan du hitta alla nämnder och projekt som är en del av sektionen.",
+    "keywords": "nämnder, projekt, sektion, studentliv",
     "not_found": "Inga nämnder eller projekt hittades"
 
 }
