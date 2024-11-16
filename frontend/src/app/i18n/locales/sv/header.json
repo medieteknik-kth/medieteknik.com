@@ -24,6 +24,11 @@
                     "link": "/chapter"
                 },
                 {
+                    "title": "JML",
+                    "description": "Jämlikhet, Mångfald och Likabehandling",
+                    "link": "/chapter/equality"
+                },
+                {
                     "title": "Nämnder och Projektgrupper",
                     "link": "/chapter/committees"
                 },

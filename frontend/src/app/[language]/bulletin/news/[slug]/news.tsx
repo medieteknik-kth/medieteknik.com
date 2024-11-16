@@ -59,7 +59,7 @@ export default function NewsDisplay({
         </BreadcrumbList>
       </Breadcrumb>
       <article
-        className='md:min-w-[600px] w-full max-w-[700px] flex flex-col items-center justify-start min-h-[1080px] h-fit relative gap-2'
+        className='md:min-w-[600px] w-full max-w-[700px] flex flex-col items-center justify-start min-h-[1080px] h-fit relative gap-2 px-4 sm:px-12 md:px-0'
         role='main'
       >
         <h1 className='w-full text-4xl mt-4'>

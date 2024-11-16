@@ -8,6 +8,7 @@ import { useState, type JSX } from 'react'
 
 interface Props {
   element: HeaderElement
+  toggleMenuCallback: () => void
 }
 
 /**
@@ -16,11 +17,14 @@ interface Props {
  *
  * @param {Props} props
  * @param {HeaderElement} props.element - The element to render
- * 
+ *
  * @returns {JSX.Element} The rendered sub menu
  * @throws {Error} If the element does not have subNavs
  */
-export default function SubMenu({ element }: Props): JSX.Element {
+export default function SubMenu({
+  element,
+  toggleMenuCallback,
+}: Props): JSX.Element {
   if (!element.subNavs) {
     throw new Error('Element must have subNavs')
   }
@@ -56,10 +60,11 @@ export default function SubMenu({ element }: Props): JSX.Element {
           <div key={subNav.title}>
             <Button
               variant={'outline'}
-              className='w-10/12 h-full uppercase flex justify-start items-center ml-4 py-4 bg-neutral-50 dark:bg-neutral-900'
+              className='w-10/12 h-fit uppercase flex justify-start items-center ml-4 py-4 bg-neutral-50 dark:bg-neutral-900'
+              onClick={toggleMenuCallback}
               asChild
             >
-              <Link key={subNav.title} href={subNav.link}>
+              <Link key={subNav.title} href={subNav.link} className='text-wrap'>
                 {subNav.title}
               </Link>
             </Button>

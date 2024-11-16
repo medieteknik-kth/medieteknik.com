@@ -1,3 +1,5 @@
+'use client'
+
 import { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +16,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import SubMenu from './client/SubMenu'
 
-import type { JSX } from 'react'
+import { useCallback, useState, type JSX } from 'react'
 
 interface Props {
   language: string
@@ -35,13 +37,21 @@ export default function NavigationSheet({
   language,
   headerElements,
 }: Props): JSX.Element {
-  // TODO: Close the navigation menu when a link is clicked
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const toggleMenu = useCallback(() => {
+    setIsOpen((prev) => {
+      return !prev
+    })
+  }, [isOpen, setIsOpen])
+
   return (
-    <Sheet>
+    <Sheet open={isOpen}>
       <SheetTrigger asChild>
         <Button
           variant={'ghost'}
           className='w-fit h-full lg:hidden rounded-none'
+          onClick={toggleMenu}
         >
           <Bars3CenterLeftIcon className='w-7 h-7' />
         </Button>
@@ -71,6 +81,8 @@ export default function NavigationSheet({
           <Button
             variant={'secondary'}
             className='w-full h-fit uppercase flex justify-start items-center text-base xxs:text-xl'
+            asChild
+            onClick={toggleMenu}
           >
             <Link href={`/${language}`} className='w-full h-full text-start'>
               Home
@@ -78,14 +90,20 @@ export default function NavigationSheet({
           </Button>
           {headerElements.map((element, index) =>
             element.subNavs ? (
-              <SubMenu element={element} key={index} />
+              <SubMenu
+                element={element}
+                key={index}
+                toggleMenuCallback={toggleMenu}
+              />
             ) : (
               <Button
                 key={element.title}
                 variant={'secondary'}
                 className='w-full h-fit uppercase flex justify-start items-center text-base xxs:text-xl'
+                asChild
+                onClick={toggleMenu}
               >
-                <Link href={element.link} className='w-full h-full text-start'>
+                <Link href={element.link} className='w-full h-fit text-start'>
                   {element.title}
                 </Link>
               </Button>
