@@ -1,4 +1,4 @@
-import { GetAlbum } from '@/api/items'
+import { getAlbumAndMedia } from '@/api/items/media'
 import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import Redirect from '@/app/[language]/chapter/media/components/redirect'
 import VideoDisplay from '@/app/[language]/chapter/media/components/videos'
@@ -28,8 +28,6 @@ interface Props {
   params: Promise<Params>
 }
 
-export const revalidate = 1_000_000
-
 /**
  * @name AlbumSlug
  * @description The page for a specific album
@@ -43,10 +41,10 @@ export const revalidate = 1_000_000
  */
 export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const album = await GetAlbum(language, slug)
+  const { data: album, error } = await getAlbumAndMedia(language, slug)
   const { t } = await useTranslation(language, 'media')
 
-  if (!album) {
+  if (error) {
     return <Redirect language={language} />
   }
 

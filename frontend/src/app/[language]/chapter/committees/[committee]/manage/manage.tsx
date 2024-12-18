@@ -1,4 +1,4 @@
-import { GetCommitteePublic } from '@/api/committee'
+import { getPublicCommitteeData } from '@/api/committee'
 import { type JSX } from 'react'
 import CommitteeRedirect from './redirect'
 
@@ -26,9 +26,11 @@ export default async function CommitteeManage(
 ): Promise<JSX.Element> {
   const { language, committee } = await props.params
   const decodedCommittee = decodeURIComponent(committee)
-  const committeeData = await GetCommitteePublic(decodedCommittee)
+  const { data: committeeData, error } = await getPublicCommitteeData(
+    decodedCommittee
+  )
 
-  if (!committeeData) {
+  if (error) {
     return <p>Not Found!</p>
   }
 

@@ -3,7 +3,10 @@ import Document from '@/models/items/Document'
 import Event from '@/models/items/Event'
 import Media from '@/models/items/Media'
 import News from '@/models/items/News'
-import Student, { StudentMembership } from '@/models/Student'
+import Student, {
+  StudentCommitteePosition,
+  StudentMembership,
+} from '@/models/Student'
 
 /**
  * @interface Pagniation
@@ -96,4 +99,15 @@ export interface MediaPagination extends Pagniation {
  */
 export interface AlbumPagination extends Pagniation {
   items: Album[]
+}
+
+/**
+ * @interface StudentCommitteePositionPagination
+ * @extends Pagniation
+ * @description The pagination for student committee positions
+ * 
+ * @property {StudentCommitteePosition[]} items - The student committee positions
+ */
+export interface StudentCommitteePositionPagination extends Pagniation {
+  items: StudentCommitteePosition[]
 }

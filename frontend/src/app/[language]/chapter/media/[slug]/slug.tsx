@@ -1,5 +1,5 @@
-import { GetCommitteePublic } from '@/api/committee'
-import { GetMediaData } from '@/api/items'
+import { getPublicCommitteeData } from '@/api/committee'
+import { getMediaData } from '@/api/items/media'
 import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import Redirect from '@/app/[language]/chapter/media/components/redirect'
 import VideoDisplay from '@/app/[language]/chapter/media/components/videos'
@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
-import { MediaPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   ChevronLeftIcon,
@@ -78,27 +77,24 @@ export async function generateStaticParams(): Promise<
  */
 export default async function MediaSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const committee_data: Committee | null = await GetCommitteePublic(
-    slug,
-    language
-  )
+  const { data: committee_data, error: committee_error } = await getPublicCommitteeData(slug, language)
   const { t } = await useTranslation(language, 'media')
 
-  if (!committee_data || Object.keys(committee_data).length === 0) {
+  if (committee_error || Object.keys(committee_data).length === 0) {
     return <Redirect language={language} />
   }
 
-  const album_data: MediaPagination | null = await GetMediaData(
+  const { data: media, error } = await getMediaData(
     'sv',
     committee_data.committee_id
   )
 
-  if (!album_data || Object.keys(album_data).length === 0) {
+  if (error || Object.keys(media).length === 0) {
     return <Redirect language={language} />
   }
 
-  const videos = album_data.items.filter((item) => item.media_type === 'video')
-  const images = album_data.items.filter((item) => item.media_type === 'image')
+  const videos = media.items.filter((item) => item.media_type === 'video')
+  const images = media.items.filter((item) => item.media_type === 'image')
 
   return (
     <main>

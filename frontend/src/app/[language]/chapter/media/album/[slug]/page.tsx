@@ -1,4 +1,4 @@
-import { GetAlbum } from '@/api/items'
+import { getAlbumAndMedia } from '@/api/items/media'
 import AlbumSlug from '@/app/[language]/chapter/media/album/[slug]/albumSlug'
 import { useTranslation } from '@/app/i18n'
 import { Metadata } from 'next'
@@ -14,11 +14,11 @@ export async function generateMetadata(props: {
   params: Promise<Params>
 }): Promise<Metadata> {
   const { language, slug } = await props.params
-  const album = await GetAlbum(language, slug)
+  const { data: album, error } = await getAlbumAndMedia(language, slug)
   const { t } = await useTranslation(language, 'media')
   let value = ''
 
-  if (!album) {
+  if (error) {
     value = t('title')
   } else {
     value = t('title') + ' - ' + decodeURI(album.album.translations[0].title)

@@ -1,4 +1,4 @@
-import { GetNewsPagniation } from '@/api/items'
+import { getNewsPagniation } from '@/api/items/news'
 import AllNews from '@/app/[language]/bulletin/news/client/allNews'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import News from '@/models/items/News'
@@ -24,21 +24,21 @@ interface Props {
  */
 export default async function NewsPage(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const data = await GetNewsPagniation(language, 1)
+  const { data: paginatedNews, error } = await getNewsPagniation(language, 1)
 
-  if (!data) {
+  if (error) {
     return (
       <div className='h-96 grid place-items-center text-3xl'>No data...</div>
     )
   }
 
-  data.items = data.items as News[]
+  paginatedNews.items = paginatedNews.items as News[]
 
   return (
     <main className='grid place-items-center'>
       <HeaderGap />
       <h1 className='text-4xl py-10'>News</h1>
-      <AllNews language={language} data={data} />
+      <AllNews language={language} data={paginatedNews} />
     </main>
   )
 }

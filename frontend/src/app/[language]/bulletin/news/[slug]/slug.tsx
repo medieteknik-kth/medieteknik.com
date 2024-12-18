@@ -1,4 +1,4 @@
-import { GetNewsData } from '@/api/items'
+import { getNewsData } from '@/api/items/news'
 import NewsRedirect from '@/app/[language]/bulletin/news/[slug]/client/redirect'
 
 import type { JSX } from 'react'
@@ -24,7 +24,7 @@ interface Props {
  */
 export default async function NewsSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const data = await GetNewsData(language, slug)
+  const { data } = await getNewsData(language, slug)
 
   return (
     <main className='w-full grid place-items-center'>

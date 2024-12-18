@@ -1,4 +1,4 @@
-import { GetCommitteeMembers } from '@/api/committee'
+import { getCommitteeMembers } from '@/api/committee'
 import EqualityConcepts from '@/app/[language]/chapter/equality/concepts'
 import EqualityDiscrimination from '@/app/[language]/chapter/equality/discrimination'
 import EqualityPlans from '@/app/[language]/chapter/equality/plans'
@@ -19,9 +19,13 @@ interface Props {
 export default async function Equality(props: Props) {
   const { language } = await props.params
   const { t } = await useTranslation(language, 'equality/equality')
-  const members = await GetCommitteeMembers('studienämnden', 'sv', 1)
+  const { data: members, error } = await getCommitteeMembers(
+    'studienämnden',
+    'sv',
+    1
+  )
 
-  if (!members) {
+  if (error || members.total_items === 0) {
     return null
   }
 

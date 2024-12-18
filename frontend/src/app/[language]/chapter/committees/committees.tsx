@@ -1,7 +1,7 @@
 import {
-  GetCommitteeCategories,
-  GetCommitteeCategoryCommittees,
-} from '@/api/committee'
+  getCommitteeCategories,
+  getCommitteesForCategory,
+} from '@/api/committee_category'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
@@ -14,8 +14,6 @@ interface CommitteeCategoryWithCommittees extends CommitteeCategory {
   committees: Committee[]
 }
 
-export const revalidate = 60 * 60 * 24 * 30 * 3 // 3 months
-
 interface Params {
   language: string
 }
@@ -26,7 +24,7 @@ interface Props {
 
 export default async function CommitteeList(props: Props) {
   const { language } = await props.params
-  const committeeCategories = await GetCommitteeCategories(language)
+  const { data: committeeCategories } = await getCommitteeCategories(language)
   const categoriesWithCommittees: CommitteeCategoryWithCommittees[] = []
   const { t } = await useTranslation(language, 'committee')
 
@@ -51,10 +49,10 @@ export default async function CommitteeList(props: Props) {
   }
 
   for (const committeeCategory of committeeCategories) {
-    const committees = (await GetCommitteeCategoryCommittees(
+    const { data: committees } = await getCommitteesForCategory(
       committeeCategory.translations[0].title,
       language
-    )) as CommitteeCategoryWithCommittees | null
+    )
     if (committees) {
       categoriesWithCommittees.push({
         email: committeeCategory.email,

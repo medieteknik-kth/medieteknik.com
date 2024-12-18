@@ -1,4 +1,4 @@
-import { GetLatestMedia } from '@/api/items'
+import { getLatestMedia } from '@/api/items/media'
 import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import { useTranslation } from '@/app/i18n'
 import CommitteeTag from '@/components/tags/CommitteeTag'
@@ -9,8 +9,6 @@ import { JSX } from 'react'
 interface Props {
   language: string
 }
-
-export const revalidate = 1_000_000
 
 /**
  * @name RecentMedia
@@ -24,10 +22,10 @@ export const revalidate = 1_000_000
 export default async function RecentMedia({
   language,
 }: Props): Promise<JSX.Element> {
-  const latest = await GetLatestMedia(language)
+  const { data: latestMedia, error } = await getLatestMedia(language)
   const { t } = await useTranslation(language, 'media')
 
-  const empty = !latest || Object.keys(latest).length === 0
+  const empty = error || Object.keys(latestMedia).length === 0
 
   return (
     <section className='px-10 py-2'>
@@ -41,7 +39,7 @@ export default async function RecentMedia({
             <h3 className='text-lg font-semibold'>{t('images')}</h3>
           </div>
           <ul className='w-fit flex flex-wrap gap-4 pb-4'>
-            {latest
+            {latestMedia
               .filter((item) => item.media_type === 'image')
               .sort(
                 (a, b) =>

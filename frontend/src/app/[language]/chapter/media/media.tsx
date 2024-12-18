@@ -1,5 +1,5 @@
-import { GetAllCommittees } from '@/api/committee'
-import { GetAlbums } from '@/api/items'
+import { getAllCommittees } from '@/api/committee'
+import { getAlbums } from '@/api/items/media'
 import MediaToolbar from '@/app/[language]/chapter/media/components/toolbar/toolbar'
 import Album from '@/app/[language]/chapter/media/view/album'
 import { useTranslation } from '@/app/i18n'
@@ -29,8 +29,8 @@ interface Props {
  */
 export default async function Media(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const committees = await GetAllCommittees('sv')
-  const albums = await GetAlbums(language)
+  const { data: committees } = await getAllCommittees('sv')
+  const { data: albums } = await getAlbums(language)
   const { t } = await useTranslation(language, 'media')
 
   return (

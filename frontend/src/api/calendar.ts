@@ -1,16 +1,35 @@
+import { ApiResponse, fetchData } from '@/api/api'
 import Event from '@/models/items/Event'
-import { cache } from 'react'
-import api from './index'
+import { LanguageCode } from '@/models/Language'
+import { API_BASE_URL } from '@/utility/Constants'
 
-export const GetEvents = cache(async (date: Date, language: string) => {
-  const converted = date.toISOString().substring(0, 7)
-  const response = await api.get(
-    '/public/calendar/events?date=' + converted + '&language=' + language
+/**
+ * @name getEvents
+ * @description Get the events for a specific date and language
+ *
+ * @param {Date} date - The date to get events for
+ * @param {LanguageCode} language - The language to get events in
+ * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
+ * @returns {Promise<ApiResponse<Event[]>>} The API response with the events or an error
+ */
+export const getEvents = async (
+  date: Date,
+  language: LanguageCode,
+  revalidate?: number
+): Promise<ApiResponse<Event[]>> => {
+  const convertedDate = date.toISOString().substring(0, 7)
+  const { data, error } = await fetchData<Event[]>(
+    `${API_BASE_URL}/public/calendar/events?date=${convertedDate}&language=${language}`,
+    {
+      next: {
+        revalidate: revalidate || 3_600, // 1 hour or user defined
+      },
+    }
   )
 
-  if (response.status === 200) {
-    return response.data as Event[]
+  if (error) {
+    return { data, error }
   }
 
-  return null
-})
+  return { data, error: null }
+}

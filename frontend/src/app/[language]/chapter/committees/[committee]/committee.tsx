@@ -1,4 +1,3 @@
-import { GetCommitteePublic } from '@/api/committee'
 import type Committee from '@/models/Committee'
 import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
@@ -10,9 +9,8 @@ import HeaderGap from '@/components/header/components/HeaderGap'
 import Link from 'next/link'
 import ManageButton from './client/manage'
 
+import { getPublicCommitteeData } from '@/api/committee'
 import type { JSX } from 'react'
-
-export const revalidate = 60 * 60 * 24 * 30
 
 interface Params {
   language: string
@@ -35,7 +33,12 @@ export async function generateStaticParams(): Promise<
 > {
   try {
     const response = await fetch(
-      API_BASE_URL + `/public/committees?language=sv`
+      `${API_BASE_URL}/public/committees?language=sv`,
+      {
+        next: {
+          revalidate: 2_592_000, // 3 months
+        },
+      }
     )
 
     if (response.ok) {
@@ -69,21 +72,26 @@ export default async function CommitteePage(
   props: Props
 ): Promise<JSX.Element> {
   const { language, committee } = await props.params
-  const committee_data: Committee | null = await GetCommitteePublic(
+  const { data: committeeData, error } = await getPublicCommitteeData(
     committee,
     language
   )
 
-  if (!committee_data || Object.keys(committee_data).length === 0) {
+  if (error) {
+    console.error(error)
     redirect('/' + language + '/chapter/committees')
   }
 
-  if (!committee_data.translations || committee_data.hidden) {
+  if (Object.keys(committeeData).length === 0) {
+    redirect('/' + language + '/chapter/committees')
+  }
+
+  if (!committeeData.translations || committeeData.hidden) {
     redirect('/' + language + '/chapter/committees')
   }
 
   const committeeName = decodeURIComponent(committee)
-  const hasGroupPhoto = !!committee_data.group_photo_url
+  const hasGroupPhoto = !!committeeData.group_photo_url
 
   return (
     <main>
@@ -94,7 +102,7 @@ export default async function CommitteePage(
       >
         {hasGroupPhoto ? (
           <Image
-            src={committee_data.group_photo_url || ''}
+            src={committeeData.group_photo_url!}
             alt='img'
             fill
             className='object-cover'
@@ -115,7 +123,7 @@ export default async function CommitteePage(
           mx-auto lg:ml-0 left-0 right-0 -top-24 lg:top-auto lg:left-auto lg:right-auto border-2 border-yellow-400'
           >
             <Image
-              src={committee_data.logo_url || FallbackImage.src}
+              src={committeeData.logo_url || FallbackImage.src}
               alt='img'
               width={208}
               height={208}
@@ -133,14 +141,14 @@ export default async function CommitteePage(
               {committeeName}
             </h1>
             <Link
-              href={`mailto:${committee_data.email}`}
+              href={`mailto:${committeeData.email}`}
               target='_blank'
               className='absolute top-0 text-lg underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400 hover:text-yellow-400 hover:underline tracking-wide'
             >
-              {committee_data.email}
+              {committeeData.email}
             </Link>
             <p className='max-w-[1000px] h-24 max-h-24 overflow-auto text-center xs:text-start'>
-              {committee_data.translations[0].description}
+              {committeeData.translations[0].description}
             </p>
           </div>
           <div
@@ -148,7 +156,7 @@ export default async function CommitteePage(
               hasGroupPhoto ? '-top-20' : '-top-24 lg:bottom-8 lg:top-auto'
             }`}
           >
-            <ManageButton language={language} committee={committee_data} />
+            <ManageButton language={language} committee={committeeData} />
           </div>
         </div>
       </section>

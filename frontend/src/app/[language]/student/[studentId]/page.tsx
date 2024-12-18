@@ -1,4 +1,4 @@
-import { GetStudentPublic } from '@/api/student'
+import { getStudentPublic } from '@/api/student'
 import { useTranslation } from '@/app/i18n'
 import { LanguageCode } from '@/models/Language'
 import { Metadata } from 'next'
@@ -14,9 +14,13 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
   const params = await props.params
   const { t } = await useTranslation(params.language, 'student/student')
-  const data = await GetStudentPublic(params.studentId, params.language, true)
+  const { data, error } = await getStudentPublic(
+    params.studentId,
+    params.language,
+    true
+  )
 
-  if (!data) return {}
+  if (error) return {}
 
   const maxWords = 30
   const fullName =

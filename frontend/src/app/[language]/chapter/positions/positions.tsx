@@ -1,4 +1,4 @@
-import { GetCommitteePositions } from '@/api/committee'
+import { getCommitteePositions } from '@/api/committee_position'
 import Search from '@/app/[language]/chapter/positions/client/search'
 import PositionDisplay from '@/app/[language]/chapter/positions/positionDisplay'
 import { useTranslation } from '@/app/i18n'
@@ -39,9 +39,13 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
     'independent',
     language
   )
+  const { data: committeePositions, error: committeePositionError } =
+    await getCommitteePositions('committee', language)
+  const { data: independentPositions, error: independentPositionError } =
+    await getCommitteePositions('independent', language)
   const { t } = await useTranslation(language, 'positions')
 
-  if (!committeePositions || !independentPositions) {
+  if (committeePositionError || independentPositionError) {
     return <></>
   }
 

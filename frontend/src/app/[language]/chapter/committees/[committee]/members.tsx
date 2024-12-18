@@ -1,13 +1,12 @@
-import { GetCommitteeMembers } from '@/api/committee'
 import StudentTag from '@/components/tags/StudentTag'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
+import { getCommitteeMembers } from '@/api/committee'
 
 import { StudentCommitteePosition } from '@/models/Student'
 import type { JSX } from 'react'
 
-export const revalidate = 60 * 60 * 24 * 30
 
 interface Props {
   language: string
@@ -27,10 +26,14 @@ export default async function CommitteeMembers({
   language,
   committee,
 }: Props): Promise<JSX.Element> {
-  const members = await GetCommitteeMembers(committee, language, 1)
+  const { data: members, error } = await getCommitteeMembers(
+    committee,
+    language,
+    1
+  )
   const committeeName = decodeURIComponent(committee)
 
-  if (!members || members.total_items === 0) {
+  if (error || members.total_items === 0) {
     return (
       <section className='h-96'>
         <div className='h-full pt-12 mb-10 grid place-items-center'>

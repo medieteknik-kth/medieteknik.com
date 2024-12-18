@@ -1,5 +1,5 @@
-import { GetAllCommittees } from '@/api/committee'
-import { GetNewsPagniation } from '@/api/items'
+import { getAllCommittees } from '@/api/committee'
+import { getNewsPagniation } from '@/api/items/news'
 import { supportedLanguages } from '@/app/i18n/settings'
 import { MetadataRoute } from 'next'
 
@@ -10,8 +10,8 @@ import { MetadataRoute } from 'next'
  * @returns {MetadataRoute.Sitemap} The sitemap.xml configuration
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const news = await GetNewsPagniation('en', 1)
-  const committees = await GetAllCommittees('en')
+  const { data: news } = await getNewsPagniation('en', 1)
+  const { data: committees } = await getAllCommittees('en')
 
   const newsUrls = news?.items.map(
     (item) =>

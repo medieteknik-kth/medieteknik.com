@@ -1,4 +1,4 @@
-import { GetRecruitment } from '@/api/committee'
+import { getRecruitment } from '@/api/committee'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import CalendarProvider from '@/providers/CalendarProvider'
 import BreakingNews from './client/breakingNews'
@@ -7,8 +7,6 @@ import ExtraNewsObserver from './client/extranewsObserver'
 import Recruitment from './recruiting'
 
 import type { JSX } from 'react'
-
-export const revalidate = 3_600 // 1 hour
 
 interface Params {
   language: string
@@ -29,7 +27,7 @@ interface Props {
  */
 export default async function Bulletin(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const recruitmentData = await GetRecruitment(language)
+  const { data: recruitmentData } = await getRecruitment(language)
 
   return (
     <main className='px-4 sm:px-12 flex flex-col gap-2'>

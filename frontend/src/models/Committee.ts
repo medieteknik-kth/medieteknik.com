@@ -19,10 +19,12 @@ export interface CommitteeCategoryTranslation {
 
 export type CommitteePositionCategory =
   | 'STYRELSEN'
-  | 'VALBEREDNINGEN'
-  | 'UTBILDNING'
-  | 'NÄRINGSLIV OCH KOMMUNIKATION'
   | 'STUDIESOCIALT'
+  | 'NÄRINGSLIV OCH KOMMUNIKATION'
+  | 'UTBILDNING'
+  | 'VALBEREDNINGEN'
+  | 'KÅRFULLMÄKTIGE'
+  | 'REVISORER'
   | 'FANBORGEN'
   | 'NONE'
 
@@ -94,4 +96,31 @@ export interface CommitteePositionRecruitment {
       link_url: string
     }
   ]
+}
+
+export interface CommitteeData {
+  members: {
+    ids: string[]
+    total: number
+  }
+  positions: {
+    ids: string[]
+    total: number
+  }
+  news: {
+    ids: string[]
+    total: number
+  }
+  events: {
+    ids: string[]
+    total: number
+  }
+  documents: {
+    ids: string[]
+    total: number
+  }
+  albums: {
+    ids: string[]
+    total: number
+  }
 }
