@@ -1,6 +1,8 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Metadata } from 'next'
+import { CustomProvider } from 'rsuite'
+import 'rsuite/dist/rsuite-no-reset.min.css'
 
 interface Props {
   children: React.ReactNode
@@ -32,7 +34,7 @@ export default function RootLayout({ children }: Props): React.ReactElement {
       <body>
         <SpeedInsights />
         <Analytics />
-        {children}
+        <CustomProvider>{children}</CustomProvider>
       </body>
     </html>
   )

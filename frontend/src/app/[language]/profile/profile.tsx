@@ -1,4 +1,5 @@
 'use client'
+
 import Loading from '@/components/tooltips/Loading'
 import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
@@ -28,9 +29,9 @@ export default function Profile(props: Props): JSX.Element {
 
   useEffect(() => {
     if (!student) {
-      router.push(`/${language}/login`)
+      router.replace(`/${language}/login`)
     } else {
-      router.push(`/${language}/student/${student.student_id}`)
+      router.replace(`/${language}/student/${student.student_id}`)
     }
   }, [student, router, language])
 
