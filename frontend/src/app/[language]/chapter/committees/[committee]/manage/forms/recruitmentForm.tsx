@@ -146,7 +146,6 @@ export default function RecruitmentForm({
     resolver: zodResolver(createRecruitmentSchema),
     defaultValues: {
       position: 'MEMBER',
-      start_date: new Date(),
       end_date: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
       translations: supportedLanguages.map((language) => ({
         language_code: language,
@@ -173,7 +172,10 @@ export default function RecruitmentForm({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          start_date: new Date().toISOString(),
+        }),
       }
     )
 
@@ -209,7 +211,7 @@ export default function RecruitmentForm({
           ))}
         </TabsList>
 
-        <form onSubmit={form.handleSubmit(publish)}>
+        <form onSubmit={form.handleSubmit(publish)} className='z-10'>
           <Form {...form}>
             <FormField
               control={form.control}
@@ -217,7 +219,11 @@ export default function RecruitmentForm({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Position</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                    modal
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -237,8 +243,8 @@ export default function RecruitmentForm({
                     <PopoverContent>
                       <Command>
                         <CommandInput placeholder='Search positions...' />
-                        <CommandEmpty>No positions available</CommandEmpty>
                         <CommandList>
+                          <CommandEmpty>No positions available</CommandEmpty>
                           <CommandGroup>
                             {dropdownOptions.map((option) => (
                               <CommandItem
@@ -258,19 +264,6 @@ export default function RecruitmentForm({
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormMessage className='text-xs font-bold' />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name='start_date'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Start Date</FormLabel>
-                  <FormControl>
-                    <Input {...field} type='datetime-local' />
-                  </FormControl>
                   <FormMessage className='text-xs font-bold' />
                 </FormItem>
               )}

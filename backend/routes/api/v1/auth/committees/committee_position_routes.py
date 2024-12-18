@@ -5,7 +5,7 @@ API Endpoint: '/api/v1/committee_positions'
 
 import json
 from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from sqlalchemy import func
 from typing import Any, Dict, List
@@ -196,7 +196,8 @@ def recruit_for_position(committee_position_id) -> Response:
         committee_position_id=committee_position_id
     ).first_or_404()
     student_id = get_jwt_identity()
-
+    claims = get_jwt()
+    is_admin = claims.get("role") == "ADMIN"
     student_membership: List[StudentMembership] = StudentMembership.query.filter_by(
         student_id=student_id,
     ).all()
@@ -205,6 +206,7 @@ def recruit_for_position(committee_position_id) -> Response:
         if (
             membership.committee_position.committee_id
             == committee_position.committee_id
+            or is_admin
         ):
             break
         else:

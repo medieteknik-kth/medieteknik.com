@@ -63,7 +63,7 @@ export default function HomeDetails({ language }: Props): JSX.Element {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
+          {isLoading || !members ? (
             <Skeleton className='w-32 h-8' />
           ) : (
             <p className='text-2xl'>{members.total_items}</p>

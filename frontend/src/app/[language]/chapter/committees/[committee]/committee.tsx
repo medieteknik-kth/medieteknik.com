@@ -98,42 +98,44 @@ export default async function CommitteePage(
     <main>
       <section
         className={`${
-          hasGroupPhoto ? 'min-h-[1080px] h-screen' : 'h-fit'
-        } relative bg-[#EEE] dark:bg-[#333]`}
+          hasGroupPhoto ? 'desktop:min-h-[1080px] h-screen' : 'h-fit'
+        } relative bg-[#EEE] dark:bg-[#222]`}
       >
         {hasGroupPhoto ? (
           <Image
             src={committeeData.group_photo_url!}
             alt='img'
             fill
-            className='object-cover'
+            className='object-cover h-full'
+            placeholder='blur'
+            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+            quality={80}
+            priority
+            loading='eager'
           />
         ) : (
           <HeaderGap />
         )}
 
         <div
-          className={`w-full h-fit ${
+          className={`w-full  ${
             hasGroupPhoto
-              ? 'absolute border-t-2 bg-black/75 text-white'
-              : 'border-b-2 bg-[#EEE] dark:bg-[#222] mt-28 lg:mt-0'
-          } backdrop-blur-xl bottom-0 left-0 px-12 py-12 flex items-center border-yellow-400`}
+              ? 'absolute h-fit bottom-0 border-t-2 bg-black/75 text-white'
+              : 'h-full border-b-2 mt-32 lg:mt-0 relative'
+          } backdrop-blur-xl px-12 py-12 flex flex-col lg:flex-row gap-4 lg:gap-10 items-center border-yellow-400`}
         >
-          <div
-            className='w-32 h-32 lg:w-52 lg:h-52 lg:mr-10 bg-white rounded-full absolute lg:relative overflow-hidden 
-          mx-auto lg:ml-0 left-0 right-0 -top-24 lg:top-auto lg:left-auto lg:right-auto border-2 border-yellow-400'
-          >
+          <div className='w-32 h-auto lg:w-52 -top-24 left-0 right-0 mx-auto absolute lg:static grid aspect-square bg-white rounded-full overflow-hidden border-2 border-yellow-400  place-items-center'>
             <Image
               src={committeeData.logo_url || FallbackImage.src}
               alt='img'
               width={208}
               height={208}
-              className='w-24 lg:w-[9.5rem] bg-white h-auto absolute left-0 top-0 bottom-0 right-0 m-auto hover:scale-105 duration-300 transition-transform'
+              className='w-24 lg:w-[9.5rem] bg-white h-auto hover:scale-105 duration-300 transition-transform p-2 lg:p-4 desktop:p-0 object-cover'
             />
           </div>
-          <div className='w-full lg:w-fit h-fit flex flex-col justify-between items-center lg:items-start relative'>
+          <div className='grow h-fit flex flex-col justify-between items-center lg:items-start relative'>
             <h1
-              className={`h-[144px] ${
+              className={`h-fit pt-8 pb-4 font-semibold ${
                 committeeName.length >= 15
                   ? 'text-lg xxs:text-xl md:text-4xl xl:text-6xl desktop:text-7xl'
                   : 'text-3xl xxs:text-4xl md:text-6xl xl:text-7xl'
@@ -144,7 +146,11 @@ export default async function CommitteePage(
             <Link
               href={`mailto:${committeeData.email}`}
               target='_blank'
-              className='absolute top-0 text-lg underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400 hover:text-yellow-400 hover:underline tracking-wide'
+              className={`absolute top-0 text-lg underline-offset-4 hover:underline tracking-wide ${
+                hasGroupPhoto
+                  ? 'text-yellow-400'
+                  : 'text-blue-600 dark:text-primary'
+              }`}
             >
               {committeeData.email}
             </Link>

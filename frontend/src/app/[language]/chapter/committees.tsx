@@ -83,7 +83,7 @@ export default function Committees({
 
   return (
     <section
-      className='px-4 sm:px-20 h-fit my-10 relative flex flex-col gap-4'
+      className='px-2 sm:px-5 md:px-20 h-fit my-10 relative flex flex-col gap-4'
       id='committees'
     >
       <Link
@@ -151,7 +151,9 @@ export default function Committees({
                     <CardFooter>
                       <Button asChild>
                         <Link
-                          href={`/${language}/chapter/committees/${committee.translations[0].title}`}
+                          href={`/${language}/chapter/committees/${encodeURIComponent(
+                            committee.translations[0].title.toLowerCase()
+                          )}`}
                         >
                           {t('readMore')}
                         </Link>

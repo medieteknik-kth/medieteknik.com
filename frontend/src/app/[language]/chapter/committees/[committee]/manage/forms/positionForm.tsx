@@ -181,20 +181,28 @@ export default function PositionForm({
       label: 'Styrelsen',
     },
     {
-      value: 'VALBEREDNINGEN',
-      label: 'Valberedningen',
-    },
-    {
-      value: 'UTBILDNING',
-      label: 'Utbildning',
+      value: 'STUDIESOCIALT',
+      label: 'Studiesocialt',
     },
     {
       value: 'NÄRINGSLIV OCH KOMMUNIKATION',
       label: 'Näringsliv och kommunikation',
     },
     {
-      value: 'STUDIESOCIALT',
-      label: 'Studiesocialt',
+      value: 'UTBILDNING',
+      label: 'Utbildning',
+    },
+    {
+      value: 'VALBEREDNINGEN',
+      label: 'Valberedningen',
+    },
+    {
+      value: 'KÅRFULLMÄKTIGE',
+      label: 'Kårfullmäktige',
+    },
+    {
+      value: 'REVISORER',
+      label: 'Revisorer',
     },
     {
       value: 'FANBORGEN',
