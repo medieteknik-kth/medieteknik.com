@@ -69,9 +69,9 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
           </Link>
         </CardHeader>
 
-        <CardFooter className='w-full hidden md:flex justify-between items-center max-w-[325px] p-0 mb-2'>
+        <CardFooter className='w-full hidden md:flex items-center max-w-[325px] p-0 mb-2'>
           {newsItem.author.author_type === 'STUDENT' ? (
-            <StudentTag student={newsItem.author as Student} includeAt={false}>
+            <StudentTag student={newsItem.author as Student} includeImage>
               <span className='text-xs text-neutral-700 dark:text-neutral-300'>
                 {new Date(newsItem.created_at).toLocaleDateString(language, {
                   year: 'numeric',

@@ -30,6 +30,7 @@ import {
   PlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import { isSameDay } from 'date-fns'
 import { useState, type JSX } from 'react'
 import CalendarExport from '../components/calendarExport'
 import EventDialog from '../components/eventDialog'
@@ -206,9 +207,14 @@ export default function Events({
             <ul className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
               {events
                 .filter((event) => {
+                  const startDate = new Date(event.start_date)
+                  const endDate = new Date(
+                    startDate.getTime() + event.duration * 60_000
+                  )
                   return (
-                    new Date(event.start_date).toDateString() ===
-                    selectedDate.toDateString()
+                    isSameDay(startDate, selectedDate) ||
+                    isSameDay(endDate, selectedDate) ||
+                    (startDate < selectedDate && endDate > selectedDate)
                   )
                 })
                 .sort(

@@ -135,39 +135,33 @@ export default function DetailedEvent({
         <div className='flex justify-between items-center'>
           <div className='w-fit flex items-center justify-end'>
             <ClockIcon className='w-6 h-6 mr-1' />
-            <p
-              title={`Event starts: ${new Date(
-                event.start_date
-              ).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}`}
-            >
-              {new Date(event.start_date).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}
-            </p>
-            <span> &nbsp;-&nbsp; </span>
-            <p
-              title={`Event Ends: ${new Date(
-                new Date(event.start_date).getTime() + event.duration * 60000
-              ).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}`}
-            >
-              {new Date(
-                new Date(event.start_date).getTime() + event.duration * 60000
-              ).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}
-            </p>
+            <div>
+              <p
+                title={`Event starts: ${new Date(
+                  event.start_date
+                ).toLocaleTimeString(language, {
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                })}`}
+              >
+                {new Date(event.start_date).toLocaleTimeString(language, {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                })}
+              </p>
+              <p
+                title={`Event Ends: ${new Date(
+                  new Date(event.start_date).getTime() + event.duration * 60000
+                ).toLocaleTimeString(language)}`}
+              >
+                {new Date(
+                  new Date(event.start_date).getTime() + event.duration * 60000
+                ).toLocaleTimeString(language)}
+              </p>
+            </div>
           </div>
           <div className='flex items-center'>
             <div
