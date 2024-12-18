@@ -48,7 +48,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
 
   useEffect(() => {
     setIsClient(true)
-  }, [])
+  }, [setIsClient])
 
   /**
    * @name switchLanguage
@@ -104,10 +104,10 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
               <CardDescription>{t('description')}</CardDescription>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
+              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                {t('language')}
+              </h4>
               <div>
-                <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                  {t('language')}
-                </h4>
                 {supportedLanguages.map((lang) => (
                   <Button
                     key={lang}
@@ -131,13 +131,13 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                 ))}
               </div>
 
+              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                {t('theme')}
+                <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
+                  Beta
+                </sup>
+              </h4>
               <div>
-                <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                  {t('theme')}
-                  <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
-                    Beta
-                  </sup>
-                </h4>
                 <Button
                   onClick={() => switchTheme('light')}
                   className='mx-1 cursor-pointer'
@@ -166,10 +166,10 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                 </Button>
               </div>
 
+              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                {t('privacy')}
+              </h4>
               <div>
-                <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                  {t('privacy')}
-                </h4>
                 <Button
                   onClick={() => {
                     setCookiesShown(true)

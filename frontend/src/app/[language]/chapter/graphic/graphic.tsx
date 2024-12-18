@@ -1,5 +1,4 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import Colors from './client/colors'
 import Documents from './documents'
@@ -40,7 +39,6 @@ export default async function GraphicalIdentity(
   const { t } = await useTranslation(language, 'graphic')
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Documents language={language} />
       <Iconography language={language} />

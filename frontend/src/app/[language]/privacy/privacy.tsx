@@ -1,5 +1,4 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import StaticHeading from '@/components/static/StaticHeading'
 import { Button } from '@/components/ui/button'
@@ -30,7 +29,6 @@ export default async function Privacy(props: Props) {
 
   return (
     <main className='pb-4'>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <p className='text-center py-1 text-neutral-600 dark:text-neutral-300'>
         {t('lastUpdated')} <span className='font-bold'>2024-10-23</span>

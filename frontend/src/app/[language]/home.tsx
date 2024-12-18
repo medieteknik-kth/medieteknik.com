@@ -6,12 +6,13 @@ import Image from 'next/image'
 import BlurredBG from 'public/images/landingpage_blurred.webp'
 import { Suspense, type JSX } from 'react'
 import './home.css'
+import { LanguageCode } from '@/models/Language'
 
 const About = dynamic(() => import('./about'), { ssr: true })
 
 interface Props {
   params: Promise<{
-    language: string
+    language: LanguageCode
   }>
 }
 

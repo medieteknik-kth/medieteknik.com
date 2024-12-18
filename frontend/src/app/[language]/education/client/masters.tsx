@@ -41,9 +41,19 @@ interface Master {
     description: string
   }[]
   tags: string[]
+interface Props {
+  language: LanguageCode
 }
 
-export default function Masters({ language }: { language: LanguageCode }) {
+/**
+ * @name Masters
+ * @description The master programs page, contains the list of master programs and their respective information
+ *
+ * @param {Props} props - The properties of the component
+ * @param {LanguageCode} props.language - The language of the page
+ * @returns {JSX.Element} The master programs page
+ */
+export default function Masters({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'education')
 
   const masters: Master[] = t('masters', { returnObjects: true }) as Master[]

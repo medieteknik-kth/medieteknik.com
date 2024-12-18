@@ -2,7 +2,6 @@ import { getCommitteePositions } from '@/api/committee_position'
 import Search from '@/app/[language]/chapter/positions/client/search'
 import PositionDisplay from '@/app/[language]/chapter/positions/positionDisplay'
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import {
   Accordion,
@@ -22,8 +21,6 @@ interface Props {
   params: Promise<Params>
 }
 
-export const revalidate = 2_592_000 // 30 days
-
 /**
  * @name Positions
  * @description Displays all positions in the organization and allows for searching
@@ -35,11 +32,6 @@ export const revalidate = 2_592_000 // 30 days
  */
 export default async function Positions(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const committeePositions = await GetCommitteePositions('committee', language)
-  const independentPositions = await GetCommitteePositions(
-    'independent',
-    language
-  )
   const { data: committeePositions, error: committeePositionError } =
     await getCommitteePositions('committee', language)
   const { data: independentPositions, error: independentPositionError } =
@@ -52,7 +44,6 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
 
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Search
         language={language}

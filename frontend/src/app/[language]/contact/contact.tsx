@@ -1,5 +1,4 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import { SectionDescription, SectionDescriptionProps } from './utility/section'
 
@@ -32,7 +31,6 @@ export default async function Contact(props: Props): Promise<JSX.Element> {
 
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
 
       <div className='w-full flex items-center flex-col py-10'>

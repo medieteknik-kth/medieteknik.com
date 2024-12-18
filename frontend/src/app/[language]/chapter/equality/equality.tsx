@@ -4,7 +4,6 @@ import EqualityDiscrimination from '@/app/[language]/chapter/equality/discrimina
 import EqualityPlans from '@/app/[language]/chapter/equality/plans'
 import { useTranslation } from '@/app/i18n'
 import StudentCommitteCard from '@/components/cards/StudentCard'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import StaticHeading from '@/components/static/StaticHeading'
 import { LanguageCode } from '@/models/Language'
@@ -36,7 +35,6 @@ export default async function Equality(props: Props) {
 
   return (
     <main className='pb-4 w-full grid place-items-center'>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <section className='md:min-w-[600px] w-full max-w-[700px] px-4 sm:px-12 md:px-0'>
         <StaticHeading

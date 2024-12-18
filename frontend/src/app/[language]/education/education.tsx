@@ -1,5 +1,4 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent, Section } from '@/components/static/Static'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,8 +15,6 @@ import Masters from './client/masters'
 import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
-export const dynamic = 'force-static'
-
 interface Params {
   language: LanguageCode
 }
@@ -31,7 +28,7 @@ interface Props {
  * @description The education page, with useful information regarding courses, possible master degrees, and other useful information
  *
  * @param {object} params - The dynamic route parameters
- * @param {string} params.language - The language of the page
+ * @param {LanguageCode} params.language - The language of the page
  * @returns {Promise<JSX.Element>} The education page
  */
 export default async function Education(props: Props): Promise<JSX.Element> {
@@ -39,7 +36,6 @@ export default async function Education(props: Props): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'education')
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} description={t('description')}>
         <div className='absolute left-20 bottom-4 flex gap-8'>
           <Button

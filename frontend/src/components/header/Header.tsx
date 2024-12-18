@@ -35,10 +35,14 @@ export default async function Header({
   return (
     <header
       id='header'
-      className='w-full h-16 lg:h-24 text-black bg-white dark:bg-[#111] dark:text-white fixed flex justify-between z-50 transition-all shadow-sm shadow-black/25 dark:shadow-yellow-400/25'
+      className='left-2 right-2 top-2 sm:left-5 sm:right-5 sm:top-5 rounded-md h-16 lg:h-24 text-black bg-white dark:bg-[#111] dark:text-white fixed flex justify-between z-50 transition-all border dark:border-yellow-400 shadow-md'
     >
       <div className='w-fit h-full flex z-20'>
-        <Button variant={'ghost'} className='hidden lg:block' asChild>
+        <Button
+          variant={'ghost'}
+          className='hidden lg:block rounded-l-md rounded-r-none'
+          asChild
+        >
           <Link
             href={'/' + language}
             className='w-full h-full flex items-center z-10 relative'

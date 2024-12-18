@@ -3,7 +3,6 @@ import {
   getCommitteesForCategory,
 } from '@/api/committee_category'
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import Committee, { CommitteeCategory } from '@/models/Committee'
 import { LanguageCode } from '@/models/Language'
@@ -32,7 +31,6 @@ export default async function CommitteeList(props: Props) {
   if (!committeeCategories) {
     return (
       <main>
-        <HeaderGap />
         <HeadComponent title='Committees' />
         <h2 className='text-center text-2xl my-8'>No committees found</h2>
         <p className='text-center my-4'>

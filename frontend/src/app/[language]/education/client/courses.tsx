@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
 import { useState, type JSX } from 'react'
 import {
@@ -18,7 +19,6 @@ import {
   getHP,
   getLink,
 } from '../constants'
-import { LanguageCode } from '@/models/Language'
 
 /**
  * @interface Course
@@ -68,6 +68,8 @@ interface FrontendCategory {
   percentage: number
   color: string
   courses?: Course[]
+interface Props {
+  language: LanguageCode
 }
 
 /**
@@ -77,11 +79,7 @@ interface FrontendCategory {
  * @param {string} language - The language of the page
  * @returns {JSX.Element} The courses page
  */
-export default function Courses({
-  language,
-}: {
-  language: LanguageCode
-}): JSX.Element {
+export default function Courses({ language }: Props): JSX.Element {
   const [detailedViewOpen, setDetailedViewOpen] = useState(false)
   const [currentView, setCurrentView] = useState<FrontendCategory | null>(null)
   const { t } = useTranslation(language, 'education')

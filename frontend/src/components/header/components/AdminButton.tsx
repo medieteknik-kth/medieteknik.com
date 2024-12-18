@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -36,15 +37,17 @@ export default function AdminButton({ language }: Props): JSX.Element {
     <>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/${language}/admin`}
-            className='w-full flex items-center gap-2 pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
-            title='Admin Dashboard'
+        <DropdownMenuItem className='p-0'>
+          <Button
+            variant={'ghost'}
+            className='w-full flex items-center justify-start gap-2 p-0 pl-2'
+            asChild
           >
-            <PowerIcon className='w-4 h-4' />
-            <span>Admin Dashboard</span>
-          </Link>
+            <Link href={`/${language}/admin`} title='Admin Dashboard'>
+              <PowerIcon className='w-4 h-4' />
+              <span>Admin Dashboard</span>
+            </Link>
+          </Button>
         </DropdownMenuItem>
       </DropdownMenuGroup>
     </>

@@ -1,3 +1,4 @@
+import HeaderGap from '@/components/header/components/HeaderGap'
 import Image, { StaticImageData } from 'next/image'
 import React from 'react'
 
@@ -13,7 +14,8 @@ export function HeadComponent({
   children?: React.JSX.Element
 }) {
   return (
-    <div className='w-full h-fit bg-[#EEE] dark:bg-[#222] flex items-center border-b-2 border-yellow-400 relative'>
+    <div className='w-full h-fit bg-[#EEE] dark:bg-[#222] flex flex-col items-center border-b-2 border-yellow-400 relative'>
+      <HeaderGap />
       <div
         className={`w-full ${
           image ? 'xl:w-1/2' : 'w-full justify-center'

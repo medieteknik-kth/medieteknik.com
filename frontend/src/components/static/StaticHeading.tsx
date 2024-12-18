@@ -67,12 +67,13 @@ export default function StaticHeading({
   return (
     <div className='relative flex items-center h-fit'>
       <button
-        className='absolute hidden sm:inline-block h-8 w-auto aspect-square opacity-35 hover:opacity-100 transition-opacity -left-9 p-1 select-none'
+        className='absolute hidden md:inline-block h-8 w-auto aspect-square opacity-35 hover:opacity-100 transition-opacity -left-9 p-1 select-none'
         onClick={() => {
-          navigator.clipboard.writeText(window.location.href + '#' + id)
+          const link = window.location.href.split('#')[0]
+          navigator.clipboard.writeText(link + '#' + id)
           toast({
             title: 'Copied to clipboard',
-            description: `${window.location.href + '#' + id}`,
+            description: `${link + '#' + id}`,
             duration: 2500,
           })
         }}

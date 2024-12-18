@@ -20,6 +20,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
@@ -28,7 +29,7 @@ import FallbackImage from 'public/images/logo.webp'
 import { JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committees: Committee[]
 }
 

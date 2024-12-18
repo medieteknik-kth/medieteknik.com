@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -44,16 +45,21 @@ export default function CommitteeListMenu({ language }: Props): JSX.Element {
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger className='flex items-center gap-2 py-2'>
-            <SquaresPlusIcon className='w-4 h-4' />
-            {t('committees')}
+          <DropdownMenuSubTrigger className='p-0 pr-2'>
+            <Button
+              className='w-full flex items-center justify-start gap-2 p-0 pl-2'
+              variant={'ghost'}
+            >
+              <SquaresPlusIcon className='w-4 h-4' />
+              {t('committees')}
+            </Button>
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
-            <DropdownMenuSubContent>
+            <DropdownMenuSubContent className='w-[200px] mr-2 dark:bg-[#111]'>
               {committees.map((committee) => (
                 <DropdownMenuItem key={committee.committee_id} asChild>
                   <Link
-                    href={`/${language}/chapter/committees/${committee.translations[0].title.toLowerCase()}`}
+                    href={`/${language}/chapter/committees/${committee.translations[0].title.toLowerCase()}/manage`}
                     className='w-full flex items-center gap-2 pr-2 py-2 cursor-pointer'
                     title={committee.translations[0].title}
                     aria-label={`Go to ${committee.translations[0].title}'s page`}
@@ -66,7 +72,9 @@ export default function CommitteeListMenu({ language }: Props): JSX.Element {
                         src={committee.logo_url ?? ''}
                       />
                     </Avatar>
-                    <p>{committee.translations[0].title}</p>
+                    <p className='truncate'>
+                      {committee.translations[0].title}
+                    </p>
                   </Link>
                 </DropdownMenuItem>
               ))}

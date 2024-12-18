@@ -44,10 +44,10 @@ export default function NavigationSheet({
     setIsOpen((prev) => {
       return !prev
     })
-  }, [isOpen, setIsOpen])
+  }, [setIsOpen])
 
   return (
-    <Sheet open={isOpen}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
           variant={'ghost'}
