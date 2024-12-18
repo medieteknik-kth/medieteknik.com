@@ -73,10 +73,10 @@ export default function RepeatingForm({
           <FormItem className='col-span-1 flex flex-col justify-between items-start'>
             <FormLabel className='flex items-center'>
               <p>{t('event.form.frequency')}</p>
-              <sup className='text-red-600'>*</sup>
+              <sup className='text-red-600 px-0.5 select-none'>*</sup>
             </FormLabel>
             <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger>
+              <PopoverTrigger asChild>
                 <FormControl>
                   <Button
                     variant={'outline'}

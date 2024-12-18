@@ -67,8 +67,31 @@ export default function EventUpload({
   const [isRepeating, setIsRepeating] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [showColorPicker, setShowColorPicker] = useState(false)
-  const [currentColor, setCurrentColor] = useState('#FFFFFF')
-  const presetColors = ['#FACC15', '#111111', '#22C55E', '#3B82F6', '#EF4444']
+  const [currentColor, setCurrentColor] = useState('#EEC912')
+  const presetColors = [
+    {
+      color: '#FACC15',
+      title: 'Yellow (#FACC15)',
+    },
+    {
+      color: '#111111',
+      title: 'Smokey Black (#111111)',
+    },
+    {
+      color: '#EC3F83',
+      title: 'CompSci Pink (#EC3F83)',
+    },
+    {
+      color: '#45B8DA',
+      title: 'THS Blue (#45B8DA)',
+    },
+    {
+      color: '#EF4444',
+      title: 'Red (#EF4444)',
+    },
+  ]
+
+  console.log(new Date(selectedDate.getTime() + 60 * 60 * 1000))
 
   const eventForm = useForm<z.infer<typeof eventUploadSchema>>({
     resolver: zodResolver(eventUploadSchema),
@@ -80,9 +103,14 @@ export default function EventUpload({
           description: '',
         }
       }),
-      date: selectedDate.toISOString().split('T')[0],
-      start_time: '11:00:00',
-      duration: 60,
+      // @ts-ignore
+      event_start_date: new Date(selectedDate.getTime() + 60 * 60 * 1000)
+        .toISOString()
+        .substring(0, 16),
+      // @ts-ignore
+      event_end_date: new Date(selectedDate.getTime() + 2 * 60 * 60 * 1000)
+        .toISOString()
+        .substring(0, 16),
       repeats: false,
       location: '',
       background_color: currentColor,
@@ -101,7 +129,15 @@ export default function EventUpload({
   }
 
   const publish = async (data: z.infer<typeof eventUploadSchema>) => {
-    const start_date = new Date(data.date + ' ' + data.start_time)
+    const duration =
+      (new Date(data.event_end_date).getTime() -
+        new Date(data.event_start_date).getTime()) /
+      60000
+
+    if (duration <= 0) {
+      setErrorMessage('End date must be after start date')
+      return
+    }
 
     if (data.repeats) {
       if (!data.frequency) {
@@ -111,8 +147,8 @@ export default function EventUpload({
     }
 
     const json_data = {
-      start_date: start_date.toISOString(),
-      duration: data.duration,
+      start_date: data.event_start_date,
+      duration: duration,
       repeats: data.repeats,
       frequency: data.repeats ? data.frequency : null,
       end_date: data.repeats ? data.end_date : null,
@@ -139,11 +175,14 @@ export default function EventUpload({
         }
         if (addEvent) {
           addEvent({
-            start_date: start_date.toLocaleString(language, {
-              timeZone: 'Europe/Stockholm',
-            }),
+            start_date: new Date(data.event_start_date).toLocaleString(
+              language,
+              {
+                timeZone: 'Europe/Stockholm',
+              }
+            ),
             event_id: json.id,
-            duration: data.duration,
+            duration: duration,
             background_color: data.background_color,
             location: data.location,
             created_at: new Date().toLocaleDateString(),
@@ -172,11 +211,11 @@ export default function EventUpload({
   return (
     <DialogContent className='h-fit'>
       <DialogHeader>
-        <DialogTitle>{t('event.form.title')}</DialogTitle>
-        <DialogDescription>{t('event.form.description')}</DialogDescription>
+        <DialogTitle>{t('event.form.add')}</DialogTitle>
+        <DialogDescription>{t('event.form.add_to_calendar')}</DialogDescription>
       </DialogHeader>
       {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
-      <Tabs defaultValue={language} className='mb-2'>
+      <Tabs defaultValue={language} className='mb-2 -mt-1'>
         <Label>{t('event.form.language')}</Label>
         <TabsList className='overflow-x-auto h-fit w-full justify-start'>
           {supportedLanguages.map((language) => (
@@ -194,14 +233,17 @@ export default function EventUpload({
         </TabsList>
         <Form {...eventForm}>
           <form onSubmit={eventForm.handleSubmit(publish)}>
-            <div className='grid grid-cols-2 grid-rows-2 gap-2 mt-2 relative'>
+            <div className='grid grid-cols-2 gap-2 mt-2 relative mb-2'>
               <FormField
-                name='date'
+                name='event_start_date'
                 render={({ field }) => (
-                  <FormItem className='col-span-2'>
-                    <FormLabel>{t('event.form.date')}</FormLabel>
+                  <FormItem className='col-span-1'>
+                    <FormLabel>
+                      {t('event.form.date')}
+                      <span className='text-red-500 px-0.5 select-none'>*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input id='date' type='date' {...field} />
+                      <Input id='startdate' type='datetime-local' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -209,25 +251,15 @@ export default function EventUpload({
               />
 
               <FormField
-                name='start_time'
+                name='event_end_date'
                 render={({ field }) => (
                   <FormItem className='col-span-1'>
-                    <FormLabel>{t('event.form.start_time')}</FormLabel>
+                    <FormLabel>
+                      {t('event.form.end_date')}
+                      <span className='text-red-500 px-0.5 select-none'>*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input id='start_time' type='time' step={2} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name='duration'
-                render={({ field }) => (
-                  <FormItem className='col-span-1'>
-                    <FormLabel>{t('event.form.duration')}</FormLabel>
-                    <FormControl>
-                      <Input id='duration' type='number' {...field} />
+                      <Input id='enddate' type='datetime-local' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -277,7 +309,10 @@ export default function EventUpload({
               name='location'
               render={({ field }) => (
                 <FormItem className='mt-2'>
-                  <FormLabel>{t('event.form.location')}</FormLabel>
+                  <FormLabel>
+                    {t('event.form.location')}
+                    <span className='text-red-500 px-0.5 select-none'>*</span>
+                  </FormLabel>
                   <div className='relative'>
                     <FormControl>
                       <Input id='location' type='text' {...field} />
@@ -294,11 +329,14 @@ export default function EventUpload({
               name='background_color'
               render={({ field }) => (
                 <FormItem className='mt-2'>
-                  <FormLabel>{t('event.form.bg_color')}</FormLabel>
+                  <FormLabel>
+                    {t('event.form.bg_color')}
+                    <span className='text-red-500 px-0.5 select-none'>*</span>
+                  </FormLabel>
                   <div className='flex items-center'>
                     <div
                       className='h-8 aspect-square mr-2 rounded-lg border cursor-pointer'
-                      title='Click to open color picker'
+                      title='Click to open colour picker'
                       style={{ backgroundColor: currentColor }}
                       onClick={(e) => {
                         e.stopPropagation()
@@ -336,13 +374,13 @@ export default function EventUpload({
                       {t('event.form.preset_colors')}
                     </Label>
                     <div className='w-full h-fit flex gap-4 mt-1'>
-                      {presetColors.map((color) => (
-                        <div
-                          key={color}
+                      {presetColors.map((presetColor) => (
+                        <span
+                          key={presetColor.color}
                           className='w-6 h-6 cursor-pointer rounded-full'
-                          style={{ backgroundColor: color }}
-                          title={color}
-                          onClick={() => handleColorChange(color)}
+                          style={{ backgroundColor: presetColor.color }}
+                          title={presetColor.title}
+                          onClick={() => handleColorChange(presetColor.color)}
                         />
                       ))}
                     </div>

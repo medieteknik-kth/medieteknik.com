@@ -7,7 +7,6 @@ import {
 } from '@/components/ui/hover-card'
 import Student from '@/models/Student'
 import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
 import { forwardRef } from 'react'
 import { StudentTooltip } from '../tooltips/Tooltip'
 
@@ -35,8 +34,8 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
   (
     {
       student,
-      includeImage = true,
-      includeAt = true,
+      includeImage = false,
+      includeAt = false,
       reverseImage = false,
       children,
     },
@@ -50,7 +49,7 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
             className={`h-fit text-inherit py-0 px-0 max-w-full ${
               reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'
             }`}
-            style={{ fontSize: 'inherit' }}
+            style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
             ref={ref}
             tabIndex={-1}
             asChild
@@ -60,18 +59,17 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                 <Avatar className='h-10 w-auto aspect-square bg-white rounded-full overflow-hidden'>
                   <AvatarImage
                     className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full'
-                    src={student.profile_picture_url || FallbackImage.src}
+                    src={student.profile_picture_url}
                     alt={student.first_name + ' ' + (student.last_name || '')}
                   />
-                  <AvatarFallback>
-                    {student.first_name +
-                      ' ' +
-                      (student.last_name || '') +
-                      ' Profile Picture'}
+                  <AvatarFallback className='bg-primary text-black'>
+                    {student.first_name[0]}
+                    {''}
+                    {(student.last_name && student.last_name[0]) || ''}
                   </AvatarFallback>
                 </Avatar>
               )}
-              <div className='flex flex-col items-center text-start overflow-hidden'>
+              <div className='flex flex-col items-start justify-center text-start overflow-hidden'>
                 <p
                   className='h-fit truncate max-w-full'
                   title={student.first_name + ' ' + (student.last_name || '')}
@@ -81,7 +79,7 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                     ' ' +
                     (student.last_name || '')}
                 </p>
-                <div className={`${children && 'pt-0.5'}`}>{children}</div>
+                <div className={`${children && 'leading-3'}`}>{children}</div>
               </div>
             </Link>
           </Button>

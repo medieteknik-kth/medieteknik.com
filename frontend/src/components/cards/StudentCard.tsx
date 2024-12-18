@@ -12,26 +12,31 @@ interface StudentCommitteeCardProps {
 
 export default function StudentCommitteCard({
   member,
-  committeeLogo = true,
+  committeeLogo = false,
 }: StudentCommitteeCardProps) {
-  const hasImage = (member: StudentCommitteePosition) => {
-    return !!member.student.profile_picture_url
-  }
-
   return (
     <div className='w-72 border rounded-md relative dark:bg-[#111] shadow-sm shadow-black/25 dark:shadow-white/25'>
       <div className='relative'>
-        <Image
-          src={member.student.profile_picture_url || FallbackImage}
-          alt='img'
-          width={512}
-          height={512}
-          className={`w-full aspect-square object-cover rounded-md mx-auto ${
-            !hasImage(member) && 'p-8 bg-[#EEE] dark:bg-[#323232]'
-          }`}
-          quality={90}
-        />
-        <div className='w-full h-20 absolute bottom-0 from-white from-20% dark:from-[#111] bg-gradient-to-t' />
+        {member.student.profile_picture_url ? (
+          <Image
+            src={member.student.profile_picture_url}
+            alt='img'
+            width={512}
+            height={512}
+            className='w-full aspect-square object-cover rounded-t-md mx-auto'
+            quality={90}
+          />
+        ) : (
+          <Image
+            src={FallbackImage.src}
+            alt='img'
+            width={286}
+            height={286}
+            className='w-full aspect-square object-cover rounded-md mx-auto p-14'
+            quality={90}
+          />
+        )}
+        <div className='w-full h-20 absolute bottom-0 from-white from-20% dark:from-[#111] bg-gradient-to-t to-60%' />
       </div>
       <div className='flex gap-2 items-center px-2 absolute top-4 bg-white dark:bg-[#111] border border-l-0 rounded-r-md shadow-sm shadow-black/25 dark:shadow-white/25'>
         <Avatar
@@ -70,7 +75,7 @@ export default function StudentCommitteCard({
           {member.position.translations[0].title}
         </p>
       </div>
-      <div className='px-2 pb-2 h-fit flex flex-col gap-2 text-xl'>
+      <div className='px-2 pb-2 h-fit flex flex-col gap-2 text-xl leading-6'>
         <StudentTag
           student={member.student}
           includeAt={false}
@@ -79,7 +84,7 @@ export default function StudentCommitteCard({
         <Link
           href={`mailto:${member.position.email}`}
           target='_blank'
-          className='text-xs break-words sm:text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
+          className='text-xs -mt-2 break-words sm:text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
           title={`Mail to ${member.position.email}`}
         >
           {member.position.email}

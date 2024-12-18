@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/card'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import Student from '@/models/Student'
+import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
@@ -26,13 +27,21 @@ export function StudentTooltip({ student }: { student: Student }) {
         >
           <Avatar className='w-24 h-auto aspect-square bg-white rounded-full mb-2 group-hover:scale-110 transition-transform overflow-hidden'>
             <AvatarImage
-              src={student.profile_picture_url || FallbackImage.src}
+              src={student.profile_picture_url}
               alt='Profile Picture'
               width={96}
               height={96}
               className='w-24 h-auto aspect-square object-fill p-0.5 rounded-full'
             />
-            <AvatarFallback>Profile Picture</AvatarFallback>
+            <AvatarFallback className='bg-white'>
+              <Image
+                src={FallbackImage.src}
+                alt='Profile Picture'
+                width={72}
+                height={72}
+                className='w-24 h-auto aspect-square object-cover p-4'
+              />
+            </AvatarFallback>
           </Avatar>
           <p>{student.first_name + ' ' + (student.last_name || '')}</p>
         </Link>

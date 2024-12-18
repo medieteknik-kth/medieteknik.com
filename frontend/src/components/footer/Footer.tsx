@@ -72,7 +72,10 @@ export default async function Footer({
                   title='Go to Contact Page'
                   aria-label='Go to Contact Page'
                 >
-                  <Link href='/contact' className='w-fit flex items-center'>
+                  <Link
+                    href={`/${language}/contact`}
+                    className='w-fit flex items-center'
+                  >
                     {t('contact')}
                     <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
                   </Link>
