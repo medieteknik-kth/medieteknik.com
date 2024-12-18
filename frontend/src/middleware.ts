@@ -27,6 +27,7 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
   const blacklistedURLs = [
     '/_next',
     '/_vercel',
+    '/.well-known',
     '/static',
     '/robots.txt',
     '/sitemap.xml',

@@ -196,12 +196,13 @@ export default function AccountForm({ language }: Props): JSX.Element {
         0
       )
       if (!croppedImage) return
-      accountForm.setValue(
-        'profilePicture',
-        new File([croppedImage], 'profilePicture', {
-          type: 'image/jpeg',
-        })
-      )
+      const response = await fetch(croppedImage)
+      const blob = await response.blob()
+      const extension = blob.type.split('/')[1]
+      const newFile = new File([blob], student.student_id + '.' + extension, {
+        type: blob.type,
+      })
+      accountForm.setValue('profilePicture', newFile)
       setCroppedImage(croppedImage)
       setSuccessfulProfilePictureUpload(true)
     } catch (e) {

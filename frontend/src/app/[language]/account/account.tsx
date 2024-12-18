@@ -1,5 +1,6 @@
 'use client'
 
+import Sidebar from '@/app/[language]/account/sidebar'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { LanguageCode } from '@/models/Language'
@@ -22,7 +23,6 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import Sidebar from './sidebar'
 const AccountProfile = React.lazy(() => import('./pages/accountPage'))
 const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
 //const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
@@ -79,7 +79,7 @@ export default function AccountPage(props: Props): JSX.Element {
   useEffect(() => {
     if (!authLoading) {
       if (!student) {
-        router.push(`/${language}/login`)
+        router.push(`/${language}`)
       } else {
         setIsLoading(false)
       }
@@ -137,6 +137,10 @@ export default function AccountPage(props: Props): JSX.Element {
     return <Loading language={language} />
   }
 
+  if (!student) {
+    return <div>Student not found</div>
+  }
+
   return (
     <main className='relative'>
       <HeaderGap />
@@ -146,6 +150,7 @@ export default function AccountPage(props: Props): JSX.Element {
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
         />
+
         <div className='w-full min-h-[1080px] h-fit flex dark:bg-[#111]'>
           <div className='w-0 md:w-24' />
           <Suspense fallback={<Loading language={language} />}>

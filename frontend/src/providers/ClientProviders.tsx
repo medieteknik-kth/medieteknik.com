@@ -5,7 +5,7 @@
 
 import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 import { ThemeProvider } from 'next-themes'
-import { useEffect, useState, type JSX } from 'react'
+import { useCallback, useEffect, useState, type JSX } from 'react'
 import { AuthenticationProvider } from './AuthenticationProvider'
 import { LanguageCode } from '@/models/Language'
 
@@ -31,15 +31,18 @@ export default function ClientProviders({
     return window.localStorage.getItem(LOCAL_STORAGE_THEME)
   }
 
-  const setTheme = (theme: string) => {
-    window.localStorage.setItem(LOCAL_STORAGE_THEME, theme)
-    setStandardTheme(theme)
-  }
+  const setTheme = useCallback(
+    (theme: string) => {
+      window.localStorage.setItem(LOCAL_STORAGE_THEME, theme)
+      setStandardTheme(theme)
+    },
+    [setStandardTheme]
+  )
 
   useEffect(() => {
     setIsClient(true)
     setTheme(getTheme() || 'light')
-  }, [])
+  }, [setIsClient, getTheme, setTheme])
 
   if (!isClient) {
     return null
@@ -51,7 +54,8 @@ export default function ClientProviders({
         attribute='class'
         defaultTheme={standardTheme}
         themes={['dark', 'light']}
-        enableSystem={true}
+        enableSystem
+        disableTransitionOnChange
       >
         {children}
       </ThemeProvider>
