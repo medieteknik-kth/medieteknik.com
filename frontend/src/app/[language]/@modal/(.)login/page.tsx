@@ -50,10 +50,10 @@ export default function LoginModal(props: Props) {
         </DialogHeader>
 
         <div className='!text-sm'>
-          <LoginForm language={language} />
+          <AlternativeLogin language={language} return_url={return_url} />
         </div>
         <DialogFooter>
-          <AlternativeLogin language={language} return_url={return_url} />
+          <LoginForm language={language} />
         </DialogFooter>
       </DialogContent>
     </Dialog>

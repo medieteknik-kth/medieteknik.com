@@ -47,10 +47,6 @@ export default function AlternativeLogin({
         fontSize: 'inherit',
       }}
     >
-      <h2 className='w-full text-center uppercase tracking-wider mb-2'>
-        {t('alternative_logins')}
-      </h2>
-
       <ul className='w-full grid grid-cols-1 place-items-center'>
         <li className='text-center'>
           <Button

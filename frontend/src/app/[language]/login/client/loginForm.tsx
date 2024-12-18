@@ -2,6 +2,11 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -17,6 +22,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AccordionItem } from '@radix-ui/react-accordion'
 import { useRouter } from 'next/navigation'
 import { useState, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
@@ -89,7 +95,11 @@ export default function LoginForm({ language }: Props): JSX.Element {
   }
 
   if (isLoading) {
-    return <Loading language={language} />
+    return (
+      <div className='w-full h-20'>
+        <Loading language={language} />
+      </div>
+    )
   }
 
   return (
@@ -99,74 +109,86 @@ export default function LoginForm({ language }: Props): JSX.Element {
           {errorMessage}
         </p>
       )}
-      <Form {...loginForm}>
-        <form onSubmit={loginForm.handleSubmit(submit)}>
-          <FormField
-            name='email'
-            render={({ field }) => (
-              <FormItem className='w-full mb-4'>
-                <FormLabel
-                  style={{
-                    fontSize: 'inherit',
+      <h2 className='w-full tracking-wide font-semibold border-t pt-2'>
+        {t('alternative_logins')}
+      </h2>
+      <Accordion type='multiple'>
+        <AccordionItem value='email'>
+          <AccordionTrigger className='text-base'>
+            {t('alternative_logins.email')}
+          </AccordionTrigger>
+          <AccordionContent>
+            <Form {...loginForm}>
+              <form onSubmit={loginForm.handleSubmit(submit)}>
+                <FormField
+                  name='email'
+                  render={({ field }) => (
+                    <FormItem className='w-full mb-4'>
+                      <FormLabel
+                        style={{
+                          fontSize: 'inherit',
+                        }}
+                      >
+                        {t('email')}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t('email')}
+                          autoComplete='email'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name='password'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        style={{
+                          fontSize: 'inherit',
+                        }}
+                      >
+                        {t('password')}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type='password'
+                          placeholder={t('password')}
+                          autoComplete='current-password'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name='csrf_token'
+                  render={({ field }) => (
+                    <FormItem>
+                      <input type='hidden' {...field} />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type='submit'
+                  className='w-full mt-4'
+                  onClick={() => {
+                    loginForm.setValue('csrf_token', data.token)
                   }}
                 >
-                  {t('email')}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={t('email')}
-                    autoComplete='email'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name='password'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel
-                  style={{
-                    fontSize: 'inherit',
-                  }}
-                >
-                  {t('password')}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type='password'
-                    placeholder={t('password')}
-                    autoComplete='current-password'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name='csrf_token'
-            render={({ field }) => (
-              <FormItem>
-                <input type='hidden' {...field} />
-              </FormItem>
-            )}
-          />
-          <Button
-            type='submit'
-            className='w-full mt-4'
-            onClick={() => {
-              loginForm.setValue('csrf_token', data.token)
-            }}
-          >
-            {t('login')}
-          </Button>
-        </form>
-      </Form>
+                  {t('login')}
+                </Button>
+              </form>
+            </Form>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }
