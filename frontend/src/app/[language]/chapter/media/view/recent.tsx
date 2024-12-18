@@ -29,7 +29,7 @@ export default async function RecentMedia({
   const empty = error || Object.keys(latestMedia).length === 0
 
   return (
-    <section className='px-10 py-2'>
+    <section className='px-2 sm:px-5 md:px-10 py-2'>
       <h2 className='text-2xl font-bold capitalize'>{t('recent')}</h2>
       {empty ? (
         <p>{t('no_media')}</p>

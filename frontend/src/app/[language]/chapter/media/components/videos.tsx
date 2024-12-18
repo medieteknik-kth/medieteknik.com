@@ -38,8 +38,11 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
     throw new TypeError('Media is not a video')
   }
 
-  const youtube_url = (fullUrl: string) => {
+  const getYoutubeId = (fullUrl: string) => {
     const url = new URL(fullUrl)
+    if (url.hostname === 'youtu.be') {
+      return url.pathname.slice(1)
+    }
     return url.searchParams.get('v')
   }
 
@@ -64,7 +67,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
         }}
       >
         <Image
-          src={`https:/i.ytimg.com/vi/${youtube_url(
+          src={`https:/i.ytimg.com/vi/${getYoutubeId(
             video.media_url
           )}/maxresdefault.jpg`}
           alt={video.translations[0].title}
@@ -75,7 +78,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
           className='w-full h-auto aspect-video object-cover rounded-lg'
         />
         <div className='w-full h-fit flex flex-col px-1 pb-1'>
-          <p className='text-lg font-semibold py-1 max-w-60 truncate text-start'>
+          <p className='text-lg font-semibold py-1 max-w-60 truncate text-start text-black dark:text-white'>
             {video.translations[0].title}
           </p>
           <p className='text-start leading-tight text-sm text-neutral-600 dark:text-neutral-300 max-w-60 truncate'>
@@ -106,7 +109,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
             <iframe
               width='1386'
               height='780'
-              src={`https://www.youtube.com/embed/${youtube_url(
+              src={`https://www.youtube.com/embed/${getYoutubeId(
                 video.media_url
               )}`}
               title='YouTube video player'

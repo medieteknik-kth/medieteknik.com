@@ -33,7 +33,7 @@ export default async function Album({
   }
 
   return (
-    <section className='px-10 py-2'>
+    <section className='px-2 sm:px-5 md:px-10 py-2'>
       <h2 className='text-2xl font-bold capitalize'>{t('album')}</h2>
       <ul className='flex flex-wrap gap-4 py-2'>
         {albums.items

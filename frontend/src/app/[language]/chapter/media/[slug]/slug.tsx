@@ -120,7 +120,9 @@ export default async function MediaSlug(props: Props): Promise<JSX.Element> {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem className='capitalize'>{slug}</BreadcrumbItem>
+          <BreadcrumbItem className='capitalize'>
+            {decodeURIComponent(slug)}
+          </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <section className='px-10 py-4 border-b flex justify-between'>
@@ -132,7 +134,9 @@ export default async function MediaSlug(props: Props): Promise<JSX.Element> {
             </Avatar>
           </div>
           <div>
-            <h1 className='text-3xl capitalize tracking-wide'>{slug}</h1>
+            <h1 className='text-3xl capitalize tracking-wide'>
+              {decodeURIComponent(slug)}
+            </h1>
             <p className='leading-tight tracking-wide text-neutral-600 dark:text-neutral-300'>
               {t('title')}
             </p>

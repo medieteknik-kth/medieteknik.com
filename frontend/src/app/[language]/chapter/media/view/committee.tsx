@@ -43,7 +43,11 @@ export default async function MediaGridView({
 
   const filtered = filteredCommittees(committees)
   return (
-    <section className={`${filtered.length === 0 ? 'hidden' : 'px-10 py-2'}`}>
+    <section
+      className={`${
+        filtered.length === 0 ? 'hidden' : 'px-2 sm:px-5 md:px-10 py-2'
+      }`}
+    >
       <h2 className='text-2xl font-bold capitalize'>{t('committees')}</h2>
       <ul className='flex flex-wrap gap-4 py-2'>
         {filtered
