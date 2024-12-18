@@ -9,6 +9,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { JSX } from 'react'
 import ConnectSection from './connect'
+import { LanguageCode } from '@/models/Language'
 
 /**
  * Renders the footer for all pages
@@ -20,7 +21,7 @@ import ConnectSection from './connect'
 export default async function Footer({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'footer')
   return (

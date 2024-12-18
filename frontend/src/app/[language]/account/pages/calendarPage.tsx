@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import Event from '@/models/items/Event'
+import { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
@@ -33,7 +34,7 @@ import { addMonths, subMonths } from 'date-fns'
 import { JSX, useCallback, useMemo, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

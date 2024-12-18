@@ -1,11 +1,12 @@
 'use client'
 import Loading from '@/components/tooltips/Loading'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
 import { use, useEffect, type JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

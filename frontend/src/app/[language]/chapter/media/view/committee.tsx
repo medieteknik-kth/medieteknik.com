@@ -1,11 +1,12 @@
 import { useTranslation } from '@/app/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
 import { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committees: Committee[] | null
 }
 

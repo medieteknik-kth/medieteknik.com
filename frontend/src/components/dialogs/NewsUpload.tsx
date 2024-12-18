@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Author } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { createNewsSchema } from '@/schemas/items/news'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -28,7 +29,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 interface NewsUploadProps {
-  language: string
+  language: LanguageCode
   author: Author
 }
 

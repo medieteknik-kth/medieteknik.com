@@ -6,9 +6,10 @@ import { addMonths, getDaysInMonth, setDate } from 'date-fns'
 import { useMemo, type JSX } from 'react'
 import './calendar.css'
 import { getPreviousMonthLastWeekToCurrent } from './util'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   onDateClickCallback?: (date: Date) => void
   onEventClickCallback?: (event: Event) => void
   children?: React.ReactNode

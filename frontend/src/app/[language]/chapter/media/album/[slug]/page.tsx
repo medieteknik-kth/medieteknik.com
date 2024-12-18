@@ -1,14 +1,13 @@
 import { getAlbumAndMedia } from '@/api/items/media'
 import AlbumSlug from '@/app/[language]/chapter/media/album/[slug]/albumSlug'
 import { useTranslation } from '@/app/i18n'
+import { LanguageCode } from '@/models/Language'
 import { Metadata } from 'next'
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
-
-export const revalidate = 1_000_000
 
 export async function generateMetadata(props: {
   params: Promise<Params>

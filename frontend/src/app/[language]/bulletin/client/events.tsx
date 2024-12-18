@@ -33,6 +33,7 @@ import {
 import { useState, type JSX } from 'react'
 import CalendarExport from '../components/calendarExport'
 import EventDialog from '../components/eventDialog'
+import { LanguageCode } from '@/models/Language'
 
 /**
  * Get the ordinal suffix for a given number
@@ -74,7 +75,7 @@ function getNumberWithOrdinalEnglish(number: number): string {
 export default function Events({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): JSX.Element {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const { selectedDate, events, addEvent } = useCalendar()

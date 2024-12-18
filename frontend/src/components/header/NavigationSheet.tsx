@@ -17,9 +17,10 @@ import Link from 'next/link'
 import SubMenu from './client/SubMenu'
 
 import { useCallback, useState, type JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   headerElements: HeaderElement[]
 }
 

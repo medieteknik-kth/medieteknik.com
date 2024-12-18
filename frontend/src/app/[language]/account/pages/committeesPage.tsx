@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import {
   ArrowTopRightOnSquareIcon,
@@ -96,7 +97,7 @@ const committeeData = [
 ]
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

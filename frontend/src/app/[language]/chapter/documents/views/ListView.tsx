@@ -15,6 +15,7 @@ import {
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { Author } from '@/models/Items'
 import Document from '@/models/items/Document'
+import { LanguageCode } from '@/models/Language'
 import Student from '@/models/Student'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import {
@@ -27,7 +28,7 @@ import FallbackLogo from 'public/images/logo.webp'
 import { MouseEvent, useCallback, type JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   type: TypeOfDocument
 }
 

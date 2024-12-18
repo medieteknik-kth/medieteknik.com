@@ -6,10 +6,11 @@ import Events from './client/events'
 import ExtraNewsObserver from './client/extranewsObserver'
 import Recruitment from './recruiting'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

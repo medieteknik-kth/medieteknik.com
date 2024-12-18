@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import News from '@/models/items/News'
+import { LanguageCode } from '@/models/Language'
 import Student from '@/models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,7 +18,7 @@ import FallbackImage from 'public/images/logo.webp'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   newsItem: News
 }
 

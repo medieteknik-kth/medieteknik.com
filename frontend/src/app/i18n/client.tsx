@@ -10,6 +10,7 @@ import {
   UseTranslationResponse,
 } from 'react-i18next'
 import { getOptions, supportedLanguages } from './settings'
+import { LanguageCode } from '@/models/Language'
 
 const isRunningOnServer = typeof window === 'undefined'
 
@@ -42,7 +43,7 @@ i18next
  * @returns {UseTranslationResponse<string, string>} Translation function and i18next instance
  */
 export function useTranslation(
-  language: string,
+  language: LanguageCode,
   namespace: string,
   options: { keyPrefix?: string | undefined } = {}
 ): UseTranslationResponse<string, string> {

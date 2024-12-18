@@ -7,9 +7,10 @@ import NotificationMenu from './Notification'
 import OptionsMenu from './Options'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

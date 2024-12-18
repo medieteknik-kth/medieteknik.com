@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/table'
 import { useToast } from '@/components/ui/use-toast'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
@@ -40,7 +41,7 @@ import { JSX, useState } from 'react'
 import useSWR from 'swr'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 

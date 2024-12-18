@@ -5,9 +5,10 @@ import { useArticle } from '@/providers/ArticleProvider'
 import { BooleanMark, toggleMark } from '../../util/Text'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

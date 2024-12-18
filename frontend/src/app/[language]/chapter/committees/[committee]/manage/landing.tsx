@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import {
   CalendarDaysIcon,
   DocumentDuplicateIcon,
@@ -28,7 +29,7 @@ import Content from './content'
 import EditCommittee from './edit'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committeeData: Committee
   committeeName: string
 }

@@ -1,10 +1,11 @@
 import { useTranslation } from '@/app/i18n'
 import { Metadata } from 'next'
 import MediaSlug from './slug'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
   slug: string
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {

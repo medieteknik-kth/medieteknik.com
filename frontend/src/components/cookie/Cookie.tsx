@@ -2,13 +2,14 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
+import { LanguageCode } from '@/models/Language'
 import { DEFAULT_COOKIE_SETTINGS } from '@/utility/CookieManager'
 import { LOCAL_STORAGE_COOKIE_CONSENT } from '@/utility/LocalStorage'
 import { JSX, useEffect, useState } from 'react'
 import DetailedCookiePopup from './DetailedCookie'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

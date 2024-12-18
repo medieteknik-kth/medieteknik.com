@@ -2,11 +2,12 @@ import { getAllCommittees } from '@/api/committee'
 import { getOfficials } from '@/api/student'
 import { useTranslation } from '@/app/i18n'
 import { HeadComponent } from '@/components/static/Static'
+import { LanguageCode } from '@/models/Language'
 import Committees from './committees'
 import Officials from './officials'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

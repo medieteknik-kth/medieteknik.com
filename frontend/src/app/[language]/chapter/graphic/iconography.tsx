@@ -1,5 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
+import { LanguageCode } from '@/models/Language'
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,7 +12,7 @@ import type { JSX } from 'react'
  * @property {string} language - The currently selected language
  */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

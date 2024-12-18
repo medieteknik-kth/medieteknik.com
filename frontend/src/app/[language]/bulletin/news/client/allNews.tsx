@@ -20,9 +20,10 @@ import {
 } from '@heroicons/react/24/outline'
 import { useState, type JSX } from 'react'
 import NewsCard from '../../components/newsCard'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   data: NewsPagination
 }
 

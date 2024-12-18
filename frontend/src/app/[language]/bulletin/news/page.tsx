@@ -1,9 +1,10 @@
 import NewsPage from '@/app/[language]/bulletin/news/news'
 import { useTranslation } from '@/app/i18n'
+import { LanguageCode } from '@/models/Language'
 import { Metadata } from 'next'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {

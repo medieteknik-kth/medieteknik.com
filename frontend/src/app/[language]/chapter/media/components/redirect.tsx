@@ -1,11 +1,12 @@
 'use client'
 
 import Loading from '@/components/tooltips/Loading'
+import { LanguageCode } from '@/models/Language'
 import { useRouter } from 'next/navigation'
 import { JSX, useEffect } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

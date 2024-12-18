@@ -12,9 +12,10 @@ import { useState, type JSX } from 'react'
 import tinycolor from 'tinycolor2'
 import DetailedEvent from './detailedEvent'
 import './event.css'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   event: Event
   index: number
 }

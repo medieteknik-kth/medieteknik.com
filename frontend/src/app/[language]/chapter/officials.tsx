@@ -2,6 +2,7 @@ import StudentTag from '@/components/tags/StudentTag'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { CommitteePositionCategory } from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { StudentCommitteePosition } from '@/models/Student'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import Image from 'next/image'
@@ -9,8 +10,8 @@ import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
 interface Props {
-  language: string
   members: StudentCommitteePosition[]
+  language: LanguageCode
 }
 
 export default async function Officials({ language, members }: Props) {

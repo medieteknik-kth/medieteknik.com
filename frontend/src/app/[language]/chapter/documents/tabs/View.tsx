@@ -5,9 +5,10 @@ import GridView from '../views/GridView'
 import ListView from '../views/ListView'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   type: TypeOfDocument
 }
 

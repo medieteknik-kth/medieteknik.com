@@ -1,5 +1,6 @@
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { LanguageCode } from '@/models/Language'
 import {
   ChevronDownIcon,
   PresentationChartLineIcon,
@@ -11,7 +12,7 @@ import Link from 'next/link'
 export default function Admin({
   params: { language },
 }: {
-  params: { language: string }
+  params: { language: LanguageCode }
 }) {
   return (
     <main>

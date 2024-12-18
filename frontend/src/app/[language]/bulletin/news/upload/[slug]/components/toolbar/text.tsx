@@ -21,9 +21,10 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { useCallback, useState, type JSX } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ElementType, textTypes } from '../../util/Text'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

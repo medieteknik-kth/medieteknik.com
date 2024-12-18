@@ -1,18 +1,31 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { LanguageCode } from '@/models/Language'
 import Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Cog8ToothIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { type JSX } from 'react'
 
+interface Props {
+  language: LanguageCode
+  currentStudent: Student
+}
+
+/**
+ * @name EditProfile
+ * @description The edit profile button, which is only visible to the current student and any administators with the correct permissions
+ *
+ * @param {Props} props - The props
+ * @param {LanguageCode} props.language - The language code
+ * @param {Student} props.currentStudent - The current student
+ * @returns {JSX.Element} The edit profile button
+ */
 export default function EditProfile({
   language,
   currentStudent,
-}: {
-  language: string
-  currentStudent: Student
-}) {
+}: Props): JSX.Element {
   const { student, permissions } = useAuthentication()
 
   if (!student) return <></>

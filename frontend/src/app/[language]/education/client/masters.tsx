@@ -16,6 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+import { LanguageCode } from '@/models/Language'
 import ClassNames from 'embla-carousel-class-names'
 import { StaticImageData } from 'next/image'
 import Link from 'next/link'
@@ -42,7 +43,7 @@ interface Master {
   tags: string[]
 }
 
-export default function Masters({ language }: { language: string }) {
+export default function Masters({ language }: { language: LanguageCode }) {
   const { t } = useTranslation(language, 'education')
 
   const masters: Master[] = t('masters', { returnObjects: true }) as Master[]

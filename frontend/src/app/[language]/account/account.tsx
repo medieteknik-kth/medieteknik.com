@@ -2,6 +2,7 @@
 
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import CalendarProvider from '@/providers/CalendarProvider'
 import {
@@ -39,12 +40,12 @@ export interface AccountPages {
   name: Tabs
   icon: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>
   page: LazyExoticComponent<
-    ({ language }: { language: string }) => React.JSX.Element
+    ({ language }: { language: LanguageCode }) => React.JSX.Element
   >
 }
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

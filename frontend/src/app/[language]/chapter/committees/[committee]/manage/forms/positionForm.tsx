@@ -112,7 +112,7 @@ export default function PositionForm({
   committee,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   committee: Committee
   onSuccess: (position: CommitteePosition) => void
 }) {

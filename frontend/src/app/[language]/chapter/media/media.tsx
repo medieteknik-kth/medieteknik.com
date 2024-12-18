@@ -5,12 +5,13 @@ import Album from '@/app/[language]/chapter/media/view/album'
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
+import { LanguageCode } from '@/models/Language'
 import { JSX } from 'react'
 import MediaGridView from './view/committee'
 import RecentMedia from './view/recent'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

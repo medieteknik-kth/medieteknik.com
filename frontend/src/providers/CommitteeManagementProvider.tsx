@@ -3,6 +3,7 @@ import Committee, {
   CommitteePosition,
   CommitteePositionRecruitment,
 } from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { StudentMembershipPagination } from '@/models/Pagination'
 import { StudentMembership } from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -170,7 +171,7 @@ export function CommitteeManagementProvider({
   children,
 }: {
   committee: Committee
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }) {
   const [state, dispatch] = useReducer(committeeManagementReducer, initialState)

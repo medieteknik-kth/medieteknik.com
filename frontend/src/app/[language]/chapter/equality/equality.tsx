@@ -7,9 +7,10 @@ import StudentCommitteCard from '@/components/cards/StudentCard'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import StaticHeading from '@/components/static/StaticHeading'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

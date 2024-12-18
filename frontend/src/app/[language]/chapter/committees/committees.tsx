@@ -6,6 +6,7 @@ import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import Committee, { CommitteeCategory } from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import Image from 'next/image'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
@@ -15,7 +16,7 @@ interface CommitteeCategoryWithCommittees extends CommitteeCategory {
 }
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

@@ -18,7 +18,7 @@ import Link from 'next/link'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   news_data: News
 }
 

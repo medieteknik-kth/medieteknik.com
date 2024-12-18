@@ -11,6 +11,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { LanguageCode } from '@/models/Language'
 import {
   FolderIcon,
   PhotoIcon,
@@ -20,7 +21,7 @@ import Link from 'next/link'
 import { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 

@@ -1,8 +1,9 @@
+import { LanguageCode } from '@/models/Language'
 import { Metadata } from 'next'
 import Profile from './profile'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {

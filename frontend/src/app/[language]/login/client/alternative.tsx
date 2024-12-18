@@ -5,10 +5,11 @@ import KTHSVG from 'public/images/svg/kth.svg'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   return_url?: string | null
 }
 

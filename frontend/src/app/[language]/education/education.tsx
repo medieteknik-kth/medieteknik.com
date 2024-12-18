@@ -13,12 +13,13 @@ import KTH from 'public/images/svg/kth.svg'
 import Courses from './client/courses'
 import Masters from './client/masters'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 export const dynamic = 'force-static'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

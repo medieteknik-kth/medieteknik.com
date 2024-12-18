@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { LanguageCode } from '@/models/Language'
 import { NewsPagination } from '@/models/Pagination'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -31,7 +32,7 @@ const fetcher = (url: string) =>
   fetch(url).then((res) => res.json() as Promise<NewsPagination>)
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

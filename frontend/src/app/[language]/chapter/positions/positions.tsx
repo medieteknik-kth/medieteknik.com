@@ -10,11 +10,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

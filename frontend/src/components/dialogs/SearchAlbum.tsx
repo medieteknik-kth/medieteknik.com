@@ -18,11 +18,12 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Skeleton } from '../ui/skeleton'
+import { LanguageCode } from '@/models/Language'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
-  language: string
+  language: LanguageCode
   albums?: Album[]
   callback: (album: Album | null) => void
 }

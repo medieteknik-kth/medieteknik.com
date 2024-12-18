@@ -47,7 +47,7 @@ import { z } from 'zod'
 import { AutoSaveResult, useAutoSave } from './autoSave'
 
 interface Props {
-  language: string
+  language: LanguageCode
   slug: string
 }
 

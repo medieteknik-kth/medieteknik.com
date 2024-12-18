@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, type JSX } from 'react'
 import CommitteeLandingPage from './landing'
 import { Permission, Role } from '@/models/Permission'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: string
   committeeName: string
   committeeData: Committee

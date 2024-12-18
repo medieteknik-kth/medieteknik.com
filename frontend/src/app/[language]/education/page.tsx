@@ -1,9 +1,10 @@
 import { useTranslation } from '@/app/i18n'
 import { Metadata } from 'next'
 import Education from './education'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {

@@ -33,9 +33,10 @@ import { useCallback, type JSX } from 'react'
 import { Transforms } from 'slate'
 import ToolbarMarks from './toolbar/marks'
 import ToolbarText from './toolbar/text'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

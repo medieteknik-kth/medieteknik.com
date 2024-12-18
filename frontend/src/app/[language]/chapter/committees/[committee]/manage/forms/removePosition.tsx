@@ -27,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { LanguageCode } from '@/models/Language'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { removePositionSchema } from '@/schemas/committee/position'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -40,7 +41,7 @@ export default function RemovePositionForm({
   language,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()

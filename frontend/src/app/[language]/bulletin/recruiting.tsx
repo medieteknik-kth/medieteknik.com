@@ -1,11 +1,12 @@
 import RecruitmentCard from '@/app/[language]/bulletin/components/recruitmentCard'
 import { useTranslation } from '@/app/i18n'
 import { CommitteePositionRecruitment } from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   data: CommitteePositionRecruitment[]
 }
 

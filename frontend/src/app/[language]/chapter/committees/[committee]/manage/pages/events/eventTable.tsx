@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/table'
 import Committee from '@/models/Committee'
 import Event from '@/models/items/Event'
+import { LanguageCode } from '@/models/Language'
 import { EventPagniation } from '@/models/Pagination'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -54,7 +55,7 @@ import { JSX, useState } from 'react'
 import useSWR from 'swr'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 

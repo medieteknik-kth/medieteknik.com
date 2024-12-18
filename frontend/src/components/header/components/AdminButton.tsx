@@ -5,6 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { PowerIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -12,7 +13,7 @@ import Link from 'next/link'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

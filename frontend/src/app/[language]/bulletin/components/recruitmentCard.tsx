@@ -9,13 +9,14 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { CommitteePositionRecruitment } from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   recruitment: CommitteePositionRecruitment
 }
 

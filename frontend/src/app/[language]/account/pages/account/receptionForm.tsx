@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { receptionSchema } from '@/schemas/user/reception'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -33,7 +34,7 @@ const fetcher = (url: string) =>
   )
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

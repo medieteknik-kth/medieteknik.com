@@ -16,6 +16,7 @@ import React, { use, type JSX } from 'react'
 import useSWR from 'swr'
 import { AutoSaveProvdier } from './autoSave'
 import CommandBar from './commandBar'
+import { LanguageCode } from '@/models/Language'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))
@@ -27,7 +28,7 @@ const fetcher = (url: string) =>
   )
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 

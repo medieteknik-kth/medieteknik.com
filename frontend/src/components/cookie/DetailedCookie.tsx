@@ -19,9 +19,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Dispatch, JSX, SetStateAction, useState } from 'react'
 import { Button } from '../ui/button'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   popup: Dispatch<SetStateAction<boolean>>
 }
 

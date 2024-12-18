@@ -4,12 +4,13 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
+import { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   headerElement: HeaderElement
 }
 

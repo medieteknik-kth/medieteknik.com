@@ -11,7 +11,6 @@ import { CommitteePosition } from '@/models/Committee'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
   position: CommitteePosition
 }
 
@@ -25,10 +24,7 @@ interface Props {
  *
  * @returns {JSX.Element} The position display
  */
-export default function PositionDisplay({
-  language,
-  position,
-}: Props): JSX.Element {
+export default function PositionDisplay({ position }: Props): JSX.Element {
   return (
     <Card className='h-full'>
       <CardHeader>

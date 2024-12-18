@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge'
+import { LanguageCode } from '@/models/Language'
 
-function DraftBadge({ language }: { language: string }) {
+function DraftBadge({ language }: { language: LanguageCode }) {
   return (
     <Badge className={`bg-rose-600 hover:bg-rose-400 font-bold text-white`}>
       DRAFT
@@ -8,7 +9,7 @@ function DraftBadge({ language }: { language: string }) {
   )
 }
 
-function PublishedBadge({ language }: { language: string }) {
+function PublishedBadge({ language }: { language: LanguageCode }) {
   return (
     <Badge className={`bg-green-600 hover:bg-green-400 font-bold text-white`}>
       PUBLISHED
@@ -16,7 +17,7 @@ function PublishedBadge({ language }: { language: string }) {
   )
 }
 
-function UpcomingEventBadge({ language }: { language: string }) {
+function UpcomingEventBadge({ language }: { language: LanguageCode }) {
   return (
     <Badge className={`bg-amber-600 hover:bg-amber-400 font-bold text-white`}>
       UPCOMING
@@ -24,7 +25,7 @@ function UpcomingEventBadge({ language }: { language: string }) {
   )
 }
 
-function OngoingEventBadge({ language }: { language: string }) {
+function OngoingEventBadge({ language }: { language: LanguageCode }) {
   return (
     <Badge
       className={`bg-fuchsia-600 hover:bg-fuchsia-400 font-bold text-white`}
@@ -34,7 +35,7 @@ function OngoingEventBadge({ language }: { language: string }) {
   )
 }
 
-function CompletedEventBadge({ language }: { language: string }) {
+function CompletedEventBadge({ language }: { language: LanguageCode }) {
   return (
     <Badge className={`bg-blue-600 hover:bg-blue-400 font-bold text-white`}>
       COMPLETED

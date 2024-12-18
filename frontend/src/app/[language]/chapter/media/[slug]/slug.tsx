@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   ChevronLeftIcon,
@@ -25,7 +26,7 @@ import Link from 'next/link'
 import { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 

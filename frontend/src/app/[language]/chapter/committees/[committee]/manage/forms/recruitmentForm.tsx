@@ -107,7 +107,7 @@ export default function RecruitmentForm({
   language,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   onSuccess: () => void
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false)

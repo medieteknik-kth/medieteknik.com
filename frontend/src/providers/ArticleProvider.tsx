@@ -1,5 +1,6 @@
 'use client'
 
+import { LanguageCode } from '@/models/Language'
 import {
   createContext,
   useCallback,
@@ -187,7 +188,7 @@ interface ArticleContextType extends ArticleState {
 const ArticleContext = createContext<ArticleContextType | undefined>(undefined)
 
 interface Props {
-  language: string
+  language: LanguageCode
   editor: BaseEditor & ReactEditor
   children: React.ReactNode
 }

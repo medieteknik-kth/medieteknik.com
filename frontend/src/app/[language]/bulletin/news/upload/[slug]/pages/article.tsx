@@ -12,6 +12,7 @@ import { BaseEditor, createEditor } from 'slate'
 import { ReactEditor, withReact } from 'slate-react'
 import ArticleRenderer from '../components/articleRenderer'
 import NewsToolbar from '../components/toolbar'
+import { LanguageCode } from '@/models/Language'
 
 declare module 'slate' {
   interface CustomTypes {
@@ -22,7 +23,7 @@ declare module 'slate' {
 }
 
 interface Props {
-  language: string
+  language: LanguageCode
   news_data: News
 }
 

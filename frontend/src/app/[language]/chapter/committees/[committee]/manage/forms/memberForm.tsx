@@ -28,6 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
@@ -133,7 +134,7 @@ export function AddMemberForm({
   language,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()

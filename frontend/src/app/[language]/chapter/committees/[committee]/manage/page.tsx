@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import CommitteeManage from './manage'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
   committee: string
 }
 

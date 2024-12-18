@@ -7,9 +7,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { LanguageCode } from '@/models/Language'
 
 export default async function CommitteePositions(props: {
-  params: Promise<{ language: string; committee: string }>
+  params: Promise<{ language: LanguageCode; committee: string }>
 }) {
   const params = await props.params
 

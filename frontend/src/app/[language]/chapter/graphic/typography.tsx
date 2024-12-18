@@ -1,4 +1,5 @@
 import { useTranslation } from '@/app/i18n'
+import { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
@@ -7,7 +8,7 @@ import type { JSX } from 'react'
  * @property {string} language - The currently selected language
  */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

@@ -36,7 +36,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 

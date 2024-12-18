@@ -18,6 +18,7 @@ import {
   getHP,
   getLink,
 } from '../constants'
+import { LanguageCode } from '@/models/Language'
 
 /**
  * @interface Course
@@ -79,7 +80,7 @@ interface FrontendCategory {
 export default function Courses({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): JSX.Element {
   const [detailedViewOpen, setDetailedViewOpen] = useState(false)
   const [currentView, setCurrentView] = useState<FrontendCategory | null>(null)

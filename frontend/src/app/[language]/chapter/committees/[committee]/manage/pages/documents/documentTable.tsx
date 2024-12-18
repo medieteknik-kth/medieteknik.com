@@ -35,6 +35,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
@@ -53,7 +54,7 @@ import { JSX, useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 

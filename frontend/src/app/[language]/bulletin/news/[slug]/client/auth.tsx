@@ -23,6 +23,7 @@ import {
 import { useToast } from '@/components/ui/use-toast'
 import Committee from '@/models/Committee'
 import News from '@/models/items/News'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon } from '@heroicons/react/24/outline'
@@ -30,7 +31,7 @@ import { LinkIcon } from '@heroicons/react/24/outline'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   news_data: News
 }
 

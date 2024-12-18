@@ -6,6 +6,7 @@ import Documents from './documents'
 import Iconography from './iconography'
 import Typography from './typography'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 /**
@@ -13,7 +14,7 @@ import type { JSX } from 'react'
  * @property {string} language - The currently selected language
  */
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 /**

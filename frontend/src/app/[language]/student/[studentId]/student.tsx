@@ -49,9 +49,10 @@ function SocialMediaDisplay({
     </Button>
   )
 }
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
   studentId: string
 }
 

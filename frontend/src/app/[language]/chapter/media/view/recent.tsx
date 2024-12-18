@@ -3,11 +3,12 @@ import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import { useTranslation } from '@/app/i18n'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
+import { LanguageCode } from '@/models/Language'
 import { PhotoIcon } from '@heroicons/react/24/outline'
 import { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

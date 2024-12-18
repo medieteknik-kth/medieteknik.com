@@ -1,9 +1,10 @@
 import { getPublicCommitteeData } from '@/api/committee'
 import { type JSX } from 'react'
 import CommitteeRedirect from './redirect'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
   committee: string
 }
 

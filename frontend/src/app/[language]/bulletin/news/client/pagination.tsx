@@ -5,11 +5,12 @@ import { API_BASE_URL } from '@/utility/Constants'
 import useSWR from 'swr'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
-  language: string
+  language: LanguageCode
   index: number
 }
 

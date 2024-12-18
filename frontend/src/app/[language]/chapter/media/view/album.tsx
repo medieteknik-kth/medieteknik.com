@@ -1,5 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
+import { LanguageCode } from '@/models/Language'
 import { AlbumPagination } from '@/models/Pagination'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,7 +8,7 @@ import FallbackImage from 'public/images/logo.webp'
 import { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   albums: AlbumPagination | null
 }
 

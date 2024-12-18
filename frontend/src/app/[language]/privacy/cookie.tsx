@@ -16,9 +16,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 export default async function CookieSection({ language }: Props) {

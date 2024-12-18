@@ -13,7 +13,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { JSX, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -16,7 +17,7 @@ import Logo from 'public/images/logo.webp'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

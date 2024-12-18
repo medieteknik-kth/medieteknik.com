@@ -10,10 +10,11 @@ import Link from 'next/link'
 import ManageButton from './client/manage'
 
 import { getPublicCommitteeData } from '@/api/committee'
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
   committee: string
 }
 

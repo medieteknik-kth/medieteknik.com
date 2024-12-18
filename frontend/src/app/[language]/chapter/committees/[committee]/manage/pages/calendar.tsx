@@ -1,11 +1,12 @@
 'use client'
 
 import Calendar from '@/components/calendar/Calendar'
+import { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

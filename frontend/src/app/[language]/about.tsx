@@ -1,5 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import InfographicCard from '@/components/cards/Infographic'
+import { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
@@ -12,7 +13,7 @@ interface CardElement {
 }
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

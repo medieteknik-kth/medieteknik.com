@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
+import { LanguageCode } from '@/models/Language'
 import { BellIcon, Cog8ToothIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
@@ -24,7 +25,7 @@ import Logo from 'public/images/logo.webp'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

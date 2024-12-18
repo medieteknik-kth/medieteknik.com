@@ -7,9 +7,10 @@ import { Input } from '@/components/ui/input'
 import { CommitteePosition } from '@/models/Committee'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { ChangeEvent, useCallback, useState, type JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   data: CommitteePosition[]
 }
 

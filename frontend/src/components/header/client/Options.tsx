@@ -25,7 +25,7 @@ import { useCallback, useEffect, useState, type JSX } from 'react'
 import DetailedCookiePopup from '../../cookie/DetailedCookie'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

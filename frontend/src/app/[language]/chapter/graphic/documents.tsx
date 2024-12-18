@@ -12,7 +12,7 @@ import type { JSX } from 'react'
  * @property {string} language - The currently selected language
  */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

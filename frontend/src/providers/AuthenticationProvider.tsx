@@ -2,6 +2,7 @@
 
 import Committee, { CommitteePosition } from '@/models/Committee'
 import { AuthorResource } from '@/models/Items'
+import { LanguageCode } from '@/models/Language'
 import { Permission, Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -217,7 +218,7 @@ const AuthenticationContext = createContext<
 >(undefined)
 
 interface Props {
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }
 

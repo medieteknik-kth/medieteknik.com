@@ -1,6 +1,7 @@
 'use client'
 
 import Document from '@/models/items/Document'
+import { LanguageCode } from '@/models/Language'
 import { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useSearchParams } from 'next/navigation'
@@ -191,7 +192,7 @@ export function DocumentManagementProvider({
   language,
   children,
 }: {
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }): JSX.Element {
   const [state, dispatch] = useReducer(documentReducer, initialState)

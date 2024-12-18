@@ -41,9 +41,10 @@ import PositionForm from '../forms/positionForm'
 import RecruitmentForm from '../forms/recruitmentForm'
 import RemovePositionForm from '../forms/removePosition'
 import { Role } from '@/models/Permission'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 

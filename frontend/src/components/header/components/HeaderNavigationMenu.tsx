@@ -12,9 +12,10 @@ import Link from 'next/link'
 import './headerNavigationMenu.css'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   headerElements: HeaderElement[]
 }
 

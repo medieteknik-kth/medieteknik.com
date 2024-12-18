@@ -3,6 +3,7 @@
 import Loading from '@/components/tooltips/Loading'
 import { TabsContent } from '@/components/ui/tabs'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { CommitteeManagementProvider } from '@/providers/CommitteeManagementProvider'
 import { lazy, Suspense, type JSX } from 'react'
 const HomePage = lazy(() => import('./pages/home/home'))
@@ -12,7 +13,7 @@ const EventPage = lazy(() => import('./pages/events/events'))
 const DocumentPage = lazy(() => import('./pages/documents/documents'))
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 

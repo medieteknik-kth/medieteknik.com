@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
+import { LanguageCode } from '@/models/Language'
 import { UserIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -9,7 +10,7 @@ import { usePathname } from 'next/navigation'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

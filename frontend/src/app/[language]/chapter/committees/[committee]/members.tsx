@@ -5,11 +5,12 @@ import FallbackImage from 'public/images/logo.webp'
 import { getCommitteeMembers } from '@/api/committee'
 
 import { StudentCommitteePosition } from '@/models/Student'
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: string
 }
 

@@ -25,6 +25,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import Committee, { CommitteePosition } from '@/models/Committee'
 import Event from '@/models/items/Event'
+import { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
 import Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
@@ -55,7 +56,7 @@ function determineEventStatus(event: Event): Status {
 }
 
 interface Props {
-  language: string
+  language: LanguageCode
   event: Event
   closeDialog: () => void
 }

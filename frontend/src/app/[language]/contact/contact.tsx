@@ -3,10 +3,11 @@ import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import { SectionDescription, SectionDescriptionProps } from './utility/section'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

@@ -16,12 +16,13 @@ import {
 } from '@/components/ui/dialog'
 import Album from '@/models/Album'
 import Committee from '@/models/Committee'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { FolderPlusIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { JSX, useEffect, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

@@ -1,8 +1,9 @@
 import { useTranslation } from '@/app/i18n'
 import StaticHeading from '@/components/static/StaticHeading'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 export default async function EqualityPlans({ language }: Props) {

@@ -25,6 +25,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
+import { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { accountSchema } from '@/schemas/user/account'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -50,7 +51,7 @@ const fetcher = (url: string) =>
   )
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

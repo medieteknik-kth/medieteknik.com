@@ -22,11 +22,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { LanguageCode } from '@/models/Language'
 import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { useState, type JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   setValue: (value: string) => void
 }
 

@@ -23,6 +23,7 @@ import { z } from 'zod'
 
 import { useTranslation } from '@/app/i18n/client'
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -30,7 +31,7 @@ const fetcher = (url: string) =>
   }).then((res) => res.json() as Promise<Profile>)
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

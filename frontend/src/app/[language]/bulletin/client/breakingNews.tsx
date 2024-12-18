@@ -18,6 +18,7 @@ import Link from 'next/link'
 import type { JSX } from 'react'
 import useSWR from 'swr'
 import ShortNews from '../components/shortNews'
+import { LanguageCode } from '@/models/Language'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -35,7 +36,7 @@ const fetcher = (url: string) =>
 export default function BreakingNews({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): JSX.Element {
   const { toast } = useToast()
   const { t } = useTranslation(language, 'bulletin')

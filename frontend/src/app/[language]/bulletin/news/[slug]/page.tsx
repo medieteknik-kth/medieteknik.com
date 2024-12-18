@@ -1,10 +1,11 @@
 import { getNewsData } from '@/api/items/news'
 import NewsSlug from '@/app/[language]/bulletin/news/[slug]/slug'
 import { useTranslation } from '@/app/i18n'
+import { LanguageCode } from '@/models/Language'
 import { Metadata } from 'next'
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 

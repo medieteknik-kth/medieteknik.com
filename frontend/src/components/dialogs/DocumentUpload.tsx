@@ -52,7 +52,7 @@ interface TranslatedInputProps {
 }
 
 interface DocumentUploadProps {
-  language: string
+  language: LanguageCode
   author: Author
   addDocument: (document: Document) => void
   closeMenuCallback: () => void

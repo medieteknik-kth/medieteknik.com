@@ -7,9 +7,10 @@ import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 import { ThemeProvider } from 'next-themes'
 import { useEffect, useState, type JSX } from 'react'
 import { AuthenticationProvider } from './AuthenticationProvider'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }
 

@@ -6,9 +6,10 @@ import Link from 'next/link'
 import LoginForm from './client/loginForm'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

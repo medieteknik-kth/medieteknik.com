@@ -9,9 +9,10 @@ import LoginSection from './client/LoginSection'
 import NavigationSheet from './NavigationSheet'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

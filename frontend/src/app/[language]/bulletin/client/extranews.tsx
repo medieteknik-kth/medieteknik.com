@@ -9,6 +9,7 @@ import { useState, type JSX } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from '../components/shortNews'
+import { LanguageCode } from '@/models/Language'
 
 /**
  * The fetcher function that fetches news data from the API.
@@ -31,7 +32,7 @@ const fetcher = (url: string): Promise<NewsPagination> =>
  */
 const useNews = (
   index: number,
-  language: string
+  language: LanguageCode
 ): {
   data: NewsPagination | undefined
   isLoading: boolean
@@ -59,7 +60,7 @@ const useNews = (
  *   - {number} total_items - The total number of items in the news page.
  *   - {number} total_pages - The total number of pages in the news page.
  */
-function Page({ index, language }: { index: number; language: string }): {
+function Page({ index, language }: { index: number; language: LanguageCode }): {
   jsx: JSX.Element
   total_items: number
   total_pages: number
@@ -110,7 +111,7 @@ function Page({ index, language }: { index: number; language: string }): {
 export default function ExtraNews({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): JSX.Element {
   const [page, setPage] = useState(1)
   const pages: {

@@ -1,13 +1,14 @@
 'use client'
 import { useTranslation } from '@/app/i18n/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { LanguageCode } from '@/models/Language'
 import { UsersIcon } from '@heroicons/react/24/outline'
 
 export default function ExploreMore({
   language,
   committee,
 }: {
-  language: string
+  language: LanguageCode
   committee: string
 }) {
   const committeeName = decodeURIComponent(committee)

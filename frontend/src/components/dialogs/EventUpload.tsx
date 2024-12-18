@@ -36,7 +36,7 @@ import RepeatingForm from './event/repeating'
 import TranslatedInputs from './event/translations'
 
 interface Props {
-  language: string
+  language: LanguageCode
   selectedDate: Date
   closeMenuCallback: () => void
   author: Author

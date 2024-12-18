@@ -3,6 +3,7 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
+import { LanguageCode } from '@/models/Language'
 import { useRef, useState, type JSX } from 'react'
 import tinycolor from 'tinycolor2'
 
@@ -11,7 +12,7 @@ import tinycolor from 'tinycolor2'
  * @property {string} language - The currently selected language
  */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

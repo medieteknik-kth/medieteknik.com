@@ -14,9 +14,10 @@ import {
 } from '@/components/ui/table'
 import Link from 'next/link'
 import CookieSection from './cookie'
+import { LanguageCode } from '@/models/Language'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

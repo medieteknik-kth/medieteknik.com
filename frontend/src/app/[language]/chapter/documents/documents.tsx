@@ -7,10 +7,11 @@ import Sidebar from './sidebar'
 import View from './tabs/View'
 import Toolbar from './toolbar'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {

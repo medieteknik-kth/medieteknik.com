@@ -6,7 +6,7 @@ import tinycolor from 'tinycolor2'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   currentColor: string
   translations: { language_code?: string; title: string }[]
 }
