@@ -7,10 +7,6 @@ import Link from 'next/link'
 
 import type { JSX } from 'react'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Props {
   language: LanguageCode
 }
@@ -40,7 +36,7 @@ export default async function Documents({
   ]
 
   return (
-    <section id='documents' className='px-12 mb-8'>
+    <section id='documents' className='px-2 sm:px-5 md:px-12 mb-8'>
       <h2 className='py-4 font-bold text-3xl uppercase tracking-wide'>
         {t('documents')}
       </h2>

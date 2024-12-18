@@ -8,18 +8,10 @@ import Typography from './typography'
 import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Params {
   language: LanguageCode
 }
 
-/**
- * @interface Params
- * @property {Props} params - The dynamic parameters of the URL
- */
 interface Props {
   params: Promise<Params>
 }

@@ -7,10 +7,6 @@ import { LanguageCode } from '@/models/Language'
 import { useRef, useState, type JSX } from 'react'
 import tinycolor from 'tinycolor2'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Props {
   language: LanguageCode
 }
@@ -77,7 +73,7 @@ export default function Colors({ language }: Props): JSX.Element {
   }
 
   return (
-    <section id='colors' className='px-12 mb-8'>
+    <section id='colors' className='px-2 sm:px-5 md:px-12 mb-8'>
       <div className='py-4'>
         <h2 className='font-bold text-3xl uppercase tracking-wide'>
           {t('colors')}
