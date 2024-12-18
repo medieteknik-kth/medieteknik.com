@@ -115,7 +115,7 @@ def retrieve_extra_claims(
     ).all()
 
     for membership in student_memberships:
-        position: CommitteePosition = CommitteePosition.query.get(
+        position: CommitteePosition | None = CommitteePosition.query.get(
             membership.committee_position_id
         )
 
@@ -128,7 +128,7 @@ def retrieve_extra_claims(
             )
         )
 
-        committee: Committee = Committee.query.get(position.committee_id)
+        committee: Committee | None = Committee.query.get(position.committee_id)
 
         if not committee:
             continue
@@ -212,6 +212,7 @@ def update(request: Request, student: Student) -> Response:
         result = upload_file(
             file=profile_picture,
             file_name=f"{student.student_id}.{file_extension}",
+            content_type=f"image/{file_extension if file_extension != 'jpg' else 'jpeg'}",
             timedelta=None,
             path="profile",
         )
@@ -267,7 +268,10 @@ def get_permissions(student_id: str) -> Dict[str, Any]:
     """
     all_permissions_and_role = {
         "role": None,
-        "permissions": {},
+        "permissions": {
+            "author": [],
+            "student": [],
+        },
     }
 
     author = Author.query.filter(

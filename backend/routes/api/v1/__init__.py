@@ -21,7 +21,7 @@ from flask_jwt_extended import (
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
-from services.core.student import get_permissions
+from services.core.student import get_permissions, retrieve_extra_claims
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
@@ -298,13 +298,29 @@ def register_v1_routes(app: Flask):
             db.session.commit()
 
         response = make_response({"student": student.to_dict(is_public_route=False)})
+        try:
+            permissions_and_role, additional_claims, committees, committee_positions = (
+                retrieve_extra_claims(student=student)
+            )
+
+            response = make_response(
+                {
+                    "student": student.to_dict(is_public_route=False),
+                    "permissions": permissions_and_role.get("permissions"),
+                    "role": permissions_and_role.get("role"),
+                    "committees": committees,
+                    "committee_positions": committee_positions,
+                }
+            )
+        except Exception as e:
+            app.logger.error(f"Error retrieving extra claims: {str(e)}")
 
         response.status_code = 302
         set_access_cookies(
             response=response,
             encoded_access_token=create_access_token(
                 identity=student,
-                fresh=timedelta(minutes=20),
+                fresh=timedelta(minutes=30),
             ),
             max_age=timedelta(hours=1),
         )

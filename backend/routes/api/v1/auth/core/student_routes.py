@@ -47,7 +47,7 @@ def student_login() -> Response:
 
 @student_bp.route("/", methods=["PUT"])
 @csrf_protected
-@jwt_required(refresh=True)
+@jwt_required()
 def update_student() -> Response:
     """
     Updates a student
