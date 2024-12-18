@@ -51,7 +51,7 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
       />
       <Accordion
         type='multiple'
-        className='px-20 py-4 flex flex-col gap-10'
+        className='px-2 sm:px-5 md:px-20 py-4 flex flex-col gap-6'
         defaultValue={['committees']}
       >
         <AccordionItem value='committees'>
@@ -66,7 +66,7 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
                 )
                 .map((position, index) => (
                   <li key={index}>
-                    <PositionDisplay language={language} position={position} />
+                    <PositionDisplay position={position} />
                   </li>
                 ))}
             </ul>
@@ -80,7 +80,7 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
             <ul className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
               {independentPositions.map((position, index) => (
                 <li key={index}>
-                  <PositionDisplay language={language} position={position} />
+                  <PositionDisplay position={position} />
                 </li>
               ))}
             </ul>

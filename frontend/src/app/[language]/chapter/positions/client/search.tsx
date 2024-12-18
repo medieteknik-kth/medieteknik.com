@@ -5,9 +5,10 @@ import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CommitteePosition } from '@/models/Committee'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { ChangeEvent, useCallback, useState, type JSX } from 'react'
 import { LanguageCode } from '@/models/Language'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { ChangeEvent, useCallback, useMemo, useState, type JSX } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -25,8 +26,13 @@ interface Props {
  * @returns {JSX.Element} The search component
  */
 export default function Search({ language, data }: Props): JSX.Element {
-  const [searchInput, setSearchInput] = useState('')
-  const [search, setSearch] = useState('')
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get('search') || ''
+  )
+  const [search, setSearch] = useState(searchParams.get('search') || '')
   const { t } = useTranslation(language, 'positions')
 
   const updateSearchInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -40,18 +46,43 @@ export default function Search({ language, data }: Props): JSX.Element {
     if (searchInput.length < 3) {
       return
     }
+    router.replace(`${pathname}?search=${searchInput.toLowerCase()}`)
     setSearch(searchInput)
   }, [searchInput])
 
+  const filteredData = useMemo(() => {
+    return data.filter((position) =>
+      position.translations[0].title
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    )
+  }, [data, search])
+
   return (
-    <section className='pt-8 px-16'>
+    <section className='pt-8 px-2 sm:px-5 md:px-20'>
       <h2 className='text-xl pb-1'>{t('search')}</h2>
-      <div className='flex gap-2 items-center'>
+      <div className='flex gap-2 items-center relative'>
         <Input
           placeholder='Ordförande, vice ordförande, ledamot...'
           value={searchInput}
           onChange={updateSearchInput}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              updateSearch()
+            }
+          }}
         />
+        <button
+          className={`absolute right-14 ${
+            searchInput.length < 1 && 'hidden'
+          } p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-md`}
+          onClick={() => {
+            setSearchInput('')
+            setSearch('')
+          }}
+        >
+          <XMarkIcon className='w-5 h-5' />
+        </button>
         <Button
           size={'icon'}
           onClick={updateSearch}
@@ -62,21 +93,21 @@ export default function Search({ language, data }: Props): JSX.Element {
         </Button>
       </div>
       <div className={`${!search ? 'hidden' : 'block'} py-2 h-fit pb-4`}>
-        <p className='pb-1 text-neutral-500 dark:text-neutral-200'>
-          {t('search.results')}
+        <p
+          className='pb-1 text-neutral-500 dark:text-neutral-200'
+          title={t('search.results')}
+        >
+          {t('search.results')}{' '}
+          <span className='font-bold text-neutral-900 dark:text-neutral-100'>
+            ({filteredData.length})
+          </span>
         </p>
         <ul className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
-          {data
-            .filter((position) =>
-              position.translations[0].title
-                .toLowerCase()
-                .includes(search.toLowerCase())
-            )
-            .map((position, index) => (
-              <li key={index}>
-                <PositionDisplay language={language} position={position} />
-              </li>
-            ))}
+          {filteredData.map((position, index) => (
+            <li key={index}>
+              <PositionDisplay position={position} />
+            </li>
+          ))}
         </ul>
       </div>
     </section>
