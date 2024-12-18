@@ -3,6 +3,8 @@
     "keywords": "KTH, Kungliga Tekniska Högskolan, Medieteknik, Medieteknikprogrammet, Kurs, Program, Masterprogram, Datalogi, Interaktiv medieteknik, Innovation och Entreprenörskap inom IKT, Maskininlärning, Hållbar Digitalisering",
     "description": "Här kan du hitta information om kurser och program som erbjuds på Medieteknikprogrammet.",
     "courses": "Kurser",
+    "no_courses": "Kontrollera KTH:s hemsida för mer information",
+    "total_hp": "Totalt HP",
     "categories": [
         {
             "id": "math",
@@ -84,18 +86,19 @@
         {
             "title": "Datalogi",
             "description": "Masterprogrammet i datalogi ger dig möjlighet att fördjupa dina kunskaper inom AI, nätverk och kommunikation, data science, algoritmer och komplexitet. Denna är en bred utbildning som ger dig möjlighet att specialisera dig inom ett område som intresserar dig.",
-            "kth_link": "https://www.kth.se/en/studies/master/computer-science",
-            "flags": [
-                {
-                    "title": "Ej tillgängligt",
-                    "description": "Detta program är inte tillgängligt"
-                }
-            ],
+            "kth_link": "https://www.kth.se/en/studies/master/computer-science", 
             "tags": [
                 "AI",
                 "Nätverk och Kommunikation",
                 "Data Science",
                 "Algoritmer och Komplexitet"
+            ],
+            "flags": [
+                {
+                    "flag": "closed",
+                    "applies": "HT 2024",
+                    "description": "Valbar för kull HT24 och tidigare"
+                }
             ]
         },
         {
@@ -118,11 +121,18 @@
                 "Konsulting",
                 "System och Mjuvaruutveckling",
                 "Entreprenörskap"
+            ],
+            "flags": [
+                {
+                    "flag": "closed",
+                    "applies": "HT 2022",
+                    "description": "Valbar för kull HT22 och tidigare"
+                }
             ]
         },
         {
             "title": "Maskininlärning",
-            "description": "Masterprogrammet i maskininlärning ger dig möjlighet att fördjupa dina kunskaper inom maskininlärning, data science och artificiell intelligens.",
+            "description": "Maskininlärnings masterprogrammet fokuserar på att utveckla din förmåga att analysera och förstå data, samt att använda denna data för att skapa intelligenta system.",
             "kth_link": "https://www.kth.se/en/studies/master/machine-learning/",
             "tags": [
                 "Maskininlärning",
@@ -133,12 +143,13 @@
         },
         {
             "title": "Hållbar Digitalisering",
-            "description": "Masterprogrammet i hållbar digitalisering ger dig möjlighet att fördjupa dina kunskaper inom hållbarhet och digitalisering.",
+            "description": "Masterprogrammet inom hållbar digitalisering fokuserar på att utveckla din förmåga att leda och driva digitala transformationer med hållbarhet i fokus.",
             "kth_link": "https://www.kth.se/en/studies/master/sustainable-digitalisation",
             "flags": [
                 {
-                    "title": "Nyhet",
-                    "description": "Detta program är nytt och kommer att starta hösten 2024."
+                    "flag": "new",
+                    "applies": "HT 2024",
+                    "description": "Ny masterprogram från och med HT24"
                 }
             ],
             "tags": [
@@ -149,5 +160,7 @@
             ]
         }
     ],
-    "study_counselor": "Studievägledare"
+    "study_counselor": "Studievägledare",
+    "flag.new": "Ny",
+    "flag.closed": "Stängd"
 }

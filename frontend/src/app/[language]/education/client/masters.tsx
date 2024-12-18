@@ -1,4 +1,6 @@
 'use client'
+
+import { Master } from '@/app/[language]/education/types/educationTypes'
 import { useTranslation } from '@/app/i18n/client'
 import { Section } from '@/components/static/Static'
 import { Badge } from '@/components/ui/badge'
@@ -18,29 +20,11 @@ import {
 } from '@/components/ui/carousel'
 import { LanguageCode } from '@/models/Language'
 import ClassNames from 'embla-carousel-class-names'
-import { StaticImageData } from 'next/image'
 import Link from 'next/link'
 import KTH from 'public/images/svg/kth.svg'
+import { type JSX } from 'react'
 import './masters.css'
 
-interface CarouselItem {
-  id: number
-  title: string
-  description: string
-  image: StaticImageData
-  kthLink: string
-  keyAreas: string[]
-}
-
-interface Master {
-  title: string
-  description: string
-  kth_link: string
-  flags?: {
-    flag: string
-    description: string
-  }[]
-  tags: string[]
 interface Props {
   language: LanguageCode
 }
@@ -85,7 +69,27 @@ export default function Masters({ language }: Props): JSX.Element {
 
                 <Card className='w-fit h-[900px] md:h-[700px] xl:h-[550px] flex flex-col justify-between'>
                   <CardHeader className='w-fit'>
-                    <CardTitle>{item.title}</CardTitle>
+                    <CardTitle className='flex items-center gap-2'>
+                      {item.title}
+                      {item.flags &&
+                        item.flags.map((flag, index) => (
+                          <Badge
+                            key={index}
+                            variant={
+                              flag.flag === 'closed' ? 'destructive' : 'default'
+                            }
+                            className={`${
+                              flag.flag === 'new' &&
+                              'bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700'
+                            } select-none`}
+                            title={flag.description}
+                          >
+                            {flag.flag === 'closed'
+                              ? t('flag.closed') + ' - ' + flag.applies
+                              : t('flag.new') + ' - ' + flag.applies}
+                          </Badge>
+                        ))}
+                    </CardTitle>
                     <div className='flex flex-wrap gap-1'>
                       {item.tags.map((keyArea, index) => (
                         <Badge

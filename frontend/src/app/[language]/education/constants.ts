@@ -110,6 +110,16 @@ export function getHP(category: string, index: number): number {
   return HP[category][index]
 }
 
+export function getTotalHP(
+  courses: {
+    title: string
+    hp: number
+    link: string
+  }[]
+): number {
+  return courses.reduce((acc, course) => acc + course.hp, 0)
+}
+
 /**
  * Gets the color of a category
  * @param category The category to get the color for
