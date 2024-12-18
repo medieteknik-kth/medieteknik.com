@@ -36,7 +36,7 @@ export default async function Equality(props: Props) {
   return (
     <main className='pb-4 w-full grid place-items-center'>
       <HeadComponent title={t('title')} />
-      <section className='md:min-w-[600px] w-full max-w-[700px] px-4 sm:px-12 md:px-0'>
+      <section className='md:min-w-[600px] w-full max-w-[700px] px-2 sm:px-5 md:px-0'>
         <StaticHeading
           title={t('dei')}
           id='dei'
@@ -60,7 +60,7 @@ export default async function Equality(props: Props) {
           </a>
         </p>
       </section>
-      <section className='md:min-w-[600px] w-full max-w-[700px] px-4 sm:px-12 md:px-0'>
+      <section className='md:min-w-[600px] w-full max-w-[700px] px-4 sm:px-5 md:px-0'>
         <StaticHeading
           title={t('safety_council')}
           id='safety-council'
