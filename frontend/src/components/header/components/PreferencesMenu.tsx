@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
@@ -9,13 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState, type JSX } from 'react'
+import { type JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -30,7 +30,7 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
 
   useEffect(() => {
     setIsClient(true)
-  }, [setIsClient])
+  }, [])
 
   /**
    * @name switchLanguage
@@ -69,8 +69,8 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
     <>
       <DropdownMenuGroup>
         <DropdownMenuLabel>{t('language')}</DropdownMenuLabel>
-        {supportedLanguages.map((lang, index) => (
-          <DropdownMenuItem className='p-0' key={index}>
+        {SUPPORTED_LANGUAGES.map((lang) => (
+          <DropdownMenuItem className='p-0' key={lang}>
             <Button
               variant='ghost'
               className='w-full flex items-center justify-between gap-2 p-0 pl-2'

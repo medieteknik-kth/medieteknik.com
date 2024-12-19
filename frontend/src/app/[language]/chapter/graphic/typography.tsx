@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
@@ -89,7 +89,7 @@ export default async function Typography({
               <p
                 className='tracking-wider select-none'
                 style={{
-                  fontFamily: font.name + ", 'Helvetica', 'Arial', sans-serif",
+                  fontFamily: `${font.name}, 'Helvetica', 'Arial', sans-serif`,
                   fontWeight: font.weight[0],
                   fontStyle: font.style[0],
                 }}
@@ -103,7 +103,7 @@ export default async function Typography({
                 {font.weight.join(', ')} {font.style.join(', ')}{' '}
               </p>
               <p className='text-neutral-600 text-sm dark:text-neutral-300 text-wrap max-w-[375px] text-start'>
-                {t('typography.' + font.id)}
+                {t(`typography.${font.id}`)}
               </p>
             </div>
           </li>

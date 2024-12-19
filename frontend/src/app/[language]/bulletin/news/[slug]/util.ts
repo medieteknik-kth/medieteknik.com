@@ -1,6 +1,7 @@
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { Author } from '@/models/Items'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { Author } from '@/models/Items'
+import type Student from '@/models/Student'
 
 /**
  * @name assignCorrectAuthor

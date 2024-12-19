@@ -3,7 +3,7 @@
 import Sidebar from '@/app/[language]/account/sidebar'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import CalendarProvider from '@/providers/CalendarProvider'
 import {
@@ -14,11 +14,11 @@ import {
 } from '@heroicons/react/24/outline'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, {
-  ForwardRefExoticComponent,
-  JSX,
-  LazyExoticComponent,
+  type ForwardRefExoticComponent,
+  type JSX,
+  type LazyExoticComponent,
   Suspense,
-  SVGProps,
+  type SVGProps,
   use,
   useEffect,
   useState,
@@ -124,7 +124,7 @@ export default function AccountPage(props: Props): JSX.Element {
     }*/
 
     setAccountPages([...defaultPages, ...additionalPages])
-  }, [committees, permissions])
+  }, [permissions])
 
   const searchParams = useSearchParams()
 

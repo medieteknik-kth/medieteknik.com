@@ -2,10 +2,11 @@ import { assignCorrectAuthor } from '@/app/[language]/bulletin/news/[slug]/util'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
+import type News from '@/models/items/News'
 
 interface Props {
   news_data: News

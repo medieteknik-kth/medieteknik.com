@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { PencilIcon } from '@heroicons/react/24/outline'
 
 export default function TagsPage({ language }: { language: LanguageCode }) {

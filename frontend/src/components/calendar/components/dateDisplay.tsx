@@ -1,6 +1,6 @@
 'use client'
 import EventComponent from '@/components/calendar/components/eventDisplay'
-import Event from '@/models/items/Event'
+import type Event from '@/models/items/Event'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { isSameDay, isSameMonth } from 'date-fns'
 
@@ -97,6 +97,13 @@ export default function DateComponent({
                 : 'bg-neutral-100 dark:bg-[#222] hover:bg-neutral-300/75 dark:hover:bg-neutral-700/75'
             }`
       }`}
+      onKeyDown={(event) => {
+        event.stopPropagation()
+        if (event.key === 'Enter') {
+          setSelectedDate(date)
+          onDateClickCallback(date)
+        }
+      }}
       onClick={(event) => {
         event.stopPropagation()
         setSelectedDate(date)
@@ -121,9 +128,9 @@ export default function DateComponent({
         }`}
       >
         <ul className='flex flex-row sm:flex-col flex-wrap gap-1 h-fit'>
-          {filterEventsForDate(sortEvents(events), date).map((event, index) => (
+          {filterEventsForDate(sortEvents(events), date).map((event) => (
             <EventComponent
-              key={index}
+              key={event.event_id}
               date={date}
               event={event}
               onEventClick={onEventClickCallback}

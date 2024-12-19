@@ -41,7 +41,6 @@ export default async function Home(props: Props): Promise<JSX.Element> {
             src='https://storage.googleapis.com/medieteknik-static/static/landingpage.webp'
             alt='Background'
             fill
-            sizes='(max-width: 768px) 100vw, 100vw'
             className='w-full h-full object-cover'
             priority
             placeholder='blur'

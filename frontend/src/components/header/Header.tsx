@@ -1,15 +1,15 @@
 import { useTranslation } from '@/app/i18n'
 import HeaderNavigationMenu from '@/components/header/components/HeaderNavigationMenu'
-import { HeaderElement } from '@/components/header/util/HeaderElement'
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
-import LoginSection from './client/LoginSection'
 import NavigationSheet from './NavigationSheet'
+import LoginSection from './client/LoginSection'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -44,7 +44,7 @@ export default async function Header({
           asChild
         >
           <Link
-            href={'/' + language}
+            href={`/${language}`}
             className='w-full h-full flex items-center z-10 relative'
             title={t('home')}
             aria-label='Home Button'

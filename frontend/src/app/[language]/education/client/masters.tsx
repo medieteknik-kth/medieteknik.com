@@ -1,6 +1,6 @@
 'use client'
 
-import { Master } from '@/app/[language]/education/types/educationTypes'
+import type { Master } from '@/app/[language]/education/types/educationTypes'
 import { useTranslation } from '@/app/i18n/client'
 import { Section } from '@/components/static/Static'
 import { Badge } from '@/components/ui/badge'
@@ -18,11 +18,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import ClassNames from 'embla-carousel-class-names'
 import Link from 'next/link'
 import KTH from 'public/images/svg/kth.svg'
-import { type JSX } from 'react'
+import type { JSX } from 'react'
 import './masters.css'
 
 interface Props {
@@ -71,35 +71,34 @@ export default function Masters({ language }: Props): JSX.Element {
                   <CardHeader className='w-fit'>
                     <CardTitle className='flex items-center gap-2'>
                       {item.title}
-                      {item.flags &&
-                        item.flags.map((flag, index) => (
-                          <Badge
-                            key={index}
-                            variant={
-                              flag.flag === 'closed' ? 'destructive' : 'default'
-                            }
-                            className={`${
-                              flag.flag === 'new' &&
-                              'bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700'
-                            } select-none`}
-                            title={flag.description}
-                          >
-                            {flag.flag === 'closed'
-                              ? t('flag.closed') + ' - ' + flag.applies
-                              : t('flag.new') + ' - ' + flag.applies}
-                          </Badge>
-                        ))}
+                      {item.flags?.map((flag) => (
+                        <Badge
+                          key={`${flag.flag}_${item.title}`}
+                          variant={
+                            flag.flag === 'closed' ? 'destructive' : 'default'
+                          }
+                          className={`${
+                            flag.flag === 'new' &&
+                            'bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700'
+                          } select-none`}
+                          title={flag.description}
+                        >
+                          {flag.flag === 'closed'
+                            ? `${t('flag.closed')} - ${flag.applies}`
+                            : `${t('flag.new')} - ${flag.applies}`}
+                        </Badge>
+                      ))}
                     </CardTitle>
                     <div className='flex flex-wrap gap-1'>
                       {item.tags.map((keyArea, index) => (
                         <Badge
-                          key={index}
+                          key={`${keyArea}_${item.title}`}
                           variant={
                             index === 0
                               ? 'default'
                               : index > 2
-                              ? 'outline'
-                              : 'secondary'
+                                ? 'outline'
+                                : 'secondary'
                           }
                           className='select-none'
                         >

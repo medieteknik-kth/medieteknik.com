@@ -1,7 +1,7 @@
 'use client'
 
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
@@ -61,12 +61,12 @@ export function AutoSaveProvdier({
   )
 
   const saveCallback = useCallback(
-    async (language_code: string, manual: boolean = false) => {
+    async (language_code: string, manual = false) => {
       if (!autoSavePossible && !manual)
         return Promise.resolve(AutoSaveResult.FAILED)
       try {
         const response = await fetch(
-          API_BASE_URL + `/news/${slug}?language=${language_code}`,
+          `${API_BASE_URL}/news/${slug}?language=${language_code}`,
           {
             method: 'PUT',
             headers: {
@@ -81,24 +81,24 @@ export function AutoSaveProvdier({
           setAutoSavePossible(false)
           setErrorCount(0)
           return AutoSaveResult.SUCCESS
-        } else {
-          if (manual) {
-            return AutoSaveResult.FAILED
-          }
-          setAutoSavePossible(true)
-          setErrorCount((prev) => prev + 1)
-
-          if (errorCount > 3) {
-            return AutoSaveResult.FAILED_MAX_RETRIES
-          }
-
-          setTimeout(() => {
-            setAutoSavePossible(false)
-            setErrorCount(0)
-          }, 1000 * 30)
-
-          return AutoSaveResult.FAILED_RETRY
         }
+
+        if (manual) {
+          return AutoSaveResult.FAILED
+        }
+        setAutoSavePossible(true)
+        setErrorCount((prev) => prev + 1)
+
+        if (errorCount > 3) {
+          return AutoSaveResult.FAILED_MAX_RETRIES
+        }
+
+        setTimeout(() => {
+          setAutoSavePossible(false)
+          setErrorCount(0)
+        }, 1000 * 30)
+
+        return AutoSaveResult.FAILED_RETRY
       } catch (error) {
         console.error(error)
         return AutoSaveResult.FAILED
@@ -129,7 +129,7 @@ export function AutoSaveProvdier({
     setInterval(() => {
       setAutoSavePossible(true)
     }, 1000 * 30)
-  }, [autoSavePossible])
+  }, [])
 
   return (
     <AutoSaveContext.Provider

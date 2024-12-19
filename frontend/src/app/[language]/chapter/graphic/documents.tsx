@@ -1,6 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,12 +1,12 @@
 import DateComponent from '@/components/calendar/components/dateDisplay'
-import Event from '@/models/items/Event'
+import type { LanguageCode } from '@/models/Language'
+import type Event from '@/models/items/Event'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { LANGUAGES } from '@/utility/Constants'
 import { addMonths, getDaysInMonth, setDate } from 'date-fns'
-import { useMemo, type JSX } from 'react'
+import { type JSX, useMemo } from 'react'
 import './calendar.css'
 import { getPreviousMonthLastWeekToCurrent } from './util'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -52,17 +52,17 @@ export default function Calendar({
     >
       <ul className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 font-bold text-lg border-l border-t rounded-t'>
         {language === LANGUAGES.en.short_name
-          ? en_days.map((day, index) => (
+          ? en_days.map((day) => (
               <li
-                key={index}
+                key={day}
                 className='week w-full desktop:w-48 py-1 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'
               >
                 {day}
               </li>
             ))
-          : sv_days.map((day, index) => (
+          : sv_days.map((day) => (
               <li
-                key={index}
+                key={day}
                 className='week w-full desktop:w-48 py-1 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'
               >
                 {day}
@@ -86,27 +86,30 @@ export default function Calendar({
                 onDateClickCallback(date)
               }
             }}
-            key={index}
+            key={mappedDate.toString()}
           />
         ))}
-        {[...Array(totalDays)].map((_, index) => (
-          <DateComponent
-            date={setDate(date, index + 1)}
-            events={events}
-            currentMonth
-            onEventClickCallback={(event) => {
-              if (onEventClickCallback) {
-                onEventClickCallback(event)
-              }
-            }}
-            onDateClickCallback={(date) => {
-              if (onDateClickCallback) {
-                onDateClickCallback(date)
-              }
-            }}
-            key={index + previousMonthLastWeek.length}
-          />
-        ))}
+        {[...Array(totalDays)].map((_, index) => {
+          const currentDate = setDate(date, index + 1)
+          return (
+            <DateComponent
+              date={currentDate}
+              events={events}
+              currentMonth
+              onEventClickCallback={(event) => {
+                if (onEventClickCallback) {
+                  onEventClickCallback(event)
+                }
+              }}
+              onDateClickCallback={(date) => {
+                if (onDateClickCallback) {
+                  onDateClickCallback(date)
+                }
+              }}
+              key={currentDate.toISOString()}
+            />
+          )
+        })}
         {[...Array(MAX_NEXT_MONTH_DAYS)].map((_, index) => (
           <DateComponent
             date={setDate(addMonths(date, 1), index + 1)}

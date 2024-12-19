@@ -39,10 +39,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import Committee from '@/models/Committee'
-import Event from '@/models/items/Event'
-import { LanguageCode } from '@/models/Language'
-import { EventPagniation } from '@/models/Pagination'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type { EventPagniation } from '@/models/Pagination'
+import type Event from '@/models/items/Event'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
@@ -51,7 +51,7 @@ import {
   ChevronRightIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { JSX, useState } from 'react'
+import { type JSX, useState } from 'react'
 import useSWR from 'swr'
 
 interface Props {
@@ -81,9 +81,7 @@ export default function EventTable({
   const { total_events, setEventsTotal } = useCommitteeManagement()
   const [pageIndex, setPageIndex] = useState(1)
   const { data: events, error: swrError } = useSWR<EventPagniation>(
-    `${API_BASE_URL}/committees/${
-      committee && committee.translations[0].title.toLowerCase()
-    }/events?language=${language}&page=${pageIndex}`,
+    `${API_BASE_URL}/committees/${committee?.translations[0].title.toLowerCase()}/events?language=${language}&page=${pageIndex}`,
     fetcher
   )
   const { t } = useTranslation(language, 'committee_management/events')
@@ -195,83 +193,82 @@ export default function EventTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {events.items &&
-              events.items.map((event, index) => (
-                <TableRow key={index}>
-                  <TableCell className='max-w-52'>
-                    {event.translations[0].title}
-                  </TableCell>
-                  <TableCell className='w-36'>
-                    {new Date(
+            {events.items?.map((event) => (
+              <TableRow key={event.event_id}>
+                <TableCell className='max-w-52'>
+                  {event.translations[0].title}
+                </TableCell>
+                <TableCell className='w-36'>
+                  {new Date(
+                    new Date(event.start_date).getTime() +
+                      event.duration * 60000
+                  ) < new Date() ? (
+                    <CompletedEventBadge language={language} />
+                  ) : new Date(
                       new Date(event.start_date).getTime() +
                         event.duration * 60000
-                    ) < new Date() ? (
-                      <CompletedEventBadge language={language} />
-                    ) : new Date(
-                        new Date(event.start_date).getTime() +
-                          event.duration * 60000
-                      ) > new Date() &&
-                      new Date(event.start_date) < new Date() ? (
-                      <OngoingEventBadge language={language} />
-                    ) : (
-                      <UpcomingEventBadge language={language} />
-                    )}
-                  </TableCell>
-                  <TableCell className='max-w-96'>{event.location}</TableCell>
-                  <TableCell className='w-72'>
-                    {new Date(event.start_date).toLocaleDateString(language, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell className='w-72'>
-                    {new Date(
-                      new Date(event.start_date).getTime() +
-                        event.duration * 60000
-                    ).toLocaleDateString(language, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant={'destructive'} size={'icon'}>
-                          <TrashIcon className='w-6 h-6' />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            {t('event.delete') + event.translations[0].title}
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {t('event.delete_confirmation')}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>
-                            {t('event.cancel')}
-                          </AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => {
-                              deleteEvent(event)
-                            }}
-                          >
-                            {t('event.delete_confirm')}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    ) > new Date() &&
+                    new Date(event.start_date) < new Date() ? (
+                    <OngoingEventBadge language={language} />
+                  ) : (
+                    <UpcomingEventBadge language={language} />
+                  )}
+                </TableCell>
+                <TableCell className='max-w-96'>{event.location}</TableCell>
+                <TableCell className='w-72'>
+                  {new Date(event.start_date).toLocaleDateString(language, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  })}
+                </TableCell>
+                <TableCell className='w-72'>
+                  {new Date(
+                    new Date(event.start_date).getTime() +
+                      event.duration * 60000
+                  ).toLocaleDateString(language, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  })}
+                </TableCell>
+                <TableCell>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant={'destructive'} size={'icon'}>
+                        <TrashIcon className='w-6 h-6' />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          {t('event.delete') + event.translations[0].title}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t('event.delete_confirmation')}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>
+                          {t('event.cancel')}
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => {
+                            deleteEvent(event)
+                          }}
+                        >
+                          {t('event.delete_confirm')}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>

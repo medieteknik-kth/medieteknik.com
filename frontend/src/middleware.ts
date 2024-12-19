@@ -1,10 +1,10 @@
 import acceptLanguage from 'accept-language'
 import { NextURL } from 'next/dist/server/web/next-url'
-import { NextRequest, NextResponse } from 'next/server'
-import { fallbackLanguage, supportedLanguages } from './app/i18n/settings'
-import { LanguageCode } from './models/Language'
+import { type NextRequest, NextResponse } from 'next/server'
+import { FALLBACK_LANGUAGE, SUPPORTED_LANGUAGES } from './app/i18n/settings'
+import type { LanguageCode } from './models/Language'
 
-acceptLanguage.languages(supportedLanguages)
+acceptLanguage.languages(SUPPORTED_LANGUAGES)
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -21,8 +21,6 @@ export const Config = {
  * @return {NextResponse} The response object with redirection or next response.
  */
 async function handleLanguage(request: NextRequest): Promise<NextResponse> {
-  let language
-
   // Blacklisted URLs, which should not be redirected
   const blacklistedURLs = [
     '/_next',
@@ -41,7 +39,7 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
     '/__nextjs_original-stack-frame',
   ]
 
-  language = null
+  let language = null
 
   // Check client side language
   if (!language && typeof window !== 'undefined') {
@@ -54,19 +52,19 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
       .get('Accept-Language')
       ?.split(',')[0]
       .split('-')[0]
-    if (language && !supportedLanguages.includes(language as LanguageCode)) {
+    if (language && !SUPPORTED_LANGUAGES.includes(language as LanguageCode)) {
       language = null
     }
   }
 
   // If no language is found, use the fallback language
   if (!language) {
-    language = fallbackLanguage
+    language = FALLBACK_LANGUAGE
   }
 
   // Non-specified language or language not supported
   if (
-    !supportedLanguages.some((locale) =>
+    !SUPPORTED_LANGUAGES.some((locale) =>
       request.nextUrl.pathname.startsWith(`/${locale}`)
     ) &&
     !blacklistedURLs.some((url) => request.nextUrl.pathname.startsWith(url))
@@ -91,7 +89,7 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
   // Specified language
   if (request.headers.has('Referer')) {
     const refererUrl = new URL(request.headers.get('Referer') as string)
-    const language = supportedLanguages.find((locale) =>
+    const language = SUPPORTED_LANGUAGES.find((locale) =>
       refererUrl.pathname.startsWith(`/${locale}`)
     )
     const response = NextResponse.next()

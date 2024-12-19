@@ -27,7 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { removePositionSchema } from '@/schemas/committee/position'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -35,7 +35,7 @@ import { ChevronUpDownIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 export default function RemovePositionForm({
   language,
@@ -111,6 +111,7 @@ export default function RemovePositionForm({
                     <FormControl>
                       <Button
                         variant={'outline'}
+                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         role='combobox'
                         aria-expanded={open}
                         className='w-[300px] justify-between'

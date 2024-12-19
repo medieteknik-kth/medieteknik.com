@@ -1,4 +1,4 @@
-import { Language } from '@/models/Language'
+import type { Language } from '@/models/Language'
 import { GB, SE } from 'country-flag-icons/react/3x2'
 
 export const API_BASE_URL: string =

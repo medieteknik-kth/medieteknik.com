@@ -1,7 +1,7 @@
 import Positions from '@/app/[language]/chapter/positions/positions'
 import { useTranslation } from '@/app/i18n'
-import { LanguageCode } from '@/models/Language'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 
 interface Params {
   language: LanguageCode

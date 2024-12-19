@@ -6,13 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type Student from '@/models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 
 export function StudentTooltip({ student }: { student: Student }) {
+  const username = `${student.first_name} ${student.last_name || ''}`
   return (
     <>
       <Button
@@ -43,7 +45,7 @@ export function StudentTooltip({ student }: { student: Student }) {
               />
             </AvatarFallback>
           </Avatar>
-          <p>{student.first_name + ' ' + (student.last_name || '')}</p>
+          <p>{username}</p>
         </Link>
       </Button>
       <Button
@@ -52,12 +54,8 @@ export function StudentTooltip({ student }: { student: Student }) {
       >
         <Link
           href={`mailto:${student.email}`}
-          title={`Send email to ${
-            student.first_name + ' ' + (student.last_name || '')
-          }`}
-          aria-label={`Send email to ${
-            student.first_name + ' ' + (student.last_name || '')
-          }`}
+          title={`Send email to ${username}`}
+          aria-label={`Send email to ${username}`}
         >
           <span>{student.email}</span>
         </Link>
@@ -87,7 +85,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
                 className='h-24 w-auto object-contain p-3.5'
               />
               <AvatarFallback>
-                {committee.translations[0].title + ' logo'}
+                {`${committee.translations[0].title} logo`}
               </AvatarFallback>
             </Avatar>
             <p>{committee.translations[0].title}</p>
@@ -103,7 +101,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
               className='h-24 w-auto object-contain p-3.5'
             />
             <AvatarFallback>
-              {committee.translations[0].title + ' logo'}
+              {`${committee.translations[0].title} logo`}
             </AvatarFallback>
           </Avatar>
           <p>{committee.translations[0].title}</p>

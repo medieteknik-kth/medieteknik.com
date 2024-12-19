@@ -14,7 +14,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import {
   AdjustmentsHorizontalIcon,
@@ -23,7 +23,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -47,7 +47,7 @@ export default function DefaultProfile({ language }: Props): JSX.Element {
     return <></>
   }
 
-  const username = student.first_name + ' ' + (student.last_name || '')
+  const username = `${student.first_name} ${student.last_name || ''}`
 
   return (
     <>
@@ -61,9 +61,7 @@ export default function DefaultProfile({ language }: Props): JSX.Element {
             loading='lazy'
           />
           <AvatarFallback className='bg-primary text-black'>
-            {student.first_name[0]}
-            {''}
-            {(student.last_name && student.last_name[0]) || ''}
+            {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
           </AvatarFallback>
         </Avatar>
         <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px]'>

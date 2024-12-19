@@ -7,14 +7,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { LanguageCode } from '@/models/Language'
-import { TFunction } from 'next-i18next'
+import type { TFunction } from 'next-i18next'
 
 import type { JSX } from 'react'
 
 interface Props {
   index: number
-  language: LanguageCode
+  language: string
   t: TFunction
 }
 

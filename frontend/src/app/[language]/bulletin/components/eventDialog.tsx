@@ -4,15 +4,16 @@ import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import Event from '@/models/items/Event'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
+import type Event from '@/models/items/Event'
 import { ClockIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import tinycolor from 'tinycolor2'
 import DetailedEvent from './detailedEvent'
 import './event.css'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -57,11 +58,11 @@ export default function EventDialog({
               : event.background_color,
           }}
         >
-          <div className={`w-full h-fit rounded-t-md`}>
-            <div className={`w-full flex flex-col gap-2 overflow-hidden`}>
+          <div className='w-full h-fit rounded-t-md'>
+            <div className='w-full flex flex-col gap-2 overflow-hidden'>
               <div className='event-header flex flex-col px-2 py-2'>
                 <h3
-                  className={`event-title text-2xl font-bold text-start truncate`}
+                  className='event-title text-2xl font-bold text-start truncate'
                   title={event.translations[0].title}
                 >
                   {event.translations[0].title}

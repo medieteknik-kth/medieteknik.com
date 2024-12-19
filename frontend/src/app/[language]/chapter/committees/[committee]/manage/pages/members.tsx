@@ -21,7 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import { Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -35,13 +37,11 @@ import {
   TrashIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import { useEffect, useState, type JSX } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
 import PositionForm from '../forms/positionForm'
 import RecruitmentForm from '../forms/recruitmentForm'
 import RemovePositionForm from '../forms/removePosition'
-import { Role } from '@/models/Permission'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -117,9 +117,8 @@ export default function MembersPage({
       if (!response.ok) {
         alert('Failed to delete recruitment')
         throw new Error('Failed to delete recruitment')
-      } else {
-        window.location.reload()
       }
+      window.location.reload()
     } catch (error) {
       console.error(error)
     }
@@ -305,8 +304,8 @@ export default function MembersPage({
                       (positionB ? positionB.weight : 0)
                     )
                   })
-                  .map((member, index) => (
-                    <TableRow key={index}>
+                  .map((member) => (
+                    <TableRow key={member.student.student_id}>
                       <TableCell className='flex items-center gap-2'>
                         <StudentTag
                           student={member.student}
@@ -320,8 +319,8 @@ export default function MembersPage({
                           findPosition(member.committee_position_id) && (
                             <p>
                               {
-                                findPosition(member.committee_position_id)!
-                                  .translations[0].title
+                                findPosition(member.committee_position_id)
+                                  ?.translations[0].title
                               }
                             </p>
                           )
@@ -367,9 +366,9 @@ export default function MembersPage({
               <ul className='flex flex-col gap-1'>
                 {positions
                   .sort((a, b) => a.weight - b.weight)
-                  .map((position, index) => (
+                  .map((position) => (
                     <li
-                      key={index}
+                      key={position.committee_position_id}
                       className='even:bg-neutral-100 even:dark:bg-neutral-800 rounded-md p-2 uppercase font-mono text-sm even:dark:hover:bg-neutral-800 even:hover:bg-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900'
                     >
                       <p>{position.translations[0].title}</p>
@@ -397,8 +396,10 @@ export default function MembersPage({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recruitments.map((recruitment, index) => (
-                    <TableRow key={index}>
+                  {recruitments.map((recruitment) => (
+                    <TableRow
+                      key={`${recruitment.committee_position.committee_position_id}_${recruitment.start_date.toString()}`}
+                    >
                       <TableCell>
                         {recruitment.committee_position.translations[0].title}
                       </TableCell>

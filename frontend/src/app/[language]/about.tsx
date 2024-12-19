@@ -1,6 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import InfographicCard from '@/components/cards/Infographic'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
@@ -32,14 +32,14 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
       title: t('chapter.title'),
       description: t('chapter.description'),
       icon: 'https://storage.googleapis.com/medieteknik-static/committees/styrelsen.svg',
-      href: '/' + language + '/chapter',
+      href: `/${language}/chapter`,
       linkText: t('chapter.link_text'),
     },
     {
       title: t('new_students.title'),
       description: t('new_students.description'),
       icon: 'https://storage.googleapis.com/medieteknik-static/committees/mtgn.svg',
-      href: '/' + language + '/education',
+      href: `/${language}/education`,
       linkText: t('new_students.link_text'),
     },
     {

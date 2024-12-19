@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -56,6 +56,7 @@ export default async function EqualityConcepts({ language }: Props) {
               href='https://drive.google.com/drive/u/0/folders/1Yg90ggSuvpP_9858ByotplhSgR01l6aX'
               target='_blank'
               className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+              rel='noreferrer'
             >
               {t('ths_policy')}
             </a>
@@ -70,6 +71,7 @@ export default async function EqualityConcepts({ language }: Props) {
               href={t('media_conduct.url')}
               target='_blank'
               className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+              rel='noreferrer'
             >
               {t('media_conduct')}
             </a>

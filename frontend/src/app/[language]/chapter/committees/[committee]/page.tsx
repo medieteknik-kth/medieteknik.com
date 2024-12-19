@@ -1,6 +1,6 @@
 import { getPublicCommitteeData } from '@/api/committee'
-import { LanguageCode } from '@/models/Language'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 import CommitteePage from './committee'
 
 interface Params {

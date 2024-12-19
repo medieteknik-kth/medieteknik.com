@@ -2,9 +2,10 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Switch } from '@/components/ui/switch'
+import type { LanguageCode } from '@/models/Language'
 import {
   CookieConsent,
-  CookieSettings,
+  type CookieSettings,
   DEFAULT_COOKIE_SETTINGS,
 } from '@/utility/CookieManager'
 import { LOCAL_STORAGE_COOKIE_CONSENT } from '@/utility/LocalStorage'
@@ -17,9 +18,8 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Dispatch, JSX, SetStateAction, useState } from 'react'
+import { type Dispatch, type JSX, type SetStateAction, useState } from 'react'
 import { Button } from '../ui/button'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -196,7 +196,7 @@ export default function DetailedCookiePopup({
         </div>
         <div className='max-h-96 overflow-y-auto px-8 py-8'>
           <div className='w-full h-full flex flex-col gap-4 pb-10'>
-            {availableCookies.map((key, index) => {
+            {availableCookies.map((key) => {
               const cookie = key as
                 | 'NECESSARY'
                 | 'FUNCTIONAL'
@@ -206,7 +206,7 @@ export default function DetailedCookiePopup({
                 | 'THIRD_PARTY'
               return (
                 <div
-                  key={index}
+                  key={key}
                   className='w-full flex flex-col border-b-2 border-black/25 last:border-0'
                 >
                   <div className='w-full flex justify-between'>
@@ -229,11 +229,16 @@ export default function DetailedCookiePopup({
                         )}
                       </button>
                       <h3 className='ml-2 text-xl uppercase tracking-wider'>
-                        {t('cookie_' + cookie)}
+                        {t(`cookie_${cookie}`)}
                       </h3>
                     </div>
                     <div
                       className='cookieSwitch w-16 h-9 relative inline-block focus:border-2 focus:border-black'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          updateSlider(cookie, !sliders[cookie])
+                        }
+                      }}
                       onClick={() => {
                         updateSlider(cookie, !sliders[cookie])
                       }}
@@ -246,7 +251,7 @@ export default function DetailedCookiePopup({
                   </div>
                   {dropdowns[cookie] && (
                     <p className='px-8 mt-4 text-sm'>
-                      {t('cookie_' + cookie + '_description')}
+                      {t(`cookie_${cookie}_description`)}
                     </p>
                   )}
                 </div>

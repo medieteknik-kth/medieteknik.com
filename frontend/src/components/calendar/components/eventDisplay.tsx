@@ -1,6 +1,6 @@
-import Event from '@/models/items/Event'
+import type Event from '@/models/items/Event'
 import { getDay, isSameDay } from 'date-fns'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 import tinycolor from 'tinycolor2'
 
 interface Props {
@@ -55,6 +55,10 @@ export default function EventComponent({
         e.stopPropagation()
         if (onEventClick) onEventClick(event)
       }}
+      onKeyDown={(e) => {
+        e.stopPropagation()
+        if (onEventClick && e.key === 'Enter') onEventClick(event)
+      }}
       style={{
         backgroundColor: defaultColor,
       }}
@@ -66,6 +70,23 @@ export default function EventComponent({
               ? 'text-white'
               : 'text-black'
           }`}
+        onFocus={(e) => {
+          e.stopPropagation()
+          const elements = document.getElementsByClassName(event.event_id)
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute(
+              'style',
+              'border: 1px solid black !important;'
+            )
+          }
+        }}
+        onBlur={(e) => {
+          e.stopPropagation()
+          const elements = document.getElementsByClassName(event.event_id)
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute('style', 'border: 0')
+          }
+        }}
         onMouseOver={(e) => {
           e.stopPropagation()
           const elements = document.getElementsByClassName(event.event_id)
@@ -119,6 +140,23 @@ export default function EventComponent({
         } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10 z-10 rounded-md`}
         style={{
           backgroundColor: defaultColor,
+        }}
+        onFocus={(e) => {
+          e.stopPropagation()
+          const elements = document.getElementsByClassName(event.event_id)
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute(
+              'style',
+              'border: 1px solid black !important;'
+            )
+          }
+        }}
+        onBlur={(e) => {
+          e.stopPropagation()
+          const elements = document.getElementsByClassName(event.event_id)
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute('style', 'border: 0')
+          }
         }}
         onMouseOver={(e) => {
           e.stopPropagation()

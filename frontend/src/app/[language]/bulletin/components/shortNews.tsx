@@ -8,10 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
+import type News from '@/models/items/News'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'

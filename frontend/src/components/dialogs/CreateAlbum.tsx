@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   DialogContent,
@@ -19,12 +19,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { albumUploadSchema } from '@/schemas/items/album'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 interface Props {
   language: LanguageCode
@@ -36,7 +36,7 @@ export default function CreateAlbum({ language, callback }: Props) {
   const form = useForm<z.infer<typeof albumUploadSchema>>({
     resolver: zodResolver(albumUploadSchema),
     defaultValues: {
-      translations: supportedLanguages.map((language) => ({
+      translations: SUPPORTED_LANGUAGES.map((language) => ({
         language_code: language,
         title: '',
         description: '',
@@ -77,7 +77,7 @@ export default function CreateAlbum({ language, callback }: Props) {
       <Tabs>
         <Label>{t('language')}</Label>
         <TabsList className='overflow-x-auto h-fit w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -92,7 +92,7 @@ export default function CreateAlbum({ language, callback }: Props) {
         </TabsList>
         <form onSubmit={form.handleSubmit(postForm)}>
           <Form {...form}>
-            {supportedLanguages.map((language, index) => (
+            {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
                 <FormField
                   name={`translations[${index}].title`}

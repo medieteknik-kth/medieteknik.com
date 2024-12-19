@@ -6,7 +6,7 @@ import { useTranslation } from '@/app/i18n'
 import StudentCommitteCard from '@/components/cards/StudentCard'
 import { HeadComponent } from '@/components/static/Static'
 import StaticHeading from '@/components/static/StaticHeading'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 interface Params {
   language: LanguageCode
@@ -79,6 +79,7 @@ export default async function Equality(props: Props) {
           href='https://docs.google.com/forms/d/e/1FAIpQLScjjMkYBuJ3s1TwQjHI7VYhyFIrlafQtmA1X2ile6VFUBmF9w/viewform?usp=sf_link'
           target='_blank'
           className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+          rel='noreferrer'
         >
           {t('safety_council.contact.file')}
         </a>
@@ -91,9 +92,9 @@ export default async function Equality(props: Props) {
           <ul className='flex flex-wrap gap-8 justify-center py-1'>
             {filteredMembers
               .sort((a, b) => a.position.weight - b.position.weight)
-              .map((member, index) => (
+              .map((member) => (
                 <StudentCommitteCard
-                  key={index}
+                  key={member.student.email}
                   member={member}
                   committeeLogo={false}
                 />

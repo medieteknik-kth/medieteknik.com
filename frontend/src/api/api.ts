@@ -12,7 +12,7 @@ type ApiSuccessResponse<T> = {
  * @description The API error response object with no data, but an error
  */
 type ApiErrorResponse<T> = {
-  data: T extends any[] ? T : null
+  data: T extends unknown[] ? T : null
   error: Error
 }
 
@@ -45,7 +45,7 @@ function createSuccessResponse<T>(data: T): ApiSuccessResponse<T> {
  */
 function createErrorResponse<T>(error: Error): ApiErrorResponse<T> {
   return {
-    data: [] as any as T extends any[] ? T : null,
+    data: [] as T extends unknown[] ? T : null,
     error,
   }
 }

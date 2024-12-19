@@ -1,4 +1,5 @@
 'use client'
+
 import StudentTag from '@/components/tags/StudentTag'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,15 +10,15 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from '@/components/ui/pagination'
-import { StudentPagination } from '@/models/Pagination'
-import Student from '@/models/Student'
+import type { StudentPagination } from '@/models/Pagination'
+import type Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckIcon,
   MagnifyingGlassIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
-import { Dispatch, SetStateAction, useRef, useState } from 'react'
+import { type Dispatch, type SetStateAction, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Skeleton } from '../ui/skeleton'
 
@@ -29,10 +30,10 @@ function render(
   selectedStudents: Student[],
   setSelectedStudents: Dispatch<SetStateAction<Student[]>>
 ) {
-  return students.map((student, index) => (
-    <li key={student.email + index} className='w-full flex justify-between'>
+  return students.map((student) => (
+    <li key={student.email} className='w-full flex justify-between'>
       <div className='max-w-[400px]'>
-        <StudentTag key={index} student={student} includeAt={false} />
+        <StudentTag student={student} includeAt={false} />
       </div>
       <Button
         size={'icon'}
@@ -151,24 +152,24 @@ export default function SearchStudent({
               {'< '}Previous
             </Button>
           </PaginationItem>
-          <PaginationItem></PaginationItem>
-          {[...Array(data.total_pages)].map((_, index) =>
-            pageIndex + 2 === index || pageIndex - 2 === index ? (
-              <PaginationEllipsis key={index} />
-            ) : (
-              pageIndex + 2 > index &&
-              pageIndex - 2 < index && (
-                <PaginationItem key={index}>
-                  <Button
-                    disabled={pageIndex === index + 1}
-                    onClick={() => setPageIndex(index + 1)}
-                    variant={'ghost'}
-                  >
-                    <span>{index + 1}</span>
-                  </Button>
-                </PaginationItem>
+          {Array.from({ length: data.total_pages }, (_, index) => index).map(
+            (page, index) =>
+              pageIndex + 2 === index || pageIndex - 2 === index ? (
+                <PaginationEllipsis key={`ellipsis-${page}`} />
+              ) : (
+                pageIndex + 2 > index &&
+                pageIndex - 2 < index && (
+                  <PaginationItem key={page}>
+                    <Button
+                      disabled={pageIndex === index + 1}
+                      onClick={() => setPageIndex(index + 1)}
+                      variant={'ghost'}
+                    >
+                      <span>{index + 1}</span>
+                    </Button>
+                  </PaginationItem>
+                )
               )
-            )
           )}
 
           <PaginationItem>

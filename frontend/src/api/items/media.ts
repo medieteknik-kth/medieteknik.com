@@ -1,8 +1,8 @@
-import { ApiResponse, fetchData } from '@/api/api'
-import Album from '@/models/Album'
-import Media from '@/models/items/Media'
-import { LanguageCode } from '@/models/Language'
-import { AlbumPagination, MediaPagination } from '@/models/Pagination'
+import { type ApiResponse, fetchData } from '@/api/api'
+import type Album from '@/models/Album'
+import type { LanguageCode } from '@/models/Language'
+import type { AlbumPagination, MediaPagination } from '@/models/Pagination'
+import type Media from '@/models/items/Media'
 import { API_BASE_URL } from '@/utility/Constants'
 
 /**

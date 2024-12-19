@@ -1,16 +1,16 @@
+//import ExploreMore from './client/explore'
+import HeaderGap from '@/components/header/components/HeaderGap'
 import type Committee from '@/models/Committee'
 import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import FallbackImage from 'public/images/logo.webp'
-import CommitteeMembers from './members'
-//import ExploreMore from './client/explore'
-import HeaderGap from '@/components/header/components/HeaderGap'
-import Link from 'next/link'
 import ManageButton from './client/manage'
+import CommitteeMembers from './members'
 
 import { getPublicCommitteeData } from '@/api/committee'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
@@ -80,30 +80,31 @@ export default async function CommitteePage(
 
   if (error) {
     console.error(error)
-    redirect('/' + language + '/chapter/committees')
+    redirect(`/${language}/chapter/committees`)
   }
 
   if (Object.keys(committeeData).length === 0) {
-    redirect('/' + language + '/chapter/committees')
+    redirect(`/${language}/chapter/committees`)
   }
 
   if (!committeeData.translations || committeeData.hidden) {
-    redirect('/' + language + '/chapter/committees')
+    redirect(`/${language}/chapter/committees`)
   }
 
   const committeeName = decodeURIComponent(committee)
-  const hasGroupPhoto = !!committeeData.group_photo_url
 
   return (
     <main>
       <section
         className={`${
-          hasGroupPhoto ? 'desktop:min-h-[1080px] h-screen' : 'h-fit'
+          committeeData.group_photo_url
+            ? 'desktop:min-h-[1080px] h-screen'
+            : 'h-fit'
         } relative bg-[#EEE] dark:bg-[#222]`}
       >
-        {hasGroupPhoto ? (
+        {committeeData.group_photo_url ? (
           <Image
-            src={committeeData.group_photo_url!}
+            src={committeeData.group_photo_url}
             alt='img'
             fill
             className='object-cover h-full'
@@ -119,7 +120,7 @@ export default async function CommitteePage(
 
         <div
           className={`w-full  ${
-            hasGroupPhoto
+            committeeData.group_photo_url
               ? 'absolute h-fit bottom-0 border-t-2 bg-black/75 text-white'
               : 'h-full border-b-2 mt-32 lg:mt-0 relative'
           } backdrop-blur-xl px-12 py-12 flex flex-col lg:flex-row gap-4 lg:gap-10 items-center border-yellow-400`}
@@ -147,7 +148,7 @@ export default async function CommitteePage(
               href={`mailto:${committeeData.email}`}
               target='_blank'
               className={`absolute top-0 text-lg underline-offset-4 hover:underline tracking-wide ${
-                hasGroupPhoto
+                committeeData.group_photo_url
                   ? 'text-yellow-400'
                   : 'text-blue-600 dark:text-primary'
               }`}
@@ -160,7 +161,9 @@ export default async function CommitteePage(
           </div>
           <div
             className={`absolute right-4 sm:right-12 ${
-              hasGroupPhoto ? '-top-20' : '-top-24 lg:bottom-8 lg:top-auto'
+              committeeData.group_photo_url
+                ? '-top-20'
+                : '-top-24 lg:bottom-8 lg:top-auto'
             }`}
           >
             <ManageButton language={language} committee={committeeData} />

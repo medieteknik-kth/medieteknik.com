@@ -13,20 +13,20 @@ import {
 } from '@/components/ui/card'
 import {
   Carousel,
-  CarouselApi,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
-import { JSX, useCallback, useEffect, useState } from 'react'
+import { type JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -66,7 +66,7 @@ export default function Committees({
     }
     setSelectedIndex(api.selectedScrollSnap())
     emblaThumbsApi.scrollTo(api.selectedScrollSnap())
-  }, [api, emblaThumbsApi, setSelectedIndex])
+  }, [api, emblaThumbsApi])
 
   useEffect(() => {
     if (!api || !emblaThumbsApi) {
@@ -110,7 +110,7 @@ export default function Committees({
               )
               .map((committee, index) => (
                 <CarouselItem
-                  key={index}
+                  key={committee.translations[0].title}
                   className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[400px] pl-4'
                 >
                   <Card className='h-full flex flex-col justify-between'>
@@ -185,14 +185,14 @@ export default function Committees({
             )
             .map((committee, index) => (
               <Button
-                key={index}
+                key={committee.translations[0].title}
                 variant='outline'
                 size='icon'
                 className={`w-16 h-auto aspect-square p-2.5 overflow-visible relative hover:brightness-95 bg-white hover:bg-white ${
                   api?.selectedScrollSnap() === index && 'brightness-95'
                 }`}
                 onClick={onThumbClick(index)}
-                title={translation(committee)?.title + ' thumbnail' || ''}
+                title={`${translation(committee)?.title} thumbnail'`}
               >
                 <Image
                   src={committee.logo_url}

@@ -1,12 +1,13 @@
-import Album from '@/models/Album'
-import Document from '@/models/items/Document'
-import Event from '@/models/items/Event'
-import Media from '@/models/items/Media'
-import News from '@/models/items/News'
-import Student, {
+import type Album from '@/models/Album'
+import type Student from '@/models/Student'
+import type {
   StudentCommitteePosition,
   StudentMembership,
 } from '@/models/Student'
+import type Document from '@/models/items/Document'
+import type Event from '@/models/items/Event'
+import type Media from '@/models/items/Media'
+import type News from '@/models/items/News'
 
 /**
  * @interface Pagniation
@@ -105,7 +106,7 @@ export interface AlbumPagination extends Pagniation {
  * @interface StudentCommitteePositionPagination
  * @extends Pagniation
  * @description The pagination for student committee positions
- * 
+ *
  * @property {StudentCommitteePosition[]} items - The student committee positions
  */
 export interface StudentCommitteePositionPagination extends Pagniation {

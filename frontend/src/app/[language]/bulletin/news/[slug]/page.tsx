@@ -1,8 +1,8 @@
 import { getNewsData } from '@/api/items/news'
 import NewsSlug from '@/app/[language]/bulletin/news/[slug]/slug'
 import { useTranslation } from '@/app/i18n'
-import { LanguageCode } from '@/models/Language'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 
 interface Params {
   language: LanguageCode
@@ -29,7 +29,7 @@ export async function generateMetadata(props: {
 
   let title = data.translations[0].title
   if (title.length > 60) {
-    title = title.substring(0, 60) + '...'
+    title = `${title.substring(0, 60)}...`
   }
 
   return {
@@ -39,8 +39,8 @@ export async function generateMetadata(props: {
       data.author.author_type === 'COMMITTEE'
         ? data.author.translations[0].title
         : data.author.author_type === 'STUDENT'
-        ? data.author.first_name + ' ' + (data.author.last_name || '')
-        : ''
+          ? `${data.author.first_name} ${data.author.last_name || ''}`
+          : ''
     }`,
     alternates: {
       canonical: `https://www.medieteknik.com/${params.language}/bulletin/news/${params.slug}`,
@@ -56,17 +56,13 @@ export async function generateMetadata(props: {
       locale: params.language === 'sv' ? 'sv_SE' : 'en_GB',
       siteName: 'Medieteknik - KTH',
       countryName: 'Sweden',
-      url:
-        'https://www.medieteknik.com/' +
-        params.language +
-        '/bulletin/news/' +
-        params.slug,
+      url: `https://www.medieteknik.com/${params.language}/bulletin/news/${params.slug}`,
       type: 'article',
       publishedTime: data.created_at,
       modifiedTime: data.last_updated || data.created_at,
       images: data.translations[0].main_image_url && {
         url: data.translations[0].main_image_url,
-        type: 'image/' + data.translations[0].main_image_url.split('.').pop(),
+        type: `image/${data.translations[0].main_image_url.split('.').pop()}`,
         width: 700,
         height: 320,
         alt: data.translations[0].title,
@@ -75,8 +71,8 @@ export async function generateMetadata(props: {
         data.author.author_type === 'COMMITTEE'
           ? data.author.translations[0].title
           : data.author.author_type === 'STUDENT'
-          ? data.author.first_name + ' ' + data.author.last_name
-          : null,
+            ? `${data.author.first_name} ${data.author.last_name}`
+            : null,
     },
   }
 }

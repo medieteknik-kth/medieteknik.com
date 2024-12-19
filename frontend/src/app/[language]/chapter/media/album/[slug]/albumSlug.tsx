@@ -11,14 +11,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import {
   FolderIcon,
   PhotoIcon,
   VideoCameraIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Params {
   language: LanguageCode
@@ -106,8 +106,8 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
                   new Date(b.created_at).getTime() -
                   new Date(a.created_at).getTime()
               )
-              .map((video, index) => (
-                <li key={index}>
+              .map((video) => (
+                <li key={`${video.translations[0].title}_${video.media_url}`}>
                   <VideoDisplay language={language} video={video} />
                 </li>
               ))}
@@ -128,8 +128,11 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
                   new Date(b.created_at).getTime() -
                   new Date(a.created_at).getTime()
               )
-              .map((image, index) => (
-                <li key={index} className=''>
+              .map((image) => (
+                <li
+                  key={`${image.translations[0].title}_${image.media_url}`}
+                  className=''
+                >
                   <ImageDisplay image={image} />
                 </li>
               ))}

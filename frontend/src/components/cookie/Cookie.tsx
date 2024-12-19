@@ -2,10 +2,10 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { DEFAULT_COOKIE_SETTINGS } from '@/utility/CookieManager'
 import { LOCAL_STORAGE_COOKIE_CONSENT } from '@/utility/LocalStorage'
-import { JSX, useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 import DetailedCookiePopup from './DetailedCookie'
 
 interface Props {
@@ -31,8 +31,9 @@ export default function CookiePopup({ language }: Props): JSX.Element {
    * @description Saves the cookie settings to the local storage.
    *
    * @param {boolean} allowedAll - Whether all cookies are allowed or not. Defaults to false.
+   * @returns {void}
    */
-  function saveSettings(allowedAll: boolean = false) {
+  function saveSettings(allowedAll = false): void {
     if (!allowedAll) {
       window.localStorage.setItem(
         LOCAL_STORAGE_COOKIE_CONSENT,
@@ -64,21 +65,22 @@ export default function CookiePopup({ language }: Props): JSX.Element {
       // Check if cookie settings contains all necessary keys
       const settings = JSON.parse(cookieSettings)
       const keys = Object.keys(DEFAULT_COOKIE_SETTINGS)
-      const hasAllKeys = keys.every((key) => settings.hasOwnProperty(key))
+      const hasAllKeys = keys.every((key) =>
+        Object.prototype.hasOwnProperty.call(settings, key)
+      )
       if (!hasAllKeys) {
         setMessage(t('outdated'))
         setShowPopup(true)
       }
     }
-  }, [t, setShowPopup])
+  }, [t])
 
   if (!showPopup) return <></>
 
   return (
-    <div
-      role='dialog'
+    <dialog
       aria-modal='true'
-      className={`w-full h-screen fixed grid place-items-center top-0 bg-black/30 z-50`}
+      className='w-full h-screen fixed grid place-items-center top-0 bg-black/30 z-50'
     >
       <div className='w-full sm:w-[512px] h-fit fixed bg-white dark:bg-[#111] border-2 border-black/50 dark:border-yellow-400/50 rounded-md'>
         <div className='flex flex-col px-8 gap-4'>
@@ -125,6 +127,6 @@ export default function CookiePopup({ language }: Props): JSX.Element {
       {showDetailedPopup && (
         <DetailedCookiePopup language={language} popup={setShowPopup} />
       )}
-    </div>
+    </dialog>
   )
 }

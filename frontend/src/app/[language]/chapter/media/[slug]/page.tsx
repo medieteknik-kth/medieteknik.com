@@ -1,7 +1,7 @@
 import { useTranslation } from '@/app/i18n'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 import MediaSlug from './slug'
-import { LanguageCode } from '@/models/Language'
 
 interface Params {
   slug: string
@@ -19,7 +19,7 @@ export async function generateMetadata(props: {
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   const capitalizedSlug = slugTitle.charAt(0).toUpperCase() + slugTitle.slice(1)
   return {
-    title: capitalizedValue + ' - ' + capitalizedSlug,
+    title: `${capitalizedValue} - ${capitalizedSlug}`,
     keywords: t('keywords'),
     description: t('description'),
     alternates: {

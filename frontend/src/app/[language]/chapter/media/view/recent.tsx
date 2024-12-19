@@ -3,9 +3,9 @@ import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import { useTranslation } from '@/app/i18n'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { PhotoIcon } from '@heroicons/react/24/outline'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -47,8 +47,11 @@ export default async function RecentMedia({
                   new Date(b.created_at).getTime() -
                   new Date(a.created_at).getTime()
               )
-              .map((item, index) => (
-                <li key={index} className='flex flex-col gap-2'>
+              .map((item) => (
+                <li
+                  key={item.translations[0].title}
+                  className='flex flex-col gap-2'
+                >
                   <ImageDisplay image={item} />
                   <div className='px-3 hidden'>
                     {item.author.author_type === 'STUDENT' ? (

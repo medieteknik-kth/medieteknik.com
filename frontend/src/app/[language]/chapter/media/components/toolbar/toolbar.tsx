@@ -1,6 +1,6 @@
 import ToolbarAuth from '@/app/[language]/chapter/media/components/toolbar/auth'
-import { LanguageCode } from '@/models/Language'
-import { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 
 interface Props {
   language: LanguageCode

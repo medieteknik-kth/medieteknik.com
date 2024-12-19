@@ -25,9 +25,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useToast } from '@/components/ui/use-toast'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
-import { NewsPagination } from '@/models/Pagination'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckBadgeIcon,
@@ -37,7 +37,7 @@ import {
   NewspaperIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { JSX, useState } from 'react'
+import { type JSX, useState } from 'react'
 import useSWR from 'swr'
 
 interface Props {
@@ -148,8 +148,8 @@ export default function NewsTable({ language, committee }: Props): JSX.Element {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {news.items.map((article, index) => (
-              <TableRow key={index}>
+            {news.items.map((article) => (
+              <TableRow key={article.url}>
                 <TableCell className='max-w-52'>
                   {article.translations[0].title}
                 </TableCell>
@@ -173,20 +173,11 @@ export default function NewsTable({ language, committee }: Props): JSX.Element {
                       title='Copy URL'
                       onClick={() => {
                         navigator.clipboard.writeText(
-                          window.location.origin +
-                            '/' +
-                            language +
-                            '/bulletin/news/' +
-                            article.url
+                          `${window.location.origin}/${language}/bulletin/news/${article.url}`
                         )
                         toast({
                           title: 'Copied to clipboard',
-                          description:
-                            window.location.origin +
-                            '/' +
-                            language +
-                            '/bulletin/news/' +
-                            article.url,
+                          description: `${window.location.origin}/${language}/bulletin/news/${article.url}`,
                           duration: 2500,
                         })
                       }}

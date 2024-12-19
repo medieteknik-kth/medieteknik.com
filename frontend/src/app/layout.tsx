@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { CustomProvider } from 'rsuite'
 import 'rsuite/dist/rsuite-no-reset.min.css'
 
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
-    <html suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning>
       <body>
         <SpeedInsights />
         <Analytics />

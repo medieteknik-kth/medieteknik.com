@@ -1,7 +1,7 @@
-import { ApiResponse, fetchData } from '@/api/api'
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
-import { NewsPagination } from '@/models/Pagination'
+import { type ApiResponse, fetchData } from '@/api/api'
+import type { LanguageCode } from '@/models/Language'
+import type { NewsPagination } from '@/models/Pagination'
+import type News from '@/models/items/News'
 import { API_BASE_URL } from '@/utility/Constants'
 
 /**

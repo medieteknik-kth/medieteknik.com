@@ -36,8 +36,6 @@ export const mediaUploadSchema = z
   .refine((data) => {
     if (data.media_type === 'video') {
       return data.youtube_url !== ''
-    } else if (data.media_type === 'image') {
-      return data.media !== ''
     }
-    return false
+    return data.media !== ''
   })

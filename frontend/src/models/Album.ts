@@ -1,4 +1,4 @@
-import Media from '@/models/items/Media'
+import type Media from '@/models/items/Media'
 
 /**
  * @interface Album

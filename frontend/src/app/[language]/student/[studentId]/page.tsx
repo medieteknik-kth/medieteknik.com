@@ -1,7 +1,7 @@
 import { getStudentPublic } from '@/api/student'
 import { useTranslation } from '@/app/i18n'
-import { LanguageCode } from '@/models/Language'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 import StudentPage from './student'
 
 interface Params {
@@ -23,8 +23,7 @@ export async function generateMetadata(props: {
   if (error) return {}
 
   const maxWords = 30
-  const fullName =
-    data.student.first_name + ' ' + (data.student.last_name || '')
+  const fullName = `${data.student.first_name} ${data.student.last_name || ''}`
   const value = fullName.split(' ').slice(0, maxWords).join(' ')
 
   return {
@@ -35,7 +34,7 @@ export async function generateMetadata(props: {
       canonical: `https://www.medieteknik.com/${params.language}/student/${params.studentId}`,
       languages: {
         sv: `https://www.medieteknik.com/sv/student/${params.studentId}`,
-        en: `https://www.medieteknik.com/en/privacy`,
+        en: `https://www.medieteknik.com/en/student/${params.studentId}`,
         'x-default': `https://www.medieteknik.com/student/${params.studentId}`,
       },
     },

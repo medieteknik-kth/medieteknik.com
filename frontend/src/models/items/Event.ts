@@ -1,5 +1,5 @@
-import Item from '@/models/Items'
-import { LanguageCode } from '@/models/Language'
+import type Item from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
 
 /**
  * @interface Event

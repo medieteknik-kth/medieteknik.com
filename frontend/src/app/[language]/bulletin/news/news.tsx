@@ -1,8 +1,8 @@
 import { getNewsPagniation } from '@/api/items/news'
 import AllNews from '@/app/[language]/bulletin/news/client/allNews'
 import HeaderGap from '@/components/header/components/HeaderGap'
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 
 import type { JSX } from 'react'
 

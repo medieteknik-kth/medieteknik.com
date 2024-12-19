@@ -1,15 +1,15 @@
 'use client'
 import { getEvents } from '@/api/calendar'
-import Event from '@/models/items/Event'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import type Event from '@/models/items/Event'
 import {
+  type JSX,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useReducer,
   useRef,
-  type JSX,
 } from 'react'
 
 interface CalendarState {
@@ -128,7 +128,7 @@ export default function CalendarProvider({
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
       try {
-        const {data: events, error} = await getEvents(date, language)
+        const { data: events, error } = await getEvents(date, language)
 
         if (error) {
           throw error

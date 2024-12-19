@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   ChevronLeftIcon,
@@ -23,7 +23,7 @@ import {
   VideoCameraIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Params {
   language: LanguageCode
@@ -46,7 +46,7 @@ export async function generateStaticParams(): Promise<
 > {
   try {
     const response = await fetch(
-      API_BASE_URL + `/public/committees?language=sv`
+      `${API_BASE_URL}/public/committees?language=sv`
     )
 
     if (response.ok) {
@@ -78,7 +78,8 @@ export async function generateStaticParams(): Promise<
  */
 export default async function MediaSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const { data: committee_data, error: committee_error } = await getPublicCommitteeData(slug, language)
+  const { data: committee_data, error: committee_error } =
+    await getPublicCommitteeData(slug, language)
   const { t } = await useTranslation(language, 'media')
 
   if (committee_error || Object.keys(committee_data).length === 0) {
@@ -165,8 +166,8 @@ export default async function MediaSlug(props: Props): Promise<JSX.Element> {
                     new Date(b.created_at).getTime() -
                     new Date(a.created_at).getTime()
                 )
-                .map((video, index) => (
-                  <li key={index}>
+                .map((video) => (
+                  <li key={`${video.translations[0].title}_${video.media_url}`}>
                     <VideoDisplay language={language} video={video} />
                   </li>
                 ))}
@@ -186,8 +187,8 @@ export default async function MediaSlug(props: Props): Promise<JSX.Element> {
                     new Date(b.created_at).getTime() -
                     new Date(a.created_at).getTime()
                 )
-                .map((image, index) => (
-                  <li key={index}>
+                .map((image) => (
+                  <li key={`${image.translations[0].title}_${image.media_url}`}>
                     <ImageDisplay image={image} />
                   </li>
                 ))}

@@ -1,6 +1,7 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -20,18 +21,18 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Author } from '@/models/Items'
-import Event from '@/models/items/Event'
-import { LanguageCode } from '@/models/Language'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type Event from '@/models/items/Event'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { eventUploadSchema } from '@/schemas/items/event'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 import RepeatingForm from './event/repeating'
 import TranslatedInputs from './event/translations'
 
@@ -96,7 +97,7 @@ export default function EventUpload({
   const eventForm = useForm<z.infer<typeof eventUploadSchema>>({
     resolver: zodResolver(eventUploadSchema),
     defaultValues: {
-      translations: supportedLanguages.map((language) => {
+      translations: SUPPORTED_LANGUAGES.map((language) => {
         return {
           language_code: language,
           title: '',
@@ -218,7 +219,7 @@ export default function EventUpload({
       <Tabs defaultValue={language} className='mb-2 -mt-1'>
         <Label>{t('event.form.language')}</Label>
         <TabsList className='overflow-x-auto h-fit w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -338,6 +339,12 @@ export default function EventUpload({
                       className='h-8 aspect-square mr-2 rounded-lg border cursor-pointer'
                       title='Click to open colour picker'
                       style={{ backgroundColor: currentColor }}
+                      onKeyDown={(e) => {
+                        e.stopPropagation()
+                        if (e.key === 'Enter') {
+                          setShowColorPicker(!showColorPicker)
+                        }
+                      }}
                       onClick={(e) => {
                         e.stopPropagation()
                         setShowColorPicker(!showColorPicker)
@@ -380,6 +387,12 @@ export default function EventUpload({
                           className='w-6 h-6 cursor-pointer rounded-full'
                           style={{ backgroundColor: presetColor.color }}
                           title={presetColor.title}
+                          onKeyDown={(e) => {
+                            e.stopPropagation()
+                            if (e.key === 'Enter') {
+                              handleColorChange(presetColor.color)
+                            }
+                          }}
                           onClick={() => handleColorChange(presetColor.color)}
                         />
                       ))}
@@ -390,7 +403,7 @@ export default function EventUpload({
                 </FormItem>
               )}
             />
-            {supportedLanguages.map((language, index) => (
+            {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}

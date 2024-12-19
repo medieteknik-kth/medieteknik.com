@@ -3,10 +3,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  card: Card
+  card: InfoCard
 }
 
-interface Card {
+interface InfoCard {
   title: string
   description: string
   icon: string

@@ -1,7 +1,7 @@
 import { useTranslation } from '@/app/i18n'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 import Education from './education'
-import { LanguageCode } from '@/models/Language'
 
 interface Params {
   language: LanguageCode

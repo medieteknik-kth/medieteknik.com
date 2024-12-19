@@ -1,9 +1,8 @@
 import { getCommitteeMembers } from '@/api/committee'
 
 import StudentCommitteCard from '@/components/cards/StudentCard'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
-
 
 interface Props {
   language: LanguageCode
@@ -52,9 +51,9 @@ export default async function CommitteeMembers({
       <div className='w-full h-full flex flex-wrap gap-4 justify-center grid-flow-row px-12 mb-6'>
         {members.items
           .sort((a, b) => a.position.weight - b.position.weight)
-          .map((member, index) => (
+          .map((member) => (
             <StudentCommitteCard
-              key={index}
+              key={`${member.position.translations[0].title}-${member.student.email}`}
               member={member}
               committeeLogo={false}
             />

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { CommitteePosition } from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackLogo from 'public/images/logo.webp'
@@ -35,7 +35,7 @@ export default function PositionDisplay({ position }: Props): JSX.Element {
             <Avatar className='p-2 bg-white'>
               <AvatarImage
                 src={position.committee.logo_url}
-                alt={position.committee.translations[0].title + ' Logo'}
+                alt={`${position.committee.translations[0].title} Logo`}
               />
               <AvatarFallback className='p-2 bg-white'>
                 <Image src={FallbackLogo} alt='' />

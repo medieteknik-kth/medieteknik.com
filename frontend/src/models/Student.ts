@@ -1,4 +1,4 @@
-import { CommitteePosition } from './Committee'
+import type { CommitteePosition } from './Committee'
 
 /**
  * @enum STUDENT_TYPES

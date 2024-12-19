@@ -6,7 +6,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
 import { forwardRef } from 'react'
 
 interface CommitteeTagProps {
@@ -72,7 +72,7 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
                   alt=''
                 />
                 <AvatarFallback>
-                  {committee.translations[0].title + ' Profile Picture'}
+                  {`${committee.translations[0].title} logo`}
                 </AvatarFallback>
               </Avatar>
             )}

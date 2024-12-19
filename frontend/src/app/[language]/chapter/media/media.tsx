@@ -4,8 +4,8 @@ import MediaToolbar from '@/app/[language]/chapter/media/components/toolbar/tool
 import Album from '@/app/[language]/chapter/media/view/album'
 import { useTranslation } from '@/app/i18n'
 import { HeadComponent } from '@/components/static/Static'
-import { LanguageCode } from '@/models/Language'
-import { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 import MediaGridView from './view/committee'
 import RecentMedia from './view/recent'
 

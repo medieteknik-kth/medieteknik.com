@@ -2,8 +2,8 @@ import { getStudentPublic } from '@/api/student'
 import StudentPositions from '@/app/[language]/student/[studentId]/client/positionsTab'
 import StudentInfo from '@/app/[language]/student/[studentId]/info'
 import HeaderGap from '@/components/header/components/HeaderGap'
-import { LanguageCode } from '@/models/Language'
-import { type JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 
 interface Params {
   language: LanguageCode

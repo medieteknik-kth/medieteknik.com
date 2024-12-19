@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -15,13 +15,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { Cog8ToothIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState, type JSX } from 'react'
+import { type JSX, useCallback, useEffect, useState } from 'react'
 import DetailedCookiePopup from '../../cookie/DetailedCookie'
 
 interface Props {
@@ -48,7 +48,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
 
   useEffect(() => {
     setIsClient(true)
-  }, [setIsClient])
+  }, [])
 
   /**
    * @name switchLanguage
@@ -108,7 +108,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                 {t('language')}
               </h4>
               <div>
-                {supportedLanguages.map((lang) => (
+                {SUPPORTED_LANGUAGES.map((lang) => (
                   <Button
                     key={lang}
                     onClick={() => {

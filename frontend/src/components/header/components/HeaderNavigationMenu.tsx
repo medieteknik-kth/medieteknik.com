@@ -1,4 +1,4 @@
-import { HeaderElement } from '@/components/header/util/HeaderElement'
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import MegaMenu from '@/components/header/view/MegaMenu'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,8 +11,8 @@ import {
 import Link from 'next/link'
 import './headerNavigationMenu.css'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode

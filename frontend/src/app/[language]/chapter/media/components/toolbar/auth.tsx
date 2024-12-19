@@ -14,12 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import Album from '@/models/Album'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Album from '@/models/Album'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { FolderPlusIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { JSX, useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -48,7 +48,7 @@ export default function ToolbarAuth({ language }: Props): JSX.Element {
     if (committees.length === 1) {
       setSelectedCommittee(committees[0])
     }
-  }, [committees, setSelectedCommittee, selectedCommittee])
+  }, [committees])
 
   if (!student && committees.length === 0) {
     return <></>

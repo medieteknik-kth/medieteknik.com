@@ -9,8 +9,8 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 
 interface Props {

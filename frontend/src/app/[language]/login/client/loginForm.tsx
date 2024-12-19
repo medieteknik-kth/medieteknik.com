@@ -17,17 +17,17 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AccordionItem } from '@radix-ui/react-accordion'
 import { useRouter } from 'next/navigation'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())

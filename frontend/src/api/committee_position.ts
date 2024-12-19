@@ -1,6 +1,6 @@
-import { ApiResponse, fetchData } from '@/api/api'
-import { CommitteePosition } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import { type ApiResponse, fetchData } from '@/api/api'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { API_BASE_URL } from '@/utility/Constants'
 
 /**
@@ -15,13 +15,13 @@ import { API_BASE_URL } from '@/utility/Constants'
 export const getCommitteePositions = async (
   type: 'committee' | 'independent',
   language_code: LanguageCode,
-  revalidate?: number
+  revalidate = 2_592_000
 ): Promise<ApiResponse<CommitteePosition[]>> => {
   const { data, error } = await fetchData<CommitteePosition[]>(
     `${API_BASE_URL}/public/committee_positions?language=${language_code}&type=${type}`,
     {
       next: {
-        revalidate: revalidate || 2_592_000, // 30 days or user defined
+        revalidate: revalidate, // 30 days or user defined
       },
     }
   )

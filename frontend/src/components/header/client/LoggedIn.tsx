@@ -14,11 +14,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
-import { type JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -41,8 +41,8 @@ export default function UserLoggedIn({ language }: Props): JSX.Element {
     return <></>
   }
 
-  let username = student.first_name + ' ' + (student.last_name || '')
-  username = username.length > 28 ? username.slice(0, 28) + '...' : username
+  let username = `${student.first_name} ${student.last_name || ''}`
+  username = username.length > 28 ? `${username.slice(0, 28)}...` : username
   return (
     <>
       <DropdownMenu modal={false}>
@@ -63,9 +63,7 @@ export default function UserLoggedIn({ language }: Props): JSX.Element {
                 loading='lazy'
               />
               <AvatarFallback className='bg-primary text-black'>
-                {student.first_name[0]}
-                {''}
-                {(student.last_name && student.last_name[0]) || ''}
+                {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
               </AvatarFallback>
             </Avatar>
           </Button>

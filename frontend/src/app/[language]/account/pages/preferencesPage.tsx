@@ -1,16 +1,16 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
 import { Button } from '@/components/ui/button'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { JSX, useState } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -37,7 +37,7 @@ export default function PreferencesPage({ language }: Props): JSX.Element {
     const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
     const category = params.get('category') || 'account'
     window.localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLanguage)
-    router.replace(newPath + '?' + new URLSearchParams({ category }))
+    router.replace(`${newPath}?${new URLSearchParams({ category })}`)
   }
 
   return (
@@ -51,7 +51,7 @@ export default function PreferencesPage({ language }: Props): JSX.Element {
             <h2 className='text-2xl font-bold mb-2'>{t('language')}</h2>
             <div>
               <ul className='flex flex-col xs:flex-row'>
-                {supportedLanguages.map((lang) => (
+                {SUPPORTED_LANGUAGES.map((lang) => (
                   <li key={lang} className='w-32 xs:mr-4 first:mb-2 xs:mb-0'>
                     <Button
                       title='Switch Language'

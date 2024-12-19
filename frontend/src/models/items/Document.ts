@@ -1,4 +1,5 @@
-import Item, { Author } from '../Items'
+import type Item from '../Items'
+import type { Author } from '../Items'
 
 /**
  * @type DocumentType

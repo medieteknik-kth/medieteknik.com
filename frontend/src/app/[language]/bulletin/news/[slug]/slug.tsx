@@ -1,6 +1,6 @@
 import { getNewsData } from '@/api/items/news'
 import NewsRedirect from '@/app/[language]/bulletin/news/[slug]/client/redirect'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 

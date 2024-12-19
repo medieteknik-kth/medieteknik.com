@@ -28,9 +28,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
-import Student from '@/models/Student'
+import type Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { addMember } from '@/schemas/committee/member'
@@ -250,6 +250,7 @@ export function AddMemberForm({
                     <FormControl>
                       <Button
                         variant={'outline'}
+                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         role='combobox'
                         aria-expanded={open}
                         className='w-[300px] justify-between'

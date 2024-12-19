@@ -2,14 +2,13 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
-import News from '@/models/items/News'
-import { NewsPagination } from '@/models/Pagination'
+import type { LanguageCode } from '@/models/Language'
+import type { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from '../components/shortNews'
-import { LanguageCode } from '@/models/Language'
 
 /**
  * The fetcher function that fetches news data from the API.
@@ -89,8 +88,8 @@ function Page({ index, language }: { index: number; language: LanguageCode }): {
   return {
     jsx: (
       <>
-        {data.items.map((item: News, index) => (
-          <div key={index} className='relative'>
+        {data.items.map((item) => (
+          <div key={item.url} className='relative'>
             <ShortNews language={language} newsItem={item} />
           </div>
         ))}
@@ -142,9 +141,9 @@ export default function ExtraNews({
           </p>
         }
       >
-        {pages.map((page, index) => (
-          <div key={index} className='flex flex-wrap gap-2'>
-            {page.jsx}
+        {pages.map((currentPage) => (
+          <div key={page} className='flex flex-wrap gap-2'>
+            {currentPage.jsx}
           </div>
         ))}
       </InfiniteScroll>

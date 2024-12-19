@@ -5,7 +5,7 @@ import Documents from './documents'
 import Iconography from './iconography'
 import Typography from './typography'
 
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {

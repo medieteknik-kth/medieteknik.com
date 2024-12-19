@@ -1,9 +1,9 @@
 import { useTranslation } from '@/app/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -52,9 +52,9 @@ export default async function MediaGridView({
       <ul className='flex flex-wrap gap-4 py-2'>
         {filtered
           .sort((a, b) => b.total_media - a.total_media)
-          .map((committee, index) => (
+          .map((committee) => (
             <li
-              key={index}
+              key={committee.committee_id}
               className='w-72 h-fit rounded-md border overflow-hidden relative hover:scale-105 transition-transform duration-500 cursor-pointer'
             >
               <Link
@@ -71,7 +71,7 @@ export default async function MediaGridView({
                     src={committee.logo_url ?? ''}
                   />
                   <AvatarFallback>
-                    {committee.translations[0].title + ' Profile Picture'}
+                    {`${committee.translations[0].title} Profile Picture`}
                   </AvatarFallback>
                 </Avatar>
 

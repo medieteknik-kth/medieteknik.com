@@ -2,10 +2,10 @@
 import { useTranslation } from '@/app/i18n/client'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useArticle } from '@/providers/ArticleProvider'
-import { BooleanMark, toggleMark } from '../../util/Text'
+import { type BooleanMark, toggleMark } from '../../util/Text'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -37,8 +37,8 @@ export default function ToolbarMarks({ language }: Props): JSX.Element {
     >
       <ToggleGroupItem
         value='bold'
-        aria-label={t('toggle') + ' ' + t('bold')}
-        title={t('toggle') + ' ' + t('bold')}
+        aria-label={`${t('toggle')} ${t('bold')}`}
+        title={`${t('toggle')} ${t('bold')}`}
         className='data-[state=on]:bg-yellow-400'
         onClick={() => toggleMark(editor, 'bold')}
       >
@@ -46,8 +46,8 @@ export default function ToolbarMarks({ language }: Props): JSX.Element {
       </ToggleGroupItem>
       <ToggleGroupItem
         value='italic'
-        aria-label={t('toggle') + ' ' + t('italic')}
-        title={t('toggle') + ' ' + t('italic')}
+        aria-label={`${t('toggle')} ${t('italic')}`}
+        title={`${t('toggle')} ${t('italic')}`}
         className='data-[state=on]:bg-yellow-400'
         onClick={() => toggleMark(editor, 'italic')}
       >
@@ -55,8 +55,8 @@ export default function ToolbarMarks({ language }: Props): JSX.Element {
       </ToggleGroupItem>
       <ToggleGroupItem
         value='underline'
-        aria-label={t('toggle') + ' ' + t('underline')}
-        title={t('toggle') + ' ' + t('underline')}
+        aria-label={`${t('toggle')} ${t('underline')}`}
+        title={`${t('toggle')} ${t('underline')}`}
         className='data-[state=on]:bg-yellow-400'
         onClick={() => toggleMark(editor, 'underline')}
       >
@@ -64,8 +64,8 @@ export default function ToolbarMarks({ language }: Props): JSX.Element {
       </ToggleGroupItem>
       <ToggleGroupItem
         value='strikethrough'
-        aria-label={t('toggle') + ' ' + t('strikethrough')}
-        title={t('toggle') + ' ' + t('strikethrough')}
+        aria-label={`${t('toggle')} ${t('strikethrough')}`}
+        title={`${t('toggle')} ${t('strikethrough')}`}
         className='data-[state=on]:bg-yellow-400'
         onClick={() => toggleMark(editor, 'strikethrough')}
       >

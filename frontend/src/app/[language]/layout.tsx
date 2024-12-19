@@ -4,16 +4,17 @@ import ErrorFallback from '@/components/error/ErrorFallback'
 import Footer from '@/components/footer/Footer'
 import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/toaster'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import ClientProviders from '@/providers/ClientProviders'
 import { dir } from 'i18next'
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { fontFigtree } from '../fonts'
-import { supportedLanguages } from '../i18n/settings'
+import { SUPPORTED_LANGUAGES } from '../i18n/settings'
 import './globals.css'
 
 import { useTranslation } from '@/app/i18n'
+import type React from 'react'
 import type { JSX } from 'react'
 
 /**
@@ -26,7 +27,7 @@ import type { JSX } from 'react'
 export async function generateStaticParams(): Promise<
   { language: LanguageCode }[]
 > {
-  return supportedLanguages.map((language) => ({ language }))
+  return SUPPORTED_LANGUAGES.map((language) => ({ language }))
 }
 
 interface Params {
@@ -43,7 +44,7 @@ export async function generateMetadata(props: {
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   return {
     title: {
-      default: capitalizedValue + ' - KTH',
+      default: `${capitalizedValue} - KTH`,
       template: `%s | ${capitalizedValue} - KTH`,
     },
     keywords: t('keywords'),
@@ -89,7 +90,6 @@ interface Props {
  */
 export default async function RootLayout(props: Props): Promise<JSX.Element> {
   const params = await props.params
-
   const { children, modal } = props
 
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import Loading from '@/components/tooltips/Loading'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import React, { Suspense, useEffect, useRef, useState, type JSX } from 'react'
 
 const ExtraNews = React.lazy(() => import('./extranews'))
@@ -46,7 +46,7 @@ export default function ExtraNewsObserver({ language }: Props): JSX.Element {
         observer.unobserve(current)
       }
     }
-  }, [ref])
+  }, [])
   return (
     <div ref={ref}>
       {isIntersecting && (

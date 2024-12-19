@@ -11,9 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import type { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
 import CookieSection from './cookie'
-import { LanguageCode } from '@/models/Language'
 
 interface Params {
   language: LanguageCode
@@ -51,6 +51,7 @@ export default async function Privacy(props: Props) {
             href='https://medieteknik.com'
             target='_blank'
             className='hover:underline underline-offset-4 inline-block cursor-pointer transition-all text-blue-600 dark:text-primary'
+            rel='noreferrer'
           >
             https://medieteknik.com
           </a>
@@ -62,6 +63,7 @@ export default async function Privacy(props: Props) {
             href='mailto:webmaster@medieteknik.com'
             target='_blank'
             className='hover:underline underline-offset-4 inline-block cursor-pointer transition-all text-blue-600 dark:text-primary'
+            rel='noreferrer'
           >
             webmaster@medieteknik.com
           </a>
@@ -106,6 +108,7 @@ export default async function Privacy(props: Props) {
                   href='mailto:webmaster@medieteknik.com?subject=Data%20Deletion%20Request&body=Please%20delete%20my%20account%20and%20all%20associated%20data%20from%20medieteknik.com%0AMy%20email:%20%3Cyour%20email%20here%3E@kth.se'
                   target='_blank'
                   className='hover:underline underline-offset-4 inline-block cursor-pointer transition-all text-blue-600 dark:text-primary'
+                  rel='noreferrer'
                 >
                   webmaster@medieteknik.com
                 </a>
@@ -168,6 +171,7 @@ export default async function Privacy(props: Props) {
           href='mailto:webmaster@medieteknik.com'
           target='_blank'
           className='hover:underline underline-offset-4 inline-block cursor-pointer transition-all text-blue-600 dark:text-primary'
+          rel='noreferrer'
         >
           webmaster@medieteknik.com
         </a>

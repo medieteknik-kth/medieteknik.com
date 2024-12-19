@@ -1,7 +1,7 @@
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { createInstance } from 'i18next'
 import resourcesToBackend from 'i18next-resources-to-backend'
-import { I18n, TFunction } from 'next-i18next'
+import type { I18n, TFunction } from 'next-i18next'
 import { initReactI18next } from 'react-i18next/initReactI18next'
 import { getOptions } from './settings'
 

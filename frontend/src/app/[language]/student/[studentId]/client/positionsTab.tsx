@@ -2,11 +2,12 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { LanguageCode } from '@/models/Language'
-import { IndividualCommitteePosition } from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type { IndividualCommitteePosition } from '@/models/Student'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
-import { type JSX } from 'react'
+import type { JSX } from 'react'
 import { Timeline } from 'rsuite'
 import './positions.css'
 
@@ -44,8 +45,8 @@ export default function StudentPositions({
 
     const timelineItems: {
       type: 'header' | 'position'
-      committee?: any
-      position?: any
+      committee?: Committee
+      position?: IndividualCommitteePosition
       key: string
     }[] = []
 
@@ -93,11 +94,12 @@ export default function StudentPositions({
               if (combinedPositions[index].type === 'header') {
                 return false
               }
-              return (
-                combinedPositions[index].position.termination_date === null ||
-                new Date(combinedPositions[index].position.termination_date) >
-                  new Date()
-              )
+              return combinedPositions[index].position
+                ? combinedPositions[index].position.termination_date === null ||
+                    new Date(
+                      combinedPositions[index].position.termination_date
+                    ) > new Date()
+                : false
             }}
           >
             {combinedPositions.map((item) => {
@@ -109,7 +111,7 @@ export default function StudentPositions({
                     dot={
                       <Avatar className='w-12 h-auto aspect-square border border-yellow-400 p-1 bg-white absolute -left-5 -top-4 grid place-items-center rounded-md shadow-md'>
                         <AvatarImage
-                          src={item.committee && item.committee.logo_url}
+                          src={item.committee?.logo_url}
                           alt='Profile Picture'
                           className='rounded-md'
                         />
@@ -132,26 +134,25 @@ export default function StudentPositions({
                     </h3>
                   </Timeline.Item>
                 )
-              } else {
-                return (
-                  <Timeline.Item className='h-20' key={item.key}>
-                    <p className='text-muted-foreground dark:text-neutral-300 select-none leading-tight text-xs xs:text-sm'>
-                      {new Date(
-                        item.position.initiation_date
-                      ).toLocaleDateString()}{' '}
-                      -{' '}
-                      {item.position.termination_date
-                        ? new Date(
-                            item.position.termination_date
-                          ).toLocaleDateString()
-                        : t('present')}
-                    </p>
-                    <h4 className='text-sm xs:text-base dark:text-white'>
-                      {item.position.position.translations[0].title}
-                    </h4>
-                  </Timeline.Item>
-                )
               }
+              return item.position ? (
+                <Timeline.Item className='h-20' key={item.key}>
+                  <p className='text-muted-foreground dark:text-neutral-300 select-none leading-tight text-xs xs:text-sm'>
+                    {new Date(
+                      item.position.initiation_date
+                    ).toLocaleDateString()}{' '}
+                    -{' '}
+                    {item.position.termination_date
+                      ? new Date(
+                          item.position.termination_date
+                        ).toLocaleDateString()
+                      : t('present')}
+                  </p>
+                  <h4 className='text-sm xs:text-base dark:text-white'>
+                    {item.position.position.translations[0].title}
+                  </h4>
+                </Timeline.Item>
+              ) : null
             })}
           </Timeline>
         </div>

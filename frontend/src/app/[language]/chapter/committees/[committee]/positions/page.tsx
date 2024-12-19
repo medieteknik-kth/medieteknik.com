@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 export default async function CommitteePositions(props: {
   params: Promise<{ language: LanguageCode; committee: string }>
@@ -22,20 +22,20 @@ export default async function CommitteePositions(props: {
       <Breadcrumb className='w-fit h-fit absolute top-28 left-4'>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={'/' + language + '/chapter'}>
+            <BreadcrumbLink href={`/${language}/chapter`}>
               Chapter
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={'/' + language + '/chapter/committees'}>
+            <BreadcrumbLink href={`/${language}/chapter/committees`}>
               Committees
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={'/' + language + '/chapter/committees/' + committee}
+              href={`/${language}/chapter/committees/${committee}`}
               className='capitalize'
             >
               {committee}

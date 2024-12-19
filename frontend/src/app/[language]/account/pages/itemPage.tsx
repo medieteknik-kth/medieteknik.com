@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 import AccountNewsPage from './item/news'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode

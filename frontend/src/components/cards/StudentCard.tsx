@@ -1,6 +1,6 @@
 import StudentTag from '@/components/tags/StudentTag'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { StudentCommitteePosition } from '@/models/Student'
+import type { StudentCommitteePosition } from '@/models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'

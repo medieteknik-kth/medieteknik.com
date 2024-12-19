@@ -2,10 +2,10 @@
 
 import Loading from '@/components/tooltips/Loading'
 import { TabsContent } from '@/components/ui/tabs'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { CommitteeManagementProvider } from '@/providers/CommitteeManagementProvider'
-import { lazy, Suspense, type JSX } from 'react'
+import { type JSX, Suspense, lazy } from 'react'
 const HomePage = lazy(() => import('./pages/home/home'))
 const MembersPage = lazy(() => import('./pages/members'))
 const NewsPage = lazy(() => import('./pages/news/news'))

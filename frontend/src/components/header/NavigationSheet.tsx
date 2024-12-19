@@ -1,6 +1,6 @@
 'use client'
 
-import { HeaderElement } from '@/components/header/util/HeaderElement'
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -16,8 +16,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import SubMenu from './client/SubMenu'
 
-import { useCallback, useState, type JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import { type JSX, useCallback, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -44,7 +44,7 @@ export default function NavigationSheet({
     setIsOpen((prev) => {
       return !prev
     })
-  }, [setIsOpen])
+  }, [])
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -89,11 +89,11 @@ export default function NavigationSheet({
               Home
             </Link>
           </Button>
-          {headerElements.map((element, index) =>
+          {headerElements.map((element) =>
             element.subNavs ? (
               <SubMenu
                 element={element}
-                key={index}
+                key={element.title}
                 toggleMenuCallback={toggleMenu}
               />
             ) : (

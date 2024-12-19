@@ -1,10 +1,10 @@
 'use client'
 
-import { HeaderElement } from '@/components/header/util/HeaderElement'
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
   element: HeaderElement

@@ -2,7 +2,7 @@
 
 import { useToast } from '@/components/ui/use-toast'
 import { LinkIcon } from '@heroicons/react/24/outline'
-import { CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 
 interface Props {
   title: string
@@ -18,7 +18,7 @@ export default function StaticHeading({
   headingLevel = 'h2',
 }: Props) {
   const { toast } = useToast()
-  let headingElement
+  let headingElement = null
   switch (headingLevel) {
     case 'h1':
       headingElement = (
@@ -67,13 +67,14 @@ export default function StaticHeading({
   return (
     <div className='relative flex items-center h-fit'>
       <button
+        type='button'
         className='absolute hidden md:inline-block h-8 w-auto aspect-square opacity-35 hover:opacity-100 transition-opacity -left-9 p-1 select-none'
         onClick={() => {
           const link = window.location.href.split('#')[0]
-          navigator.clipboard.writeText(link + '#' + id)
+          navigator.clipboard.writeText(`${link}#${id}`)
           toast({
             title: 'Copied to clipboard',
-            description: `${link + '#' + id}`,
+            description: `${link}#${id}`,
             duration: 2500,
           })
         }}

@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import Event from '@/models/items/Event'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import {
@@ -31,10 +31,9 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { isSameDay } from 'date-fns'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import CalendarExport from '../components/calendarExport'
 import EventDialog from '../components/eventDialog'
-import { LanguageCode } from '@/models/Language'
 
 /**
  * Get the ordinal suffix for a given number
@@ -43,24 +42,24 @@ import { LanguageCode } from '@/models/Language'
  * @returns {string} The ordinal suffix for the given number
  */
 function getNumberWithOrdinalEnglish(number: number): string {
-  if (typeof number !== 'number' || isNaN(number)) {
+  if (typeof number !== 'number' || Number.isNaN(number)) {
     return 'Not a number'
   }
 
   // Handle special cases for 11, 12, 13
   if (number % 100 >= 11 && number % 100 <= 13) {
-    return number + 'th'
+    return `${number}th`
   }
 
   switch (number % 10) {
     case 1:
-      return number + 'st'
+      return `${number}st`
     case 2:
-      return number + 'nd'
+      return `${number}nd`
     case 3:
-      return number + 'rd'
+      return `${number}rd`
     default:
-      return number + 'th'
+      return `${number}th`
   }
 }
 
@@ -141,8 +140,7 @@ export default function Events({
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.author &&
-                    permissions.author.includes('EVENT') ? (
+                    {permissions.author?.includes('EVENT') ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -150,8 +148,7 @@ export default function Events({
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.author &&
-                        permissions.author.includes('EVENT')
+                        {permissions.author?.includes('EVENT')
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}
@@ -168,10 +165,10 @@ export default function Events({
             <CardTitle>{t('events')}</CardTitle>
             <CardDescription>
               {language === 'en'
-                ? getNumberWithOrdinalEnglish(selectedDate.getDate()) + ' '
+                ? `${getNumberWithOrdinalEnglish(selectedDate.getDate())} `
                 : selectedDate.getDate() > 2
-                ? selectedDate.getDate() + ':e '
-                : selectedDate.getDate() + ':a '}
+                  ? `${selectedDate.getDate()}:e `
+                  : `${selectedDate.getDate()}:a `}
               <span className='capitalize'>
                 {selectedDate.toLocaleDateString(language, { month: 'long' })}
               </span>
@@ -222,8 +219,8 @@ export default function Events({
                     new Date(a.start_date).getTime() -
                     new Date(b.start_date).getTime()
                 )
-                .map((event: Event, index) => (
-                  <li key={index}>
+                .map((event, index) => (
+                  <li key={event.event_id}>
                     <EventDialog
                       language={language}
                       event={event}

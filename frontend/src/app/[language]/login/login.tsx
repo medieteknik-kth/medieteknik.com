@@ -5,8 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import LoginForm from './client/loginForm'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
 
 interface Params {
   language: LanguageCode

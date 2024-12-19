@@ -1,6 +1,6 @@
-import { ApiResponse, fetchData } from '@/api/api'
-import Event from '@/models/items/Event'
-import { LanguageCode } from '@/models/Language'
+import { type ApiResponse, fetchData } from '@/api/api'
+import type { LanguageCode } from '@/models/Language'
+import type Event from '@/models/items/Event'
 import { API_BASE_URL } from '@/utility/Constants'
 
 /**
@@ -9,20 +9,20 @@ import { API_BASE_URL } from '@/utility/Constants'
  *
  * @param {Date} date - The date to get events for
  * @param {LanguageCode} language - The language to get events in
- * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
+ * @param {number} revalidate - The time in seconds to revalidate the data (default: 15 minutes)
  * @returns {Promise<ApiResponse<Event[]>>} The API response with the events or an error
  */
 export const getEvents = async (
   date: Date,
   language: LanguageCode,
-  revalidate?: number
+  revalidate = 900
 ): Promise<ApiResponse<Event[]>> => {
   const convertedDate = date.toISOString().substring(0, 7)
   const { data, error } = await fetchData<Event[]>(
     `${API_BASE_URL}/public/calendar/events?date=${convertedDate}&language=${language}`,
     {
       next: {
-        revalidate: revalidate || 3_600, // 1 hour or user defined
+        revalidate: revalidate,
       },
     }
   )

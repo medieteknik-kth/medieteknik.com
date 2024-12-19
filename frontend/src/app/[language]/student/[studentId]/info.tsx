@@ -1,11 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import Student, { Profile } from '@/models/Student'
+import type Student from '@/models/Student'
+import type { Profile } from '@/models/Student'
 import Link from 'next/link'
 import FacebookSVG from 'public/images/svg/facebook.svg'
 import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
-import { type JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
   student: Student
@@ -37,12 +38,12 @@ export default async function StudentInfo({
           />
           <AvatarFallback className='bg-yellow-400 text-6xl'>
             {student.first_name.charAt(0) +
-              ((student.last_name && student.last_name?.charAt(0)) || '')}
+              (student.last_name ? student.last_name.charAt(0) : '')}
           </AvatarFallback>
         </Avatar>
         <div className='w-fit relative h-full flex flex-wrap items-center ml-4 gap-4 mt-2 xs:mt-20 md:mt-32'>
           <h1 className='grow text-2xl md:text-5xl dark:text-white font-semibold text-pretty max-h-24'>
-            {student.first_name + ' ' + (student.last_name || '')}
+            {`${student.first_name} ${student.last_name || ''}`}
           </h1>
         </div>
       </div>

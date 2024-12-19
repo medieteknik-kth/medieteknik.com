@@ -3,7 +3,8 @@
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import News from '@/models/items/News'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CogIcon,
@@ -16,7 +17,6 @@ import React, { use, type JSX } from 'react'
 import useSWR from 'swr'
 import { AutoSaveProvdier } from './autoSave'
 import CommandBar from './commandBar'
-import { LanguageCode } from '@/models/Language'
 const ArticlePage = React.lazy(() => import('./pages/article'))
 const TagsPage = React.lazy(() => import('./pages/tags'))
 const EngagementPage = React.lazy(() => import('./pages/engagement'))

@@ -1,5 +1,5 @@
 'use client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -32,17 +32,18 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Author } from '@/models/Items'
-import Document, { DocumentTranslation } from '@/models/items/Document'
-import { LanguageCode } from '@/models/Language'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type Document from '@/models/items/Document'
+import type { DocumentTranslation } from '@/models/items/Document'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 interface TranslatedInputProps {
   index: number
@@ -181,7 +182,7 @@ export default function DocumentUpload({
     resolver: zodResolver(documentUploadSchema),
     defaultValues: {
       type: 'DOCUMENT',
-      translations: supportedLanguages.map((language) => ({
+      translations: SUPPORTED_LANGUAGES.map((language) => ({
         language_code: language,
         title: '',
       })),
@@ -202,7 +203,7 @@ export default function DocumentUpload({
     formData.append('author[email]', author.email || '')
 
     // Add translation fields
-    supportedLanguages.forEach((language, index) => {
+    SUPPORTED_LANGUAGES.forEach((language, index) => {
       formData.append(`translations[${index}][language_code]`, language)
       formData.append(
         `translations[${index}][title]`,
@@ -237,11 +238,11 @@ export default function DocumentUpload({
         })
         closeMenuCallback()
       } else {
-        setErrorMessage('Failed to upload document ' + response.statusText)
+        setErrorMessage(`Failed to upload document: ${response.statusText}`)
       }
     } catch (error) {
       console.error(error)
-      setErrorMessage('Failed to upload document ' + error)
+      setErrorMessage(`Failed to upload document: ${error}`)
     }
   }
 
@@ -270,7 +271,7 @@ export default function DocumentUpload({
       <Tabs defaultValue={language} className='mb-2'>
         <Label>Language</Label>
         <TabsList className='overflow-x-auto h-fit w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -336,7 +337,7 @@ export default function DocumentUpload({
               )}
             />
 
-            {supportedLanguages.map((language, index) => (
+            {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}

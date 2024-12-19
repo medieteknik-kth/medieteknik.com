@@ -5,7 +5,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import Student from '@/models/Student'
+import type Student from '@/models/Student'
 import Link from 'next/link'
 import { forwardRef } from 'react'
 import { StudentTooltip } from '../tooltips/Tooltip'
@@ -41,6 +41,7 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
     },
     ref
   ) => {
+    const username = `${student.first_name} ${student.last_name || ''}`
     return (
       <HoverCard>
         <HoverCardTrigger className='h-fit w-fit flex items-center' asChild>
@@ -60,24 +61,16 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                   <AvatarImage
                     className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full'
                     src={student.profile_picture_url}
-                    alt={student.first_name + ' ' + (student.last_name || '')}
+                    alt={username}
                   />
                   <AvatarFallback className='bg-primary text-black'>
-                    {student.first_name[0]}
-                    {''}
-                    {(student.last_name && student.last_name[0]) || ''}
+                    {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
                   </AvatarFallback>
                 </Avatar>
               )}
               <div className='flex flex-col items-start justify-center text-start overflow-hidden'>
-                <p
-                  className='h-fit truncate max-w-full'
-                  title={student.first_name + ' ' + (student.last_name || '')}
-                >
-                  {(includeAt ? '@ ' : '') +
-                    student.first_name +
-                    ' ' +
-                    (student.last_name || '')}
+                <p className='h-fit truncate max-w-full' title={username}>
+                  {(includeAt ? '@ ' : '') + username}
                 </p>
                 <div className={`${children && 'leading-3'}`}>{children}</div>
               </div>

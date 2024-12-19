@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { CommitteePositionRecruitment } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type { CommitteePositionRecruitment } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
@@ -36,48 +36,41 @@ export default function RecruitmentCard({
 }: Props): JSX.Element {
   return (
     <Card className='w-full sm:w-[470px] h-fit md:min-h-[260px] relative flex flex-col justify-between'>
-      <CardHeader className='h-fit flex flex-row items-center justify-between'>
-        <div className='flex flex-col items-start'>
-          <div>
-            <CardTitle className='text-sm xxs:text-base sm:text-xl'>
-              {recruitment.committee_position.committee && (
-                <CommitteeTag
-                  committee={recruitment.committee_position.committee}
-                  includeAt={false}
-                  includeBackground={false}
-                >
-                  <span
-                    className='text-sm flex items-center font-normal text-neutral-700 dark:text-neutral-300'
-                    title={new Date(recruitment.end_date).toLocaleDateString(
-                      language,
-                      {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                      }
-                    )}
-                  >
-                    <ClockIcon className='w-4 h-4 mr-1' />
-                    {Math.floor(
-                      (new Date(recruitment.end_date).getTime() - Date.now()) /
-                        1000 /
-                        60 /
-                        60 /
-                        24
-                    )}{' '}
-                    days left
-                  </span>
-                </CommitteeTag>
-              )}
-            </CardTitle>
-            <CardDescription className='flex items-center mt-1'></CardDescription>
-          </div>
+      <CardHeader>
+        <CardTitle className='text-sm xxs:text-base sm:text-xl flex justify-between'>
+          {recruitment.committee_position.committee && (
+            <CommitteeTag
+              committee={recruitment.committee_position.committee}
+              includeAt={false}
+              includeBackground={false}
+            />
+          )}
+          <span
+            className='text-sm flex items-center font-normal text-neutral-700 dark:text-neutral-300'
+            title={new Date(recruitment.end_date).toLocaleDateString(language, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+            })}
+          >
+            <ClockIcon className='w-4 h-4 mr-1' />
+            {Math.floor(
+              (new Date(recruitment.end_date).getTime() - Date.now()) /
+                1000 /
+                60 /
+                60 /
+                24
+            )}{' '}
+            days left
+          </span>
+        </CardTitle>
+        <CardDescription className='flex items-center mt-1'>
           <span className='font-mono uppercase text-xs select-none'>
             Position: {recruitment.committee_position.translations[0].title}
           </span>
-        </div>
+        </CardDescription>
       </CardHeader>
 
       <CardContent className='text-sm w-full max-w-[450px] text-pretty break-words whitespace-pre-line'>

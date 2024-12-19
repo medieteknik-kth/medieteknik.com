@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import {
   CalendarDaysIcon,
@@ -18,7 +18,7 @@ import {
   PhotoIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import { JSX, useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 
 interface Props {
   language: LanguageCode

@@ -10,8 +10,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -58,10 +58,7 @@ export default function NewsDisplay({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <article
-        className='md:min-w-[600px] w-full max-w-[700px] flex flex-col items-center justify-start min-h-[1080px] h-fit relative gap-2 px-4 sm:px-12 md:px-0'
-        role='main'
-      >
+      <article className='md:min-w-[600px] w-full max-w-[700px] flex flex-col items-center justify-start min-h-[1080px] h-fit relative gap-2 px-4 sm:px-12 md:px-0'>
         <h1 className='w-full text-4xl mt-4'>
           {news_data.translations[0].title}
         </h1>

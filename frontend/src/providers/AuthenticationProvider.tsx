@@ -1,18 +1,19 @@
 'use client'
 
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { AuthorResource } from '@/models/Items'
-import { LanguageCode } from '@/models/Language'
-import { Permission, Role } from '@/models/Permission'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { AuthorResource } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type { Permission, Role } from '@/models/Permission'
+import type Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
+  type JSX,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useReducer,
-  type JSX,
 } from 'react'
 
 interface AuthenticationState {
@@ -309,8 +310,8 @@ const createAuthFunctions = (
       dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
-      return success
     }
+    return success
   },
 
   /**
@@ -401,7 +402,7 @@ export function AuthenticationProvider({
   children,
 }: Props): JSX.Element {
   const [state, dispatch] = useReducer(authenticationReducer, initialState)
-  const authFunctions = useMemo(() => createAuthFunctions(dispatch), [dispatch])
+  const authFunctions = useMemo(() => createAuthFunctions(dispatch), [])
 
   useEffect(() => {
     /**
@@ -537,14 +538,17 @@ export function AuthenticationProvider({
     /**
      * Refreshes the access token every 30 minutes.
      */
-    const refreshTimer = setInterval(() => {
-      if (state.isAuthenticated) {
-        dispatch({ type: 'REFRESH_TOKEN' })
-        authFunctions.refreshToken()
-      } else {
-        clearInterval(refreshTimer)
-      }
-    }, 1000 * 60 * 30)
+    const refreshTimer = setInterval(
+      () => {
+        if (state.isAuthenticated) {
+          dispatch({ type: 'REFRESH_TOKEN' })
+          authFunctions.refreshToken()
+        } else {
+          clearInterval(refreshTimer)
+        }
+      },
+      1000 * 60 * 30
+    )
 
     return () => clearInterval(refreshTimer)
   }, [state, authFunctions])

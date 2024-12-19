@@ -3,11 +3,11 @@
  */
 'use client'
 
+import type { LanguageCode } from '@/models/Language'
 import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 import { ThemeProvider } from 'next-themes'
-import { useCallback, useEffect, useState, type JSX } from 'react'
+import { type JSX, useCallback, useEffect, useState } from 'react'
 import { AuthenticationProvider } from './AuthenticationProvider'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -27,22 +27,19 @@ export default function ClientProviders({
   const [isClient, setIsClient] = useState(false)
   const [standardTheme, setStandardTheme] = useState('light')
 
-  const getTheme = () => {
-    return window.localStorage.getItem(LOCAL_STORAGE_THEME)
-  }
-
-  const setTheme = useCallback(
-    (theme: string) => {
-      window.localStorage.setItem(LOCAL_STORAGE_THEME, theme)
-      setStandardTheme(theme)
-    },
-    [setStandardTheme]
-  )
+  const setTheme = useCallback((theme: string) => {
+    window.localStorage.setItem(LOCAL_STORAGE_THEME, theme)
+    setStandardTheme(theme)
+  }, [])
 
   useEffect(() => {
+    const getTheme = () => {
+      return window.localStorage.getItem(LOCAL_STORAGE_THEME)
+    }
+
     setIsClient(true)
     setTheme(getTheme() || 'light')
-  }, [setIsClient, getTheme, setTheme])
+  }, [setTheme])
 
   if (!isClient) {
     return null

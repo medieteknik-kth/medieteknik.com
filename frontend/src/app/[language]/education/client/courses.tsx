@@ -1,6 +1,6 @@
 'use client'
 
-import {
+import type {
   BackendCategory,
   Course,
   FrontendCategory,
@@ -16,9 +16,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import {
   getCategoryColor,
   getCategoryPercentage,
@@ -84,27 +84,17 @@ export default function Courses({ language }: Props): JSX.Element {
                 {currentView.title}
                 {currentView.courses && currentView.courses.length > 0 ? (
                   <span className='text-sm'>
-                    {' (' +
-                      currentView.courses.length +
-                      ' ' +
-                      t('courses') +
-                      ')'}
+                    {` (${currentView.courses.length} ${t('courses')})`}
                   </span>
                 ) : (
-                  <span className='text-sm'>
-                    {' (' + t('no_courses') + ')'}
-                  </span>
+                  <span className='text-sm'>{` (${t('no_courses')})`}</span>
                 )}
               </DialogTitle>
               <DialogDescription>
-                {currentView.percentage + '%'}
+                {`${currentView.percentage}%`}
                 {currentView.courses && (
                   <span className='text-sm'>
-                    {' (' +
-                      t('total_hp') +
-                      ': ' +
-                      getTotalHP(currentView.courses) +
-                      ')'}
+                    {` (${t('total_hp')}: ${getTotalHP(currentView.courses)})`}
                   </span>
                 )}
               </DialogDescription>
@@ -112,9 +102,9 @@ export default function Courses({ language }: Props): JSX.Element {
             {currentView.courses && (
               <div className='h-fit bg-white dark:bg-[#111]'>
                 <ul className='flex flex-col gap-1'>
-                  {currentView.courses.map((course, index) => (
+                  {currentView.courses.map((course) => (
                     <li
-                      key={index}
+                      key={course.title}
                       className='w-full h-fit flex items-center border-l-4 shadow-sm shadow-black/15 rounded-r-md'
                       style={{
                         borderColor: currentView.color,
@@ -147,7 +137,7 @@ export default function Courses({ language }: Props): JSX.Element {
         <div className='w-full h-4/5 flex items-center justify-center py-8 px-10'>
           <div className='w-fit relative h-fit text-2xl flex flex-wrap justify-center gap-8 max-w-[1250px]'>
             {categoryMetadataMap.map((category, index) => (
-              <DialogTrigger asChild key={index}>
+              <DialogTrigger asChild key={category.title}>
                 <Button
                   variant={'ghost'}
                   className='w-36 lg:w-72 h-auto aspect-square flex flex-col justify-center border-4 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg relative overflow-hidden shadow-[#0000004f] dark:shadow-[#ffffff4f] bg-white dark:bg-[#111] dark:text-white border-black/15 dark:border-white/15'

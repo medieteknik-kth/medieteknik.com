@@ -1,13 +1,13 @@
 'use client'
 
 import Loading from '@/components/tooltips/Loading'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import { Permission, Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, type JSX } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 import CommitteeLandingPage from './landing'
-import { Permission, Role } from '@/models/Permission'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
@@ -44,19 +44,15 @@ export default function CommitteeRedirect({
   useEffect(() => {
     if (authLoading) return
     if (
-      !(
-        committees && committees.some((c) => c.email === committeeData.email)
-      ) &&
+      !committees.some((c) => c.email === committeeData.email) &&
       !(
         role === Role.ADMIN ||
-        (permissions.student &&
-          permissions.student.includes(Permission.COMMITTEE_EDIT))
+        permissions.student?.includes(Permission.COMMITTEE_EDIT)
       )
     ) {
       router.push(`/${language}/chapter/committees/${committee}`)
-    } else {
-      setIsLoading(false)
     }
+    setIsLoading(false)
   }, [
     committees,
     role,

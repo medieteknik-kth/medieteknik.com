@@ -2,13 +2,25 @@ import { fontJetBrainsMono } from '@/app/fonts'
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { Author } from '@/models/Items'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { Author } from '@/models/Items'
+import type Student from '@/models/Student'
 import Image from 'next/image'
-import { HTMLAttributes, JSX, Ref, useCallback, useMemo } from 'react'
-import { createEditor, Descendant, Editor, Text, Transforms } from 'slate'
-import { Editable, RenderElementProps, Slate, withReact } from 'slate-react'
+import {
+  type HTMLAttributes,
+  type JSX,
+  type Ref,
+  useCallback,
+  useMemo,
+} from 'react'
+import { type Descendant, Editor, Text, Transforms, createEditor } from 'slate'
+import {
+  Editable,
+  type RenderElementProps,
+  Slate,
+  withReact,
+} from 'slate-react'
 
 /**
  * @type BooleanMark
@@ -267,10 +279,7 @@ export const ElementDisplay = ({
     case 'multi-line code':
       return (
         <pre
-          className={
-            textTypes.find((type) => type.value === element.type)?.style +
-            ` ${fontJetBrainsMono.className}`
-          }
+          className={`${textTypes.find((type) => type.value === element.type)?.style} ${fontJetBrainsMono.className}`}
           {...attributes}
           ref={attributes.ref as Ref<HTMLPreElement> | undefined}
         >
@@ -280,10 +289,7 @@ export const ElementDisplay = ({
     case 'code':
       return (
         <code
-          className={
-            textTypes.find((type) => type.value === element.type)?.style +
-            ` inline-block ${fontJetBrainsMono.className}`
-          }
+          className={`${textTypes.find((type) => type.value === element.type)?.style} inline-block ${fontJetBrainsMono.className}`}
           {...attributes}
         >
           {children}
@@ -320,10 +326,10 @@ export const ElementDisplay = ({
         </a>
       )
     }
-    case 'image':
+    case 'image': {
       const { image } = element
       if (!image) {
-        return <p></p>
+        return <></>
       }
       return (
         <Image
@@ -337,6 +343,7 @@ export const ElementDisplay = ({
           ref={attributes.ref as Ref<HTMLImageElement> | undefined}
         />
       )
+    }
     case 'line break':
       return <br />
     case 'student tag':
@@ -345,7 +352,7 @@ export const ElementDisplay = ({
       const { tag } = element
 
       if (!tag) {
-        return <p></p>
+        return <></>
       }
 
       if (element.type === 'student tag') {
@@ -362,7 +369,8 @@ export const ElementDisplay = ({
             </StudentTag>
           </span>
         )
-      } else if (element.type === 'committee tag') {
+      }
+      if (element.type === 'committee tag') {
         return (
           <CommitteeTag
             committee={tag.author as Committee}
@@ -374,28 +382,25 @@ export const ElementDisplay = ({
             {children}
           </CommitteeTag>
         )
-      } else {
-        return (
-          <span>
-            <CommitteePositionTag
-              committeePosition={tag.author as CommitteePosition}
-              includeAt={true}
-              includeImage={false}
-              {...attributes}
-            >
-              {children}
-            </CommitteePositionTag>
-          </span>
-        )
       }
+      return (
+        <span>
+          <CommitteePositionTag
+            committeePosition={tag.author as CommitteePosition}
+            includeAt={true}
+            includeImage={false}
+            {...attributes}
+          >
+            {children}
+          </CommitteePositionTag>
+        </span>
+      )
     }
+
     default:
       return (
         <p
-          className={
-            textTypes.find((type) => type.value === 'paragraph')?.style +
-            ' block whitespace-pre-wrap break-words'
-          }
+          className={`${textTypes.find((type) => type.value === 'paragraph')?.style} block whitespace-pre-wrap break-words`}
           {...attributes}
           ref={attributes.ref as Ref<HTMLParagraphElement> | undefined}
         >

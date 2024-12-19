@@ -1,5 +1,5 @@
-import News from '@/models/items/News'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 
 interface Props {
   news_data: News

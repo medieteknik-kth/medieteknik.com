@@ -1,5 +1,6 @@
-import Committee, { CommitteePosition } from './Committee'
-import Student from './Student'
+import type Committee from './Committee'
+import type { CommitteePosition } from './Committee'
+import type Student from './Student'
 
 /**
  * @type Author

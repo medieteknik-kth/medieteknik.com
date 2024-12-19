@@ -12,7 +12,7 @@ import KTH from 'public/images/svg/kth.svg'
 import Courses from './client/courses'
 import Masters from './client/masters'
 
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
@@ -46,7 +46,7 @@ export default async function Education(props: Props): Promise<JSX.Element> {
             asChild
           >
             <Link
-              href={`https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150`}
+              href='https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150'
               target='_blank'
               rel='external'
             >
@@ -60,7 +60,7 @@ export default async function Education(props: Props): Promise<JSX.Element> {
             asChild
           >
             <Link
-              href={`https://metastudent.se/`}
+              href='https://metastudent.se/'
               target='_blank'
               rel='external'
             >

@@ -1,4 +1,4 @@
-import { LanguageCode } from './Language'
+import type { LanguageCode } from './Language'
 
 /**
  * @interface CommitteeCategory
@@ -94,7 +94,7 @@ export interface CommitteePositionRecruitment {
     {
       description: string
       link_url: string
-    }
+    },
   ]
 }
 

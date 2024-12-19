@@ -23,11 +23,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import Event from '@/models/items/Event'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
-import Student from '@/models/Student'
+import type Student from '@/models/Student'
+import type Event from '@/models/items/Event'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -49,7 +50,8 @@ function determineEventStatus(event: Event): Status {
 
   if (end_date < new Date()) {
     return Status.ENDED
-  } else if (start_date < new Date() && end_date > new Date()) {
+  }
+  if (start_date < new Date() && end_date > new Date()) {
     return Status.ONGOING
   }
   return Status.UPCOMING
@@ -86,11 +88,11 @@ export default function DetailedEvent({
     if (event.author.author_type === 'STUDENT') {
       if (!student) return false
       return student.email === event.author.email
-    } else if (event.author.author_type === 'COMMITTEE') {
-      return committees.find((c) => c.email === event.author.email)
-    } else {
-      return false
     }
+    if (event.author.author_type === 'COMMITTEE') {
+      return committees.find((c) => c.email === event.author.email)
+    }
+    return false
   }
 
   const deleteEvent = async () => {
@@ -169,8 +171,8 @@ export default function DetailedEvent({
                 determineEventStatus(event) === 'UPCOMING'
                   ? 'bg-yellow-500'
                   : determineEventStatus(event) === 'ONGOING'
-                  ? 'bg-green-500'
-                  : 'bg-red-500'
+                    ? 'bg-green-500'
+                    : 'bg-red-500'
               }`}
             />
             <p>

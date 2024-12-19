@@ -1,5 +1,5 @@
-import { NextConfig } from 'next'
-import {
+import type { NextConfig } from 'next'
+import type {
   ExperimentalConfig,
   NextJsWebpackConfig,
 } from 'next/dist/server/config-shared'

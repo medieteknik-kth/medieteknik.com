@@ -15,8 +15,8 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import {
   ArrowTopRightOnSquareIcon,
@@ -25,7 +25,7 @@ import {
   NewspaperIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
   language: LanguageCode

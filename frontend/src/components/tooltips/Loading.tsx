@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 interface Props {

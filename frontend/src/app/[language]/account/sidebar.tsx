@@ -9,8 +9,14 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Dispatch, JSX, SetStateAction, useEffect, useState } from 'react'
-import { AccountPages, Tabs } from './account'
+import {
+  type Dispatch,
+  type JSX,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
+import type { AccountPages, Tabs } from './account'
 
 interface Props {
   accountPages: AccountPages[]
@@ -68,7 +74,7 @@ export default function Sidebar({
   const handleTabChange = (tabName: Tabs) => {
     setCurrentTab(tabName)
 
-    router.push(path + '?' + new URLSearchParams({ category: tabName }))
+    router.push(`${path}?${new URLSearchParams({ category: tabName })}`)
   }
 
   const updateExpandMenu = (value: boolean) => {
@@ -87,6 +93,12 @@ export default function Sidebar({
     <div
       className={`${isExpanded ? 'w-full md:w-48' : isHidden ? 'w-0' : 'w-24'}
       min-h-[1080px] h-full bg-white dark:bg-[#111] absolute left-0 border-r-2 z-20 border-neutral-300 dark:border-neutral-800 transition-all`}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          setIsExpanded(false)
+          setIsHidden(true)
+        }
+      }}
       onClick={() => {
         if (smallScreen) {
           if (isExpanded) {

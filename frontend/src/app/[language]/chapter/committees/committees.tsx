@@ -10,8 +10,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import Committee, { CommitteeCategory } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { CommitteeCategory } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import Image from 'next/image'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
@@ -98,34 +99,32 @@ export default async function CommitteeList(props: Props) {
           )}
         >
           {categoriesWithCommittees.length > 0 &&
-            categoriesWithCommittees.map((data, index) => (
+            categoriesWithCommittees.map((category) => (
               <AccordionItem
-                value={data.translations[0].title.toLowerCase()}
-                key={index}
-                id={`${data.translations[0].title.toLowerCase()}`}
+                value={category.translations[0].title.toLowerCase()}
+                key={category.translations[0].title}
+                id={`${category.translations[0].title.toLowerCase()}`}
                 className='w-full h-fit flex flex-col'
               >
                 <AccordionTrigger className='text-2xl lg:text-4xl w-full text-center font-semibold sm:text-left uppercase tracking-wider'>
-                  <h2>{data.translations[0].title}</h2>
+                  <h2>{category.translations[0].title}</h2>
                 </AccordionTrigger>
-                <AccordionContent
-                  className={`p-4 pb-16 sm:pb-4 flex justify-center sm:justify-start flex-wrap gap-y-12 gap-x-4 sm:gap-4`}
-                >
-                  {data.committees.length === 0 && (
+                <AccordionContent className='p-4 pb-16 sm:pb-4 flex justify-center sm:justify-start flex-wrap gap-y-12 gap-x-4 sm:gap-4'>
+                  {category.committees.length === 0 && (
                     <p className='w-full text-center'>{t('not_found')}</p>
                   )}
-                  {data.committees.length > 0 &&
-                    data.committees
+                  {category.committees.length > 0 &&
+                    category.committees
                       .sort((a, b) =>
                         a.translations[0].title.localeCompare(
                           b.translations[0].title
                         )
                       )
-                      .map((committee, index) => (
+                      .map((committee) => (
                         <Link
                           href={`./committees/${committee.translations[0].title.toLowerCase()}`}
                           title={committee.translations[0].title}
-                          key={index}
+                          key={committee.translations[0].title}
                           className='w-28 sm:w-56 h-auto aspect-square relative rounded-full border border-yellow-400 shadow shadow-black/20 transition-transform motion-reduce:hover:scale-100 hover:scale-110 hover:hover:font-bold bg-white grid place-items-center'
                         >
                           <Image

@@ -1,8 +1,8 @@
 import { getAlbumAndMedia } from '@/api/items/media'
 import AlbumSlug from '@/app/[language]/chapter/media/album/[slug]/albumSlug'
 import { useTranslation } from '@/app/i18n'
-import { LanguageCode } from '@/models/Language'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 
 interface Params {
   language: LanguageCode
@@ -20,7 +20,7 @@ export async function generateMetadata(props: {
   if (error) {
     value = t('title')
   } else {
-    value = t('title') + ' - ' + decodeURI(album.album.translations[0].title)
+    value = `${t('title')} - ${decodeURI(album.album.translations[0].title)}`
   }
 
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)

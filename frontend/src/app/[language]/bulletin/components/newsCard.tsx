@@ -7,9 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import Committee from '@/models/Committee'
-import News from '@/models/items/News'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type Student from '@/models/Student'
+import type News from '@/models/items/News'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -36,18 +36,16 @@ export default function NewsCard({ newsItem }: Props): JSX.Element {
       aria-label={newsItem.translations[0].title}
     >
       <CardHeader>
-        <Link href={'./news/' + newsItem.url} className='group w-full h-fit'>
+        <Link href={`./news/${newsItem.url}`} className='group w-full h-fit'>
           <div className='flex items-center gap-1'>
             {newsItem.translations[0].main_image_url && (
-              <>
-                <Image
-                  src={newsItem.translations[0].main_image_url}
-                  alt={newsItem.translations[0].title + ' Image'}
-                  width={300}
-                  height={100}
-                  className='object-cover w-8 h-auto aspect-square rounded-md'
-                />
-              </>
+              <Image
+                src={newsItem.translations[0].main_image_url}
+                alt={`${newsItem.translations[0].title} Image`}
+                width={300}
+                height={100}
+                className='object-cover w-8 h-auto aspect-square rounded-md'
+              />
             )}
 
             <CardTitle className='underline-offset-4 text-xl leading-tight decoration-yellow-400 decoration-2 group-hover:underline max-w-[280px] truncate'>
@@ -56,8 +54,7 @@ export default function NewsCard({ newsItem }: Props): JSX.Element {
           </div>
           <CardDescription className='h-12 overflow-hidden group-hover:underline !no-underline py-1 text-xs'>
             {newsItem.translations[0].short_description.length > 80
-              ? newsItem.translations[0].short_description.substring(0, 80) +
-                '...'
+              ? `${newsItem.translations[0].short_description.substring(0, 80)}...`
               : newsItem.translations[0].short_description}
           </CardDescription>
         </Link>

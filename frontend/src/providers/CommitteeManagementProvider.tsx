@@ -1,11 +1,12 @@
 'use client'
-import Committee, {
+import type Committee from '@/models/Committee'
+import type {
   CommitteePosition,
   CommitteePositionRecruitment,
 } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
-import { StudentMembershipPagination } from '@/models/Pagination'
-import { StudentMembership } from '@/models/Student'
+import type { LanguageCode } from '@/models/Language'
+import type { StudentMembershipPagination } from '@/models/Pagination'
+import type { StudentMembership } from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,

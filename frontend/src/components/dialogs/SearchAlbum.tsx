@@ -11,14 +11,14 @@ import {
   PaginationItem,
 } from '@/components/ui/pagination'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import Album from '@/models/Album'
-import { AlbumPagination } from '@/models/Pagination'
+import type Album from '@/models/Album'
+import type { LanguageCode } from '@/models/Language'
+import type { AlbumPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Skeleton } from '../ui/skeleton'
-import { LanguageCode } from '@/models/Language'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -85,7 +85,7 @@ export default function SearchAlbum({ language, albums, callback }: Props) {
         <Label htmlFor='search'>{t('search_album')}</Label>
         <div className='flex gap-2'>
           <Input
-            placeholder={t('search_album') + '...'}
+            placeholder={`${t('search_album')}...`}
             type='search'
             name='search'
             id='search'
@@ -138,17 +138,19 @@ export default function SearchAlbum({ language, albums, callback }: Props) {
               {t('previous')}
             </Button>
           </PaginationItem>
-          {[...Array(data.total_pages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <Button
-                disabled={pageIndex === index + 1}
-                onClick={() => setPageIndex(index + 1)}
-                variant={'ghost'}
-              >
-                <span>{index + 1}</span>
-              </Button>
-            </PaginationItem>
-          ))}
+          {Array.from({ length: data.total_pages }, (_, index) => index).map(
+            (page, index) => (
+              <PaginationItem key={`ellipsis-${page}`}>
+                <Button
+                  disabled={pageIndex === index + 1}
+                  onClick={() => setPageIndex(index + 1)}
+                  variant={'ghost'}
+                >
+                  <span>{index + 1}</span>
+                </Button>
+              </PaginationItem>
+            )
+          )}
           {pageIndex + 3 < data.total_pages && <PaginationEllipsis />}
           <PaginationItem>
             <Button

@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { use } from 'react'

@@ -1,5 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
+import type { LanguageCode } from '@/models/Language'
 import {
   ArrowTopRightOnSquareIcon,
   BuildingOffice2Icon,
@@ -7,9 +8,8 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 import ConnectSection from './connect'
-import { LanguageCode } from '@/models/Language'
 
 /**
  * Renders the footer for all pages
@@ -90,7 +90,7 @@ export default async function Footer({
                   href='mailto:styrelsen@medieteknik.com'
                   className='flex items-center text-center mt-1'
                   title='Email styrelsen@medieteknik.com'
-                  aria-label={`Email styrelsen@medieteknik.com`}
+                  aria-label='Email styrelsen@medieteknik.com'
                 >
                   <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>styrelsen@medieteknik.com</span>
@@ -106,7 +106,7 @@ export default async function Footer({
                   className='flex items-center text-center mt-1
                   '
                   title='Call organization number 802411-5647'
-                  aria-label={`Call organization number 802411-5647`}
+                  aria-label='Call organization number 802411-5647'
                 >
                   <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>802411-5647</span>

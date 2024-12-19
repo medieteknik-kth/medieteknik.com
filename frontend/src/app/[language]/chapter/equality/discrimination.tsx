@@ -1,6 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import StaticHeading from '@/components/static/StaticHeading'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode

@@ -1,10 +1,10 @@
-import { HeaderElement } from '@/components/header/util/HeaderElement'
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
 
 import type { JSX } from 'react'

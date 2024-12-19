@@ -4,11 +4,17 @@ import PositionDisplay from '@/app/[language]/chapter/positions/positionDisplay'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { CommitteePosition } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useMemo, useState, type JSX } from 'react'
+import {
+  type ChangeEvent,
+  type JSX,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react'
 
 interface Props {
   language: LanguageCode
@@ -48,7 +54,7 @@ export default function Search({ language, data }: Props): JSX.Element {
     }
     router.replace(`${pathname}?search=${searchInput.toLowerCase()}`)
     setSearch(searchInput)
-  }, [searchInput])
+  }, [searchInput, pathname, router.replace])
 
   const filteredData = useMemo(() => {
     return data.filter((position) =>
@@ -73,6 +79,7 @@ export default function Search({ language, data }: Props): JSX.Element {
           }}
         />
         <button
+          type='button'
           className={`absolute right-14 ${
             searchInput.length < 1 && 'hidden'
           } p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-md`}
@@ -104,7 +111,7 @@ export default function Search({ language, data }: Props): JSX.Element {
         </p>
         <ul className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
           {filteredData.map((position, index) => (
-            <li key={index}>
+            <li key={`${position.committee_position_id}_search`}>
               <PositionDisplay position={position} />
             </li>
           ))}

@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
@@ -64,8 +64,8 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
                 .sort((a, b) =>
                   a.translations[0].title.localeCompare(b.translations[0].title)
                 )
-                .map((position, index) => (
-                  <li key={index}>
+                .map((position) => (
+                  <li key={position.committee_position_id}>
                     <PositionDisplay position={position} />
                   </li>
                 ))}
@@ -78,8 +78,8 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
           </AccordionTrigger>
           <AccordionContent>
             <ul className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
-              {independentPositions.map((position, index) => (
-                <li key={index}>
+              {independentPositions.map((position) => (
+                <li key={position.committee_position_id}>
                   <PositionDisplay position={position} />
                 </li>
               ))}

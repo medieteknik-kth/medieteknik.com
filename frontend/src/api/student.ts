@@ -1,7 +1,8 @@
-import { ApiResponse, fetchData } from '@/api/api'
-import { LanguageCode } from '@/models/Language'
-import { EventPagniation, NewsPagination } from '@/models/Pagination'
-import Student, {
+import { type ApiResponse, fetchData } from '@/api/api'
+import type { LanguageCode } from '@/models/Language'
+import type { EventPagniation, NewsPagination } from '@/models/Pagination'
+import type Student from '@/models/Student'
+import type {
   IndividualCommitteePosition,
   Profile,
   StudentCommitteePosition,
@@ -21,8 +22,8 @@ import { API_BASE_URL } from '@/utility/Constants'
 export const getStudentPublic = async (
   studentId: string,
   language_code: LanguageCode,
-  detailed: boolean = false,
-  revalidate: number = 3_600
+  detailed: false,
+  revalidate = 3_600
 ): Promise<
   ApiResponse<{
     student: Student
@@ -61,7 +62,7 @@ export const getStudentPublic = async (
 export const getStudentNews = async (
   student_email: string,
   language_code: LanguageCode,
-  revalidate: number = 3_600
+  revalidate = 3_600
 ): Promise<ApiResponse<NewsPagination>> => {
   const { data, error } = await fetchData<NewsPagination>(
     `${API_BASE_URL}/public/news/student/${student_email}?language=${language_code}`,
@@ -90,7 +91,7 @@ export const getStudentNews = async (
 export const getStudentEvents = async (
   student_email: string,
   language_code: LanguageCode,
-  revalidate: number = 3_600
+  revalidate = 3_600
 ): Promise<ApiResponse<EventPagniation>> => {
   const { data, error } = await fetchData<EventPagniation>(
     `${API_BASE_URL}/public/events/student/${student_email}?language=${language_code}`,
@@ -119,7 +120,7 @@ export const getStudentEvents = async (
 export const getOfficials = async (
   language_code: LanguageCode,
   date: string,
-  revalidate: number = 3_600
+  revalidate = 3_600
 ): Promise<ApiResponse<StudentCommitteePosition[]>> => {
   // TODO: Change the API endpoint to something like this '/public/officials/'?
   const { data, error } = await fetchData<StudentCommitteePosition[]>(

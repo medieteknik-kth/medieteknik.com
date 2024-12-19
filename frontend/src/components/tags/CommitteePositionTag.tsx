@@ -5,7 +5,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import { CommitteePosition } from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
 
 import type { JSX } from 'react'
 
@@ -45,11 +45,9 @@ export default function CommitteePositionTag({
         >
           {includeImage && (
             <Avatar className='w-8 h-8 mr-2'>
-              <AvatarImage
-                src={committeePosition.committee?.logo_url ?? ''}
-              />
+              <AvatarImage src={committeePosition.committee?.logo_url ?? ''} />
               <AvatarFallback>
-                {committeePosition.translations[0].title + ' Profile Picture'}
+                {`${committeePosition.translations[0].title} logo`}
               </AvatarFallback>
             </Avatar>
           )}

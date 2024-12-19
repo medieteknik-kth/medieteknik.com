@@ -1,6 +1,6 @@
 'use client'
 
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import {
   createContext,
   useCallback,
@@ -8,8 +8,8 @@ import {
   useMemo,
   useReducer,
 } from 'react'
-import { BaseEditor, Editor } from 'slate'
-import { ReactEditor } from 'slate-react'
+import { type BaseEditor, Editor } from 'slate'
+import type { ReactEditor } from 'slate-react'
 
 type ElementType =
   | 'h1'

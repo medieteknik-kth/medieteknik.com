@@ -3,15 +3,15 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import Media from '@/models/items/Media'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
+import type Media from '@/models/items/Media'
 import {
   isCookieCategoryAllowed,
   retrieveCookieSettings,
 } from '@/utility/CookieManager'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
-import { JSX, useState } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -93,6 +93,11 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
         <div className='fixed left-0 top-0 w-screen h-screen z-50 grid place-items-center transition-all'>
           <div
             className='absolute left-0 top-0 h-full w-full bg-black/75'
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                setDialogOpen(false)
+              }
+            }}
             onClick={() => setDialogOpen(false)}
           />
           <Button

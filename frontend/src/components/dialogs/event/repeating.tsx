@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,9 +23,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -80,6 +81,7 @@ export default function RepeatingForm({
                 <FormControl>
                   <Button
                     variant={'outline'}
+                    // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                     role='combobox'
                     type='button'
                     aria-expanded={open}

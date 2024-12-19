@@ -1,8 +1,11 @@
 import { useTranslation } from '@/app/i18n'
 import { HeadComponent } from '@/components/static/Static'
-import { SectionDescription, SectionDescriptionProps } from './utility/section'
+import {
+  SectionDescription,
+  type SectionDescriptionProps,
+} from './utility/section'
 
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
@@ -34,9 +37,9 @@ export default async function Contact(props: Props): Promise<JSX.Element> {
       <HeadComponent title={t('title')} />
 
       <div className='w-full flex items-center flex-col py-10'>
-        {contactData.map((section, index) => (
+        {contactData.map((section) => (
           <SectionDescription
-            key={index}
+            key={section.title}
             title={section.title}
             description={section.description}
             links={section.links}
