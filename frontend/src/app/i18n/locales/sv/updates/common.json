@@ -1,0 +1,13 @@
+{
+    "title": "Uppdateringar",
+    "description": "Här kan du hitta alla uppdateringar som har gjorts på webbplatsen.",
+    "keywords": "Medieteknik, uppdateringar, ändringar, nya funktioner, buggfixar",
+    "overview": "Översikt",
+    "general": "Allmänt",
+    "ui_ux": "Användargränssnitt & Användarupplevelse",
+    "qol": "Livskvalitet",
+    "bugfixes": "Buggfixar",
+    "badge_new": "Ny",
+    "badge_updated": "Uppdaterad",
+    "badge_removed": "Borttagen"
+}

@@ -6,6 +6,8 @@ export const API_BASE_URL: string =
     ? 'http://localhost:80/api/v1' // http://localhost:80/api/v1
     : 'https://api.medieteknik.com/api/v1'
 
+export const SITE_VERSION = '0.6.1'
+
 export const LANGUAGES: Language = {
   sv: {
     short_name: 'sv',

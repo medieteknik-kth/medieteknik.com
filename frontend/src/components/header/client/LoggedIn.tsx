@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { SITE_VERSION } from '@/utility/Constants'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 
 import type { JSX } from 'react'
@@ -36,6 +37,7 @@ interface Props {
 export default function UserLoggedIn({ language }: Props): JSX.Element {
   const { student, logout } = useAuthentication()
   const { t } = useTranslation(language, 'header')
+  const { t: commonT } = useTranslation(language, 'common')
 
   if (!student) {
     return <></>
@@ -84,6 +86,9 @@ export default function UserLoggedIn({ language }: Props): JSX.Element {
                 {t('logout')}
               </Button>
             </DropdownMenuItem>
+            <p className='w-full text-center text-muted-foreground text-xs py-2 select-none'>
+              {commonT('title')} v{SITE_VERSION}
+            </p>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
