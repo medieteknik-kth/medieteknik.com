@@ -1,140 +1,169 @@
-import StudentTag from '@/components/tags/StudentTag'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Separator } from '@/components/ui/separator'
-import { CommitteePositionCategory } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
-import { StudentCommitteePosition } from '@/models/Student'
-import { AvatarFallback } from '@radix-ui/react-avatar'
-import Image from 'next/image'
-import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
+'use client'
+
+import OfficialsList from '@/app/[language]/chapter/officialsList'
+import { useTranslation } from '@/app/i18n/client'
+import Loading from '@/components/tooltips/Loading'
+import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import { Label } from '@/components/ui/label'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import type { LanguageCode } from '@/models/Language'
+import type { StudentCommitteePosition } from '@/models/Student'
+import { API_BASE_URL } from '@/utility/Constants'
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from '@heroicons/react/24/outline'
+import { useState, useTransition } from 'react'
 
 interface Props {
-  members: StudentCommitteePosition[]
   language: LanguageCode
+  currentMembers: StudentCommitteePosition[]
 }
 
-export default async function Officials({ language, members }: Props) {
-  const categories: CommitteePositionCategory[] = [
-    'STYRELSEN',
-    'VALBEREDNINGEN',
-    'UTBILDNING',
-    'NÄRINGSLIV OCH KOMMUNIKATION',
-    'STUDIESOCIALT',
-    'FANBORGEN',
+export default function Officials({ language, currentMembers }: Props) {
+  const { t } = useTranslation(language, 'chapter')
+  const [open, setOpen] = useState(false)
+  const [members, setMembers] = useState(currentMembers)
+  const [isPending, startTransition] = useTransition()
+
+  const years = [
+    {
+      value: '2024-2025',
+      label: '2024 - 2025',
+    },
+    {
+      value: '2023-2024',
+      label: '2023 - 2024',
+    },
+    {
+      value: '2022-2023',
+      label: '2022 - 2023',
+    },
+    {
+      value: '2021-2022',
+      label: '2021 - 2022',
+    },
+    {
+      value: '2020-2021',
+      label: '2020 - 2021',
+    },
+    {
+      value: '2019-2020',
+      label: '2019 - 2020',
+    },
+    {
+      value: '2018-2019',
+      label: '2018 - 2019',
+    },
   ]
 
-  const memberCategories = categories.map((category) => {
-    return {
-      name: category,
-      members: members.filter(
-        (member) => member.position.category === category
-      ),
-    }
-  })
+  const [value, setValue] = useState(years[0].value)
 
-  const hasImage = (member: StudentCommitteePosition) => {
-    return !!member.student.profile_picture_url
+  const onYearChange = (year: string, currentValue: string) => {
+    const previousMembers = [...members]
+    setMembers([])
+    startTransition(async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/public/students/committee_members?language=${language}&date=${year}`,
+          {
+            next: {
+              revalidate: 0,
+            },
+          }
+        )
+
+        setOpen(false)
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch data')
+        }
+
+        const data = await response.json()
+
+        setValue(currentValue === value ? '' : currentValue)
+        setMembers(data)
+      } catch (error) {
+        console.error(error)
+        setMembers(previousMembers)
+      }
+    })
   }
 
   return (
-    <section id='officials' className='w-full flex flex-col gap-4'>
-      {categories.map((category, index) => (
-        <div key={index}>
-          <h2 className='text-center sm:text-start text-lg sm:text-3xl tracking-wide uppercase text-black dark:text-yellow-400'>
-            {category}
-          </h2>
-          <div className='flex flex-wrap gap-4 mt-2 justify-center sm:justify-start'>
-            {memberCategories
-              .filter((member) => member.name === category)
-              .map((member) =>
-                member.members
-                  .sort((a, b) =>
-                    a.position.translations[0].title.localeCompare(
-                      b.position.translations[0].title
-                    )
-                  )
-                  .filter(
-                    (member) =>
-                      member.termination_date === null ||
-                      (member.termination_date &&
-                        new Date(member.termination_date) > new Date())
-                  )
-                  .sort((a, b) => a.position.weight - b.position.weight)
-                  .map((member, index) => (
-                    <div
-                      key={index}
-                      className='w-56 sm:w-72 h-fit border rounded-md relative dark:bg-[#111] shadow-sm shadow-black/25 dark:shadow-white/25'
-                    >
-                      <div className='relative'>
-                        <Image
-                          src={
-                            member.student.profile_picture_url || FallbackImage
-                          }
-                          alt='img'
-                          width={512}
-                          height={512}
-                          className={`w-full aspect-square object-cover rounded-md mx-auto ${
-                            !hasImage(member) &&
-                            'p-8 bg-[#EEE] dark:bg-[#323232]'
-                          }`}
-                          quality={90}
-                        />
-                        <div className='w-full h-20 absolute bottom-0 from-white from-20% dark:from-[#111] bg-gradient-to-t' />
-                      </div>
-                      <div className='flex gap-2 items-center px-2 absolute top-4 bg-white dark:bg-[#111] border border-l-0 rounded-r-md shadow-sm shadow-black/25 dark:shadow-white/25'>
-                        <Avatar className='w-6 h-6 rounded-full overflow-hidden bg-white'>
-                          <AvatarImage
-                            src={member.position.committee?.logo_url}
-                            alt={`${member.position.translations[0].title} logo`}
-                            width={32}
-                            height={32}
-                            className='w-6 h-full object-contain p-0.5'
-                          />
-                          <AvatarFallback>
-                            <Image
-                              src={FallbackImage.src}
-                              alt='Fallback image'
-                              width={24}
-                              height={24}
-                              className='w-6 bg-white rounded-full p-0.5'
-                            />
-                          </AvatarFallback>
-                        </Avatar>
-                        <p
-                          className={`${
-                            member.position.translations[0].title.length > 15 &&
-                            !/\s/.test(member.position.translations[0].title)
-                              ? 'text-xs'
-                              : 'text-xs md:text-sm'
-                          } truncate lg:text-wrap lg:overflow-visible lg:whitespace-normal uppercase tracking-wider w-fit max-w-36 sm:max-w-56 leading-4 py-0.5`}
-                          title={member.position.translations[0].title}
-                        >
-                          {member.position.translations[0].title}
-                        </p>
-                      </div>
-                      <div className='px-2 pb-2 h-24 flex flex-col gap-2 text-xl'>
-                        <StudentTag
-                          student={member.student}
-                          includeAt={false}
-                          includeImage={false}
-                        />
-                        <Link
-                          href={`mailto:${member.position.email}`}
-                          target='_blank'
-                          className='text-xs break-words sm:text-sm text-neutral-700 hover:text-yellow-400 hover:underline underline-offset-4 dark:text-neutral-300 dark:hover:text-yellow-400'
-                          title={`Mail to ${member.position.email}`}
-                        >
-                          {member.position.email}
-                        </Link>
-                      </div>
-                    </div>
-                  ))
+    <section id='officials' className='px-2 sm:px-5 md:px-12 mb-10'>
+      <div className='w-full lg:w-1/2 flex flex-col md:flex-row items-center gap-4 pb-4'>
+        <h1 className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl block'>
+          {t('officials')}
+        </h1>
+        <Label className='uppercase'>{t('year')}</Label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant={'outline'}
+              // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+              role='combobox'
+              aria-expanded={open}
+              className='w-[200px] justify-between'
+              disabled={isPending}
+            >
+              {value
+                ? years.find((year) => year.value === value)?.label
+                : t('select_year')}
+
+              {open ? (
+                <ChevronUpIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+              ) : (
+                <ChevronDownIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
               )}
-          </div>
-          <Separator className='w-full sm:w-1/3 mt-4 bg-yellow-400' />
-        </div>
-      ))}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className='w-[200px] p-0'>
+            <Command>
+              <CommandInput placeholder={t('search_year')} />
+              <CommandList>
+                <CommandEmpty>{t('no_results')}</CommandEmpty>
+                <CommandGroup>
+                  {years.map((year) => (
+                    <CommandItem
+                      key={year.value}
+                      value={year.value}
+                      onSelect={(currentValue) =>
+                        onYearChange(year.value, currentValue)
+                      }
+                    >
+                      {year.label}
+                      <CheckIcon
+                        className={`${
+                          year.value === value ? 'opacity-100' : 'opacity-0'
+                        } w-4 h-4 ml-auto`}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+      {!isPending ? (
+        <OfficialsList language={language} year={value} members={members} />
+      ) : (
+        <Loading language={language} />
+      )}
     </section>
   )
 }

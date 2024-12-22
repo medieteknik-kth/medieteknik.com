@@ -104,11 +104,11 @@ export default function EventUpload({
           description: '',
         }
       }),
-      // @ts-ignore
+      // @ts-expect-error - This is a valid date string
       event_start_date: new Date(selectedDate.getTime() + 60 * 60 * 1000)
         .toISOString()
         .substring(0, 16),
-      // @ts-ignore
+      // @ts-expect-error - This is a valid date string
       event_end_date: new Date(selectedDate.getTime() + 2 * 60 * 60 * 1000)
         .toISOString()
         .substring(0, 16),

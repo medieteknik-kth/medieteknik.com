@@ -6,5 +6,7 @@
     "committees": "Committees",
     "committees.description": "Description",
     "officials": "Officials",
+    "search_year": "Search year",
+    "no_results": "No results",
     "readMore": "Read More"
 }

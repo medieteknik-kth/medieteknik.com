@@ -142,7 +142,10 @@ export default function ExtraNews({
         }
       >
         {pages.map((currentPage) => (
-          <div key={page} className='flex flex-wrap gap-2'>
+          <div
+            key={page}
+            className='flex flex-wrap justify-center xl:justify-start gap-2'
+          >
             {currentPage.jsx}
           </div>
         ))}

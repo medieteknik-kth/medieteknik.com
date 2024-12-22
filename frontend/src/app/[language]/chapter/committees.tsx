@@ -83,7 +83,7 @@ export default function Committees({
 
   return (
     <section
-      className='px-2 sm:px-5 md:px-20 h-fit my-10 relative flex flex-col gap-4'
+      className='px-2 sm:px-5 md:px-12 h-fit my-10 relative flex flex-col gap-4'
       id='committees'
     >
       <Link
@@ -92,7 +92,7 @@ export default function Committees({
       >
         {t('committees')}
       </Link>
-      <div className='w-full'>
+      <div className='w-full px-4'>
         <Carousel
           className='w-full'
           setApi={setApi}
@@ -108,40 +108,42 @@ export default function Committees({
               .sort((a, b) =>
                 a.translations[0].title.localeCompare(b.translations[0].title)
               )
-              .map((committee, index) => (
+              .map((committee) => (
                 <CarouselItem
                   key={committee.translations[0].title}
-                  className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[400px] pl-4'
+                  className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[300px] pl-4'
                 >
                   <Card className='h-full flex flex-col justify-between'>
-                    <CardHeader>
-                      <CardTitle className='flex flex-col gap-2 text-lg sm:text-xl md:text-2xl'>
-                        <Avatar className='bg-white w-16 h-16 z-10'>
-                          <AvatarImage
-                            src={committee.logo_url}
-                            width={64}
-                            height={64}
-                            className='w-auto h-16 aspect-square object-contain p-2'
+                    <CardHeader className='flex flex-row flex-wrap items-center gap-4'>
+                      <Avatar className='bg-white w-16 h-16 z-10 rounded-md'>
+                        <AvatarImage
+                          src={committee.logo_url}
+                          width={64}
+                          height={64}
+                          className='w-auto h-16 aspect-square object-contain p-2'
+                        />
+                        <AvatarFallback>
+                          <Image
+                            src={FallbackImage}
+                            alt='Committee Fallback image'
+                            width={100}
+                            height={100}
                           />
-                          <AvatarFallback>
-                            <Image
-                              src={FallbackImage}
-                              alt='Committee Fallback image'
-                              width={100}
-                              height={100}
-                            />
-                          </AvatarFallback>
-                        </Avatar>
-                        {committee.translations[0].title}
-                      </CardTitle>
-                      <CardDescription>
-                        <Link
-                          href={`mailto:${committee.email}`}
-                          className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
-                        >
-                          {committee.email}
-                        </Link>
-                      </CardDescription>
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className='flex items-center gap-3 text-lg sm:text-xl md:text-2xl'>
+                          {committee.translations[0].title}
+                        </CardTitle>
+                        <CardDescription>
+                          <Link
+                            href={`mailto:${committee.email}`}
+                            className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+                          >
+                            {committee.email}
+                          </Link>
+                        </CardDescription>
+                      </div>
                     </CardHeader>
                     <CardContent className='select-none'>
                       <p className='text-xs xs:text-sm text-neutral-700 dark:text-neutral-300'>

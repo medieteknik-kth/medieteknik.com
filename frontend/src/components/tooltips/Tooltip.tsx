@@ -1,11 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import type Committee from '@/models/Committee'
 import type { CommitteePosition } from '@/models/Committee'
 import type Student from '@/models/Student'
@@ -134,25 +128,27 @@ export function CommitteePositionTooltip({
 }) {
   return (
     <>
-      <CardHeader className='flex flex-row items-center'>
-        <Avatar className='mr-2'>
-          <AvatarImage
-            src={position.committee?.logo_url || ''}
-            alt='Committee Logo'
-          />
-          <AvatarFallback>N/A</AvatarFallback>
-        </Avatar>
-        <div className='flex flex-col'>
-          <CardTitle>{position.translations[0].title}</CardTitle>
-          <CardDescription className='capitalize'>
-            {position.category}
-          </CardDescription>
+      <div className='w-fit flex items-center gap-2 py-2'>
+        {position.committee && (
+          <Avatar className='mr-2 bg-white rounded-md overflow-hidden border'>
+            <AvatarImage
+              src={position.committee.logo_url}
+              alt='Committee Logo'
+              className='w-full h-full object-contain p-0.5'
+            />
+          </Avatar>
+        )}
+
+        <div className='flex flex-col w-fit'>
+          <p className='font-bold'>{position.translations[0].title}</p>
+          <p className='text-sm text-muted-foreground'>{position.category}</p>
         </div>
-      </CardHeader>
-      <CardContent>
-        <h3 className='text-lg font-bold'>Description</h3>
-        <p>{position.translations[0].description}</p>
-      </CardContent>
+      </div>
+      <div>
+        <p className='text-sm min-w-72 max-w-[350px] whitespace-pre-wrap'>
+          {position.translations[0].description}
+        </p>
+      </div>
     </>
   )
 }

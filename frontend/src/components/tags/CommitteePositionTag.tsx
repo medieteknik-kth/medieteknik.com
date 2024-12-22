@@ -1,3 +1,4 @@
+import { CommitteePositionTooltip } from '@/components/tooltips/Tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,35 +31,38 @@ interface CommitteePositionTagProps {
  */
 export default function CommitteePositionTag({
   committeePosition,
-  includeImage = true,
-  includeAt = true,
+  includeImage = false,
+  includeAt = false,
   children,
 }: CommitteePositionTagProps): JSX.Element {
   return (
     <HoverCard>
-      <HoverCardTrigger className='flex items-center' asChild>
+      <HoverCardTrigger className='flex items-center p-0 py-0.5' asChild>
         <Button
           variant='link'
-          className='text-black dark:text-yellow-400 pl-0'
+          className='text-black dark:text-yellow-400 h-fit w-fit tracking-tight'
           style={{ fontSize: 'inherit' }}
           tabIndex={-1}
         >
-          {includeImage && (
-            <Avatar className='w-8 h-8 mr-2'>
-              <AvatarImage src={committeePosition.committee?.logo_url ?? ''} />
+          {includeImage && committeePosition.committee && (
+            <Avatar className='w-8 h-8 mr-2 bg-white rounded-md overflow-hidden'>
+              <AvatarImage
+                src={committeePosition.committee.logo_url}
+                className='w-full h-full object-contain p-0.5'
+              />
               <AvatarFallback>
                 {`${committeePosition.translations[0].title} logo`}
               </AvatarFallback>
             </Avatar>
           )}
-          <p>
+          <p className='text-xs xs:text-sm text-start font-semibold'>
             {(includeAt ? '@ ' : '') + committeePosition.translations[0].title}
             {children}
           </p>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent>
-        {/*<CommitteePositionTooltip  position={committeePosition} />*/}
+      <HoverCardContent className='w-fit'>
+        <CommitteePositionTooltip position={committeePosition} />
       </HoverCardContent>
     </HoverCard>
   )

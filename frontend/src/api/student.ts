@@ -22,7 +22,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 export const getStudentPublic = async (
   studentId: string,
   language_code: LanguageCode,
-  detailed: false,
+  detailed = false,
   revalidate = 3_600
 ): Promise<
   ApiResponse<{
