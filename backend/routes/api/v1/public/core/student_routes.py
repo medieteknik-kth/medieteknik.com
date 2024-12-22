@@ -7,10 +7,7 @@ from http import HTTPStatus
 from flask import Blueprint, Response, jsonify, request
 from typing import Any, Dict, List
 from models.core import Student, Profile, StudentMembership
-from services.core.public import (
-    retrieve_all_committee_members,
-    retrieve_student_membership_by_id,
-)
+from services.core.public import retrieve_student_membership_by_id, get_officials
 from utility import retrieve_languages
 
 public_student_bp = Blueprint("public_student", __name__)
@@ -111,15 +108,27 @@ def get_student_by_email(email: str) -> Response:
 @public_student_bp.route("/committee_members", methods=["GET"])
 def get_committee_members() -> Response:
     """
-    Retrieves all committee members
-        :return: Response - The response object, 200 if successful
+    Retrieves all committee members in a range of dates
+        :return: Response - The response object, 200 if successful, 400 if the date format is invalid
     """
 
     provided_languages = retrieve_languages(request.args)
+    date = request.args.get("date", type=str, default=None)
 
-    committee_memberships: List[StudentMembership] = retrieve_all_committee_members(
-        provided_languages
+    if (
+        not date
+        or not date.count("-") == 1
+        or not all(map(lambda x: x.isdigit(), date.split("-")))
+    ):
+        return jsonify({"message": "Invalid date format"}), HTTPStatus.BAD_REQUEST
+
+    committee_memberships: List[StudentMembership] | None = get_officials(
+        provided_languages,
+        date,
     )
+
+    if committee_memberships is None:
+        return jsonify({"message": "Invalid date format"}), HTTPStatus.BAD_REQUEST
 
     # Construct the result from the joined data
     committee_members: List[Dict[str, Any]] = [

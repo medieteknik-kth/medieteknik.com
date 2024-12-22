@@ -26,12 +26,13 @@ class CommitteePositionsRole(enum.Enum):
 
 class CommitteePositionCategory(enum.Enum):
     STYRELSEN = "STYRELSEN"
-    VALBEREDNINGEN = "VALBEREDNINGEN"
-    STUDIENÄMNDEN = "STUDIENÄMNDEN"
-    NÄRINGSLIV_OCH_KOMMUNIKATION = "NÄRINGSLIV OCH KOMMUNIKATION"
     STUDIESOCIALT = "STUDIESOCIALT"
-    FANBORGEN = "FANBORGEN"
+    NÄRINGSLIV_OCH_KOMMUNIKATION = "NÄRINGSLIV OCH KOMMUNIKATION"
     UTBILDNING = "UTBILDNING"
+    VALBEREDNINGEN = "VALBEREDNINGEN"
+    KÅRFULLMÄKTIGE = "KÅRFULLMÄKTIGE"
+    REVISORER = "REVISORER"
+    FANBORGEN = "FANBORGEN"
 
 
 class CommitteePosition(db.Model):
@@ -264,7 +265,7 @@ class CommitteePositionRecruitment(db.Model):
         del data["committee_position_recruitment_id"]
 
         committee_position = CommitteePosition.query.get(data["committee_position_id"])
-        del data["committee_position_id"]   
+        del data["committee_position_id"]
 
         if not committee_position or not isinstance(
             committee_position, CommitteePosition
