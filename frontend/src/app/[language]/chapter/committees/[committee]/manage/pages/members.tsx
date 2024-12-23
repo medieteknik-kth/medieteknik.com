@@ -305,7 +305,9 @@ export default function MembersPage({
                     )
                   })
                   .map((member) => (
-                    <TableRow key={member.student.student_id}>
+                    <TableRow
+                      key={`${member.committee_position_id}_${member.student.email}`}
+                    >
                       <TableCell className='flex items-center gap-2'>
                         <StudentTag
                           student={member.student}

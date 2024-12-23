@@ -120,16 +120,16 @@ export default function EventUpload({
 
   const { setValue } = eventForm
 
-  if (!student) {
-    return <></>
-  }
-
   const handleColorChange = (color: string) => {
     setValue('background_color', color)
     setCurrentColor(color)
   }
 
   const publish = async (data: z.infer<typeof eventUploadSchema>) => {
+    if (!student) {
+      setErrorMessage('You need to be logged in!')
+      return
+    }
     const duration =
       (new Date(data.event_end_date).getTime() -
         new Date(data.event_start_date).getTime()) /
@@ -207,6 +207,10 @@ export default function EventUpload({
       setErrorMessage('Something went wrong, try again later!')
       console.error(error)
     }
+  }
+
+  if (!student) {
+    return <DialogContent>You need to be logged in!</DialogContent>
   }
 
   return (

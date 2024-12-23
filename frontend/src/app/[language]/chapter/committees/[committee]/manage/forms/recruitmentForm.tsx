@@ -222,7 +222,7 @@ export default function RecruitmentForm({
                   <Popover
                     open={popoverOpen}
                     onOpenChange={setPopoverOpen}
-                    modal
+                    modal={popoverOpen}
                   >
                     <PopoverTrigger asChild>
                       <FormControl>

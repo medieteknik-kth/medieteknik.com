@@ -172,7 +172,7 @@ export default function DocumentUpload({
 }: DocumentUploadProps): JSX.Element {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
-  const [value, _] = useState('DOCUMENT')
+  const [value, setValue] = useState('DOCUMENT')
   const { student } = useAuthentication()
   const [files, setFiles] = useState<File[]>([])
 
@@ -191,8 +191,10 @@ export default function DocumentUpload({
 
   const postForm = async (data: z.infer<typeof documentUploadSchema>) => {
     if (!student) {
+      setErrorMessage('Must be logged in to upload a document.')
       return
     }
+
     const formData = new FormData()
 
     // Add top-level fields
@@ -257,6 +259,12 @@ export default function DocumentUpload({
     },
   ] as const
 
+  if (!student) {
+    return (
+      <DialogContent>Must be logged in to upload a document.</DialogContent>
+    )
+  }
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -292,11 +300,17 @@ export default function DocumentUpload({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Type</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    modal={popoverOpen}
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant='outline'
+                          // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                          role='combobox'
                           aria-expanded={popoverOpen}
                           value={value}
                           className='w-52 justify-between'
@@ -321,6 +335,7 @@ export default function DocumentUpload({
                                 value={documentType.value}
                                 onSelect={() => {
                                   form.setValue('type', documentType.value)
+                                  setValue(documentType.value)
                                   setPopoverOpen(false)
                                 }}
                               >

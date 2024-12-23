@@ -122,17 +122,14 @@ export default function DateComponent({
       >
         {date.getDate()}
       </p>
-      <div
-        className={`w-full mt-10 text-black font-bold px-2 max-h-[80px] overflow-y-auto overflow-x-clip ${
-          !currentMonth && 'opacity-50'
-        }`}
-      >
+      <div className='w-full mt-10 text-black font-bold px-2 max-h-[80px] overflow-y-auto overflow-x-clip'>
         <ul className='flex flex-row sm:flex-col flex-wrap gap-1 h-fit'>
-          {filterEventsForDate(sortEvents(events), date).map((event) => (
+          {filterEventsForDate(sortEvents(events), date).map((event, index) => (
             <EventComponent
               key={event.event_id}
               date={date}
               event={event}
+              index={index}
               onEventClick={onEventClickCallback}
             />
           ))}

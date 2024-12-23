@@ -275,7 +275,11 @@ export default function PositionForm({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Category</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                    modal={popoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button

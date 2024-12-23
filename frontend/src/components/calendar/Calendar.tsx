@@ -70,7 +70,7 @@ export default function Calendar({
             ))}
       </ul>
       <ul className='w-full desktop:w-fit h-[768px] grid grid-cols-7 grid-rows-[repeat(6,minmax(128px,1fr))] place-items-center overflow-hidden border-l border-b'>
-        {previousMonthLastWeek.map((mappedDate, index) => (
+        {previousMonthLastWeek.map((mappedDate) => (
           <DateComponent
             date={mappedDate}
             events={events}

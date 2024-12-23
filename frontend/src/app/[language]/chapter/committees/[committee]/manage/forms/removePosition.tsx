@@ -106,7 +106,7 @@ export default function RemovePositionForm({
             render={({ field }) => (
               <FormItem className='flex flex-col gap-0.5'>
                 <FormLabel htmlFor='position_id'>Position</FormLabel>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={open} onOpenChange={setOpen} modal={open}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button

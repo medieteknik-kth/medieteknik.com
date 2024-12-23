@@ -117,7 +117,7 @@ export default function MediaUpload({
   album,
   callback,
 }: Props) {
-  const [value, _] = useState('image')
+  const [value, setValue] = useState('image')
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { student } = useAuthentication()
 
@@ -246,7 +246,11 @@ export default function MediaUpload({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Media Type</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                    modal={popoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -273,6 +277,7 @@ export default function MediaUpload({
                                 key={mediaType.value}
                                 value={mediaType.value}
                                 onSelect={() => {
+                                  setValue(mediaType.value)
                                   form.setValue(
                                     'media_type',
                                     mediaType.value as 'image' | 'video'

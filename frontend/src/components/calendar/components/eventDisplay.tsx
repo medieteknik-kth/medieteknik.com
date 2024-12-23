@@ -1,11 +1,18 @@
 import type Event from '@/models/items/Event'
-import { getDay, isSameDay } from 'date-fns'
+import {
+  differenceInDays,
+  eachDayOfInterval,
+  getDay,
+  isSameDay,
+  isSameMonth,
+} from 'date-fns'
 import type { JSX } from 'react'
 import tinycolor from 'tinycolor2'
 
 interface Props {
   event: Event
   date: Date
+  index: number
   onEventClick?: (event: Event) => void
 }
 
@@ -22,18 +29,21 @@ interface Props {
 export default function EventComponent({
   event,
   date,
+  index,
   onEventClick,
 }: Props): JSX.Element {
   const tinyEventColor = tinycolor(event.background_color)
   const defaultColor = tinyEventColor.isDark()
-    ? tinyEventColor.darken(10).toString()
-    : event.background_color
+    ? tinyEventColor.darken(10).toHex()
+    : tinyEventColor.toHex()
   const hoverColor = tinyEventColor.isDark()
-    ? tinyEventColor.lighten(5).toString()
-    : tinyEventColor.darken(5).toString()
+    ? tinyEventColor.lighten(5).toHex()
+    : tinyEventColor.darken(5).toHex()
 
   const startDate = new Date(event.start_date)
   const endDate = new Date(startDate.getTime() + event.duration * 60_000)
+  const spanDays = differenceInDays(endDate, startDate)
+  const days = eachDayOfInterval({ start: startDate, end: endDate })
 
   const multipleDays = !isSameDay(endDate, date)
 
@@ -42,15 +52,13 @@ export default function EventComponent({
       className={`${
         getDay(date) === 0 && multipleDays ? 'w-full' : 'w-2 sm:w-full'
       } ${
-        isSameDay(startDate, date) && 'z-20'
-      }h-4 sm:h-5 rounded-md text-xs overflow-y-hidden flex items-center
+        isSameDay(startDate, date) ? 'z-20 ' : ''
+      }h-4 sm:h-5 text-xs overflow-y-hidden flex items-center 
         ${
           tinycolor(event.background_color).isDark()
             ? 'text-white'
             : 'text-black'
-        }
-        ${event.background_color === '#FFFFFF' && 'border dark:border-none'}
-        ${isSameDay(new Date(event.start_date), date) && 'sm:h-5'}`}
+        } ${event.background_color === '#FFFFFF' ? 'border dark:border-none' : ''} ${isSameDay(new Date(event.start_date), date) ? 'sm:h-5' : ''}`}
       onClick={(e) => {
         e.stopPropagation()
         if (onEventClick) onEventClick(event)
@@ -59,17 +67,25 @@ export default function EventComponent({
         e.stopPropagation()
         if (onEventClick && e.key === 'Enter') onEventClick(event)
       }}
-      style={{
-        backgroundColor: defaultColor,
-      }}
     >
       <div
-        className={`${event.event_id} w-full h-full sm:py-0.5 z-20
+        className={`absolute left-2 bg-black/40 h-4 sm:h-5 z-30 ${!isSameDay(startDate, date) ? 'hidden' : ''} ${isSameMonth(startDate, new Date()) ? 'hidden' : ''}`}
+        style={{
+          top: `${(index + 1) * 4 + 36}px`,
+          // Calculate how many days the event spans over
+          right: `${8 - (multipleDays ? spanDays * 175 + 17 * spanDays : 0)}px`,
+        }}
+      />
+      <div
+        className={`${event.event_id} w-full h-full sm:py-0.5 ${multipleDays && !isSameDay(startDate, date) ? 'z-0' : 'z-10'}
           ${
             tinycolor(event.background_color).isDark()
               ? 'text-white'
               : 'text-black'
           }`}
+        style={{
+          backgroundColor: `#${defaultColor}`,
+        }}
         onFocus={(e) => {
           e.stopPropagation()
           const elements = document.getElementsByClassName(event.event_id)
@@ -94,7 +110,7 @@ export default function EventComponent({
           for (let i = 0; i < elements.length; i++) {
             elements[i].setAttribute(
               'style',
-              `background-color: ${hoverColor} !important;`
+              `background-color: #${hoverColor} !important;`
             )
           }
         }}
@@ -104,13 +120,13 @@ export default function EventComponent({
           for (let i = 0; i < elements.length; i++) {
             elements[i].setAttribute(
               'style',
-              `background-color: ${defaultColor} !important;`
+              `background-color: #${defaultColor} !important;`
             )
           }
         }}
       >
         <p
-          className={`absolute z-50 px-2 truncate ${
+          className={`absolute z-50 px-2 truncate filter ${
             isSameDay(new Date(event.start_date), date)
               ? !multipleDays && getDay(date) !== 0
                 ? 'hidden sm:block' // Single day event
@@ -137,9 +153,9 @@ export default function EventComponent({
       <span
         className={`${event.event_id} ${
           multipleDays && getDay(date) !== 0 ? 'block' : 'hidden'
-        } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10 z-10 rounded-md`}
+        } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10 z-10`}
         style={{
-          backgroundColor: defaultColor,
+          backgroundColor: `#${defaultColor}`,
         }}
         onFocus={(e) => {
           e.stopPropagation()
@@ -165,7 +181,7 @@ export default function EventComponent({
           for (let i = 0; i < elements.length; i++) {
             elements[i].setAttribute(
               'style',
-              `background-color: ${hoverColor} !important;`
+              `background-color: #${hoverColor} !important;`
             )
           }
         }}
@@ -175,7 +191,7 @@ export default function EventComponent({
           for (let i = 0; i < elements.length; i++) {
             elements[i].setAttribute(
               'style',
-              `background-color: ${defaultColor} !important;`
+              `background-color: #${defaultColor} !important;`
             )
           }
         }}

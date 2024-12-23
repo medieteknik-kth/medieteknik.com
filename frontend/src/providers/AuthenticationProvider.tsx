@@ -144,7 +144,10 @@ function authenticationReducer(
     case 'SET_STUDENT':
       return {
         ...state,
-        student: action.payload,
+        student: {
+          ...action.payload,
+          author_type: 'STUDENT',
+        },
       }
 
     case 'SET_ROLE':
@@ -211,7 +214,6 @@ interface AuthenticationContextType extends AuthenticationState {
   ) => Promise<boolean>
   logout: () => void
   register: () => void
-  setStudent: (student: Student) => void
 }
 
 const AuthenticationContext = createContext<
@@ -483,15 +485,6 @@ export function AuthenticationProvider({
       ...state,
 
       register: () => dispatch({ type: 'REGISTER' }),
-
-      /**
-       * Sets the student in the authentication state, by dispatching the action to the reducer.
-       *
-       * @param {Student} student - The student object to be set.
-       * @return {void}
-       */
-      setStudent: (student: Student): void =>
-        dispatch({ type: 'SET_STUDENT', payload: student }),
 
       /**
        * Sets the current role in the authentication state, by dispatching the action to the reducer.

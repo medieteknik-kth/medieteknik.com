@@ -76,7 +76,7 @@ export default function RepeatingForm({
               <p>{t('event.form.frequency')}</p>
               <sup className='text-red-600 px-0.5 select-none'>*</sup>
             </FormLabel>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={open} onOpenChange={setOpen} modal={open}>
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
