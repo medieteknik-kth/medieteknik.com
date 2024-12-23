@@ -9,7 +9,6 @@ from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
     jwt_required,
-    current_user,
     set_access_cookies,
     unset_jwt_cookies,
 )
@@ -263,7 +262,7 @@ def get_student_callback() -> Response:
     provided_languages = retrieve_languages(request.args)
     student_id = get_jwt_identity()
 
-    student = Student.query.get_or_404(student_id)
+    student: Student = Student.query.get_or_404(student_id)
 
     permissions_and_role = get_permissions(getattr(student, "student_id"))
 
@@ -299,7 +298,7 @@ def get_student_callback() -> Response:
 
     return jsonify(
         {
-            "student": current_user.to_dict(is_public_route=False),
+            "student": student.to_dict(is_public_route=False),
             "role": permissions_and_role.get("role"),
             "permissions": permissions_and_role.get("permissions"),
             "committees": committees,

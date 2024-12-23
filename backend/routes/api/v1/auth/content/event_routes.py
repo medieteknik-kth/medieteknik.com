@@ -127,16 +127,17 @@ def create_event() -> Response:
     data: dict[str, Any] = json.loads(json.dumps(data))
 
     author = data.get("author")
+    author_type = author.get("author_type")
 
-    if author is None:
+    if author is None or author_type is None:
         return jsonify({"error": "No author provided"}), HTTPStatus.BAD_REQUEST
 
     author_table = None
-    if author.get("author_type") == "STUDENT":
+    if author_type.upper() == "STUDENT":
         author_table = Student
-    elif author.get("author_type") == "COMMITTEE":
+    elif author_type.upper() == "COMMITTEE":
         author_table = Committee
-    elif author.get("author_type") == "COMMITTEE_POSITION":
+    elif author_type.upper() == "COMMITTEE_POSITION":
         author_table = CommitteePosition
     else:
         return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST

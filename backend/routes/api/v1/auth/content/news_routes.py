@@ -129,13 +129,13 @@ def create_news() -> Response:
     data: Dict[str, Any] = json.loads(json.dumps(data))
 
     author: Dict | None = data.get("author")
-    if author is None:
+    author_type: str = author.get("author_type")
+
+    if author is None or author_type is None:
         return jsonify({"error": "No author provided"}), HTTPStatus.BAD_REQUEST
 
-    author_type = author.get("author_type")
-
     author_table = None
-    if author_type == "STUDENT":
+    if author_type.upper() == "STUDENT":
         claims = get_jwt()
         permissions = claims.get("permissions")
 
@@ -146,9 +146,9 @@ def create_news() -> Response:
             return jsonify({"error": "Not authorized"}), HTTPStatus.UNAUTHORIZED
 
         author_table = Student
-    elif author_type == "COMMITTEE":
+    elif author_type.upper() == "COMMITTEE":
         author_table = Committee
-    elif author_type == "COMMITTEE_POSITION":
+    elif author_type.upper() == "COMMITTEE_POSITION":
         author_table = CommitteePosition
     else:
         return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST

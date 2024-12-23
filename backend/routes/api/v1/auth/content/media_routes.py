@@ -43,7 +43,7 @@ def create_media() -> Response:
         ), HTTPStatus.BAD_REQUEST
 
     author_table = None
-    if author_type == "STUDENT":
+    if author_type.upper() == "STUDENT":
         claims = get_jwt()
         permissions = claims.get("permissions")
 
@@ -54,7 +54,7 @@ def create_media() -> Response:
             return jsonify({"error": "Not authorized"}), HTTPStatus.UNAUTHORIZED
 
         author_table = Student
-    elif author_type == "COMMITTEE":
+    elif author_type.upper() == "COMMITTEE":
         author_table = Committee
     else:
         return jsonify({"error": "Invalid author type"}), HTTPStatus.BAD_REQUEST
