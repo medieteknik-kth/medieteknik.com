@@ -42,7 +42,7 @@ interface Props {
  */
 export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const { data: album, error } = await getAlbumAndMedia(language, slug)
+  const { data: album, error } = await getAlbumAndMedia(language, slug, 60)
   const { t } = await useTranslation(language, 'media')
 
   if (error) {

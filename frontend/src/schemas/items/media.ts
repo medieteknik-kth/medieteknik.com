@@ -16,7 +16,13 @@ export const mediaUploadSchema = z
       .or(z.literal(''))
       .refine((url) => {
         if (!url) return true
-        return url.includes('youtube.com') || url.includes('youtu.be')
+        try {
+          const parsedUrl = new URL(url)
+          const allowedHosts = ['youtube.com', 'www.youtube.com', 'youtu.be']
+          return allowedHosts.includes(parsedUrl.host)
+        } catch (e) {
+          return false
+        }
       }),
     translations: z.array(
       z.object({

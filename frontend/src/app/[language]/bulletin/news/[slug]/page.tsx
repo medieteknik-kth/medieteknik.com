@@ -2,6 +2,7 @@ import { getNewsData } from '@/api/items/news'
 import NewsSlug from '@/app/[language]/bulletin/news/[slug]/slug'
 import { useTranslation } from '@/app/i18n'
 import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
 import type { Metadata } from 'next'
 
 interface Params {
@@ -39,7 +40,7 @@ export async function generateMetadata(props: {
       data.author.author_type === 'COMMITTEE'
         ? data.author.translations[0].title
         : data.author.author_type === 'STUDENT'
-          ? `${data.author.first_name} ${data.author.last_name || ''}`
+          ? `${(data.author as Student).first_name} ${(data.author as Student).last_name || ''}`
           : ''
     }`,
     alternates: {
@@ -71,7 +72,7 @@ export async function generateMetadata(props: {
         data.author.author_type === 'COMMITTEE'
           ? data.author.translations[0].title
           : data.author.author_type === 'STUDENT'
-            ? `${data.author.first_name} ${data.author.last_name}`
+            ? `${(data.author as Student).first_name} ${(data.author as Student).last_name}`
             : null,
     },
   }

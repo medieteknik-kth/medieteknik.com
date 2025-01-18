@@ -67,7 +67,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
         }}
       >
         <Image
-          src={`https:/i.ytimg.com/vi/${getYoutubeId(
+          src={`https://i.ytimg.com/vi/${getYoutubeId(
             video.media_url
           )}/maxresdefault.jpg`}
           alt={video.translations[0].title}

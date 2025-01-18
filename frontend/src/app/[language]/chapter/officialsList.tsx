@@ -13,11 +13,10 @@ import type { StudentCommitteePosition } from '@/models/Student'
 
 interface Props {
   language: LanguageCode
-  year: string
   members: StudentCommitteePosition[]
 }
 
-export default function OfficialsList({ language, year, members }: Props) {
+export default function OfficialsList({ language, members }: Props) {
   const categories: CommitteePositionCategory[] = [
     'STYRELSEN',
     'STUDIESOCIALT',

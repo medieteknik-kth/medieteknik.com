@@ -17,7 +17,7 @@ interface Props {
 export default async function Chapter(props: Props) {
   const { language } = await props.params
   const { data: committees } = await getAllCommittees(language)
-  const { data: members } = await getOfficials(language, '2024-2025', 0)
+  const { data: members } = await getOfficials(language, '2024-2025')
 
   const { t } = await useTranslation(language, 'chapter')
 

@@ -4,6 +4,7 @@ import { useTranslation } from '@/app/i18n'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
 import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
 import { PhotoIcon } from '@heroicons/react/24/outline'
 import type { JSX } from 'react'
 
@@ -55,7 +56,7 @@ export default async function RecentMedia({
                   <ImageDisplay image={item} />
                   <div className='px-3 hidden'>
                     {item.author.author_type === 'STUDENT' ? (
-                      <StudentTag student={item.author} />
+                      <StudentTag student={item.author as Student} />
                     ) : item.author.author_type === 'COMMITTEE' ? (
                       <CommitteeTag
                         committee={item.author}

@@ -48,14 +48,13 @@ export default async function CommitteeMembers({
           Meet <span className='font-bold'>{committeeName}</span>
         </h2>
       </div>
-      <div className='w-full h-full flex flex-wrap gap-4 justify-center grid-flow-row px-12 mb-6'>
+      <div className='flex flex-wrap gap-3 mt-2 justify-center'>
         {members.items
           .sort((a, b) => a.position.weight - b.position.weight)
           .map((member) => (
             <StudentCommitteCard
-              key={`${member.position.translations[0].title}-${member.student.email}`}
+              key={`${member.position.committee_position_id}_${member.student.student_id}`}
               member={member}
-              committeeLogo={false}
             />
           ))}
       </div>

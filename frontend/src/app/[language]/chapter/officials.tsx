@@ -160,7 +160,7 @@ export default function Officials({ language, currentMembers }: Props) {
         </Popover>
       </div>
       {!isPending ? (
-        <OfficialsList language={language} year={value} members={members} />
+        <OfficialsList language={language} members={members} />
       ) : (
         <Loading language={language} />
       )}

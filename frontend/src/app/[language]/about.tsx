@@ -53,7 +53,7 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
   ]
 
   return (
-    <section className='w-full h-fit relative bg-white dark:bg-[#111] px-4 lg:px-20 2xl:px-56 py-20 border-t-2 flex flex-col gap-20 border-black/75 dark:border-white/75'>
+    <section className='w-full h-fit relative bg-white dark:bg-[#111] px-4 lg:px-20 2xl:px-56 py-20 border-t-2 flex flex-col gap-20 border-black/75 dark:border-yellow-400/75'>
       <h3 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
         {t('about')}
       </h3>
