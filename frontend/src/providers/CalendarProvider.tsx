@@ -10,6 +10,7 @@ import {
   useMemo,
   useReducer,
   useRef,
+  type JSX,
 } from 'react'
 
 interface CalendarState {

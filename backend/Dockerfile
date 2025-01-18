@@ -16,8 +16,8 @@ COPY . /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 COPY env/service-account-file.json /app/service-account-file.json
 
-# Expose port 80
-EXPOSE 80
+# Expose port 8080
+EXPOSE 8080
 
 # Run the application with gunicorn
 CMD ["gunicorn", "main:app"]

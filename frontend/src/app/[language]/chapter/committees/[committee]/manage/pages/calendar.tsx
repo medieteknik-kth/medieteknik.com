@@ -9,6 +9,12 @@ interface Props {
   language: LanguageCode
 }
 
+import type { JSX } from 'react'
+
+interface Props {
+  language: string
+}
+
 /**
  * @name CalendarPage
  * @description The page for managing a committees calendar
