@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   HoverCard,
@@ -6,6 +5,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import type Student from '@/models/Student'
+import Image from 'next/image'
 import Link from 'next/link'
 import { forwardRef } from 'react'
 import { StudentTooltip } from '../tooltips/Tooltip'
@@ -55,21 +55,29 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
             tabIndex={-1}
             asChild
           >
-            <Link href={`/student/${student.student_id}`}>
-              {includeImage && (
-                <Avatar className='h-10 w-auto aspect-square bg-white rounded-full overflow-hidden'>
-                  <AvatarImage
-                    className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full'
+            <Link
+              href={`/student/${student.student_id}`}
+              className='group !no-underline'
+            >
+              {includeImage &&
+                (student.profile_picture_url ? (
+                  <Image
+                    className='h-10 w-auto aspect-square object-contain rounded-full bg-white dark:bg-gray-800'
+                    width={40}
+                    height={40}
                     src={student.profile_picture_url}
                     alt={username}
                   />
-                  <AvatarFallback className='bg-primary text-black'>
-                    {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
-                  </AvatarFallback>
-                </Avatar>
-              )}
+                ) : (
+                  <p className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold'>
+                    {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
+                  </p>
+                ))}
               <div className='flex flex-col items-start justify-center text-start overflow-hidden'>
-                <p className='h-fit truncate max-w-full' title={username}>
+                <p
+                  className='h-fit truncate max-w-full group-hover:underline'
+                  title={username}
+                >
                   {(includeAt ? '@ ' : '') + username}
                 </p>
                 <div className={`${children && 'leading-3'}`}>{children}</div>

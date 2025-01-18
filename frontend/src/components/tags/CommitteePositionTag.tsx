@@ -37,7 +37,7 @@ export default function CommitteePositionTag({
 }: CommitteePositionTagProps): JSX.Element {
   return (
     <HoverCard>
-      <HoverCardTrigger className='flex items-center p-0 py-0.5' asChild>
+      <HoverCardTrigger className='flex items-center !p-0 py-0.5' asChild>
         <Button
           variant='link'
           className='text-black dark:text-yellow-400 h-fit w-fit tracking-tight'

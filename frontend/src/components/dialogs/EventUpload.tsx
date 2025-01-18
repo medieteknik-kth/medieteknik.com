@@ -92,8 +92,6 @@ export default function EventUpload({
     },
   ]
 
-  console.log(new Date(selectedDate.getTime() + 60 * 60 * 1000))
-
   const eventForm = useForm<z.infer<typeof eventUploadSchema>>({
     resolver: zodResolver(eventUploadSchema),
     defaultValues: {

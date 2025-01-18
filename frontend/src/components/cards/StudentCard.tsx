@@ -26,16 +26,30 @@ export default function StudentCommitteCard({
             className='w-full aspect-square object-cover rounded-t-md mx-auto'
             quality={90}
           />
+        ) : committeeLogo && member.position.committee ? (
+          <div className='w-full h-auto aspect-square grid place-items-center'>
+            <Image
+              src={member.position.committee.logo_url}
+              alt='img'
+              width={286}
+              height={286}
+              className='w-1/2 object-cover'
+              quality={90}
+            />
+          </div>
         ) : (
-          <Image
-            src={FallbackImage.src}
-            alt='img'
-            width={286}
-            height={286}
-            className='w-full aspect-square object-cover rounded-md mx-auto p-14'
-            quality={90}
-          />
+          <div className='w-full h-auto aspect-square grid place-items-center'>
+            <Image
+              src={FallbackImage.src}
+              alt='img'
+              width={286}
+              height={286}
+              className='w-1/2 object-cover'
+              quality={90}
+            />
+          </div>
         )}
+
         <div className='w-full h-20 absolute bottom-0 from-white from-10% dark:from-[#111] bg-gradient-to-t to-70%' />
       </div>
       {committeeLogo && member.position.committee && (

@@ -5,7 +5,6 @@ import type { CommitteePosition } from '@/models/Committee'
 import type Student from '@/models/Student'
 import Image from 'next/image'
 import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
 
 export function StudentTooltip({ student }: { student: Student }) {
   const username = `${student.first_name} ${student.last_name || ''}`
@@ -18,27 +17,22 @@ export function StudentTooltip({ student }: { student: Student }) {
       >
         <Link
           href={`./student/${student.student_id}`}
-          className='group'
+          className='group flex flex-col items-center gap-2'
           title='Go to profile page'
         >
-          <Avatar className='w-24 h-auto aspect-square bg-white rounded-full mb-2 group-hover:scale-110 transition-transform overflow-hidden'>
-            <AvatarImage
-              src={student.profile_picture_url}
-              alt='Profile Picture'
+          {student.profile_picture_url ? (
+            <Image
+              className='h-24 w-auto aspect-square object-contain p-0.5 rounded-full bg-white'
               width={96}
               height={96}
-              className='w-24 h-auto aspect-square object-fill p-0.5 rounded-full'
+              src={student.profile_picture_url}
+              alt={username}
             />
-            <AvatarFallback className='bg-white'>
-              <Image
-                src={FallbackImage.src}
-                alt='Profile Picture'
-                width={72}
-                height={72}
-                className='w-24 h-auto aspect-square object-cover p-4'
-              />
-            </AvatarFallback>
-          </Avatar>
+          ) : (
+            <p className='h-24 w-auto aspect-square p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold text-black text-2xl'>
+              {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
+            </p>
+          )}
           <p>{username}</p>
         </Link>
       </Button>
