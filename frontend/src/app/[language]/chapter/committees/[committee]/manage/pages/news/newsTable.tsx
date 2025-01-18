@@ -148,7 +148,7 @@ export default function NewsTable({ language, committee }: Props): JSX.Element {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {news.items.map((article) => (
+            {news.items?.map((article) => (
               <TableRow key={article.url}>
                 <TableCell className='max-w-52'>
                   {article.translations[0].title}

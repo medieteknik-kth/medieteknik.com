@@ -7,7 +7,7 @@ import type { LanguageCode } from '@/models/Language'
 import { CommitteeManagementProvider } from '@/providers/CommitteeManagementProvider'
 import { type JSX, Suspense, lazy } from 'react'
 const HomePage = lazy(() => import('./pages/home/home'))
-const MembersPage = lazy(() => import('./pages/members'))
+const MembersPage = lazy(() => import('./pages/members/members'))
 const NewsPage = lazy(() => import('./pages/news/news'))
 const EventPage = lazy(() => import('./pages/events/events'))
 const DocumentPage = lazy(() => import('./pages/documents/documents'))

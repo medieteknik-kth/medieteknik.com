@@ -1,7 +1,12 @@
 'use client'
 
+import CurrentMembers from '@/app/[language]/chapter/committees/[committee]/manage/pages/members/currentMembers'
+import {
+  WeightLevel,
+  hasMinimumWeightRequirement,
+} from '@/app/[language]/chapter/committees/[committee]/manage/pages/members/util'
 import { useTranslation } from '@/app/i18n/client'
-import StudentTag from '@/components/tags/StudentTag'
+import { Accordion } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -23,7 +28,6 @@ import {
 } from '@/components/ui/table'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -31,17 +35,16 @@ import {
   BuildingOffice2Icon,
   CircleStackIcon,
   ClockIcon,
-  Cog6ToothIcon,
   IdentificationIcon,
   PlusIcon,
   TrashIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
 import { type JSX, useEffect, useState } from 'react'
-import { AddMemberForm, RemoveMemberForm } from '../forms/memberForm'
-import PositionForm from '../forms/positionForm'
-import RecruitmentForm from '../forms/recruitmentForm'
-import RemovePositionForm from '../forms/removePosition'
+import { AddMemberForm, RemoveMemberForm } from '../../forms/memberForm'
+import PositionForm from '../../forms/positionForm'
+import RecruitmentForm from '../../forms/recruitmentForm'
+import RemovePositionForm from '../../forms/removePosition'
 
 interface Props {
   language: LanguageCode
@@ -78,32 +81,6 @@ export default function MembersPage({
   const { positions: studentPositions, role } = useAuthentication()
   const { t } = useTranslation(language, 'committee_management/members')
 
-  const findPosition = (id: string) => {
-    return positions.find((position) => position.committee_position_id === id)
-  }
-
-  const limited = (weight: number) => {
-    if (role === Role.ADMIN) {
-      return false
-    }
-
-    const positions = studentPositions.map((userPosition) =>
-      findPosition(userPosition.committee_position_id)
-    )
-
-    if (!positions || positions.length === 0) {
-      return true
-    }
-
-    return positions.some((position) => {
-      if (!position) {
-        return true
-      }
-
-      return position.weight >= weight
-    })
-  }
-
   const deleteRecruitment = async (id: string) => {
     try {
       const response = await fetch(
@@ -136,8 +113,8 @@ export default function MembersPage({
         {t('title')}
       </h2>
       <div className='flex flex-col mt-4 gap-4'>
-        <div className='flex'>
-          <Card className='w-fit relative mr-4'>
+        <div className='flex flex-wrap gap-4'>
+          <Card className='w-fit relative'>
             <CardHeader>
               <CardTitle>{t('members')}</CardTitle>
               <CardDescription>
@@ -157,7 +134,15 @@ export default function MembersPage({
                 <DialogTrigger asChild>
                   <Button
                     variant={'outline'}
-                    disabled={error !== null || limited(300)}
+                    disabled={
+                      error !== null ||
+                      !hasMinimumWeightRequirement(
+                        positions,
+                        studentPositions,
+                        role,
+                        WeightLevel.HIGH
+                      )
+                    }
                     title='Add a new member to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
@@ -179,7 +164,12 @@ export default function MembersPage({
                     disabled={
                       members.total_items === 0 ||
                       error !== null ||
-                      limited(150)
+                      !hasMinimumWeightRequirement(
+                        positions,
+                        studentPositions,
+                        role,
+                        WeightLevel.HIGHEST
+                      )
                     }
                     title='Remove a member from the committee'
                   >
@@ -213,7 +203,15 @@ export default function MembersPage({
                   <Button
                     variant={'outline'}
                     className='mr-4'
-                    disabled={error !== null || limited(300)}
+                    disabled={
+                      error !== null ||
+                      !hasMinimumWeightRequirement(
+                        positions,
+                        studentPositions,
+                        role,
+                        WeightLevel.HIGH
+                      )
+                    }
                     title='Create a new position to the committee'
                   >
                     <PlusIcon className='w-5 h-5 mr-2' />
@@ -237,7 +235,14 @@ export default function MembersPage({
                     variant={'outline'}
                     className='mr-4'
                     disabled={
-                      error !== null || positions.length === 0 || limited(400)
+                      error !== null ||
+                      positions.length === 0 ||
+                      !hasMinimumWeightRequirement(
+                        positions,
+                        studentPositions,
+                        role,
+                        WeightLevel.MEDIUM
+                      )
                     }
                     title='Open a position for recruitment'
                   >
@@ -245,20 +250,29 @@ export default function MembersPage({
                     {t('positions.recruit')}
                   </Button>
                 </DialogTrigger>
-                <RecruitmentForm
-                  language={language}
-                  onSuccess={() => {
-                    setRecruitmentOpen(false)
-                    window.location.reload()
-                  }}
-                />
+                {!isLoading && (
+                  <RecruitmentForm
+                    language={language}
+                    onSuccess={() => {
+                      setRecruitmentOpen(false)
+                      window.location.reload()
+                    }}
+                  />
+                )}
               </Dialog>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
                     variant={'destructive'}
                     disabled={
-                      error !== null || positions.length <= 1 || limited(150)
+                      error !== null ||
+                      positions.length <= 1 ||
+                      !hasMinimumWeightRequirement(
+                        positions,
+                        studentPositions,
+                        role,
+                        WeightLevel.HIGHEST
+                      )
                     }
                     title='Remove a position from the committee'
                   >
@@ -271,90 +285,9 @@ export default function MembersPage({
             </CardFooter>
           </Card>
         </div>
-        <Card className='relative'>
-          <CardHeader>
-            <CardTitle>{t('current_members')}</CardTitle>
-            <CardDescription>
-              <BuildingOffice2Icon className='absolute top-6 right-4 w-5 h-5 mr-2' />
-              {t('current_members.description')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t('student_name')}</TableHead>
-                  <TableHead>{t('position')}</TableHead>
-                  <TableHead>{t('initiation_date')}</TableHead>
-                  <TableHead className='text-right'>{t('actions')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {members.items
-                  .sort((a, b) => {
-                    return a.student.first_name.localeCompare(
-                      b.student.first_name
-                    )
-                  })
-                  .sort((a, b) => {
-                    const positionA = findPosition(a.committee_position_id)
-                    const positionB = findPosition(b.committee_position_id)
-                    return (
-                      (positionA ? positionA.weight : 0) -
-                      (positionB ? positionB.weight : 0)
-                    )
-                  })
-                  .map((member) => (
-                    <TableRow
-                      key={`${member.committee_position_id}_${member.student.email}`}
-                    >
-                      <TableCell className='flex items-center gap-2'>
-                        <StudentTag
-                          student={member.student}
-                          includeAt={false}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {isLoading ? (
-                          <Skeleton className='w-32 h-8' />
-                        ) : (
-                          findPosition(member.committee_position_id) && (
-                            <p>
-                              {
-                                findPosition(member.committee_position_id)
-                                  ?.translations[0].title
-                              }
-                            </p>
-                          )
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(member.initiation_date).toLocaleDateString(
-                          language,
-                          {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell className='text-right'>
-                        <Button
-                          variant={'outline'}
-                          size={'icon'}
-                          title='View member'
-                        >
-                          <Cog6ToothIcon className='w-5 h-5' />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <Accordion type='multiple' defaultValue={['current_members']}>
+          <CurrentMembers language={language} />
+        </Accordion>
         <div className='flex gap-4 flex-wrap'>
           <Card className='w-96 relative'>
             <CardHeader>
@@ -379,7 +312,7 @@ export default function MembersPage({
               </ul>
             </CardContent>
           </Card>
-          <Card className='relative grow min-w-[875px]'>
+          <Card className='relative grow xl:min-w-[875px]'>
             <CardHeader>
               <CardTitle>{t('recruitments')}</CardTitle>
               <CardDescription>

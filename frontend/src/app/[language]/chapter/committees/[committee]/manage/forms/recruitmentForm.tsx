@@ -114,10 +114,6 @@ export default function RecruitmentForm({
   const { positions } = useCommitteeManagement()
   const { positions: studentPositions } = useAuthentication()
 
-  if (!positions) {
-    throw new Error('Positions not found')
-  }
-
   const [value, setValue] = useState(positions[0].translations[0].title)
 
   const dropdownOptions = positions
