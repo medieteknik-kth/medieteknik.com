@@ -181,7 +181,10 @@ export function CommitteeManagementProvider({
     const retrieveData = async (committee: Committee) => {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
-      dispatch({ type: 'SET_COMMITTEE', payload: committee })
+      dispatch({ type: 'SET_COMMITTEE', payload: {
+        ...committee,
+        author_type: 'COMMITTEE'
+      } })
       try {
         const [dataResponse, recruitmentResponse] = await Promise.all([
           fetch(

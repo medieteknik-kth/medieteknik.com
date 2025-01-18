@@ -38,7 +38,7 @@ export type CommitteePositionCategory =
  */
 export default interface Committee {
   committee_id: string
-  author_type: 'COMMITTEE'
+  author_type: string
   email: string
   group_photo_url?: string
   logo_url: string
