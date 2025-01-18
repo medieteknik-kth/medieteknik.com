@@ -31,6 +31,8 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
     '/sitemap.xml',
     '/manifest.webmanifest',
     '/favicon',
+    '/web-app-manifest-192x192.png',
+    '/web-app-manifest-512x512.png',
     '/screenshots',
     '/apple-icon.png',
     '/react_devtools_backend_compact.js.map',
