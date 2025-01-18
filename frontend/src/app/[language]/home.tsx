@@ -1,12 +1,12 @@
 import { useTranslation } from '@/app/i18n'
 import Loading from '@/components/tooltips/Loading'
+import type { LanguageCode } from '@/models/Language'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import BlurredBG from 'public/images/landingpage_blurred.webp'
-import { Suspense, type JSX } from 'react'
+import { type JSX, Suspense } from 'react'
 import './home.css'
-import { LanguageCode } from '@/models/Language'
 
 const About = dynamic(() => import('./about'), { ssr: true })
 
@@ -48,7 +48,7 @@ export default async function Home(props: Props): Promise<JSX.Element> {
             loading='eager'
           />
           <ChevronDownIcon
-            className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce z-20'
+            className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce z-20 motion-reduce:animate-none'
             style={{
               animationDuration: '1500ms',
             }}

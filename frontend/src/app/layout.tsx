@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body>
+      <body className='bg-neutral-900'>
         <SpeedInsights />
         <Analytics />
         <CustomProvider>{children}</CustomProvider>

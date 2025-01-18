@@ -110,14 +110,14 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
         {modal}
       </ClientProviders>
       <Script id='language-attributes'>
-        {`
-            document.documentElement.lang = "${params.language}";
-            document.documentElement.dir = "${dir(params.language)}";
-            document.documentElement.className = "${fontFigtree.className}";
-            document.body.className = "${
-              fontFigtree.className
-            } min-w-full min-h-screen bg-background font-sans antialiased";
-            `}
+        {`document.documentElement.lang = "${params.language}";
+document.documentElement.dir = "${dir(params.language)}";
+document.documentElement.className = "${fontFigtree.className} bg-neutral-900";`}
+      </Script>
+      <Script id='theme-attributes' strategy='lazyOnload'>
+        {`const theme = window.localStorage.getItem('theme');
+document.documentElement.className = "${fontFigtree.className} antialiased" + (theme === 'dark' ? ' dark' : '');
+document.body.removeAttribute('class');`}
       </Script>
     </>
   )
