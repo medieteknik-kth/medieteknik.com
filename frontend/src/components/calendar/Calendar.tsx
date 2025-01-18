@@ -55,7 +55,7 @@ export default function Calendar({
           ? en_days.map((day) => (
               <li
                 key={day}
-                className='week w-full desktop:w-48 py-1 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'
+                className='week w-full desktop:w-48 py-1 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start tracking-[-0.3rem] sm:tracking-normal'
               >
                 {day}
               </li>

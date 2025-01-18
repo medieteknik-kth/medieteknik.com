@@ -1,10 +1,10 @@
 import type Event from '@/models/items/Event'
 import {
   differenceInDays,
-  eachDayOfInterval,
   getDay,
   isSameDay,
   isSameMonth,
+  startOfDay,
 } from 'date-fns'
 import type { JSX } from 'react'
 import tinycolor from 'tinycolor2'
@@ -42,16 +42,12 @@ export default function EventComponent({
 
   const startDate = new Date(event.start_date)
   const endDate = new Date(startDate.getTime() + event.duration * 60_000)
-  const spanDays = differenceInDays(endDate, startDate)
-  const days = eachDayOfInterval({ start: startDate, end: endDate })
-
+  const spanDays = differenceInDays(startOfDay(endDate), startOfDay(startDate))
   const multipleDays = !isSameDay(endDate, date)
 
   return (
     <li
-      className={`${
-        getDay(date) === 0 && multipleDays ? 'w-full' : 'w-2 sm:w-full'
-      } ${
+      className={`${getDay(date) === 0 && multipleDays ? 'w-full' : 'w-full'} ${
         isSameDay(startDate, date) ? 'z-20 ' : ''
       }h-4 sm:h-5 text-xs overflow-y-hidden flex items-center 
         ${
@@ -69,7 +65,7 @@ export default function EventComponent({
       }}
     >
       <div
-        className={`absolute left-2 bg-black/40 h-4 sm:h-5 z-30 ${!isSameDay(startDate, date) ? 'hidden' : ''} ${isSameMonth(startDate, new Date()) ? 'hidden' : ''}`}
+        className={`hidden absolute left-2 bg-black/20 dark:bg-black/40 h-4 sm:h-5 z-30 ${!isSameDay(startDate, date) ? 'hidden' : ''} ${isSameMonth(startDate, new Date()) ? 'hidden' : ''}`}
         style={{
           top: `${(index + 1) * 4 + 36}px`,
           // Calculate how many days the event spans over
@@ -134,16 +130,7 @@ export default function EventComponent({
               : 'hidden' // Not the first day of multiple day event
           }`}
           style={{
-            maxWidth: `calc(95% * ${
-              getDay(date) === 0
-                ? 1
-                : Math.min(
-                    (endDate.getTime() - startDate.getTime()) /
-                      (1000 * 60 * 60 * 24) +
-                      1,
-                    8 - getDay(date)
-                  )
-            })`,
+            maxWidth: `${multipleDays ? 'calc(95% * ${spanDays})' : '95%'}`,
           }}
         >
           {event.translations[0].title}
@@ -153,7 +140,7 @@ export default function EventComponent({
       <span
         className={`${event.event_id} ${
           multipleDays && getDay(date) !== 0 ? 'block' : 'hidden'
-        } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10 z-10`}
+        } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10 ${isSameDay(startDate, new Date()) ? 'z-0' : 'z-10'}`}
         style={{
           backgroundColor: `#${defaultColor}`,
         }}
