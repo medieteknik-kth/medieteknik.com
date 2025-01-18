@@ -17,13 +17,13 @@ import { API_BASE_URL } from '@/utility/Constants'
 export const getMediaData = async (
   language_code: LanguageCode,
   committee_id: string,
-  revalidate?: number
+  revalidate = 3_600
 ): Promise<ApiResponse<MediaPagination>> => {
   const { data, error } = await fetchData<MediaPagination>(
     `${API_BASE_URL}/public/media/author/${committee_id}?language=${language_code}`,
     {
       next: {
-        revalidate: revalidate || 3_600, // 1 hour or user defined
+        revalidate: revalidate, // 1 hour or user defined
       },
     }
   )
@@ -45,13 +45,13 @@ export const getMediaData = async (
  */
 export const getAlbums = async (
   language_code: LanguageCode,
-  revalidate?: number
+  revalidate = 3_600
 ): Promise<ApiResponse<AlbumPagination>> => {
   const { data, error } = await fetchData<AlbumPagination>(
     `${API_BASE_URL}/public/albums?language=${language_code}`,
     {
       next: {
-        revalidate: revalidate || 3_600, // 1 hour or user defined
+        revalidate: revalidate, // 1 hour or user defined
       },
     }
   )
@@ -75,14 +75,14 @@ export const getAlbums = async (
 export const getAlbumAndMedia = async (
   language_code: LanguageCode,
   slug: string,
-  revalidate?: number
+  revalidate = 86_400
 ): Promise<ApiResponse<{ album: Album; media: Media[] }>> => {
   const { data, error } = await fetchData<{
     album: Album
     media: Media[]
   }>(`${API_BASE_URL}/public/albums/${slug}?language=${language_code}`, {
     next: {
-      revalidate: revalidate || 86_400, // 24 hours or user defined
+      revalidate: revalidate, // 24 hours or user defined
     },
   })
 
@@ -103,13 +103,13 @@ export const getAlbumAndMedia = async (
  */
 export const getLatestMedia = async (
   language_code: LanguageCode,
-  revalidate?: number
+  revalidate = 3_600
 ): Promise<ApiResponse<Media[]>> => {
   const { data, error } = await fetchData<Media[]>(
     `${API_BASE_URL}/public/media/latest?language=${language_code}`,
     {
       next: {
-        revalidate: revalidate || 3_600, // 1 hour or user defined
+        revalidate: revalidate, // 1 hour or user defined
       },
     }
   )

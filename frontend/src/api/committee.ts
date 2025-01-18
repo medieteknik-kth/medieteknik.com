@@ -37,7 +37,7 @@ export const getPublicCommitteeData = async (
     return { data, error }
   }
 
-  return { data, error: null }
+  return { data: { ...data, author_type: 'COMMITTEE' }, error: null }
 }
 
 /**
@@ -98,7 +98,13 @@ export const getCommittee = async (
     return { data, error }
   }
 
-  return { data, error: null }
+  return {
+    data: {
+      ...data,
+      author_type: 'COMMITTEE',
+    },
+    error: null,
+  }
 }
 
 /**
