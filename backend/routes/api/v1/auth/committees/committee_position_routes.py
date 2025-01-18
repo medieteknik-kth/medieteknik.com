@@ -99,9 +99,13 @@ def create_committee_position() -> Response:
     ), HTTPStatus.CREATED
 
 
-@committee_position_bp.route("/assign", methods=["POST", "DELETE"])
+@committee_position_bp.route(
+    "/assign/<string:committee_position_id>", methods=["POST", "DELETE"]
+)
 @jwt_required()
-def assign_student_to_committee_position() -> Response:
+def assign_student_to_committee_position(
+    committee_position_id: str,
+) -> Response:
     """
     Assigns a student to a committee position
         :return: Response - The response object, 400 if no data is provided, 404 if the student or committee position is not found, 200 if successful
@@ -123,19 +127,21 @@ def assign_student_to_committee_position() -> Response:
         student_email = student.get("student_email")
 
         if not student_email:
-            return jsonify({"error": "No student id provided"}), HTTPStatus.BAD_REQUEST
+            return jsonify(
+                {"error": "No student email provided"}
+            ), HTTPStatus.BAD_REQUEST
 
         student = Student.query.filter_by(email=student_email).one_or_404()
 
         if request.method == "DELETE":
             membership = StudentMembership.query.filter_by(
                 student_id=student.student_id,
+                committee_position_id=committee_position_id,
             ).one_or_none()
 
             if membership:
                 setattr(membership, "termination_date", func.now())
         else:
-            committee_position_id = data.get("position_id")
             committee_position = CommitteePosition.query.filter_by(
                 committee_position_id=committee_position_id
             ).one_or_none()

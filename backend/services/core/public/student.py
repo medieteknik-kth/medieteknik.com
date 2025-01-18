@@ -58,7 +58,6 @@ def get_officials(languages, date):
 
     start_date = datetime(start_year, QUARTER_START_MONTHS["Q3"], 1)
     end_date = datetime(end_year, QUARTER_START_MONTHS["Q2"], 1)
-    current_date = datetime.now()
 
     committee_memberships = (
         db.session.query(StudentMembership)
