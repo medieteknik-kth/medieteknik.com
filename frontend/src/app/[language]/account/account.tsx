@@ -1,7 +1,9 @@
 'use client'
 
+import Sidebar from '@/app/[language]/account/sidebar'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import CalendarProvider from '@/providers/CalendarProvider'
 import {
@@ -12,16 +14,15 @@ import {
 } from '@heroicons/react/24/outline'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, {
-  ForwardRefExoticComponent,
-  JSX,
-  LazyExoticComponent,
+  type ForwardRefExoticComponent,
+  type JSX,
+  type LazyExoticComponent,
   Suspense,
-  SVGProps,
+  type SVGProps,
   use,
   useEffect,
   useState,
 } from 'react'
-import Sidebar from './sidebar'
 const AccountProfile = React.lazy(() => import('./pages/accountPage'))
 const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
 //const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
@@ -39,12 +40,12 @@ export interface AccountPages {
   name: Tabs
   icon: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>
   page: LazyExoticComponent<
-    ({ language }: { language: string }) => React.JSX.Element
+    ({ language }: { language: LanguageCode }) => React.JSX.Element
   >
 }
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -78,7 +79,7 @@ export default function AccountPage(props: Props): JSX.Element {
   useEffect(() => {
     if (!authLoading) {
       if (!student) {
-        router.push(`/${language}/login`)
+        router.push(`/${language}`)
       } else {
         setIsLoading(false)
       }
@@ -123,7 +124,7 @@ export default function AccountPage(props: Props): JSX.Element {
     }*/
 
     setAccountPages([...defaultPages, ...additionalPages])
-  }, [committees, permissions])
+  }, [permissions])
 
   const searchParams = useSearchParams()
 
@@ -136,6 +137,10 @@ export default function AccountPage(props: Props): JSX.Element {
     return <Loading language={language} />
   }
 
+  if (!student) {
+    return <div>Student not found</div>
+  }
+
   return (
     <main className='relative'>
       <HeaderGap />
@@ -145,6 +150,7 @@ export default function AccountPage(props: Props): JSX.Element {
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
         />
+
         <div className='w-full min-h-[1080px] h-fit flex dark:bg-[#111]'>
           <div className='w-0 md:w-24' />
           <Suspense fallback={<Loading language={language} />}>

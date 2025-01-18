@@ -1,12 +1,15 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
-import { SectionDescription, SectionDescriptionProps } from './utility/section'
+import {
+  SectionDescription,
+  type SectionDescriptionProps,
+} from './utility/section'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -31,13 +34,12 @@ export default async function Contact(props: Props): Promise<JSX.Element> {
 
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
 
-      <div className='w-full flex items-center flex-col py-10 text-black bg-white dark:bg-[#232323] dark:text-white'>
-        {contactData.map((section, index) => (
+      <div className='w-full flex items-center flex-col py-10'>
+        {contactData.map((section) => (
           <SectionDescription
-            key={index}
+            key={section.title}
             title={section.title}
             description={section.description}
             links={section.links}

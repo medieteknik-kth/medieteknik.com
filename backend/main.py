@@ -3,16 +3,14 @@ The main application.
 """
 
 import os
+import secrets
 from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from utility.database import db
-from utility.authorization import jwt, oauth, oidc
-from utility.csrf import csrf
-from routes import register_routes
-import secrets
 from werkzeug.middleware.proxy_fix import ProxyFix
+from utility import db, jwt, oauth, csrf
+from routes import register_v1_routes
 
 
 app = Flask(__name__)
@@ -65,10 +63,8 @@ oauth.register(
     },
 )
 
-oidc.init_app(app)
-
 # Register routes (blueprints)
-register_routes(app)
+register_v1_routes(app)
 
 
 # Reverse proxy
@@ -81,12 +77,12 @@ class ReverseProxied:
         return self.app(environ, start_response)
 
 
-if os.environ.get("FLASK_ENV", "development") == "production":
+if os.environ.get("FLASK_ENV") == "production":
     app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 
 if __name__ == "__main__":
-    if os.environ.get("FLASK_ENV", "development") == "development":
+    if os.environ.get("FLASK_ENV") == "development":
         app.run(debug=True)
     else:
         app.run()

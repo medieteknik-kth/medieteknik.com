@@ -1,13 +1,10 @@
 import { useTranslation } from '@/app/i18n'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -75,24 +72,24 @@ export default async function Typography({
   ]
 
   return (
-    <section id='typography' className='px-12 mb-8'>
+    <section id='typography' className='px-2 sm:px-5 md:px-12 mb-8'>
       <div className='py-4'>
         <h2 className='font-bold text-3xl uppercase tracking-wide'>
           {t('typography')}
         </h2>
       </div>
 
-      <ul className='flex gap-4 flex-wrap'>
+      <ul className='flex gap-4 flex-wrap justify-center sm:justify-start'>
         {fonts.map((font) => (
           <li
             key={font.name}
-            className='w-[500px] flex flex-col sm:flex-row sm:items-center gap-3 my-1 sm:my-0'
+            className='w-[500px] flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-start gap-3 my-1 sm:my-0'
           >
             <div className='w-24 aspect-square bg-yellow-400 rounded-full grid place-items-center text-3xl text-black'>
               <p
                 className='tracking-wider select-none'
                 style={{
-                  fontFamily: font.name + ", 'Helvetica', 'Arial', sans-serif",
+                  fontFamily: `${font.name}, 'Helvetica', 'Arial', sans-serif`,
                   fontWeight: font.weight[0],
                   fontStyle: font.style[0],
                 }}
@@ -105,8 +102,8 @@ export default async function Typography({
               <p>
                 {font.weight.join(', ')} {font.style.join(', ')}{' '}
               </p>
-              <p className='text-neutral-600 text-sm dark:text-neutral-300 text-wrap max-w-[375px]'>
-                {t('typography.' + font.id)}
+              <p className='text-neutral-600 text-sm dark:text-neutral-300 text-wrap max-w-[375px] text-start'>
+                {t(`typography.${font.id}`)}
               </p>
             </div>
           </li>

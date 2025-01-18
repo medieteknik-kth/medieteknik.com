@@ -1,8 +1,9 @@
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 import CommitteeManage from './manage'
 
 interface Params {
-  language: string
+  language: LanguageCode
   committee: string
 }
 
@@ -14,7 +15,8 @@ export async function generateMetadata(props: {
 
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   return {
-    title: capitalizedValue + ' - Management',
+    title: `${capitalizedValue} - Management`,
+    robots: 'noindex, nofollow',
   }
 }
 

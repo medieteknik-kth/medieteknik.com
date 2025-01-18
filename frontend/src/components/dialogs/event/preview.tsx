@@ -1,12 +1,12 @@
 import { useTranslation } from '@/app/i18n/client'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import tinycolor from 'tinycolor2'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   currentColor: string
   translations: { language_code?: string; title: string }[]
 }
@@ -38,9 +38,9 @@ export default function EventPreview({
           1
         </p>
         <div className='w-full h-fit relative top-10 mb-12 left-0 px-2 flex flex-col gap-1'>
-          {translations.map((translation, index) => (
+          {translations.map((translation) => (
             <div
-              key={index}
+              key={translation.language_code}
               className={`w-full text-xs rounded-2xl px-2 py-0.5 h-6 border font-bold overflow-hidden ${
                 tinycolor(currentColor).isDark() ? 'text-white' : 'text-black'
               }`}

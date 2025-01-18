@@ -1,6 +1,7 @@
+import type { LanguageCode } from '@/models/Language'
 import { createInstance } from 'i18next'
 import resourcesToBackend from 'i18next-resources-to-backend'
-import { I18n, TFunction } from 'next-i18next'
+import type { I18n, TFunction } from 'next-i18next'
 import { initReactI18next } from 'react-i18next/initReactI18next'
 import { getOptions } from './settings'
 
@@ -12,7 +13,10 @@ import { getOptions } from './settings'
  * @param {string} namespace - The namespace, i.e. the translation file name
  * @returns {Promise<I18n>} i18next instance
  */
-const initI18n = async (language: string, namespace: string): Promise<I18n> => {
+const initI18n = async (
+  language: LanguageCode,
+  namespace: string
+): Promise<I18n> => {
   const i18n = createInstance()
   const options = getOptions(language, namespace)
 
@@ -37,7 +41,7 @@ const initI18n = async (language: string, namespace: string): Promise<I18n> => {
  * @returns {Promise<{ t: TFunction, i18n: I18n }>} Translation function and i18next instance
  */
 export async function useTranslation(
-  language: string,
+  language: LanguageCode,
   namespace: string,
   options: { keyPrefix?: string | undefined } = {}
 ): Promise<{ t: TFunction; i18n: I18n }> {

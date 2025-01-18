@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { LanguageCode } from '@/models/Language'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import {
   CalendarDaysIcon,
@@ -17,10 +18,10 @@ import {
   PhotoIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import { JSX, useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -62,7 +63,7 @@ export default function HomeDetails({ language }: Props): JSX.Element {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
+          {isLoading || !members ? (
             <Skeleton className='w-32 h-8' />
           ) : (
             <p className='text-2xl'>{members.total_items}</p>

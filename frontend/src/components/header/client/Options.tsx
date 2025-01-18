@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -15,17 +15,17 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { Cog8ToothIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState, type JSX } from 'react'
+import { type JSX, useCallback, useEffect, useState } from 'react'
 import DetailedCookiePopup from '../../cookie/DetailedCookie'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -104,11 +104,11 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
               <CardDescription>{t('description')}</CardDescription>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
+              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                {t('language')}
+              </h4>
               <div>
-                <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                  {t('language')}
-                </h4>
-                {supportedLanguages.map((lang) => (
+                {SUPPORTED_LANGUAGES.map((lang) => (
                   <Button
                     key={lang}
                     onClick={() => {
@@ -131,13 +131,13 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                 ))}
               </div>
 
+              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                {t('theme')}
+                <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
+                  Beta
+                </sup>
+              </h4>
               <div>
-                <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                  {t('theme')}
-                  <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
-                    Beta
-                  </sup>
-                </h4>
                 <Button
                   onClick={() => switchTheme('light')}
                   className='mx-1 cursor-pointer'
@@ -166,10 +166,10 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
                 </Button>
               </div>
 
+              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                {t('privacy')}
+              </h4>
               <div>
-                <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                  {t('privacy')}
-                </h4>
                 <Button
                   onClick={() => {
                     setCookiesShown(true)

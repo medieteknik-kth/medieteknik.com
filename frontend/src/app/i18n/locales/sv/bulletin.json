@@ -1,5 +1,7 @@
 {
     "title": "Nyheter & Events",
+    "description": "Här kan du läsa om de senaste nyheterna, kommande events och rekryteringar inom sektionen.",
+    "keywords": "Nyheter, Events, Kalender, Rekryteringar, Student liv",
     "breaking_news": "Just nu",
     "no_breaking_news": "Inga nyheter",
     "all_news": "Se alla nyheter",
@@ -35,8 +37,8 @@
     "event.delete_confirmation": "Är du säker på att du vill ta bort detta event? Detta kommer att ta bort alla förekomster av detta event.",
     "delete": "Ta bort",
     "cancel": "Avbryt",
-    "recruitment": "Aktuella Rekryterar",
-    "no_recruitment": "Inga Aktuella Rekryterar",
+    "recruitment": "Aktuella Rekryteringar",
+    "no_recruitment": "Ingen aktuell rekrytering",
     "more_news": "Mer Nyheter",
     "end_news": "Slut av Nyheter"
 }

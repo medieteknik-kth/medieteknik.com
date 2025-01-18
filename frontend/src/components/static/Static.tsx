@@ -1,5 +1,6 @@
-import Image, { StaticImageData } from 'next/image'
-import React from 'react'
+import HeaderGap from '@/components/header/components/HeaderGap'
+import Image, { type StaticImageData } from 'next/image'
+import type React from 'react'
 
 export function HeadComponent({
   title,
@@ -13,7 +14,8 @@ export function HeadComponent({
   children?: React.JSX.Element
 }) {
   return (
-    <div className='w-full h-fit bg-[#EEE] dark:bg-[#222] flex items-center border-b-2 border-yellow-400 relative'>
+    <div className='w-full h-fit bg-[#EEE] dark:bg-[#222] flex flex-col items-center border-b-2 border-yellow-400 relative'>
+      <HeaderGap />
       <div
         className={`w-full ${
           image ? 'xl:w-1/2' : 'w-full justify-center'
@@ -80,17 +82,17 @@ export function Section({
         centeredChildren ? 'flex flex-col items-center' : ''
       }`}
       id={title?.toLowerCase().replace(' ', '-')}
-      style={{
-        backgroundColor: metadata && metadata.background && metadata.background,
-        marginTop: metadata && metadata.marginTop && metadata.marginTop,
-        color: metadata && metadata.textColor && metadata.textColor,
-      }}
+      style={
+        metadata && {
+          backgroundColor: metadata.background && metadata.background,
+          marginTop: metadata.marginTop && metadata.marginTop,
+          color: metadata.textColor && metadata.textColor,
+        }
+      }
     >
       {title && (
         <div className='w-full h-fit text-center grid place-items-center'>
-          <h2
-            className={`uppercase tracking-wider font-semibold text-3xl w-9/12 border-b-2 border-yellow-400 py-8`}
-          >
+          <h2 className='uppercase tracking-wider font-semibold text-3xl w-9/12 border-b-2 border-yellow-400 py-8'>
             {title}
           </h2>
         </div>

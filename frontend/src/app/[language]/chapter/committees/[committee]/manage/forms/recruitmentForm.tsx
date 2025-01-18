@@ -1,5 +1,5 @@
 'use client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { createRecruitmentSchema } from '@/schemas/committee/recruitment'
@@ -42,7 +42,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 function TranslatedInputs({
   index,
@@ -107,16 +107,12 @@ export default function RecruitmentForm({
   language,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   onSuccess: () => void
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { positions } = useCommitteeManagement()
   const { positions: studentPositions } = useAuthentication()
-
-  if (!positions) {
-    throw new Error('Positions not found')
-  }
 
   const [value, setValue] = useState(positions[0].translations[0].title)
 
@@ -146,9 +142,8 @@ export default function RecruitmentForm({
     resolver: zodResolver(createRecruitmentSchema),
     defaultValues: {
       position: 'MEMBER',
-      start_date: new Date(),
       end_date: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-      translations: supportedLanguages.map((language) => ({
+      translations: SUPPORTED_LANGUAGES.map((language) => ({
         language_code: language,
         link: '',
         description: '',
@@ -173,7 +168,10 @@ export default function RecruitmentForm({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          start_date: new Date().toISOString(),
+        }),
       }
     )
 
@@ -195,7 +193,7 @@ export default function RecruitmentForm({
       <Tabs defaultValue={language}>
         <Label>Language</Label>
         <TabsList className='overflow-x-auto w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -209,7 +207,7 @@ export default function RecruitmentForm({
           ))}
         </TabsList>
 
-        <form onSubmit={form.handleSubmit(publish)}>
+        <form onSubmit={form.handleSubmit(publish)} className='z-10'>
           <Form {...form}>
             <FormField
               control={form.control}
@@ -217,7 +215,11 @@ export default function RecruitmentForm({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Position</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                    modal={popoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -237,8 +239,8 @@ export default function RecruitmentForm({
                     <PopoverContent>
                       <Command>
                         <CommandInput placeholder='Search positions...' />
-                        <CommandEmpty>No positions available</CommandEmpty>
                         <CommandList>
+                          <CommandEmpty>No positions available</CommandEmpty>
                           <CommandGroup>
                             {dropdownOptions.map((option) => (
                               <CommandItem
@@ -264,19 +266,6 @@ export default function RecruitmentForm({
             />
 
             <FormField
-              name='start_date'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Start Date</FormLabel>
-                  <FormControl>
-                    <Input {...field} type='datetime-local' />
-                  </FormControl>
-                  <FormMessage className='text-xs font-bold' />
-                </FormItem>
-              )}
-            />
-
-            <FormField
               name='end_date'
               render={({ field }) => (
                 <FormItem>
@@ -289,8 +278,8 @@ export default function RecruitmentForm({
               )}
             />
 
-            {supportedLanguages.map((language, index) => (
-              <TabsContent key={index} value={language}>
+            {SUPPORTED_LANGUAGES.map((language, index) => (
+              <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}
                   language={LANGUAGES[language].name}

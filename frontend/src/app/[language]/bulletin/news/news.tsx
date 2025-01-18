@@ -1,19 +1,18 @@
-import { GetNewsPagniation } from '@/api/items'
+import { getNewsPagniation } from '@/api/items/news'
 import AllNews from '@/app/[language]/bulletin/news/client/allNews'
 import HeaderGap from '@/components/header/components/HeaderGap'
-import { News } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
   params: Promise<Params>
 }
-
-export const revalidate = 43_200 // 12 hours
 
 /**
  * @name NewsPage
@@ -26,21 +25,21 @@ export const revalidate = 43_200 // 12 hours
  */
 export default async function NewsPage(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const data = await GetNewsPagniation(language, 1)
+  const { data: paginatedNews, error } = await getNewsPagniation(language, 1)
 
-  if (!data) {
+  if (error) {
     return (
       <div className='h-96 grid place-items-center text-3xl'>No data...</div>
     )
   }
 
-  data.items = data.items as News[]
+  paginatedNews.items = paginatedNews.items as News[]
 
   return (
     <main className='grid place-items-center'>
       <HeaderGap />
       <h1 className='text-4xl py-10'>News</h1>
-      <AllNews language={language} data={data} />
+      <AllNews language={language} data={paginatedNews} />
     </main>
   )
 }

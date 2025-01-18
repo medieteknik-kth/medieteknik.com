@@ -1,11 +1,13 @@
 'use client'
+
 import Loading from '@/components/tooltips/Loading'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
-import { use, useEffect, type JSX } from 'react'
+import { type JSX, use, useEffect } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -27,9 +29,9 @@ export default function Profile(props: Props): JSX.Element {
 
   useEffect(() => {
     if (!student) {
-      router.push(`/${language}/login`)
+      router.replace(`/${language}/login`)
     } else {
-      router.push(`/${language}/student/${student.student_id}`)
+      router.replace(`/${language}/student/${student.student_id}`)
     }
   }, [student, router, language])
 

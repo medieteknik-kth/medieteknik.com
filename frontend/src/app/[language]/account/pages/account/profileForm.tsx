@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Profile } from '@/models/Student'
+import type { Profile } from '@/models/Student'
 import { profileSchema } from '@/schemas/user/profile'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,9 +19,10 @@ import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 import { useTranslation } from '@/app/i18n/client'
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 const fetcher = (url: string) =>
@@ -30,7 +31,7 @@ const fetcher = (url: string) =>
   }).then((res) => res.json() as Promise<Profile>)
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

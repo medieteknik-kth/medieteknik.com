@@ -1,10 +1,10 @@
 'use client'
 
-import { News } from '@/models/Items'
+import type News from '@/models/items/News'
 import { useArticle } from '@/providers/ArticleProvider'
-import { useCallback, useMemo, type JSX } from 'react'
-import { Descendant, Editor, Transforms } from 'slate'
-import { Editable, RenderElementProps, Slate } from 'slate-react'
+import { type JSX, useCallback, useMemo } from 'react'
+import { type Descendant, Editor, Transforms } from 'slate'
+import { Editable, type RenderElementProps, Slate } from 'slate-react'
 import { AutoSaveResult, useAutoSave } from '../autoSave'
 import { ElementDisplay, Leaf, toggleMark } from '../util/Text'
 

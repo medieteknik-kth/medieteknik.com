@@ -25,6 +25,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { accountSchema } from '@/schemas/user/account'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -32,12 +33,12 @@ import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
-import { JSX, useMemo, useState } from 'react'
+import { type JSX, useMemo, useState } from 'react'
 import Dropzone from 'react-dropzone'
 import Cropper from 'react-easy-crop'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -50,7 +51,7 @@ const fetcher = (url: string) =>
   )
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -195,12 +196,13 @@ export default function AccountForm({ language }: Props): JSX.Element {
         0
       )
       if (!croppedImage) return
-      accountForm.setValue(
-        'profilePicture',
-        new File([croppedImage], 'profilePicture', {
-          type: 'image/jpeg',
-        })
-      )
+      const response = await fetch(croppedImage)
+      const blob = await response.blob()
+      const extension = blob.type.split('/')[1]
+      const newFile = new File([blob], `${student.student_id}.${extension}`, {
+        type: blob.type,
+      })
+      accountForm.setValue('profilePicture', newFile)
       setCroppedImage(croppedImage)
       setSuccessfulProfilePictureUpload(true)
     } catch (e) {
@@ -402,7 +404,10 @@ export default function AccountForm({ language }: Props): JSX.Element {
                       }
 
                       const img = new window.Image()
-                      img.src = URL.createObjectURL(file)
+                      const file_url = URL.createObjectURL(
+                        new Blob([file], { type: file.type })
+                      )
+                      img.src = file_url
                       img.onload = () => {
                         if (img.width !== img.height) {
                           alert('Aspect ratio must be 1:1')
@@ -416,6 +421,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
                           },
                         })
                         setProfilePicturePreview(file)
+                        URL.revokeObjectURL(file_url)
                       }
                     }}
                   />
@@ -434,7 +440,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
                   <Input
                     {...field}
                     title='Contact an administrator to change your name'
-                    value={student.first_name + ' ' + (student.last_name || '')}
+                    value={`${student.first_name} ${student.last_name || ''}`}
                     readOnly
                     autoComplete='off'
                   />
@@ -448,7 +454,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
           />
           <div className='flex flex-col *:py-1'>
             <FormField
-              name={`emailOne`}
+              name='emailOne'
               disabled
               render={({ field }) => (
                 <FormItem>
@@ -468,7 +474,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
             />
             <FormField
               control={accountForm.control}
-              name={`emailTwo`}
+              name='emailTwo'
               disabled
               render={({ field }) => (
                 <FormItem>
@@ -487,7 +493,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
             />
             <FormField
               control={accountForm.control}
-              name={`emailThree`}
+              name='emailThree'
               disabled
               render={({ field }) => (
                 <FormItem>

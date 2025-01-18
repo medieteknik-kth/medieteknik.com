@@ -2,10 +2,10 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
-import { News } from '@/models/Items'
-import { NewsPagination } from '@/models/Pagination'
+import type { LanguageCode } from '@/models/Language'
+import type { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import ShortNews from '../components/shortNews'
@@ -31,7 +31,7 @@ const fetcher = (url: string): Promise<NewsPagination> =>
  */
 const useNews = (
   index: number,
-  language: string
+  language: LanguageCode
 ): {
   data: NewsPagination | undefined
   isLoading: boolean
@@ -59,7 +59,7 @@ const useNews = (
  *   - {number} total_items - The total number of items in the news page.
  *   - {number} total_pages - The total number of pages in the news page.
  */
-function Page({ index, language }: { index: number; language: string }): {
+function Page({ index, language }: { index: number; language: LanguageCode }): {
   jsx: JSX.Element
   total_items: number
   total_pages: number
@@ -88,8 +88,8 @@ function Page({ index, language }: { index: number; language: string }): {
   return {
     jsx: (
       <>
-        {data.items.map((item: News, index) => (
-          <div key={index} className='relative'>
+        {data.items.map((item) => (
+          <div key={item.url} className='relative'>
             <ShortNews language={language} newsItem={item} />
           </div>
         ))}
@@ -110,7 +110,7 @@ function Page({ index, language }: { index: number; language: string }): {
 export default function ExtraNews({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): JSX.Element {
   const [page, setPage] = useState(1)
   const pages: {
@@ -141,9 +141,12 @@ export default function ExtraNews({
           </p>
         }
       >
-        {pages.map((page, index) => (
-          <div key={index} className='flex flex-wrap gap-2 justify-center'>
-            {page.jsx}
+        {pages.map((currentPage) => (
+          <div
+            key={page}
+            className='flex flex-wrap justify-center xl:justify-start gap-2'
+          >
+            {currentPage.jsx}
           </div>
         ))}
       </InfiniteScroll>

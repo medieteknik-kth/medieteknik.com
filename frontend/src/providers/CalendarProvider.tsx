@@ -1,7 +1,9 @@
 'use client'
-import { GetEvents } from '@/api/calendar'
-import { Event } from '@/models/Items'
+import { getEvents } from '@/api/calendar'
+import type { LanguageCode } from '@/models/Language'
+import type Event from '@/models/items/Event'
 import {
+  type JSX,
   createContext,
   useContext,
   useEffect,
@@ -98,8 +100,6 @@ const CalendarContext = createContext<CalendarContextType | undefined>(
   undefined
 )
 
-export const revalidate = 60 * 60 * 24
-
 /**
  * Renders the CalendarProvider component with the provided children.
  *
@@ -110,7 +110,7 @@ export default function CalendarProvider({
   language,
   children,
 }: {
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }): JSX.Element {
   const [state, dispatch] = useReducer(calendarReduction, initalState)
@@ -129,7 +129,11 @@ export default function CalendarProvider({
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
       try {
-        const events = await GetEvents(date, language)
+        const { data: events, error } = await getEvents(date, language)
+
+        if (error) {
+          throw error
+        }
 
         if (isMounted.current && events) {
           dispatch({ type: 'SET_EVENTS', payload: events })

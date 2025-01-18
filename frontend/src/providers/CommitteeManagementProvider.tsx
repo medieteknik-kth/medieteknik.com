@@ -1,10 +1,12 @@
 'use client'
-import Committee, {
+import type Committee from '@/models/Committee'
+import type {
   CommitteePosition,
   CommitteePositionRecruitment,
 } from '@/models/Committee'
-import { StudentMembershipPagination } from '@/models/Pagination'
-import { StudentMembership } from '@/models/Student'
+import type { LanguageCode } from '@/models/Language'
+import type { StudentMembershipPagination } from '@/models/Pagination'
+import type { StudentMembership } from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
@@ -170,7 +172,7 @@ export function CommitteeManagementProvider({
   children,
 }: {
   committee: Committee
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }) {
   const [state, dispatch] = useReducer(committeeManagementReducer, initialState)
@@ -179,7 +181,10 @@ export function CommitteeManagementProvider({
     const retrieveData = async (committee: Committee) => {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
-      dispatch({ type: 'SET_COMMITTEE', payload: committee })
+      dispatch({ type: 'SET_COMMITTEE', payload: {
+        ...committee,
+        author_type: 'COMMITTEE'
+      } })
       try {
         const [dataResponse, recruitmentResponse] = await Promise.all([
           fetch(

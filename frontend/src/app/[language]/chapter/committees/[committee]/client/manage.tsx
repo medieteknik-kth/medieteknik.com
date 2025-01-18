@@ -1,12 +1,14 @@
 'use client'
+
 import { Button } from '@/components/ui/button'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Cog8ToothIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 export default function ManageButton({ language, committee }: Props) {

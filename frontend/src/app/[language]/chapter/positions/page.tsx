@@ -1,9 +1,10 @@
 import Positions from '@/app/[language]/chapter/positions/positions'
 import { useTranslation } from '@/app/i18n'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {
@@ -16,6 +17,16 @@ export async function generateMetadata(props: {
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
   return {
     title: capitalizedValue,
+    keywords: t('keywords'),
+    description: t('description'),
+    alternates: {
+      canonical: `https://www.medieteknik.com/${params.language}/chapter/positions`,
+      languages: {
+        sv: 'https://www.medieteknik.com/sv/chapter/positions',
+        en: 'https://www.medieteknik.com/en/chapter/positions',
+        'x-default': 'https://www.medieteknik.com/chapter/positions',
+      },
+    },
   }
 }
 

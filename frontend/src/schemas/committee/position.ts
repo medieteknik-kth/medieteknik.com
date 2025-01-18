@@ -14,12 +14,13 @@ export const addPositionSchema = z.object({
   weight: z.number().or(z.string()).pipe(z.coerce.number()),
   category: z.enum([
     'STYRELSEN',
-    'VALBEREDNINGEN',
-    'STUDIENÄMNDEN',
-    'NÄRINGSLIV OCH KOMMUNIKATION',
     'STUDIESOCIALT',
-    'FANBORGEN',
+    'NÄRINGSLIV OCH KOMMUNIKATION',
     'UTBILDNING',
+    'VALBEREDNINGEN',
+    'KÅRFULLMÄKTIGE',
+    'REVISORER',
+    'FANBORGEN',
     'NONE',
   ]),
   translations: z.array(

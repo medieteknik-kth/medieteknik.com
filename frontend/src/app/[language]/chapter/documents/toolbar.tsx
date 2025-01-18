@@ -6,9 +6,10 @@ import StatusSelect from './toolbar/client/statusSelect'
 import ViewSelect from './toolbar/client/viewSelect'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

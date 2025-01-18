@@ -6,10 +6,11 @@ import UserLoggedIn from './LoggedIn'
 import NotificationMenu from './Notification'
 import OptionsMenu from './Options'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

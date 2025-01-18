@@ -1,18 +1,17 @@
-import { GetNewsData } from '@/api/items'
+import { getNewsData } from '@/api/items/news'
 import NewsRedirect from '@/app/[language]/bulletin/news/[slug]/client/redirect'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 
 interface Props {
   params: Promise<Params>
 }
-
-export const revalidate = 31_536_000 // 1 year
 
 /**
  * @name NewsSlug
@@ -26,10 +25,10 @@ export const revalidate = 31_536_000 // 1 year
  */
 export default async function NewsSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const data = await GetNewsData(language, slug)
+  const { data } = await getNewsData(language, slug)
 
   return (
-    <main>
+    <main className='w-full grid place-items-center'>
       <NewsRedirect language={language} news_data={data} />
     </main>
   )

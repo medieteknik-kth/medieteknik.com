@@ -1,9 +1,10 @@
 import { useTranslation } from '@/app/i18n'
-import { Metadata } from 'next'
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 import AccountPage from './account'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {

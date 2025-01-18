@@ -1,4 +1,5 @@
 'use client'
+
 import SearchStudent from '@/components/dialogs/SearchStudent'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,8 +29,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
-import Student from '@/models/Student'
+import type Student from '@/models/Student'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { addMember } from '@/schemas/committee/member'
@@ -45,7 +47,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export function RemoveMemberForm({ language }: { language: string }) {
-  const { committee, members } = useCommitteeManagement()
+  const { committee, members, positions } = useCommitteeManagement()
+  const { student } = useAuthentication()
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
   const form = useForm<z.infer<typeof addMember>>({
     resolver: zodResolver(addMember),
@@ -79,9 +82,18 @@ export function RemoveMemberForm({ language }: { language: string }) {
     }
   }
 
+  const findPosition = (id: string) => {
+    return positions.find((position) => position.committee_position_id === id)
+  }
+
   if (!committee) {
     return null
   }
+
+  if (!student) {
+    return null
+  }
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -91,7 +103,16 @@ export function RemoveMemberForm({ language }: { language: string }) {
         </DialogDescription>
       </DialogHeader>
       <SearchStudent
-        students={[...members.items.map((member) => member.student)]}
+        studentsOrMetadata={{
+          metadata: members.items.map((member) => {
+            return {
+              student: member.student,
+              metadataKey:
+                findPosition(member.committee_position_id)?.translations[0]
+                  .title || member.committee_position_id,
+            }
+          }),
+        }}
         onClickCallback={(student) => {
           if (selectedStudents.includes(student)) {
             setSelectedStudents(
@@ -107,10 +128,25 @@ export function RemoveMemberForm({ language }: { language: string }) {
         onSubmit={form.handleSubmit(publish)}
       >
         <Form {...form}>
+          {selectedStudents
+            .map((student) => student.email)
+            .includes(student.email) && (
+            <p className='text-sm text-red-500'>
+              You can&apos;t remove yourself from the committee. If you want to
+              leave the committee, please contact an admin or someone higher up
+              in the committee.
+            </p>
+          )}
+
           <Button
             type='submit'
             variant={'destructive'}
-            disabled={selectedStudents.length === 0}
+            disabled={
+              selectedStudents.length === 0 ||
+              selectedStudents
+                .map((student) => student.email)
+                .includes(student.email)
+            }
             onClick={() => {
               form.setValue(
                 'students',
@@ -133,7 +169,7 @@ export function AddMemberForm({
   language,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()
@@ -244,11 +280,12 @@ export function AddMemberForm({
             render={({ field }) => (
               <FormItem className='flex flex-col gap-0.5'>
                 <FormLabel htmlFor='position_id'>Position</FormLabel>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={open} onOpenChange={setOpen} modal={open}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant={'outline'}
+                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         role='combobox'
                         aria-expanded={open}
                         className='w-[300px] justify-between'

@@ -1,16 +1,19 @@
 'use client'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { AuthorResource } from '@/models/Items'
-import { Permission, Role } from '@/models/Permission'
-import Student from '@/models/Student'
+
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { AuthorResource } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type { Permission, Role } from '@/models/Permission'
+import type Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
+  type JSX,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useReducer,
-  type JSX,
 } from 'react'
 
 interface AuthenticationState {
@@ -81,13 +84,13 @@ type AuthenticationAction =
 
 interface AuthenticationResponse {
   student: Student
-  role: Role
-  permissions: {
+  role?: 'OTHER'
+  permissions?: {
     author: AuthorResource[]
     student: Permission[]
   }
-  committees: Committee[]
-  positions: CommitteePosition[]
+  committees?: Committee[]
+  positions?: CommitteePosition[]
 }
 
 /**
@@ -141,7 +144,10 @@ function authenticationReducer(
     case 'SET_STUDENT':
       return {
         ...state,
-        student: action.payload,
+        student: {
+          ...action.payload,
+          author_type: 'STUDENT',
+        },
       }
 
     case 'SET_ROLE':
@@ -208,7 +214,6 @@ interface AuthenticationContextType extends AuthenticationState {
   ) => Promise<boolean>
   logout: () => void
   register: () => void
-  setStudent: (student: Student) => void
 }
 
 const AuthenticationContext = createContext<
@@ -216,7 +221,7 @@ const AuthenticationContext = createContext<
 >(undefined)
 
 interface Props {
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }
 
@@ -276,6 +281,28 @@ const createAuthFunctions = (
       if (response.ok) {
         const json = (await response.json()) as AuthenticationResponse
         dispatch({ type: 'SET_STUDENT', payload: json.student })
+        dispatch({ type: 'SET_ROLE', payload: json.role || 'OTHER' })
+        dispatch({
+          type: 'SET_PERMISSIONS',
+          payload: json.permissions || {
+            author: [],
+            student: [],
+          },
+        })
+
+        const uniqueCommittees =
+          (json.committees &&
+            Array.from(new Set(json.committees.map((c) => c.committee_id)))
+              .map((id) => {
+                if (!json.committees) return null
+                return json.committees.find((c) => c.committee_id === id)
+              })
+              .filter((c): c is Committee => c !== null && c !== undefined)) ||
+          []
+
+        dispatch({ type: 'SET_COMMITTEES', payload: uniqueCommittees })
+        dispatch({ type: 'SET_POSITIONS', payload: json.positions || [] })
+
         dispatch({ type: 'LOGIN' })
         success = true
       } else {
@@ -285,8 +312,8 @@ const createAuthFunctions = (
       dispatch({ type: 'SET_ERROR', payload: 'Invalid Crendentials' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
-      return success
     }
+    return success
   },
 
   /**
@@ -333,10 +360,25 @@ const createAuthFunctions = (
       if (response.ok) {
         const json = (await response.json()) as AuthenticationResponse
         dispatch({ type: 'SET_STUDENT', payload: json.student })
-        dispatch({ type: 'SET_ROLE', payload: json.role })
-        dispatch({ type: 'SET_PERMISSIONS', payload: json.permissions })
-        dispatch({ type: 'SET_COMMITTEES', payload: json.committees })
-        dispatch({ type: 'SET_POSITIONS', payload: json.positions })
+        dispatch({ type: 'SET_ROLE', payload: json.role || 'OTHER' })
+        dispatch({
+          type: 'SET_PERMISSIONS',
+          payload: json.permissions || {
+            author: [],
+            student: [],
+          },
+        })
+        const uniqueCommittees =
+          (json.committees &&
+            Array.from(new Set(json.committees.map((c) => c.committee_id)))
+              .map((id) => {
+                if (!json.committees) return null
+                return json.committees.find((c) => c.committee_id === id)
+              })
+              .filter((c): c is Committee => c !== null && c !== undefined)) ||
+          []
+        dispatch({ type: 'SET_COMMITTEES', payload: uniqueCommittees })
+        dispatch({ type: 'SET_POSITIONS', payload: json.positions || [] })
       } else {
         dispatch({ type: 'LOGOUT' })
         throw new Error('Failed to refresh token')
@@ -362,7 +404,7 @@ export function AuthenticationProvider({
   children,
 }: Props): JSX.Element {
   const [state, dispatch] = useReducer(authenticationReducer, initialState)
-  const authFunctions = useMemo(() => createAuthFunctions(dispatch), [dispatch])
+  const authFunctions = useMemo(() => createAuthFunctions(dispatch), [])
 
   useEffect(() => {
     /**
@@ -391,19 +433,31 @@ export function AuthenticationProvider({
               author_type: 'STUDENT',
             },
           })
-          const uniqueCommittees = Array.from(
-            new Set(json.committees.map((c) => c.committee_id))
-          ).map((id) => json.committees.find((c) => c.committee_id === id))
+          const uniqueCommittees =
+            (json.committees &&
+              Array.from(new Set(json.committees.map((c) => c.committee_id)))
+                .map((id) => {
+                  if (!json.committees) return null
+                  return json.committees.find((c) => c.committee_id === id)
+                })
+                .filter(
+                  (c): c is Committee => c !== null && c !== undefined
+                )) ||
+            []
 
-          dispatch({ type: 'SET_ROLE', payload: json.role })
-          dispatch({ type: 'SET_PERMISSIONS', payload: json.permissions })
+          dispatch({ type: 'SET_ROLE', payload: json.role || 'OTHER' })
+          dispatch({
+            type: 'SET_PERMISSIONS',
+            payload: json.permissions || {
+              author: [],
+              student: [],
+            },
+          })
           dispatch({
             type: 'SET_COMMITTEES',
-            payload: uniqueCommittees.filter(
-              (c): c is Committee => c !== undefined
-            ),
+            payload: uniqueCommittees,
           })
-          dispatch({ type: 'SET_POSITIONS', payload: json.positions })
+          dispatch({ type: 'SET_POSITIONS', payload: json.positions || [] })
           dispatch({ type: 'LOGIN' })
         } else {
           dispatch({ type: 'LOGOUT' })
@@ -431,15 +485,6 @@ export function AuthenticationProvider({
       ...state,
 
       register: () => dispatch({ type: 'REGISTER' }),
-
-      /**
-       * Sets the student in the authentication state, by dispatching the action to the reducer.
-       *
-       * @param {Student} student - The student object to be set.
-       * @return {void}
-       */
-      setStudent: (student: Student): void =>
-        dispatch({ type: 'SET_STUDENT', payload: student }),
 
       /**
        * Sets the current role in the authentication state, by dispatching the action to the reducer.
@@ -486,14 +531,17 @@ export function AuthenticationProvider({
     /**
      * Refreshes the access token every 30 minutes.
      */
-    const refreshTimer = setInterval(() => {
-      if (state.isAuthenticated) {
-        dispatch({ type: 'REFRESH_TOKEN' })
-        authFunctions.refreshToken()
-      } else {
-        clearInterval(refreshTimer)
-      }
-    }, 1000 * 60 * 30)
+    const refreshTimer = setInterval(
+      () => {
+        if (state.isAuthenticated) {
+          dispatch({ type: 'REFRESH_TOKEN' })
+          authFunctions.refreshToken()
+        } else {
+          clearInterval(refreshTimer)
+        }
+      },
+      1000 * 60 * 30
+    )
 
     return () => clearInterval(refreshTimer)
   }, [state, authFunctions])

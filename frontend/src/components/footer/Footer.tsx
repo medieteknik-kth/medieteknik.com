@@ -1,5 +1,6 @@
 import { useTranslation } from '@/app/i18n'
-import { Button } from '@components/ui/button'
+import { Button } from '@/components/ui/button'
+import type { LanguageCode } from '@/models/Language'
 import {
   ArrowTopRightOnSquareIcon,
   BuildingOffice2Icon,
@@ -7,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 import ConnectSection from './connect'
 
 /**
@@ -20,7 +21,7 @@ import ConnectSection from './connect'
 export default async function Footer({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): Promise<JSX.Element> {
   const { t } = await useTranslation(language, 'footer')
   return (
@@ -67,34 +68,45 @@ export default async function Footer({
                 <Button
                   asChild
                   variant='link'
-                  className='text-2xl text-center xxs:text-left tracking-wider font-bold text-sky-800 dark:text-white -ml-4 -mt-2'
+                  className='text-2xl text-center xxs:text-left tracking-wider font-bold -ml-4 -mt-2 text-blue-600 dark:text-primary'
                   title='Go to Contact Page'
                   aria-label='Go to Contact Page'
                 >
-                  <Link href='/contact' className='w-fit flex items-center'>
+                  <Link
+                    href={`/${language}/contact`}
+                    className='w-fit flex items-center'
+                  >
                     {t('contact')}
                     <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
                   </Link>
                 </Button>
               </h4>
-              <Button asChild variant='link' className='-ml-4'>
+              <Button
+                asChild
+                variant='link'
+                className='-ml-4 text-blue-600 dark:text-primary'
+              >
                 <Link
                   href='mailto:styrelsen@medieteknik.com'
-                  className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400'
+                  className='flex items-center text-center mt-1'
                   title='Email styrelsen@medieteknik.com'
-                  aria-label={`${t('contact')} email`}
+                  aria-label='Email styrelsen@medieteknik.com'
                 >
                   <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>styrelsen@medieteknik.com</span>
                 </Link>
               </Button>
-              <Button asChild variant='link' className='-ml-4'>
+              <Button
+                asChild
+                variant='link'
+                className='-ml-4 text-blue-600 dark:text-primary'
+              >
                 <Link
                   href='tel:802411-5647'
-                  className='flex items-center text-center mt-1 text-sky-800 dark:text-sky-400
+                  className='flex items-center text-center mt-1
                   '
                   title='Call organization number 802411-5647'
-                  aria-label={`${t('contact')} phone`}
+                  aria-label='Call organization number 802411-5647'
                 >
                   <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>802411-5647</span>

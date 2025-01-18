@@ -1,3 +1,5 @@
+'use client'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,8 +21,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
-import Committee from '@/models/Committee'
-import { News } from '@/models/Items'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon } from '@heroicons/react/24/outline'
@@ -28,7 +31,7 @@ import { LinkIcon } from '@heroicons/react/24/outline'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   news_data: News
 }
 

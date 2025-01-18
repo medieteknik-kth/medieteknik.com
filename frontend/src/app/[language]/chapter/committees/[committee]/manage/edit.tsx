@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -23,20 +23,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import Committee from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { editCommitteeSchema } from '@/schemas/committee/edit'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 
@@ -109,7 +109,7 @@ export default function EditCommittee({
     resolver: zodResolver(editCommitteeSchema),
     defaultValues: {
       title: committee.translations[0].title,
-      translations: supportedLanguages.map((lang) => ({
+      translations: SUPPORTED_LANGUAGES.map((lang) => ({
         language_code: lang,
         description:
           committee.translations.find(
@@ -120,10 +120,7 @@ export default function EditCommittee({
   })
 
   if (
-    !(
-      permissions.student &&
-      permissions.student.includes(Permission.COMMITTEE_EDIT)
-    ) &&
+    !permissions.student?.includes(Permission.COMMITTEE_EDIT) &&
     !(
       positions &&
       positions.length > 0 &&
@@ -149,7 +146,7 @@ export default function EditCommittee({
     }
 
     // Add translation fields
-    supportedLanguages.map((language, index) => {
+    SUPPORTED_LANGUAGES.map((language, index) => {
       formData.append(`translations[${index}][language_code]`, language)
       formData.append(`translations[${index}][title]`, data.title)
       formData.append(
@@ -200,7 +197,7 @@ export default function EditCommittee({
         </DialogHeader>
         <Tabs defaultValue={language}>
           <TabsList>
-            {supportedLanguages.map((language) => (
+            {SUPPORTED_LANGUAGES.map((language) => (
               <TabsTrigger
                 key={language}
                 value={language}
@@ -237,7 +234,7 @@ export default function EditCommittee({
                 )}
               />
 
-              {supportedLanguages.map((language, index) => (
+              {SUPPORTED_LANGUAGES.map((language, index) => (
                 <TabsContent key={language} value={language}>
                   <TranslatedInputs
                     index={index}

@@ -34,8 +34,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import Committee from '@/models/Committee'
-import { DocumentPagination } from '@/models/Pagination'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import type { DocumentPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckBadgeIcon,
@@ -49,11 +50,11 @@ import {
 } from '@heroicons/react/24/outline'
 import { GB, SE } from 'country-flag-icons/react/3x2'
 import Link from 'next/link'
-import { JSX, useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committee: Committee
 }
 
@@ -91,7 +92,7 @@ export default function DocumentTable({
         .filter((document) => document.is_pinned)
         .map((document) => document.document_id)
     )
-  }, [documents, pageIndex])
+  }, [documents])
 
   if (swrError) {
     console.error(swrError)
@@ -212,8 +213,8 @@ export default function DocumentTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {documents.items.map((document, index) => (
-              <TableRow key={index}>
+            {documents.items.map((document) => (
+              <TableRow key={document.document_id}>
                 <TableCell>{document.translations[0].title}</TableCell>
                 <TableCell>
                   {document.is_public && (

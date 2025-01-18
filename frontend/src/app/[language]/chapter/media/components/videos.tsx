@@ -3,17 +3,18 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { Media } from '@/models/items/Media'
+import type { LanguageCode } from '@/models/Language'
+import type Media from '@/models/items/Media'
 import {
   isCookieCategoryAllowed,
   retrieveCookieSettings,
 } from '@/utility/CookieManager'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
-import { JSX, useState } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   video: Media
 }
 
@@ -37,8 +38,11 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
     throw new TypeError('Media is not a video')
   }
 
-  const youtube_url = (fullUrl: string) => {
+  const getYoutubeId = (fullUrl: string) => {
     const url = new URL(fullUrl)
+    if (url.hostname === 'youtu.be') {
+      return url.pathname.slice(1)
+    }
     return url.searchParams.get('v')
   }
 
@@ -63,7 +67,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
         }}
       >
         <Image
-          src={`https:/i.ytimg.com/vi/${youtube_url(
+          src={`https://i.ytimg.com/vi/${getYoutubeId(
             video.media_url
           )}/maxresdefault.jpg`}
           alt={video.translations[0].title}
@@ -74,7 +78,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
           className='w-full h-auto aspect-video object-cover rounded-lg'
         />
         <div className='w-full h-fit flex flex-col px-1 pb-1'>
-          <p className='text-lg font-semibold py-1 max-w-60 truncate text-start'>
+          <p className='text-lg font-semibold py-1 max-w-60 truncate text-start text-black dark:text-white'>
             {video.translations[0].title}
           </p>
           <p className='text-start leading-tight text-sm text-neutral-600 dark:text-neutral-300 max-w-60 truncate'>
@@ -89,6 +93,11 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
         <div className='fixed left-0 top-0 w-screen h-screen z-50 grid place-items-center transition-all'>
           <div
             className='absolute left-0 top-0 h-full w-full bg-black/75'
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                setDialogOpen(false)
+              }
+            }}
             onClick={() => setDialogOpen(false)}
           />
           <Button
@@ -105,7 +114,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
             <iframe
               width='1386'
               height='780'
-              src={`https://www.youtube.com/embed/${youtube_url(
+              src={`https://www.youtube.com/embed/${getYoutubeId(
                 video.media_url
               )}`}
               title='YouTube video player'

@@ -1,5 +1,4 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { DocumentManagementProvider } from '@/providers/DocumentProvider'
@@ -7,10 +6,11 @@ import Sidebar from './sidebar'
 import View from './tabs/View'
 import Toolbar from './toolbar'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -31,7 +31,6 @@ export default async function Documents(props: Props): Promise<JSX.Element> {
 
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Tabs orientation='vertical' defaultValue={t('category.all')}>
         <DocumentManagementProvider language={language}>

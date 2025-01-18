@@ -11,7 +11,8 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import {
   CalendarDaysIcon,
   DocumentDuplicateIcon,
@@ -23,12 +24,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import Logo from 'public/images/logo.webp'
-import { JSX, useCallback } from 'react'
+import { type JSX, useCallback } from 'react'
 import Content from './content'
 import EditCommittee from './edit'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committeeData: Committee
   committeeName: string
 }
@@ -72,14 +73,14 @@ export default function CommitteeLandingPage({
       <Breadcrumb className='w-full h-fit border-b px-4 py-2'>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={'/' + language + '/chapter'} className='py-2'>
+            <BreadcrumbLink href={`/${language}/chapter`} className='py-2'>
               {t('chapter')}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={'/' + language + '/chapter/committees'}
+              href={`/${language}/chapter/committees`}
               className='py-2'
             >
               {t('committees')}
@@ -88,7 +89,7 @@ export default function CommitteeLandingPage({
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={'/' + language + '/chapter/committees/' + committeeName}
+              href={`/${language}/chapter/committees/${committeeName}`}
               className='capitalize py-2'
             >
               {committeeName}
@@ -105,20 +106,12 @@ export default function CommitteeLandingPage({
           <Link
             href={`/chapter/committees/${committeeName}`}
             target='_blank'
-            title={
-              committeeName.charAt(0).toUpperCase() +
-              committeeName.slice(1) +
-              ' Page'
-            }
+            title={`${committeeName.charAt(0).toUpperCase()}${committeeName.slice(1)} Page`}
             className='w-32 h-32 grid place-items-center bg-white rounded-full overflow-hidden hover:scale-110 transition-transform'
           >
             <Image
               src={committeeData.logo_url || Logo.src}
-              alt={
-                committeeName.charAt(0).toUpperCase() +
-                committeeName.slice(1) +
-                ' Logo'
-              }
+              alt={`${committeeName.charAt(0).toUpperCase()}${committeeName.slice(1)} Logo`}
               width={256}
               height={256}
               priority
@@ -141,7 +134,7 @@ export default function CommitteeLandingPage({
                   value='home'
                   className='w-36 h-10 flex justify-start items-center'
                   onClick={() =>
-                    router.push(pathname + '?' + createTabString('home'))
+                    router.push(`${pathname}?${createTabString('home')}`)
                   }
                 >
                   <HomeIcon className='w-6 h-6 mr-2' />
@@ -151,7 +144,7 @@ export default function CommitteeLandingPage({
                   value='members'
                   className='w-36 h-10 flex justify-start items-center'
                   onClick={() =>
-                    router.push(pathname + '?' + createTabString('members'))
+                    router.push(`${pathname}?${createTabString('members')}`)
                   }
                 >
                   <UserGroupIcon className='w-6 h-6 mr-2' />
@@ -162,7 +155,7 @@ export default function CommitteeLandingPage({
                   value='news'
                   className='w-36 h-10 flex justify-start items-center'
                   onClick={() =>
-                    router.push(pathname + '?' + createTabString('news'))
+                    router.push(`${pathname}?${createTabString('news')}`)
                   }
                 >
                   <NewspaperIcon className='w-6 h-6 mr-2' />
@@ -172,7 +165,7 @@ export default function CommitteeLandingPage({
                   value='events'
                   className='w-36 h-10 flex justify-start items-center'
                   onClick={() =>
-                    router.push(pathname + '?' + createTabString('events'))
+                    router.push(`${pathname}?${createTabString('events')}`)
                   }
                 >
                   <CalendarDaysIcon className='w-6 h-6 mr-2' />
@@ -182,7 +175,7 @@ export default function CommitteeLandingPage({
                   value='documents'
                   className='w-36 h-10 flex justify-start items-center'
                   onClick={() =>
-                    router.push(pathname + '?' + createTabString('documents'))
+                    router.push(`${pathname}?${createTabString('documents')}`)
                   }
                 >
                   <DocumentDuplicateIcon className='w-6 h-6 mr-2' />

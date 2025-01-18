@@ -1,17 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import Student from '@/models/Student'
-import { Button } from '@components/ui/button'
+import { Button } from '@/components/ui/button'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type Student from '@/models/Student'
+import Image from 'next/image'
 import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
 
 export function StudentTooltip({ student }: { student: Student }) {
+  const username = `${student.first_name} ${student.last_name || ''}`
   return (
     <>
       <Button
@@ -21,20 +17,23 @@ export function StudentTooltip({ student }: { student: Student }) {
       >
         <Link
           href={`./student/${student.student_id}`}
-          className='group'
+          className='group flex flex-col items-center gap-2'
           title='Go to profile page'
         >
-          <Avatar className='w-24 h-auto aspect-square bg-white rounded-full mb-2 group-hover:scale-110 transition-transform overflow-hidden'>
-            <AvatarImage
-              src={student.profile_picture_url || FallbackImage.src}
-              alt='Profile Picture'
+          {student.profile_picture_url ? (
+            <Image
+              className='h-24 w-auto aspect-square object-contain p-0.5 rounded-full bg-white'
               width={96}
               height={96}
-              className='w-24 h-auto aspect-square object-fill p-1.5 rounded-full'
+              src={student.profile_picture_url}
+              alt={username}
             />
-            <AvatarFallback>Profile Picture</AvatarFallback>
-          </Avatar>
-          <p>{student.first_name + ' ' + (student.last_name || '')}</p>
+          ) : (
+            <p className='h-24 w-auto aspect-square p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold text-black text-2xl'>
+              {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
+            </p>
+          )}
+          <p>{username}</p>
         </Link>
       </Button>
       <Button
@@ -43,12 +42,8 @@ export function StudentTooltip({ student }: { student: Student }) {
       >
         <Link
           href={`mailto:${student.email}`}
-          title={`Send email to ${
-            student.first_name + ' ' + (student.last_name || '')
-          }`}
-          aria-label={`Send email to ${
-            student.first_name + ' ' + (student.last_name || '')
-          }`}
+          title={`Send email to ${username}`}
+          aria-label={`Send email to ${username}`}
         >
           <span>{student.email}</span>
         </Link>
@@ -75,11 +70,10 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
                 src={committee.logo_url}
                 width={128}
                 height={128}
-                alt='Committee Logo'
                 className='h-24 w-auto object-contain p-3.5'
               />
               <AvatarFallback>
-                {committee.translations[0].title + ' logo'}
+                {`${committee.translations[0].title} logo`}
               </AvatarFallback>
             </Avatar>
             <p>{committee.translations[0].title}</p>
@@ -92,11 +86,10 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
               src={committee.logo_url}
               width={128}
               height={128}
-              alt='Committee Logo'
               className='h-24 w-auto object-contain p-3.5'
             />
             <AvatarFallback>
-              {committee.translations[0].title + ' logo'}
+              {`${committee.translations[0].title} logo`}
             </AvatarFallback>
           </Avatar>
           <p>{committee.translations[0].title}</p>
@@ -129,25 +122,27 @@ export function CommitteePositionTooltip({
 }) {
   return (
     <>
-      <CardHeader className='flex flex-row items-center'>
-        <Avatar className='mr-2'>
-          <AvatarImage
-            src={position.committee?.logo_url || ''}
-            alt='Committee Logo'
-          />
-          <AvatarFallback>N/A</AvatarFallback>
-        </Avatar>
-        <div className='flex flex-col'>
-          <CardTitle>{position.translations[0].title}</CardTitle>
-          <CardDescription className='capitalize'>
-            {position.category}
-          </CardDescription>
+      <div className='w-fit flex items-center gap-2 py-2'>
+        {position.committee && (
+          <Avatar className='mr-2 bg-white rounded-md overflow-hidden border'>
+            <AvatarImage
+              src={position.committee.logo_url}
+              alt='Committee Logo'
+              className='w-full h-full object-contain p-0.5'
+            />
+          </Avatar>
+        )}
+
+        <div className='flex flex-col w-fit'>
+          <p className='font-bold'>{position.translations[0].title}</p>
+          <p className='text-sm text-muted-foreground'>{position.category}</p>
         </div>
-      </CardHeader>
-      <CardContent>
-        <h3 className='text-lg font-bold'>Description</h3>
-        <p>{position.translations[0].description}</p>
-      </CardContent>
+      </div>
+      <div>
+        <p className='text-sm min-w-72 max-w-[350px] whitespace-pre-wrap'>
+          {position.translations[0].description}
+        </p>
+      </div>
     </>
   )
 }

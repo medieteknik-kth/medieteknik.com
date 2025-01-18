@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,11 +23,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import type { LanguageCode } from '@/models/Language'
 import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   setValue: (value: string) => void
 }
 
@@ -72,13 +74,14 @@ export default function RepeatingForm({
           <FormItem className='col-span-1 flex flex-col justify-between items-start'>
             <FormLabel className='flex items-center'>
               <p>{t('event.form.frequency')}</p>
-              <sup className='text-red-600'>*</sup>
+              <sup className='text-red-600 px-0.5 select-none'>*</sup>
             </FormLabel>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger>
+            <Popover open={open} onOpenChange={setOpen} modal={open}>
+              <PopoverTrigger asChild>
                 <FormControl>
                   <Button
                     variant={'outline'}
+                    // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                     role='combobox'
                     type='button'
                     aria-expanded={open}

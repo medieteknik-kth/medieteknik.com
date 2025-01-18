@@ -1,12 +1,12 @@
+import { CommitteeTooltip } from '@/components/tooltips/Tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import Committee from '@/models/Committee'
-import { CommitteeTooltip } from '@components/tooltips/Tooltip'
-import { Button } from '@components/ui/button'
+import type Committee from '@/models/Committee'
 import { forwardRef } from 'react'
 
 interface CommitteeTagProps {
@@ -68,11 +68,11 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
                   className='h-10 w-auto aspect-square object-fill p-1.5'
                   width={128}
                   height={128}
-                  src={committee.logo_url ?? ''}
-                  alt={committee.translations[0].title}
+                  src={committee.logo_url}
+                  alt=''
                 />
                 <AvatarFallback>
-                  {committee.translations[0].title + ' Profile Picture'}
+                  {`${committee.translations[0].title} logo`}
                 </AvatarFallback>
               </Avatar>
             )}

@@ -10,7 +10,7 @@ from models.committees import (
     CommitteePosition,
     CommitteeTranslation,
 )
-from models.core.student import StudentMembership
+from models.core import StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
 from .committee_position import get_committee_positions_by_committee_title
 from datetime import datetime

@@ -1,10 +1,10 @@
-import { LanguageCode } from '@/models/Language'
-import { InitOptions } from 'i18next'
+import type { LanguageCode } from '@/models/Language'
+import type { InitOptions } from 'i18next'
 
-export const fallbackLanguage: LanguageCode = 'en'
-export const supportedLanguages: LanguageCode[] = [fallbackLanguage, 'sv']
-export const cookieName: string = 'language'
-export const defaultNS: string = 'translation'
+export const FALLBACK_LANGUAGE: LanguageCode = 'en'
+export const SUPPORTED_LANGUAGES: LanguageCode[] = [FALLBACK_LANGUAGE, 'sv']
+export const LANGUAGE_COOKIE_NAME: string = 'language'
+export const DEFAULT_NS: string = 'translation'
 
 /**
  * @name getOptions
@@ -16,15 +16,15 @@ export const defaultNS: string = 'translation'
  * @see https://www.i18next.com/overview/configuration-options
  */
 export function getOptions(
-  lng: string = fallbackLanguage,
-  ns: string = defaultNS
+  lng: string = FALLBACK_LANGUAGE,
+  ns: string = DEFAULT_NS
 ): InitOptions {
   return {
-    supportedLngs: supportedLanguages,
-    fallbackLng: fallbackLanguage,
+    supportedLngs: SUPPORTED_LANGUAGES,
+    fallbackLng: FALLBACK_LANGUAGE,
     lng,
-    fallbackNS: defaultNS,
-    defaultNS,
+    fallbackNS: DEFAULT_NS,
+    defaultNS: DEFAULT_NS,
     ns,
   }
 }

@@ -1,15 +1,16 @@
 'use client'
 import NewsCard from '@/app/[language]/bulletin/components/newsCard'
-import { NewsPagination } from '@/models/Pagination'
+import type { NewsPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
 import useSWR from 'swr'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
-  language: string
+  language: LanguageCode
   index: number
 }
 
@@ -38,8 +39,8 @@ export default function NewsPaginationPage({
     )
   }
 
-  return data.items.map((newsItem, index) => (
-    <div key={index} className='relative'>
+  return data.items.map((newsItem) => (
+    <div key={newsItem.url} className='relative'>
       <NewsCard key={newsItem.url} newsItem={newsItem} />
     </div>
   ))

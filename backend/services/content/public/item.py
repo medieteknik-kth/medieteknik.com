@@ -1,4 +1,5 @@
-from models.content import Item, Author
+from models.content import Item
+from models.core import Author
 from utility.constants import AVAILABLE_LANGUAGES
 from typing import Any, Dict, Type, List
 
@@ -102,7 +103,7 @@ def get_latest_items(
     item_table: Type[Item] = Item,
     count: int = 5,
     provided_languages: List[str] = AVAILABLE_LANGUAGES,
-) -> Dict[str, Any]:
+) -> List[Dict[str, Any]]:
     """
     Retrieves the latest items from the item table.
 

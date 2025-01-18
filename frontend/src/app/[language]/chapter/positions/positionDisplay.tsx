@@ -6,12 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { CommitteePosition } from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import Image from 'next/image'
+import Link from 'next/link'
+import FallbackLogo from 'public/images/logo.webp'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
   position: CommitteePosition
 }
 
@@ -20,28 +22,40 @@ interface Props {
  * @description Displays a single position in the organization
  *
  * @param {Props} props
- * @param {string} props.language - The current language
  * @param {CommitteePosition} props.position - The position to display
  *
  * @returns {JSX.Element} The position display
  */
-export default function PositionDisplay({
-  language,
-  position,
-}: Props): JSX.Element {
+export default function PositionDisplay({ position }: Props): JSX.Element {
   return (
-    <Card>
+    <Card className='h-full'>
       <CardHeader>
         <CardTitle className='flex gap-2 items-center truncate'>
           {position.committee && (
             <Avatar className='p-2 bg-white'>
-              <AvatarImage src={position.committee.logo_url} />
-              <AvatarFallback>Fallback</AvatarFallback>
+              <AvatarImage
+                src={position.committee.logo_url}
+                alt={`${position.committee.translations[0].title} Logo`}
+              />
+              <AvatarFallback className='p-2 bg-white'>
+                <Image src={FallbackLogo} alt='' />
+              </AvatarFallback>
             </Avatar>
           )}
           {position.translations[0].title}
         </CardTitle>
-        <CardDescription>{position.email || 'N/A'}</CardDescription>
+        <CardDescription>
+          {position.email ? (
+            <Link
+              className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+              href={`mailto:${position.email}`}
+            >
+              {position.email}
+            </Link>
+          ) : (
+            'N/A'
+          )}
+        </CardDescription>
       </CardHeader>
       <CardContent className='whitespace-pre-line text-sm'>
         {position.translations[0].description}

@@ -1,9 +1,9 @@
 from calendar import monthrange
 from datetime import datetime, timedelta
 from typing import List
-from sqlalchemy import and_, func, or_
-from models.content import Calendar, Event
-from models.content.event import RepeatableEvent
+from sqlalchemy import and_, or_
+from models.content import Event
+from models.core import Calendar
 from services.content.event import generate_events
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db

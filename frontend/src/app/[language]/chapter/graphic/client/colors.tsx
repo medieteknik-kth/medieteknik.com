@@ -3,15 +3,12 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { useRef, useState, type JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import { type JSX, useRef, useState } from 'react'
 import tinycolor from 'tinycolor2'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -76,7 +73,7 @@ export default function Colors({ language }: Props): JSX.Element {
   }
 
   return (
-    <section id='colors' className='px-12 mb-8'>
+    <section id='colors' className='px-2 sm:px-5 md:px-12 mb-8'>
       <div className='py-4'>
         <h2 className='font-bold text-3xl uppercase tracking-wide'>
           {t('colors')}
@@ -97,6 +94,7 @@ export default function Colors({ language }: Props): JSX.Element {
             <span
               className='py-0.5 px-0.5 border rounded-md shadow shadow-black/20 dark:shadow-white/20 select-none'
               onMouseOver={() => setMac(true)}
+              onFocus={() => setMac(true)}
               title='CTRL on Windows/Linux, ⌘ CMD on macOS'
             >
               {mac ? '⌘ CMD' : 'CTRL'}

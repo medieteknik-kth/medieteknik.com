@@ -1,5 +1,5 @@
-import { NextConfig } from 'next'
-import {
+import type { NextConfig } from 'next'
+import type {
   ExperimentalConfig,
   NextJsWebpackConfig,
 } from 'next/dist/server/config-shared'
@@ -53,8 +53,25 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value:
-              "default-src 'self' http://localhost:3000 https://medieteknik.com; script-src 'self' https://vercel.live 'unsafe-eval' 'unsafe-inline'; connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com https://vercel.live wss://ws-us3.pusher.com; img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com https://i.ytimg.com data: blob:; style-src 'self' https://vercel.live 'unsafe-inline'; font-src 'self' https://vercel.live https://assets.vercel.com; frame-src 'self' https://www.youtube.com/ https://vercel.live; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'self'; script-src-elem 'self' 'unsafe-inline' https://vercel.live;",
+            value: `
+              default-src 'self' http://localhost:3000 https://medieteknik.com; 
+              script-src 'self' https://vercel.live 'unsafe-eval' 'unsafe-inline'; 
+              connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com https://vercel.live wss://ws-us3.pusher.com blob:; 
+              media-src blob: http://localhost:3000; 
+              img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com https://i.ytimg.com data: blob:; 
+              style-src 'self' https://vercel.live 'unsafe-inline'; 
+              font-src 'self' https://vercel.live https://assets.vercel.com; 
+              frame-src 'self' https://www.youtube.com/ https://www.instagram.com https://vercel.live; 
+              object-src 'none'; 
+              base-uri 'none'; 
+              form-action 'self'; 
+              frame-ancestors 'none'; 
+              manifest-src 'self'; 
+              worker-src 'self'; 
+              script-src-elem 'self' 'unsafe-inline' https://vercel.live;`.replace(
+              /\s+/g,
+              ' '
+            ),
           },
           {
             key: 'X-Content-Type-Options',

@@ -1,6 +1,6 @@
 'use client'
 
-import { CustomElement } from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
+import type { CustomElement } from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import type { LanguageCode } from '@/models/Language'
 import { useArticle } from '@/providers/ArticleProvider'
 import {
   ArrowUturnLeftIcon,
@@ -29,13 +30,13 @@ import {
   LinkIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline'
-import { useCallback, type JSX } from 'react'
+import { type JSX, useCallback } from 'react'
 import { Transforms } from 'slate'
 import ToolbarMarks from './toolbar/marks'
 import ToolbarText from './toolbar/text'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -215,15 +216,15 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
                 size='icon'
                 variant='ghost'
                 className='mr-1'
-                title={t('insert') + ' ' + t('link')}
-                aria-label={t('insert') + ' ' + t('link')}
+                title={`${t('insert')} ${t('link')}`}
+                aria-label={`${t('insert')} ${t('link')}`}
               >
                 <LinkIcon className='w-6 h-6 text-black dark:text-white' />
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{t('insert') + ' ' + t('link')}</DialogTitle>
+                <DialogTitle>{`${t('insert')} ${t('link')}`}</DialogTitle>
                 <DialogDescription>
                   {t('insert.link.description')}
                 </DialogDescription>
@@ -232,8 +233,8 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
               <Input
                 type='text'
                 id='link'
-                title={t('insert') + ' ' + t('link')}
-                aria-label={t('insert') + ' ' + t('link')}
+                title={`${t('insert')} ${t('link')}`}
+                aria-label={`${t('insert')} ${t('link')}`}
                 placeholder='https://example.com'
                 className='w-full'
               />
@@ -246,8 +247,8 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
               />
               <Button
                 className='mt-4'
-                title={t('insert') + ' ' + t('link')}
-                aria-label={t('insert') + ' ' + t('link')}
+                title={`${t('insert')} ${t('link')}`}
+                aria-label={`${t('insert')} ${t('link')}`}
                 onClick={(e) => {
                   const link = e.currentTarget.parentElement?.querySelector(
                     '#link'
@@ -274,7 +275,7 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
                   }
                 }}
               >
-                {t('insert') + ' ' + t('link')}
+                {`${t('insert')} ${t('link')}`}
               </Button>
             </DialogContent>
           </Dialog>
@@ -282,8 +283,8 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
             size='icon'
             variant='ghost'
             className='mr-1 cursor-not-allowed !pointer-events-auto'
-            title={t('insert') + ' ' + t('image')}
-            aria-label={t('insert') + ' ' + t('image')}
+            title={`${t('insert')} ${t('image')}`}
+            aria-label={`${t('insert')} ${t('image')}`}
             disabled
           >
             <PhotoIcon className='w-6 h-6 text-black dark:text-white' />
@@ -294,8 +295,8 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
                 size='icon'
                 variant='ghost'
                 className='mr-1'
-                title={t('insert') + ' ' + t('tag')}
-                aria-label={t('insert') + ' ' + t('tag')}
+                title={`${t('insert')} ${t('tag')}`}
+                aria-label={`${t('insert')} ${t('tag')}`}
                 disabled
               >
                 <AtSymbolIcon className='w-6 h-6 text-black dark:text-white' />

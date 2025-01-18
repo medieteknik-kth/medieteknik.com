@@ -1,4 +1,4 @@
-import { Language } from '@/models/Language'
+import type { Language } from '@/models/Language'
 import { GB, SE } from 'country-flag-icons/react/3x2'
 
 export const API_BASE_URL: string =
@@ -6,11 +6,12 @@ export const API_BASE_URL: string =
     ? 'http://localhost:80/api/v1' // http://localhost:80/api/v1
     : 'https://api.medieteknik.com/api/v1'
 
+export const SITE_VERSION = '0.6.1'
+
 export const LANGUAGES: Language = {
   sv: {
     short_name: 'sv',
     name: 'Svenska',
-    flag: 'se',
     flag_icon: (
       <SE
         style={{
@@ -23,7 +24,6 @@ export const LANGUAGES: Language = {
   en: {
     short_name: 'en',
     name: 'English',
-    flag: 'gb',
     flag_icon: (
       <GB
         style={{

@@ -1,8 +1,6 @@
-from datetime import timedelta
 from typing import Any, Dict, List
-
 from flask import Request
-from models.committees.committee import Committee, CommitteeTranslation
+from models.committees import Committee, CommitteeTranslation
 from services.committees.public.committee import get_committee_by_title
 from utility.gc import upload_file
 from utility.translation import get_translation

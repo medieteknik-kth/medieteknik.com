@@ -4,9 +4,10 @@ import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { documentCategories } from '../utility/util'
 
 import type { JSX } from 'react'
+import { LanguageCode } from '@/models/Language'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

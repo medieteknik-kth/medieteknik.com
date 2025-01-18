@@ -1,16 +1,16 @@
-import { GetAllCommittees } from '@/api/committee'
-import { GetAlbums } from '@/api/items'
+import { getAllCommittees } from '@/api/committee'
+import { getAlbums } from '@/api/items/media'
 import MediaToolbar from '@/app/[language]/chapter/media/components/toolbar/toolbar'
 import Album from '@/app/[language]/chapter/media/view/album'
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
-import { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 import MediaGridView from './view/committee'
 import RecentMedia from './view/recent'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -29,13 +29,12 @@ interface Props {
  */
 export default async function Media(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const committees = await GetAllCommittees('sv')
-  const albums = await GetAlbums(language)
+  const { data: committees } = await getAllCommittees('sv')
+  const { data: albums } = await getAlbums(language)
   const { t } = await useTranslation(language, 'media')
 
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <MediaToolbar language={language} />
       <MediaGridView language={language} committees={committees} />

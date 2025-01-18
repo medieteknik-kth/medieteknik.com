@@ -1,17 +1,14 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
+import type { LanguageCode } from '@/models/Language'
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import type { JSX } from 'react'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -28,7 +25,7 @@ export default async function Iconography({
   const { t } = await useTranslation(language, 'graphic')
 
   return (
-    <section id='iconography' className='px-12 mb-8'>
+    <section id='iconography' className='px-2 sm:px-5 md:px-12 mb-8'>
       <h2 className='py-4 font-bold text-3xl uppercase tracking-wide'>
         {t('iconography')}
       </h2>

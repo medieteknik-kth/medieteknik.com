@@ -1,13 +1,14 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
-import { AlbumPagination } from '@/models/Pagination'
+import type { LanguageCode } from '@/models/Language'
+import type { AlbumPagination } from '@/models/Pagination'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   albums: AlbumPagination | null
 }
 
@@ -32,7 +33,7 @@ export default async function Album({
   }
 
   return (
-    <section className='px-10 py-2'>
+    <section className='px-2 sm:px-5 md:px-10 py-2'>
       <h2 className='text-2xl font-bold capitalize'>{t('album')}</h2>
       <ul className='flex flex-wrap gap-4 py-2'>
         {albums.items

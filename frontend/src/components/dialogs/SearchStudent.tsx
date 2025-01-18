@@ -1,4 +1,5 @@
 'use client'
+
 import StudentTag from '@/components/tags/StudentTag'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,19 +10,40 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from '@/components/ui/pagination'
-import { StudentPagination } from '@/models/Pagination'
-import Student from '@/models/Student'
+import type { StudentPagination } from '@/models/Pagination'
+import type Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckIcon,
   MagnifyingGlassIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
-import { Dispatch, SetStateAction, useRef, useState } from 'react'
+import { type Dispatch, type SetStateAction, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Skeleton } from '../ui/skeleton'
 
+type OnlyStudents = {
+  students?: Student[]
+  metadata: never
+}
+type OnlyMetadata = {
+  students?: never
+  metadata: { student: Student; metadataKey: string }[]
+}
+type EitherStudentsOrMetadata = OnlyStudents | OnlyMetadata
+
+function isStudents(
+  studentsOrMetadata: EitherStudentsOrMetadata
+): studentsOrMetadata is OnlyStudents {
+  return 'students' in studentsOrMetadata
+}
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+interface Props {
+  studentsOrMetadata?: EitherStudentsOrMetadata
+  onClickCallback: (student: Student) => void
+}
 
 function render(
   students: Student[],
@@ -29,40 +51,84 @@ function render(
   selectedStudents: Student[],
   setSelectedStudents: Dispatch<SetStateAction<Student[]>>
 ) {
-  return students.map((student, index) => (
-    <li key={student.email + index} className='w-full flex justify-between'>
-      <div className='max-w-[400px]'>
-        <StudentTag key={index} student={student} includeAt={false} />
-      </div>
-      <Button
-        size={'icon'}
-        variant={'outline'}
-        onClick={() => {
-          onClickCallback(student)
-          setSelectedStudents((prev) =>
-            prev.includes(student)
-              ? prev.filter((prevStudent) => prevStudent !== student)
-              : [...prev, student]
-          )
-        }}
+  return students
+    .sort((a, b) => a.email.localeCompare(b.email))
+    .map((student) => (
+      <li key={student.email} className='w-full flex justify-between'>
+        <div className='max-w-[400px]'>
+          <StudentTag student={student} includeAt={false} />
+        </div>
+        <Button
+          size={'icon'}
+          variant={'outline'}
+          onClick={() => {
+            onClickCallback(student)
+            setSelectedStudents((prev) =>
+              prev.includes(student)
+                ? prev.filter((prevStudent) => prevStudent !== student)
+                : [...prev, student]
+            )
+          }}
+        >
+          {selectedStudents.includes(student) ? (
+            <CheckIcon className='h-5 w-5 text-green-500' />
+          ) : (
+            <PlusIcon className='h-5 w-5' />
+          )}
+        </Button>
+      </li>
+    ))
+}
+
+function renderMetadata(
+  metadata: {
+    student: Student
+    metadataKey: string
+  }[],
+  onClickCallback: (student: Student) => void,
+  selectedStudents: Student[],
+  setSelectedStudents: Dispatch<SetStateAction<Student[]>>
+) {
+  return metadata
+    .sort((a, b) => a.student.email.localeCompare(b.student.email))
+    .map((metadata) => (
+      <li
+        key={metadata.student.email + metadata.metadataKey}
+        className='w-full flex justify-between'
       >
-        {selectedStudents.includes(student) ? (
-          <CheckIcon className='h-5 w-5 text-green-500' />
-        ) : (
-          <PlusIcon className='h-5 w-5' />
-        )}
-      </Button>
-    </li>
-  ))
+        <div className='max-w-[400px]'>
+          <StudentTag student={metadata.student} includeAt={false}>
+            <span className='text-xs text-muted-foreground'>
+              {metadata.metadataKey}
+            </span>
+          </StudentTag>
+        </div>
+        <Button
+          size={'icon'}
+          variant={'outline'}
+          onClick={() => {
+            onClickCallback(metadata.student)
+            setSelectedStudents((prev) =>
+              prev.includes(metadata.student)
+                ? prev.filter((prevStudent) => prevStudent !== metadata.student)
+                : [...prev, metadata.student]
+            )
+          }}
+        >
+          {selectedStudents.includes(metadata.student) ? (
+            <CheckIcon className='h-5 w-5 text-green-500' />
+          ) : (
+            <PlusIcon className='h-5 w-5' />
+          )}
+        </Button>
+      </li>
+    ))
 }
 
 export default function SearchStudent({
-  students,
+  studentsOrMetadata,
   onClickCallback,
-}: {
-  students?: Student[]
-  onClickCallback: (student: Student) => void
-}) {
+}: Props) {
   const [pageIndex, setPageIndex] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
@@ -74,18 +140,32 @@ export default function SearchStudent({
     }`,
     fetcher
   )
+  if (studentsOrMetadata) {
+    if (isStudents(studentsOrMetadata)) {
+      return (
+        <ul className='flex flex-col gap-1 h-[440px] overflow-y-auto'>
+          {render(
+            studentsOrMetadata.students || [],
+            onClickCallback,
+            selectedStudents,
+            setSelectedStudents
+          )}
+        </ul>
+      )
+    }
 
-  if (students) {
-    return (
-      <ul className='flex flex-col gap-1 h-[440px] overflow-y-auto'>
-        {render(
-          students,
-          onClickCallback,
-          selectedStudents,
-          setSelectedStudents
-        )}
-      </ul>
-    )
+    if (!isStudents(studentsOrMetadata)) {
+      return (
+        <ul className='flex flex-col gap-1 h-[440px] overflow-y-auto'>
+          {renderMetadata(
+            studentsOrMetadata.metadata,
+            onClickCallback,
+            selectedStudents,
+            setSelectedStudents
+          )}
+        </ul>
+      )
+    }
   }
 
   if (!data) {
@@ -127,7 +207,7 @@ export default function SearchStudent({
         ) : error ? (
           <div className='h-[440px]'>Error</div>
         ) : (
-          <ul className='flex flex-col gap-1 h-[440px]'>
+          <ul className='grid grid-rows-10'>
             {data.total_items === 0 && (
               <li className='text-center h-[440px]'>No students found</li>
             )}
@@ -151,24 +231,24 @@ export default function SearchStudent({
               {'< '}Previous
             </Button>
           </PaginationItem>
-          <PaginationItem></PaginationItem>
-          {[...Array(data.total_pages)].map((_, index) =>
-            pageIndex + 2 === index || pageIndex - 2 === index ? (
-              <PaginationEllipsis key={index} />
-            ) : (
-              pageIndex + 2 > index &&
-              pageIndex - 2 < index && (
-                <PaginationItem key={index}>
-                  <Button
-                    disabled={pageIndex === index + 1}
-                    onClick={() => setPageIndex(index + 1)}
-                    variant={'ghost'}
-                  >
-                    <span>{index + 1}</span>
-                  </Button>
-                </PaginationItem>
+          {Array.from({ length: data.total_pages }, (_, index) => index).map(
+            (page, index) =>
+              pageIndex + 2 === index || pageIndex - 2 === index ? (
+                <PaginationEllipsis key={`ellipsis-${page}`} />
+              ) : (
+                pageIndex + 2 > index &&
+                pageIndex - 2 < index && (
+                  <PaginationItem key={page}>
+                    <Button
+                      disabled={pageIndex === index + 1}
+                      onClick={() => setPageIndex(index + 1)}
+                      variant={'ghost'}
+                    >
+                      <span>{index + 1}</span>
+                    </Button>
+                  </PaginationItem>
+                )
               )
-            )
           )}
 
           <PaginationItem>

@@ -11,7 +11,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { NewsPagination } from '@/models/Pagination'
+import type { LanguageCode } from '@/models/Language'
+import type { NewsPagination } from '@/models/Pagination'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
@@ -24,14 +25,14 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { JSX, useState } from 'react'
+import { type JSX, useState } from 'react'
 import useSWR from 'swr'
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => res.json() as Promise<NewsPagination>)
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -99,29 +100,27 @@ export default function AccountNewsPage({ language }: Props): JSX.Element {
             <NewsUpload language={language} author={student} />
           </Dialog>
         </li>
-        {data &&
-          data.items &&
-          data.items.map((item, index) => (
-            <li
-              key={index}
-              className='w-full h-fit border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'
-            >
-              <div className='py-2 flex flex-col items-start'>
-                <Link
-                  href={
-                    item.published_status === 'PUBLISHED'
-                      ? `/${language}/bulletin/news/${item.url}`
-                      : `/${language}/bulletin/news/upload/${item.url}`
-                  }
-                  target='_blank'
-                  className='underline underline-offset-4 decoration-2 pb-1'
-                >
-                  <h3 className='text-lg font-bold'>
-                    {item.translations[0].title}
-                  </h3>
-                </Link>
-                <Badge
-                  className={`
+        {data?.items.map((item, index) => (
+          <li
+            key={item.url}
+            className='w-full h-fit border-2 border-b-gray-300 border-r-gray-300 border-gray-200 rounded-xl shadow-sm shadow-gray-300 flex justify-between items-center pl-4 pr-8'
+          >
+            <div className='py-2 flex flex-col items-start'>
+              <Link
+                href={
+                  item.published_status === 'PUBLISHED'
+                    ? `/${language}/bulletin/news/${item.url}`
+                    : `/${language}/bulletin/news/upload/${item.url}`
+                }
+                target='_blank'
+                className='underline underline-offset-4 decoration-2 pb-1'
+              >
+                <h3 className='text-lg font-bold'>
+                  {item.translations[0].title}
+                </h3>
+              </Link>
+              <Badge
+                className={`
                     ${
                       item.published_status === 'PUBLISHED'
                         ? 'bg-emerald-600 hover:bg-emerald-400'
@@ -130,41 +129,41 @@ export default function AccountNewsPage({ language }: Props): JSX.Element {
                     font-bold
                     text-white
                   `}
-                >
-                  {item.published_status}
-                </Badge>
-              </div>
-              <div className='grid grid-cols-4 gap-4 py-2'>
-                <Button size={'icon'} variant={'outline'}>
-                  <EyeIcon className='w-6 h-6' />
-                </Button>
-                <TooltipProvider>
-                  <Tooltip open={copiedLink === index}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        title='Share'
-                        aria-label='Share'
-                        className='z-10'
-                        onClick={() => handleCopyLink(index)}
-                      >
-                        <TooltipContent className='z-10'>Copied</TooltipContent>
+              >
+                {item.published_status}
+              </Badge>
+            </div>
+            <div className='grid grid-cols-4 gap-4 py-2'>
+              <Button size={'icon'} variant={'outline'}>
+                <EyeIcon className='w-6 h-6' />
+              </Button>
+              <TooltipProvider>
+                <Tooltip open={copiedLink === index}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      title='Share'
+                      aria-label='Share'
+                      className='z-10'
+                      onClick={() => handleCopyLink(index)}
+                    >
+                      <TooltipContent className='z-10'>Copied</TooltipContent>
 
-                        <LinkIcon className='w-5 h-5' />
-                      </Button>
-                    </TooltipTrigger>
-                  </Tooltip>
-                </TooltipProvider>
-                <Button size={'icon'}>
-                  <PencilSquareIcon className='w-6 h-6' />
-                </Button>
-                <Button size={'icon'} variant={'destructive'}>
-                  <TrashIcon className='w-6 h-6' />
-                </Button>
-              </div>
-            </li>
-          ))}
+                      <LinkIcon className='w-5 h-5' />
+                    </Button>
+                  </TooltipTrigger>
+                </Tooltip>
+              </TooltipProvider>
+              <Button size={'icon'}>
+                <PencilSquareIcon className='w-6 h-6' />
+              </Button>
+              <Button size={'icon'} variant={'destructive'}>
+                <TrashIcon className='w-6 h-6' />
+              </Button>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   )

@@ -1,0 +1,3 @@
+.rs-timeline-item-active > .rs-timeline-item-dot:before {
+  background-color: rgb(250 204 21) !important; /* The dot for each position */
+}

@@ -1,7 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { EnvelopeIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import React, { ForwardRefExoticComponent, SVGProps, type JSX } from 'react'
+import React, {
+  type ForwardRefExoticComponent,
+  type JSX,
+  type SVGProps,
+} from 'react'
 
 export interface SectionDescriptionProps {
   title: string
@@ -57,24 +61,27 @@ export function SectionDescription({
           }`}
         >
           {links.map((link, index) => (
-            <div key={index} className='w-full pb-4 flex justify-start'>
-              <Button asChild variant='link' className='-ml-4 xs:text-md'>
+            <div key={link.href} className='w-full pb-4 flex justify-start'>
+              <Button
+                asChild
+                variant='link'
+                className='-ml-4 xs:text-md hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+              >
                 <Link
                   href={link.href}
                   target='_blank'
                   {...(!link.href.startsWith('mailto') && {
                     rel: 'noreferrer',
                   })}
-                  className='text-sky-800 dark:text-sky-400 underline underline-offset-2'
                   title={
                     link.href.startsWith('mailto')
-                      ? 'Mail: ' + link.text
-                      : 'Go to: ' + link.text
+                      ? `Mail: ${link.text}`
+                      : `Go to: ${link.text}`
                   }
                   aria-label={
                     link.href.startsWith('mailto')
-                      ? 'Mail: ' + link.text
-                      : 'Go to: ' + link.text
+                      ? `Mail: ${link.text}`
+                      : `Go to: ${link.text}`
                   }
                 >
                   {link.icon &&

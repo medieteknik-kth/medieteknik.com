@@ -1,5 +1,7 @@
 {
     "title": "Positions",
+    "description": "Here you can search for positions that are available in the chapter. You can search for specific positions at SM 1-4 via the Election Committee (Valberedningen)",
+    "keywords": "positions, search, chapter, election committee",
     "search": "Search positions",
     "search.results": "Search results",
     "committees": "Committees",

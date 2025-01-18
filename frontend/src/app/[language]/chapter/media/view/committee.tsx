@@ -1,11 +1,12 @@
 import { useTranslation } from '@/app/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committees: Committee[] | null
 }
 
@@ -42,14 +43,18 @@ export default async function MediaGridView({
 
   const filtered = filteredCommittees(committees)
   return (
-    <section className={`${filtered.length === 0 ? 'hidden' : 'px-10 py-2'}`}>
+    <section
+      className={`${
+        filtered.length === 0 ? 'hidden' : 'px-2 sm:px-5 md:px-10 py-2'
+      }`}
+    >
       <h2 className='text-2xl font-bold capitalize'>{t('committees')}</h2>
       <ul className='flex flex-wrap gap-4 py-2'>
         {filtered
           .sort((a, b) => b.total_media - a.total_media)
-          .map((committee, index) => (
+          .map((committee) => (
             <li
-              key={index}
+              key={committee.committee_id}
               className='w-72 h-fit rounded-md border overflow-hidden relative hover:scale-105 transition-transform duration-500 cursor-pointer'
             >
               <Link
@@ -64,10 +69,9 @@ export default async function MediaGridView({
                     width={128}
                     height={128}
                     src={committee.logo_url ?? ''}
-                    alt={committee.translations[0].title}
                   />
                   <AvatarFallback>
-                    {committee.translations[0].title + ' Profile Picture'}
+                    {`${committee.translations[0].title} Profile Picture`}
                   </AvatarFallback>
                 </Avatar>
 

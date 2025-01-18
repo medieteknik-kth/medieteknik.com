@@ -1,11 +1,10 @@
 import NewsPage from '@/app/[language]/bulletin/news/news'
 import { useTranslation } from '@/app/i18n'
-import { Metadata } from 'next'
-
-export const revalidate = 43_200 // 12 hours
+import type { LanguageCode } from '@/models/Language'
+import type { Metadata } from 'next'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 export async function generateMetadata(props: {

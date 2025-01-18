@@ -1,5 +1,6 @@
 'use client'
 
+import type { LanguageCode } from '@/models/Language'
 import {
   createContext,
   useCallback,
@@ -7,8 +8,8 @@ import {
   useMemo,
   useReducer,
 } from 'react'
-import { BaseEditor, Editor } from 'slate'
-import { ReactEditor } from 'slate-react'
+import { type BaseEditor, Editor } from 'slate'
+import type { ReactEditor } from 'slate-react'
 
 type ElementType =
   | 'h1'
@@ -187,7 +188,7 @@ interface ArticleContextType extends ArticleState {
 const ArticleContext = createContext<ArticleContextType | undefined>(undefined)
 
 interface Props {
-  language: string
+  language: LanguageCode
   editor: BaseEditor & ReactEditor
   children: React.ReactNode
 }

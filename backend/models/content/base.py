@@ -18,7 +18,7 @@ from models.core.student import Student
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from datetime import datetime, timezone
-from .author import Author, AuthorType
+from models.core import Author, AuthorType
 
 
 class PublishedStatus(enum.Enum):

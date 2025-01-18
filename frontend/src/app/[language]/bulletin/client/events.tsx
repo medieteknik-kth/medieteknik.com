@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { Event } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import {
@@ -30,7 +30,8 @@ import {
   PlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react'
+import { isSameDay } from 'date-fns'
+import { type JSX, useState } from 'react'
 import CalendarExport from '../components/calendarExport'
 import EventDialog from '../components/eventDialog'
 
@@ -41,24 +42,24 @@ import EventDialog from '../components/eventDialog'
  * @returns {string} The ordinal suffix for the given number
  */
 function getNumberWithOrdinalEnglish(number: number): string {
-  if (typeof number !== 'number' || isNaN(number)) {
+  if (typeof number !== 'number' || Number.isNaN(number)) {
     return 'Not a number'
   }
 
   // Handle special cases for 11, 12, 13
   if (number % 100 >= 11 && number % 100 <= 13) {
-    return number + 'th'
+    return `${number}th`
   }
 
   switch (number % 10) {
     case 1:
-      return number + 'st'
+      return `${number}st`
     case 2:
-      return number + 'nd'
+      return `${number}nd`
     case 3:
-      return number + 'rd'
+      return `${number}rd`
     default:
-      return number + 'th'
+      return `${number}th`
   }
 }
 
@@ -74,7 +75,7 @@ function getNumberWithOrdinalEnglish(number: number): string {
 export default function Events({
   language,
 }: {
-  language: string
+  language: LanguageCode
 }): JSX.Element {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const { selectedDate, events, addEvent } = useCalendar()
@@ -139,8 +140,7 @@ export default function Events({
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.author &&
-                    permissions.author.includes('EVENT') ? (
+                    {permissions.author?.includes('EVENT') ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -148,8 +148,7 @@ export default function Events({
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.author &&
-                        permissions.author.includes('EVENT')
+                        {permissions.author?.includes('EVENT')
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}
@@ -166,10 +165,10 @@ export default function Events({
             <CardTitle>{t('events')}</CardTitle>
             <CardDescription>
               {language === 'en'
-                ? getNumberWithOrdinalEnglish(selectedDate.getDate()) + ' '
+                ? `${getNumberWithOrdinalEnglish(selectedDate.getDate())} `
                 : selectedDate.getDate() > 2
-                ? selectedDate.getDate() + ':e '
-                : selectedDate.getDate() + ':a '}
+                  ? `${selectedDate.getDate()}:e `
+                  : `${selectedDate.getDate()}:a `}
               <span className='capitalize'>
                 {selectedDate.toLocaleDateString(language, { month: 'long' })}
               </span>
@@ -205,9 +204,14 @@ export default function Events({
             <ul className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
               {events
                 .filter((event) => {
+                  const startDate = new Date(event.start_date)
+                  const endDate = new Date(
+                    startDate.getTime() + event.duration * 60_000
+                  )
                   return (
-                    new Date(event.start_date).toDateString() ===
-                    selectedDate.toDateString()
+                    isSameDay(startDate, selectedDate) ||
+                    isSameDay(endDate, selectedDate) ||
+                    (startDate < selectedDate && endDate > selectedDate)
                   )
                 })
                 .sort(
@@ -215,8 +219,8 @@ export default function Events({
                     new Date(a.start_date).getTime() -
                     new Date(b.start_date).getTime()
                 )
-                .map((event: Event, index) => (
-                  <li key={index}>
+                .map((event, index) => (
+                  <li key={event.event_id}>
                     <EventDialog
                       language={language}
                       event={event}

@@ -1,5 +1,5 @@
 'use client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -32,17 +32,18 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Author } from '@/models/Items'
-import { Document, DocumentTranslation } from '@/models/items/Document'
-import { LanguageCode } from '@/models/Language'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type Document from '@/models/items/Document'
+import type { DocumentTranslation } from '@/models/items/Document'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 interface TranslatedInputProps {
   index: number
@@ -52,7 +53,7 @@ interface TranslatedInputProps {
 }
 
 interface DocumentUploadProps {
-  language: string
+  language: LanguageCode
   author: Author
   addDocument: (document: Document) => void
   closeMenuCallback: () => void
@@ -171,7 +172,7 @@ export default function DocumentUpload({
 }: DocumentUploadProps): JSX.Element {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
-  const [value, _] = useState('DOCUMENT')
+  const [value, setValue] = useState('DOCUMENT')
   const { student } = useAuthentication()
   const [files, setFiles] = useState<File[]>([])
 
@@ -181,7 +182,7 @@ export default function DocumentUpload({
     resolver: zodResolver(documentUploadSchema),
     defaultValues: {
       type: 'DOCUMENT',
-      translations: supportedLanguages.map((language) => ({
+      translations: SUPPORTED_LANGUAGES.map((language) => ({
         language_code: language,
         title: '',
       })),
@@ -190,8 +191,10 @@ export default function DocumentUpload({
 
   const postForm = async (data: z.infer<typeof documentUploadSchema>) => {
     if (!student) {
+      setErrorMessage('Must be logged in to upload a document.')
       return
     }
+
     const formData = new FormData()
 
     // Add top-level fields
@@ -202,7 +205,7 @@ export default function DocumentUpload({
     formData.append('author[email]', author.email || '')
 
     // Add translation fields
-    supportedLanguages.forEach((language, index) => {
+    SUPPORTED_LANGUAGES.forEach((language, index) => {
       formData.append(`translations[${index}][language_code]`, language)
       formData.append(
         `translations[${index}][title]`,
@@ -237,11 +240,11 @@ export default function DocumentUpload({
         })
         closeMenuCallback()
       } else {
-        setErrorMessage('Failed to upload document ' + response.statusText)
+        setErrorMessage(`Failed to upload document: ${response.statusText}`)
       }
     } catch (error) {
       console.error(error)
-      setErrorMessage('Failed to upload document ' + error)
+      setErrorMessage(`Failed to upload document: ${error}`)
     }
   }
 
@@ -255,6 +258,12 @@ export default function DocumentUpload({
       label: 'Form',
     },
   ] as const
+
+  if (!student) {
+    return (
+      <DialogContent>Must be logged in to upload a document.</DialogContent>
+    )
+  }
 
   return (
     <DialogContent>
@@ -270,7 +279,7 @@ export default function DocumentUpload({
       <Tabs defaultValue={language} className='mb-2'>
         <Label>Language</Label>
         <TabsList className='overflow-x-auto h-fit w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -291,11 +300,17 @@ export default function DocumentUpload({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Type</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    modal={popoverOpen}
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant='outline'
+                          // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                          role='combobox'
                           aria-expanded={popoverOpen}
                           value={value}
                           className='w-52 justify-between'
@@ -320,6 +335,7 @@ export default function DocumentUpload({
                                 value={documentType.value}
                                 onSelect={() => {
                                   form.setValue('type', documentType.value)
+                                  setValue(documentType.value)
                                   setPopoverOpen(false)
                                 }}
                               >
@@ -336,7 +352,7 @@ export default function DocumentUpload({
               )}
             />
 
-            {supportedLanguages.map((language, index) => (
+            {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}

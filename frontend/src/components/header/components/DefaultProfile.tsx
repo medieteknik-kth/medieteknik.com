@@ -1,22 +1,32 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import PreferencesMenu from '@/components/header/components/PreferencesMenu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
+import {
+  AdjustmentsHorizontalIcon,
+  Cog6ToothIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import Logo from 'public/images/logo.webp'
 
-import type { JSX } from 'react'
+import { type JSX, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -31,54 +41,83 @@ interface Props {
 export default function DefaultProfile({ language }: Props): JSX.Element {
   const { student } = useAuthentication()
   const { t } = useTranslation(language, 'header')
+  const [openPreferences, setOpenPreferences] = useState(false)
 
   if (!student) {
     return <></>
   }
 
-  const username = student.first_name + ' ' + (student.last_name || '')
+  const username = `${student.first_name} ${student.last_name || ''}`
 
   return (
     <>
       <div className='flex items-center px-2'>
         <Avatar>
           <AvatarImage
-            src={student.profile_picture_url || Logo.src}
+            src={student.profile_picture_url}
             width={40}
             height={40}
             alt='Profile Picture'
             loading='lazy'
           />
-          <AvatarFallback>Profile Picture</AvatarFallback>
+          <AvatarFallback className='bg-primary text-black'>
+            {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
+          </AvatarFallback>
         </Avatar>
         <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px]'>
-          <p className='truncate '>{username}</p>
-          <span className='font-normal text-sm text-neutral-500 leading-3'>
+          <p className='truncate'>{username}</p>
+          <span className='font-normal text-sm text-muted-foreground leading-3'>
             {student.email}
           </span>
         </DropdownMenuLabel>
       </div>
       <DropdownMenuSeparator />
-      <DropdownMenuGroup>
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/${language}/profile`}
-            className='w-full flex items-center gap-2 pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer mb-1'
-            title='Your profile'
+      <DropdownMenuGroup className='flex flex-col gap-0.5'>
+        <DropdownMenuItem className='p-0'>
+          <Button
+            className='w-full flex items-center justify-start gap-2 p-0 pl-2'
+            variant={'ghost'}
+            asChild
           >
-            <UserIcon className='w-4 h-4' />
-            <span>{t('profile')}</span>
-          </Link>
+            <Link
+              href={`/${language}/profile`}
+              className='w-full flex items-center gap-2'
+              title='Your profile'
+            >
+              <UserIcon className='w-4 h-4' />
+              <span>{t('profile')}</span>
+            </Link>
+          </Button>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/${language}/account`}
-            className='w-full flex items-center gap-2 pr-2 border-l-2 border-transparent hover:border-yellow-400 rounded-l-none py-2 cursor-pointer'
-            title={t('account_settings')}
+        <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className='p-0 pr-2'>
+              <Button
+                className='w-full flex items-center justify-start gap-2 p-0 pl-2'
+                variant={'ghost'}
+              >
+                <AdjustmentsHorizontalIcon className='w-4 h-4' />
+                <span>Preferences</span>
+              </Button>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent className='w-[200px] mr-2 dark:bg-[#111]'>
+                <PreferencesMenu language={language} />
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuItem className='p-0'>
+          <Button
+            className='w-full flex items-center justify-start gap-2 p-0 pl-2'
+            variant={'ghost'}
+            asChild
           >
-            <Cog6ToothIcon className='w-4 h-4' />
-            <span>{t('account_settings')}</span>
-          </Link>
+            <Link href={`/${language}/account`} title={t('account_settings')}>
+              <Cog6ToothIcon className='w-4 h-4' />
+              <span>{t('account_settings')}</span>
+            </Link>
+          </Button>
         </DropdownMenuItem>
       </DropdownMenuGroup>
     </>

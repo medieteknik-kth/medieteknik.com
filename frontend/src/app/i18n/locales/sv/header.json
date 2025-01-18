@@ -24,7 +24,12 @@
                     "link": "/chapter"
                 },
                 {
-                    "title": "Nämnder och Projekter",
+                    "title": "JML",
+                    "description": "Jämlikhet, Mångfald och Likabehandling",
+                    "link": "/chapter/equality"
+                },
+                {
+                    "title": "Nämnder och Projektgrupper",
                     "link": "/chapter/committees"
                 },
                 {
@@ -33,8 +38,7 @@
                     "link": "/chapter/documents"
                 },
                 {
-                    "title": "Positioner",
-                    "description": "Funktionärsposter",
+                    "title": "Funktionärsposter",
                     "link": "/chapter/positions"
                 },
                 {

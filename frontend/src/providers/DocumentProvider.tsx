@@ -1,16 +1,17 @@
 'use client'
 
-import { Document } from '@/models/items/Document'
-import { DocumentPagination } from '@/models/Pagination'
+import type { LanguageCode } from '@/models/Language'
+import type { DocumentPagination } from '@/models/Pagination'
+import type Document from '@/models/items/Document'
 import { API_BASE_URL } from '@/utility/Constants'
 import { useSearchParams } from 'next/navigation'
 import {
+  type JSX,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useReducer,
-  type JSX,
 } from 'react'
 
 type View = 'grid' | 'list'
@@ -191,7 +192,7 @@ export function DocumentManagementProvider({
   language,
   children,
 }: {
-  language: string
+  language: LanguageCode
   children: React.ReactNode
 }): JSX.Element {
   const [state, dispatch] = useReducer(documentReducer, initialState)

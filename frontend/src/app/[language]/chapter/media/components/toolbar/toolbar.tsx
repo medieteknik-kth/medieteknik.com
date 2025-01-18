@@ -1,8 +1,9 @@
 import ToolbarAuth from '@/app/[language]/chapter/media/components/toolbar/auth'
-import { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -18,7 +19,7 @@ export default async function MediaToolbar({
   language,
 }: Props): Promise<JSX.Element> {
   return (
-    <div className='w-full h-fit py-2 px-10 border-b-2'>
+    <div className='w-full h-fit py-2 px-2 sm:px-5 md:px-10 border-b-2'>
       <ToolbarAuth language={language} />
     </div>
   )

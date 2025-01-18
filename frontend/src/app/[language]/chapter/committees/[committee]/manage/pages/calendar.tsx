@@ -1,6 +1,13 @@
 'use client'
 
 import Calendar from '@/components/calendar/Calendar'
+import type { LanguageCode } from '@/models/Language'
+
+import type { JSX } from 'react'
+
+interface Props {
+  language: LanguageCode
+}
 
 import type { JSX } from 'react'
 

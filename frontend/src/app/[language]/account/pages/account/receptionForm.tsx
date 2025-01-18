@@ -14,15 +14,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { receptionSchema } from '@/schemas/user/reception'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Logo from 'public/images/logo.webp'
-import { JSX, useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url).then(
@@ -33,7 +34,7 @@ const fetcher = (url: string) =>
   )
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

@@ -1,5 +1,7 @@
 'use client'
+
 import Loading from '@/components/tooltips/Loading'
+import { Button } from '@/components/ui/button'
 import {
   DialogContent,
   DialogDescription,
@@ -16,19 +18,19 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Author } from '@/models/Items'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { createNewsSchema } from '@/schemas/items/news'
 import { API_BASE_URL } from '@/utility/Constants'
-import { Button } from '@components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, type JSX } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 interface NewsUploadProps {
-  language: string
+  language: LanguageCode
   author: Author
 }
 
@@ -109,7 +111,7 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
         setLoading(false)
       }
     } catch (error) {
-      setError('Something went wrong, try again later ' + error)
+      setError(`Something went wrong, try again later: ${error}`)
       setLoading(false)
     }
   }

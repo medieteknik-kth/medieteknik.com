@@ -11,8 +11,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { Event } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
+import type Event from '@/models/items/Event'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import {
@@ -30,10 +31,10 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { addMonths, subMonths } from 'date-fns'
-import { JSX, useCallback, useMemo, useState } from 'react'
+import { type JSX, useCallback, useMemo, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -100,6 +101,11 @@ export default function CalendarPage({ language }: Props): JSX.Element {
                     ? 'cursor-not-allowed text-neutral-300'
                     : 'cursor-pointer hover:text-neutral-800'
                 }`}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowLeft') {
+                    subtractMonth()
+                  }
+                }}
                 onClick={subtractMonth}
               >
                 {subMonths(date, 1).toLocaleDateString(language, {
@@ -118,6 +124,11 @@ export default function CalendarPage({ language }: Props): JSX.Element {
                     ? 'cursor-not-allowed text-neutral-300'
                     : 'cursor-pointer hover:text-neutral-800'
                 }`}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight') {
+                    addMonth()
+                  }
+                }}
                 onClick={addMonth}
               >
                 {addMonths(date, 1).toLocaleDateString(language, {
@@ -230,8 +241,7 @@ export default function CalendarPage({ language }: Props): JSX.Element {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.author &&
-                    permissions.author.includes('EVENT') ? (
+                    {permissions.author?.includes('EVENT') ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
                     ) : (
                       <XMarkIcon className='w-6 h-6 text-red-500' />
@@ -239,8 +249,7 @@ export default function CalendarPage({ language }: Props): JSX.Element {
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.author &&
-                        permissions.author.includes('EVENT')
+                        {permissions.author?.includes('EVENT')
                           ? 'can'
                           : 'cannot'}
                       </span>{' '}
@@ -251,8 +260,7 @@ export default function CalendarPage({ language }: Props): JSX.Element {
                     className='flex items-center gap-2'
                     title='Contact an administrator to gain access'
                   >
-                    {permissions.student &&
-                    permissions.student.includes(
+                    {permissions.student?.includes(
                       Permission.CALENDAR_PRIVATE
                     ) ? (
                       <CheckIcon className='w-6 h-6 text-green-500' />
@@ -262,8 +270,7 @@ export default function CalendarPage({ language }: Props): JSX.Element {
                     <p>
                       You{' '}
                       <span className='font-bold'>
-                        {permissions.student &&
-                        permissions.student.includes(
+                        {permissions.student?.includes(
                           Permission.CALENDAR_PRIVATE
                         )
                           ? 'can'
@@ -281,23 +288,19 @@ export default function CalendarPage({ language }: Props): JSX.Element {
       <Dialog open={openEvent} onOpenChange={setOpenEvent}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {selectedEvent && selectedEvent.translations[0].title}
-            </DialogTitle>
+            <DialogTitle>{selectedEvent?.translations[0].title}</DialogTitle>
             <DialogDescription>Event Information</DialogDescription>
           </DialogHeader>
           <Separator
             style={{
-              background:
-                (selectedEvent && selectedEvent.background_color) || 'inherit',
+              background: selectedEvent?.background_color || 'inherit',
             }}
           />
           <div className='flex flex-col gap-2 overflow-hidden'>
             <div className='flex items-center gap-2'>
               <Bars3CenterLeftIcon className='w-6 h-6' />
               <p className='truncate max-w-[400px]'>
-                {(selectedEvent &&
-                  selectedEvent.translations[0].description) || (
+                {selectedEvent?.translations[0].description || (
                   <span className='text-neutral-600'>No description</span>
                 )}
               </p>
@@ -330,7 +333,7 @@ export default function CalendarPage({ language }: Props): JSX.Element {
             </div>
             <div className='flex items-center gap-2'>
               <MapPinIcon className='w-6 h-6' />
-              <p>{selectedEvent && selectedEvent.location}</p>
+              <p>{selectedEvent?.location}</p>
             </div>
           </div>
         </DialogContent>

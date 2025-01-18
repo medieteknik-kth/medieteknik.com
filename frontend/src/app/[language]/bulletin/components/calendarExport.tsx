@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
-import Student from '@/models/Student'
+import type Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   ArrowPathRoundedSquareIcon,

@@ -1,11 +1,18 @@
 import {
-  GetCommitteeCategories,
-  GetCommitteeCategoryCommittees,
-} from '@/api/committee'
+  getCommitteeCategories,
+  getCommitteesForCategory,
+} from '@/api/committee_category'
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
-import Committee, { CommitteeCategory } from '@/models/Committee'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import type Committee from '@/models/Committee'
+import type { CommitteeCategory } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import Image from 'next/image'
 import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
@@ -14,10 +21,8 @@ interface CommitteeCategoryWithCommittees extends CommitteeCategory {
   committees: Committee[]
 }
 
-export const revalidate = 60 * 60 * 24 * 30 * 3 // 3 months
-
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -26,14 +31,13 @@ interface Props {
 
 export default async function CommitteeList(props: Props) {
   const { language } = await props.params
-  const committeeCategories = await GetCommitteeCategories(language)
+  const { data: committeeCategories } = await getCommitteeCategories(language)
   const categoriesWithCommittees: CommitteeCategoryWithCommittees[] = []
   const { t } = await useTranslation(language, 'committee')
 
   if (!committeeCategories) {
     return (
       <main>
-        <HeaderGap />
         <HeadComponent title='Committees' />
         <h2 className='text-center text-2xl my-8'>No committees found</h2>
         <p className='text-center my-4'>
@@ -51,10 +55,10 @@ export default async function CommitteeList(props: Props) {
   }
 
   for (const committeeCategory of committeeCategories) {
-    const committees = (await GetCommitteeCategoryCommittees(
+    const { data: committees } = await getCommitteesForCategory(
       committeeCategory.translations[0].title,
       language
-    )) as CommitteeCategoryWithCommittees | null
+    )
     if (committees) {
       categoriesWithCommittees.push({
         email: committeeCategory.email,
@@ -64,63 +68,87 @@ export default async function CommitteeList(props: Props) {
     }
   }
 
+  if (categoriesWithCommittees.length === 0) {
+    return (
+      <main>
+        <HeadComponent title='Committees' />
+        <h2 className='text-center text-2xl my-8'>{t('not_found')}</h2>
+        <p className='text-center my-4'>
+          Contact{' '}
+          <a
+            href='mailto:webmaster@medieteknik.com'
+            className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+          >
+            webmaster@medieteknik.com
+          </a>
+        </p>
+      </main>
+    )
+  }
+
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
 
-      <div className='w-fit flex flex-col gap-10 py-10 sm:px-16 xl:px-52 desktop:px-96 dark:bg-[#111]'>
-        {categoriesWithCommittees.length === 0 && (
-          <div className='w-full h-full flex justify-center items-center'>
-            <h2 className='text-2xl lg:text-4xl'>{t('not_found')}</h2>
-          </div>
-        )}
-        {categoriesWithCommittees.length > 0 &&
-          categoriesWithCommittees.map((data, index) => (
-            <section
-              key={index}
-              id={`${data.translations[0].title.toLowerCase()}`}
-              className='w-full h-fit flex flex-col'
-            >
-              <h2 className='text-2xl lg:text-4xl w-full text-center sm:text-left uppercase tracking-wider border-b-2 border-yellow-400 pb-4'>
-                {data.translations[0].title}
-              </h2>
-              <div
-                className={`w-full sm:w-fit h-fit *:h-[200px] flex justify-center sm:justify-start flex-wrap py-4 gap-4`}
+      <div className='w-full flex flex-col gap-10 py-10 px-2 sm:px-5 md:px-12 xl:px-52 desktop:px-96 dark:bg-[#111]'>
+        <Accordion
+          type='multiple'
+          className='w-full flex flex-col gap-4'
+          defaultValue={categoriesWithCommittees.map((category) =>
+            category.translations[0].title.toLowerCase()
+          )}
+        >
+          {categoriesWithCommittees.length > 0 &&
+            categoriesWithCommittees.map((category) => (
+              <AccordionItem
+                value={category.translations[0].title.toLowerCase()}
+                key={category.translations[0].title}
+                id={`${category.translations[0].title.toLowerCase()}`}
+                className='w-full h-fit flex flex-col'
               >
-                {data.committees.length === 0 && (
-                  <p className='w-full text-center'>{t('not_found')}</p>
-                )}
-                {data.committees.length > 0 &&
-                  data.committees
-                    .sort((a, b) =>
-                      a.translations[0].title.localeCompare(
-                        b.translations[0].title
+                <AccordionTrigger className='text-2xl lg:text-4xl w-full text-center font-semibold sm:text-left uppercase tracking-wider'>
+                  <h2>{category.translations[0].title}</h2>
+                </AccordionTrigger>
+                <AccordionContent className='p-4 pb-16 sm:pb-4 flex justify-center sm:justify-start flex-wrap gap-y-12 gap-x-4 sm:gap-4'>
+                  {category.committees.length === 0 && (
+                    <p className='w-full text-center'>{t('not_found')}</p>
+                  )}
+                  {category.committees.length > 0 &&
+                    category.committees
+                      .sort((a, b) =>
+                        a.translations[0].title.localeCompare(
+                          b.translations[0].title
+                        )
                       )
-                    )
-                    .map((committee, index) => (
-                      <Link
-                        href={`./committees/${committee.translations[0].title.toLowerCase()}`}
-                        title={committee.translations[0].title}
-                        aria-label={committee.translations[0].title}
-                        key={index}
-                        className='min-w-[240px] w-fit relative rounded-t-lg border transition-transform hover:scale-110 hover:hover:font-bold bg-white'
-                      >
-                        <Image
-                          src={committee.logo_url || Logo.src}
-                          alt={`${committee.translations[0].title}icon`}
-                          width={300}
-                          height={300}
-                          className='w-[100px] lg:w-[120px] h-auto absolute -top-8 left-0 right-0 bottom-0 m-auto'
-                        />
-                        <h3 className='uppercase w-[240px] text-xs lg:text-sm bg-[#232323] py-2 text-white absolute bottom-0 text-center px-2 tracking-wider'>
-                          {committee.translations[0].title}
-                        </h3>
-                      </Link>
-                    ))}
-              </div>
-            </section>
-          ))}
+                      .map((committee) => (
+                        <Link
+                          href={`./committees/${committee.translations[0].title.toLowerCase()}`}
+                          title={committee.translations[0].title}
+                          key={committee.translations[0].title}
+                          className='w-28 sm:w-56 h-auto aspect-square relative rounded-full border border-yellow-400 shadow shadow-black/20 transition-transform motion-reduce:hover:scale-100 hover:scale-110 hover:hover:font-bold bg-white grid place-items-center'
+                        >
+                          <Image
+                            src={committee.logo_url || Logo.src}
+                            alt={`${committee.translations[0].title} logo`}
+                            width={300}
+                            height={300}
+                            loading='lazy'
+                            className='w-16 sm:w-28 lg:w-32 h-auto absolute top-0 sm:-top-6 bottom-0 my-auto'
+                          />
+                          <h3 className='uppercase w-[130px] text-xs absolute -bottom-10 sm:bottom-6 text-center tracking-wider text-black'>
+                            {committee.translations[0].title.length > 15
+                              ? committee.translations[0].title.replace(
+                                  /(grupp|nämnden)/g,
+                                  '- $1'
+                                )
+                              : committee.translations[0].title}
+                          </h3>
+                        </Link>
+                      ))}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+        </Accordion>
       </div>
     </main>
   )

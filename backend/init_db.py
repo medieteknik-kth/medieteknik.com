@@ -1,12 +1,13 @@
 """
-Utility script for initializing the database on the server.
+Utility script for initializing the database on the server. It needs to import all models to create the tables (even though they are not used in the script).
+
+This script is used to create all tables in the database. It is used to initialize the database.
 """
 
 import argparse
 from main import app
 from sqlalchemy.exc import SQLAlchemyError
-from utility.database import db
-
+from utility import db
 from models.utility import Analytics, Audit, Idempotency  # noqa: F401
 from models.committees import (
     CommitteeCategory,  # noqa: F401
@@ -24,12 +25,10 @@ from models.content import (
     AlbumTranslation,  # noqa: F401
     Media,  # noqa: F401
     MediaTranslation,  # noqa: F401
-    Author,  # noqa: F401
     Document,  # noqa: F401
     DocumentTranslation,  # noqa: F401
     Event,  # noqa: F401
     EventTranslation,  # noqa: F401
-    Calendar,  # noqa: F401
     News,  # noqa: F401
     NewsTranslation,  # noqa: F401
     Item,  # noqa: F401
@@ -38,6 +37,8 @@ from models.content import (
     TagTranslation,  # noqa: F401
 )
 from models.core import (
+    Author,  # noqa: F401
+    Calendar,  # noqa: F401
     Student,  # noqa: F401
     Profile,  # noqa: F401
     StudentMembership,  # noqa: F401
@@ -52,6 +53,7 @@ def init_db():
     """
     Initializes the database. Only creates new tables if they do not exist.
     """
+
     print("Initializing database...")
     with app.app_context():
         print("Creating tables...")
@@ -71,6 +73,7 @@ def drop_db():
     """
     Drops all tables from the database.
     """
+
     print("Dropping database...")
     with app.app_context():
         print("Dropping tables...")

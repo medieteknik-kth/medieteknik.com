@@ -1,6 +1,6 @@
 'use client'
 import EventComponent from '@/components/calendar/components/eventDisplay'
-import { Event } from '@/models/Items'
+import type Event from '@/models/items/Event'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { isSameDay, isSameMonth } from 'date-fns'
 
@@ -15,16 +15,30 @@ interface Props {
 }
 
 /**
- * Sorts events based on the start date in ascending order.
+ * Sorts events based on the duration in descending order and then by start date in ascending order.
  *
  * @param {Event[]} events - The list of events to be sorted.
  * @return {Event[]} The sorted list of events.
  */
 const sortEvents = (events: Event[]): Event[] =>
-  events.sort(
-    (a, b) =>
-      new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
-  )
+  events.sort((a, b) => {
+    const durationA =
+      new Date(
+        new Date(a.start_date).getTime() + a.duration * 60_000
+      ).getTime() - new Date(a.start_date).getTime()
+    const durationB =
+      new Date(
+        new Date(b.start_date).getTime() + b.duration * 60_000
+      ).getTime() - new Date(b.start_date).getTime()
+
+    // TODO: Add better styling instead of priority sorting
+
+    if (durationA !== durationB) {
+      return durationB - durationA
+    }
+
+    return new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+  })
 
 /**
  * Filters events based on the provided date.
@@ -35,7 +49,14 @@ const sortEvents = (events: Event[]): Event[] =>
  */
 const filterEventsForDate = (events: Event[], date: Date): Event[] =>
   events.filter((event) => {
-    return isSameDay(new Date(event.start_date), date)
+    const startDate = new Date(event.start_date)
+    const endDate = new Date(startDate.getTime() + event.duration * 60_000)
+
+    return (
+      isSameDay(startDate, date) ||
+      isSameDay(endDate, date) ||
+      (date > startDate && date < endDate)
+    )
   })
 
 /**
@@ -76,6 +97,13 @@ export default function DateComponent({
                 : 'bg-neutral-100 dark:bg-[#222] hover:bg-neutral-300/75 dark:hover:bg-neutral-700/75'
             }`
       }`}
+      onKeyDown={(event) => {
+        event.stopPropagation()
+        if (event.key === 'Enter') {
+          setSelectedDate(date)
+          onDateClickCallback(date)
+        }
+      }}
       onClick={(event) => {
         event.stopPropagation()
         setSelectedDate(date)
@@ -94,16 +122,14 @@ export default function DateComponent({
       >
         {date.getDate()}
       </p>
-      <div
-        className={`w-full absolute top-10 left-0 text-black font-bold px-2 max-h-[80px] overflow-y-auto ${
-          !currentMonth && 'opacity-50'
-        }`}
-      >
-        <ul className='flex flex-row sm:flex-col flex-wrap gap-1 h-fit'>
+      <div className='w-full mt-10 text-black font-bold px-1 sm:px-2 max-h-[80px] overflow-y-auto overflow-x-clip'>
+        <ul className='flex flex-col gap-1 h-fit'>
           {filterEventsForDate(sortEvents(events), date).map((event, index) => (
             <EventComponent
-              key={index}
+              key={event.event_id}
+              date={date}
               event={event}
+              index={index}
               onEventClick={onEventClickCallback}
             />
           ))}

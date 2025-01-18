@@ -13,22 +13,23 @@ import {
 } from '@/components/ui/card'
 import {
   Carousel,
-  CarouselApi,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import Committee from '@/models/Committee'
+import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
-import { JSX, useCallback, useEffect, useState } from 'react'
+import { type JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   committees: Committee[]
 }
 
@@ -65,7 +66,7 @@ export default function Committees({
     }
     setSelectedIndex(api.selectedScrollSnap())
     emblaThumbsApi.scrollTo(api.selectedScrollSnap())
-  }, [api, emblaThumbsApi, setSelectedIndex])
+  }, [api, emblaThumbsApi])
 
   useEffect(() => {
     if (!api || !emblaThumbsApi) {
@@ -81,14 +82,17 @@ export default function Committees({
     )
 
   return (
-    <section className='px-4 sm:px-20 h-fit my-10 relative' id='committees'>
+    <section
+      className='px-2 sm:px-5 md:px-12 h-fit my-10 relative flex flex-col gap-4'
+      id='committees'
+    >
       <Link
         href={`/${language}/chapter/committees`}
-        className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 block border-b-2 border-yellow-400 pb-4 mb-10 transition-colors text-blue-500 hover:text-yellow-400'
+        className='uppercase tracking-wider font-semibold text-2xl sm:text-4xl w-full lg:w-1/2 hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
       >
         {t('committees')}
       </Link>
-      <div className='w-full mt-10'>
+      <div className='w-full px-4'>
         <Carousel
           className='w-full'
           setApi={setApi}
@@ -104,40 +108,42 @@ export default function Committees({
               .sort((a, b) =>
                 a.translations[0].title.localeCompare(b.translations[0].title)
               )
-              .map((committee, index) => (
+              .map((committee) => (
                 <CarouselItem
-                  key={index}
-                  className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[400px] pl-4'
+                  key={committee.translations[0].title}
+                  className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[300px] pl-4'
                 >
                   <Card className='h-full flex flex-col justify-between'>
-                    <CardHeader>
-                      <CardTitle className='flex flex-col gap-2 text-lg sm:text-xl md:text-2xl'>
-                        <Avatar className='bg-white w-16 h-16 z-10'>
-                          <AvatarImage
-                            src={committee.logo_url}
-                            width={64}
-                            height={64}
-                            className='w-auto h-16 aspect-square object-contain p-2'
+                    <CardHeader className='flex flex-row flex-wrap items-center gap-4'>
+                      <Avatar className='bg-white w-16 h-16 z-10 rounded-md'>
+                        <AvatarImage
+                          src={committee.logo_url}
+                          width={64}
+                          height={64}
+                          className='w-auto h-16 aspect-square object-contain p-2'
+                        />
+                        <AvatarFallback>
+                          <Image
+                            src={FallbackImage}
+                            alt='Committee Fallback image'
+                            width={100}
+                            height={100}
                           />
-                          <AvatarFallback>
-                            <Image
-                              src={FallbackImage}
-                              alt='Committee Fallback image'
-                              width={100}
-                              height={100}
-                            />
-                          </AvatarFallback>
-                        </Avatar>
-                        {committee.translations[0].title}
-                      </CardTitle>
-                      <CardDescription>
-                        <Link
-                          href={`mailto:${committee.email}`}
-                          className='text-blue-500 hover:text-yellow-400 text-xs xs:text-sm'
-                        >
-                          {committee.email}
-                        </Link>
-                      </CardDescription>
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className='flex items-center gap-3 text-lg sm:text-xl md:text-2xl'>
+                          {committee.translations[0].title}
+                        </CardTitle>
+                        <CardDescription>
+                          <Link
+                            href={`mailto:${committee.email}`}
+                            className='hover:underline underline-offset-4 cursor-pointer transition-all text-blue-600 dark:text-primary'
+                          >
+                            {committee.email}
+                          </Link>
+                        </CardDescription>
+                      </div>
                     </CardHeader>
                     <CardContent className='select-none'>
                       <p className='text-xs xs:text-sm text-neutral-700 dark:text-neutral-300'>
@@ -147,7 +153,9 @@ export default function Committees({
                     <CardFooter>
                       <Button asChild>
                         <Link
-                          href={`/${language}/chapter/committees/${committee.translations[0].title}`}
+                          href={`/${language}/chapter/committees/${encodeURIComponent(
+                            committee.translations[0].title.toLowerCase()
+                          )}`}
                         >
                           {t('readMore')}
                         </Link>
@@ -179,14 +187,14 @@ export default function Committees({
             )
             .map((committee, index) => (
               <Button
-                key={index}
+                key={committee.translations[0].title}
                 variant='outline'
                 size='icon'
                 className={`w-16 h-auto aspect-square p-2.5 overflow-visible relative hover:brightness-95 bg-white hover:bg-white ${
                   api?.selectedScrollSnap() === index && 'brightness-95'
                 }`}
                 onClick={onThumbClick(index)}
-                title={translation(committee)?.title + ' thumbnail' || ''}
+                title={`${translation(committee)?.title} thumbnail'`}
               >
                 <Image
                   src={committee.logo_url}

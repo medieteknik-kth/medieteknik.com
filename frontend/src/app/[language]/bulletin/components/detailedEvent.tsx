@@ -23,9 +23,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { Event } from '@/models/Items'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import { Role } from '@/models/Permission'
+import type Student from '@/models/Student'
+import type Event from '@/models/items/Event'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -47,14 +50,15 @@ function determineEventStatus(event: Event): Status {
 
   if (end_date < new Date()) {
     return Status.ENDED
-  } else if (start_date < new Date() && end_date > new Date()) {
+  }
+  if (start_date < new Date() && end_date > new Date()) {
     return Status.ONGOING
   }
   return Status.UPCOMING
 }
 
 interface Props {
-  language: string
+  language: LanguageCode
   event: Event
   closeDialog: () => void
 }
@@ -80,15 +84,15 @@ export default function DetailedEvent({
   const { removeEvent } = useCalendar()
 
   const canDelete = () => {
-    if (role === 'ADMIN') return true
+    if (role === Role.ADMIN) return true
     if (event.author.author_type === 'STUDENT') {
       if (!student) return false
       return student.email === event.author.email
-    } else if (event.author.author_type === 'COMMITTEE') {
-      return committees.find((c) => c.email === event.author.email)
-    } else {
-      return false
     }
+    if (event.author.author_type === 'COMMITTEE') {
+      return committees.find((c) => c.email === event.author.email)
+    }
+    return false
   }
 
   const deleteEvent = async () => {
@@ -133,39 +137,33 @@ export default function DetailedEvent({
         <div className='flex justify-between items-center'>
           <div className='w-fit flex items-center justify-end'>
             <ClockIcon className='w-6 h-6 mr-1' />
-            <p
-              title={`Event starts: ${new Date(
-                event.start_date
-              ).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}`}
-            >
-              {new Date(event.start_date).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}
-            </p>
-            <span> &nbsp;-&nbsp; </span>
-            <p
-              title={`Event Ends: ${new Date(
-                new Date(event.start_date).getTime() + event.duration * 60000
-              ).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}`}
-            >
-              {new Date(
-                new Date(event.start_date).getTime() + event.duration * 60000
-              ).toLocaleTimeString(language, {
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              })}
-            </p>
+            <div>
+              <p
+                title={`Event starts: ${new Date(
+                  event.start_date
+                ).toLocaleTimeString(language, {
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                })}`}
+              >
+                {new Date(event.start_date).toLocaleTimeString(language, {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                })}
+              </p>
+              <p
+                title={`Event Ends: ${new Date(
+                  new Date(event.start_date).getTime() + event.duration * 60000
+                ).toLocaleTimeString(language)}`}
+              >
+                {new Date(
+                  new Date(event.start_date).getTime() + event.duration * 60000
+                ).toLocaleTimeString(language)}
+              </p>
+            </div>
           </div>
           <div className='flex items-center'>
             <div
@@ -173,8 +171,8 @@ export default function DetailedEvent({
                 determineEventStatus(event) === 'UPCOMING'
                   ? 'bg-yellow-500'
                   : determineEventStatus(event) === 'ONGOING'
-                  ? 'bg-green-500'
-                  : 'bg-red-500'
+                    ? 'bg-green-500'
+                    : 'bg-red-500'
               }`}
             />
             <p>

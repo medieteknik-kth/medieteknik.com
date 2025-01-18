@@ -5,8 +5,8 @@ A utility module that contains constants used in the backend.
 import enum
 from typing import List
 
-DEFAULT_LANGUAGE_CODE = "sv-SE"
-AVAILABLE_LANGUAGES: List[str] = [DEFAULT_LANGUAGE_CODE, "en-GB"]
+DEFAULT_LANGUAGE_CODE = "en-GB"
+AVAILABLE_LANGUAGES: List[str] = [DEFAULT_LANGUAGE_CODE, "sv-SE"]
 
 API_VERSION = "v1"
 PUBLIC_PATH = f"/api/{API_VERSION}/public"
@@ -15,19 +15,19 @@ PROTECTED_PATH = f"/api/{API_VERSION}"
 
 class ROUTES(enum.Enum):
     """
-    Enum representing the available API routes.
+    Enum representing the available API routes. Should be used to avoid hardcoding the routes, and to ensure consistency.
 
-    Attributes:
-        DYNAMIC: The route for dynamic content.
-        STUDENTS: The route for students.
-        COMMITTEES: The route for committees.
-        COMMITTEE_CATEGORIES: The route for committee categories.
-        COMMITTEE_POSITIONS: The route for committee positions.
-        EVENTS: The route for events.
-        NEWS: The route for news.
-        ALBUMS: The route for albums.
-        DOCUMENTS: The route for documents.
-        LANGUAGES: The route for languages.
+    ALBUMS: The albums route
+    DYNAMIC: The dynamic route
+    STUDENTS: The students route
+    COMMITTEES: The committees route
+    COMMITTEE_CATEGORIES: The committee categories route
+    COMMITTEE_POSITIONS: The committee positions route
+    EVENTS: The events route
+    NEWS: The news route
+    MEDIA: The media route
+    DOCUMENTS: The documents route
+    LANGUAGES: The languages route
     """
 
     ALBUMS = "albums"

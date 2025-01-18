@@ -1,7 +1,10 @@
 {
     "title": "Education",
+    "keywords": "Media Technology, KTH, Courses, Programs, Master's, Computer Science, Interactive Media Technology, ICT Innovation, Machine Learning, Sustainable Digitalisation",
     "description": "Here you can find information about the courses and programs that are offered at the Media Technology programme.",
     "courses": "Courses",
+    "no_courses": "See KTH's website for more information",
+    "total_hp": "Total HP",
     "categories": [
         {
             "id": "math",
@@ -84,17 +87,18 @@
             "title": "Computer Science",
             "description": "Computer Science is the study of computers and computational systems. Unlike electrical and computer engineers, computer scientists deal mostly with software and software systems; this includes their theory, design, development, and application.",
             "kth_link": "https://www.kth.se/en/studies/master/computer-science",
-            "flags": [
-                {
-                    "flag": "closed",
-                    "description": "This program is no longer available to be applied to."
-                }
-            ],
             "tags": [
                 "AI",
                 "Network and Communication",
                 "Data Science",
                 "Algorithms and Complexity"
+            ],
+            "flags": [
+                {
+                    "flag": "closed",
+                    "applies": "HT 2024",
+                    "description": "Elective for cohort HT24 and earlier"
+                }
             ]
         },
         {
@@ -117,11 +121,18 @@
                 "Consulting",
                 "Systems and Software Engineering",
                 "Entrepreneurship"
+            ],
+            "flags": [
+                {
+                    "flag": "closed",
+                    "applies": "HT 2022",
+                    "description": "Elective for cohort HT22 and earlier"
+                }
             ]
         },
         {
             "title": "Machine Learning",
-            "description": "Machine Learning is a two-year master's programme that focuses on the theoretical foundation of machine learning and computational learning theory, as well as the practical application of machine learning methods to real-world problems.",
+            "description": "Machine Learning is a programme that focuses on the theoretical foundation of machine learning and computational learning theory, as well as the practical application of machine learning methods to real-world problems.",
             "kth_link": "https://www.kth.se/en/studies/master/machine-learning/",
             "tags": [
                 "AI",
@@ -132,12 +143,13 @@
         },
         {
             "title": "Sustainable Digitalisation",
-            "description": "Digitalisation is a powerful driver of societal change; it offers the potential to build resilience for a volatile, uncertain, complex and ambiguous future. But digitalisation can also be problematic if it speeds up unsustainable trends.",
+            "description": "The master's programme in Sustainable Digitalisation will give you the skills to lead complex processes and use digitalisation in service of a regenerative transformation towards a sustainable society.",
             "kth_link": "https://www.kth.se/en/studies/master/sustainable-digitalisation",
             "flags": [
                 {
                     "flag": "new",
-                    "description": "This program is new and has not yet started."
+                    "applies": "HT 2024",
+                    "description": "New master's programme starting in autumn 2024"
                 }
             ],
             "tags": [
@@ -148,5 +160,7 @@
             ]
         }
     ],
-    "study_counselor": "Study Counselor"
+    "study_counselor": "Study Counselor",
+    "flag.new": "New",
+    "flag.closed": "Closed"
 }

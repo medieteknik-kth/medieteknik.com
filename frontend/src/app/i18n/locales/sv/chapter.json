@@ -1,9 +1,12 @@
 {
     "title": "Sektionen",
+    "keywords": "Studentliv, Sektionen, Nämnder och Projektgrupper, Funktionärer",
     "no_data": "Ingen data tillgänglig",
     "description": "Sektionens syfte är att tillgodose medieteknikstudenternas behov under deras tid på KTH.",
     "committees": "Nämnder och Projekt",
     "committees.description": "Beskrivning",
     "officials": "Funktionärer",
+    "search_year": "Sök år",
+    "no_results": "Inga resultat",
     "readMore": "Läs mer"
 }

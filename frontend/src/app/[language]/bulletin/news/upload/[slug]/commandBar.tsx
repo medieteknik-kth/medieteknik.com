@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
@@ -31,7 +31,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { uploadNewsSchema } from '@/schemas/items/news'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import {
@@ -41,13 +41,13 @@ import {
 } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 import { AutoSaveResult, useAutoSave } from './autoSave'
 
 interface Props {
-  language: string
+  language: LanguageCode
   slug: string
 }
 
@@ -94,7 +94,7 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
 
     formData.append('author', JSON.stringify(content.author))
 
-    supportedLanguages.forEach((lang, index) => {
+    SUPPORTED_LANGUAGES.forEach((lang, index) => {
       formData.append(`translations[${index}][language_code]`, lang)
       formData.append(`translations[${index}][title]`, data.title)
       if (data.image) {
@@ -238,7 +238,7 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                 <div className='mb-4'>
                   <p>{t('publish.availablility')}</p>
                   <ul className='flex'>
-                    {supportedLanguages.map((lang) => (
+                    {SUPPORTED_LANGUAGES.map((lang) => (
                       <li key={lang} className='mr-4 last:mr-0'>
                         <span className='w-6 h-6 mr-2'>
                           {LANGUAGES[language as LanguageCode].flag_icon}

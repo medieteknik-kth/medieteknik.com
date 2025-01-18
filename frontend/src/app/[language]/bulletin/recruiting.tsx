@@ -1,11 +1,12 @@
 import RecruitmentCard from '@/app/[language]/bulletin/components/recruitmentCard'
 import { useTranslation } from '@/app/i18n'
-import { CommitteePositionRecruitment } from '@/models/Committee'
+import type { CommitteePositionRecruitment } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   data: CommitteePositionRecruitment[]
 }
 
@@ -54,7 +55,7 @@ export default async function Recruitment({
                 )
                 .map((recruit, index) => (
                   <RecruitmentCard
-                    key={index}
+                    key={`${recruit.committee_position}_${recruit.start_date}`}
                     language={language}
                     recruitment={recruit}
                   />

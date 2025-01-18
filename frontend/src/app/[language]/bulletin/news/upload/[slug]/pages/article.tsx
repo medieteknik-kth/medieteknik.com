@@ -1,15 +1,16 @@
 'use client'
 
-import {
+import type {
   CustomElement,
   CustomText,
 } from '@/app/[language]/bulletin/news/upload/[slug]/util/Text'
-import { News } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import { ArticleProvider } from '@/providers/ArticleProvider'
 import { useRouter } from 'next/navigation'
-import { useState, type JSX } from 'react'
-import { BaseEditor, createEditor } from 'slate'
-import { ReactEditor, withReact } from 'slate-react'
+import { type JSX, useState } from 'react'
+import { type BaseEditor, createEditor } from 'slate'
+import { type ReactEditor, withReact } from 'slate-react'
 import ArticleRenderer from '../components/articleRenderer'
 import NewsToolbar from '../components/toolbar'
 
@@ -22,7 +23,7 @@ declare module 'slate' {
 }
 
 interface Props {
-  language: string
+  language: LanguageCode
   news_data: News
 }
 
@@ -65,7 +66,7 @@ export default function ArticlePage({
   const { push } = useRouter()
 
   if (Object.keys(news_data).length === 0) {
-    push('/' + language + '/bulletin/news')
+    push(`/${language}/bulletin/news`)
     return <></>
   }
 

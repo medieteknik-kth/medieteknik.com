@@ -3,7 +3,8 @@
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { News } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
   CogIcon,
@@ -27,7 +28,7 @@ const fetcher = (url: string) =>
   )
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 

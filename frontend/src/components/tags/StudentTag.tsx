@@ -1,13 +1,12 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import Student from '@/models/Student'
-import { Button } from '@components/ui/button'
+import type Student from '@/models/Student'
+import Image from 'next/image'
 import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
 import { forwardRef } from 'react'
 import { StudentTooltip } from '../tooltips/Tooltip'
 
@@ -35,50 +34,53 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
   (
     {
       student,
-      includeImage = true,
-      includeAt = true,
+      includeImage = false,
+      includeAt = false,
       reverseImage = false,
       children,
     },
     ref
   ) => {
+    const username = `${student.first_name} ${student.last_name || ''}`
     return (
       <HoverCard>
         <HoverCardTrigger className='h-fit w-fit flex items-center' asChild>
           <Button
             variant='link'
-            className={`h-fit text-inherit  py-0 px-0 max-w-full ${
+            className={`h-fit text-inherit py-0 px-0 max-w-full ${
               reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'
             }`}
-            style={{ fontSize: 'inherit' }}
+            style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
             ref={ref}
             tabIndex={-1}
             asChild
           >
-            <Link href={`/student/${student.student_id}`}>
-              {includeImage && (
-                <Avatar className='h-10 w-auto aspect-square bg-white rounded-full overflow-hidden'>
-                  <AvatarImage
-                    className='h-10 w-auto aspect-square object-contain p-1.5 rounded-full'
-                    src={student.profile_picture_url || FallbackImage.src}
-                    alt={student.first_name + ' ' + (student.last_name || '')}
+            <Link
+              href={`/student/${student.student_id}`}
+              className='group !no-underline'
+            >
+              {includeImage &&
+                (student.profile_picture_url ? (
+                  <Image
+                    className='h-10 w-auto aspect-square object-contain rounded-full bg-white dark:bg-gray-800'
+                    width={40}
+                    height={40}
+                    src={student.profile_picture_url}
+                    alt={username}
                   />
-                  <AvatarFallback>
-                    {student.first_name +
-                      ' ' +
-                      (student.last_name || '') +
-                      ' Profile Picture'}
-                  </AvatarFallback>
-                </Avatar>
-              )}
-              <div className='flex flex-col text-start overflow-hidden'>
-                <p className='h-fit pb-0.5 truncate max-w-full'>
-                  {(includeAt ? '@ ' : '') +
-                    student.first_name +
-                    ' ' +
-                    (student.last_name || '')}
+                ) : (
+                  <p className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold'>
+                    {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
+                  </p>
+                ))}
+              <div className='flex flex-col items-start justify-center text-start overflow-hidden'>
+                <p
+                  className='h-fit truncate max-w-full group-hover:underline'
+                  title={username}
+                >
+                  {(includeAt ? '@ ' : '') + username}
                 </p>
-                {children}
+                <div className={`${children && 'leading-3'}`}>{children}</div>
               </div>
             </Link>
           </Button>

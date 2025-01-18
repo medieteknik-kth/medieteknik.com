@@ -27,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import type { LanguageCode } from '@/models/Language'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { removePositionSchema } from '@/schemas/committee/position'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -34,13 +35,13 @@ import { ChevronUpDownIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 export default function RemovePositionForm({
   language,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()
@@ -105,11 +106,12 @@ export default function RemovePositionForm({
             render={({ field }) => (
               <FormItem className='flex flex-col gap-0.5'>
                 <FormLabel htmlFor='position_id'>Position</FormLabel>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={open} onOpenChange={setOpen} modal={open}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant={'outline'}
+                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         role='combobox'
                         aria-expanded={open}
                         className='w-[300px] justify-between'

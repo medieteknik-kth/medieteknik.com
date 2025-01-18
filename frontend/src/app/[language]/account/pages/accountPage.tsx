@@ -1,15 +1,16 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import Loading from '@components/tooltips/Loading'
-import React, { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import React, { type JSX } from 'react'
 const AccountForm = React.lazy(() => import('./account/accountForm'))
 const ProfileForm = React.lazy(() => import('./account/profileForm'))
 const ReceptionForm = React.lazy(() => import('./account/receptionForm'))
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

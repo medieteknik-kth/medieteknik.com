@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
-import { Media } from '@/models/items/Media'
+import type Media from '@/models/items/Media'
 import Image from 'next/image'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
   image: Media

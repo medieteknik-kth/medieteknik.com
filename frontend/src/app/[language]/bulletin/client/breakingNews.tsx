@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -8,13 +9,21 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
-import { News } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
+import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import type { JSX } from 'react'
+import useSWR from 'swr'
 import ShortNews from '../components/shortNews'
 
-import type { JSX } from 'react'
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  }).then((res) => res.json() as Promise<News[]>)
 
 /**
  * Renders the latest breaking news.
@@ -26,14 +35,33 @@ import type { JSX } from 'react'
  */
 export default function BreakingNews({
   language,
-  data,
 }: {
-  language: string
-  data: News[]
+  language: LanguageCode
 }): JSX.Element {
   const { toast } = useToast()
-
   const { t } = useTranslation(language, 'bulletin')
+  const { data, error, isLoading } = useSWR<News[]>(
+    `${API_BASE_URL}/public/news/latest?language=${language}`,
+    fetcher
+  )
+
+  if (isLoading) {
+    return (
+      <div className='grid grid-cols-3 grid-rows-1 gap-2'>
+        {[1, 2, 3].map((index) => (
+          <Skeleton key={index} className='w-full h-[172px]' />
+        ))}
+      </div>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <p className='w-full h-[200px] grid place-items-center z-10 uppercase tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800'>
+        {t('no_breaking_news')}
+      </p>
+    )
+  }
 
   return (
     <section
@@ -65,13 +93,9 @@ export default function BreakingNews({
         <ScrollArea className='w-full'>
           <ul className='flex justify-start gap-2 pb-2'>
             {data.length > 0 &&
-              data.map((newsItem, index) => (
-                <li key={index} className='relative'>
-                  <ShortNews
-                    key={index}
-                    language={language}
-                    newsItem={newsItem}
-                  />
+              data.map((newsItem) => (
+                <li key={newsItem.url} className='relative'>
+                  <ShortNews language={language} newsItem={newsItem} />
                   <div className='hidden md:block'>
                     <Button
                       variant='outline'
@@ -81,12 +105,11 @@ export default function BreakingNews({
                       className='absolute bottom-4 right-4 z-10'
                       onClick={() => {
                         navigator.clipboard.writeText(
-                          window.location.href + '/news/' + newsItem.url
+                          `${window.location.href}/news/${newsItem.url}`
                         )
                         toast({
                           title: 'Copied to clipboard',
-                          description:
-                            window.location.href + '/news/' + newsItem.url,
+                          description: `${window.location.href}/news/${newsItem.url}`,
                           duration: 2500,
                         })
                       }}
@@ -108,12 +131,11 @@ export default function BreakingNews({
                       <PopoverContent className='absolute w-fit h-fit'>
                         <h3 className='text-lg font-bold pb-1'>Tags</h3>
                         <div className='flex'>
-                          {newsItem.categories &&
-                            newsItem.categories.map((category, index) => (
-                              <Badge key={index} className='w-fit mr-2'>
-                                {category}
-                              </Badge>
-                            ))}
+                          {newsItem.categories?.map((category, index) => (
+                            <Badge key={category} className='w-fit mr-2'>
+                              {category}
+                            </Badge>
+                          ))}
                         </div>
                       </PopoverContent>
                     </Popover>

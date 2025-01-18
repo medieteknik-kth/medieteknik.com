@@ -1,83 +1,140 @@
-import {
-  EventPagniation,
-  NewsPagination,
-  StudentPagination,
-} from '@/models/Pagination'
-import Student, {
+import { type ApiResponse, fetchData } from '@/api/api'
+import type { LanguageCode } from '@/models/Language'
+import type { EventPagniation, NewsPagination } from '@/models/Pagination'
+import type Student from '@/models/Student'
+import type {
   IndividualCommitteePosition,
   Profile,
   StudentCommitteePosition,
-  StudentMembership,
 } from '@/models/Student'
-import { cache } from 'react'
-import api from './index'
+import { API_BASE_URL } from '@/utility/Constants'
 
-export const GetStudentPublic = cache(
-  async (student: string, language_code: string, detailed: boolean = false) => {
-    const response = await api.get(
-      `/public/students/${student}?language=${language_code}&detailed=${detailed}`
-    )
-
-    if (response.status === 200) {
-      return response.data as {
-        student: Student
-        profile?: Profile
-        memberships: IndividualCommitteePosition[]
-      }
+/**
+ * @name getStudentPublic
+ * @description Get student public data
+ *
+ * @param {string} studentId - The students email address
+ * @param {LanguageCode} language_code - The language of retrieved data to be returned in
+ * @param {boolean} detailed - Whether to return detailed data
+ * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
+ * @returns {Promise<ApiResponse<{ student: Student, profile?: Profile, memberships: IndividualCommitteePosition[] }>>} The API response with the student data or an error
+ */
+export const getStudentPublic = async (
+  studentId: string,
+  language_code: LanguageCode,
+  detailed = false,
+  revalidate = 3_600
+): Promise<
+  ApiResponse<{
+    student: Student
+    profile?: Profile
+    memberships: IndividualCommitteePosition[]
+  }>
+> => {
+  const { data, error } = await fetchData<{
+    student: Student
+    profile?: Profile
+    memberships: IndividualCommitteePosition[]
+  }>(
+    `${API_BASE_URL}/public/students/${studentId}?language=${language_code}&detailed=${detailed}`,
+    {
+      next: {
+        revalidate: revalidate,
+      },
     }
+  )
 
-    return null
-  }
-)
-
-export const GetStudents = cache(async () => {
-  const response = await api.get(`/public/student`)
-
-  if (response.status === 200) {
-    return response.data as StudentPagination
+  if (error) {
+    return { data, error }
   }
 
-  return null
-})
+  return { data, error: null }
+}
 
-export const GetStudentNews = cache(
-  async (student_email: string, language_code: string) => {
-    const response = await api.get(
-      `/public/news/student/${student_email}?language=${language_code}`
-    )
-
-    if (response.status === 200) {
-      return response.data as NewsPagination
+/**
+ * @name getStudentNews
+ * @description Get the news for a specific student
+ *
+ * @param {string} student_email - The students email address
+ * @param {LanguageCode} language_code - The language of retrieved data to be returned in
+ * @returns {Promise<ApiResponse<NewsPagination>>} The API response with the news or an error
+ */
+export const getStudentNews = async (
+  student_email: string,
+  language_code: LanguageCode,
+  revalidate = 3_600
+): Promise<ApiResponse<NewsPagination>> => {
+  const { data, error } = await fetchData<NewsPagination>(
+    `${API_BASE_URL}/public/news/student/${student_email}?language=${language_code}`,
+    {
+      next: {
+        revalidate: revalidate,
+      },
     }
+  )
 
-    return null
+  if (error) {
+    return { data, error }
   }
-)
 
-export const GetStudentEvents = cache(
-  async (student_email: string, language_code: string) => {
-    const response = await api.get(
-      `/public/events/student/${student_email}?language=${language_code}`
-    )
+  return { data, error: null }
+}
 
-    if (response.status === 200) {
-      return response.data as EventPagniation
+/**
+ * @name getStudentEvents
+ * @description Get the events for a specific student
+ *
+ * @param {string} student_email - The students email address
+ * @param {LanguageCode} language_code - The language of retrieved data to be returned in
+ * @returns {Promise<ApiResponse<EventPagniation>>} The API response with the events or an error
+ */
+export const getStudentEvents = async (
+  student_email: string,
+  language_code: LanguageCode,
+  revalidate = 3_600
+): Promise<ApiResponse<EventPagniation>> => {
+  const { data, error } = await fetchData<EventPagniation>(
+    `${API_BASE_URL}/public/events/student/${student_email}?language=${language_code}`,
+    {
+      next: {
+        revalidate: revalidate,
+      },
     }
+  )
 
-    return null
+  if (error) {
+    return { data, error }
   }
-)
 
-export const GetCommitteeMembers = cache(
-  async (language_code: string, date: string) => {
-    const response = await api.get(
-      `/public/students/committee_members?language=${language_code}&date=${date}`
-    )
+  return { data, error: null }
+}
 
-    if (response.status === 200) {
-      return response.data as StudentCommitteePosition[]
+/**
+ * @name getOfficials
+ * @description Get the officials for a specific language and date
+ *
+ * @param {LanguageCode} language_code - The language to get officials in
+ * @param {string} date - The date range to get officials for (e.g. '2024-2025')
+ * @returns {Promise<ApiResponse<StudentCommitteePosition[]>>} The API response with the officials or an error
+ */
+export const getOfficials = async (
+  language_code: LanguageCode,
+  date: string,
+  revalidate = 3_600
+): Promise<ApiResponse<StudentCommitteePosition[]>> => {
+  // TODO: Change the API endpoint to something like this '/public/officials/'?
+  const { data, error } = await fetchData<StudentCommitteePosition[]>(
+    `${API_BASE_URL}/public/students/committee_members?language=${language_code}&date=${date}`,
+    {
+      next: {
+        revalidate: revalidate,
+      },
     }
+  )
 
-    return null
+  if (error) {
+    return { data, error }
   }
-)
+
+  return { data, error: null }
+}

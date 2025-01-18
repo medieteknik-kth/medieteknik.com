@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { TFunction } from 'next-i18next'
+import type { TFunction } from 'next-i18next'
 
 import type { JSX } from 'react'
 
@@ -48,9 +48,10 @@ export default function TranslatedInputs({
           <FormItem>
             <FormLabel>
               {t('event.form.title')}{' '}
-              <span className='uppercase text-xs tracking-wide'>
+              <span className='uppercase text-xs tracking-wide select-none'>
                 [{language}]
               </span>
+              <span className='text-red-500 px-0.5 select-none'>*</span>
             </FormLabel>
             <FormControl>
               <Input id='title' type='text' {...field} />
@@ -69,6 +70,7 @@ export default function TranslatedInputs({
               <span className='uppercase text-xs tracking-wide select-none'>
                 [{language}]
               </span>
+              <span className='text-red-500 px-0.5 select-none'>*</span>
             </FormLabel>
             <FormControl>
               <Textarea id='description' placeholder='Optional' {...field} />

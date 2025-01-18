@@ -11,12 +11,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import type { LanguageCode } from '@/models/Language'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { use } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
@@ -49,10 +50,10 @@ export default function LoginModal(props: Props) {
         </DialogHeader>
 
         <div className='!text-sm'>
-          <LoginForm language={language} />
+          <AlternativeLogin language={language} return_url={return_url} />
         </div>
         <DialogFooter>
-          <AlternativeLogin language={language} return_url={return_url} />
+          <LoginForm language={language} />
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -6,19 +6,20 @@ from http import HTTPStatus
 from flask import Response, jsonify, make_response, request, session
 from flask_wtf.csrf import CSRFProtect
 
+# The CSRF protection object, should be initialized in the application factory and used in the application context.
 csrf = CSRFProtect()
 
 
-def validate_csrf(csrf_token) -> Response | bool:
+def validate_csrf(csrf_token: str) -> Response | bool:
     """
     Validates CSRF tokens via the X-CSRF-Token header, the session CSRF token, and the given CSRF token.
 
-    Args:
-        csrf_token: The CSRF token to validate.
-
-    Returns:
-        True if the CSRF token is valid, or a Flask Response if the CSRF token is invalid.
+    :param csrf_token: The CSRF token to validate
+    :type csrf_token: str
+    :return: True if the CSRF token is valid, otherwise a response with an error message
+    :rtype: Response | bool
     """
+
     header_csrf_token = request.headers.get("X-CSRF-Token")
     session_csrf_token = session.get("csrf_token")
 

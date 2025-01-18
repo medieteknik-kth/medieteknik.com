@@ -1,17 +1,16 @@
 """
-The configuration for the backend.
+The configuration for the backend. Contains the environment variables and settings for the application.
 """
 
-from datetime import timedelta
 import os
+from datetime import timedelta
 
 # App
+FLASK_ENV = os.environ.get("FLASK_ENV", "development")
 PREFERRED_URL_SCHEME = (
-    "https" if os.environ.get("FLASK_ENV", "development") == "production" else "http"
+    "https" if os.environ.get("FLASK_ENV") == "production" else "http"
 )
-SESSION_COOKIE_SECURE = (
-    True if os.environ.get("FLASK_ENV", "development") == "production" else False
-)
+SESSION_COOKIE_SECURE = True if os.environ.get("FLASK_ENV") == "production" else False
 
 # Database
 SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
@@ -25,14 +24,10 @@ WTF_CSRF_CHECK_DEFAULT = False
 JWT_COOKIE_CSRF_PROTECT = False
 
 # JWT
-JWT_COOKIE_SECURE = (
-    True if os.environ.get("FLASK_ENV", "development") == "production" else False
-)
+JWT_COOKIE_SECURE = True if os.environ.get("FLASK_ENV") == "production" else False
 JWT_TOKEN_LOCATION = ["cookies"]
 JWT_COOKIE_DOMAIN = (
-    ".medieteknik.com"
-    if os.environ.get("FLASK_ENV", "development") == "production"
-    else "localhost"
+    ".medieteknik.com" if os.environ.get("FLASK_ENV") == "production" else "localhost"
 )
 JWT_SESSION_COOKIE = False
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
@@ -45,19 +40,3 @@ KTH_ACCESS_TOKEN_URL = "https://login.ug.kth.se/adfs/oauth2/token"
 KTH_AUTHORIZE_URL = "https://login.ug.kth.se/adfs/oauth2/authorize"
 KTH_API_BASE_URL = "https://app.kth.se/api/v.1.1"
 KTH_DISCOVERY_URL = "https://login.ug.kth.se/adfs/.well-known/openid-configuration"
-
-# OIDC
-OIDC_OVERWRITE_REDIRECT_URI = "https://api.medieteknik.com/oidc"
-OIDC_CLIENT_SECRETS = {
-    "kth": {
-        "client_id": KTH_CLIENT_ID,
-        "client_secret": KTH_CLIENT_SECRET,
-        "auth_uri": KTH_AUTHORIZE_URL,
-        "token_uri": KTH_ACCESS_TOKEN_URL,
-        "userinfo_uri": "https://login.ug.kth.se/adfs/userinfo",
-        "issuer": "https://login.ug.kth.se/adfs",
-        "redirect_uris": [
-            "https://api.medieteknik.com/oidc",
-        ],
-    },
-}

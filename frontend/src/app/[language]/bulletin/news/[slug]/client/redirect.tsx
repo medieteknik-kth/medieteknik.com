@@ -2,12 +2,13 @@
 
 import NewsDisplay from '@/app/[language]/bulletin/news/[slug]/news'
 import Loading from '@/components/tooltips/Loading'
-import { News } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type News from '@/models/items/News'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, type JSX } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   news_data: News | null
 }
 

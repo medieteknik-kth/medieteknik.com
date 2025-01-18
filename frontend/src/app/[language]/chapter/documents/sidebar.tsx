@@ -6,10 +6,11 @@ import SidebarAuth from './sidebar/client/sidebarAuth'
 import SidebarStatus from './sidebar/client/sidebarStatus'
 import { documentCategories } from './utility/util'
 
+import { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**

@@ -1,8 +1,7 @@
-import { GetCommitteePositions } from '@/api/committee'
+import { getCommitteePositions } from '@/api/committee_position'
 import Search from '@/app/[language]/chapter/positions/client/search'
 import PositionDisplay from '@/app/[language]/chapter/positions/positionDisplay'
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import {
   Accordion,
@@ -10,18 +9,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import type { LanguageCode } from '@/models/Language'
 
 import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
 interface Props {
   params: Promise<Params>
 }
-
-export const revalidate = 2_592_000
 
 /**
  * @name Positions
@@ -34,20 +32,18 @@ export const revalidate = 2_592_000
  */
 export default async function Positions(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const committeePositions = await GetCommitteePositions('committee', language)
-  const independentPositions = await GetCommitteePositions(
-    'independent',
-    language
-  )
+  const { data: committeePositions, error: committeePositionError } =
+    await getCommitteePositions('committee', language)
+  const { data: independentPositions, error: independentPositionError } =
+    await getCommitteePositions('independent', language)
   const { t } = await useTranslation(language, 'positions')
 
-  if (!committeePositions || !independentPositions) {
+  if (committeePositionError || independentPositionError) {
     return <></>
   }
 
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Search
         language={language}
@@ -55,7 +51,7 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
       />
       <Accordion
         type='multiple'
-        className='px-20 py-4 flex flex-col gap-10'
+        className='px-2 sm:px-5 md:px-20 py-4 flex flex-col gap-6'
         defaultValue={['committees']}
       >
         <AccordionItem value='committees'>
@@ -68,9 +64,9 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
                 .sort((a, b) =>
                   a.translations[0].title.localeCompare(b.translations[0].title)
                 )
-                .map((position, index) => (
-                  <li key={index}>
-                    <PositionDisplay language={language} position={position} />
+                .map((position) => (
+                  <li key={position.committee_position_id}>
+                    <PositionDisplay position={position} />
                   </li>
                 ))}
             </ul>
@@ -82,9 +78,9 @@ export default async function Positions(props: Props): Promise<JSX.Element> {
           </AccordionTrigger>
           <AccordionContent>
             <ul className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
-              {independentPositions.map((position, index) => (
-                <li key={index}>
-                  <PositionDisplay language={language} position={position} />
+              {independentPositions.map((position) => (
+                <li key={position.committee_position_id}>
+                  <PositionDisplay position={position} />
                 </li>
               ))}
             </ul>

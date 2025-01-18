@@ -1,5 +1,7 @@
 {
     "title": "News & Events",
+    "description": "See breaking news and upcoming events and ongoing recruitments within the Chapter.",
+    "keywords": "News, Events, Calendar, Recruitment, Studentlife",
     "breaking_news": "Breaking News",
     "no_breaking_news": "No Breaking News",
     "all_news": "View All",

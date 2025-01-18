@@ -1,4 +1,4 @@
-import { GetAlbum } from '@/api/items'
+import { getAlbumAndMedia } from '@/api/items/media'
 import ImageDisplay from '@/app/[language]/chapter/media/components/images'
 import Redirect from '@/app/[language]/chapter/media/components/redirect'
 import VideoDisplay from '@/app/[language]/chapter/media/components/videos'
@@ -11,24 +11,23 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import type { LanguageCode } from '@/models/Language'
 import {
   FolderIcon,
   PhotoIcon,
   VideoCameraIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 interface Params {
-  language: string
+  language: LanguageCode
   slug: string
 }
 
 interface Props {
   params: Promise<Params>
 }
-
-export const revalidate = 1_000_000
 
 /**
  * @name AlbumSlug
@@ -43,10 +42,10 @@ export const revalidate = 1_000_000
  */
 export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const album = await GetAlbum(language, slug)
+  const { data: album, error } = await getAlbumAndMedia(language, slug, 60)
   const { t } = await useTranslation(language, 'media')
 
-  if (!album) {
+  if (error) {
     return <Redirect language={language} />
   }
 
@@ -107,8 +106,8 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
                   new Date(b.created_at).getTime() -
                   new Date(a.created_at).getTime()
               )
-              .map((video, index) => (
-                <li key={index}>
+              .map((video) => (
+                <li key={`${video.translations[0].title}_${video.media_url}`}>
                   <VideoDisplay language={language} video={video} />
                 </li>
               ))}
@@ -129,8 +128,11 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
                   new Date(b.created_at).getTime() -
                   new Date(a.created_at).getTime()
               )
-              .map((image, index) => (
-                <li key={index} className=''>
+              .map((image) => (
+                <li
+                  key={`${image.translations[0].title}_${image.media_url}`}
+                  className=''
+                >
                   <ImageDisplay image={image} />
                 </li>
               ))}

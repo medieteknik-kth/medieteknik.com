@@ -1,5 +1,5 @@
 'use client'
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -33,11 +33,12 @@ import {
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import Committee, {
+import type Committee from '@/models/Committee'
+import type {
   CommitteePosition,
   CommitteePositionCategory,
 } from '@/models/Committee'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { addPositionSchema } from '@/schemas/committee/position'
@@ -46,7 +47,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 function TranslatedInputs({
   index,
@@ -112,7 +113,7 @@ export default function PositionForm({
   committee,
   onSuccess,
 }: {
-  language: string
+  language: LanguageCode
   committee: Committee
   onSuccess: (position: CommitteePosition) => void
 }) {
@@ -126,7 +127,7 @@ export default function PositionForm({
       email: '',
       weight: 1000,
       category: 'NONE',
-      translations: supportedLanguages.map((language) => ({
+      translations: SUPPORTED_LANGUAGES.map((language) => ({
         language_code: language,
         title: '',
         description: '',
@@ -181,20 +182,28 @@ export default function PositionForm({
       label: 'Styrelsen',
     },
     {
-      value: 'VALBEREDNINGEN',
-      label: 'Valberedningen',
-    },
-    {
-      value: 'UTBILDNING',
-      label: 'Utbildning',
+      value: 'STUDIESOCIALT',
+      label: 'Studiesocialt',
     },
     {
       value: 'NÄRINGSLIV OCH KOMMUNIKATION',
       label: 'Näringsliv och kommunikation',
     },
     {
-      value: 'STUDIESOCIALT',
-      label: 'Studiesocialt',
+      value: 'UTBILDNING',
+      label: 'Utbildning',
+    },
+    {
+      value: 'VALBEREDNINGEN',
+      label: 'Valberedningen',
+    },
+    {
+      value: 'KÅRFULLMÄKTIGE',
+      label: 'Kårfullmäktige',
+    },
+    {
+      value: 'REVISORER',
+      label: 'Revisorer',
     },
     {
       value: 'FANBORGEN',
@@ -217,7 +226,7 @@ export default function PositionForm({
       <Tabs defaultValue={language}>
         <Label>Language</Label>
         <TabsList className='overflow-x-auto w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -251,8 +260,8 @@ export default function PositionForm({
               )}
             />
 
-            {supportedLanguages.map((language, index) => (
-              <TabsContent key={index} value={language}>
+            {SUPPORTED_LANGUAGES.map((language, index) => (
+              <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}
                   language={LANGUAGES[language].name}
@@ -266,7 +275,11 @@ export default function PositionForm({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Category</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                    modal={popoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button

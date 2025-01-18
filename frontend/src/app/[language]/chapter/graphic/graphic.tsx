@@ -1,25 +1,17 @@
 import { useTranslation } from '@/app/i18n'
-import HeaderGap from '@/components/header/components/HeaderGap'
 import { HeadComponent } from '@/components/static/Static'
 import Colors from './client/colors'
 import Documents from './documents'
 import Iconography from './iconography'
 import Typography from './typography'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Params {
-  language: string
+  language: LanguageCode
 }
 
-/**
- * @interface Params
- * @property {Props} params - The dynamic parameters of the URL
- */
 interface Props {
   params: Promise<Params>
 }
@@ -39,7 +31,6 @@ export default async function GraphicalIdentity(
   const { t } = await useTranslation(language, 'graphic')
   return (
     <main>
-      <HeaderGap />
       <HeadComponent title={t('title')} />
       <Documents language={language} />
       <Iconography language={language} />

@@ -1,8 +1,9 @@
 'use client'
 import { Button } from '@/components/ui/button'
+import type { LanguageCode } from '@/models/Language'
 import { PencilIcon } from '@heroicons/react/24/outline'
 
-export default function TagsPage({ language }: { language: string }) {
+export default function TagsPage({ language }: { language: LanguageCode }) {
   return (
     <section className='w-full h-full min-h-[1080px] flex flex-col relative ml-24 pt-8'>
       <div>

@@ -11,18 +11,19 @@ import {
   PaginationItem,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { NewsPagination } from '@/models/Pagination'
+import type { LanguageCode } from '@/models/Language'
+import type { NewsPagination } from '@/models/Pagination'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import NewsCard from '../../components/newsCard'
 
 interface Props {
-  language: string
+  language: LanguageCode
   data: NewsPagination
 }
 
@@ -74,8 +75,8 @@ export default function AllNews({ language, data }: Props): JSX.Element {
         ) : null}
         {pageIndex === 1 ? (
           // SSR data
-          data.items.map((newsItem, index) => (
-            <div key={index} className='relative'>
+          data.items.map((newsItem) => (
+            <div key={newsItem.url} className='relative'>
               {Object.keys(newsItem).length === 0 ? (
                 <Skeleton className='w-full h-full' />
               ) : (

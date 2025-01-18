@@ -12,16 +12,14 @@ from models.content import (
     DocumentTranslation,
     EventTranslation,
     NewsTranslation,
-    Author,
     News,
     Document,
     Event,
     Media,
 )
-from models.content.author import AuthorType
-from models.core import Student
+from models.core import Student, AuthorType, Author
 from models.committees import Committee, CommitteePosition
-from services.content.author import get_author_from_email
+from services.core import get_author_from_email
 from utility import normalize_to_ascii
 from utility import database
 from utility.constants import AVAILABLE_LANGUAGES

@@ -2,7 +2,7 @@ import enum
 import uuid
 import urllib.parse
 from typing import List
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, inspect, text
+from sqlalchemy import String, Column, Boolean, ForeignKey, inspect, text
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES

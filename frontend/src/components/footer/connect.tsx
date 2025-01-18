@@ -5,7 +5,7 @@ import InstagramSVG from 'public/images/svg/instagram.svg'
 import LinkedInSVG from 'public/images/svg/linkedin.svg'
 import MBDSVG from 'public/images/svg/mbd.svg'
 import YoutubeSVG from 'public/images/svg/youtube.svg'
-import { JSX } from 'react'
+import type { JSX } from 'react'
 
 /**
  * @name ConnectSection

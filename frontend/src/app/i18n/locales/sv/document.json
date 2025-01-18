@@ -1,5 +1,7 @@
 {
     "title": "Dokument",
+    "description": "Här hittar du alla dokument och formulär som är relaterade till sektionens dagliga funktioner.",
+    "keywords": "dokument, formulär, kategorier, status, organisatoriska funktioner",
     "categories.status": "Status",
     "categories.type": "Kategorier",
     "category.time.active": "Aktiv",

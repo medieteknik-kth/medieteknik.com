@@ -1,15 +1,16 @@
 'use client'
 
+import type { LanguageCode } from '@/models/Language'
 import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import { useEffect, useState } from 'react'
 import {
+  type UseTranslationResponse,
   initReactI18next,
   useTranslation as useTranslationOrg,
-  UseTranslationResponse,
 } from 'react-i18next'
-import { getOptions, supportedLanguages } from './settings'
+import { SUPPORTED_LANGUAGES, getOptions } from './settings'
 
 const isRunningOnServer = typeof window === 'undefined'
 
@@ -29,7 +30,7 @@ i18next
       order: ['path', 'htmlTag', 'cookie', 'navigator'],
       caches: [],
     },
-    preload: isRunningOnServer ? supportedLanguages : [],
+    preload: isRunningOnServer ? SUPPORTED_LANGUAGES : [],
   })
 
 /**
@@ -42,7 +43,7 @@ i18next
  * @returns {UseTranslationResponse<string, string>} Translation function and i18next instance
  */
 export function useTranslation(
-  language: string,
+  language: LanguageCode,
   namespace: string,
   options: { keyPrefix?: string | undefined } = {}
 ): UseTranslationResponse<string, string> {
@@ -54,7 +55,7 @@ export function useTranslation(
   useEffect(() => {
     if (activeLanguage === language) return
     setActiveLanguage(language)
-  }, [language, i18n.resolvedLanguage, activeLanguage])
+  }, [language, activeLanguage])
 
   // Change the language
   useEffect(() => {

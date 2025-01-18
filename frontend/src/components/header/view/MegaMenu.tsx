@@ -1,15 +1,16 @@
-import { HeaderElement } from '@/components/header/util/HeaderElement'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
+import type { LanguageCode } from '@/models/Language'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   headerElement: HeaderElement
 }
 
@@ -36,14 +37,14 @@ export default async function MegaMenu({
           <NavigationMenuLink
             className={`${navigationMenuTriggerStyle()} h-full flex flex-col justify-center`}
           >
-            <Avatar className='w-16 h-16 bg-white rounded-full overflow-hidden'>
-              <AvatarImage
-                className='h-16 w-auto aspect-square object-fill p-1.5'
-                width={128}
-                height={128}
+            <div className='p-1 bg-white w-16 h-16 grid place-items-center rounded-full overflow-hidden'>
+              <Image
                 src={subNav.icon}
+                width={54}
+                height={54}
+                alt={subNav.title}
               />
-            </Avatar>
+            </div>
             <p>{subNav.title}</p>
             <p className='text-xs text-center text-neutral-600 dark:text-neutral-400 max-w-40'>
               {subNav.description ? subNav.description : ''}

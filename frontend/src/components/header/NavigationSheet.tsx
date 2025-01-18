@@ -1,4 +1,6 @@
-import { HeaderElement } from '@/components/header/util/HeaderElement'
+'use client'
+
+import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -14,10 +16,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import SubMenu from './client/SubMenu'
 
-import type { JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import { type JSX, useCallback, useState } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   headerElements: HeaderElement[]
 }
 
@@ -35,13 +38,21 @@ export default function NavigationSheet({
   language,
   headerElements,
 }: Props): JSX.Element {
-  // TODO: Close the navigation menu when a link is clicked
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const toggleMenu = useCallback(() => {
+    setIsOpen((prev) => {
+      return !prev
+    })
+  }, [])
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
           variant={'ghost'}
           className='w-fit h-full lg:hidden rounded-none'
+          onClick={toggleMenu}
         >
           <Bars3CenterLeftIcon className='w-7 h-7' />
         </Button>
@@ -71,21 +82,29 @@ export default function NavigationSheet({
           <Button
             variant={'secondary'}
             className='w-full h-fit uppercase flex justify-start items-center text-base xxs:text-xl'
+            asChild
+            onClick={toggleMenu}
           >
             <Link href={`/${language}`} className='w-full h-full text-start'>
               Home
             </Link>
           </Button>
-          {headerElements.map((element, index) =>
+          {headerElements.map((element) =>
             element.subNavs ? (
-              <SubMenu element={element} key={index} />
+              <SubMenu
+                element={element}
+                key={element.title}
+                toggleMenuCallback={toggleMenu}
+              />
             ) : (
               <Button
                 key={element.title}
                 variant={'secondary'}
                 className='w-full h-fit uppercase flex justify-start items-center text-base xxs:text-xl'
+                asChild
+                onClick={toggleMenu}
               >
-                <Link href={element.link} className='w-full h-full text-start'>
+                <Link href={element.link} className='w-full h-fit text-start'>
                   {element.title}
                 </Link>
               </Button>

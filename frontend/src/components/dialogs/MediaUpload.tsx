@@ -1,6 +1,6 @@
 'use client'
 
-import { supportedLanguages } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -34,20 +34,20 @@ import {
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import Album from '@/models/Album'
-import { Author } from '@/models/Items'
-import { LanguageCode } from '@/models/Language'
+import type Album from '@/models/Album'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { mediaUploadSchema } from '@/schemas/items/media'
 import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, type JSX } from 'react'
+import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 interface Props {
-  language: string
+  language: LanguageCode
   author: Author
   album: Album | null
   callback: () => void
@@ -117,7 +117,7 @@ export default function MediaUpload({
   album,
   callback,
 }: Props) {
-  const [value, _] = useState('image')
+  const [value, setValue] = useState('image')
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { student } = useAuthentication()
 
@@ -127,7 +127,7 @@ export default function MediaUpload({
       media_type: 'image',
       media: '',
       youtube_url: '',
-      translations: supportedLanguages.map((language) => ({
+      translations: SUPPORTED_LANGUAGES.map((language) => ({
         language_code: language,
         title: '',
         description: '',
@@ -156,7 +156,7 @@ export default function MediaUpload({
       formData.append('youtube_url', data.youtube_url)
     }
 
-    supportedLanguages.forEach((language, index) => {
+    SUPPORTED_LANGUAGES.forEach((language, index) => {
       formData.append(`translations[${index}][language_code]`, language)
       formData.append(
         `translations[${index}][title]`,
@@ -216,7 +216,7 @@ export default function MediaUpload({
       <Tabs defaultValue={language}>
         <Label>Language</Label>
         <TabsList className='overflow-x-auto h-fit w-full justify-start'>
-          {supportedLanguages.map((language) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
               key={language}
               value={language}
@@ -231,7 +231,7 @@ export default function MediaUpload({
         </TabsList>
         <form onSubmit={form.handleSubmit(postForm)}>
           <Form {...form}>
-            {supportedLanguages.map((language, index) => (
+            {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
                 <TranslatedInputs
                   index={index}
@@ -246,7 +246,11 @@ export default function MediaUpload({
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
                   <FormLabel>Media Type</FormLabel>
-                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={setPopoverOpen}
+                    modal={popoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -273,6 +277,7 @@ export default function MediaUpload({
                                 key={mediaType.value}
                                 value={mediaType.value}
                                 onSelect={() => {
+                                  setValue(mediaType.value)
                                   form.setValue(
                                     'media_type',
                                     mediaType.value as 'image' | 'video'

@@ -1,18 +1,14 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import type { JSX } from 'react'
 
-/**
- * @interface Props
- * @property {string} language - The currently selected language
- */
 interface Props {
-  language: string
+  language: LanguageCode
 }
 
 /**
@@ -40,7 +36,7 @@ export default async function Documents({
   ]
 
   return (
-    <section id='documents' className='px-12 mb-8'>
+    <section id='documents' className='px-2 sm:px-5 md:px-12 mb-8'>
       <h2 className='py-4 font-bold text-3xl uppercase tracking-wide'>
         {t('documents')}
       </h2>
@@ -59,9 +55,9 @@ export default async function Documents({
                 {t('documents.download')} {document.name}
               </Link>
             </Button>
-            <p className='tracking-wide text-lg'>
+            <p className='tracking-wide text-lg flex items-center gap-2'>
               {document.supportedLanguages.map((lang) => (
-                <span key={lang} className='w-6 h-6 mr-2'>
+                <span key={lang} className='w-6 h-6'>
                   {LANGUAGES[lang as LanguageCode].flag_icon}
                 </span>
               ))}

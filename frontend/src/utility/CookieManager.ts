@@ -102,8 +102,11 @@ export function isCookieCategoryAllowed(
   cookieSettings: CookieSettings | string,
   category: CookieConsent
 ): boolean {
+  let decodedCookieSettings: CookieSettings
   if (typeof cookieSettings === 'string') {
-    cookieSettings = decodeCookieSettings(cookieSettings)
+    decodedCookieSettings = decodeCookieSettings(cookieSettings)
+  } else {
+    decodedCookieSettings = cookieSettings
   }
 
   switch (category) {
@@ -111,15 +114,15 @@ export function isCookieCategoryAllowed(
       // Necessary cookies are always allowed
       return true
     case CookieConsent.FUNCTIONAL:
-      return cookieSettings.FUNCTIONAL
+      return decodedCookieSettings.FUNCTIONAL
     case CookieConsent.ANALYTICS:
-      return cookieSettings.ANALYTICS
+      return decodedCookieSettings.ANALYTICS
     case CookieConsent.PERFORMANCE:
-      return cookieSettings.PERFORMANCE
+      return decodedCookieSettings.PERFORMANCE
     case CookieConsent.ADVERTISING:
-      return cookieSettings.ADVERTISING
+      return decodedCookieSettings.ADVERTISING
     case CookieConsent.THIRD_PARTY:
-      return cookieSettings.THIRD_PARTY
+      return decodedCookieSettings.THIRD_PARTY
     default:
       return false
   }

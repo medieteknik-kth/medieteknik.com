@@ -5,10 +5,11 @@ import KTHSVG from 'public/images/svg/kth.svg'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
 
 interface Props {
-  language: string
+  language: LanguageCode
   return_url?: string | null
 }
 
@@ -46,10 +47,6 @@ export default function AlternativeLogin({
         fontSize: 'inherit',
       }}
     >
-      <h2 className='w-full text-center uppercase tracking-wider mb-2'>
-        {t('alternative_logins')}
-      </h2>
-
       <ul className='w-full grid grid-cols-1 place-items-center'>
         <li className='text-center'>
           <Button
