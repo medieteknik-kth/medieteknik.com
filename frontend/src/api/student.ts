@@ -114,17 +114,18 @@ export const getStudentEvents = async (
  * @description Get the officials for a specific language and date
  *
  * @param {LanguageCode} language_code - The language to get officials in
- * @param {string} date - The date range to get officials for (e.g. '2024-2025')
+ * @param {string} year - The date range to get officials for (e.g. '2024-2025')
  * @returns {Promise<ApiResponse<StudentCommitteePosition[]>>} The API response with the officials or an error
  */
 export const getOfficials = async (
   language_code: LanguageCode,
-  date: string,
+  year: string,
+  semester: string,
   revalidate = 3_600
 ): Promise<ApiResponse<StudentCommitteePosition[]>> => {
   // TODO: Change the API endpoint to something like this '/public/officials/'?
   const { data, error } = await fetchData<StudentCommitteePosition[]>(
-    `${API_BASE_URL}/public/students/committee_members?language=${language_code}&date=${date}`,
+    `${API_BASE_URL}/public/students/committee_members?language=${language_code}&year=${year}&semester=${semester}`,
     {
       next: {
         revalidate: revalidate,

@@ -39,49 +39,41 @@ export default function Officials({ language, currentMembers }: Props) {
   const [members, setMembers] = useState(currentMembers)
   const [isPending, startTransition] = useTransition()
 
-  const years = [
-    {
-      value: '2024-2025',
-      label: '2024 - 2025',
-    },
-    {
-      value: '2023-2024',
-      label: '2023 - 2024',
-    },
-    {
-      value: '2022-2023',
-      label: '2022 - 2023',
-    },
-    {
-      value: '2021-2022',
-      label: '2021 - 2022',
-    },
-    {
-      value: '2020-2021',
-      label: '2020 - 2021',
-    },
-    {
-      value: '2019-2020',
-      label: '2019 - 2020',
-    },
-    {
-      value: '2018-2019',
-      label: '2018 - 2019',
-    },
-  ]
+  const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth() + 1
+  const years = Array.from(
+    { length: (currentYear - 2018) * 2 + (currentMonth > 6 ? 2 : 1) },
+    (_, i) => {
+      const year = currentYear - Math.floor(i / 2)
+      const semester = i % 2 === 0 ? 'HT' : 'VT'
+      return {
+        value: `${year}-${semester}`,
+        label: `${year} ${semester}`,
+      }
+    }
+  ).filter(({ value }) => {
+    const [year, semester] = value.split('-')
+    return !(
+      Number.parseInt(year) === currentYear &&
+      semester === 'HT' &&
+      currentMonth <= 6
+    )
+  })
 
   const [value, setValue] = useState(years[0].value)
 
-  const onYearChange = (year: string, currentValue: string) => {
+  const onYearChange = (date: string, currentValue: string) => {
     const previousMembers = [...members]
+    // Extract semester from year
+    const [year, semester] = date.split('-')
     setMembers([])
     startTransition(async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/public/students/committee_members?language=${language}&date=${year}`,
+          `${API_BASE_URL}/public/students/committee_members?language=${language}&year=${year}&semester=${semester}`,
           {
             next: {
-              revalidate: 0,
+              revalidate: year === currentYear.toString() ? 60 : 3_600,
             },
           }
         )
