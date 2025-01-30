@@ -16,7 +16,6 @@ from models.committees import (
     CommitteeTranslation,  # noqa: F401
     CommitteePosition,  # noqa: F401
     CommitteePositionTranslation,  # noqa: F401
-    CommitteePositionResource,  # noqa: F401
     CommitteePositionRecruitment,  # noqa: F401
     CommitteePositionRecruitmentTranslation,  # noqa: F401
 )
@@ -42,9 +41,6 @@ from models.core import (
     Student,  # noqa: F401
     Profile,  # noqa: F401
     StudentMembership,  # noqa: F401
-    Content,  # noqa: F401
-    Resource,  # noqa: F401
-    ContentTranslation,  # noqa: F401
     Language,  # noqa: F401
 )
 

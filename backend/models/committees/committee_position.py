@@ -62,11 +62,6 @@ class CommitteePosition(db.Model):
     # Relationship
     author = db.relationship("Author", back_populates="committee_position")
     committee = db.relationship("Committee", back_populates="committee_positions")
-    resources = db.relationship(
-        "Resource",
-        secondary="committee_position_resource",
-        back_populates="committee_positions",
-    )
     student_positions = db.relationship(
         "StudentMembership", back_populates="committee_position"
     )
@@ -137,19 +132,6 @@ class CommitteePosition(db.Model):
             )
 
         return data
-
-
-class CommitteePositionResource(db.Model):
-    __tablename__ = "committee_position_resource"
-
-    committee_position_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee_position.committee_position_id"),
-        primary_key=True,
-    )
-    resource_id = Column(
-        UUID(as_uuid=True), ForeignKey("resource.resource_id"), primary_key=True
-    )
 
 
 class CommitteePositionTranslation(db.Model):
@@ -265,7 +247,7 @@ class CommitteePositionRecruitment(db.Model):
         del data["committee_position_recruitment_id"]
 
         committee_position = CommitteePosition.query.get(data["committee_position_id"])
-        del data["committee_position_id"]   
+        del data["committee_position_id"]
 
         if not committee_position or not isinstance(
             committee_position, CommitteePosition

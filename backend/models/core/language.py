@@ -40,10 +40,6 @@ class Language(db.Model):
     news_translations = db.relationship("NewsTranslation", back_populates="language")
     tag_translations = db.relationship("TagTranslation", back_populates="language")
 
-    content_translations = db.relationship(
-        "ContentTranslation", back_populates="language"
-    )
-
     def __repr__(self):
         return "<Language %r>" % self.language_code
 
