@@ -1,21 +1,27 @@
 'use client'
 
-import { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
+import type { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { Author } from '@/models/Items'
-import Document from '@/models/items/Document'
-import { LanguageCode } from '@/models/Language'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
+import type Document from '@/models/items/Document'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import { DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
-import { TFunction } from 'next-i18next'
+import type { TFunction } from 'next-i18next'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
-import { KeyboardEvent, MouseEvent, useCallback, type JSX } from 'react'
+import {
+  type JSX,
+  type KeyboardEvent,
+  type MouseEvent,
+  useCallback,
+} from 'react'
 
 interface Props {
   language: LanguageCode

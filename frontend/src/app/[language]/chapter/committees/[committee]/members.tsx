@@ -42,7 +42,7 @@ export default async function CommitteeMembers({
   }
 
   return (
-    <section className='min-h-96 h-fit relative'>
+    <section className='min-h-96 h-fit relative pb-10'>
       <div className='pt-12 mb-10 grid place-items-center'>
         <h2 className='text-lg md:text-2xl lg:text-3xl capitalize'>
           Meet <span className='font-bold'>{committeeName}</span>

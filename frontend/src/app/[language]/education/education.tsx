@@ -59,16 +59,13 @@ export default async function Education(props: Props): Promise<JSX.Element> {
             className='overflow-hidden hover:scale-110 transition-all'
             asChild
           >
-            <Link
-              href='https://metastudent.se/'
-              target='_blank'
-              rel='external'
-            >
+            <Link href='https://metastudent.se/' target='_blank' rel='external'>
               <Image
                 src={
                   'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg'
                 }
                 alt='img'
+                unoptimized={true} // Logos are SVGs, so they don't need to be optimized
                 width={200}
                 height={200}
                 className='w-10 h-10'

@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -25,7 +24,6 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import FallbackImage from 'public/images/logo.webp'
 import { type JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
@@ -115,22 +113,16 @@ export default function Committees({
                 >
                   <Card className='h-full flex flex-col justify-between'>
                     <CardHeader className='flex flex-row flex-wrap items-center gap-4'>
-                      <Avatar className='bg-white w-16 h-16 z-10 rounded-md'>
-                        <AvatarImage
+                      <div className='bg-white w-16 h-16 z-10 rounded-md'>
+                        <Image
                           src={committee.logo_url}
+                          alt={`${committee.translations[0].title} logo`}
+                          unoptimized={true} // Logos are SVGs, so they don't need to be optimized
                           width={64}
                           height={64}
                           className='w-auto h-16 aspect-square object-contain p-2'
                         />
-                        <AvatarFallback>
-                          <Image
-                            src={FallbackImage}
-                            alt='Committee Fallback image'
-                            width={100}
-                            height={100}
-                          />
-                        </AvatarFallback>
-                      </Avatar>
+                      </div>
                       <div>
                         <CardTitle className='flex items-center gap-3 text-lg sm:text-xl md:text-2xl'>
                           {committee.translations[0].title}
@@ -199,6 +191,7 @@ export default function Committees({
                 <Image
                   src={committee.logo_url}
                   alt={`${committee.translations[0].title} logo`}
+                  unoptimized={true} // Logos are SVGs, so they don't need to be optimized
                   width={64}
                   height={64}
                   className='w-auto h-full object-contain overflow-visible'

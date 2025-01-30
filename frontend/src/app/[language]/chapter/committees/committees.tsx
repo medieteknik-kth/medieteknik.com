@@ -15,7 +15,6 @@ import type { CommitteeCategory } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Logo from 'public/images/logo.webp'
 
 interface CommitteeCategoryWithCommittees extends CommitteeCategory {
   committees: Committee[]
@@ -125,13 +124,14 @@ export default async function CommitteeList(props: Props) {
                           href={`./committees/${committee.translations[0].title.toLowerCase()}`}
                           title={committee.translations[0].title}
                           key={committee.translations[0].title}
-                          className='w-28 sm:w-56 h-auto aspect-square relative rounded-full border border-yellow-400 shadow shadow-black/20 transition-transform motion-reduce:hover:scale-100 hover:scale-110 hover:hover:font-bold bg-white grid place-items-center'
+                          className='w-28 sm:w-56 h-auto aspect-square relative rounded-full border border-yellow-400 transition-transform motion-reduce:hover:scale-100 hover:scale-110 hover:hover:font-bold bg-white grid place-items-center'
                         >
                           <Image
-                            src={committee.logo_url || Logo.src}
+                            src={committee.logo_url}
                             alt={`${committee.translations[0].title} logo`}
-                            width={300}
-                            height={300}
+                            unoptimized={true} // Logos are SVGs, so they don't need to be optimized
+                            width={128}
+                            height={128}
                             loading='lazy'
                             className='w-16 sm:w-28 lg:w-32 h-auto absolute top-0 sm:-top-6 bottom-0 my-auto'
                           />

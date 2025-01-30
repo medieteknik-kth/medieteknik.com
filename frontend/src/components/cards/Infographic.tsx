@@ -32,6 +32,7 @@ export default function InfographicCard({ card }: Props) {
               alt=''
               width={100}
               height={100}
+              unoptimized={true} // Logos are SVGs, so they don't need to be optimized
               loading='lazy'
               placeholder='empty'
               className='w-16 h-16 aspect-square object-cover bg-white rounded-full p-2'

@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { IndividualCommitteePosition } from '@/models/Student'
@@ -109,22 +108,23 @@ export default function StudentPositions({
                     className='h-16'
                     key={item.key}
                     dot={
-                      <Avatar className='w-12 h-auto aspect-square border border-yellow-400 p-1 bg-white absolute -left-5 -top-4 grid place-items-center rounded-md shadow-md'>
-                        <AvatarImage
-                          src={item.committee?.logo_url}
-                          alt='Profile Picture'
-                          className='rounded-md'
-                        />
-                        <AvatarFallback className='bg-white'>
+                      <div className='w-12 p-1 bg-white border border-yellow-400 h-auto aspect-square absolute -left-5 -top-4 rounded-md grid place-items-center'>
+                        {item.committee ? (
+                          <Image
+                            src={item.committee.logo_url}
+                            alt={item.committee.translations[0].title}
+                            width={48}
+                            height={48}
+                          />
+                        ) : (
                           <Image
                             src={FallbackLogo}
-                            alt='Logo'
-                            width={64}
-                            height={64}
-                            className='object-cover'
+                            width={48}
+                            height={48}
+                            alt='Medieteknik Logo'
                           />
-                        </AvatarFallback>
-                      </Avatar>
+                        )}
+                      </div>
                     }
                   >
                     <h3 className='w-fit font-semibold dark:text-white pl-4 xs:text-lg'>

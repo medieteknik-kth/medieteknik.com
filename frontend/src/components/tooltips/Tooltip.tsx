@@ -124,13 +124,16 @@ export function CommitteePositionTooltip({
     <>
       <div className='w-fit flex items-center gap-2 py-2'>
         {position.committee && (
-          <Avatar className='mr-2 bg-white rounded-md overflow-hidden border'>
-            <AvatarImage
+          <div className='w-10 h-auto aspect-square bg-white rounded-md overflow-hidden border p-1'>
+            <Image
               src={position.committee.logo_url}
-              alt='Committee Logo'
-              className='w-full h-full object-contain p-0.5'
+              alt={`${position.translations[0].title} logo`}
+              unoptimized={true} // Logos are SVGs, so they don't need to be optimized
+              width={32}
+              height={32}
+              className='w-full h-full object-contain'
             />
-          </Avatar>
+          </div>
         )}
 
         <div className='flex flex-col w-fit'>
@@ -139,7 +142,7 @@ export function CommitteePositionTooltip({
         </div>
       </div>
       <div>
-        <p className='text-sm min-w-72 max-w-[350px] whitespace-pre-wrap'>
+        <p className='text-sm whitespace-pre-wrap max-w-[30rem]'>
           {position.translations[0].description}
         </p>
       </div>

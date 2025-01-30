@@ -5,7 +5,6 @@ import { API_BASE_URL } from '@/utility/Constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import FallbackImage from 'public/images/logo.webp'
 import ManageButton from './client/manage'
 import CommitteeMembers from './members'
 
@@ -98,7 +97,7 @@ export default async function CommitteePage(
       <section
         className={`${
           committeeData.group_photo_url
-            ? 'desktop:min-h-[1080px] h-screen'
+            ? 'desktop:min-h-[1080px] h-[70vh] lg:h-[80vh] xl:h-[90vh]'
             : 'h-fit'
         } relative bg-[#EEE] dark:bg-[#222]`}
       >
@@ -106,11 +105,9 @@ export default async function CommitteePage(
           <Image
             src={committeeData.group_photo_url}
             alt='img'
-            fill
             className='object-cover h-full'
-            placeholder='blur'
-            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
             quality={80}
+            fill
             priority
             loading='eager'
           />
@@ -119,22 +116,37 @@ export default async function CommitteePage(
         )}
 
         <div
-          className={`w-full  ${
+          className={`w-full ${
             committeeData.group_photo_url
-              ? 'absolute h-fit bottom-0 border-t-2 bg-black/75 text-white'
+              ? 'absolute h-fit bottom-0 border-t-2 text-white'
               : 'h-full border-b-2 mt-32 lg:mt-0 relative'
-          } backdrop-blur-xl px-12 py-12 flex flex-col lg:flex-row gap-4 lg:gap-10 items-center border-yellow-400`}
+          } px-12 py-12 flex flex-col lg:flex-row gap-4 lg:gap-10 items-center border-yellow-400`}
         >
-          <div className='w-32 h-auto lg:w-52 -top-24 left-0 right-0 mx-auto absolute lg:static grid aspect-square bg-white rounded-full overflow-hidden border-2 border-yellow-400  place-items-center'>
+          {committeeData.group_photo_url && (
+            <>
+              <svg xmlns='http://www.w3.org/2000/svg' className='hidden'>
+                <title>Blur Effect</title>
+                <filter id='blur' x='0' y='0' width='100%' height='100%'>
+                  <feGaussianBlur stdDeviation='5' />
+                </filter>
+              </svg>
+              <div
+                className='w-full absolute left-0 bg-black/75 top-0 bottom-0'
+                style={{ filter: 'url(#blur)' }}
+              />
+            </>
+          )}
+          <div className='w-32 h-auto lg:w-52 -top-24 left-0 right-0 mx-auto lg:mx-0 absolute lg:static grid aspect-square bg-white rounded-full overflow-hidden border-2 border-yellow-400  place-items-center z-10'>
             <Image
-              src={committeeData.logo_url || FallbackImage.src}
+              src={committeeData.logo_url}
               alt='img'
+              unoptimized={true} // Logos are SVGs, so they don't need to be optimized
               width={208}
               height={208}
-              className='w-24 lg:w-[9.5rem] bg-white h-auto hover:scale-105 duration-300 transition-transform p-2 lg:p-4 desktop:p-0 object-cover'
+              className='w-full bg-white h-auto hover:scale-105 duration-300 transition-transform p-5 lg:p-8 object-cover'
             />
           </div>
-          <div className='grow h-fit flex flex-col justify-between items-center lg:items-start relative'>
+          <div className='w-fit h-fit flex flex-col justify-between items-center lg:items-start relative'>
             <h1
               className={`h-fit pt-8 pb-4 font-semibold ${
                 committeeName.length >= 15
@@ -171,7 +183,6 @@ export default async function CommitteePage(
         </div>
       </section>
       <CommitteeMembers language={language} committee={committee} />
-      {/*<ExploreMore language={language} committee={committee} />*/}
     </main>
   )
 }

@@ -32,6 +32,10 @@ export default async function Album({
     return <></>
   }
 
+  if (!albums.items) {
+    return <></>
+  }
+
   return (
     <section className='px-2 sm:px-5 md:px-10 py-2'>
       <h2 className='text-2xl font-bold capitalize'>{t('album')}</h2>
