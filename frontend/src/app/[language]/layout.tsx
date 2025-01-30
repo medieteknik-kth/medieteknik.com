@@ -1,3 +1,5 @@
+import LanguageAlert from '@/app/[language]/languageAlert'
+import { useTranslation } from '@/app/i18n'
 import CookiePopup from '@/components/cookie/Cookie'
 import ErrorBoundary from '@/components/error/ErrorBoundary'
 import ErrorFallback from '@/components/error/ErrorFallback'
@@ -9,13 +11,12 @@ import ClientProviders from '@/providers/ClientProviders'
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { dir } from 'i18next'
 import type { Metadata, Viewport } from 'next'
+import { headers } from 'next/headers'
 import Script from 'next/script'
-import { fontFigtree } from '../fonts'
-import './globals.css'
-
-import { useTranslation } from '@/app/i18n'
 import type React from 'react'
 import type { JSX } from 'react'
+import { fontFigtree } from '../fonts'
+import './globals.css'
 
 /**
  * @name generateStaticParams
@@ -89,8 +90,10 @@ interface Props {
  * @returns {JSX.Element} The root layout component
  */
 export default async function RootLayout(props: Props): Promise<JSX.Element> {
-  const params = await props.params
+  const { language } = await props.params
   const { children, modal } = props
+  const headerList = await headers()
+  const nonce = headerList.get('x-nonce')
 
   return (
     <>
@@ -101,23 +104,20 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
           </h1>
         </div>
       </noscript>
-      <ClientProviders language={params.language}>
-        <Header language={params.language} />
+
+      <ClientProviders language={language}>
+        <LanguageAlert language={language} />
+        <Header language={language} />
         <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>
-        <Footer language={params.language} />
-        <CookiePopup language={params.language} />
+        <Footer language={language} />
+        <CookiePopup language={language} />
         <Toaster />
         {modal}
       </ClientProviders>
-      <Script id='language-attributes'>
-        {`document.documentElement.lang = "${params.language}";
-document.documentElement.dir = "${dir(params.language)}";
-document.documentElement.className = "${fontFigtree.className} bg-neutral-900";`}
-      </Script>
-      <Script id='theme-attributes' strategy='lazyOnload'>
-        {`const theme = window.localStorage.getItem('theme');
-document.documentElement.className = "${fontFigtree.className} antialiased" + (theme === 'dark' ? ' dark' : '');
-document.body.removeAttribute('class');`}
+      <Script id='language-attributes' nonce={nonce ?? ''}>
+        {`document.documentElement.lang = "${language}";
+document.documentElement.dir = "${dir(language)}";
+document.documentElement.className = "${fontFigtree.className}";`}
       </Script>
     </>
   )

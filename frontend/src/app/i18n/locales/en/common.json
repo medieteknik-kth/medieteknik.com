@@ -3,5 +3,10 @@
     "keywords": "Media Technology, KTH, META, Royal Institute of Technology, University, Master of Science",
     "description": "Website for the Media Technology programme and chapter at the Royal Institute of Technology (KTH) in Stockholm, Sweden.",
     "school": "Royal Institute of Technology",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "different_language.title": "Du har besökt sidan på ett annat språk ",
+    "different_language.currently_viewing": "Vill du se innehållet på ",
+    "different_language.switch_question": "Eller vill du byta till det språk du tidigare besökte sidan på?",
+    "different_language.remain": "Förbli temporärt på",
+    "different_language.switch": "Byt till"
 }

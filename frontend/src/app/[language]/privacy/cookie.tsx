@@ -93,18 +93,19 @@ export default async function CookieSection({ language }: Props) {
                   <TableCell>
                     {t('cookies.necessary.list.access_token')}
                   </TableCell>
-                  <TableCell>1h</TableCell>
+                  <TableCell>
+                    1h&nbsp;
+                    <span className='text-muted-foreground'>(14d)</span>
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
                     <code className={`${fontJetBrainsMono.className}`}>
-                      refresh_token_cookie
+                      language
                     </code>
                   </TableCell>
-                  <TableCell>
-                    {t('cookies.necessary.list.refresh_token')}
-                  </TableCell>
-                  <TableCell>30d</TableCell>
+                  <TableCell>{t('cookies.necessary.list.language')}</TableCell>
+                  <TableCell>1y</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

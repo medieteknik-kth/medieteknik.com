@@ -39,7 +39,12 @@ export default async function HeaderNavigationMenu({
     >
       {headerElements.map((element) =>
         element.subNavs ? (
-          <NavigationMenu key={element.title} className='*:h-full'>
+          <NavigationMenu
+            key={element.title}
+            className='*:h-full'
+            delayDuration={0}
+            skipDelayDuration={100}
+          >
             <NavigationMenuList className='!h-full'>
               <NavigationMenuItem className='h-full'>
                 <NavigationMenuTrigger className='uppercase h-full bg-inherit'>

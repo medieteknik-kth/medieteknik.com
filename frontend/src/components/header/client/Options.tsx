@@ -62,6 +62,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const switchLanguage = useCallback(
     (newLanguage: string) => {
       const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
+      document.cookie = `${LANGUAGE_COOKIE_NAME}=${newLanguage}; path=/; expires=${new Date(Date.now() + 31536000000)}; SameSite=Lax`
       window.localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLanguage)
       router.push(newPath)
     },
