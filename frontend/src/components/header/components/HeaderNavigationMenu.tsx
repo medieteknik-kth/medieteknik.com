@@ -8,10 +8,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
-import Link from 'next/link'
 import './headerNavigationMenu.css'
 
 import type { LanguageCode } from '@/models/Language'
+import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
 
 interface Props {

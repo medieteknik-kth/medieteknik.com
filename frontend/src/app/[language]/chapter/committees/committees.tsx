@@ -13,8 +13,8 @@ import {
 import type Committee from '@/models/Committee'
 import type { CommitteeCategory } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
 
 interface CommitteeCategoryWithCommittees extends CommitteeCategory {

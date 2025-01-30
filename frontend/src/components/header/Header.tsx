@@ -3,12 +3,12 @@ import HeaderNavigationMenu from '@/components/header/components/HeaderNavigatio
 import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
-import Link from 'next/link'
 import Logo from 'public/images/logo.webp'
 import NavigationSheet from './NavigationSheet'
 import LoginSection from './client/LoginSection'
 
 import type { LanguageCode } from '@/models/Language'
+import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
 
 interface Props {

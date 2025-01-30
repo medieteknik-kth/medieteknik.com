@@ -5,7 +5,7 @@ import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { Cog8ToothIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 interface Props {
   language: LanguageCode

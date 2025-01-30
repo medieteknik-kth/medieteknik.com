@@ -15,7 +15,7 @@ import {
 import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { SquaresPlusIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 import type { JSX } from 'react'
 

@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
+import { ViewTransitions } from 'next-view-transitions'
 import { CustomProvider } from 'rsuite'
 import 'rsuite/dist/rsuite-no-reset.min.css'
 
@@ -30,12 +31,14 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
-    <html lang='en' suppressHydrationWarning>
-      <body className='bg-neutral-900'>
-        <SpeedInsights />
-        <Analytics />
-        <CustomProvider>{children}</CustomProvider>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang='en' suppressHydrationWarning>
+        <body>
+          <SpeedInsights />
+          <Analytics />
+          <CustomProvider>{children}</CustomProvider>
+        </body>
+      </html>
+    </ViewTransitions>
   )
 }

@@ -6,8 +6,8 @@ import {
   BuildingOffice2Icon,
   EnvelopeIcon,
 } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { JSX } from 'react'
 import ConnectSection from './connect'
 
