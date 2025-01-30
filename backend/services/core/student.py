@@ -18,6 +18,11 @@ from models.committees import CommitteePosition
 from models.core import Author, AuthorType
 from models.core import StudentPermission
 from models.core import Student, StudentMembership
+from models.core import Student
+from services.utility.auth import (
+    get_student_authorization,
+    get_student_committee_details,
+)
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from utility.gc import delete_file, upload_file
@@ -59,8 +64,9 @@ def login(
             }
         ), HTTPStatus.UNAUTHORIZED
 
-    permissions_and_role, additional_claims, committees, committee_positions = (
-        retrieve_extra_claims(provided_languages, student)
+    permissions, role = get_student_authorization(student)
+    committees, committee_positions = get_student_committee_details(
+        provided_languages=provided_languages, student=student
     )
 
     response = make_response(
@@ -68,8 +74,8 @@ def login(
             "student": student.to_dict(is_public_route=False),
             "committees": committees,
             "committee_positions": committee_positions,
-            "permissions": permissions_and_role.get("permissions"),
-            "role": permissions_and_role.get("role"),
+            "permissions": permissions,
+            "role": role,
         }
     )
     response.status_code = HTTPStatus.OK
@@ -78,7 +84,10 @@ def login(
         encoded_access_token=create_access_token(
             identity=student,
             fresh=timedelta(minutes=20),
-            additional_claims=additional_claims,
+            additional_claims={
+                "permissions": permissions,
+                "role": role,
+            },
         ),
         max_age=timedelta(hours=1),
     )
@@ -89,59 +98,6 @@ def login(
     )
 
     return response
-
-
-def retrieve_extra_claims(
-    provided_languages: List[str] = AVAILABLE_LANGUAGES, student: Student | None = None
-) -> tuple[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]]:
-    """
-    Retrieves the student's permissions, role, committees, and committee positions, if they exist.
-        :param provided_languages: List[str] - The list of languages that the user can view.
-        :param student: Student - The student object.
-        :return: Tuple[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]] - The permissions and role, additional claims, committees, and committee positions.
-    """
-    if student is None:
-        return None
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
-    additional_claims = {
-        "role": permissions_and_role.get("role"),
-        "permissions": permissions_and_role.get("permissions"),
-    }
-
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter_by(
-        student_id=student.student_id
-    ).all()
-
-    for membership in student_memberships:
-        position: CommitteePosition | None = CommitteePosition.query.get(
-            membership.committee_position_id
-        )
-
-        if not position:
-            continue
-
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
-
-        committee: Committee | None = Committee.query.get(position.committee_id)
-
-        if not committee:
-            continue
-
-        committee_dict = committee.to_dict(provided_languages=provided_languages)
-
-        # Check if the committee already exists in the list
-        if committee_dict in committees:
-            continue
-
-        committees.append(committee_dict)
-
-    return permissions_and_role, additional_claims, committees, committee_positions
 
 
 def assign_password(data: Dict[str, Any]) -> bool:
@@ -238,10 +194,10 @@ def update(request: Request, student: Student) -> Response:
 
     db.session.commit()
     response = make_response()
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
+    permissions, role = get_student_authorization(student)
     additional_claims = {
-        "role": permissions_and_role.get("role"),
-        "permissions": permissions_and_role.get("permissions"),
+        "permissions": permissions,
+        "role": role,
     }
     access_token = create_access_token(
         identity=student, fresh=True, additional_claims=additional_claims
@@ -258,46 +214,3 @@ def update(request: Request, student: Student) -> Response:
     response.status_code = HTTPStatus.OK
 
     return response
-
-
-def get_permissions(student_id: str) -> Dict[str, Any]:
-    """
-    Gets the student's permissions and role.
-        :param student_id: str - The student's ID.
-        :return: Dict[str, Any] - The student's permissions and role.
-    """
-    all_permissions_and_role = {
-        "role": None,
-        "permissions": {
-            "author": [],
-            "student": [],
-        },
-    }
-
-    author = Author.query.filter(
-        Author.author_type == AuthorType.STUDENT.value,
-        Author.student_id == student_id,
-    ).first()
-
-    if author and isinstance(author, Author):
-        author_data = author.to_dict()
-        if author_data:
-            all_permissions_and_role["permissions"]["author"] = author_data.get(
-                "resources"
-            )
-
-    student = Student.query.get(student_id)
-
-    if student and isinstance(student, Student):
-        permissions = StudentPermission.query.filter_by(student_id=student_id).first()
-
-        if permissions and isinstance(permissions, StudentPermission):
-            permission_data = permissions.to_dict()
-
-            if permission_data:
-                all_permissions_and_role["role"] = permission_data.get("role")
-                all_permissions_and_role["permissions"]["student"] = (
-                    permission_data.get("permissions")
-                )
-
-    return all_permissions_and_role

@@ -1,21 +1,18 @@
 import enum
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, inspect, text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    Enum,
+    ForeignKey,
+    func,
+    inspect,
+    text,
+)
 from utility.database import db
-
-
-class Result(enum.Enum):
-    """
-    Whether the request was successful or not.
-
-    Attributes:
-        SUCCESS: The request was successful.
-        FAILURE: The request failed.
-    """
-
-    SUCCESS = "SUCCESS"
-    FAILURE = "FAILURE"
 
 
 class EndpointCategory(enum.Enum):
@@ -23,23 +20,25 @@ class EndpointCategory(enum.Enum):
     The category of the endpoint.
 
     Attributes:
+        AUTH: The endpoint belongs to authentication.
         COMMITTEE: The endpoint belongs to the committee.
+        COMMITTEE_POSITION: The endpoint belongs to the committee position.
         EVENT: The endpoint belongs to an event.
-        POST: The endpoint belongs to a post.
+        NEWS: The endpoint belongs to news.
         DOCUMENT: The endpoint belongs to a document.
-        RESOURCE: The endpoint belongs to a resource.
+        MEDIA: The endpoint belongs to media.
         STUDENT: The endpoint belongs to a student.
-        ANALYTICS: The endpoint belongs to analytics.
         NOT_SPECIFIED: The endpoint category is not specified.
     """
 
+    AUTH = "AUTH"
     COMMITTEE = "COMMITTEE"
+    COMMITTEE_POSITION = "COMMITTEE POSITION"
     EVENT = "EVENT"
-    POST = "POST"
+    NEWS = "NEWS"
     DOCUMENT = "DOCUMENT"
-    RESOURCE = "RESOURCE"
+    MEDIA = "MEDIA"
     STUDENT = "STUDENT"
-    ANALYTICS = "ANALYTICS"
     NOT_SPECIFIED = "NOT SPECIFIED"
 
 
@@ -68,24 +67,27 @@ class Audit(db.Model):
         server_default=text("gen_random_uuid()"),
     )
 
-    created_at = Column(DateTime, nullable=False)
-    action_type = Column(String(8), nullable=False)
-    endpoint_category = Column(Enum(EndpointCategory), nullable=False)
-    request_params = Column(String(1000))
+    created_at = Column(
+        DateTime, nullable=False, server_default=text("now()"), default=func.now()
+    )
+    method = Column(String(10), nullable=False)
+    endpoint_category = Column(Enum(EndpointCategory), nullable=False, index=True)
+    url = Column(String(), nullable=False, index=True)
+    response = Column(String())
     response_code = Column(Integer, nullable=False)
-    additional_info = Column(String(1000))
-    result = Column(Enum(Result), nullable=False, default=Result.SUCCESS)
+    additional_info = Column(String(1_000))
+    user_agent = Column(String())
+    ip_address = Column(String())
 
     # Foreign key
-    student_id = Column(UUID(as_uuid=True), ForeignKey("student.student_id"))
+    student_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("student.student_id"),
+        nullable=False,
+        unique=False,
+    )
 
-    # Relationships
-    idempotency = db.relationship("Idempotency", back_populates="audit", uselist=False)
-
-    def __init__(self):
-        from models.core.student import Student  # noqa: F401
-
-        self.student = db.relationship("Student", back_populates="audit")
+    student = db.relationship("Student", back_populates="audit")
 
     def __repr__(self):
         return "<Audit %r>" % self.audit_id

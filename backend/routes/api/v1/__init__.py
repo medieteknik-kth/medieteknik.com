@@ -21,7 +21,10 @@ from flask_jwt_extended import (
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.student import Student, StudentMembership
-from services.core.student import get_permissions, retrieve_extra_claims
+from services.utility.auth import (
+    get_student_authorization,
+    get_student_committee_details,
+)
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
@@ -149,12 +152,32 @@ def register_v1_routes(app: Flask):
             return response
 
     @app.after_request
-    def refresh_jwt(response):
+    def add_headers(response: Response):
+        response.headers["Content-Security-Policy"] = (
+            "default-src none; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'none';"
+        )
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Referrer-Policy"] = "same-origin"
+        if os.environ.get("FLASK_ENV") == "development":
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains; preload"
+            )
+        return response
+
+    @app.after_request
+    def refresh_jwt(response: Response):
         try:
             exp_timestamp = get_jwt()["exp"]
-            now = datetime.now()
-            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-            if exp_timestamp <= target_timestamp:
+            now = datetime.now(timezone.utc)
+            remember = session.get("remember", False)
+
+            target_timestamp = (
+                datetime.timestamp(now + timedelta(minutes=30))
+                if not remember
+                else datetime.timestamp(now + timedelta(days=1))
+            )
+            if target_timestamp > exp_timestamp:
                 student_id = get_jwt_identity()
 
                 student = Student.query.filter_by(student_id=student_id).one_or_none()
@@ -162,44 +185,25 @@ def register_v1_routes(app: Flask):
                 if not student:
                     return jsonify({"error": "Invalid credentials"}), 401
 
-                permissions_and_role = get_permissions(getattr(student, "student_id"))
-
-                committees = []
-                committee_positions = []
-                student_memberships = StudentMembership.query.filter_by(
-                    student_id=student.student_id
-                ).all()
-
-                for membership in student_memberships:
-                    position = CommitteePosition.query.get(
-                        membership.committee_position_id
-                    )
-                    if not position or not isinstance(position, CommitteePosition):
-                        continue
-
-                    committee = Committee.query.get(position.committee_id)
-                    if not committee or not isinstance(committee, Committee):
-                        continue
-
-                    committees.append(committee.to_dict())
-                    committee_positions.append(position.to_dict(is_public_route=False))
+                permissions, role = get_student_authorization(student)
+                committees, committee_positions = get_student_committee_details(
+                    student=student
+                )
 
                 response = jsonify(
                     {
                         "student": student.to_dict(),
-                        "permissions": permissions_and_role.get("permissions"),
-                        "role": permissions_and_role.get("role"),
+                        "permissions": permissions,
+                        "role": role,
                         "committees": committees,
                         "committee_positions": committee_positions,
                     }
                 )
                 additional_claims = {
-                    "role": permissions_and_role.get("role"),
-                    "permissions": permissions_and_role.get("permissions"),
+                    "permissions": permissions,
+                    "role": role,
                 }
-
                 access_token = create_access_token(
-                    identity=student, fresh=False, additional_claims=additional_claims
                 )
                 set_access_cookies(response, access_token)
 
@@ -292,16 +296,25 @@ def register_v1_routes(app: Flask):
             db.session.commit()
 
         response = make_response({"student": student.to_dict(is_public_route=False)})
+        additional_claims = {
+            "permissions": {},
+            "role": "",
+        }
         try:
-            permissions_and_role, additional_claims, committees, committee_positions = (
-                retrieve_extra_claims(student=student)
+            permissions, role = get_student_authorization(student)
+            committees, committee_positions = get_student_committee_details(
+                student=student
             )
+            additional_claims = {
+                "permissions": permissions,
+                "role": role,
+            }
 
             response = make_response(
                 {
                     "student": student.to_dict(is_public_route=False),
-                    "permissions": permissions_and_role.get("permissions"),
-                    "role": permissions_and_role.get("role"),
+                    "permissions": permissions,
+                    "role": role,
                     "committees": committees,
                     "committee_positions": committee_positions,
                 }

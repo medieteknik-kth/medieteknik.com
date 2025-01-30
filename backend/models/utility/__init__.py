@@ -2,8 +2,12 @@
 Utility models
 """
 
-from .analytics import Analytics
-from .audit import Audit
-from .idempotency import Idempotency
+from .audit import Audit, EndpointCategory
+from .auth import RevokedTokens
 
-__all__ = ["Analytics", "Audit", "Idempotency"]
+__all__ = [
+    "Audit",
+    "EndpointCategory",
+    "RevokedTokens",
+    "Idempotency",
+]

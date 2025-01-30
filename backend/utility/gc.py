@@ -28,6 +28,7 @@ def upload_file(
     language_code: str | None = None,
     content_disposition: str | None = None,
     content_type: str | None = None,
+    cache_control: str | None = None,
     timedelta: timedelta | None = timedelta(days=365),
 ) -> str | None:
     """
@@ -61,6 +62,8 @@ def upload_file(
             blob.content_disposition = content_disposition
         if content_type:
             blob.content_type = content_type
+        if cache_control:
+            blob.cache_control = cache_control
 
         url = None
         blob.upload_from_file(file)
