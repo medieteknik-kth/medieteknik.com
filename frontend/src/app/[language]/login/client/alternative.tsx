@@ -11,6 +11,7 @@ import type { JSX } from 'react'
 interface Props {
   language: LanguageCode
   return_url?: string | null
+  remember?: boolean
 }
 
 /**
@@ -25,17 +26,18 @@ interface Props {
 export default function AlternativeLogin({
   language,
   return_url,
+  remember,
 }: Props): JSX.Element {
   const { t } = useTranslation(language, 'login')
-
+  
   const loginKTH = () => {
     const redirectURL =
       process.env.NODE_ENV === 'production'
         ? `https://api.medieteknik.com/auth${
-            return_url && `?return_url=${return_url}`
+            return_url && `?return_url=${return_url}&remember=${remember}`
           }`
         : `http://localhost:8080/auth${
-            return_url && `?return_url=${return_url}`
+            return_url && `?return_url=${return_url}&remember=${remember}`
           }`
     window.location.href = `${redirectURL}`
   }

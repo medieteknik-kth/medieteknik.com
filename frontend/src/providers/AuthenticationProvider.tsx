@@ -210,7 +210,8 @@ interface AuthenticationContextType extends AuthenticationState {
   login: (
     email: string,
     password: string,
-    csrf_token: string
+    csrf_token: string,
+    remember?: boolean
   ) => Promise<boolean>
   logout: () => void
   register: () => void
@@ -240,10 +241,10 @@ const createAuthFunctions = (
   login: (
     email: string,
     password: string,
-    csrf_token: string
+    csrf_token: string,
+    remember?: boolean
   ) => Promise<boolean>
   logout: () => void
-  refreshToken: () => void
 } => ({
   /**
    * Login function that makes a POST request to the server to login the user.
@@ -258,17 +259,19 @@ const createAuthFunctions = (
   login: async (
     email: string,
     password: string,
-    csrf_token: string
+    csrf_token: string,
+    remember?: boolean
   ): Promise<boolean> => {
     dispatch({ type: 'SET_LOADING', payload: true })
     let success = false
     try {
       const json_data = {
-        email: email,
-        password: password,
+        email: email.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+        password: password.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
         csrf_token: csrf_token,
+        remember: remember ?? false,
       }
-      const response = await fetch(`${API_BASE_URL}/students/login`, {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -325,8 +328,8 @@ const createAuthFunctions = (
   logout: async (): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      const response = await fetch(`${API_BASE_URL}/students/logout`, {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/logout`, {
+        method: 'DELETE',
         credentials: 'include',
       })
 
@@ -338,53 +341,6 @@ const createAuthFunctions = (
         type: 'SET_ERROR',
         payload: 'Something went wrong! Please try again',
       })
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false })
-    }
-  },
-
-  /**
-   * Refresh token function that makes a POST request to the server to refresh the JWT Token.
-   * @async
-   *
-   * @returns {Promise<void>}
-   */
-  refreshToken: async (): Promise<void> => {
-    dispatch({ type: 'SET_LOADING', payload: true })
-    try {
-      const response = await fetch(`${API_BASE_URL}/students/refresh`, {
-        method: 'POST',
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        const json = (await response.json()) as AuthenticationResponse
-        dispatch({ type: 'SET_STUDENT', payload: json.student })
-        dispatch({ type: 'SET_ROLE', payload: json.role || 'OTHER' })
-        dispatch({
-          type: 'SET_PERMISSIONS',
-          payload: json.permissions || {
-            author: [],
-            student: [],
-          },
-        })
-        const uniqueCommittees =
-          (json.committees &&
-            Array.from(new Set(json.committees.map((c) => c.committee_id)))
-              .map((id) => {
-                if (!json.committees) return null
-                return json.committees.find((c) => c.committee_id === id)
-              })
-              .filter((c): c is Committee => c !== null && c !== undefined)) ||
-          []
-        dispatch({ type: 'SET_COMMITTEES', payload: uniqueCommittees })
-        dispatch({ type: 'SET_POSITIONS', payload: json.positions || [] })
-      } else {
-        dispatch({ type: 'LOGOUT' })
-        throw new Error('Failed to refresh token')
-      }
-    } catch (_) {
-      dispatch({ type: 'LOGOUT' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
@@ -526,25 +482,6 @@ export function AuthenticationProvider({
         dispatch({ type: 'SET_POSITIONS', payload: positions }),
     }
   }, [state])
-
-  useEffect(() => {
-    /**
-     * Refreshes the access token every 30 minutes.
-     */
-    const refreshTimer = setInterval(
-      () => {
-        if (state.isAuthenticated) {
-          dispatch({ type: 'REFRESH_TOKEN' })
-          authFunctions.refreshToken()
-        } else {
-          clearInterval(refreshTimer)
-        }
-      },
-      1000 * 60 * 30
-    )
-
-    return () => clearInterval(refreshTimer)
-  }, [state, authFunctions])
 
   return (
     <AuthenticationContext.Provider

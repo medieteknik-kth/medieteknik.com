@@ -8,6 +8,6 @@
     "email": "E-post",
     "password": "Lösenord",
     "network_error": "Nätverksfel",
-    "login_failed": "Inloggning misslyckades, försök igen senare"
-
+    "login_failed": "Inloggning misslyckades, försök igen senare",
+    "remember_me": "Förbli inloggad"
 }
