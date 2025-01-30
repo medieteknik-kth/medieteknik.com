@@ -8,7 +8,7 @@ import argparse
 from main import app
 from sqlalchemy.exc import SQLAlchemyError
 from utility import db
-from models.utility import Analytics, Audit, Idempotency  # noqa: F401
+from models.utility import Audit, RevokedTokens  # noqa: F401
 from models.committees import (
     CommitteeCategory,  # noqa: F401
     CommitteeCategoryTranslation,  # noqa: F401

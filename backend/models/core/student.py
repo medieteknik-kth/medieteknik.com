@@ -14,6 +14,7 @@ from sqlalchemy import (
     or_,
     text,
 )
+from models.utility.auth import RevokedTokens
 from utility.database import db
 from utility.reception_mode import RECEPTION_MODE
 from utility.authorization import jwt
@@ -81,6 +82,7 @@ class Student(db.Model):
     permissions = db.relationship(
         "StudentPermission", back_populates="student", uselist=False
     )
+    audit = db.relationship("Audit", back_populates="student", uselist=False)
 
     def __repr__(self):
         return "<Student %r>" % self.student_id
@@ -288,6 +290,13 @@ def user_identity_lookup(student: Student):
 
 
 @jwt.user_lookup_loader
-def user_lookup_callback(_jwt_header, jwt_data):
+def user_lookup_callback(jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return Student.query.filter_by(student_id=identity).one_or_none()
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blocklist(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    result = RevokedTokens.query.filter_by(jti=jti).first()
+    return result is not None

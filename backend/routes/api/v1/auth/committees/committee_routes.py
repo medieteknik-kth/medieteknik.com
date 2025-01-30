@@ -6,9 +6,11 @@ API Endpoint: '/api/v1/committees'
 from http import HTTPStatus
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import jwt_required
+from decorators.auditable import audit
 from models.committees import Committee
 from models.core import Author
 from models.content import Document, Event, News
+from models.utility.audit import EndpointCategory
 from services.committees.committee import update_committee
 from services.committees.public import (
     get_committee_by_title,
@@ -189,6 +191,10 @@ def get_committee_positions_by_title(committee_title: str) -> Response:
 
 @committee_bp.route("/<string:committee_title>", methods=["PUT"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.COMMITTEE,
+    additional_info="Can contain copyrighted material, either logo or group photo.",
+)
 def update_committee_by_title(committee_title: str) -> Response:
     """
     Updates the committee by title

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Dict, List
 from flask import Request
 from models.committees import Committee, CommitteeTranslation
@@ -42,13 +43,15 @@ def update_committee(
 
     logo = request.files.get("logo")
     if logo:
+        current_date = datetime.now().strftime("%Y-%m-%d")
         extension = logo.filename.split(".")[-1]
         url = upload_file(
             file=logo,
-            file_name=f"{committee_title}.{extension}",
+            file_name=f"{committee_title}_{current_date}.{extension}",
             path="committees",
             content_disposition="inline",
             content_type=logo.content_type,
+            cache_control="public, max-age=31536000, immutable",
             timedelta=None,
         )
 
@@ -56,12 +59,14 @@ def update_committee(
 
     group_photo = request.files.get("group_photo")
     if group_photo:
+        current_date = datetime.now().strftime("%Y-%m-%d")
         extension = group_photo.filename.split(".")[-1]
         url = upload_file(
             file=group_photo,
-            file_name=f"{committee_title}.{extension}",
+            file_name=f"{committee_title}_{current_date}.{extension}",
             path="committees/group_photos",
             content_disposition="inline",
+            cache_control="public, max-age=31536000, immutable",
             content_type=group_photo.content_type,
         )
 

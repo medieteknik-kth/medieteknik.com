@@ -8,9 +8,11 @@ from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import List
+from decorators.auditable import audit
 from models.committees import Committee, CommitteePosition
 from models.content import Document, DocumentTranslation
 from models.core import Student, StudentMembership, Author
+from models.utility.audit import EndpointCategory
 from services.content import create_item
 from utility import (
     AVAILABLE_LANGUAGES,
@@ -26,6 +28,10 @@ documents_bp = Blueprint("documents", __name__)
 
 @documents_bp.route("/", methods=["POST"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.DOCUMENT,
+    additional_info="Uploaded a new document",
+)
 def create_document() -> Response:
     """
     Creates a new document
@@ -137,6 +143,10 @@ def create_document() -> Response:
 
 @documents_bp.route("/<string:document_id>/pin", methods=["PUT"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.DOCUMENT,
+    additional_info="Pinned a document",
+)
 def pin_document(document_id: str) -> Response:
     """
     Pins a document
@@ -180,6 +190,10 @@ def pin_document(document_id: str) -> Response:
 
 @documents_bp.route("/<string:document_id>", methods=["DELETE"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.DOCUMENT,
+    additional_info="Deleted a document",
+)
 def delete_document(document_id: str) -> Response:
     """
     Deletes a document

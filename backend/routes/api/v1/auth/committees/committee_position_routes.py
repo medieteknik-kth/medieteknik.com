@@ -9,6 +9,7 @@ from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from sqlalchemy import func
 from typing import Any, Dict, List
+from decorators.auditable import audit
 from models.committees import (
     CommitteePosition,
     CommitteePositionRecruitment,
@@ -17,6 +18,7 @@ from models.committees import (
     CommitteePositionsRole,
 )
 from models.core import Student, StudentMembership
+from models.utility.audit import EndpointCategory
 from services.committees.public import get_committee_by_title
 from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
@@ -28,6 +30,10 @@ committee_position_bp = Blueprint("committee_position", __name__)
 
 @committee_position_bp.route("/", methods=["POST"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.COMMITTEE_POSITION,
+    additional_info="New committee position.",
+)
 def create_committee_position() -> Response:
     """
     Creates a new committee position
@@ -103,6 +109,10 @@ def create_committee_position() -> Response:
     "/assign/<string:committee_position_id>", methods=["POST", "DELETE"]
 )
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.COMMITTEE_POSITION,
+    additional_info="New committee position assignment.",
+)
 def assign_student_to_committee_position(
     committee_position_id: str,
 ) -> Response:
@@ -164,6 +174,10 @@ def assign_student_to_committee_position(
 
 @committee_position_bp.route("/<string:committee_position_id>", methods=["DELETE"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.COMMITTEE_POSITION,
+    additional_info="Soft delete of committee position.",
+)
 def soft_delete_committee_position(committee_position_id) -> Response:
     """
     Soft deletes a committee position.
@@ -191,6 +205,10 @@ def soft_delete_committee_position(committee_position_id) -> Response:
     "/<string:committee_position_id>/recruit", methods=["POST", "DELETE"]
 )
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.COMMITTEE_POSITION,
+    additional_info="New recruitment for a committee position.",
+)
 def recruit_for_position(committee_position_id) -> Response:
     """
     Recruits for a committee position, both creating and deleting recruitment

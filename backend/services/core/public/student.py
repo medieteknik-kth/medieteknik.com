@@ -3,6 +3,7 @@ The public service for student related queries
 """
 
 from datetime import datetime
+from typing import List
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
 from models.committees import (
@@ -13,51 +14,35 @@ from models.core import Student, StudentMembership
 from utility.database import db
 
 
-def retrieve_all_committee_members(languages):
-    committee_memberships = (
-        db.session.query(StudentMembership)
-        .join(
-            CommitteePosition,
-            StudentMembership.committee_position_id
-            == CommitteePosition.committee_position_id,
-        )
-        .join(Student, StudentMembership.student_id == Student.student_id)
-        .filter(
-            CommitteePosition.role == CommitteePositionsRole.COMMITTEE,
-            StudentMembership.termination_date == None,  # noqa
-        )
-        .options(
-            joinedload(StudentMembership.student),  # type: ignore
-            joinedload(StudentMembership.committee_position),  # type: ignore
-        )
-        .all()
-    )
+def get_officials(year: str = None, semester: str = "VT") -> List[StudentMembership]:
+    """
+    Retrieves all officials for a given year and semester.
 
-    return committee_memberships
+    :param year: The year to retrieve officials for
+    :type year: str
+    :param semester: The semester to retrieve officials for
+    :type semester: str
 
-
-def get_officials(languages, date):
-    if not date:
-        committee_memberships = retrieve_all_committee_members(languages)
-        return committee_memberships
-
-    QUARTER_START_MONTHS = {
-        "Q1": 1,  # January
-        "Q2": 4,  # April
-        "Q3": 7,  # July
-        "Q4": 10,  # October
-    }
-
-    start_year, end_year = date.split("-")
-
-    try:
-        start_year = int(start_year)
-        end_year = int(end_year)
-    except ValueError:
+    :return: The list of officials
+    :rtype: list
+    """
+    if semester != "VT" and semester != "HT":
+        return None
+    if year is None or len(year) != 4 or not year.isdigit():
         return None
 
-    start_date = datetime(start_year, QUARTER_START_MONTHS["Q3"], 1)
-    end_date = datetime(end_year, QUARTER_START_MONTHS["Q2"], 1)
+    # start_date = datetime(start_year, QUARTER_START_MONTHS["Q3"], 1)
+    # end_date = datetime(end_year, QUARTER_START_MONTHS["Q2"], 1)
+
+    start_date = None
+    end_date = None
+
+    if semester == "VT":
+        start_date = datetime(int(year), 1, 1)
+        end_date = datetime(int(year), 6, 30)
+    elif semester == "HT":
+        start_date = datetime(int(year), 7, 1)
+        end_date = datetime(int(year), 12, 31)
 
     committee_memberships = (
         db.session.query(StudentMembership)

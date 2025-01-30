@@ -10,10 +10,12 @@ from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
+from decorators.auditable import audit
 from main import app
 from models.committees import Committee, CommitteePosition
 from models.content import Event, RepeatableEvent
 from models.core import Student, StudentMembership, Author
+from models.utility.audit import EndpointCategory
 from services.content import (
     create_item,
     delete_item,
@@ -27,6 +29,10 @@ events_bp = Blueprint("events", __name__)
 
 @events_bp.route("/<string:event_id>", methods=["DELETE"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.EVENT,
+    additional_info="Deleted an event",
+)
 def delete_event(event_id: str) -> Response:
     """
     Deletes an event by ID
@@ -113,6 +119,10 @@ def delete_event(event_id: str) -> Response:
 
 @events_bp.route("/", methods=["POST"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.EVENT,
+    additional_info="Created an event",
+)
 def create_event() -> Response:
     """
     Creates an event

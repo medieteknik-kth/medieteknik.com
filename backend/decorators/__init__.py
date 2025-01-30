@@ -4,5 +4,6 @@ Package for decorators.
 """
 
 from .csrf_protection import csrf_protected
+from .auditable import audit
 
-__all__ = ["csrf_protected"]
+__all__ = ["csrf_protected", "audit"]

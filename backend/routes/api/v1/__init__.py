@@ -4,31 +4,39 @@ v1 API Routes.
 All routes are registered here via the `register_routes` function.
 """
 
+import json
 import os
 import secrets
+from typing import Any
 import urllib
 from http import HTTPStatus
-from datetime import datetime, timedelta
-from flask import Flask, jsonify, make_response, request, session, url_for
+from datetime import datetime, timedelta, timezone
+from flask import Flask, Response, jsonify, make_response, request, session, url_for
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
     get_jwt_identity,
+    jwt_required,
     set_access_cookies,
-    set_refresh_cookies,
-    create_refresh_token,
+    unset_jwt_cookies,
 )
-from models.committees.committee import Committee
-from models.committees.committee_position import CommitteePosition
-from models.core.student import Student, StudentMembership
+from sqlalchemy import text
+from decorators.auditable import audit
+from decorators.csrf_protection import csrf_protected
+from models.core.student import Student
+from models.utility.audit import EndpointCategory
+from models.utility.auth import RevokedTokens
+from services.core.student import login
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
+from sqlalchemy.exc import SQLAlchemyError
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
 from utility.database import db
+from utility.translation import retrieve_languages
 
 
 def register_v1_routes(app: Flask):
@@ -204,6 +212,12 @@ def register_v1_routes(app: Flask):
                     "role": role,
                 }
                 access_token = create_access_token(
+                    identity=student,
+                    fresh=False,
+                    additional_claims=additional_claims,
+                    expires_delta=timedelta(minutes=30)
+                    if not remember
+                    else timedelta(days=7),
                 )
                 set_access_cookies(response, access_token)
 
@@ -213,7 +227,7 @@ def register_v1_routes(app: Flask):
 
         return response
 
-    # Non-Specific Routes
+    # Non-Specific Routes / Auth
     @app.route("/")
     def index():
         """
@@ -227,16 +241,91 @@ def register_v1_routes(app: Flask):
                             </span> <br />"""
             for route in (ROUTES)
         ]
-        return f'<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}'
+        return f"<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}"
+
+    @app.route("/uptime")
+    def uptime():
+        """
+        Uptime route.
+        """
+        return jsonify({"message": "OK"}), HTTPStatus.OK
+
+    @app.route("/health")
+    def health():
+        """
+        Health route.
+        """
+        health_status = {"status": "healthy"}
+
+        try:
+            db.session.execute(text("SELECT 1"))
+            health_status["database"] = "healthy"
+        except SQLAlchemyError as e:
+            health_status["status"] = "unhealthy"
+            health_status["database"] = "unavailable"
+            health_status["error"] = str(e)
+
+        return jsonify(health_status), HTTPStatus.OK if health_status[
+            "database"
+        ] == "healthy" else HTTPStatus.SERVICE_UNAVAILABLE
 
     @app.route("/api/v1/csrf-token")
-    def get_csrf_token():
+    def get_csrf_token() -> Response:
         token = session.get("csrf_token")
         if not token:
             new_token = generate_csrf()
             session["csrf_token"] = new_token
             return jsonify({"token": new_token})
         return jsonify({"token": token})
+
+    @app.route("/api/v1/login", methods=["POST"])
+    @csrf_protected
+    def login_credentials() -> Response:
+        """
+        Logs in a student
+            :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
+        """
+
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+        provided_languages = retrieve_languages(request.args)
+
+        data: dict[str, Any] = json.loads(json.dumps(data))
+
+        return login(data=data, provided_languages=provided_languages)
+
+    @app.route("/api/v1/logout", methods=["DELETE"])
+    @jwt_required()
+    @audit(endpoint_category=EndpointCategory.AUTH, additional_info="Logged out")
+    def logout() -> Response:
+        """
+        Logs out a student
+            :return: Response - The response object, 200 if successful
+        """
+
+        token = get_jwt()
+        jti = token["jti"]
+
+        if not jti:
+            return jsonify({"success": "No session to log out"}), HTTPStatus.OK
+
+        revoked_token = RevokedTokens(
+            jti=jti,
+            originally_valid_until=datetime.fromtimestamp(token["exp"]),
+        )
+        response = make_response(
+            jsonify({"success": "Successfully logged out", "jti": jti})
+        )
+
+        unset_jwt_cookies(response)
+
+        db.session.add(revoked_token)
+        db.session.commit()
+
+        return response
 
     @app.route("/auth")
     def auth():
@@ -246,15 +335,17 @@ def register_v1_routes(app: Flask):
         nonce = secrets.token_urlsafe(32)
 
         return_url = request.args.get("return_url", type=str, default="/")
+        remember = request.args.get("remember", type=bool, default=False)
         return_url = urllib.parse.quote(return_url)
         session["return_url"] = return_url
+        session["remember"] = remember
         session["oauth_nonce"] = nonce
 
         redirect_uri = url_for(endpoint="oidc_auth", _external=True)
         return oauth.kth.authorize_redirect(redirect_uri, nonce=nonce)
 
     @app.route("/oidc")
-    def oidc_auth():
+    def oidc_auth() -> Response:
         """
         OIDC route.
         """
@@ -269,6 +360,7 @@ def register_v1_routes(app: Flask):
         if not token:
             return jsonify({"error": "Invalid credentials"}), 401
 
+        remember = session.get("remember", False)
         nonce = session.pop("oauth_nonce", None)
 
         student_data = oauth.kth.parse_id_token(token, nonce=nonce)
@@ -327,14 +419,15 @@ def register_v1_routes(app: Flask):
             response=response,
             encoded_access_token=create_access_token(
                 identity=student,
-                fresh=timedelta(minutes=30),
+                fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
+                additional_claims=additional_claims,
+                expires_delta=timedelta(hours=1)
+                if not remember
+                else timedelta(days=14),
             ),
-            max_age=timedelta(hours=1),
-        )
-        set_refresh_cookies(
-            response=response,
-            encoded_refresh_token=create_refresh_token(identity=student),
-            max_age=timedelta(days=30).seconds,
+            max_age=timedelta(hours=1).seconds
+            if not remember
+            else timedelta(days=14).seconds,
         )
         return_url = session.pop("return_url", default=None)
         if return_url:

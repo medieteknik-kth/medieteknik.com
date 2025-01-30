@@ -4,20 +4,13 @@ Student service that handles the student's login, permissions, and role.
 
 from datetime import timedelta
 from http import HTTPStatus
-from flask import Request, Response, jsonify, make_response
+from flask import Request, Response, jsonify, make_response, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
-    create_refresh_token,
-    set_refresh_cookies,
 )
 from typing import Any, Dict, List
-from models.committees import Committee
-from models.committees import CommitteePosition
-from models.core import Author, AuthorType
-from models.core import StudentPermission
-from models.core import Student, StudentMembership
 from models.core import Student
 from services.utility.auth import (
     get_student_authorization,
@@ -26,6 +19,7 @@ from services.utility.auth import (
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from utility.gc import delete_file, upload_file
+import re
 
 
 def login(
@@ -38,19 +32,47 @@ def login(
         :return: Response - The response object containing the user's data and the access token.
 
     """
-    email = data.get("email")
-    password = data.get("password")
+    email: str = data.get("email")
+    password: str = data.get("password")
+    remember = data.get("remember", False)
 
     if email is None or password is None:
         return jsonify(
             {
                 "message": "Invalid credentials",
             }
-        )
+        ), HTTPStatus.UNAUTHORIZED
+
+    if len(password) > 128:
+        return jsonify(
+            {
+                "message": "Invalid credentials",
+            }
+        ), HTTPStatus.UNAUTHORIZED
+
+    if (
+        email.find("@kth.se") == -1 and email.find("@ug.kth.se") == -1
+    ) and not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify(
+            {
+                "message": "Invalid credentials",
+            }
+        ), HTTPStatus.UNAUTHORIZED
 
     student = Student.query.filter_by(email=email).first()
 
+    dummy_hash = generate_password_hash("dummy_password")
     if student is None or not isinstance(student, Student):
+        check_password_hash(
+            dummy_hash, "dummy_password"
+        )  # This is a dummy check to prevent timing attacks
+        return jsonify(
+            {
+                "message": "Invalid credentials",
+            }
+        ), HTTPStatus.UNAUTHORIZED
+
+    if not getattr(student, "password_hash"):
         return jsonify(
             {
                 "message": "Invalid credentials",
@@ -78,23 +100,22 @@ def login(
             "role": role,
         }
     )
+    session["remember"] = remember
     response.status_code = HTTPStatus.OK
     set_access_cookies(
         response=response,
         encoded_access_token=create_access_token(
             identity=student,
-            fresh=timedelta(minutes=20),
+            fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
             additional_claims={
                 "permissions": permissions,
                 "role": role,
             },
+            expires_delta=timedelta(hours=1) if not remember else timedelta(days=14),
         ),
-        max_age=timedelta(hours=1),
-    )
-    set_refresh_cookies(
-        response=response,
-        encoded_refresh_token=create_refresh_token(identity=student),
-        max_age=timedelta(days=30).seconds,
+        max_age=timedelta(hours=1).seconds
+        if not remember
+        else timedelta(days=14).seconds,
     )
 
     return response
@@ -202,14 +223,9 @@ def update(request: Request, student: Student) -> Response:
     access_token = create_access_token(
         identity=student, fresh=True, additional_claims=additional_claims
     )
-    refresh_token = create_refresh_token(
-        identity=student, expires_delta=timedelta(days=30)
-    )
     set_access_cookies(
         response=response, encoded_access_token=access_token, max_age=timedelta(hours=1)
     )
-
-    set_refresh_cookies(response=response, encoded_refresh_token=refresh_token)
 
     response.status_code = HTTPStatus.OK
 

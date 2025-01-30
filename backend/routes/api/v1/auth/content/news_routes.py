@@ -8,14 +8,15 @@ from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt, jwt_required
 from http import HTTPStatus
 from typing import Any, Dict
+from decorators.auditable import audit
 from models.committees import Committee, CommitteePosition
 from models.content import News, NewsTranslation
 from models.core import Student, Author, AuthorType
+from models.utility.audit import EndpointCategory
 from services.content import (
     create_item,
     delete_item,
     get_item_by_url,
-    get_items,
     get_items_from_author,
     publish,
     update_item,
@@ -28,38 +29,12 @@ from utility import AVAILABLE_LANGUAGES, upload_file, retrieve_languages
 news_bp = Blueprint("news", __name__)
 
 
-@news_bp.route("/", methods=["GET"])
-@jwt_required()
-def get_news() -> Response:
-    """
-    Retrieves all news items
-        :return: Response - The response object, 404 if the news item is not found, 403 if the user is not authorized, 200 if successful
-    """
-
-    claims = get_jwt()
-    permissions = claims.get("permissions")
-
-    if not permissions:
-        return jsonify({}), HTTPStatus.FORBIDDEN
-
-    if not permissions.get("student").get("ITEMS_VIEW"):
-        return jsonify({}), HTTPStatus.FORBIDDEN
-
-    language_code = retrieve_languages(request.args)
-    specific_author_id = request.args.get("author")
-
-    author: Author = Author.query.get_or_404(specific_author_id)
-
-    if specific_author_id:
-        return jsonify(
-            get_items_from_author(author, News, language_code)
-        ), HTTPStatus.OK
-
-    return jsonify(get_items(News, language_code)), HTTPStatus.OK
-
-
 @news_bp.route("/<string:identifier>", methods=["GET"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.NEWS,
+    additional_info="Retrieved a news item based on ID or URL",
+)
 def get_news_by_id(identifier: str) -> Response:
     """
     Retrieves a news item by ID
@@ -86,6 +61,10 @@ def get_news_by_id(identifier: str) -> Response:
 
 @news_bp.route("/student/<string:email>", methods=["GET"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.NEWS,
+    additional_info="Retrieved news items by student",
+)
 def get_news_by_student(email: str) -> Response:
     """
     Retrieves all news items by student
@@ -115,6 +94,10 @@ def get_news_by_student(email: str) -> Response:
 
 @news_bp.route("/", methods=["POST"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.NEWS,
+    additional_info="Created a news item",
+)
 def create_news() -> Response:
     """
     Creates a news item
@@ -173,6 +156,10 @@ def create_news() -> Response:
 
 @news_bp.route("/<string:identifier>", methods=["PUT"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.NEWS,
+    additional_info="Updated a news item",
+)
 def update_news_by_url(identifier: str) -> Response:
     """
     Updates a news item by URL
@@ -225,6 +212,10 @@ def update_news_by_url(identifier: str) -> Response:
 
 @news_bp.route("/<string:identifier>/publish", methods=["PUT"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.NEWS,
+    additional_info="Published a news item",
+)
 def publish_news(identifier: str) -> Response:
     """
     Publishes a news item
@@ -300,6 +291,10 @@ def publish_news(identifier: str) -> Response:
 
 @news_bp.route("/<string:url>", methods=["DELETE"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.NEWS,
+    additional_info="Deleted a news item",
+)
 def delete_news(url: str) -> Response:
     """
     Deletes a news item

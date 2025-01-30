@@ -8,8 +8,10 @@ from datetime import datetime, timedelta
 from flask import Blueprint, Response, jsonify, request
 from http import HTTPStatus
 from sqlalchemy import or_
+from decorators.auditable import audit
 from models.content import Event
 from models.core import Student
+from models.utility.audit import EndpointCategory
 from services.content import generate_ics
 from services.content.public import get_main_calendar
 from utility import retrieve_languages
@@ -19,6 +21,10 @@ calendar_bp = Blueprint("calendar", __name__)
 
 
 @calendar_bp.route("/ics")
+@audit(
+    endpoint_category=EndpointCategory.NOT_SPECIFIED,
+    additional_info="Subscribed to the calendar",
+)
 def get_calendar_ics() -> Response:
     """
     Retrieves the calendar in iCalendar format

@@ -4,44 +4,25 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, make_response, request
+from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import (
-    create_access_token,
     get_jwt_identity,
     jwt_required,
-    set_access_cookies,
-    unset_jwt_cookies,
 )
 from http import HTTPStatus
 from typing import Any
-from sqlalchemy import func, or_
 from decorators import csrf_protected
-from models.committees import Committee, CommitteePosition
-from models.core import Profile, Student, StudentMembership
-from services.core import login, get_permissions, update
+from decorators.auditable import audit
+from models.core import Profile, Student
+from models.utility.audit import EndpointCategory
+from services.core import update
+from services.utility.auth import (
+    get_student_authorization,
+    get_student_committee_details,
+)
 from utility import delete_file, upload_file, retrieve_languages, db
 
 student_bp = Blueprint("student", __name__)
-
-
-@student_bp.route("/login", methods=["POST"])
-@csrf_protected
-def student_login() -> Response:
-    """
-    Logs in a student
-        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
-    """
-
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-    provided_languages = retrieve_languages(request.args)
-
-    data: dict[str, Any] = json.loads(json.dumps(data))
-
-    return login(data=data, provided_languages=provided_languages)
 
 
 @student_bp.route("/", methods=["PUT"])
@@ -69,6 +50,10 @@ def update_student() -> Response:
 
 @student_bp.route("/profile", methods=["PUT", "GET"])
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.STUDENT,
+    additional_info="Profile, profile picture may contain copyrighted material.",
+)
 def update_profile() -> Response:
     """
     Updates the student profile
@@ -126,6 +111,10 @@ def update_profile() -> Response:
 @student_bp.route("/reception", methods=["PUT"])
 @csrf_protected
 @jwt_required()
+@audit(
+    endpoint_category=EndpointCategory.STUDENT,
+    additional_info="Updated the student reception profile picture, profile picture may contain copyrighted material.",
+)
 def update_reception() -> Response:
     """
     Updates the student reception profile picture
@@ -168,77 +157,6 @@ def update_reception() -> Response:
     return jsonify({"url": result}), HTTPStatus.CREATED
 
 
-@student_bp.route("/refresh", methods=["POST"])
-@jwt_required(refresh=True)
-def refresh_token() -> Response:
-    """
-    Refreshes the student token
-        :return: Response - The response object, 401 if the credentials are invalid, 200 if successful
-    """
-
-    student_id = get_jwt_identity()
-    student = Student.query.filter_by(student_id=student_id).one_or_none()
-    provided_languages = retrieve_languages(request.args)
-
-    if not student:
-        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
-
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
-
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter(
-        StudentMembership.student_id == student_id,
-        or_(
-            StudentMembership.termination_date == None,  # noqa
-            StudentMembership.termination_date > func.now(),
-        ),
-    ).all()
-
-    for membership in student_memberships:
-        position = CommitteePosition.query.get(membership.committee_position_id)
-        if not position or not isinstance(position, CommitteePosition):
-            continue
-
-        committee = Committee.query.get(position.committee_id)
-        if not committee or not isinstance(committee, Committee):
-            continue
-
-        committees.append(committee.to_dict(provided_languages=provided_languages))
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
-
-    response = make_response(
-        {
-            "student": student.to_dict(is_public_route=False),
-            "committees": committees,
-            "committee_positions": committee_positions,
-            "role": permissions_and_role.get("role"),
-            "permissions": permissions_and_role.get("permissions"),
-        }
-    )
-    access_token = create_access_token(identity=student, fresh=False)
-    set_access_cookies(response=response, encoded_access_token=access_token)
-    response.status_code = HTTPStatus.OK
-    return response
-
-
-@student_bp.route("/logout", methods=["POST"])
-def student_logout() -> Response:
-    """
-    Logs out a student
-        :return: Response - The response object, 200 if successful
-    """
-
-    response = make_response()
-    unset_jwt_cookies(response)
-    response.status_code = HTTPStatus.OK
-    return response
-
-
 @student_bp.route("/permissions", methods=["GET"])
 @jwt_required(fresh=True)
 def get_student_permissions() -> Response:
@@ -248,7 +166,14 @@ def get_student_permissions() -> Response:
     """
 
     student_id = get_jwt_identity()
-    return jsonify(get_permissions(student_id)), HTTPStatus.OK
+    student: Student = Student.query.get_or_404(student_id)
+    permissions, role = get_student_authorization(student)
+    return jsonify(
+        {
+            "permissions": permissions,
+            "role": role,
+        }
+    ), HTTPStatus.OK
 
 
 @student_bp.route("/me", methods=["GET"])
@@ -264,44 +189,18 @@ def get_student_callback() -> Response:
 
     student: Student = Student.query.get_or_404(student_id)
 
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
+    permissions, role = get_student_authorization(student)
 
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter(
-        StudentMembership.student_id == student_id,
-        or_(
-            StudentMembership.termination_date == None,  # noqa
-            StudentMembership.termination_date > func.now(),
-        ),
-    ).all()
-
-    for membership in student_memberships:
-        position = CommitteePosition.query.get_or_404(membership.committee_position_id)
-
-        if not position.committee_id:
-            continue
-
-        committee: Committee = Committee.query.get_or_404(position.committee_id)
-
-        committee_dict = committee.to_dict(provided_languages=provided_languages)
-
-        if committee_dict in committees:
-            continue
-
-        committees.append(committee_dict)
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
+    committees, committee_positions = get_student_committee_details(
+        provided_languages=provided_languages, student=student
+    )
 
     return jsonify(
         {
             "student": student.to_dict(is_public_route=False),
-            "role": permissions_and_role.get("role"),
-            "permissions": permissions_and_role.get("permissions"),
             "committees": committees,
             "positions": committee_positions,
+            "permissions": permissions,
+            "role": role,
         }
     ), HTTPStatus.OK
