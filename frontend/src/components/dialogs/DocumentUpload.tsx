@@ -1,5 +1,4 @@
 'use client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -38,7 +37,7 @@ import type Document from '@/models/items/Document'
 import type { DocumentTranslation } from '@/models/items/Document'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'

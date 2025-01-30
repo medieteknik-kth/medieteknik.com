@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
@@ -33,7 +32,7 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import type { LanguageCode } from '@/models/Language'
 import { uploadNewsSchema } from '@/schemas/items/news'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import {
   DocumentTextIcon,
   EyeIcon,

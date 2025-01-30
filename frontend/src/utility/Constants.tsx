@@ -1,4 +1,4 @@
-import type { Language } from '@/models/Language'
+import type { Language, LanguageCode } from '@/models/Language'
 import { GB, SE } from 'country-flag-icons/react/3x2'
 
 export const API_BASE_URL: string =
@@ -7,6 +7,11 @@ export const API_BASE_URL: string =
     : 'https://api.medieteknik.com/api/v1'
 
 export const SITE_VERSION = '0.6.1'
+
+export const FALLBACK_LANGUAGE: LanguageCode = 'en'
+export const SUPPORTED_LANGUAGES: LanguageCode[] = [FALLBACK_LANGUAGE, 'sv']
+export const LANGUAGE_COOKIE_NAME: string = 'language'
+export const DEFAULT_NS: string = 'translation'
 
 export const LANGUAGES: Language = {
   sv: {

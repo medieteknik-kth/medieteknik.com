@@ -1,6 +1,6 @@
 import { getAllCommittees } from '@/api/committee'
 import { getNewsPagniation } from '@/api/items/news'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
+import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import type { MetadataRoute } from 'next'
 
 /**

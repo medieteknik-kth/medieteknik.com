@@ -1,10 +1,7 @@
 import type { LanguageCode } from '@/models/Language'
+import { DEFAULT_NS, FALLBACK_LANGUAGE, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import type { InitOptions } from 'i18next'
 
-export const FALLBACK_LANGUAGE: LanguageCode = 'en'
-export const SUPPORTED_LANGUAGES: LanguageCode[] = [FALLBACK_LANGUAGE, 'sv']
-export const LANGUAGE_COOKIE_NAME: string = 'language'
-export const DEFAULT_NS: string = 'translation'
 
 /**
  * @name getOptions

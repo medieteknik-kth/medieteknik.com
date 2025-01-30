@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -28,7 +27,7 @@ import type { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { editCommitteeSchema } from '@/schemas/committee/edit'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'

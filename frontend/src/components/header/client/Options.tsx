@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -16,7 +15,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import { LANGUAGES } from '@/utility/Constants'
+import {
+  LANGUAGES,
+  LANGUAGE_COOKIE_NAME,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { Cog8ToothIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'

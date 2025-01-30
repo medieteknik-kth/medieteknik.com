@@ -1,11 +1,10 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import DetailedCookiePopup from '@/components/cookie/DetailedCookie'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
-import { LANGUAGES } from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'

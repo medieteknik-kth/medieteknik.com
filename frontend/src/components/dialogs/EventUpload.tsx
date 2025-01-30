@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -26,7 +25,7 @@ import type { LanguageCode } from '@/models/Language'
 import type Event from '@/models/items/Event'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { eventUploadSchema } from '@/schemas/items/event'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
