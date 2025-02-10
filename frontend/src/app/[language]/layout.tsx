@@ -1,8 +1,7 @@
 import LanguageAlert from '@/app/[language]/languageAlert'
 import { useTranslation } from '@/app/i18n'
 import CookiePopup from '@/components/cookie/Cookie'
-import ErrorBoundary from '@/components/error/ErrorBoundary'
-import ErrorFallback from '@/components/error/ErrorFallback'
+import { ClientErrorBoundary } from '@/components/error/ClientErrorBoundary'
 import Footer from '@/components/footer/Footer'
 import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/toaster'
@@ -108,7 +107,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
       <ClientProviders language={language}>
         <LanguageAlert language={language} />
         <Header language={language} />
-        <ErrorBoundary fallback={<ErrorFallback />}>{children}</ErrorBoundary>
+        <ClientErrorBoundary>{children}</ClientErrorBoundary>
         <Footer language={language} />
         <CookiePopup language={language} />
         <Toaster />

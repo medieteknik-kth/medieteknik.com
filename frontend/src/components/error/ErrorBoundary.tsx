@@ -1,20 +1,21 @@
 'use client'
 
-import type React from 'react'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props {
-  children: React.ReactNode
-  fallback: React.ReactNode
+  children: ReactNode
+  fallback: (error: Error) => ReactNode
 }
 
 interface State {
   hasError: boolean
+  error: Error | null
 }
 
 export default class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
+    error: null,
   }
 
   /**
@@ -23,8 +24,8 @@ export default class ErrorBoundary extends Component<Props, State> {
    * @param {Error} _ - The error that was thrown
    * @returns {State} The updated state
    */
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true }
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error }
   }
 
   /**
@@ -43,8 +44,8 @@ export default class ErrorBoundary extends Component<Props, State> {
    * @returns {ReactNode} The children or the fallback UI
    */
   public render(): ReactNode {
-    if (this.state.hasError) {
-      return this.props.fallback
+    if (this.state.hasError && this.state.error) {
+      return this.props.fallback(this.state.error)
     }
     return this.props.children
   }
