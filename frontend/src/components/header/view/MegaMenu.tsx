@@ -59,7 +59,7 @@ export default async function MegaMenu({
         <NavigationMenuLink asChild>
           <Link
             href={`/${language}${subNav.link}`}
-            className={`${navigationMenuTriggerStyle()} !w-full flex flex-col text-sm !items-start justify-center h-full`}
+            className={`${navigationMenuTriggerStyle()} w-full! flex flex-col text-sm items-start! justify-center h-full`}
           >
             <p>{subNav.title}</p>
             <p className='text-xs text-neutral-600 dark:text-neutral-400'>

@@ -29,7 +29,7 @@ export default async function CategorySelect({
         <TabsTrigger asChild key={index} value={category.title}>
           <Button
             variant='outline'
-            className='w-full !justify-start'
+            className='w-full justify-start!'
             title={category.title}
           >
             {category.icon}

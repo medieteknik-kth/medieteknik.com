@@ -30,7 +30,7 @@ export default async function ImageDisplay({
       <Link
         href={image.media_url}
         target='_blank'
-        className='group w-44 sm:w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
+        className='group w-44 sm:w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform p-0!'
       >
         <Image
           src={image.media_url}

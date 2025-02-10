@@ -82,7 +82,7 @@ export default function Colors({ language }: Props): JSX.Element {
 
         <div className='flex flex-col gap-1'>
           <div className='flex items-center gap-1'>
-            <span className='py-0.5 px-0.5 border rounded-md shadow shadow-black/20 dark:shadow-white/20 select-none'>
+            <span className='py-0.5 px-0.5 border rounded-md shadow-sm shadow-black/20 dark:shadow-white/20 select-none'>
               {t('colors.click_button')}
             </span>
             <p className='py-0.5 flex items-center text-neutral-600 dark:text-neutral-300'>
@@ -92,7 +92,7 @@ export default function Colors({ language }: Props): JSX.Element {
 
           <div className='items-center gap-1 hidden md:flex'>
             <span
-              className='py-0.5 px-0.5 border rounded-md shadow shadow-black/20 dark:shadow-white/20 select-none'
+              className='py-0.5 px-0.5 border rounded-md shadow-sm shadow-black/20 dark:shadow-white/20 select-none'
               onMouseOver={() => setMac(true)}
               onFocus={() => setMac(true)}
               title='CTRL on Windows/Linux, ⌘ CMD on macOS'
@@ -100,7 +100,7 @@ export default function Colors({ language }: Props): JSX.Element {
               {mac ? '⌘ CMD' : 'CTRL'}
             </span>
             <span className='select-none'>+</span>
-            <span className='py-0.5 px-0.5 border rounded-md shadow shadow-black/20 dark:shadow-white/20 select-none'>
+            <span className='py-0.5 px-0.5 border rounded-md shadow-sm shadow-black/20 dark:shadow-white/20 select-none'>
               {t('colors.click_button')}
             </span>
             <p className='py-0.5 flex items-center text-neutral-600 dark:text-neutral-300'>
@@ -109,7 +109,7 @@ export default function Colors({ language }: Props): JSX.Element {
           </div>
         </div>
         <div className='items-center gap-1 flex md:hidden'>
-          <span className='py-0.5 px-0.5 border rounded-md shadow shadow-black/20 dark:shadow-white/20 select-none'>
+          <span className='py-0.5 px-0.5 border rounded-md shadow-sm shadow-black/20 dark:shadow-white/20 select-none'>
             HOLD
           </span>
           <p className='py-0.5 flex items-center text-neutral-600 dark:text-neutral-300'>

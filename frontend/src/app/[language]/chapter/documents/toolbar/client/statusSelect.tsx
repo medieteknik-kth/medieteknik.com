@@ -27,7 +27,7 @@ export default function StatusSelect({ language }: Props): JSX.Element {
     <div className='flex gap-2'>
       <Button
         variant={status === 'active' ? 'secondary' : 'outline'}
-        className='w-full !justify-start flex gap-2 items-center'
+        className='w-full justify-start! flex gap-2 items-center'
         title={t('category.time.active')}
         onClick={() => setStatus('active')}
       >
@@ -36,10 +36,8 @@ export default function StatusSelect({ language }: Props): JSX.Element {
       </Button>
       <Button
         variant={status === 'archived' ? 'secondary' : 'outline'}
-        className='w-full !justify-start flex gap-2 items-center'
-        title={
-          t('category.time.archive') + ' <' + (new Date().getFullYear() - 1)
-        }
+        className='w-full justify-start! flex gap-2 items-center'
+        title={`${t('category.time.archive')}  <  ${new Date().getFullYear() - 1}`}
         onClick={() => setStatus('archived')}
       >
         <ClockIcon className='w-6 h-6' />

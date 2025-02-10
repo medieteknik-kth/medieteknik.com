@@ -41,7 +41,7 @@ export default async function Sidebar({
             <TabsTrigger asChild key={index} value={category.title}>
               <Button
                 variant='outline'
-                className='w-full !justify-start'
+                className='w-full justify-start!'
                 title={category.title}
                 id={category.title}
               >

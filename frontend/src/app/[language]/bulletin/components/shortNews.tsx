@@ -55,7 +55,7 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
         />
       </Link>
 
-      <div className='h-full flex-grow flex flex-col max-w-max justify-center md:justify-between col-span-2'>
+      <div className='h-full grow flex flex-col max-w-max justify-center md:justify-between col-span-2'>
         <CardHeader className='w-fit h-fit p-2 pl-0'>
           <Link
             href={`./bulletin/news/${newsItem.url}`}
@@ -64,7 +64,7 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
             <CardTitle className='w-full text-base md:text-xl underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline truncate'>
               {newsItem.translations[0].title}
             </CardTitle>
-            <CardDescription className='w-full group-hover:underline !no-underline'>
+            <CardDescription className='w-full group-hover:underline no-underline!'>
               {newsItem.translations[0].short_description}
             </CardDescription>
           </Link>

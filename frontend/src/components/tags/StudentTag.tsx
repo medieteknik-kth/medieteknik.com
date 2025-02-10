@@ -69,7 +69,7 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
                     alt={username}
                   />
                 ) : (
-                  <p className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold'>
+                  <p className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none no-underline! font-bold'>
                     {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
                   </p>
                 ))}

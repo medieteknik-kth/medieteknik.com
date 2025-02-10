@@ -54,7 +54,7 @@ export default function LoginModal(props: Props) {
           </VisuallyHidden>
         </DialogHeader>
 
-        <div className='!text-sm'>
+        <div className='text-sm!'>
           <AlternativeLogin
             language={language}
             return_url={return_url}

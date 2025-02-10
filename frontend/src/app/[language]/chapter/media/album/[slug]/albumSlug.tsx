@@ -81,7 +81,7 @@ export default async function AlbumSlug(props: Props): Promise<JSX.Element> {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <section className='px-10 py-4 flex items-center gap-4 border-b shadow-sm shadow-black/25'>
+      <section className='px-10 py-4 flex items-center gap-4 border-b shadow-xs shadow-black/25'>
         <FolderIcon className='w-8 h-8' />
         <div>
           <h1 className='text-2xl tracking-wide leading-tight'>

@@ -193,7 +193,7 @@ export default function DetailedEvent({
           <p>{event.location}</p>
         </div>
       </div>
-      <DialogFooter className='flex !justify-between'>
+      <DialogFooter className='flex justify-between!'>
         {event.author.author_type === 'STUDENT' ? (
           <StudentTag student={event.author as Student} includeAt={false} />
         ) : event.author.author_type === 'COMMITTEE' ? (

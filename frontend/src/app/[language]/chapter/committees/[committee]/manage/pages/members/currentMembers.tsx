@@ -217,7 +217,7 @@ export default function CurrentMembers({ language }: Props) {
                           <DropdownMenuItem asChild>
                             <Button
                               variant={'destructive'}
-                              className='w-full cursor-pointer !text-destructive-foreground hover:!bg-destructive/90'
+                              className='w-full cursor-pointer text-destructive-foreground! hover:bg-destructive/90!'
                               disabled={
                                 error !== null ||
                                 positions.length <= 1 ||

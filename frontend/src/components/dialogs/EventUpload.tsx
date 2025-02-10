@@ -288,7 +288,7 @@ export default function EventUpload({
                       }}
                     />
                   </FormControl>
-                  <FormLabel className='h-full ml-2 !mt-0'>
+                  <FormLabel className='h-full ml-2 mt-0!'>
                     {t('event.form.repeats')}
                   </FormLabel>
                   <FormMessage />

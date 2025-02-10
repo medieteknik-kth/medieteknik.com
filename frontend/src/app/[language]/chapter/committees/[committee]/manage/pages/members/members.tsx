@@ -304,7 +304,7 @@ export default function MembersPage({
                   .map((position) => (
                     <li
                       key={position.committee_position_id}
-                      className='even:bg-neutral-100 even:dark:bg-neutral-800 rounded-md p-2 uppercase font-mono text-sm even:dark:hover:bg-neutral-800 even:hover:bg-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900'
+                      className='even:bg-neutral-100 dark:even:bg-neutral-800 rounded-md p-2 uppercase font-mono text-sm dark:even:hover:bg-neutral-800 even:hover:bg-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900'
                     >
                       <p>{position.translations[0].title}</p>
                     </li>

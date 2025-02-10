@@ -14,7 +14,7 @@ export default function StudentCommitteCard({
   committeeLogo = false,
 }: StudentCommitteeCardProps) {
   return (
-    <div className='w-72 border rounded-md overflow-hidden relative shadow-sm'>
+    <div className='w-72 border rounded-md overflow-hidden relative shadow-xs'>
       <div className='relative'>
         {member.student.profile_picture_url ? (
           <Image
@@ -50,10 +50,10 @@ export default function StudentCommitteCard({
           </div>
         )}
 
-        <div className='w-full h-20 absolute bottom-0 from-white from-10% dark:from-[#111] bg-gradient-to-t to-70%' />
+        <div className='w-full h-20 absolute bottom-0 from-white from-10% dark:from-[#111] bg-linear-to-t to-70%' />
       </div>
       {committeeLogo && member.position.committee && (
-        <div className='w-8 h-8 rounded-md overflow-hidden bg-white absolute right-4 top-4 shadow border border-[#e7e5e4]'>
+        <div className='w-8 h-8 rounded-md overflow-hidden bg-white absolute right-4 top-4 shadow-sm border border-[#e7e5e4]'>
           <Image
             src={member.position.committee.logo_url}
             alt={`${member.position.translations[0].title} logo`}

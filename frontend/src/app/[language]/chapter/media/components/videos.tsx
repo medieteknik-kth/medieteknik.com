@@ -49,7 +49,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
   return (
     <>
       <Button
-        className='relative w-72 h-auto aspect-video rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
+        className='relative w-72 h-auto aspect-video rounded-lg flex flex-col hover:scale-105 transition-transform p-0!'
         variant={'ghost'}
         onClick={() => {
           if (

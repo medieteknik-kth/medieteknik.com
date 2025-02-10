@@ -282,7 +282,7 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
           <Button
             size='icon'
             variant='ghost'
-            className='mr-1 cursor-not-allowed !pointer-events-auto'
+            className='mr-1 cursor-not-allowed pointer-events-auto!'
             title={`${t('insert')} ${t('image')}`}
             aria-label={`${t('insert')} ${t('image')}`}
             disabled

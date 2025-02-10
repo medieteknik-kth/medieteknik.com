@@ -25,7 +25,7 @@ export default function InfographicCard({ card }: Props) {
             rel={`${
               card.href !== 'https://metastudent.se/' ? 'me' : 'external'
             }`}
-            className='h-fit flex flex-wrap !p-0 gap-4 hover:underline items-center text-blue-600 dark:text-primary'
+            className='h-fit flex flex-wrap p-0! gap-4 hover:underline items-center text-blue-600 dark:text-primary'
           >
             <Image
               src={card.icon}

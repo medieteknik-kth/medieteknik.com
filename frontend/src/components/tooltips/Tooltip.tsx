@@ -29,7 +29,7 @@ export function StudentTooltip({ student }: { student: Student }) {
               alt={username}
             />
           ) : (
-            <p className='h-24 w-auto aspect-square p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold text-black text-2xl'>
+            <p className='h-24 w-auto aspect-square p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none no-underline! font-bold text-black text-2xl'>
               {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
             </p>
           )}
