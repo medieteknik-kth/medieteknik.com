@@ -38,10 +38,6 @@ interface Props {
  * @returns {JSX.Element} The JSX code for the GridView component.
  */
 export default function GridView({ language, type }: Props): JSX.Element {
-  const reroute = (url: string) => {
-    window.open(url, '_blank')
-  }
-
   const {
     documents,
     selectedDocuments,
@@ -65,7 +61,7 @@ export default function GridView({ language, type }: Props): JSX.Element {
         }
       } else {
         if (index > -1) {
-          reroute(document.translations[0].url)
+          window.open(document.translations[0].url, '_blank')
         } else {
           setSelectedDocuments([document])
         }
@@ -88,7 +84,7 @@ export default function GridView({ language, type }: Props): JSX.Element {
           }
         } else {
           if (index > -1) {
-            reroute(document.translations[0].url)
+            window.open(document.translations[0].url, '_blank')
           } else {
             setSelectedDocuments([document])
           }
@@ -100,15 +96,18 @@ export default function GridView({ language, type }: Props): JSX.Element {
 
   const authorImage = (author: Author) => {
     switch (author.author_type) {
-      case 'STUDENT':
+      case 'STUDENT': {
         const student = author as Student
-        return student.profile_picture_url + '&w=40'
-      case 'COMMITTEE':
+        return `${student.profile_picture_url}&w=40`
+      }
+      case 'COMMITTEE': {
         const committee = author as Committee
         return committee.logo_url
-      case 'COMMITTEE_POSITION':
+      }
+      case 'COMMITTEE_POSITION': {
         const committeePosition = author as CommitteePosition
         return committeePosition.committee?.logo_url || null
+      }
       default:
         throw new Error('Unknown author type')
     }
@@ -116,15 +115,18 @@ export default function GridView({ language, type }: Props): JSX.Element {
 
   const authorName = (author: Author) => {
     switch (author.author_type) {
-      case 'STUDENT':
+      case 'STUDENT': {
         const student = author as Student
-        return student.first_name + ' ' + (student.last_name || '')
-      case 'COMMITTEE':
+        return `${student.first_name} ${student.last_name || ''}`
+      }
+      case 'COMMITTEE': {
         const committee = author as Committee
         return committee.translations[0].title
-      case 'COMMITTEE_POSITION':
+      }
+      case 'COMMITTEE_POSITION': {
         const committeePosition = author as CommitteePosition
         return committeePosition.translations[0].title
+      }
       default:
         throw new Error('Unknown author type')
     }
@@ -235,7 +237,6 @@ function renderDocuments(
   return (
     <div
       key={documentIndex}
-      tabIndex={0}
       className={`w-32 md:w-60 h-fit rounded-md border cursor-pointer flex flex-col justify-between
           ${
             selectedDocuments.includes(document)

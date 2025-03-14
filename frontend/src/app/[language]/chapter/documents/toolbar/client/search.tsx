@@ -3,16 +3,17 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import {
   DocumentIcon,
   DocumentTextIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useState, type JSX } from 'react'
+import type { ChangeEvent, JSX } from 'react'
+import { useCallback, useState } from 'react'
 
 interface Props {
   language: LanguageCode

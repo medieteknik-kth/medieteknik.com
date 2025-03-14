@@ -4,9 +4,9 @@ import DocumentUpload from '@/components/dialogs/DocumentUpload'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { useState, type JSX } from 'react'
+import type { LanguageCode } from '@/models/Language'
+import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
+import { type JSX, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -22,7 +22,8 @@ interface Props {
  */
 export default function SidebarAuth({ language }: Props): JSX.Element {
   const [open, setOpen] = useState(false)
-  const { student, permissions } = useAuthentication()
+  const { student } = useStudent()
+  const { permissions } = usePermissions()
   return (
     <>
       {student &&

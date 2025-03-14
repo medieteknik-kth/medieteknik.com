@@ -1,6 +1,6 @@
 'use client'
 
-import { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
+import type { TypeOfDocument } from '@/app/[language]/chapter/documents/utility/util'
 import { useTranslation } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -12,11 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import Committee, { CommitteePosition } from '@/models/Committee'
-import { Author } from '@/models/Items'
-import Document from '@/models/items/Document'
-import { LanguageCode } from '@/models/Language'
-import Student from '@/models/Student'
+import type Committee from '@/models/Committee'
+import type { CommitteePosition } from '@/models/Committee'
+import type { Author } from '@/models/Items'
+import type { LanguageCode } from '@/models/Language'
+import type Student from '@/models/Student'
+import type Document from '@/models/items/Document'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import {
   DocumentIcon,
@@ -25,7 +26,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
-import { MouseEvent, useCallback, type JSX } from 'react'
+import { type JSX, type MouseEvent, useCallback } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -42,9 +43,6 @@ interface Props {
  * @returns {JSX.Element} The JSX code for the ListView component.
  */
 export default function ListView({ language, type }: Props): JSX.Element {
-  const reroute = (url: string) => {
-    window.open(url, '_blank')
-  }
   const {
     documents,
     selectedDocuments,
@@ -69,7 +67,7 @@ export default function ListView({ language, type }: Props): JSX.Element {
         }
       } else {
         if (index > -1) {
-          reroute(document.translations[0].url)
+          window.open(document.translations[0].url, '_blank')
         } else {
           setSelectedDocuments([document])
         }
@@ -80,15 +78,18 @@ export default function ListView({ language, type }: Props): JSX.Element {
 
   const authorImage = (author: Author) => {
     switch (author.author_type) {
-      case 'STUDENT':
+      case 'STUDENT': {
         const student = author as Student
         return student.profile_picture_url
-      case 'COMMITTEE':
+      }
+      case 'COMMITTEE': {
         const committee = author as Committee
         return committee.logo_url
-      case 'COMMITTEE_POSITION':
+      }
+      case 'COMMITTEE_POSITION': {
         const committeePosition = author as CommitteePosition
         return committeePosition.committee?.logo_url || ''
+      }
       default:
         throw new Error('Unknown author type')
     }
@@ -96,15 +97,18 @@ export default function ListView({ language, type }: Props): JSX.Element {
 
   const authorName = (author: Author) => {
     switch (author.author_type) {
-      case 'STUDENT':
+      case 'STUDENT': {
         const student = author as Student
-        return student.first_name + ' ' + (student.last_name || '')
-      case 'COMMITTEE':
+        return `${student.first_name} ${student.last_name || ''}`
+      }
+      case 'COMMITTEE': {
         const committee = author as Committee
         return committee.translations[0].title
-      case 'COMMITTEE_POSITION':
+      }
+      case 'COMMITTEE_POSITION': {
         const committeePosition = author as CommitteePosition
         return committeePosition.translations[0].title
+      }
       default:
         throw new Error('Unknown author type')
     }
@@ -140,9 +144,9 @@ export default function ListView({ language, type }: Props): JSX.Element {
               .sort((a, b) =>
                 a.is_pinned === b.is_pinned ? 0 : a.is_pinned ? -1 : 1
               )
-              .map((document, documentIndex) => (
+              .map((document) => (
                 <TableRow
-                  key={documentIndex}
+                  key={`${document.translations[0].title}_${document.created_at}`}
                   className={`cursor-pointer ${
                     selectedDocuments.includes(document)
                       ? 'bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700'
@@ -209,7 +213,6 @@ export default function ListView({ language, type }: Props): JSX.Element {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell></TableCell>
                 </TableRow>
               ))}
         </TableBody>

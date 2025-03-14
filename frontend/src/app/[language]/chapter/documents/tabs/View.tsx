@@ -30,6 +30,11 @@ export default function View({ language, type }: Props): JSX.Element {
       onClick={() => {
         setSelectedDocuments([])
       }}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          setSelectedDocuments([])
+        }
+      }}
     >
       {view === 'grid' ? (
         <GridView language={language} type={type} />
