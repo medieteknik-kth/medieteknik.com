@@ -1,4 +1,5 @@
 from models.content import Item
+from models.content.base import PublishedStatus
 from models.core import Author
 from utility.constants import AVAILABLE_LANGUAGES
 from typing import Any, Dict, Type, List
@@ -116,7 +117,12 @@ def get_latest_items(
     """
 
     items: List[Item] = (
-        item_table.query.order_by(Item.created_at.desc()).limit(count).all()
+        item_table.query.filter_by(
+            is_public=True, published_status=PublishedStatus.PUBLISHED.value
+        )
+        .order_by(Item.created_at.desc())
+        .limit(count)
+        .all()
     )
 
     return [

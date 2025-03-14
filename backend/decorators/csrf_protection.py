@@ -39,6 +39,9 @@ def csrf_protected(f: FunctionType) -> FunctionType:
                 "Request object is missing! Make sure you're using the decorator in a endpoint."
             )
 
+        if request.metod == "OPTIONS":
+            return f(*args, **kwargs)
+
         csrf_token: str = ""
         # Check if the request is JSON or a Form
         if not request.is_json:
