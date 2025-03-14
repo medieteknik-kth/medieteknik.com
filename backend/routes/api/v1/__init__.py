@@ -21,10 +21,8 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
 )
 from sqlalchemy import text
-from decorators.auditable import audit
 from decorators.csrf_protection import csrf_protected
 from models.core.student import Student
-from models.utility.audit import EndpointCategory
 from models.utility.auth import RevokedTokens
 from services.core.student import login
 from services.utility.auth import (

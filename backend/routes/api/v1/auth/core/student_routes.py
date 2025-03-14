@@ -12,9 +12,7 @@ from flask_jwt_extended import (
 from http import HTTPStatus
 from typing import Any
 from decorators import csrf_protected
-from decorators.auditable import audit
 from models.core import Profile, Student
-from models.utility.audit import EndpointCategory
 from services.core import update
 from services.utility.auth import (
     get_student_authorization,
@@ -50,10 +48,6 @@ def update_student() -> Response:
 
 @student_bp.route("/profile", methods=["PUT", "GET"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.STUDENT,
-    additional_info="Profile, profile picture may contain copyrighted material.",
-)
 def update_profile() -> Response:
     """
     Updates the student profile
@@ -111,10 +105,6 @@ def update_profile() -> Response:
 @student_bp.route("/reception", methods=["PUT"])
 @csrf_protected
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.STUDENT,
-    additional_info="Updated the student reception profile picture, profile picture may contain copyrighted material.",
-)
 def update_reception() -> Response:
     """
     Updates the student reception profile picture

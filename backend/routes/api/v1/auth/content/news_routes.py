@@ -8,11 +8,9 @@ from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt, jwt_required
 from http import HTTPStatus
 from typing import Any, Dict
-from decorators.auditable import audit
 from models.committees import Committee, CommitteePosition
 from models.content import News, NewsTranslation
 from models.core import Student, Author, AuthorType
-from models.utility.audit import EndpointCategory
 from services.content import (
     create_item,
     delete_item,
@@ -31,10 +29,6 @@ news_bp = Blueprint("news", __name__)
 
 @news_bp.route("/<string:identifier>", methods=["GET"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.NEWS,
-    additional_info="Retrieved a news item based on ID or URL",
-)
 def get_news_by_id(identifier: str) -> Response:
     """
     Retrieves a news item by ID
@@ -61,10 +55,6 @@ def get_news_by_id(identifier: str) -> Response:
 
 @news_bp.route("/student/<string:email>", methods=["GET"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.NEWS,
-    additional_info="Retrieved news items by student",
-)
 def get_news_by_student(email: str) -> Response:
     """
     Retrieves all news items by student
@@ -94,10 +84,6 @@ def get_news_by_student(email: str) -> Response:
 
 @news_bp.route("/", methods=["POST"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.NEWS,
-    additional_info="Created a news item",
-)
 def create_news() -> Response:
     """
     Creates a news item
@@ -156,10 +142,6 @@ def create_news() -> Response:
 
 @news_bp.route("/<string:identifier>", methods=["PUT"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.NEWS,
-    additional_info="Updated a news item",
-)
 def update_news_by_url(identifier: str) -> Response:
     """
     Updates a news item by URL
@@ -212,10 +194,6 @@ def update_news_by_url(identifier: str) -> Response:
 
 @news_bp.route("/<string:identifier>/publish", methods=["PUT"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.NEWS,
-    additional_info="Published a news item",
-)
 def publish_news(identifier: str) -> Response:
     """
     Publishes a news item
@@ -291,10 +269,6 @@ def publish_news(identifier: str) -> Response:
 
 @news_bp.route("/<string:url>", methods=["DELETE"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.NEWS,
-    additional_info="Deleted a news item",
-)
 def delete_news(url: str) -> Response:
     """
     Deletes a news item

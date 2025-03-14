@@ -82,7 +82,6 @@ class Student(db.Model):
     permissions = db.relationship(
         "StudentPermission", back_populates="student", uselist=False
     )
-    audit = db.relationship("Audit", back_populates="student", uselist=False)
 
     def __repr__(self):
         return "<Student %r>" % self.student_id

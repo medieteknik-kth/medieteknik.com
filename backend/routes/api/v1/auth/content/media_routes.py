@@ -8,11 +8,9 @@ from flask_jwt_extended import get_jwt, jwt_required
 from datetime import date
 from http import HTTPStatus
 from sqlalchemy import func
-from decorators.auditable import audit
 from models.committees import Committee
 from models.content import Album, Media
 from models.core import Student
-from models.utility.audit import EndpointCategory
 from services.content import create_item
 from utility import AVAILABLE_LANGUAGES, upload_file, convert_iso_639_1_to_bcp_47, db
 
@@ -22,10 +20,6 @@ media_bp = Blueprint("media", __name__)
 
 @media_bp.route("/", methods=["POST"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.MEDIA,
-    additional_info="Can contain copyrighted material",
-)
 def create_media() -> Response:
     """
     Creates a new media item

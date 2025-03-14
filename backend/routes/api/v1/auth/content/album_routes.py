@@ -8,9 +8,7 @@ from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import jwt_required
 from http import HTTPStatus
 from typing import Any, Dict, List
-from decorators.auditable import audit
 from models.content import Album, AlbumTranslation
-from models.utility.audit import EndpointCategory
 from utility import db, convert_iso_639_1_to_bcp_47
 
 
@@ -19,10 +17,6 @@ album_bp = Blueprint("album", __name__)
 
 @album_bp.route("/", methods=["POST"])
 @jwt_required()
-@audit(
-    endpoint_category=EndpointCategory.MEDIA,
-    additional_info="Created a new album",
-)
 def create_album() -> Response:
     """
     Creates a new album
