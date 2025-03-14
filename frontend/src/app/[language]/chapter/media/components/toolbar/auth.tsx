@@ -17,7 +17,7 @@ import {
 import type Album from '@/models/Album'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { FolderPlusIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { type JSX, useEffect, useState } from 'react'
 
@@ -37,7 +37,7 @@ interface Props {
 export default function ToolbarAuth({ language }: Props): JSX.Element {
   const [albumDialogOpen, setAlbumDialogOpen] = useState(false)
   const [selectAlbumDialogOpen, setSelectAlbumDialogOpen] = useState(true)
-  const { student, committees } = useAuthentication()
+  const { student, committees } = useStudent()
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null)
   const [selectedCommittee, setSelectedCommittee] = useState<Committee | null>(
     null

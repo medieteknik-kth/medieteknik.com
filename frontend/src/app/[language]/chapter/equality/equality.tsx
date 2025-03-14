@@ -21,7 +21,9 @@ export default async function Equality(props: Props) {
   const { t } = await useTranslation(language, 'equality/equality')
   const { data: members, error } = await getCommitteeMembers(
     'studienämnden',
-    'sv',
+    language,
+    undefined,
+    false,
     1
   )
 
@@ -95,6 +97,7 @@ export default async function Equality(props: Props) {
               .map((member) => (
                 <StudentCommitteCard
                   key={member.student.email}
+                  language={language}
                   member={member}
                   committeeLogo={false}
                 />

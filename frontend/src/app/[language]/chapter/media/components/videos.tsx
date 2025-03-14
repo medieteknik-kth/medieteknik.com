@@ -101,7 +101,7 @@ export default function VideoDisplay({ language, video }: Props): JSX.Element {
             onClick={() => setDialogOpen(false)}
           />
           <Button
-            className='absolute right-96 top-48'
+            className='absolute top-20 left-0 right-0 mx-auto'
             size={'icon'}
             onClick={(event) => {
               event.stopPropagation()

@@ -2,8 +2,8 @@ import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 
 import type { JSX } from 'react'
 
@@ -34,7 +34,7 @@ export default async function Iconography({
         <ul className='flex gap-4 flex-wrap'>
           <li className='flex flex-col gap-2'>
             <Image
-              src='https://storage.googleapis.com/medieteknik-static/static/logo.webp'
+              src='https://storage.googleapis.com/medieteknik-static/static/logos/logo.webp'
               alt='Base Emblem'
               width={256}
               height={256}
@@ -42,7 +42,7 @@ export default async function Iconography({
             />
             <Button asChild variant={'outline'}>
               <Link
-                href='https://storage.googleapis.com/medieteknik-static/static/logo.webp'
+                href='https://storage.googleapis.com/medieteknik-static/static/logos/logo.webp'
                 className='flex items-center gap-1'
                 target='_blank'
               >

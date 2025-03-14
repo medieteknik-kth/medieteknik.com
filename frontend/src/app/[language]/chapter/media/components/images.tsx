@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import type Media from '@/models/items/Media'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { JSX } from 'react'
 
 interface Props {

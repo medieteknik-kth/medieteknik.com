@@ -2,7 +2,7 @@ import { useTranslation } from '@/app/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
 
 interface Props {
