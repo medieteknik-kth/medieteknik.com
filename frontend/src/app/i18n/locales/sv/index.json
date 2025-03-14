@@ -1,14 +1,17 @@
 {
     "about": "Medieteknik på KTH",
+    "about_description": "Medieteknik är ett 5-årigt civilingenjörsprogram med fokus på teknik och design av medier.",
     "chapter": {
         "title": "Sektionen",
         "description": "Vill du bli sektionsaktiv inom Medieteknik? Klicka ovan för att lära mer om vad dagliga operationen kan innehålla.",
-        "link_text": "Länk till sektionssidan."
+        "link_text": "Länk till sektionssidan.",
+        "cta_text": "Bli sektionsaktiv"
     },
     "new_students": {
         "title": "Nya studenter",
         "description": "Är du en ny student, som kommer påbörja på Civilingenjörsutbildningen inom Medieteknik detta år? Klicka ovan för att lära dig mer om dina 3 års utbildning och masteralternativ.",
-        "link_text": "Länk till utbildningssidan"
+        "link_text": "Länk till utbildningssidan",
+        "cta_text": "Läs mer"
     },
     "international_link_text": "Länk till internationella sidan."
 }

@@ -14,7 +14,6 @@ import { headers } from 'next/headers'
 import Script from 'next/script'
 import type React from 'react'
 import type { JSX } from 'react'
-import { fontFigtree } from '../fonts'
 import './globals.css'
 
 /**
@@ -97,7 +96,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
   return (
     <>
       <noscript>
-        <div className='fixed top-0 left-0 w-full h-full bg-[#090909] dark:bg-white text-white dark:text-black flex items-center justify-center z-50'>
+        <div className='fixed top-0 left-0 w-full h-full bg-[#121212] dark:bg-white text-white dark:text-black flex items-center justify-center z-50'>
           <h1 className='text-2xl'>
             You need to enable JavaScript to use this site.
           </h1>
@@ -115,8 +114,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
       </ClientProviders>
       <Script id='language-attributes' nonce={nonce ?? ''}>
         {`document.documentElement.lang = "${language}";
-document.documentElement.dir = "${dir(language)}";
-document.documentElement.className = "${fontFigtree.className}";`}
+document.documentElement.dir = "${dir(language)}";`}
       </Script>
     </>
   )
