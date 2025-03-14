@@ -18,14 +18,12 @@ const experimentalConfig: ExperimentalConfig = {
 
 const nextConfig: NextConfig = {
   experimental: experimentalConfig,
-
   productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {
         hostname: 'storage.googleapis.com',
         protocol: 'https',
-        port: '',
         pathname: '/medieteknik-static/**',
       },
       {
@@ -60,6 +58,10 @@ const nextConfig: NextConfig = {
             value: 'same-origin',
           },
           {
+            key: 'Service-Worker-Allowed',
+            value: '/',
+          },
+          {
             key: 'Permissions-Policy',
             value:
               'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), fullscreen=(self "https://*.youtube-nocookie.com"), autoplay=(), payment=(self)',
@@ -71,6 +73,19 @@ const nextConfig: NextConfig = {
           {
             key: 'Cross-Origin-Resource-Policy',
             value: 'same-site',
+          },
+        ],
+      },
+      {
+        source: '/service-worker.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
           },
         ],
       },
@@ -117,5 +132,12 @@ const nextConfig: NextConfig = {
     return config
   },
 } satisfies NextConfig
+
+if (process.env.ANALYZE) {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  })
+  module.exports = withBundleAnalyzer(nextConfig)
+}
 
 export default nextConfig
