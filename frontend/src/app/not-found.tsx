@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
 import './[language]/globals.css'
 
@@ -20,16 +20,16 @@ export default async function NotFound(): Promise<JSX.Element> {
         <h2 className='text-2xl'>Page Not Found</h2>
       </div>
       <Button asChild>
-        <a href='/'>Go back to the homepage</a>
+        <Link href='/'>Go back to the homepage</Link>
       </Button>
       <div className='text-sm flex flex-col items-center'>
         <p>If you believe this to be an error, please mail us at</p>
-        <Link
+        <a
           href='mailto:webmaster@medieteknik.com'
           className='text-blue-500 hover:underline'
         >
           webmaster@medieteknik.com
-        </Link>
+        </a>
       </div>
     </main>
   )

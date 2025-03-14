@@ -1,11 +1,10 @@
 'use client'
 
-import KTHSVG from 'public/images/svg/kth.svg'
-
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 
 import type { LanguageCode } from '@/models/Language'
+import Image from 'next/image'
 import type { JSX } from 'react'
 
 interface Props {
@@ -29,7 +28,7 @@ export default function AlternativeLogin({
   remember,
 }: Props): JSX.Element {
   const { t } = useTranslation(language, 'login')
-  
+
   const loginKTH = () => {
     const redirectURL =
       process.env.NODE_ENV === 'production'
@@ -59,12 +58,12 @@ export default function AlternativeLogin({
             size={'icon'}
             onClick={loginKTH}
           >
-            <KTHSVG
+            <Image
+              src='https://storage.googleapis.com/medieteknik-static/static/logos/kth.svg'
+              alt={t('kth_login')}
               width={80}
               height={80}
-              aria-label='KTH Logo'
-              name='KTH Logo'
-              className='rounded-lg'
+              unoptimized
             />
           </Button>
         </li>

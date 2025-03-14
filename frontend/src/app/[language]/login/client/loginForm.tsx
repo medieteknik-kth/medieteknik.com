@@ -69,7 +69,7 @@ export default function LoginForm({ language, remember }: Props): JSX.Element {
 
   if (error) {
     return (
-      <div className='flex flex-col gap-0.5'>
+      <div className='flex flex-col gap-0.5 w-full'>
         <p className='text-red-500 font-bold text-xl text-center'>
           {t('network_error')}
         </p>

@@ -12,7 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { LanguageCode } from '@/models/Language'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import CookieSection from './cookie'
 
 interface Params {

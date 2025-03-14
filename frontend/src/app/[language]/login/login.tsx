@@ -1,7 +1,7 @@
 import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 
 import LoginWrapper from '@/app/[language]/login/client/loginWrapper'
 import type { LanguageCode } from '@/models/Language'

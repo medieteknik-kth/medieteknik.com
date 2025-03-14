@@ -7,8 +7,9 @@ import type { IndividualCommitteePosition } from '@/models/Student'
 import Image from 'next/image'
 import FallbackLogo from 'public/images/logo.webp'
 import type { JSX } from 'react'
-import { Timeline } from 'rsuite'
+import Timeline from 'rsuite/Timeline'
 import './positions.css'
+import 'rsuite/Timeline/styles/index.css';
 
 interface Props {
   language: LanguageCode

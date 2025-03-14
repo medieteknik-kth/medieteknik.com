@@ -2,7 +2,7 @@
 
 import Loading from '@/components/tooltips/Loading'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
 import { type JSX, use, useEffect } from 'react'
 
@@ -25,7 +25,7 @@ interface Props {
 export default function Profile(props: Props): JSX.Element {
   const { language } = use(props.params)
   const router = useRouter()
-  const { student } = useAuthentication()
+  const { student } = useStudent()
 
   useEffect(() => {
     if (!student) {

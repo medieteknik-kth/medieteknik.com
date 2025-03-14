@@ -6,7 +6,7 @@ import {
 } from '@/components/badges/Updates'
 import { HeadComponent } from '@/components/static/Static'
 import type { LanguageCode } from '@/models/Language'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 interface Params {
   language: LanguageCode
