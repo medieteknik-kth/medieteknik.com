@@ -13,30 +13,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: news } = await getNewsPagniation('en', 1)
   const { data: committees } = await getAllCommittees('en')
 
-  const newsUrls = news?.items.map(
-    (item) =>
-      SUPPORTED_LANGUAGES.map((language) => ({
-        url: `https://www.medieteknik.com/${language}/bulletin/news/${encodeURI(
-          item.url
-        )}`,
-        changeFrequency: 'yearly' as const,
-        lastModified: new Date(item.last_updated || item.created_at),
-        priority: 0.9,
-        alternates: {
-          languages: {
-            en: `https://www.medieteknik.com/en/bulletin/news/${encodeURI(
-              item.url
-            )}`,
-            sv: `https://www.medieteknik.com/sv/bulletin/news/${encodeURI(
-              item.url
-            )}`,
-            'x-default': `https://www.medieteknik.com/bulletin/news/${encodeURI(
-              item.url
-            )}`,
+  const newsUrls = news?.items
+    .filter(
+      (item): item is typeof item & { url: string } => item.url !== undefined
+    )
+    .map(
+      (item) =>
+        SUPPORTED_LANGUAGES.map((language) => ({
+          url: `https://www.medieteknik.com/${language}/bulletin/news/${encodeURI(
+            item.url
+          )}`,
+          changeFrequency: 'yearly' as const,
+          lastModified: new Date(item.last_updated || item.created_at),
+          priority: 0.9,
+          alternates: {
+            languages: {
+              en: `https://www.medieteknik.com/en/bulletin/news/${encodeURI(
+                item.url
+              )}`,
+              sv: `https://www.medieteknik.com/sv/bulletin/news/${encodeURI(
+                item.url
+              )}`,
+              'x-default': `https://www.medieteknik.com/bulletin/news/${encodeURI(
+                item.url
+              )}`,
+            },
           },
-        },
-      })) || []
-  )
+        })) || []
+    )
 
   const committeeUrls = committees?.map(
     (committee) =>

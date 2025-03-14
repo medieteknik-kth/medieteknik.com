@@ -1,9 +1,9 @@
+import { fontFigtree } from '@/app/fonts'
+import ServiceWorkerRegister from '@/components/services/ServiceWorkerRegister'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { ViewTransitions } from 'next-view-transitions'
-import { CustomProvider } from 'rsuite'
-import 'rsuite/dist/rsuite-no-reset.min.css'
 
 interface Props {
   children: React.ReactNode
@@ -32,11 +32,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Props): React.ReactElement {
   return (
     <ViewTransitions>
-      <html lang='en' suppressHydrationWarning>
+      <html
+        lang='en'
+        suppressHydrationWarning
+        className={`${fontFigtree.className}`}
+        style={{
+          WebkitFontSmoothing: 'antialiased',
+        }}
+      >
         <body>
+          <ServiceWorkerRegister />
           <SpeedInsights />
           <Analytics />
-          <CustomProvider>{children}</CustomProvider>
+          {children}
         </body>
       </html>
     </ViewTransitions>
