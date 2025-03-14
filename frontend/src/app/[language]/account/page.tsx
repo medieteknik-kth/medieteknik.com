@@ -11,7 +11,7 @@ export async function generateMetadata(props: {
   params: Promise<Params>
 }): Promise<Metadata> {
   const { language } = await props.params
-  const { t } = await useTranslation(language, 'account')
+  const { t } = await useTranslation(language, 'account/account')
   const value = t('title')
 
   const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
