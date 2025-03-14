@@ -2,8 +2,10 @@
 The main application.
 """
 
+import logging
 import os
 import secrets
+import sys
 from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -12,6 +14,12 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from utility import db, jwt, oauth, csrf
 from routes import register_v1_routes
 
+# Logging config
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG if needed
+    format="[%(asctime)s] [%(levelname)s] %(caller_module)s#%(caller_function)s@%(caller_lineno)d: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -65,6 +73,12 @@ oauth.register(
 
 # Register routes (blueprints)
 register_v1_routes(app)
+
+app.logger.setLevel(logging.INFO)
+werkzeug_logger = logging.getLogger("werkzeug")
+werkzeug_logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+werkzeug_logger.addHandler(handler)
 
 
 # Reverse proxy

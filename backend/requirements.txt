@@ -7,6 +7,11 @@ Flask-Limiter
 Flask-WTF
 Flask-JWT-Extended
 authlib
+unidecode
 gunicorn
 psycopg2
 google-cloud-storage
+google-cloud-scheduler
+google-cloud-pubsub
+cryptography
+pywebpush
