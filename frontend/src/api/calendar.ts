@@ -15,7 +15,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 export const getEvents = async (
   date: Date,
   language: LanguageCode,
-  revalidate = 900
+  revalidate = 60 // 1 minute
 ): Promise<ApiResponse<Event[]>> => {
   const convertedDate = date.toISOString().substring(0, 7)
   const { data, error } = await fetchData<Event[]>(

@@ -6,7 +6,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 
 export async function getCommitteeCategories(
   language: LanguageCode,
-  revalidate = 7_776_000
+  revalidate = 604_800 // 7 days
 ) {
   const { data, error } = await fetchData<CommitteeCategory[]>(
     `${API_BASE_URL}/public/committee_categories?language=${language}`,
@@ -27,7 +27,7 @@ export async function getCommitteeCategories(
 export async function getCommitteesForCategory(
   category: string,
   language: LanguageCode,
-  revalidate = 2_592_000
+  revalidate = 86_400 // 24 hours
 ) {
   const { data, error } = await fetchData<
     CommitteeCategory & { committees: Committee[] }

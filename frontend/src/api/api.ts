@@ -69,7 +69,7 @@ export async function fetchData<T>(
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data: T = await response.json()
     return createSuccessResponse<T>(data)
   } catch (error) {
     return createErrorResponse<T>(

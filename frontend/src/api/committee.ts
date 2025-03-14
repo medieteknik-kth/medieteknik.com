@@ -1,9 +1,6 @@
 import { type ApiResponse, fetchData } from '@/api/api'
 import type Committee from '@/models/Committee'
-import type {
-  CommitteeData,
-  CommitteePositionRecruitment,
-} from '@/models/Committee'
+import type { CommitteeData } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePositionPagination } from '@/models/Pagination'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -20,7 +17,7 @@ import { API_BASE_URL } from '@/utility/Constants'
 export const getPublicCommitteeData = async (
   committee: string,
   language_code?: LanguageCode,
-  revalidate = 3_600
+  revalidate = 3_600 // 1 hour
 ): Promise<ApiResponse<Committee>> => {
   const { data, error } = await fetchData<Committee>(
     `${API_BASE_URL}/public/committees/${committee}${
@@ -45,12 +42,12 @@ export const getPublicCommitteeData = async (
  * @description Get all the committees
  *
  * @param {LanguageCode} language_code - The language to get the data in
- * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
+ * @param {number} revalidate - The time in seconds to revalidate the data (default: 24 hours)
  * @returns {Promise<ApiResponse<Committee[]>>} The API response with the committees or an error
  */
 export const getAllCommittees = async (
   language_code: LanguageCode,
-  revalidate = 3_600
+  revalidate = 86_400 // 24 hours
 ): Promise<ApiResponse<Committee[]>> => {
   const { data, error } = await fetchData<Committee[]>(
     `${API_BASE_URL}/public/committees${
@@ -112,12 +109,12 @@ export const getCommittee = async (
  * @description Get the "private" data for a committee
  *
  * @param {string} committee - The committee to get data for
- * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
+ * @param {number} revalidate - The time in seconds to revalidate the data (default: 30 minutes)
  * @returns {Promise<ApiResponse<CommitteeData>>} The API response with the committee data or an error
  */
 export const getCommitteeData = async (
   committee: string,
-  revalidate = 3_600
+  revalidate = 1_800 // 30 minutes
 ): Promise<ApiResponse<CommitteeData>> => {
   const { data, error } = await fetchData<CommitteeData>(
     `${API_BASE_URL}/committees/${committee}/data`,
@@ -150,40 +147,14 @@ export const getCommitteeData = async (
 export const getCommitteeMembers = async (
   committee: string,
   language_code: LanguageCode,
+  date?: string,
+  officials = false,
   page = 1,
   per_page = 25,
   revalidate = 3_600
 ): Promise<ApiResponse<StudentCommitteePositionPagination>> => {
   const { data, error } = await fetchData<StudentCommitteePositionPagination>(
-    `${API_BASE_URL}/public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}`,
-    {
-      next: {
-        revalidate: revalidate,
-      },
-    }
-  )
-
-  if (error) {
-    return { data, error }
-  }
-
-  return { data, error: null }
-}
-
-/**
- * @name getRecruitment
- * @description Get the recruitment data for committee positions
- *
- * @param {LanguageCode} language_code - The language to get the data in
- * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
- * @returns {Promise<ApiResponse<CommitteePositionRecruitment[]>>} The API response with the recruitment data or an error
- */
-export const getRecruitment = async (
-  language_code: LanguageCode,
-  revalidate = 3_600
-): Promise<ApiResponse<CommitteePositionRecruitment[]>> => {
-  const { data, error } = await fetchData<CommitteePositionRecruitment[]>(
-    `${API_BASE_URL}/public/committee_positions/recruiting?language=${language_code}`,
+    `${API_BASE_URL}/public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}${date ? `&snapshot_date=${date}` : ''}&officials=${officials}`,
     {
       next: {
         revalidate: revalidate,
