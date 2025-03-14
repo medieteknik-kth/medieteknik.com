@@ -23,9 +23,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
 import type Event from '@/models/items/Event'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { eventUploadSchema } from '@/schemas/items/event'
-import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -62,7 +66,7 @@ export default function EventUpload({
   closeMenuCallback,
   addEvent,
 }: Props): JSX.Element {
-  const { student } = useAuthentication()
+  const { student } = useStudent()
   const { t } = useTranslation(language, 'bulletin')
   const [isRepeating, setIsRepeating] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')

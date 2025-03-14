@@ -1,22 +1,38 @@
+'use client'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
 import type { CommitteePosition } from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
+import { useStudent } from '@/providers/AuthenticationProvider'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 
-export function StudentTooltip({ student }: { student: Student }) {
+interface StudentTooltipProps {
+  student: Student
+  language: LanguageCode
+}
+
+interface CommitteeTooltipProps {
+  committee: Committee
+  language: LanguageCode
+}
+
+export function StudentTooltip({ student, language }: StudentTooltipProps) {
   const username = `${student.first_name} ${student.last_name || ''}`
+  const { student: authStudent } = useStudent()
+
   return (
     <>
       <Button
         asChild
         variant='link'
-        className='h-fit flex flex-col justify-center pb-0'
+        className='h-fit w-fit flex flex-col justify-center pb-0'
       >
         <Link
-          href={`./student/${student.student_id}`}
+          href={`/${language}/student/${student.student_id}#gap`}
           className='group flex flex-col items-center gap-2'
           title='Go to profile page'
         >
@@ -33,26 +49,38 @@ export function StudentTooltip({ student }: { student: Student }) {
               {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
             </p>
           )}
-          <p>{username}</p>
+          <p>
+            {username}
+            {authStudent && student.student_id === authStudent.student_id && (
+              <span className='text-xs text-muted-foreground select-none'>
+                &nbsp;{language === 'en' ? '(You)' : '(Du)'}
+              </span>
+            )}
+          </p>
         </Link>
       </Button>
-      <Button
-        variant='link'
-        className='w-full text-neutral-600 dark:text-neutral-300 py-0 left-0 right-0 mx-auto z-40'
-      >
-        <Link
-          href={`mailto:${student.email}`}
-          title={`Send email to ${username}`}
-          aria-label={`Send email to ${username}`}
+      {student.email && (
+        <Button
+          variant='link'
+          className='w-full text-neutral-600 dark:text-neutral-300 py-0 left-0 right-0 mx-auto z-40'
         >
-          <span>{student.email}</span>
-        </Link>
-      </Button>
+          <Link
+            href={`mailto:${student.email}`}
+            title={`Send email to ${username}`}
+            aria-label={`Send email to ${username}`}
+          >
+            <span>{student.email}</span>
+          </Link>
+        </Button>
+      )}
     </>
   )
 }
 
-export function CommitteeTooltip({ committee }: { committee: Committee }) {
+export function CommitteeTooltip({
+  committee,
+  language,
+}: CommitteeTooltipProps) {
   return (
     <>
       {!committee.hidden ? (
@@ -62,7 +90,7 @@ export function CommitteeTooltip({ committee }: { committee: Committee }) {
           className='h-fit flex flex-col justify-center pb-0 z-40 cursor-pointer'
         >
           <Link
-            href={`/chapter/committees/${committee.translations[0].title.toLocaleLowerCase()}`}
+            href={`/${language}/chapter/committees/${committee.translations[0].title.toLocaleLowerCase()}#gap`}
             className='group'
           >
             <Avatar className='w-24 h-24 bg-white group-hover:scale-105 transition-transform rounded-full overflow-hidden'>

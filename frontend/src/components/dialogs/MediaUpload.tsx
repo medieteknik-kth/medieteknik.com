@@ -36,9 +36,13 @@ import { Textarea } from '@/components/ui/textarea'
 import type Album from '@/models/Album'
 import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { mediaUploadSchema } from '@/schemas/items/media'
-import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -118,7 +122,7 @@ export default function MediaUpload({
 }: Props) {
   const [value, setValue] = useState('image')
   const [popoverOpen, setPopoverOpen] = useState(false)
-  const { student } = useAuthentication()
+  const { student } = useStudent()
 
   const form = useForm<z.infer<typeof mediaUploadSchema>>({
     resolver: zodResolver(mediaUploadSchema),

@@ -1,15 +1,18 @@
 import CommitteePositionTag from '@/components/tags/CommitteePositionTag'
 import StudentTag from '@/components/tags/StudentTag'
+import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePosition } from '@/models/Student'
 import Image from 'next/image'
 import FallbackImage from 'public/images/logo.webp'
 
 interface StudentCommitteeCardProps {
+  language: LanguageCode
   member: StudentCommitteePosition
   committeeLogo?: boolean
 }
 
 export default function StudentCommitteCard({
+  language,
   member,
   committeeLogo = false,
 }: StudentCommitteeCardProps) {
@@ -19,7 +22,7 @@ export default function StudentCommitteCard({
         {member.student.profile_picture_url ? (
           <Image
             src={member.student.profile_picture_url}
-            alt='img'
+            alt={`${member.student.first_name} ${member.student.last_name} profile picture`}
             width={512}
             height={512}
             className='w-full aspect-square object-cover rounded-t-md mx-auto'
@@ -69,6 +72,7 @@ export default function StudentCommitteCard({
         <CommitteePositionTag committeePosition={member.position} />
         <StudentTag
           student={member.student}
+          language={language}
           includeAt={false}
           includeImage={false}
         />

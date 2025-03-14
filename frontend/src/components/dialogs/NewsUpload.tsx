@@ -20,7 +20,7 @@ import {
 import { Input } from '@/components/ui/input'
 import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { createNewsSchema } from '@/schemas/items/news'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -47,7 +47,7 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
   const [isClient, setIsClient] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const { student } = useAuthentication()
+  const { student } = useStudent()
   const { push } = useRouter()
 
   const form = useForm<z.infer<typeof createNewsSchema>>({
@@ -105,6 +105,7 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
 
       if (response.ok) {
         const jsonResponse = await response.json()
+        await new Promise((resolve) => setTimeout(resolve, 3000))
         push(`/${language}/bulletin/news/upload/${jsonResponse.url}`)
       } else {
         setError('Something went wrong, try again later')

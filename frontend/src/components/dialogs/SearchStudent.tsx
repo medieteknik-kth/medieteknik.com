@@ -10,6 +10,7 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from '@/components/ui/pagination'
+import type { LanguageCode } from '@/models/Language'
 import type { StudentPagination } from '@/models/Pagination'
 import type Student from '@/models/Student'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -41,22 +42,27 @@ function isStudents(
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
+  language: LanguageCode
   studentsOrMetadata?: EitherStudentsOrMetadata
   onClickCallback: (student: Student) => void
 }
 
 function render(
   students: Student[],
+  language: LanguageCode,
   onClickCallback: (student: Student) => void,
   selectedStudents: Student[],
   setSelectedStudents: Dispatch<SetStateAction<Student[]>>
 ) {
   return students
-    .sort((a, b) => a.email.localeCompare(b.email))
+    .sort((a, b) => {
+      if (!a.email || !b.email) return -1
+      return a.email.localeCompare(b.email)
+    })
     .map((student) => (
       <li key={student.email} className='w-full flex justify-between'>
         <div className='max-w-[400px]'>
-          <StudentTag student={student} includeAt={false} />
+          <StudentTag student={student} language={language} includeAt={false} />
         </div>
         <Button
           size={'icon'}
@@ -85,19 +91,27 @@ function renderMetadata(
     student: Student
     metadataKey: string
   }[],
+  language: LanguageCode,
   onClickCallback: (student: Student) => void,
   selectedStudents: Student[],
   setSelectedStudents: Dispatch<SetStateAction<Student[]>>
 ) {
   return metadata
-    .sort((a, b) => a.student.email.localeCompare(b.student.email))
+    .sort((a, b) => {
+      if (!a.student.email || !b.student.email) return -1
+      return a.student.email.localeCompare(b.student.email)
+    })
     .map((metadata) => (
       <li
         key={metadata.student.email + metadata.metadataKey}
         className='w-full flex justify-between'
       >
         <div className='max-w-[400px]'>
-          <StudentTag student={metadata.student} includeAt={false}>
+          <StudentTag
+            student={metadata.student}
+            language={language}
+            includeAt={false}
+          >
             <span className='text-xs text-muted-foreground'>
               {metadata.metadataKey}
             </span>
@@ -126,6 +140,7 @@ function renderMetadata(
 }
 
 export default function SearchStudent({
+  language,
   studentsOrMetadata,
   onClickCallback,
 }: Props) {
@@ -146,6 +161,7 @@ export default function SearchStudent({
         <ul className='flex flex-col gap-1 h-[440px] overflow-y-auto'>
           {render(
             studentsOrMetadata.students || [],
+            language,
             onClickCallback,
             selectedStudents,
             setSelectedStudents
@@ -159,6 +175,7 @@ export default function SearchStudent({
         <ul className='flex flex-col gap-1 h-[440px] overflow-y-auto'>
           {renderMetadata(
             studentsOrMetadata.metadata,
+            language,
             onClickCallback,
             selectedStudents,
             setSelectedStudents
@@ -213,6 +230,7 @@ export default function SearchStudent({
             )}
             {render(
               data.items,
+              language,
               onClickCallback,
               selectedStudents,
               setSelectedStudents

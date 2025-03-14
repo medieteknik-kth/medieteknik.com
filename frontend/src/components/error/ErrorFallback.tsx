@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { toast } from '@/components/ui/use-toast'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
 
 interface Props {
@@ -33,16 +33,16 @@ export default function ErrorFallback({ error }: Props): JSX.Element {
         <p className='text-xl'>Please try again later.</p>
       </div>
       <Button asChild>
-        <a href='/'>Go back to the homepage</a>
+        <Link href='/'>Go back to the homepage</Link>
       </Button>
       <div className='text-sm flex flex-col items-center text-center'>
         <p>If you need assistance, please mail us at</p>
-        <Link
+        <a
           href='mailto:webmaster@medieteknik.com'
           className='text-blue-500 hover:underline'
         >
           webmaster@medieteknik.com
-        </Link>
+        </a>
       </div>
       <Accordion
         type='single'

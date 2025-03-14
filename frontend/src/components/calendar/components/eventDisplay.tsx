@@ -1,12 +1,14 @@
+import { getPreviousMonthLastWeekToCurrent } from '@/components/calendar/util'
 import type Event from '@/models/items/Event'
 import {
+  addMonths,
   differenceInDays,
   getDay,
   isSameDay,
   isSameMonth,
   startOfDay,
 } from 'date-fns'
-import type { JSX } from 'react'
+import { type JSX, useMemo } from 'react'
 import tinycolor from 'tinycolor2'
 
 interface Props {
@@ -44,12 +46,17 @@ export default function EventComponent({
   const endDate = new Date(startDate.getTime() + event.duration * 60_000)
   const spanDays = differenceInDays(startOfDay(endDate), startOfDay(startDate))
   const multipleDays = !isSameDay(endDate, date)
+  const isLongMultiDayEvent = spanDays > 3
+  const previousMonthLastWeek = useMemo(
+    () => getPreviousMonthLastWeekToCurrent(addMonths(date, 1)),
+    [date]
+  )
 
   return (
     <li
       className={`${getDay(date) === 0 && multipleDays ? 'w-full' : 'w-full'} ${
-        isSameDay(startDate, date) ? 'z-20 ' : ''
-      }h-4 sm:h-5 text-xs overflow-y-hidden flex items-center 
+        isSameDay(startDate, date) ? 'z-20 ' : 'z-10 '
+      }h-4 sm:h-5 text-xs overflow-y-hidden flex items-center rounded-lg 
         ${
           tinycolor(event.background_color).isDark()
             ? 'text-white'
@@ -73,7 +80,7 @@ export default function EventComponent({
         }}
       />
       <div
-        className={`${event.event_id} w-full h-full sm:py-0.5 ${multipleDays && !isSameDay(startDate, date) ? 'z-0' : 'z-10'}
+        className={`${event.event_id} w-full h-full sm:py-0.5 ${multipleDays && !isSameDay(startDate, date) && !isSameDay(previousMonthLastWeek[0], date) ? 'z-0' : 'z-10'}
           ${
             tinycolor(event.background_color).isDark()
               ? 'text-white'
@@ -124,13 +131,28 @@ export default function EventComponent({
         <p
           className={`absolute z-50 px-2 truncate filter ${
             isSameDay(new Date(event.start_date), date)
-              ? !multipleDays && getDay(date) !== 0
-                ? 'hidden sm:block' // Single day event
-                : 'hidden xxs:block text-nowrap' // First day of multiple day event
-              : 'hidden' // Not the first day of multiple day event
+              ? isLongMultiDayEvent
+                ? 'long block text-nowrap' // Always show title for long multi-day events
+                : !multipleDays && getDay(date) !== 0
+                  ? 'single hidden sm:block' // Single day event
+                  : 'first-long hidden xxs:block text-nowrap' // First day of multiple day event
+              : isSameDay(previousMonthLastWeek[0], date)
+                ? 'xs:block hidden text-nowrap'
+                : isLongMultiDayEvent &&
+                    differenceInDays(
+                      startOfDay(date),
+                      startOfDay(startDate)
+                    ) === 1
+                  ? 'multi block sm:hidden text-nowrap' // Show title on second day of long multi-day event
+                  : 'fallback hidden' // Hide title for other days of long multi-day event
           }`}
           style={{
-            maxWidth: `${multipleDays ? 'calc(95% * ${spanDays})' : '95%'}`,
+            maxWidth: `${
+              multipleDays
+                ? `calc(95% * ${Math.min(spanDays, getDay(date) === 0 ? 1 : 7 - getDay(date))})`
+                : '95%'
+            }`,
+            fontSize: isLongMultiDayEvent ? 'calc(0.65rem + 0.1vw)' : 'inherit',
           }}
         >
           {event.translations[0].title}
@@ -140,7 +162,7 @@ export default function EventComponent({
       <span
         className={`${event.event_id} ${
           multipleDays && getDay(date) !== 0 ? 'block' : 'hidden'
-        } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10 ${isSameDay(startDate, new Date()) ? 'z-0' : 'z-10'}`}
+        } w-[110%] sm:w-20 h-4 sm:h-5 absolute left-3 sm:left-auto sm:-right-10`}
         style={{
           backgroundColor: `#${defaultColor}`,
         }}
