@@ -27,6 +27,7 @@ export default function ArticleRenderer({ news_data }: Props): JSX.Element {
     useArticle()
   const {
     saveCallback,
+    autoSavePossible,
     content,
     updateContent,
     addNotification,
@@ -124,11 +125,13 @@ export default function ArticleRenderer({ news_data }: Props): JSX.Element {
             }
 
             updateContent(updatedContent)
-            saveCallback(currentLanguage).then((result) => {
-              if (result === AutoSaveResult.SUCCESS) {
-                addNotification('Auto-Saved')
-              }
-            })
+            if (autoSavePossible) {
+              saveCallback(currentLanguage).then((result) => {
+                if (result === AutoSaveResult.SUCCESS) {
+                  addNotification('Auto-Saved')
+                }
+              })
+            }
           }
         }}
       >

@@ -1,6 +1,9 @@
+import { getCommitteeMembers } from '@/api/committee'
 import { getNewsData } from '@/api/items/news'
 import NewsRedirect from '@/app/[language]/bulletin/news/[slug]/client/redirect'
+import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
+import type { StudentCommitteePositionPagination } from '@/models/Pagination'
 
 import type { JSX } from 'react'
 
@@ -25,11 +28,29 @@ interface Props {
  */
 export default async function NewsSlug(props: Props): Promise<JSX.Element> {
   const { language, slug } = await props.params
-  const { data } = await getNewsData(language, slug)
+  const { data: newsData } = await getNewsData(language, slug)
+  let snapshotMembers: StudentCommitteePositionPagination | null = null
+
+  if (newsData?.author?.author_type === 'COMMITTEE') {
+    const formattedDate = new Date(newsData.created_at)
+      .toISOString()
+      .split('T')[0]
+    const { data: members } = await getCommitteeMembers(
+      (newsData.author as Committee).translations[0].title,
+      language,
+      formattedDate,
+      true
+    )
+    snapshotMembers = members
+  }
 
   return (
-    <main className='w-full grid place-items-center'>
-      <NewsRedirect language={language} news_data={data} />
+    <main className='w-full'>
+      <NewsRedirect
+        language={language}
+        news={newsData}
+        members={snapshotMembers}
+      />
     </main>
   )
 }

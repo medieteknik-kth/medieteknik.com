@@ -8,14 +8,16 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
 import type News from '@/models/items/News'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 
 import type { JSX } from 'react'
 
 interface Props {
+  language: LanguageCode
   newsItem: News
 }
 
@@ -28,7 +30,7 @@ interface Props {
  *
  * @returns {JSX.Element} The news card component.
  */
-export default function NewsCard({ newsItem }: Props): JSX.Element {
+export default function NewsCard({ language, newsItem }: Props): JSX.Element {
   return (
     <Card
       className='w-full h-full'
@@ -48,7 +50,11 @@ export default function NewsCard({ newsItem }: Props): JSX.Element {
               />
             )}
 
-            <CardTitle className='underline-offset-4 text-xl leading-tight decoration-yellow-400 decoration-2 group-hover:underline max-w-[280px] truncate'>
+            <CardTitle
+              className='underline-offset-4 text-xl leading-tight decoration-yellow-400 decoration-2 group-hover:underline max-w-[280px] truncate'
+              title={newsItem.translations[0].title}
+              aria-label={newsItem.translations[0].title}
+            >
               {newsItem.translations[0].title}
             </CardTitle>
           </div>
@@ -65,15 +71,19 @@ export default function NewsCard({ newsItem }: Props): JSX.Element {
           {newsItem.author.author_type === 'COMMITTEE' ? (
             <CommitteeTag
               committee={newsItem.author as Committee}
-              includeAt={false}
-              includeBackground={false}
+              language={language}
+              includeImage
             >
               <span className='text-xs flex text-neutral-700 dark:text-neutral-400'>
                 {new Date(newsItem.created_at).toLocaleDateString()}
               </span>
             </CommitteeTag>
           ) : (
-            <StudentTag student={newsItem.author as Student} includeAt={false}>
+            <StudentTag
+              student={newsItem.author as Student}
+              language={language}
+              includeAt={false}
+            >
               <span className='text-xs flex text-neutral-700 dark:text-neutral-400'>
                 {new Date(newsItem.created_at).toLocaleDateString()}
               </span>

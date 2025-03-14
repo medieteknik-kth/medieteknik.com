@@ -32,7 +32,11 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import type { LanguageCode } from '@/models/Language'
 import { uploadNewsSchema } from '@/schemas/items/news'
-import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import {
   DocumentTextIcon,
   EyeIcon,
@@ -42,6 +46,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { mutate } from 'swr'
 import type { z } from 'zod'
 import { AutoSaveResult, useAutoSave } from './autoSave'
 
@@ -63,7 +68,6 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
   const { saveCallback, notifications, addNotification, content } =
     useAutoSave()
   const { push } = useRouter()
-
   const [title, setTitle] = useState(
     content.translations[0].title || 'Untitled Article'
   )
@@ -212,7 +216,24 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
             size='icon'
             title='Preview'
             aria-label='Preview'
-            disabled // TODO: Enable when preview is ready
+            onClick={async () => {
+              const res = await saveCallback(language, true)
+
+              if (res === AutoSaveResult.SUCCESS) {
+                await mutate(
+                  `${API_BASE_URL}/news/${slug}?language=${language}`
+                )
+                push(
+                  `/${language}/bulletin/news/upload/${slug}/preview${
+                    content.author.author_type === 'COMMITTEE'
+                      ? `?committee=${content.author.translations[0].title.toLowerCase()}`
+                      : ''
+                  }`
+                )
+              } else {
+                addNotification(t('save.error'))
+              }
+            }}
           >
             <EyeIcon className='w-6 h-6' />
           </Button>
@@ -239,10 +260,10 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                   <ul className='flex'>
                     {SUPPORTED_LANGUAGES.map((lang) => (
                       <li key={lang} className='mr-4 last:mr-0'>
-                        <span className='w-6 h-6 mr-2'>
-                          {LANGUAGES[language as LanguageCode].flag_icon}
-                        </span>
-                        <span className='text-sm'>{LANGUAGES[lang].name}</span>
+                        <p className='w-6 h-6 mr-2'>
+                          {LANGUAGES[lang as LanguageCode].flag_icon}
+                        </p>
+                        <p className='text-sm'>{LANGUAGES[lang].name}</p>
                       </li>
                     ))}
                   </ul>

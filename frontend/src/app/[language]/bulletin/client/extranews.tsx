@@ -1,5 +1,8 @@
 'use client'
 
+import ExtraNewsCard, {
+  LoadingNewsCard,
+} from '@/app/[language]/bulletin/components/extraNewsCard'
 import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
 import type { LanguageCode } from '@/models/Language'
@@ -8,7 +11,6 @@ import { API_BASE_URL } from '@/utility/Constants'
 import { type JSX, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
-import ShortNews from '../components/shortNews'
 
 /**
  * The fetcher function that fetches news data from the API.
@@ -39,7 +41,10 @@ const useNews = (
 } => {
   const { data, error, isLoading } = useSWR<NewsPagination>(
     `${API_BASE_URL}/public/news?page=${index}&language=${language}`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
   )
 
   return {
@@ -74,7 +79,7 @@ function Page({ index, language }: { index: number; language: LanguageCode }): {
     }
   if (isLoading)
     return {
-      jsx: <Loading language={language} />,
+      jsx: <LoadingNewsCard />,
       total_items: 0,
       total_pages: 0,
     }
@@ -90,7 +95,7 @@ function Page({ index, language }: { index: number; language: LanguageCode }): {
       <>
         {data.items.map((item) => (
           <div key={item.url} className='relative'>
-            <ShortNews language={language} newsItem={item} />
+            <ExtraNewsCard language={language} news={item} />
           </div>
         ))}
       </>
@@ -142,10 +147,7 @@ export default function ExtraNews({
         }
       >
         {pages.map((currentPage) => (
-          <div
-            key={page}
-            className='flex flex-wrap justify-center xl:justify-start gap-2'
-          >
+          <div key={page} className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
             {currentPage.jsx}
           </div>
         ))}

@@ -61,7 +61,11 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
             href={`./bulletin/news/${newsItem.url}`}
             className='group max-w-[190px] md:max-w-[320px] max-h-24 overflow-hidden'
           >
-            <CardTitle className='w-full text-base md:text-xl underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline truncate'>
+            <CardTitle
+              className='w-full text-base md:text-xl underline-offset-4 decoration-yellow-400 decoration-2 group-hover:underline truncate'
+              title={newsItem.translations[0].title}
+              aria-label={newsItem.translations[0].title}
+            >
               {newsItem.translations[0].title}
             </CardTitle>
             <CardDescription className='w-full group-hover:underline no-underline!'>
@@ -72,7 +76,11 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
 
         <CardFooter className='w-full hidden md:flex items-center max-w-[325px] p-0 mb-2'>
           {newsItem.author.author_type === 'STUDENT' ? (
-            <StudentTag student={newsItem.author as Student} includeImage>
+            <StudentTag
+              student={newsItem.author as Student}
+              language={language}
+              includeImage
+            >
               <span className='text-xs text-neutral-700 dark:text-neutral-300'>
                 {new Date(newsItem.created_at).toLocaleDateString(language, {
                   year: 'numeric',
@@ -84,8 +92,8 @@ export default function ShortNews({ language, newsItem }: Props): JSX.Element {
           ) : newsItem.author.author_type === 'COMMITTEE' ? (
             <CommitteeTag
               committee={newsItem.author as Committee}
-              includeAt={false}
-              includeBackground={false}
+              language={language}
+              includeImage
             >
               <span className='text-xs text-neutral-700 dark:text-neutral-300'>
                 {new Date(newsItem.created_at).toLocaleDateString(language, {

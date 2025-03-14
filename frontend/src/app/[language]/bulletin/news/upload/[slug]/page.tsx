@@ -77,7 +77,7 @@ export default function UploadNews(props: Props): JSX.Element {
   return (
     <main className='relative'>
       <HeaderGap />
-      <AutoSaveProvdier slug={slug} news_item={data} language_code={language}>
+      <AutoSaveProvdier slug={slug} news_item={data} language={language}>
         <CommandBar language={language} slug={slug} />
         <div className='h-[1500px] flex relative z-10'>
           <Tabs

@@ -360,8 +360,8 @@ export const ElementDisplay = ({
           <span>
             <StudentTag
               student={tag.author as Student}
-              includeAt={true}
-              includeImage={false}
+              language='sv'
+              includeAt
               {...attributes}
               ref={attributes.ref as Ref<HTMLButtonElement> | undefined}
             >
@@ -374,8 +374,8 @@ export const ElementDisplay = ({
         return (
           <CommitteeTag
             committee={tag.author as Committee}
-            includeAt={true}
-            includeImage={false}
+            language='sv'
+            includeAt
             {...attributes}
             ref={attributes.ref as Ref<HTMLButtonElement> | undefined}
           >

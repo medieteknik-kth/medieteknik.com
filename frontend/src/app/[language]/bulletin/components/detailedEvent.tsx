@@ -29,7 +29,7 @@ import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
 import type Student from '@/models/Student'
 import type Event from '@/models/items/Event'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
@@ -80,7 +80,7 @@ export default function DetailedEvent({
   closeDialog,
 }: Props): JSX.Element {
   const { t } = useTranslation(language, 'bulletin')
-  const { student, committees, role } = useAuthentication()
+  const { student, committees, role } = useStudent()
   const { removeEvent } = useCalendar()
 
   const canDelete = () => {
@@ -195,12 +195,16 @@ export default function DetailedEvent({
       </div>
       <DialogFooter className='flex justify-between!'>
         {event.author.author_type === 'STUDENT' ? (
-          <StudentTag student={event.author as Student} includeAt={false} />
+          <StudentTag
+            student={event.author as Student}
+            language={language}
+            includeAt={false}
+          />
         ) : event.author.author_type === 'COMMITTEE' ? (
           <CommitteeTag
             committee={event.author as Committee}
-            includeAt={false}
-            includeBackground={false}
+            language={language}
+            includeImage
           />
         ) : event.author.author_type === 'COMMITTEE_POSITION' ? (
           <CommitteePositionTag

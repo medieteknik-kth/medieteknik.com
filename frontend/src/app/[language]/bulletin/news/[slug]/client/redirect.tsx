@@ -3,13 +3,15 @@
 import NewsDisplay from '@/app/[language]/bulletin/news/[slug]/news'
 import Loading from '@/components/tooltips/Loading'
 import type { LanguageCode } from '@/models/Language'
+import type { StudentCommitteePositionPagination } from '@/models/Pagination'
 import type News from '@/models/items/News'
 import { useRouter } from 'next/navigation'
 import { type JSX, useEffect, useState } from 'react'
 
 interface Props {
   language: LanguageCode
-  news_data: News | null
+  news: News | null
+  members: StudentCommitteePositionPagination | null
 }
 
 /**
@@ -24,22 +26,23 @@ interface Props {
  */
 export default function NewsRedirect({
   language,
-  news_data,
+  news,
+  members,
 }: Props): JSX.Element {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (!news_data) {
+    if (!news) {
       router.push(`/${language}/bulletin/news`)
       return
     }
     setIsLoading(false)
-  }, [news_data, router, language])
+  }, [news, router, language])
 
-  if (isLoading || !news_data) {
+  if (isLoading || !news) {
     return <Loading language={language} />
   }
 
-  return <NewsDisplay language={language} news_data={news_data} />
+  return <NewsDisplay language={language} news={news} members={members} />
 }

@@ -1,9 +1,10 @@
 'use client'
 
+import ExtraNewsCard from '@/app/[language]/bulletin/components/extraNewsCard'
 import NewsPaginationPage from '@/app/[language]/bulletin/news/client/pagination'
 import { NewsUpload } from '@/components/dialogs/NewsUpload'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   Pagination,
@@ -13,14 +14,13 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import type { LanguageCode } from '@/models/Language'
 import type { NewsPagination } from '@/models/Pagination'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
 import { type JSX, useState } from 'react'
-import NewsCard from '../../components/newsCard'
 
 interface Props {
   language: LanguageCode
@@ -38,15 +38,13 @@ interface Props {
  * @returns {JSX.Element} The all news component
  */
 export default function AllNews({ language, data }: Props): JSX.Element {
-  const { permissions, student } = useAuthentication()
+  const { student } = useStudent()
+  const { permissions } = usePermissions()
   const [pageIndex, setPageIndex] = useState(1)
 
   return (
-    <Card className='w-fit desktop:w-[1784px] mb-24'>
-      <CardHeader className='h-24 hidden'>
-        {/* TODO: Add filtes, sorting, etc! */}
-      </CardHeader>
-      <CardContent className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 pt-2 grid-rows-[repeat(5,minmax(189px,1fr))]'>
+    <div>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(30rem,1fr))] gap-4'>
         {student &&
         permissions.author &&
         permissions.author.includes('NEWS') ? (
@@ -54,7 +52,7 @@ export default function AllNews({ language, data }: Props): JSX.Element {
             <CardContent className='h-full pt-6'>
               <Dialog>
                 <DialogTrigger
-                  className='w-full h-full grid place-items-center hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded'
+                  className='w-full h-full grid place-items-center hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded cursor-pointer'
                   title='Upload an article'
                   aria-label='Upload an article'
                 >
@@ -81,7 +79,7 @@ export default function AllNews({ language, data }: Props): JSX.Element {
                 <Skeleton className='w-full h-full' />
               ) : (
                 <>
-                  <NewsCard key={newsItem.url} newsItem={newsItem} />
+                  <ExtraNewsCard language={language} news={newsItem} />
                 </>
               )}
             </div>
@@ -90,8 +88,8 @@ export default function AllNews({ language, data }: Props): JSX.Element {
           // CSR data
           <NewsPaginationPage language={language} index={pageIndex} />
         )}
-      </CardContent>
-      <CardFooter className='flex justify-center'>
+      </div>
+      <div className='flex justify-center my-4'>
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -129,6 +127,10 @@ export default function AllNews({ language, data }: Props): JSX.Element {
                 size={'icon'}
                 disabled={pageIndex === data.total_pages}
                 onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  })
                   setPageIndex((prev) =>
                     prev + 1 > data.total_pages ? data.total_pages : prev + 1
                   )
@@ -139,7 +141,7 @@ export default function AllNews({ language, data }: Props): JSX.Element {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
