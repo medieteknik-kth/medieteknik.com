@@ -31,11 +31,18 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 CORS(
     app=app,
     supports_credentials=True,
-    origins=["http://localhost:3000", "https://www.medieteknik.com"],
+    origins=[
+        "http://localhost:3000",
+        "https://www.medieteknik.com",
+        # Allow all subdomains of medieteknik.com
+        r"^https:\/\/.*\.medieteknik\.com$",
+    ],
     allow_headers=["Content-Type", "Authorization", "X-CSRF-Token"],
     expose_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    vary_header=True,
     max_age=86400,
+    automatic_options=True,
 )
 
 db.init_app(app)

@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM python:3.13.1-alpine AS build
+FROM ghcr.io/astral-sh/uv:python3.13-alpine AS build
 
 ENV PATH /opt/venv/bin:$PATH
 
@@ -14,14 +14,13 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Create a virtual environment
-RUN python -m venv /opt/venv
+RUN uv venv /opt/venv
 
 # Copy the requirements file first to leverage Docker cache
 COPY requirements.txt .
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt 
+RUN uv pip install -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
@@ -29,7 +28,7 @@ COPY . .
 # ----------------------------------------------
 
 # Stage 2: Final stage
-FROM python:3.13.1-alpine
+FROM python:alpine
 
 # Install runtime dependencies
 RUN apk add --no-cache libpq
@@ -54,4 +53,4 @@ ENV PATH /opt/venv/bin:$PATH
 EXPOSE 80
 
 # Run the application with gunicorn
-CMD ["/opt/venv/bin/gunicorn", "main:app"]
+CMD ["/opt/venv/bin/gunicorn", "--access-logfile", "-", "--error-logfile", "-", "main:app"]
