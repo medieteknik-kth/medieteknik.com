@@ -29,23 +29,32 @@ def convert_iso_639_1_to_bcp_47(code: str) -> str:
     return DEFAULT_LANGUAGE_CODE
 
 
-def retrieve_languages(args: MultiDict[str, str] | None) -> List[str]:
+def retrieve_languages(
+    args: MultiDict[str, str] | None, fallback: bool = True
+) -> List[str]:
     """
     Retrieves the languages from the request arguments.
 
     :param args: The request arguments
     :type args: MultiDict[str, str], optional
+    :param fallback: Whether to fallback to all available languages if none are provided, defaults to True
+    :type fallback: bool, optional
     :return: The list of languages or all available languages if none are provided
     :rtype: List[str]
     """
 
     if args is None:
-        return AVAILABLE_LANGUAGES
+        if fallback:
+            return AVAILABLE_LANGUAGES
+        else:
+            raise ValueError("No languages provided")
 
     languages = [convert_iso_639_1_to_bcp_47(lang) for lang in args.getlist("language")]
 
     valid_languages = [lang for lang in languages if lang in AVAILABLE_LANGUAGES]
-    return valid_languages if valid_languages else AVAILABLE_LANGUAGES
+    return (
+        valid_languages if valid_languages else AVAILABLE_LANGUAGES if fallback else []
+    )
 
 
 def get_translation(

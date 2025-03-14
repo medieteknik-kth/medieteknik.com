@@ -6,14 +6,15 @@ API Endpoint: '/api/v1/students'
 import json
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import (
+    get_jwt,
     get_jwt_identity,
     jwt_required,
 )
 from http import HTTPStatus
-from typing import Any
+from typing import Any, Dict
 from decorators import csrf_protected
 from models.core import Profile, Student
-from services.core import update
+from services.core import update, retrieve_notifications, subscribe_to_notifications
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
@@ -120,31 +121,40 @@ def update_reception() -> Response:
     reception_image = request.files.get("reception_image")
     reception_name = request.form.get("reception_name")
 
-    if not reception_image:
-        return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
+    if (
+        not reception_image and not reception_name
+    ):  # At least one of the fields is empty
+        return jsonify(
+            {"error": "At least one field must be specified"}
+        ), HTTPStatus.BAD_REQUEST
 
-    file_extension = reception_image.filename.split(".")[-1]
+    if reception_image:
+        file_extension = reception_image.filename.split(".")[-1]
 
-    if getattr(student, "reception_profile_picture_url"):
-        delete_file(
-            getattr(student, "reception_profile_picture_url"),
+        if getattr(student, "reception_profile_picture_url"):
+            delete_file(
+                getattr(student, "reception_profile_picture_url"),
+            )
+
+        result = upload_file(
+            file=reception_image,
+            file_name=f"{student.student_id}.{file_extension}",
+            content_type=f"image/{file_extension if file_extension != 'jpg' else 'jpeg'}",
+            timedelta=None,
+            path="profile/reception",
         )
 
-    result = upload_file(
-        file=reception_image,
-        file_name=f"{student.student_id}.{file_extension}",
-        path="profile/reception",
-    )
+        if not result:
+            return jsonify({"error": "Failed to upload"}), HTTPStatus.BAD_REQUEST
 
-    if not result:
-        return jsonify({"error": "Failed to upload"}), HTTPStatus.BAD_REQUEST
+        setattr(student, "reception_profile_picture_url", result)
 
-    setattr(student, "reception_profile_picture_url", result)
-    setattr(student, "reception_name", reception_name)
+    if reception_name:
+        setattr(student, "reception_name", reception_name)
 
     db.session.commit()
 
-    return jsonify({"url": result}), HTTPStatus.CREATED
+    return jsonify({"message": "Updated"}), HTTPStatus.CREATED
 
 
 @student_bp.route("/permissions", methods=["GET"])
@@ -175,7 +185,15 @@ def get_student_callback() -> Response:
     """
 
     provided_languages = retrieve_languages(request.args)
-    student_id = get_jwt_identity()
+    student_id = None
+    expiration = None
+
+    try:
+        student_id = get_jwt_identity()
+        jwt = get_jwt()
+        expiration = jwt["exp"]
+    except Exception:
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
 
     student: Student = Student.query.get_or_404(student_id)
 
@@ -185,12 +203,52 @@ def get_student_callback() -> Response:
         provided_languages=provided_languages, student=student
     )
 
-    return jsonify(
+    student_dict = student.to_dict(is_public_route=False)
+
+    json_response = jsonify(
         {
-            "student": student.to_dict(is_public_route=False),
+            "student": student_dict,
             "committees": committees,
-            "positions": committee_positions,
+            "committee_positions": committee_positions,
             "permissions": permissions,
             "role": role,
-        }
-    ), HTTPStatus.OK
+            "expiration": expiration,
+        },
+    )
+
+    return json_response, HTTPStatus.OK
+
+
+@student_bp.route("/notifications", methods=["GET", "POST"])
+@jwt_required()
+def update_notifications() -> Response:
+    """
+    Updates the student notifications
+        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
+    """
+
+    language = retrieve_languages(request.args)
+
+    student_id = get_jwt_identity()
+    student: Student | None = Student.query.filter_by(
+        student_id=student_id
+    ).one_or_none()
+
+    if not student or not isinstance(student, Student):
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
+
+    if request.method == "GET":
+        return retrieve_notifications(student_id, language)
+    else:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
+
+        data_dict: Dict[str, Any] = json.loads(json.dumps(data))
+
+        return subscribe_to_notifications(
+            data_dict=data_dict,
+            student_id=student_id,
+            language=language,
+        )

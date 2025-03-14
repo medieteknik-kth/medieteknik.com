@@ -2,7 +2,7 @@
 Student service that handles the student's login, permissions, and role.
 """
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from http import HTTPStatus
 from flask import Request, Response, jsonify, make_response, session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -90,7 +90,8 @@ def login(
     committees, committee_positions = get_student_committee_details(
         provided_languages=provided_languages, student=student
     )
-
+    expiration = timedelta(hours=1) if not remember else timedelta(days=14)
+    exp_unix = int((datetime.now() + expiration).timestamp())
     response = make_response(
         {
             "student": student.to_dict(is_public_route=False),
@@ -98,6 +99,7 @@ def login(
             "committee_positions": committee_positions,
             "permissions": permissions,
             "role": role,
+            "expiration": exp_unix,
         }
     )
     session["remember"] = remember
@@ -107,15 +109,9 @@ def login(
         encoded_access_token=create_access_token(
             identity=student,
             fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
-            additional_claims={
-                "permissions": permissions,
-                "role": role,
-            },
-            expires_delta=timedelta(hours=1) if not remember else timedelta(days=14),
+            expires_delta=expiration,
         ),
-        max_age=timedelta(hours=1).seconds
-        if not remember
-        else timedelta(days=14).seconds,
+        max_age=expiration.total_seconds(),
     )
 
     return response
@@ -215,14 +211,7 @@ def update(request: Request, student: Student) -> Response:
 
     db.session.commit()
     response = make_response()
-    permissions, role = get_student_authorization(student)
-    additional_claims = {
-        "permissions": permissions,
-        "role": role,
-    }
-    access_token = create_access_token(
-        identity=student, fresh=True, additional_claims=additional_claims
-    )
+    access_token = create_access_token(identity=student, fresh=True)
     set_access_cookies(
         response=response, encoded_access_token=access_token, max_age=timedelta(hours=1)
     )

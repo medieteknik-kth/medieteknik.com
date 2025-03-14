@@ -4,6 +4,7 @@ API Endpoint: '/api/v1/committees'
 """
 
 from http import HTTPStatus
+from typing import List
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import jwt_required
 from models.committees import Committee
@@ -58,10 +59,11 @@ def get_committee_news_by_title(committee_title: str) -> Response:
     news = (
         News.query.join(Author, News.author_id == Author.author_id)
         .filter_by(committee_id=committee.committee_id)
+        .order_by(News.created_at.desc())
         .paginate()
     )
 
-    items = news.items
+    items: List[News] = news.items
     items_dict = [
         item_dict
         for item in items
@@ -102,6 +104,7 @@ def get_committee_events_by_title(committee_title: str) -> Response:
     events = (
         Event.query.join(Author, Event.author_id == Author.author_id)
         .filter_by(committee_id=committee.committee_id)
+        .order_by(Event.created_at.desc())
         .paginate()
     )
 
@@ -146,6 +149,7 @@ def get_committee_documents_by_title(committee_title: str) -> Response:
     documents = (
         Document.query.join(Author, Document.author_id == Author.author_id)
         .filter_by(committee_id=committee.committee_id)
+        .order_by(Document.created_at.desc())
         .paginate()
     )
 

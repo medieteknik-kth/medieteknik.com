@@ -4,13 +4,14 @@ API Endpoint: '/api/v1/news'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import get_jwt, jwt_required
+from flask import Blueprint, Response, jsonify, make_response, request
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
-from typing import Any, Dict
+from typing import Any, Dict, List
 from models.committees import Committee, CommitteePosition
 from models.content import News, NewsTranslation
 from models.core import Student, Author, AuthorType
+from models.core.student import StudentMembership
 from services.content import (
     create_item,
     delete_item,
@@ -18,10 +19,15 @@ from services.content import (
     get_items_from_author,
     publish,
     update_item,
-    update_translations,
 )
 from services.core import get_author_from_email
-from utility import AVAILABLE_LANGUAGES, upload_file, retrieve_languages
+from utility import (
+    AVAILABLE_LANGUAGES,
+    upload_file,
+    retrieve_languages,
+)
+from utility.database import db
+from sqlalchemy.sql import exists, select
 
 
 news_bp = Blueprint("news", __name__)
@@ -32,7 +38,7 @@ news_bp = Blueprint("news", __name__)
 def get_news_by_id(identifier: str) -> Response:
     """
     Retrieves a news item by ID
-        :param identifier: str - The news ID
+        :param identifier: str - The news ID or URL, if the URL is provided, the URL parameter must be set to True
         :return: Response - The response object, 404 if the news item is not found, 200 if successful
     """
 
@@ -46,7 +52,36 @@ def get_news_by_id(identifier: str) -> Response:
             )
         )
 
-    news: News = News.query.get_or_404(identifier)
+    news: News = (
+        News.query.join(
+            Author,
+            Author.author_id == News.author_id,
+        )
+        .filter(News.news_id == identifier)
+        .first_or_404()
+    )
+
+    student_id = get_jwt_identity()
+
+    if news.author.author_type == AuthorType.COMMITTEE:
+        stmt = select(
+            exists().where(
+                StudentMembership.committee_position_id
+                == CommitteePosition.committee_position_id,
+                CommitteePosition.committee_id == Committee.committee_id,
+                StudentMembership.student_id == student_id,
+                Committee.committee_id == news.author.committee_id,
+            )
+        )
+
+        is_member: bool = db.session.execute(stmt).scalar()
+
+        if not is_member:
+            return jsonify({}), HTTPStatus.FORBIDDEN
+
+    elif news.author.author_type == AuthorType.STUDENT:
+        if news.author.student_id != student_id:
+            return jsonify({}), HTTPStatus.FORBIDDEN
 
     return jsonify(
         news.to_dict(provided_languages=language_code, is_public_route=False)
@@ -82,7 +117,7 @@ def get_news_by_student(email: str) -> Response:
     ), HTTPStatus.OK
 
 
-@news_bp.route("/", methods=["POST"])
+@news_bp.route("", methods=["POST"])
 @jwt_required()
 def create_news() -> Response:
     """
@@ -91,9 +126,13 @@ def create_news() -> Response:
     """
 
     data = request.get_json()
+    language = request.args.get("language", type=str)
 
     if not data:
         return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+    if not language:
+        return jsonify({"error": "No language provided"}), HTTPStatus.BAD_REQUEST
 
     data: Dict[str, Any] = json.loads(json.dumps(data))
 
@@ -130,14 +169,19 @@ def create_news() -> Response:
     if author_email is None:
         return jsonify({"error": "No email provided"}), HTTPStatus.BAD_REQUEST
 
-    return {
-        "url": create_item(
-            author_table=author_table,
-            email=author_email,
-            item_table=News,
-            data=data,
-        )
-    }, HTTPStatus.CREATED
+    url = create_item(
+        author_table=author_table,
+        email=author_email,
+        item_table=News,
+        data=data,
+    )
+
+    if not url:
+        return jsonify(
+            {"error": "Failed to create item"}
+        ), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return jsonify({"url": url}), HTTPStatus.CREATED
 
 
 @news_bp.route("/<string:identifier>", methods=["PUT"])
@@ -177,19 +221,33 @@ def update_news_by_url(identifier: str) -> Response:
             url=identifier, item_table=News, provided_languages=langauge_code
         )
     else:
-        news_item = News.query.get(identifier)
+        news_item = News.query.filter_by(news_id=identifier).first_or_404()
 
     if news_item is None or not isinstance(news_item, News):
         return jsonify({"error": "News item not found"}), HTTPStatus.NOT_FOUND
 
-    update_translations(news_item, NewsTranslation, data.get("translations"))
+    translations: List[NewsTranslation] = NewsTranslation.query.filter_by(
+        news_id=news_item.news_id
+    ).all()
+    data_translations: List[Dict[str, Any]] = json_data.get("translations")
+    for translation in translations:
+        # TODO: For now update all translation with the first translation data
+        translation.body = data_translations[0].get("body")
+        translation.title = data_translations[0].get("title")
+
     del data["author"]
     del data["translations"]
 
-    update_item(news_item, data)
-    return jsonify(
-        news_item.to_dict(provided_languages=langauge_code, is_public_route=False)
-    ), HTTPStatus.OK
+    update_item(news_item, data=data)
+    response = make_response(
+        jsonify(
+            news_item.to_dict(provided_languages=langauge_code, is_public_route=False)
+        )
+    )
+
+    response.headers["Cache-Control"] = "no-store"
+    response.status_code = HTTPStatus.OK
+    return response
 
 
 @news_bp.route("/<string:identifier>/publish", methods=["PUT"])
@@ -222,9 +280,9 @@ def publish_news(identifier: str) -> Response:
         if "NEWS" not in permissions.get("author"):
             return jsonify({}), HTTPStatus.UNAUTHORIZED
 
-    news_item: News = News.query.get_or_404(identifier)
+    news_item: News = News.query.filter_by(news_id=identifier).first_or_404()
 
-    translation_data = []
+    translation_data: List[Dict[str, Any]] = []
     for index, language_code in enumerate(AVAILABLE_LANGUAGES):
         translation_data.append(
             {
@@ -245,6 +303,7 @@ def publish_news(identifier: str) -> Response:
                 path="news",
                 content_disposition="inline",
                 content_type="image/webp",
+                cache_control="public, max-age=31536000, immutable",
                 timedelta=None,
                 language_code=language_code,
             )
@@ -263,6 +322,49 @@ def publish_news(identifier: str) -> Response:
 
     if not publish_result:
         return jsonify({"error": "Failed to publish"}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    """
+    TODO: Implement Pub/Sub service for notifications and Discord messages, after the endpoints are in production
+    try:
+        # Defer notification and Discord message creation to the Pub/Sub service
+        base_task_data = {
+            "notification_type": "NEWS",
+            "notification_metadata": None,
+            "translation": [
+                {
+                    "language_code": translation_data.get("language_code"),
+                    "title": translation_data.get("title"),
+                    "body": translation_data.get("short_description"),
+                    "url": publish_result,
+                }
+                for translation_data in translation_data
+            ],
+            "committee_id": author.get("committee_id")
+            if author.get("committee_id")
+            else None,
+        }
+
+        notification_task_data = {
+            "task_type": "add_notification",
+            **base_task_data,
+        }
+
+        notification_data = json.dumps(notification_task_data).encode("utf-8")
+        publisher.publish(topic=topic_path, data=notification_data)
+
+        if (
+            os.environ.get("DISCORD_WEBHOOK_URL") is not None
+            and os.environ.get("DISCORD_WEBHOOK_URL") != ""
+        ):
+            discord_task_data = {
+                "task_type": "send_discord_message",
+                **base_task_data,
+            }
+            discord_data = json.dumps(discord_task_data).encode("utf-8")
+            publisher.publish(topic=topic_path, data=discord_data)
+
+    except Exception as e:
+        print(f"Unable to send Pub/Sub message, error: {str(e)}")"""
 
     return jsonify({"url": publish_result}), HTTPStatus.CREATED
 

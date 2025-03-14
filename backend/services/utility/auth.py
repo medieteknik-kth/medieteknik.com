@@ -81,7 +81,7 @@ def get_student_committee_details(
         .where(Student.student_id == student.student_id)
     )
 
-    result = db.session.execute(stmt).all()
+    result = db.session.execute(stmt).unique().all()
 
     if len(result) == 0 or result is None:
         return committees, committee_positions

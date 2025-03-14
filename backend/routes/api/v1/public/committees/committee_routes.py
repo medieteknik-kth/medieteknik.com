@@ -114,6 +114,8 @@ def get_committee_members(committee_title: str) -> Response:
         :return: Response - The response object, 200 if successful
     """
 
+    snapshot_date = request.args.get("snapshot_date", None)
+    officials = request.args.get("officials", False, type=bool)
     provided_languages = retrieve_languages(request.args)
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 10, type=int)
@@ -126,6 +128,8 @@ def get_committee_members(committee_title: str) -> Response:
     return jsonify(
         get_all_committee_members(
             committee=committee,
+            date=snapshot_date,
+            officials=officials,
             provided_languages=provided_languages,
             page=page,
             per_page=per_page,
