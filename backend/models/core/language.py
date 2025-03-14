@@ -40,6 +40,13 @@ class Language(db.Model):
     news_translations = db.relationship("NewsTranslation", back_populates="language")
     tag_translations = db.relationship("TagTranslation", back_populates="language")
 
+    notification_subscriptions = db.relationship(
+        "NotificationSubscription", back_populates="language"
+    )
+    notifications_translation = db.relationship(
+        "NotificationsTranslation", back_populates="language"
+    )
+
     def __repr__(self):
         return "<Language %r>" % self.language_code
 

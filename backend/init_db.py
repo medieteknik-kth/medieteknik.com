@@ -39,6 +39,13 @@ from models.core import (
     Author,  # noqa: F401
     Calendar,  # noqa: F401
     Student,  # noqa: F401
+    NotificationSubscription,  # noqa: F401
+    NotificationPreferences,  # noqa: F401
+    Notifications,  # noqa: F401
+    NotificationsTranslation,  # noqa: F401
+    Permissions,  # noqa: F401
+    Role,  # noqa: F401
+    StudentPermission,  # noqa: F401
     Profile,  # noqa: F401
     StudentMembership,  # noqa: F401
     Language,  # noqa: F401

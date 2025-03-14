@@ -3,8 +3,7 @@ from typing import Any, Dict, List
 from sqlalchemy import Boolean, String, Integer, Column, ForeignKey, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
 from utility.database import db
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.translation import get_translation
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 
 class Committee(db.Model):
@@ -35,11 +34,14 @@ class Committee(db.Model):
     committee_category = db.relationship(
         "CommitteeCategory", back_populates="committees"
     )
-    translations = db.relationship("CommitteeTranslation", back_populates="committee")
+    translations = db.relationship(
+        "CommitteeTranslation", back_populates="committee", lazy="joined"
+    )
     committee_positions = db.relationship(
         "CommitteePosition", back_populates="committee"
     )
     calendar = db.relationship("Calendar", back_populates="committee", uselist=False)
+    notifications = db.relationship("Notifications", back_populates="committee")
 
     def __repr__(self):
         return "<Committee %r>" % self.committee_id
@@ -61,22 +63,27 @@ class Committee(db.Model):
         if not data:
             return None
 
+        translation_lookup = {
+            translation.language_code: translation for translation in self.translations
+        }
         translations = []
 
         for language_code in provided_languages:
-            translation = get_translation(
-                CommitteeTranslation,
-                ["committee_id"],
-                {"committee_id": self.committee_id},
-                language_code,
+            translation: CommitteeTranslation | None = translation_lookup.get(
+                language_code
             )
-            translations.append(translation)
+
+            if not translation or not isinstance(translation, CommitteeTranslation):
+                translation: CommitteeTranslation | None = translation_lookup.get(
+                    DEFAULT_LANGUAGE_CODE
+                ) or next(iter(translation_lookup.values()), None)
+
+            if translation and isinstance(translation, CommitteeTranslation):
+                translations.append(translation.to_dict())
 
         del data["committee_category_id"]
 
-        data["translations"] = [
-            translation.to_dict() for translation in set(translations)
-        ]
+        data["translations"] = translations
 
         return data
 

@@ -1,9 +1,8 @@
 import enum
 import uuid
 from typing import Any, Dict
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import (
-    Boolean,
     String,
     Column,
     ForeignKey,
@@ -82,6 +81,12 @@ class Student(db.Model):
     permissions = db.relationship(
         "StudentPermission", back_populates="student", uselist=False
     )
+    notification_subscriptions = db.relationship(
+        "NotificationSubscription", back_populates="student", uselist=False
+    )
+    notification_preferences = db.relationship(
+        "NotificationPreferences", back_populates="student", uselist=False
+    )
 
     def __repr__(self):
         return "<Student %r>" % self.student_id
@@ -151,10 +156,6 @@ class Profile(db.Model):
         server_default=text("gen_random_uuid()"),
     )
 
-    notifications_enabled = Column(Boolean, default=True)
-    notification_emails = Column(ARRAY(String(255)))
-
-    phone_number = Column(String(255))
     facebook_url = Column(String(255))
     linkedin_url = Column(String(255))
     instagram_url = Column(String(255))
@@ -174,6 +175,9 @@ class Profile(db.Model):
         return "<Profile %r>" % self.profile_id
 
     def to_dict(self, is_public_route=True):
+        if RECEPTION_MODE and is_public_route:
+            return None
+
         columns = inspect(self)
 
         if not columns:
@@ -187,11 +191,6 @@ class Profile(db.Model):
             if isinstance(value, enum.Enum):
                 value = value.value
             data[column] = value
-
-        if is_public_route:
-            del data["phone_number"]
-            del data["notification_emails"]
-            del data["notifications_enabled"]
 
         del data["profile_id"]
         del data["student_id"]

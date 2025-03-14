@@ -108,8 +108,6 @@ class CommitteePosition(db.Model):
             )
             translations.append(translation)
 
-        del data["committee_id"]
-
         data["translations"] = [
             translation.to_dict()
             for translation in set(translations)
@@ -120,6 +118,7 @@ class CommitteePosition(db.Model):
             del data["role"]
 
         if include_parent and self.committee_id:
+            del data["committee_id"]
             parent_committee = Committee.query.filter_by(
                 committee_id=self.committee_id
             ).first()
