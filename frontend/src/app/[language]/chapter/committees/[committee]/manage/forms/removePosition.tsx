@@ -1,4 +1,5 @@
 'use client'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -28,12 +29,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import type { LanguageCode } from '@/models/Language'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { removePositionSchema } from '@/schemas/committee/position'
 import { API_BASE_URL } from '@/utility/Constants'
 import { ChevronUpDownIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 
@@ -45,8 +47,10 @@ export default function RemovePositionForm({
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()
+  const { positions: studentPositions } = useStudent()
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
+  const { t } = useTranslation(language, 'committee_management/forms/remove')
 
   const positionOptions = positions
     .filter((position) => {
@@ -57,6 +61,14 @@ export default function RemovePositionForm({
       value: position.committee_position_id,
     }))
 
+  const containsOwnPosition = useMemo(
+    () =>
+      studentPositions.some(
+        (studentPosition) => studentPosition.committee_position_id === value
+      ),
+    [studentPositions, value]
+  )
+
   const form = useForm<z.infer<typeof removePositionSchema>>({
     resolver: zodResolver(removePositionSchema),
     defaultValues: {
@@ -65,6 +77,10 @@ export default function RemovePositionForm({
   })
 
   const publish = async (data: z.infer<typeof removePositionSchema>) => {
+    if (containsOwnPosition) {
+      return
+    }
+
     const json_data = JSON.stringify(data)
 
     try {
@@ -88,13 +104,13 @@ export default function RemovePositionForm({
     }
   }
 
+  console.log(studentPositions)
+
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Remove position</DialogTitle>
-        <DialogDescription>
-          Select a position to remove from the committee
-        </DialogDescription>
+        <DialogTitle>{t('title')}</DialogTitle>
+        <DialogDescription>{t('description')}</DialogDescription>
       </DialogHeader>
       <form
         className='flex flex-col gap-2'
@@ -105,7 +121,7 @@ export default function RemovePositionForm({
             name='position_id'
             render={({ field }) => (
               <FormItem className='flex flex-col gap-0.5'>
-                <FormLabel htmlFor='position_id'>Position</FormLabel>
+                <FormLabel htmlFor='position_id'>{t('label')}</FormLabel>
                 <Popover open={open} onOpenChange={setOpen} modal={open}>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -119,21 +135,28 @@ export default function RemovePositionForm({
                         {field.value
                           ? positionOptions.find((o) => o.value === value)
                               ?.label
-                          : 'Select a position'}
+                          : t('placeholder')}
                         <ChevronUpDownIcon className='w-5 h-5' />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent>
                     <Command>
-                      <CommandInput />
+                      <CommandInput placeholder={t('search_placeholder')} />
                       <CommandList>
-                        <CommandEmpty>No positions found</CommandEmpty>
+                        <CommandEmpty>{t('not_found')}</CommandEmpty>
                         <CommandGroup>
                           {positionOptions.map((option) => (
                             <CommandItem
                               key={option.value}
                               value={option.value}
+                              disabled={
+                                studentPositions.some(
+                                  (studentPosition) =>
+                                    studentPosition.committee_position_id ===
+                                    option.value
+                                ) && option.value !== value
+                              }
                               onSelect={(currentValue) => {
                                 form.setValue('position_id', option.value)
                                 setValue(
@@ -154,9 +177,13 @@ export default function RemovePositionForm({
               </FormItem>
             )}
           />
-          <Button type='submit' variant={'destructive'} disabled={value === ''}>
+          <Button
+            type='submit'
+            variant={'destructive'}
+            disabled={value === '' || containsOwnPosition}
+          >
             <MinusIcon className='w-5 h-5 mr-2' />
-            Remove
+            {t('remove_button')}
           </Button>
         </Form>
       </form>

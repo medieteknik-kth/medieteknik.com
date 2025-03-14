@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import SearchStudent from '@/components/dialogs/SearchStudent'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,7 +33,7 @@ import {
 import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
 import type Student from '@/models/Student'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { addMember } from '@/schemas/committee/member'
 import { API_BASE_URL } from '@/utility/Constants'
@@ -46,10 +47,15 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export function RemoveMemberForm({ language }: { language: string }) {
+interface Props {
+  language: LanguageCode
+}
+
+export function RemoveMemberForm({ language }: Props) {
   const { committee, members, positions } = useCommitteeManagement()
-  const { student } = useAuthentication()
+  const { student } = useStudent()
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
+  const { t } = useTranslation(language, 'committee_management/forms/member')
   const form = useForm<z.infer<typeof addMember>>({
     resolver: zodResolver(addMember),
     defaultValues: {
@@ -97,12 +103,11 @@ export function RemoveMemberForm({ language }: { language: string }) {
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Remove new member</DialogTitle>
-        <DialogDescription>
-          Select a student to add to the committee
-        </DialogDescription>
+        <DialogTitle>{t('remove_member_title')}</DialogTitle>
+        <DialogDescription>{t('remove_member_description')}</DialogDescription>
       </DialogHeader>
       <SearchStudent
+        language={language}
         studentsOrMetadata={{
           metadata: members.items.map((member) => {
             return {
@@ -131,11 +136,7 @@ export function RemoveMemberForm({ language }: { language: string }) {
           {selectedStudents
             .map((student) => student.email)
             .includes(student.email) && (
-            <p className='text-sm text-red-500'>
-              You can&apos;t remove yourself from the committee. If you want to
-              leave the committee, please contact an admin or someone higher up
-              in the committee.
-            </p>
+            <p className='text-sm text-red-500'>{t('remove_self_error')}</p>
           )}
 
           <Button
@@ -151,13 +152,13 @@ export function RemoveMemberForm({ language }: { language: string }) {
               form.setValue(
                 'students',
                 selectedStudents.map((student) => ({
-                  student_email: student.email,
+                  student_email: student.email ?? '',
                 }))
               )
             }}
           >
             <MinusIcon className='w-5 h-5 mr-2' />
-            Remove
+            {t('remove_button')}
           </Button>
         </Form>
       </form>
@@ -173,9 +174,10 @@ export function AddMemberForm({
   onSuccess: () => void
 }) {
   const { positions } = useCommitteeManagement()
-  const { positions: studentPositions, role } = useAuthentication()
+  const { positions: studentPositions, role } = useStudent()
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
+  const { t } = useTranslation(language, 'committee_management/forms/member')
 
   const findPosition = (id: string) => {
     return positions.find((position) => position.committee_position_id === id)
@@ -260,12 +262,11 @@ export function AddMemberForm({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Add a new member</DialogTitle>
-        <DialogDescription>
-          Select a student to add to the committee
-        </DialogDescription>
+        <DialogTitle>{t('add_member_title')}</DialogTitle>
+        <DialogDescription>{t('add_member_description')}</DialogDescription>
       </DialogHeader>
       <SearchStudent
+        language={language}
         onClickCallback={(student) => {
           setSelectedStudents([...selectedStudents, student])
         }}
@@ -279,7 +280,9 @@ export function AddMemberForm({
             name='position_id'
             render={({ field }) => (
               <FormItem className='flex flex-col gap-0.5'>
-                <FormLabel htmlFor='position_id'>Position</FormLabel>
+                <FormLabel htmlFor='position_id'>
+                  {t('add_member_position_label')}
+                </FormLabel>
                 <Popover open={open} onOpenChange={setOpen} modal={open}>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -293,7 +296,7 @@ export function AddMemberForm({
                         {field.value
                           ? positionOptions.find((o) => o.value === value)
                               ?.label
-                          : 'Select a position'}
+                          : t('add_member_position_placeholder')}
                         <ChevronUpDownIcon className='w-5 h-5' />
                       </Button>
                     </FormControl>
@@ -302,7 +305,9 @@ export function AddMemberForm({
                     <Command>
                       <CommandInput />
                       <CommandList>
-                        <CommandEmpty>No positions found</CommandEmpty>
+                        <CommandEmpty>
+                          {t('add_member_position_not_found')}
+                        </CommandEmpty>
                         <CommandGroup>
                           {positionOptions.map((option) => (
                             <CommandItem
@@ -335,13 +340,13 @@ export function AddMemberForm({
               form.setValue(
                 'students',
                 selectedStudents.map((student) => ({
-                  student_email: student.email,
+                  student_email: student.email ?? '',
                 }))
               )
             }}
           >
             <PlusIcon className='w-5 h-5 mr-2' />
-            Add
+            {t('add_member_button')}
           </Button>
         </Form>
       </form>

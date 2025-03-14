@@ -20,8 +20,8 @@ import {
   NewspaperIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import Logo from 'public/images/logo.webp'
 import { type JSX, useCallback } from 'react'

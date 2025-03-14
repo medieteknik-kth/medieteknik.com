@@ -25,7 +25,8 @@ export default async function CommitteeMembers({
   const { data: members, error } = await getCommitteeMembers(
     committee,
     language,
-    1
+    undefined,
+    false
   )
   const committeeName = decodeURIComponent(committee)
 
@@ -54,6 +55,7 @@ export default async function CommitteeMembers({
           .map((member) => (
             <StudentCommitteCard
               key={`${member.position.committee_position_id}_${member.student.student_id}`}
+              language={language}
               member={member}
             />
           ))}

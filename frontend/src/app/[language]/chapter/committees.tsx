@@ -22,8 +22,8 @@ import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import { type JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {

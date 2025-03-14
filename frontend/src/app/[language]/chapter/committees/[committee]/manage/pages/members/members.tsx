@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/table'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import {
@@ -78,7 +78,7 @@ export default function MembersPage({
     recruitments,
     addPosition,
   } = useCommitteeManagement()
-  const { positions: studentPositions, role } = useAuthentication()
+  const { positions: studentPositions, role } = useStudent()
   const { t } = useTranslation(language, 'committee_management/members')
 
   const deleteRecruitment = async (id: string) => {
@@ -260,6 +260,7 @@ export default function MembersPage({
                   />
                 )}
               </Dialog>
+              
               <Dialog>
                 <DialogTrigger asChild>
                   <Button

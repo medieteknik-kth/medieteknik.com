@@ -1,4 +1,5 @@
 'use client'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -33,23 +34,35 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { createRecruitmentSchema } from '@/schemas/committee/recruitment'
-import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 
-function TranslatedInputs({
-  index,
-  language,
-}: {
+interface TranslateProps {
   index: number
-  language: string
-}) {
+  language: LanguageCode
+}
+
+interface Props {
+  language: LanguageCode
+  onSuccess: () => void
+}
+
+function TranslatedInputs({ index, language }: TranslateProps) {
+  const { t } = useTranslation(
+    language,
+    'committee_management/forms/recruitment'
+  )
   return (
     <>
       <FormField
@@ -66,15 +79,19 @@ function TranslatedInputs({
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Link{' '}
+              {t('link_label')}{' '}
               <span className='uppercase text-xs tracking-wide'>
-                [{language}]
+                [{LANGUAGES[language].name}]
               </span>
             </FormLabel>
             <FormControl>
-              <Input {...field} type='url' placeholder='https://example.com' />
+              <Input
+                {...field}
+                type='url'
+                placeholder={t('link_placeholder')}
+              />
             </FormControl>
-            <FormDescription>Max 512 characters</FormDescription>
+            <FormDescription>{t('link_description')}</FormDescription>
             <FormMessage className='text-xs font-bold' />
           </FormItem>
         )}
@@ -85,15 +102,15 @@ function TranslatedInputs({
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Description{' '}
+              {t('description_label')}{' '}
               <span className='uppercase text-xs tracking-wide'>
-                [{language}]
+                [{LANGUAGES[language].name}]
               </span>
             </FormLabel>
             <FormControl>
-              <Textarea {...field} placeholder='Description' />
+              <Textarea {...field} placeholder={t('description_placeholder')} />
             </FormControl>
-            <FormDescription>Max 200 characters</FormDescription>
+            <FormDescription>{t('description_description')}</FormDescription>
             <FormMessage className='text-xs font-bold' />
           </FormItem>
         )}
@@ -102,18 +119,16 @@ function TranslatedInputs({
   )
 }
 
-export default function RecruitmentForm({
-  language,
-  onSuccess,
-}: {
-  language: LanguageCode
-  onSuccess: () => void
-}) {
+export default function RecruitmentForm({ language, onSuccess }: Props) {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { positions } = useCommitteeManagement()
-  const { positions: studentPositions } = useAuthentication()
-
+  const { positions: studentPositions } = useStudent()
+  const [errorMessage, setErrorMessage] = useState('')
   const [value, setValue] = useState(positions[0].translations[0].title)
+  const { t } = useTranslation(
+    language,
+    'committee_management/forms/recruitment'
+  )
 
   const dropdownOptions = positions
     .filter((position) => {
@@ -156,7 +171,8 @@ export default function RecruitmentForm({
         p.translations[0].title.toLowerCase() === data.position.toLowerCase()
     )
     if (!position) {
-      throw new Error('Position not found')
+      setErrorMessage(t('error.position_not_found'))
+      return
     }
 
     const response = await fetch(
@@ -175,7 +191,9 @@ export default function RecruitmentForm({
     )
 
     if (!response.ok) {
-      throw new Error('Failed to recruit position')
+      const errorData = await response.json()
+      setErrorMessage(errorData.message)
+      return
     }
 
     onSuccess()
@@ -184,13 +202,11 @@ export default function RecruitmentForm({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Recruit Position</DialogTitle>
-        <DialogDescription>
-          Fill in the details to recruit a new position
-        </DialogDescription>
+        <DialogTitle>{t('title')}</DialogTitle>
+        <DialogDescription>{t('description')}</DialogDescription>
       </DialogHeader>
       <Tabs defaultValue={language}>
-        <Label>Language</Label>
+        <Label>{t('language_label')}</Label>
         <TabsList className='overflow-x-auto w-full justify-start'>
           {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
@@ -206,6 +222,11 @@ export default function RecruitmentForm({
           ))}
         </TabsList>
 
+        {errorMessage && (
+          <div className='w-full p-4 mt-2 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800'>
+            {errorMessage}
+          </div>
+        )}
         <form onSubmit={form.handleSubmit(publish)} className='z-10'>
           <Form {...form}>
             <FormField
@@ -213,7 +234,7 @@ export default function RecruitmentForm({
               name='position'
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
-                  <FormLabel>Position</FormLabel>
+                  <FormLabel>{t('position_label')}</FormLabel>
                   <Popover
                     open={popoverOpen}
                     onOpenChange={setPopoverOpen}
@@ -230,16 +251,18 @@ export default function RecruitmentForm({
                           {field.value
                             ? dropdownOptions.find((p) => p.value === value)
                                 ?.label
-                            : 'Select position'}
+                            : t('position_placeholder')}
                           <ChevronDownIcon className='w-4 h-4 ml-2' />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent>
                       <Command>
-                        <CommandInput placeholder='Search positions...' />
+                        <CommandInput
+                          placeholder={t('position_search_placeholder')}
+                        />
                         <CommandList>
-                          <CommandEmpty>No positions available</CommandEmpty>
+                          <CommandEmpty>{t('position_not_found')}</CommandEmpty>
                           <CommandGroup>
                             {dropdownOptions.map((option) => (
                               <CommandItem
@@ -268,7 +291,7 @@ export default function RecruitmentForm({
               name='end_date'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>End Date</FormLabel>
+                  <FormLabel>{t('end_date_label')}</FormLabel>
                   <FormControl>
                     <Input {...field} type='datetime-local' />
                   </FormControl>
@@ -279,15 +302,12 @@ export default function RecruitmentForm({
 
             {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
-                <TranslatedInputs
-                  index={index}
-                  language={LANGUAGES[language].name}
-                />
+                <TranslatedInputs index={index} language={language} />
               </TabsContent>
             ))}
 
             <Button type='submit' className='w-full mt-4'>
-              Submit
+              {t('submit_button')}
             </Button>
           </Form>
         </form>

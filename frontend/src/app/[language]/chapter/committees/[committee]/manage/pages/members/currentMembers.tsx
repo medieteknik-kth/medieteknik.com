@@ -30,8 +30,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { LanguageCode } from '@/models/Language'
-import { Role } from '@/models/Permission'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { API_BASE_URL } from '@/utility/Constants'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
@@ -42,7 +41,7 @@ interface Props {
 
 export default function CurrentMembers({ language }: Props) {
   const { members, positions, isLoading, error } = useCommitteeManagement()
-  const { student, positions: studentPositions, role } = useAuthentication()
+  const { student, positions: studentPositions, role } = useStudent()
   const { t } = useTranslation(language, 'committee_management/members')
 
   if (!student) {
@@ -139,6 +138,7 @@ export default function CurrentMembers({ language }: Props) {
                     <TableCell className='flex items-center gap-2 h-full'>
                       <StudentTag
                         student={member.student}
+                        language={language}
                         includeAt={false}
                         includeImage
                       />
@@ -198,6 +198,7 @@ export default function CurrentMembers({ language }: Props) {
                           <DropdownMenuLabel className='flex items-center gap-2'>
                             <StudentTag
                               student={member.student}
+                              language={language}
                               includeAt={false}
                               includeImage
                             >
@@ -231,7 +232,7 @@ export default function CurrentMembers({ language }: Props) {
                               }
                               onClick={() =>
                                 removeStudent(
-                                  member.student.email,
+                                  member.student.email || '',
                                   member.committee_position_id
                                 )
                               }

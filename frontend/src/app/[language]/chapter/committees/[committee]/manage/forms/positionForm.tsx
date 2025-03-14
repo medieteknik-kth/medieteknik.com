@@ -1,4 +1,5 @@
 'use client'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -39,9 +40,13 @@ import type {
 } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { addPositionSchema } from '@/schemas/committee/position'
-import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -53,8 +58,10 @@ function TranslatedInputs({
   language,
 }: {
   index: number
-  language: string
+  language: LanguageCode
 }) {
+  const { t } = useTranslation(language, 'committee_management/forms/position')
+
   return (
     <>
       <FormField
@@ -71,15 +78,19 @@ function TranslatedInputs({
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Title{' '}
+              {t('title_label')}{' '}
               <span className='uppercase text-xs tracking-wide'>
-                [{language}]
+                [{LANGUAGES[language].name}]
               </span>
             </FormLabel>
             <FormControl>
-              <Input id='title' placeholder='Title' {...field} />
+              <Input
+                id='title'
+                placeholder={t('title_placeholder')}
+                {...field}
+              />
             </FormControl>
-            <FormDescription>Max 125 characters</FormDescription>
+            <FormDescription>{t('title_description')}</FormDescription>
             <FormMessage className='text-xs font-bold' />
           </FormItem>
         )}
@@ -90,15 +101,19 @@ function TranslatedInputs({
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Description{' '}
+              {t('description_label')}{' '}
               <span className='uppercase text-xs tracking-wide'>
-                [{language}]
+                [{LANGUAGES[language].name}]
               </span>
             </FormLabel>
             <FormControl>
-              <Textarea id='description' placeholder='Description' {...field} />
+              <Textarea
+                id='description'
+                placeholder={t('description_placeholder')}
+                {...field}
+              />
             </FormControl>
-            <FormDescription>Max 500 characters</FormDescription>
+            <FormDescription>{t('description_description')}</FormDescription>
             <FormMessage className='text-xs font-bold' />
           </FormItem>
         )}
@@ -118,7 +133,8 @@ export default function PositionForm({
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [value, setValue] = useState('NONE')
-  const { role } = useAuthentication()
+  const { role } = useStudent()
+  const { t } = useTranslation(language, 'committee_management/forms/position')
 
   const form = useForm<z.infer<typeof addPositionSchema>>({
     resolver: zodResolver(addPositionSchema),
@@ -217,13 +233,11 @@ export default function PositionForm({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Create Position</DialogTitle>
-        <DialogDescription>
-          Add a new position to the committee
-        </DialogDescription>
+        <DialogTitle>{t('title')}</DialogTitle>
+        <DialogDescription>{t('description')}</DialogDescription>
       </DialogHeader>
       <Tabs defaultValue={language}>
-        <Label>Language</Label>
+        <Label>{t('language_label')}</Label>
         <TabsList className='overflow-x-auto w-full justify-start'>
           {SUPPORTED_LANGUAGES.map((language) => (
             <TabsTrigger
@@ -245,12 +259,12 @@ export default function PositionForm({
               name='email'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('email_label')}</FormLabel>
                   <FormControl>
                     <Input
                       id='email'
                       type='email'
-                      placeholder='Email'
+                      placeholder={t('email_placeholder')}
                       {...field}
                     />
                   </FormControl>
@@ -261,10 +275,7 @@ export default function PositionForm({
 
             {SUPPORTED_LANGUAGES.map((language, index) => (
               <TabsContent key={language} value={language}>
-                <TranslatedInputs
-                  index={index}
-                  language={LANGUAGES[language].name}
-                />
+                <TranslatedInputs index={index} language={language} />
               </TabsContent>
             ))}
 
@@ -273,7 +284,7 @@ export default function PositionForm({
               name='category'
               render={({ field }) => (
                 <FormItem className='flex flex-col my-2'>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>{t('category_label')}</FormLabel>
                   <Popover
                     open={popoverOpen}
                     onOpenChange={setPopoverOpen}
@@ -289,15 +300,17 @@ export default function PositionForm({
                         >
                           {field.value
                             ? categories.find((c) => c.value === value)?.label
-                            : 'Select category'}
+                            : t('category_placeholder')}
                           <ChevronDownIcon className='w-4 h-4 ml-2' />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent>
                       <Command>
-                        <CommandInput placeholder='Search category' />
-                        <CommandEmpty>No category found.</CommandEmpty>
+                        <CommandInput
+                          placeholder={t('category_search_placeholder')}
+                        />
+                        <CommandEmpty>{t('category_not_found')}</CommandEmpty>
                         <CommandList>
                           <CommandGroup>
                             {categories.map((category) => (
@@ -327,18 +340,16 @@ export default function PositionForm({
                 name='weight'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Weight</FormLabel>
+                    <FormLabel>{t('weight_label')}</FormLabel>
                     <FormControl>
                       <Input
                         id='weight'
                         type='number'
-                        placeholder='Weight'
+                        placeholder={t('weight_placeholder')}
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Permission Level, leave 1000 if unsure!
-                    </FormDescription>
+                    <FormDescription>{t('weight_description')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -346,7 +357,7 @@ export default function PositionForm({
             )}
 
             <Button type='submit' className='w-full mt-4'>
-              Submit
+              {t('submit_button')}
             </Button>
           </Form>
         </form>
