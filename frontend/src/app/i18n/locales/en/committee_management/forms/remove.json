@@ -1,0 +1,9 @@
+{
+    "title": "Remove position",
+    "description": "Select a position to remove from the committee",
+    "label": "Position",
+    "search_placeholder": "Search positions",
+    "placeholder": "Select a position",
+    "not_found": "No positions found",
+    "remove_button": "Remove"
+}

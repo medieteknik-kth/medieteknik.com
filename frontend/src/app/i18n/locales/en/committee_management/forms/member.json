@@ -1,0 +1,12 @@
+{
+    "remove_member_title": "Remove Member",
+    "remove_member_description": "Select a student to add to the committee",
+    "remove_self_error": "You can`t remove yourself from the committee. If you want to leave the committee, please contact an admin or someone higher up in the committee.",
+    "remove_button": "Remove",
+    "add_member_title": "Add Member",
+    "add_member_description": "Select a student to add to the committee",
+    "add_member_position_label": "Position",
+    "add_member_position_placeholder": "Select a position",
+    "add_member_position_not_found": "No positions found",
+    "add_member_button": "Add"
+}

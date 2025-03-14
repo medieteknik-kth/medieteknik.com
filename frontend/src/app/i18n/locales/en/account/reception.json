@@ -1,0 +1,18 @@
+{
+    "title": "Reception",
+    "description": "Manage how you appear when reception mode is enabled.",
+    "profile_picture": "Profile Picture",
+    "profile_picture_requirements": "PNG or JPG. Max 5MB. Aspect ratio 1:1.",
+    "change_profile_picture": "Upload a new profile picture",
+    "change_profile_picture.description": "PNG or JPG. Max 5MB",
+    "change_profile_picture.upload_profile_picture": "Drop or click to upload",
+    "change_profile_picture.zoom": "Zoom",
+    "change_profile_picture.cancel": "Cancel Upload",
+    "change_profile_picture.save": "Save",
+    "change_profile_picture.error.large": "The file is too large. Max 5MB.",
+    "change_profile_picture.error.incorrect": "Incorrect file type. PNG or JPG only.",
+    "reception_name": "Reception Name",
+    "reception_name_description": "Your name as it appears in reception mode.",
+    "reception_name.placeholder": "Custom name",
+    "save": "Save"
+}

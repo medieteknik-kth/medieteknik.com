@@ -8,6 +8,8 @@
     "qol": "Livskvalitet",
     "bugfixes": "Buggfixar",
     "badge_new": "Ny",
+    "badge_major": "Stor",
+    "badge_minor": "Liten",
     "badge_updated": "Uppdaterad",
     "badge_removed": "Borttagen"
 }

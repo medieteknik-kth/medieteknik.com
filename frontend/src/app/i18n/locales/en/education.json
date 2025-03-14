@@ -1,10 +1,11 @@
 {
-    "title": "Education",
+    "title": "Media Technology",
     "keywords": "Media Technology, KTH, Courses, Programs, Master's, Computer Science, Interactive Media Technology, ICT Innovation, Machine Learning, Sustainable Digitalisation",
     "description": "Here you can find information about the courses and programs that are offered at the Media Technology programme.",
     "courses": "Courses",
     "no_courses": "See KTH's website for more information",
     "total_hp": "Total HP",
+    "go_to_course": "Go to course",
     "categories": [
         {
             "id": "math",
@@ -81,7 +82,9 @@
         }
     ],
     "master_programs": "Masters",
-    "read_more": "Read more on KTH's website",
+    "read_more": "Learn more",
+    "available_until": "Available for cohorts up to and including {{year}}",
+    "new": "NEW",
     "masters": [
         {
             "title": "Computer Science",
@@ -93,13 +96,7 @@
                 "Data Science",
                 "Algorithms and Complexity"
             ],
-            "flags": [
-                {
-                    "flag": "closed",
-                    "applies": "HT 2024",
-                    "description": "Elective for cohort HT24 and earlier"
-                }
-            ]
+            "avaliableUntil": 2024
         },
         {
             "title": "Interactive Media Technology",
@@ -122,13 +119,7 @@
                 "Systems and Software Engineering",
                 "Entrepreneurship"
             ],
-            "flags": [
-                {
-                    "flag": "closed",
-                    "applies": "HT 2022",
-                    "description": "Elective for cohort HT22 and earlier"
-                }
-            ]
+            "avaliableUntil": 2022
         },
         {
             "title": "Machine Learning",
@@ -145,19 +136,13 @@
             "title": "Sustainable Digitalisation",
             "description": "The master's programme in Sustainable Digitalisation will give you the skills to lead complex processes and use digitalisation in service of a regenerative transformation towards a sustainable society.",
             "kth_link": "https://www.kth.se/en/studies/master/sustainable-digitalisation",
-            "flags": [
-                {
-                    "flag": "new",
-                    "applies": "HT 2024",
-                    "description": "New master's programme starting in autumn 2024"
-                }
-            ],
             "tags": [
                 "Sustainability",
                 "Future Innovation",
                 "Digital Transformation",
                 "Strategic Leadership"
-            ]
+            ],
+            "isNew": true
         }
     ],
     "study_counselor": "Study Counselor",

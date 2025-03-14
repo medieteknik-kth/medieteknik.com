@@ -8,6 +8,8 @@
     "qol": "Quality of Life",
     "bugfixes": "Bugfixes",
     "badge_new": "New",
+    "badge_major": "Major",
+    "badge_minor": "Minor",
     "badge_updated": "Updated",
     "badge_removed": "Removed"
 }

@@ -1,0 +1,18 @@
+{
+    "title": "Recruit Position",
+    "description": "Recruit for a position in the committee",
+    "language_label": "Language",
+    "position_label": "Position",
+    "position_placeholder": "Select position",
+    "position_search_placeholder": "Search for a position",
+    "position_not_found": "No position avaliable.",
+    "end_date_label": "End Date",
+    "link_label": "Link",
+    "link_placeholder": "https://forms.gle/example",
+    "link_description": "Max 512 characters",
+    "description_label": "Description",
+    "description_placeholder": "We are looking for a new position...",
+    "description_description": "Max 200 characters",
+    "error.position_not_found": "Position not found",
+    "submit_button": "Recruit Position"
+}

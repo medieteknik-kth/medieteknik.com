@@ -1,10 +1,11 @@
 {
-    "title": "Utbildning",
+    "title": "Medieteknik",
     "keywords": "KTH, Kungliga Tekniska Högskolan, Medieteknik, Medieteknikprogrammet, Kurs, Program, Masterprogram, Datalogi, Interaktiv medieteknik, Innovation och Entreprenörskap inom IKT, Maskininlärning, Hållbar Digitalisering",
     "description": "Här kan du hitta information om kurser och program som erbjuds på Medieteknikprogrammet.",
     "courses": "Kurser",
     "no_courses": "Kontrollera KTH:s hemsida för mer information",
     "total_hp": "Totalt HP",
+    "go_to_course": "Gå till kurs",
     "categories": [
         {
             "id": "math",
@@ -81,7 +82,9 @@
         }
     ],
     "master_programs": "Masterprogram",
-    "read_more": "Läs mer på KTH:s hemsida",
+    "read_more": "Läs mer",
+    "available_until": "Tillgänglig för kull upp till och med år {{year}}",
+    "new": "NY",
     "masters": [
         {
             "title": "Datalogi",
@@ -93,13 +96,7 @@
                 "Data Science",
                 "Algoritmer och Komplexitet"
             ],
-            "flags": [
-                {
-                    "flag": "closed",
-                    "applies": "HT 2024",
-                    "description": "Valbar för kull HT24 och tidigare"
-                }
-            ]
+            "avaliableUntil": 2024
         },
         {
             "title": "Interaktiv medieteknik",
@@ -122,13 +119,7 @@
                 "System och Mjuvaruutveckling",
                 "Entreprenörskap"
             ],
-            "flags": [
-                {
-                    "flag": "closed",
-                    "applies": "HT 2022",
-                    "description": "Valbar för kull HT22 och tidigare"
-                }
-            ]
+            "avaliableUntil": 2022
         },
         {
             "title": "Maskininlärning",
@@ -145,19 +136,13 @@
             "title": "Hållbar Digitalisering",
             "description": "Masterprogrammet inom hållbar digitalisering fokuserar på att utveckla din förmåga att leda och driva digitala transformationer med hållbarhet i fokus.",
             "kth_link": "https://www.kth.se/en/studies/master/sustainable-digitalisation",
-            "flags": [
-                {
-                    "flag": "new",
-                    "applies": "HT 2024",
-                    "description": "Ny masterprogram från och med HT24"
-                }
-            ],
             "tags": [
                 "Hållbarhet",
                 "Konsulting",
                 "Innovation",
                 "Strategisk Ledning"
-            ]
+            ],
+            "isNew": true
         }
     ],
     "study_counselor": "Studievägledare",

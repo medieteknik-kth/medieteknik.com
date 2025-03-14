@@ -6,7 +6,9 @@
     "news_articles": "Nyhetsartiklar",
     "all_news": "Alla nyheter (20 per sida)",
     "table.title": "Titel",
+    "table.created_at": "Skapad den",
+    "table.last_updated": "Senast uppdaterad",
     "table.status": "Status",
-    "table.is_public": "Är offentlig",
+    "table.is_public": "Offentlig",
     "table.actions": "Åtgärder"
 }
