@@ -24,7 +24,7 @@ export type StudentType = (typeof STUDENT_TYPES)[keyof typeof STUDENT_TYPES]
  *
  * @property {string} author_type - The type of the author
  * @property {string} student_id - The student ID
- * @property {string} email - The student email
+ * @property {string} email - The student email will be optional in reception mode.
  * @property {string} first_name - The student first name
  * @property {string} last_name - The student last name (optional)
  * @property {string} profile_picture_url - The student profile picture URL (optional)
@@ -35,7 +35,7 @@ export type StudentType = (typeof STUDENT_TYPES)[keyof typeof STUDENT_TYPES]
 export default interface Student {
   author_type: 'STUDENT'
   student_id: string
-  email: string
+  email?: string
   first_name: string
   last_name?: string
   profile_picture_url?: string
