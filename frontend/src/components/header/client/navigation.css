@@ -1,0 +1,25 @@
+.collapsible-content[data-state="open"] {
+    animation: slideDown 500ms ease-in;
+}
+
+.collapsible-content[data-state="closed"] {
+    animation: slideUp 500ms ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        height: 0;
+    }
+    to {
+        height: var(--radix-collapsible-content-height);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        height: var(--radix-collapsible-content-height);
+    }
+    to {
+        height: 0;
+    }
+}

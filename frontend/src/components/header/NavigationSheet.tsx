@@ -19,12 +19,13 @@ import {
 import type { LanguageCode } from '@/models/Language'
 import {
   Bars3CenterLeftIcon,
+  Bars3Icon,
   ChevronDownIcon,
 } from '@heroicons/react/24/outline'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { useTheme } from 'next-themes'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import { type JSX, useCallback, useState } from 'react'
 import './navigation.css'
 
@@ -64,10 +65,11 @@ export default function NavigationSheet({
       <SheetTrigger asChild>
         <Button
           variant={'ghost'}
-          className='w-fit h-full lg:hidden rounded-none'
+          className='w-full sm:w-fit h-full lg:hidden rounded-none'
           onClick={toggleMenu}
         >
-          <Bars3CenterLeftIcon className='w-7 h-7' />
+          <Bars3CenterLeftIcon className='w-7 h-7 hidden sm:block' />
+          <Bars3Icon className='w-7 h-7 sm:hidden' />
         </Button>
       </SheetTrigger>
       <SheetContent side={'left'} className='overflow-y-auto dark:bg-[#111]'>

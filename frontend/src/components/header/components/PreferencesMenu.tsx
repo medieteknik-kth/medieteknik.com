@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import { changeLanguage } from '@/components/server/changeLanguage'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
@@ -9,15 +10,10 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import {
-  LANGUAGES,
-  LANGUAGE_COOKIE_NAME,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
-import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { type JSX, useCallback, useEffect, useState } from 'react'
 
 interface Props {
@@ -26,7 +22,6 @@ interface Props {
 
 export default function PreferencesMenu({ language }: Props): JSX.Element {
   const path = usePathname()
-  const router = useRouter()
   const { t } = useTranslation(language, 'preferences')
   const [isClient, setIsClient] = useState(false)
   const { theme, setTheme } = useTheme()
@@ -34,25 +29,6 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
   useEffect(() => {
     setIsClient(true)
   }, [])
-
-  /**
-   * @name switchLanguage
-   * @description Switches the language of the page
-   * @param {string} newLanguage - The new language to switch to
-   * @returns {void}
-   */
-  const switchLanguage = useCallback(
-    (newLanguage: string) => {
-      if (!isClient) {
-        return
-      }
-      const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
-      document.cookie = `${LANGUAGE_COOKIE_NAME}=${newLanguage}; path=/; expires=${new Date(Date.now() + 31536000000)}; SameSite=Lax`
-      window.localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLanguage)
-      router.push(newPath)
-    },
-    [path, router, isClient]
-  )
 
   /**
    * @name switchTheme
@@ -82,7 +58,7 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
               variant='ghost'
               className='w-full flex items-center justify-between gap-2 p-0 pl-2'
               disabled={lang === language}
-              onClick={() => switchLanguage(lang)}
+              onClick={() => changeLanguage(lang, path)}
               title={`Switch to ${LANGUAGES[lang].name}`}
               aria-label={`Switch to ${LANGUAGES[lang].name}`}
             >

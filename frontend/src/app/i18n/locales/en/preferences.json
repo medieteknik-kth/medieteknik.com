@@ -2,9 +2,13 @@
     "title": "Preferences",
     "description": "Change theme, language and privacy settings here.",
     "language": "Language",
+    "language_description": "Change the language of the application.",
     "privacy": "Privacy",
+    "privacy_description": "Change privacy settings. This includes cookie settings.",
     "cookie_settings": "Cookie Settings",
     "theme": "Theme",
-    "light_theme": "Light Theme",
-    "dark_theme": "Dark Theme"
+    "select_theme": "Select theme",
+    "theme_description": "Change the theme of the application.",
+    "light_theme": "Light",
+    "dark_theme": "Dark"
 }

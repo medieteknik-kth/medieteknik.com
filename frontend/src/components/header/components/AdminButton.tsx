@@ -7,9 +7,9 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { PowerIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 import type { JSX } from 'react'
 
@@ -27,7 +27,7 @@ interface Props {
  * @returns {JSX.Element} The AdminButton component.
  */
 export default function AdminButton({ language }: Props): JSX.Element {
-  const { role } = useAuthentication()
+  const { role } = useStudent()
 
   if (role !== 'ADMIN') {
     return <></>

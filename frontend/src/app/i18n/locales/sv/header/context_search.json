@@ -1,0 +1,21 @@
+{
+    "title": "Sökning",
+    "description": "Börja skriva för att söka i systemet",
+    "committees": "Nämnder och Projektgrupper",
+    "committee_positions": "Funktionärsposter",
+    "committee_position": "Funktionärspost",
+    "documents": "Dokument",
+    "media": "Media",
+    "news": "Nyheter",
+    "placeholder": "Sök efter vad som helst...",
+    "placeholder_filters": "Filtrera sökresultat",
+    "filter_hint": "Välj de filter du vill tillämpa på dina sökresultat.",
+    "suggestions": "Förslag",
+    "clear": "Rensa",
+    "close": "Stäng",
+    "more": " mer",
+    "no_results": "Inga resultat hittades",
+    "no_results_hint": "Försök att söka med andra sökord eller ta bort några filter.",
+    "search": "Sök...",
+    "select_all": "(Välj alla)"
+}

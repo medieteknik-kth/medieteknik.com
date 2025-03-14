@@ -13,8 +13,8 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import { SquaresPlusIcon } from '@heroicons/react/24/outline'
+import { useStudent } from '@/providers/AuthenticationProvider'
+import { BuildingOffice2Icon } from '@heroicons/react/24/outline'
 import { Link } from 'next-view-transitions'
 
 import type { JSX } from 'react'
@@ -33,7 +33,7 @@ interface Props {
  * @returns {JSX.Element} The CommitteeListMenu component.
  */
 export default function CommitteeListMenu({ language }: Props): JSX.Element {
-  const { committees } = useAuthentication()
+  const { committees } = useStudent()
   const { t } = useTranslation(language, 'header')
 
   if (committees.length === 0) {
@@ -50,7 +50,7 @@ export default function CommitteeListMenu({ language }: Props): JSX.Element {
               className='w-full flex items-center justify-start gap-2 p-0 pl-2'
               variant={'ghost'}
             >
-              <SquaresPlusIcon className='w-4 h-4' />
+              <BuildingOffice2Icon className='w-4 h-4' />
               {t('committees')}
             </Button>
           </DropdownMenuSubTrigger>
