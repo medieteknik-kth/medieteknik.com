@@ -1,7 +1,7 @@
 # Stage 1: Build stage
 FROM ghcr.io/astral-sh/uv:python3.13-alpine AS build
 
-ENV PATH /opt/venv/bin:$PATH
+ENV PATH=/opt/venv/bin:$PATH
 
 # Install build dependencies
 RUN apk add --no-cache \
@@ -46,8 +46,8 @@ COPY . .
 COPY --from=build /opt/venv /opt/venv
 
 # Set environment variables
-ENV VIRTUAL_ENV /opt/venv
-ENV PATH /opt/venv/bin:$PATH
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH=/opt/venv/bin:$PATH
 
 # Expose port 80
 EXPOSE 80

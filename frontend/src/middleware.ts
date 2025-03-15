@@ -13,7 +13,13 @@ acceptLanguage.languages(SUPPORTED_LANGUAGES)
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 export const Config = {
-  matcher: ['/:language*'],
+  matcher: {
+    source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    missing: [
+      { type: 'header', key: 'next-router-prefetch' },
+      { type: 'header', key: 'purpose', value: 'prefetch' },
+    ],
+  },
 }
 
 const BLACKLISTED_URLS_REGEX = new RegExp(
@@ -94,7 +100,6 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
   function getCookieLanguage(): LanguageCode | undefined {
     const languageCookie = request.cookies.get('language')
     if (languageCookie) {
-      console.log('Found language in cookie:', languageCookie.value)
       return languageCookie.value as LanguageCode
     }
     return undefined
@@ -123,7 +128,6 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
 
       for (const { code } of languages) {
         if (SUPPORTED_LANGUAGES.includes(code)) {
-          console.log('Found language in browser:', code)
           return code as LanguageCode
         }
       }
@@ -146,7 +150,6 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
       const language = SUPPORTED_LANGUAGES.find((locale) =>
         url.pathname.startsWith(`/${locale}`)
       )
-      console.log('Found language in referer:', language)
       return language || undefined
     }
     return undefined
@@ -181,15 +184,12 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
   ) {
     if (isDevelopment) {
       console.warn(
-        `Redirecting to /${language}/${request.nextUrl.pathname.replace(/(.*)\/(?!.*\/)/, '') || ''}. Original path: ${request.nextUrl.pathname}`
+        `Redirecting to /${language}${request.nextUrl.pathname}. Original path: ${request.nextUrl.pathname}`
       )
     }
 
     response = NextResponse.redirect(
-      new NextURL(
-        `/${language}/${request.nextUrl.pathname.replace(/(.*)\/(?!.*\/)/, '') || ''}`,
-        request.nextUrl
-      )
+      new NextURL(`/${language}${request.nextUrl.pathname}`, request.nextUrl)
     )
 
     return response
@@ -208,8 +208,8 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
  */
 function generateCSP(nonce: string): string {
   return `default-src 'self'; 
-    script-src 'self' 'nonce-${nonce}' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''} 'unsafe-inline';
-    connect-src 'self' ${process.env.NODE_ENV === 'development' ? 'http://localhost:80 http://localhost:* ws://localhost:3000' : 'https://api.medieteknik.com'} https://vercel.live https://www.kth.se wss://ws-us3.pusher.com blob: https://storage.googleapis.com https://va.vercel-scripts.com;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline';
+    connect-src 'self' ${process.env.NODE_ENV === 'development' ? 'http://localhost:80 http://localhost:* ws://localhost:3000 https://api.medieteknik.com' : 'https://api.medieteknik.com'} https://vercel.live https://www.kth.se wss://ws-us3.pusher.com blob: https://storage.googleapis.com https://va.vercel-scripts.com;
     media-src blob:; 
     img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com https://i.ytimg.com data: blob:; 
     style-src 'self' https://vercel.live 'unsafe-inline'; 

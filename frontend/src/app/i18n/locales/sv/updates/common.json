@@ -7,9 +7,9 @@
     "ui_ux": "Användargränssnitt & Användarupplevelse",
     "qol": "Livskvalitet",
     "bugfixes": "Buggfixar",
-    "badge_new": "Ny",
-    "badge_major": "Stor",
-    "badge_minor": "Liten",
+    "badge_experimental": "Experimentell",
+    "tooltip_experimental": "Denna funktion är experimentell och kanske inte fungerar som förväntat. Använd på egen risk.",
+    "badge_new": "Nytt",
     "badge_updated": "Uppdaterad",
     "badge_removed": "Borttagen"
 }

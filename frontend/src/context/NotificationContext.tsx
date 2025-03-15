@@ -1,3 +1,5 @@
+'use client'
+
 import {
   type NotificationContextType,
   initialState,
@@ -15,6 +17,7 @@ import {
   useMemo,
   useReducer,
 } from 'react'
+
 export const NotificationContext = createContext<
   NotificationContextType | undefined
 >(undefined)

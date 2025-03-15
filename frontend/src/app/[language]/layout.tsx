@@ -14,7 +14,6 @@ import { headers } from 'next/headers'
 import Script from 'next/script'
 import type React from 'react'
 import type { JSX } from 'react'
-import './globals.css'
 
 /**
  * @name generateStaticParams

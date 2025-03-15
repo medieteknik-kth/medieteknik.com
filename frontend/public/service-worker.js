@@ -10,7 +10,7 @@
  * @constant
  * @default
  */
-const DEBUG_MODE = true
+const DEBUG_MODE = false
 
 /**
  * @description The cache name for runtime assets. This is used to store runtime assets that are updated frequently, should be pruned or removed at a constant rate.
@@ -369,6 +369,15 @@ function shouldCache(response, request) {
     return false
   }
 
+  // Dont cache API requests
+  if (request.url.includes('/api/')) {
+    return false
+  }
+
+  if (request.method !== 'GET') {
+    return false
+  }
+
   const isBlacklisted = BLACKLISTED_URLS_REGEX.test(request.url)
 
   if (isBlacklisted) {
@@ -418,7 +427,7 @@ self.addEventListener(
    */
   (event) => {
     /**
-     * @description Check if the request is for a font or static asset
+     * @description Request object representing the request being made
      * @type {Request}
      */
     const request = event.request
@@ -474,6 +483,11 @@ self.addEventListener(
             }
 
             const responseClone = fetchResponse.clone()
+
+            if (request.method !== 'GET') {
+              return fetchResponse
+            }
+
             const newHeaders = new Headers(responseClone.headers)
             newHeaders.append(CACHE_TIMESTAMP_HEADER, Date.now().toString())
 

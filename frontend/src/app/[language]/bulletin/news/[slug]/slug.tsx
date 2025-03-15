@@ -1,9 +1,12 @@
 import { getCommitteeMembers } from '@/api/committee'
 import { getNewsData } from '@/api/items/news'
-import NewsRedirect from '@/app/[language]/bulletin/news/[slug]/client/redirect'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePositionPagination } from '@/models/Pagination'
+import dynamic from 'next/dynamic'
+const NewsRedirect = dynamic(
+  () => import('@/app/[language]/bulletin/news/[slug]/client/redirect')
+)
 
 import type { JSX } from 'react'
 

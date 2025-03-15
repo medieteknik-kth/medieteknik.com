@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { ViewTransitions } from 'next-view-transitions'
-
+import './globals.css'
 interface Props {
   children: React.ReactNode
 }
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
  * @param {React.ReactNode} children - The children to render
  * @returns {JSX.Element} The root layout component
  */
-export default function RootLayout({ children }: Props): React.ReactElement {
+export default function RootLayout({ children }: Props): React.ReactNode {
   return (
     <ViewTransitions>
       <html

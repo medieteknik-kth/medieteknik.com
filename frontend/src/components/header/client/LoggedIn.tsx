@@ -46,7 +46,12 @@ import {
   useStudent,
 } from '@/providers/AuthenticationProvider'
 import { useNotifications } from '@/providers/NotificationProvider'
-import { IS_DEVELOPMENT, LANGUAGES, SITE_VERSION } from '@/utility/Constants'
+import {
+  IS_DEVELOPMENT,
+  LANGUAGES,
+  LOCAL_STORAGE_READ_NOTIFICATIONS_KEY,
+  SITE_VERSION,
+} from '@/utility/Constants'
 import {
   ArrowRightStartOnRectangleIcon,
   Bars3Icon,
@@ -143,11 +148,58 @@ export function NarrowScreenProfileButton({
   const { logout } = useAuthentication()
   const { student } = useStudent()
   const { theme, setTheme } = useTheme()
-  const { notifications } = useNotifications()
+  let { notifications } = useNotifications()
   const pathname = usePathname()
   const loginUrl = `/${language}/login${
     pathname !== '/' ? `?return_url=${pathname}` : ''
   }`
+
+  if (!notifications) {
+    notifications = []
+  }
+
+  /**
+   * // TODO: Maybe add a more robust solution for this, like a backend solution
+   * @name addAllRead
+   * @description Adds all notifications to the local storage as read
+   * @returns {void}
+   */
+  const addAllRead = (): void => {
+    window.localStorage.setItem(
+      LOCAL_STORAGE_READ_NOTIFICATIONS_KEY,
+      notifications
+        .map((notification) => notification.notification_id)
+        .join(',')
+    )
+  }
+
+  /**
+   * @name isAllRead
+   * @description Checks if all notifications are read
+   * @returns {boolean} True if all notifications are read, false otherwise
+   */
+  const isAllRead = (): boolean => {
+    const readNotifications = window.localStorage.getItem(
+      LOCAL_STORAGE_READ_NOTIFICATIONS_KEY
+    )
+    return (
+      notifications.length > 0 &&
+      readNotifications?.split(',').length === notifications.length
+    )
+  }
+
+  /**
+   * @name isRead
+   * @description Checks if a notification is read
+   * @param {string} notificationId - The id of the notification
+   * @returns {boolean | undefined} True if the notification is read, false otherwise, undefined if not set
+   */
+  const isRead = (notificationId: string): boolean | undefined => {
+    const readNotifications = window.localStorage.getItem(
+      LOCAL_STORAGE_READ_NOTIFICATIONS_KEY
+    )
+    return readNotifications?.split(',').includes(notificationId)
+  }
 
   return (
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -195,7 +247,7 @@ export function NarrowScreenProfileButton({
                   {t('guest')}
                 </SheetTitle>
                 <SheetDescription className='text-start'>
-                  Hello, welcome to the site!
+                  {t('guest_welcome')}
                 </SheetDescription>
               </>
             )}
@@ -203,7 +255,7 @@ export function NarrowScreenProfileButton({
           <div className='px-2 pt-3 mb-2'>
             <div className='px-2 mb-2'>
               <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
-                Navigation
+                {t('navigation')}
               </p>
             </div>
             <nav className='w-full h-fit z-10 justify-between max-h-[30vh] overflow-y-auto'>
@@ -213,7 +265,7 @@ export function NarrowScreenProfileButton({
                     href={`/${language}`}
                     className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
                   >
-                    Home
+                    {t('home')}
                   </Link>
                 </li>
                 {headerElements.map((element, index) => (
@@ -277,23 +329,36 @@ export function NarrowScreenProfileButton({
                 </p>
               </div>
               <div className='space-y-1.5 overflow-y-auto'>
-                <Link
-                  href={`/${language}/account`}
-                  className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3'
-                  onClick={() => setSheetOpen(false)}
+                <Button
+                  variant={'ghost'}
+                  asChild
+                  className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-2 justify-start'
                 >
-                  <Cog6ToothIcon className='w-6 h-6' />
-                  {t('account_settings')}
-                </Link>
+                  <Link
+                    href={`/${language}/account`}
+                    className=''
+                    onClick={() => setSheetOpen(false)}
+                  >
+                    <Cog6ToothIcon className='w-6 h-6' />
+                    {t('account_settings')}
+                  </Link>
+                </Button>
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button
                       variant={'ghost'}
-                      className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3'
+                      className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3 justify-between'
+                      onClick={addAllRead}
                     >
-                      <BellIcon className='w-6 h-6' />
-                      {t('notifications')}
-                      <Badge className='ml-auto'>{notifications.length}</Badge>
+                      <div className='flex items-center gap-2'>
+                        <BellIcon className='w-6 h-6' />
+                        {t('notifications')}
+                      </div>
+                      <Badge
+                        className={`ml-auto ${isAllRead() ? 'hidden' : ''}`}
+                      >
+                        NEW
+                      </Badge>
                     </Button>
                   </SheetTrigger>
                   <SheetContent
@@ -318,38 +383,44 @@ export function NarrowScreenProfileButton({
                         {commonT('no_notifications')}
                       </div>
                     ) : (
-                      notifications.map((notification) =>
-                        notification.translations[0].url ? (
-                          <div
-                            key={notification.notification_id}
-                            className='relative w-full h-full'
-                          >
-                            <div className='bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto' />
-
-                            <Link
-                              href={`/${language}/${notification.translations[0].url}`}
-                              className='w-full h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                      (Array.isArray(notifications) ? notifications : []).map(
+                        (notification) =>
+                          notification.translations[0].url ? (
+                            <div
+                              key={notification.notification_id}
+                              className='relative w-full h-full'
                             >
-                              <NotificationContent
-                                notification={notification}
-                                language={language}
+                              <div
+                                className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
                               />
-                            </Link>
-                          </div>
-                        ) : (
-                          <div
-                            key={notification.notification_id}
-                            className='relative w-full h-full'
-                          >
-                            <div className='bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto' />
-                            <div className='w-full h-20 flex items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'>
-                              <NotificationContent
-                                notification={notification}
-                                language={language}
-                              />
+
+                              <Link
+                                href={`/${language}/${notification.translations[0].url}`}
+                                className='w-full h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                              >
+                                <NotificationContent
+                                  notification={notification}
+                                  language={language}
+                                />
+                              </Link>
                             </div>
-                          </div>
-                        )
+                          ) : (
+                            <div
+                              key={notification.notification_id}
+                              className='relative w-full h-full'
+                            >
+                              <div
+                                className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                              />
+
+                              <div className='w-full h-20 flex items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'>
+                                <NotificationContent
+                                  notification={notification}
+                                  language={language}
+                                />
+                              </div>
+                            </div>
+                          )
                       )
                     )}
                   </SheetContent>

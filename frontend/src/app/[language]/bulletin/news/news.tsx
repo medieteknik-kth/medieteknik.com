@@ -1,5 +1,4 @@
 import { getNewsPagniation } from '@/api/items/news'
-import AllNews from '@/app/[language]/bulletin/news/client/allNews'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import CommitteeTag from '@/components/tags/CommitteeTag'
 import StudentTag from '@/components/tags/StudentTag'
@@ -8,9 +7,11 @@ import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
 import type News from '@/models/items/News'
 import { Link } from 'next-view-transitions'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
-
-import type { JSX } from 'react'
+const AllNews = dynamic(
+  () => import('@/app/[language]/bulletin/news/client/allNews')
+)
 
 interface Params {
   language: LanguageCode
@@ -27,9 +28,8 @@ interface Props {
  * @param {Params} params
  * @param {string} params.language - The language of the news
  *
- * @returns {JSX.Element} The news page
  */
-export default async function NewsPage(props: Props): Promise<JSX.Element> {
+export default async function NewsPage(props: Props) {
   const { language } = await props.params
   const { data: paginatedNews, error } = await getNewsPagniation(language, 1)
 

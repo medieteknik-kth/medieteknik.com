@@ -127,10 +127,12 @@ export default function AllNews({ language, data }: Props): JSX.Element {
                 size={'icon'}
                 disabled={pageIndex === data.total_pages}
                 onClick={() => {
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                  })
+                  if (window) {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth',
+                    })
+                  }
                   setPageIndex((prev) =>
                     prev + 1 > data.total_pages ? data.total_pages : prev + 1
                   )

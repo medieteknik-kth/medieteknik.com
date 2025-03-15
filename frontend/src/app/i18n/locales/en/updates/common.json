@@ -7,9 +7,9 @@
     "ui_ux": "User Interface & User Experience",
     "qol": "Quality of Life",
     "bugfixes": "Bugfixes",
+    "badge_experimental": "Experimental",
+    "tooltip_experimental": "This feature is experimental and may not work as expected. Use at your own risk.",
     "badge_new": "New",
-    "badge_major": "Major",
-    "badge_minor": "Minor",
     "badge_updated": "Updated",
     "badge_removed": "Removed"
 }

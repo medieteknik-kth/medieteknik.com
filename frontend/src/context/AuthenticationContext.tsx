@@ -1,3 +1,5 @@
+'use client'
+
 import { authService } from '@/api/services/authenticationService'
 import {
   type AuthenticationContextType,

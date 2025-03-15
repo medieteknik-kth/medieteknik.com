@@ -20,7 +20,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { useNotifications } from '@/providers/NotificationProvider'
 import { LOCAL_STORAGE_READ_NOTIFICATIONS_KEY } from '@/utility/Constants'
 import { BellIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { type JSX, useState } from 'react'
 
 interface Props {
@@ -40,8 +40,12 @@ export default function NotificationMenu({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'header')
   const { t: commonT } = useTranslation(language, 'common')
   const [open, setOpen] = useState(false)
-  const { notifications } = useNotifications()
+  let { notifications } = useNotifications()
   const { isAuthenticated } = useAuthentication()
+
+  if (!notifications) {
+    notifications = []
+  }
 
   /**
    * // TODO: Maybe add a more robust solution for this, like a backend solution
@@ -105,11 +109,9 @@ export default function NotificationMenu({ language }: Props): JSX.Element {
             {notifications.length > 0 ? (
               <div className='relative'>
                 <BellIcon className='w-7 h-7' />
-                <span
+                <div
                   className={`absolute top-0 right-0 w-4 h-4 bg-yellow-500 rounded-full text-xs text-black grid place-items-center font-semibold ${isAllRead() ? 'hidden' : ''}`}
-                >
-                  {notifications.length > 9 ? '9+' : notifications.length}
-                </span>
+                />
               </div>
             ) : (
               <BellIcon className='w-7 h-7' />
@@ -139,47 +141,48 @@ export default function NotificationMenu({ language }: Props): JSX.Element {
                       {commonT('no_notifications')}
                     </li>
                   ) : (
-                    notifications.map((notification) =>
-                      notification.translations[0].url ? (
-                        <li
-                          key={notification.notification_id}
-                          className='relative w-full h-fit'
-                        >
-                          <div
-                            className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
-                          />
-                          <Link
-                            href={`/${language}${notification.translations[0].url}`}
-                            className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
-                            title={notification.translations[0].body}
-                            aria-label={notification.translations[0].body}
+                    (Array.isArray(notifications) ? notifications : []).map(
+                      (notification) =>
+                        notification.translations[0].url ? (
+                          <li
+                            key={notification.notification_id}
+                            className='relative w-full h-fit'
                           >
-                            <NotificationContent
-                              notification={notification}
-                              language={language}
+                            <div
+                              className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
                             />
-                          </Link>
-                        </li>
-                      ) : (
-                        <li
-                          key={notification.notification_id}
-                          className='relative w-full h-fit'
-                        >
-                          <div
-                            className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
-                          />
-                          <div
-                            className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
-                            title={notification.translations[0].body}
-                            aria-label={notification.translations[0].body}
+                            <Link
+                              href={`/${language}${notification.translations[0].url}`}
+                              className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                              title={notification.translations[0].body}
+                              aria-label={notification.translations[0].body}
+                            >
+                              <NotificationContent
+                                notification={notification}
+                                language={language}
+                              />
+                            </Link>
+                          </li>
+                        ) : (
+                          <li
+                            key={notification.notification_id}
+                            className='relative w-full h-fit'
                           >
-                            <NotificationContent
-                              notification={notification}
-                              language={language}
+                            <div
+                              className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
                             />
-                          </div>
-                        </li>
-                      )
+                            <div
+                              className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                              title={notification.translations[0].body}
+                              aria-label={notification.translations[0].body}
+                            >
+                              <NotificationContent
+                                notification={notification}
+                                language={language}
+                              />
+                            </div>
+                          </li>
+                        )
                     )
                   )}
                 </ul>

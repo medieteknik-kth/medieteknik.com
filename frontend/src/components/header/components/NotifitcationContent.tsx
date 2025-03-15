@@ -3,7 +3,7 @@ import type { Notification } from '@/models/Notification'
 import Image from 'next/image'
 import FallbackImage from 'public/images/logo.webp'
 
-function getRelativeTime(date: Date) {
+function getRelativeTime(date: Date, language: LanguageCode) {
   const now = new Date()
   const diff = now.getTime() - date.getTime()
   const diffInSeconds = Math.floor(diff / 1000)
@@ -13,30 +13,41 @@ function getRelativeTime(date: Date) {
   const diffInMonths = Math.floor(diffInDays / 30)
 
   if (diffInSeconds < 60) {
-    return `${diffInSeconds} seconds ago`
+    return language === 'sv'
+      ? `${diffInSeconds} sekunder sedan`
+      : `${diffInSeconds} seconds ago`
   }
   if (diffInMinutes < 60) {
-    return `${diffInMinutes} minutes ago`
+    return language === 'sv'
+      ? `${diffInMinutes} minuter sedan`
+      : `${diffInMinutes} minutes ago`
   }
   if (diffInHours < 24) {
-    return `${diffInHours} hours ago`
+    return language === 'sv'
+      ? `${diffInHours} timmar sedan`
+      : `${diffInHours} hours ago`
   }
   if (diffInDays < 30) {
-    return `${diffInDays} days ago`
+    return language === 'sv'
+      ? `${diffInDays} dagar sedan`
+      : `${diffInDays} days ago`
   }
   if (diffInMonths < 12) {
-    return `${diffInMonths} months ago`
+    return language === 'sv'
+      ? `${diffInMonths} månader sedan`
+      : `${diffInMonths} months ago`
   }
-  return `${Math.floor(diffInMonths / 12)} years ago`
+  return language === 'sv'
+    ? `${date.toLocaleDateString('sv-SE')}`
+    : `${date.toLocaleDateString('en-US')}`
 }
 
-export function NotificationContent({
-  notification,
-  language,
-}: {
+interface Props {
   notification: Notification
   language: LanguageCode
-}) {
+}
+
+export function NotificationContent({ notification, language }: Props) {
   return (
     <>
       <div className='bg-white w-10 sm:w-fit p-1 rounded-lg relative'>
@@ -108,7 +119,7 @@ export function NotificationContent({
             </p>
           )}
           <p className='text-xs text-muted-foreground'>
-            {getRelativeTime(new Date(notification.created_at))}
+            {getRelativeTime(new Date(notification.created_at), language)}
           </p>
         </div>
       </div>

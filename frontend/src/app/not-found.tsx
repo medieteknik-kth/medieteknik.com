@@ -1,7 +1,8 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
-import './[language]/globals.css'
 
 /**
  * @name NotFound
@@ -9,7 +10,7 @@ import './[language]/globals.css'
  *
  * @returns {JSX.Element} The 404 page
  */
-export default async function NotFound(): Promise<JSX.Element> {
+export default function NotFound(): JSX.Element {
   return (
     <main
       aria-label='Page not found'
