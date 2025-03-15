@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import { NotificationContent } from '@/components/header/components/NotifitcationContent'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -15,11 +16,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import { UPDATES, VersionControl } from '@/utility/Updates'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useNotifications } from '@/providers/NotificationProvider'
+import { LOCAL_STORAGE_READ_NOTIFICATIONS_KEY } from '@/utility/Constants'
 import { BellIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import Link from 'next/link'
-import Logo from 'public/images/logo.webp'
+import { Link } from 'next-view-transitions'
 import { type JSX, useState } from 'react'
 
 interface Props {
@@ -38,82 +39,157 @@ interface Props {
 export default function NotificationMenu({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'header')
   const { t: commonT } = useTranslation(language, 'common')
-  const versionControl = new VersionControl()
-  const [notifications, setNotifications] = useState(
-    versionControl.checkForUpdates() ? versionControl.countUpdatesBehind() : 0
-  )
+  const [open, setOpen] = useState(false)
+  let { notifications } = useNotifications()
+  const { isAuthenticated } = useAuthentication()
+
+  if (!notifications) {
+    notifications = []
+  }
+
+  /**
+   * // TODO: Maybe add a more robust solution for this, like a backend solution
+   * @name addAllRead
+   * @description Adds all notifications to the local storage as read
+   * @returns {void}
+   */
+  const addAllRead = (): void => {
+    window.localStorage.setItem(
+      LOCAL_STORAGE_READ_NOTIFICATIONS_KEY,
+      notifications
+        .map((notification) => notification.notification_id)
+        .join(',')
+    )
+  }
+
+  /**
+   * @name isAllRead
+   * @description Checks if all notifications are read
+   * @returns {boolean} True if all notifications are read, false otherwise
+   */
+  const isAllRead = (): boolean => {
+    const readNotifications = window.localStorage.getItem(
+      LOCAL_STORAGE_READ_NOTIFICATIONS_KEY
+    )
+    return (
+      notifications.length > 0 &&
+      readNotifications?.split(',').length === notifications.length
+    )
+  }
+
+  /**
+   * @name isRead
+   * @description Checks if a notification is read
+   * @param {string} notificationId - The id of the notification
+   * @returns {boolean | undefined} True if the notification is read, false otherwise, undefined if not set
+   */
+  const isRead = (notificationId: string): boolean | undefined => {
+    const readNotifications = window.localStorage.getItem(
+      LOCAL_STORAGE_READ_NOTIFICATIONS_KEY
+    )
+    return readNotifications?.split(',').includes(notificationId)
+  }
+
+  if (!isAuthenticated) {
+    return <></>
+  }
 
   return (
-    <div className='w-20 z-10'>
-      <DropdownMenu modal={false}>
+    <div className='w-full sm:w-fit h-full z-10'>
+      <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             size='icon'
             variant='ghost'
-            className='w-fit h-full px-4 grid z-10 place-items-center rounded-none'
+            className='w-full sm:w-fit h-full px-4 grid z-10 place-items-center rounded-none'
             title='Notifications'
             aria-label='Notifications Button'
-            onClick={() => {
-              versionControl.markAsSeen()
-              setNotifications(0)
-            }}
+            onClick={addAllRead}
           >
-            {notifications > 0 ? (
+            {notifications.length > 0 ? (
               <div className='relative'>
                 <BellIcon className='w-7 h-7' />
-                <span className='absolute top-0 right-0 w-4 h-4 bg-yellow-500 rounded-full text-xs text-black grid place-items-center'>
-                  {notifications > 9 ? '9+' : notifications}
-                </span>
+                <div
+                  className={`absolute top-0 right-0 w-4 h-4 bg-yellow-500 rounded-full text-xs text-black grid place-items-center font-semibold ${isAllRead() ? 'hidden' : ''}`}
+                />
               </div>
             ) : (
               <BellIcon className='w-7 h-7' />
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent asChild>
-          <Card className='min-w-96'>
-            <CardHeader>
-              <CardTitle>{t('notifications')}</CardTitle>
-              <CardDescription>Updates and notifications</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {UPDATES.map((update) => (
-                <Button
-                  key={update.version}
-                  asChild
-                  variant={'ghost'}
-                  className='flex justify-start gap-2 items-center'
-                >
-                  <Link
-                    href={`/${language}/updates/${update.version}`}
-                    className='h-20'
-                  >
-                    <Image
-                      src={Logo}
-                      alt='Logo'
-                      width={32}
-                      height={32}
-                      className='h-10 w-auto aspect-square rounded-md'
-                    />
-                    <div className='flex flex-col justify-between h-full p-2'>
-                      <div>
-                        <p className='text-sm font-semibold leading-3 tracking-tight'>
-                          {commonT('title')} v{update.version}
-                        </p>
-                        <p className='text-xs'>{update.description}</p>
-                      </div>
-                      <div>
-                        <p className='text-xs text-muted-foreground'>
-                          {update.date}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-        </DropdownMenuContent>
+        {open && (
+          <DropdownMenuContent asChild>
+            <Card className='mr-5 lg:mr-0'>
+              <CardHeader className='relative'>
+                <CardTitle>
+                  {t('notifications')}
+                  <sup>
+                    <span className='text-xs text-red-500 font-semibold ml-1 tracking-wide select-none'>
+                      Beta
+                    </span>
+                  </sup>
+                </CardTitle>
+                <CardDescription>
+                  {t('notifications_description')}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className='pt-0'>
+                <ul className='w-full h-96 overflow-y-auto flex flex-col gap-1'>
+                  {notifications.length === 0 ? (
+                    <li className='w-md lg:w-lg xl:w-xl min-h-20 h-full grid place-items-center z-10 tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800 rounded-md'>
+                      {commonT('no_notifications')}
+                    </li>
+                  ) : (
+                    (Array.isArray(notifications) ? notifications : []).map(
+                      (notification) =>
+                        notification.translations[0].url ? (
+                          <li
+                            key={notification.notification_id}
+                            className='relative w-full h-fit'
+                          >
+                            <div
+                              className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                            />
+                            <Link
+                              href={`/${language}${notification.translations[0].url}`}
+                              className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                              title={notification.translations[0].body}
+                              aria-label={notification.translations[0].body}
+                            >
+                              <NotificationContent
+                                notification={notification}
+                                language={language}
+                              />
+                            </Link>
+                          </li>
+                        ) : (
+                          <li
+                            key={notification.notification_id}
+                            className='relative w-full h-fit'
+                          >
+                            <div
+                              className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                            />
+                            <div
+                              className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                              title={notification.translations[0].body}
+                              aria-label={notification.translations[0].body}
+                            >
+                              <NotificationContent
+                                notification={notification}
+                                language={language}
+                              />
+                            </div>
+                          </li>
+                        )
+                    )
+                  )}
+                </ul>
+              </CardContent>
+            </Card>
+          </DropdownMenuContent>
+        )}
       </DropdownMenu>
     </div>
   )

@@ -8,5 +8,6 @@
     "email": "Email",
     "password": "Password",
     "network_error": "Network Error",
-    "login_failed": "Login Failed, Please Try Again Later"
+    "login_failed": "Login Failed, Please Try Again Later",
+    "remember_me": "Stay Logged In"
 }

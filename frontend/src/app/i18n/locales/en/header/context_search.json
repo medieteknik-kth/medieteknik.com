@@ -1,0 +1,21 @@
+{
+    "title": "Search",
+    "description": "Start typing to search the system",
+    "committees": "Committees",
+    "committee_positions": "Committee Positions",
+    "committee_position": "Committee Position",
+    "documents": "Documents",
+    "media": "Media",
+    "news": "News",
+    "placeholder": "Search for anything...",
+    "placeholder_filters": "Refine search results",
+    "filter_hint": "Select the filters you want to apply to your search results.",
+    "suggestions": "Suggestions",
+    "clear": "Clear",
+    "close": "Close",
+    "more": " more",
+    "no_results": "No results found",
+    "no_results_hint": "Try searching with different keywords or remove some filters.",
+    "search": "Search...",
+    "select_all": "(Select All)"
+}

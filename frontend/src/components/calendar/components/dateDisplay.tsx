@@ -84,7 +84,7 @@ export default function DateComponent({
 
   return (
     <li
-      className={`w-full desktop:w-48 h-32 border-r relative cursor-pointer ${
+      className={`w-full desktop:w-48 h-32 border rounded-lg relative cursor-pointer ${
         currentMonth
           ? `${
               isSameDay(selectedDate, date)

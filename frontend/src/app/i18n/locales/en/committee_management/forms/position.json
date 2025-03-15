@@ -1,0 +1,21 @@
+{
+    "title": "Create Position",
+    "description": "Add a new position to the committee",
+    "language_label": "Language",
+    "title_label": "Title",
+    "title_placeholder": "Enter position title",
+    "title_description": "Max 125 characters",
+    "description_label": "Description",
+    "description_placeholder": "Enter position description",
+    "description_description": "Max 500 characters",
+    "email_label": "Email",
+    "email_placeholder": "<new_position>@medieteknik.com",
+    "category_label": "Category",
+    "category_placeholder": "Select category",
+    "category_search_placeholder": "Search for a category",
+    "category_not_found": "No category found.",
+    "weight_label": "Weight",
+    "weight_placeholder": "Enter weight (0-1000)",
+    "weight_description": "Permission level, leave at 1000 if unsure.",
+    "submit_button": "Create Position"
+}

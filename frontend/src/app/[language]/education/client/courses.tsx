@@ -6,25 +6,21 @@ import type {
   FrontendCategory,
 } from '@/app/[language]/education/types/educationTypes'
 import { useTranslation } from '@/app/i18n/client'
-import { Section } from '@/components/static/Static'
-import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { type JSX, useState } from 'react'
 import {
   getCategoryColor,
   getCategoryPercentage,
   getHP,
   getLink,
-  getTotalHP,
 } from '../constants'
 
 interface Props {
@@ -75,92 +71,54 @@ export default function Courses({ language }: Props): JSX.Element {
   // TODO: Multiple views? Pie chart?
 
   return (
-    <Section title={title}>
-      <Dialog>
-        {detailedViewOpen && currentView && (
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {currentView.title}
-                {currentView.courses && currentView.courses.length > 0 ? (
-                  <span className='text-sm'>
-                    {` (${currentView.courses.length} ${t('courses')})`}
-                  </span>
-                ) : (
-                  <span className='text-sm'>{` (${t('no_courses')})`}</span>
-                )}
-              </DialogTitle>
-              <DialogDescription>
-                {`${currentView.percentage}%`}
-                {currentView.courses && (
-                  <span className='text-sm'>
-                    {` (${t('total_hp')}: ${getTotalHP(currentView.courses)})`}
-                  </span>
-                )}
-              </DialogDescription>
-            </DialogHeader>
-            {currentView.courses && (
-              <div className='h-fit bg-white dark:bg-[#111]'>
-                <ul className='flex flex-col gap-1'>
-                  {currentView.courses.map((course) => (
-                    <li
-                      key={course.title}
-                      className='w-full h-fit flex items-center border-l-4 shadow-sm shadow-black/15 rounded-r-md'
-                      style={{
-                        borderColor: currentView.color,
-                      }}
-                    >
-                      <Button
-                        variant='ghost'
-                        className='h-fit flex flex-col gap-0.5 justify-start items-start'
-                        asChild
-                      >
-                        <Link
-                          href={course.link}
-                          className='w-full'
-                          target='_blank'
-                          rel='noreferrer noopenner'
-                        >
-                          <p className='tracking-wide text-wrap flex items-center'>
-                            {course.title}
-                          </p>
-                          <p className='text-xs'>{course.hp} HP</p>
-                        </Link>
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
+    <section className='flex flex-col gap-4 sm:px-4 md:px-8 mx-auto container'>
+      <h2 className='font-semibold text-2xl sm:text-4xl w-full'>{title}</h2>
+      <Accordion
+        collapsible
+        type='single'
+        className='grid grid-cols-1 lg:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,minmax(30vw,_1fr))]! gap-x-4 gap-y-2'
+      >
+        {categoryMetadataMap.map((category, index) => (
+          <AccordionItem value={index.toString()} key={category.title}>
+            <AccordionTrigger
+              className='w-full flex justify-between items-center px-4 rounded-lg'
+              style={{
+                border: `2px solid ${category.color}`,
+              }}
+            >
+              <div className='flex flex-col items-start no-underline!'>
+                <h2 className='text-xl font-bold'>{category.title}</h2>
+                <p className='text-sm'>{category.percentage}%</p>
               </div>
-            )}
-          </DialogContent>
-        )}
-        <div className='w-full h-4/5 flex items-center justify-center py-8 px-10'>
-          <div className='w-fit relative h-fit text-2xl flex flex-wrap justify-center gap-8 max-w-[1250px]'>
-            {categoryMetadataMap.map((category, index) => (
-              <DialogTrigger asChild key={category.title}>
-                <Button
-                  variant={'ghost'}
-                  className='w-36 lg:w-72 h-auto aspect-square flex flex-col justify-center border-4 items-center px-4 text-center hover:scale-110 transition-all duration-300 ease-in-out rounded-xl shadow-md hover:shadow-lg relative overflow-hidden shadow-[#0000004f] dark:shadow-[#ffffff4f] bg-white dark:bg-[#111] dark:text-white border-black/15 dark:border-white/15'
-                  style={{
-                    borderColor: category.color,
-                  }}
-                  onClick={() => {
-                    setDetailedViewOpen(true)
-                    setCurrentView(category)
-                  }}
-                >
-                  <h3 className='text-sm lg:text-2xl uppercase font-bold tracking-wider text-wrap z-10'>
-                    {category.title}
-                  </h3>
-                  <p className='text-center z-10 text-base lg:text-lg'>
-                    {category.percentage} %
-                  </p>
-                </Button>
-              </DialogTrigger>
-            ))}
-          </div>
-        </div>
-      </Dialog>
-    </Section>
+            </AccordionTrigger>
+            <AccordionContent className='px-2 mt-4'>
+              <ul className='flex flex-col gap-2'>
+                {category.courses?.map((course) => (
+                  <li
+                    className='flex justify-between items-center border-l-2 pl-2'
+                    style={{
+                      borderColor: category.color,
+                    }}
+                    key={course.title}
+                  >
+                    <div className='flex flex-col'>
+                      <h3>{course.title}</h3>
+                      <span className='text-xs font-bold'>{course.hp} HP</span>
+                    </div>
+                    <Button
+                      asChild
+                      variant={'link'}
+                      className='text-blue-500 dark:text-primary'
+                    >
+                      <Link href={course.link}>{t('go_to_course')}</Link>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
   )
 }

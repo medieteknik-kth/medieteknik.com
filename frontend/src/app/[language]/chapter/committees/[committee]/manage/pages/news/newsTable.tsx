@@ -37,6 +37,7 @@ import {
   NewspaperIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import { type JSX, useState } from 'react'
 import useSWR from 'swr'
 
@@ -140,6 +141,8 @@ export default function NewsTable({ language, committee }: Props): JSX.Element {
           <TableHeader>
             <TableRow>
               <TableHead className='max-w-52'>{t('table.title')}</TableHead>
+              <TableHead className='w-32'>{t('table.created_at')}</TableHead>
+              <TableHead className='w-32'>{t('table.last_updated')}</TableHead>
               <TableHead className='w-36'>{t('table.status')}</TableHead>
               <TableHead className='w-32'>{t('table.is_public')}</TableHead>
               <TableHead className='text-right w-48'>
@@ -148,49 +151,99 @@ export default function NewsTable({ language, committee }: Props): JSX.Element {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {news.items?.map((article) => (
-              <TableRow key={article.url}>
-                <TableCell className='max-w-52'>
-                  {article.translations[0].title}
-                </TableCell>
-                <TableCell>
-                  {article.published_status === 'DRAFT' ? (
-                    <DraftBadge language={language} />
-                  ) : (
-                    <PublishedBadge language={language} />
-                  )}
-                </TableCell>
-                <TableCell>
-                  {article.is_public && (
-                    <CheckBadgeIcon className='w-5 h-5 text-green-600' />
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className='flex gap-2'>
-                    <Button
-                      size={'icon'}
-                      variant={'secondary'}
-                      title='Copy URL'
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          `${window.location.origin}/${language}/bulletin/news/${article.url}`
-                        )
-                        toast({
-                          title: 'Copied to clipboard',
-                          description: `${window.location.origin}/${language}/bulletin/news/${article.url}`,
-                          duration: 2500,
-                        })
-                      }}
-                    >
-                      <ClipboardIcon className='w-5 h-5' />
-                    </Button>
-                    <Button size={'icon'} variant={'destructive'}>
-                      <TrashIcon className='w-5 h-5' />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {news.items
+              ?.sort((a, b) => {
+                if (a.last_updated && b.last_updated) {
+                  return (
+                    new Date(b.last_updated).getTime() -
+                    new Date(a.last_updated).getTime()
+                  )
+                }
+                return (
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+                )
+              })
+              .map((article) => (
+                <TableRow
+                  key={
+                    article.url ??
+                    article.news_id ??
+                    article.translations[0].title
+                  }
+                >
+                  <TableCell className='max-w-52'>
+                    {article.url ? (
+                      <Link
+                        href={`/${language}/bulletin/news/${article.url}`}
+                        className='text-blue-500 hover:underline'
+                      >
+                        {article.translations[0].title}
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/${language}/bulletin/news/upload/${article.news_id}`}
+                        className='text-blue-500 hover:underline'
+                      >
+                        {article.translations[0].title}
+                      </Link>
+                    )}
+                  </TableCell>
+                  <TableCell className='w-32'>
+                    {new Date(article.created_at).toLocaleDateString(language)}
+                  </TableCell>
+                  <TableCell className='w-32'>
+                    {article.last_updated &&
+                      new Date(article.last_updated).toLocaleDateString(
+                        language
+                      )}
+                  </TableCell>
+                  <TableCell>
+                    {article.published_status === 'DRAFT' ? (
+                      <DraftBadge language={language} />
+                    ) : (
+                      <PublishedBadge language={language} />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {article.is_public && (
+                      <CheckBadgeIcon className='w-5 h-5 text-green-600' />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className='flex gap-2'>
+                      <Button
+                        size={'icon'}
+                        variant={'secondary'}
+                        title='Copy URL'
+                        onClick={() => {
+                          let text = ''
+                          if (article.url) {
+                            text = `${window.location.origin}/${language}/bulletin/news/${article.url}`
+                          } else if (article.news_id) {
+                            text = `${window.location.origin}/${language}/bulletin/news/${article.news_id}`
+                          } else {
+                            return
+                          }
+
+                          navigator.clipboard.writeText(text)
+
+                          toast({
+                            title: 'Copied to clipboard',
+                            description: text,
+                            duration: 2500,
+                          })
+                        }}
+                      >
+                        <ClipboardIcon className='w-5 h-5' />
+                      </Button>
+                      <Button size={'icon'} variant={'destructive'}>
+                        <TrashIcon className='w-5 h-5' />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </CardContent>

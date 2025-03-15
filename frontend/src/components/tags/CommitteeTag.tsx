@@ -1,5 +1,4 @@
 import { CommitteeTooltip } from '@/components/tooltips/Tooltip'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   HoverCard,
@@ -7,10 +6,13 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import Image from 'next/image'
 import { forwardRef } from 'react'
 
 interface CommitteeTagProps {
   committee: Committee
+  language: LanguageCode
   allowHover?: boolean
   includeImage?: boolean
   includeAt?: boolean
@@ -35,9 +37,10 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
   (
     {
       committee,
-      includeImage = true,
-      includeAt = true,
-      includeBackground = true,
+      language,
+      includeImage = false,
+      includeAt = false,
+      includeBackground = false,
       reverseImage = false,
       children,
     },
@@ -47,6 +50,9 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
       <HoverCard>
         <HoverCardTrigger
           className={`${includeAt ? 'inline-block' : 'flex items-center'}`}
+          style={{
+            fontWeight: 'inherit',
+          }}
           asChild
         >
           <Button
@@ -57,26 +63,29 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
                 : ''
             } 
               ${reverseImage ? 'flex-row-reverse *:ml-2' : 'flex-row *:mr-2'}
-            py-0 px-1 max-w-full`}
+            p-0 max-w-full`}
             style={{ fontSize: 'inherit', width: 'inherit' }}
             ref={ref}
             tabIndex={-1}
           >
             {includeImage && (
-              <Avatar className='bg-white rounded-full overflow-hidden'>
-                <AvatarImage
+              <div className='bg-white rounded-full overflow-hidden'>
+                <Image
                   className='h-10 w-auto aspect-square object-fill p-1.5'
                   width={128}
                   height={128}
+                  unoptimized // Logo is an SVG
                   src={committee.logo_url}
-                  alt=''
+                  alt={`${committee.translations[0].title} logo`}
                 />
-                <AvatarFallback>
-                  {`${committee.translations[0].title} logo`}
-                </AvatarFallback>
-              </Avatar>
+              </div>
             )}
-            <div className='flex flex-col text-start overflow-hidden'>
+            <div
+              className='flex flex-col text-start overflow-hidden'
+              style={{
+                fontWeight: 'inherit',
+              }}
+            >
               <p className='truncate'>
                 {(includeAt ? '@' : '') + committee.translations[0].title}
               </p>
@@ -85,7 +94,7 @@ const CommitteeTag = forwardRef<HTMLButtonElement, CommitteeTagProps>(
           </Button>
         </HoverCardTrigger>
         <HoverCardContent>
-          <CommitteeTooltip committee={committee} />
+          <CommitteeTooltip committee={committee} language={language} />
         </HoverCardContent>
       </HoverCard>
     )

@@ -15,15 +15,13 @@ import type { LanguageCode } from '@/models/Language'
 import type News from '@/models/items/News'
 import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
 import useSWR from 'swr'
 import ShortNews from '../components/shortNews'
 
 const fetcher = (url: string) =>
-  fetch(url, {
-    credentials: 'include',
-  }).then((res) => res.json() as Promise<News[]>)
+  fetch(url).then((res) => res.json() as Promise<News[]>)
 
 /**
  * Renders the latest breaking news.
@@ -42,7 +40,11 @@ export default function BreakingNews({
   const { t } = useTranslation(language, 'bulletin')
   const { data, error, isLoading } = useSWR<News[]>(
     `${API_BASE_URL}/public/news/latest?language=${language}`,
-    fetcher
+    fetcher,
+    {
+      fallbackData: [],
+      shouldRetryOnError: false,
+    }
   )
 
   if (isLoading) {

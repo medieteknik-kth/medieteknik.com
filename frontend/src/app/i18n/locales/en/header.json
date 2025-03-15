@@ -1,8 +1,13 @@
 {
     "home": "Home",
     "profile": "Profile",
+    "guest": "Guest",
+    "guest_welcome": "Hello, Guest!",
     "login": "Login",
+    "navigation": "Navigation",
     "notifications": "Notifications",
+    "notifications_description": "News and updates",
+    "no_notifications": "No new notifications",
     "navs": [
         {
             "title": "News & Events",
@@ -57,6 +62,7 @@
             "link": "/education"
         }
     ],
+    "account": "Account",
     "account_settings": "Account settings",
     "committees": "Your committees",
     "logout": "Logout"

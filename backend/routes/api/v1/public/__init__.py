@@ -7,7 +7,6 @@ from .committees.committee_routes import public_committee_category_bp
 
 from .committees.committee_position_routes import public_committee_position_bp
 
-from .common.dynamic_routes import public_dynamic_routes_bp
 
 from .common.general_routes import public_bp
 
@@ -33,7 +32,6 @@ __all__ = [
     "public_committee_category_bp",
     "public_committee_position_bp",
     "public_documents_bp",
-    "public_dynamic_routes_bp",
     "public_events_bp",
     "public_media_bp",
     "public_news_bp",

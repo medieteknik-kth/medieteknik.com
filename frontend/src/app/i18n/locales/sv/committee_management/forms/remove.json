@@ -1,0 +1,9 @@
+{
+    "title": "Ta bort post",
+    "description": "Välj en post att ta bort från nämnden",
+    "label": "Post",
+    "search_placeholder": "Sök poster",
+    "placeholder": "Välj en post",
+    "not_found": "Inga poster hittades",
+    "remove_button": "Ta bort"    
+}

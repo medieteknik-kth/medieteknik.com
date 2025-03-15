@@ -12,9 +12,8 @@ from sqlalchemy import (
     text,
 )
 from models.content.media import Media
-from utility.constants import AVAILABLE_LANGUAGES
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 from utility.database import db
-from utility.translation import get_translation
 
 
 class Album(db.Model):
@@ -32,23 +31,30 @@ class Album(db.Model):
     updated_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
 
     # Relationships
-    translations = db.relationship("AlbumTranslation", back_populates="album")
+    translations = db.relationship(
+        "AlbumTranslation", back_populates="album", lazy="joined"
+    )
     media = db.relationship("Media", back_populates="album", passive_deletes=True)
 
     def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
         data = {}
-        translations: List[AlbumTranslation] = []
+        translation_lookup = {
+            translation.language_code: translation for translation in self.translations
+        }
+        translations = []
 
         for language_code in provided_languages:
-            translation = get_translation(
-                AlbumTranslation,
-                ["album_id"],
-                {"album_id": self.album_id},
-                language_code,
-            )
-            translations.append(translation)
+            translation: AlbumTranslation | None = translation_lookup.get(language_code)
 
-        data["translations"] = [translation.to_dict() for translation in translations]
+            if not translation or not isinstance(translation, AlbumTranslation):
+                translation: AlbumTranslation | None = translation_lookup.get(
+                    DEFAULT_LANGUAGE_CODE
+                ) or next(iter(translation_lookup.values()), None)
+
+            if translation and isinstance(translation, AlbumTranslation):
+                translations.append(translation.to_dict())
+
+        data["translations"] = translations
         data["album_id"] = self.album_id
         data["total_images"] = self.total_images
         data["total_videos"] = self.total_videos
@@ -61,8 +67,10 @@ class Album(db.Model):
 
             if not media:
                 data["preview_media"] = None
-
-            data["preview_media"] = media.to_dict(provided_languages=provided_languages)
+            else:
+                data["preview_media"] = media.to_dict(
+                    provided_languages=provided_languages
+                )
 
         return data
 

@@ -13,8 +13,8 @@
     "informationCollection.table.sso_data": "KTH unikt användar-ID och efterföljande e-postadress associerad med ID",
     "informationCollection.table.personal": "Frivilligt kan du ge oss ytterligare information om dig själv. Denna information är valfri och kan ändras eller raderas när som helst genom förfrågan till ",
     "informationCollection.table.personal_data": "Förnamn och Efternamn\nProfilbild\nLänkar till sociala medier\nLösenord (hashade och saltade)",
-    "informationCollection.table.priviliged": "Privilegierade användare kan ladda upp dokument, skapa nyhetsinlägg och arrangera evenemang. Denna information lagras för historiska poster.",
-    "informationCollection.table.priviliged_data": "Nyhetsartiklar\nEvenemang\nDokument",
+    "informationCollection.table.priviliged": "Privilegierade användare kan ladda upp dokument, media, skapa nyhetsinlägg och arrangera evenemang. Denna information lagras för historiska poster.",
+    "informationCollection.table.priviliged_data": "Nyhetsartiklar\nEvenemang\nDokument\nMedia",
     "informationCollection.table.committee": "Vi samlar in information om dina nämnd och projekt medlemskap för att ge dig möjlighet att hantera dina medlemskap. Denna information lagras för historiska poster. Och kommer att anonymiseras vid förfrågan eller när ett konto raderas.",
     "informationCollection.table.committee_data": "Nämnd och projekt medlemskap",
     "rights": "Dina rättigheter",
@@ -25,7 +25,7 @@
     "rights.restriction": "Du har rätt att begära begränsning av behandlingen av dina personuppgifter som lagras på vår hemsida.",
     "rights.processing": "Du har rätt att invända mot behandlingen av dina personuppgifter som lagras på vår hemsida.",
     "rights.transfer": "Du har rätt att begära överföring av dina personuppgifter som lagras på vår hemsida.",
-    "rights.proof": "Alla förfrågningar kan göras genom att kontakta och tillhandahålla bevis på personer, detta inkluderar men är inte begränsat till förnamn, efternamn och KTH-email (som slutar på @kth.se) till ",
+    "rights.proof": "Alla förfrågningar kan göras genom att kontakta nuvarande Webmaster på plats eller tillhandahålla bevis på personer, detta inkluderar men är inte begränsat till förnamn, efternamn och KTH-email (som slutar på @kth.se) till ",
     "cookies": "Kakor",
     "cookies.description": "Vi kan använda 'kakor' för att samla in information om dig och din aktivitet på vår hemsida. En kaka är en liten datafil som vår hemsida lagrar på din dator och får åtkomst till varje gång du besöker den, så att vi kan förstå hur du använder vår hemsida. Detta hjälper oss att servera dig innehåll baserat på preferenser du har angett.",
     "cookies.table.name": "Kakans namn",
@@ -36,6 +36,7 @@
     "cookies.necessary.list": "Lista över 1st Parts Nödvändiga Kakor ",
     "cookies.necessary.list.session": "Denna kaka används för att identifiera din session på webbplatsen. Den inkluderar ditt sessions-ID och används för att behålla din inloggningstillstånd.",
     "cookies.necessary.list.access_token": "Denna kaka används för att behålla din inloggningstillstånd.",
-    "cookies.necessary.list.refresh_token": "Denna kaka används för att behålla din inloggningstillstånd. Och erhålla en ny åtkomsttoken när den gamla löper ut."
+    "cookies.necessary.list.language": "Denna kaka används för att spara ditt språkval. Går att ändra i inställningar."
+
 
 }

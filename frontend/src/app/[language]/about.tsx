@@ -10,6 +10,7 @@ interface CardElement {
   icon: string
   href: string
   linkText: string
+  ctaText: string
 }
 
 interface Props {
@@ -34,6 +35,7 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
       icon: 'https://storage.googleapis.com/medieteknik-static/committees/styrelsen.svg',
       href: `/${language}/chapter`,
       linkText: t('chapter.link_text'),
+      ctaText: t('chapter.cta_text'),
     },
     {
       title: t('new_students.title'),
@@ -41,6 +43,7 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
       icon: 'https://storage.googleapis.com/medieteknik-static/committees/mtgn.svg',
       href: `/${language}/education`,
       linkText: t('new_students.link_text'),
+      ctaText: t('new_students.cta_text'),
     },
     {
       title: 'International Students',
@@ -49,30 +52,39 @@ export default async function About({ language }: Props): Promise<JSX.Element> {
       icon: 'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg',
       href: 'https://metastudent.se/',
       linkText: t('international_link_text'),
+      ctaText: 'Learn more about META',
     },
   ]
 
   return (
-    <section className='w-full h-fit relative bg-white dark:bg-[#111] px-4 lg:px-20 2xl:px-56 py-20 border-t-2 flex flex-col gap-20 border-black/75 dark:border-yellow-400/75'>
-      <h3 className='text-2xl xs:text-5xl font-bold w-full lg:w-fit py-2 lg:py-0 tracking-wider text-center lg:text-start'>
-        {t('about')}
-      </h3>
+    <section className='w-full py-12 md:py-24 bg-gradient-to-b from-background to-muted/50'>
+      <div className='container px-4 md:px-6'>
+        <div className='space-y-2 flex flex-col items-center justify-center text-center mb-12'>
+          <h3 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl'>
+            {t('about')}
+          </h3>
+          <p className='max-w-[700px] text-muted-foreground md:text-xl'>
+            {t('about_description')}
+          </p>
+        </div>
 
-      <ul className='grid grid-cols-1 grid-rows-3 xl:grid-rows-1 xl:grid-cols-3 gap-4'>
-        {cards.map((card) => (
-          <li key={card.title}>
-            <InfographicCard
-              card={{
-                title: card.title,
-                description: card.description,
-                icon: card.icon,
-                href: card.href,
-                linkText: card.linkText,
-              }}
-            />
-          </li>
-        ))}
-      </ul>
+        <ul className='grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8'>
+          {cards.map((card) => (
+            <li key={card.title}>
+              <InfographicCard
+                card={{
+                  title: card.title,
+                  description: card.description,
+                  icon: card.icon,
+                  href: card.href,
+                  linkText: card.linkText,
+                  ctaText: card.ctaText,
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }

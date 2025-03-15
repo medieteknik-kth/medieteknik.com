@@ -1,0 +1,18 @@
+{
+    "title": "Mottagning",
+    "description": "Hantera hur du visas när mottagningsläge är aktiverat.",
+    "profile_picture": "Profilbild",
+    "profile_picture_requirements": "PNG eller JPG. Max 5MB. Sidoförhållande 1:1.",
+    "change_profile_picture": "Ladda upp en ny profilbild",
+    "change_profile_picture.description": "PNG eller JPG. Max 5MB",
+    "change_profile_picture.upload_profile_picture": "Släpp eller klicka för att ladda upp",
+    "change_profile_picture.zoom": "Zooma",
+    "change_profile_picture.cancel": "Avbryt uppladdning",
+    "change_profile_picture.save": "Spara",
+    "change_profile_picture.error.large": "Filen är för stor. Max 5MB.",
+    "change_profile_picture.error.incorrect": "Fel filtyp. Endast PNG eller JPG.",
+    "reception_name": "Mottagningsnamn",
+    "reception_name_description": "Ditt namn som det visas i mottagningsläge.",
+    "reception_name.placeholder": "Anpassat namn",
+    "save": "Spara"
+}

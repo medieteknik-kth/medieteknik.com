@@ -1,7 +1,7 @@
 import enum
 from typing import List
 import uuid
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String, inspect, text
+from sqlalchemy import Column, Enum, ForeignKey, String, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation

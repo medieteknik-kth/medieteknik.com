@@ -18,14 +18,12 @@ const experimentalConfig: ExperimentalConfig = {
 
 const nextConfig: NextConfig = {
   experimental: experimentalConfig,
-
   productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {
         hostname: 'storage.googleapis.com',
         protocol: 'https',
-        port: '',
         pathname: '/medieteknik-static/**',
       },
       {
@@ -52,34 +50,16 @@ const nextConfig: NextConfig = {
             value: 'DENY',
           },
           {
-            key: 'Content-Security-Policy',
-            value: `
-              default-src 'self' http://localhost:3000 https://medieteknik.com; 
-              script-src 'self' https://vercel.live 'unsafe-eval' 'unsafe-inline'; 
-              connect-src 'self' localhost:80 http://localhost:* https://api.medieteknik.com https://vercel.live wss://ws-us3.pusher.com blob:; 
-              media-src blob: http://localhost:3000; 
-              img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com https://i.ytimg.com data: blob:; 
-              style-src 'self' https://vercel.live 'unsafe-inline'; 
-              font-src 'self' https://vercel.live https://assets.vercel.com; 
-              frame-src 'self' https://www.youtube.com/ https://www.instagram.com https://vercel.live; 
-              object-src 'none'; 
-              base-uri 'none'; 
-              form-action 'self'; 
-              frame-ancestors 'none'; 
-              manifest-src 'self'; 
-              worker-src 'self'; 
-              script-src-elem 'self' 'unsafe-inline' https://vercel.live;`.replace(
-              /\s+/g,
-              ' '
-            ),
-          },
-          {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
           {
             key: 'Referrer-Policy',
             value: 'same-origin',
+          },
+          {
+            key: 'Service-Worker-Allowed',
+            value: '/',
           },
           {
             key: 'Permissions-Policy',
@@ -96,9 +76,23 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/service-worker.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+        ],
+      },
     ]
   },
 
+  // biome-ignore lint/suspicious/noExplicitAny: This is a Next.js type
   webpack(config: any): NextJsWebpackConfig {
     config.infrastructureLogging = {
       level: 'error',
@@ -106,9 +100,10 @@ const nextConfig: NextConfig = {
 
     interface FileLoaderRule {
       test?: RegExp
+      // biome-ignore lint/suspicious/noExplicitAny: This is a Next.js type
       issuer?: any
       exclude?: RegExp
-      resourceQuery?: any
+      resourceQuery?: RegExp | { not: RegExp[] }
     }
 
     const fileLoaderRule: FileLoaderRule | undefined = config.module.rules.find(
@@ -137,5 +132,12 @@ const nextConfig: NextConfig = {
     return config
   },
 } satisfies NextConfig
+
+if (process.env.ANALYZE) {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  })
+  module.exports = withBundleAnalyzer(nextConfig)
+}
 
 export default nextConfig

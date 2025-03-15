@@ -1,10 +1,14 @@
 {
-    "title": "Inställningar",
+    "title": "Preferenser",
     "description": "Ändra tema, språk och integritetsinställningar här.",
     "language": "Språk",
+    "language_description": "Ändra applikationens språk.",
     "privacy": "Integritet",
+    "privacy_description": "Ändra integritetsinställningar. Detta inkluderar cookie-inställningar.",
     "cookie_settings": "Cookie-inställningar",
     "theme": "Tema",
-    "light_theme": "Ljust tema",
-    "dark_theme": "Mörkt tema"
+    "select_theme": "Välj tema",
+    "theme_description": "Ändra applikationens tema.",
+    "light_theme": "Ljust",
+    "dark_theme": "Mörkt"
 }

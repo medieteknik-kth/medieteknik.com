@@ -1,0 +1,13 @@
+{
+    "bulletin": "Bulletin",
+    "news": "News",
+    "preview_image": "Preview Image",
+    "aspect_16_9": "Aspect ratio 16:9",
+    "author": "Author",
+    "min_read": "min read",
+    "delete": "Delete article",
+    "delete_title": "Delete Article",
+    "delete_description": "This will permanently delete the article. Are you sure?",
+    "delete_cancel": "Cancel",
+    "delete_confirm": "Delete"
+}

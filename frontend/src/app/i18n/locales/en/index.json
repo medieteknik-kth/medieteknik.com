@@ -1,14 +1,17 @@
 {
     "about": "Media Technology at KTH",
+    "about_description": "Media Technology is a 5-year engineering program focusing on the technology and design of media.",
     "chapter": {
         "title": "Chapter",
         "description": "Want to become more active socially with the chapter of Media Technology? Click above to understand what the chapters daily operation may include.",
-        "link_text": "Link to the chapter page"
+        "link_text": "Link to the chapter page",
+        "cta_text": "Join the chapter"
     },
     "new_students": {
         "title": "New Students",
         "description": "Are you a new student, joining the Media Technology programme this year? Click above to learn more of your 3 year undergraduate education and master options.",
-        "link_text": "Link to the education page"
+        "link_text": "Link to the education page",
+        "cta_text": "See more"
     },
     "international_link_text": "Link to the international page"
 }

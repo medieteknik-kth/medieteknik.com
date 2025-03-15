@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,21 +13,12 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type News from '@/models/items/News'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { API_BASE_URL } from '@/utility/Constants'
-import { LinkIcon } from '@heroicons/react/24/outline'
 
 import type { JSX } from 'react'
 
@@ -37,9 +29,14 @@ interface Props {
 
 export default function NewsAuth({ language, news_data }: Props): JSX.Element {
   const { toast } = useToast()
-  const { student, committees } = useAuthentication()
+  const { student, committees } = useStudent()
+  const { t } = useTranslation(language, 'news')
 
   const deleteArticle = async () => {
+    if (!news_data.url) {
+      console.error('No URL found for article')
+      return
+    }
     const encodedURL = encodeURIComponent(news_data.url)
     try {
       const response = await fetch(`${API_BASE_URL}/news/${encodedURL}`, {
@@ -83,68 +80,32 @@ export default function NewsAuth({ language, news_data }: Props): JSX.Element {
   }
 
   return (
-    <section className='xl:fixed w-full mb-4 xl:w-72 h-fit xl:right-8 xl:top-72'>
-      <Card>
-        <CardHeader>
-          <CardTitle>Author Controls</CardTitle>
-          <CardDescription>
-            Last updated:{' '}
-            <span>
-              {new Date(
-                news_data.last_updated || news_data.created_at
-              ).toLocaleDateString(language)}
-            </span>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            variant='outline'
-            title='Share'
-            aria-label='Share'
-            className='flex items-center gap-2'
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href)
-              toast({
-                title: 'Copied to clipboard',
-                description: window.location.href,
-                duration: 2500,
-              })
-            }}
-          >
-            <LinkIcon className='w-5 h-5' />
-            <p>Share</p>
+    <div className=''>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button className='w-full h-fit' variant={'destructive'}>
+            {t('delete')}
           </Button>
-        </CardContent>
-        <CardFooter>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className='w-full' variant={'destructive'}>
-                Delete Article
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  Are you sure you want to delete this article?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    deleteArticle()
-                  }}
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardFooter>
-      </Card>
-    </section>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('delete_title')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('delete_description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('delete_cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                deleteArticle()
+              }}
+            >
+              {t('delete_confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   )
 }

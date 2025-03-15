@@ -73,6 +73,7 @@ export default function OfficialsList({ language, members }: Props) {
                   .map((member) => (
                     <StudentCommitteCard
                       key={`${member.position.committee_position_id}_${member.student.student_id}`}
+                      language={language}
                       member={member}
                       committeeLogo
                     />

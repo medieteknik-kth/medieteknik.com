@@ -4,6 +4,7 @@
     "lib": [
       "dom",
       "dom.iterable",
+      "WebWorker",
       "esnext"
     ],
     "allowJs": true,
@@ -35,7 +36,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "public/service-worker.js"
   ],
   "exclude": [
     "node_modules"

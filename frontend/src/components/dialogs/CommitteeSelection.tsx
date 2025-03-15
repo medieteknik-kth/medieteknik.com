@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 
 interface Props {
   language: LanguageCode
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function CommitteeSelection({ language, callback }: Props) {
-  const { committees } = useAuthentication()
+  const { committees } = useStudent()
   const { t } = useTranslation(language, 'media')
 
   if (committees.length === 0) {

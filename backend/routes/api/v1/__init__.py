@@ -4,28 +4,37 @@ v1 API Routes.
 All routes are registered here via the `register_routes` function.
 """
 
+import json
 import os
 import secrets
+from typing import Any
 import urllib
 from http import HTTPStatus
-from datetime import datetime, timedelta
-from flask import Flask, jsonify, make_response, request, session, url_for
+from datetime import datetime, timedelta, timezone
+from flask import Flask, Response, jsonify, make_response, request, session, url_for
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
     get_jwt_identity,
+    jwt_required,
     set_access_cookies,
-    set_refresh_cookies,
-    create_refresh_token,
+    unset_jwt_cookies,
 )
-from models.committees.committee import Committee
-from models.committees.committee_position import CommitteePosition
-from models.core.student import Student, StudentMembership
-from services.core.student import get_permissions, retrieve_extra_claims
+from sqlalchemy import text
+from decorators.csrf_protection import csrf_protected
+from models.core.student import Student
+from models.utility.auth import RevokedTokens
+from services.core.student import login
+from services.utility.auth import (
+    get_student_authorization,
+    get_student_committee_details,
+)
+from sqlalchemy.exc import SQLAlchemyError
 from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
 from utility.database import db
+from utility.translation import retrieve_languages
 
 
 def register_v1_routes(app: Flask):
@@ -41,7 +50,6 @@ def register_v1_routes(app: Flask):
         public_committee_category_bp,
         public_committee_position_bp,
         public_calendar_bp,
-        public_dynamic_routes_bp,
         public_bp,
         public_album_bp,
         public_news_bp,
@@ -62,14 +70,11 @@ def register_v1_routes(app: Flask):
         album_bp,
         calendar_bp,
         student_bp,
-        author_bp,
+        scheduler_bp,
     )
 
     # Public Routes
     app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
-    app.register_blueprint(
-        public_dynamic_routes_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DYNAMIC.value}"
-    )
     app.register_blueprint(
         public_committee_category_bp,
         url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}",
@@ -123,91 +128,86 @@ def register_v1_routes(app: Flask):
     app.register_blueprint(
         album_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
     )
-    app.register_blueprint(author_bp, url_prefix=f"{PROTECTED_PATH}/authors")
     app.register_blueprint(
         student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
     )
-
-    @app.before_request
-    def handle_preflight():
-        """
-        Handle CORS preflight requests.
-        """
-        if request.method == "OPTIONS":
-            response = make_response()
-            if os.environ.get("FLASK_ENV") == "development":
-                response.headers.add(
-                    "Access-Control-Allow-Origin", "http://localhost:3000"
-                )
-            else:
-                response.headers.add(
-                    "Access-Control-Allow-Origin", "https://www.medieteknik.com"
-                )
-            response.headers.add(
-                "Access-Control-Allow-Headers",
-                "Content-Type,Authorization,X-CSRF-Token",
-            )
-            response.headers.add("Access-Control-Allow-Credentials", "true")
-            response.headers.add(
-                "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
-            )
-            response.status_code = 200
-            return response
+    app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
 
     @app.after_request
-    def refresh_jwt(response):
+    def add_headers(response: Response):
+        response.headers["Content-Security-Policy"] = (
+            "default-src none; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'none';"
+        )
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Referrer-Policy"] = "same-origin"
+
+        # If public route, set cache control to 10 minutes if not already set
+        if request.path.startswith(f"{PUBLIC_PATH}") and not response.headers.get(
+            "Cache-Control"
+        ):
+            response.headers["Cache-Control"] = "public, max-age=600"
+        elif request.path.startswith(f"{PROTECTED_PATH}") and not response.headers.get(
+            "Cache-Control"
+        ):
+            response.headers["Cache-Control"] = (
+                "private, no-store, no-cache, must-revalidate"
+            )
+
+        if os.environ.get("FLASK_ENV") != "development":
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=3600; includeSubDomains;"
+            )
+        return response
+
+    @app.after_request
+    def refresh_jwt(response: Response):
         try:
             exp_timestamp = get_jwt()["exp"]
-            now = datetime.now()
-            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-            if exp_timestamp <= target_timestamp:
+            now = datetime.now(timezone.utc)
+            remember = session.get("remember", False)
+
+            target_timestamp = (
+                datetime.timestamp(now + timedelta(minutes=30))
+                if not remember
+                else datetime.timestamp(now + timedelta(days=1))
+            )
+            # If the token is about to expire, refresh it
+            if target_timestamp > exp_timestamp:
                 student_id = get_jwt_identity()
 
-                student = Student.query.filter_by(student_id=student_id).one_or_none()
+                student: Student | None = Student.query.filter_by(
+                    student_id=student_id
+                ).one_or_none()
 
-                if not student:
+                if not student or not isinstance(student, Student):
                     return jsonify({"error": "Invalid credentials"}), 401
 
-                permissions_and_role = get_permissions(getattr(student, "student_id"))
-
-                committees = []
-                committee_positions = []
-                student_memberships = StudentMembership.query.filter_by(
-                    student_id=student.student_id
-                ).all()
-
-                for membership in student_memberships:
-                    position = CommitteePosition.query.get(
-                        membership.committee_position_id
-                    )
-                    if not position or not isinstance(position, CommitteePosition):
-                        continue
-
-                    committee = Committee.query.get(position.committee_id)
-                    if not committee or not isinstance(committee, Committee):
-                        continue
-
-                    committees.append(committee.to_dict())
-                    committee_positions.append(position.to_dict(is_public_route=False))
+                permissions, role = get_student_authorization(student)
+                committees, committee_positions = get_student_committee_details(
+                    student=student
+                )
+                expiration = timedelta(hours=1) if not remember else timedelta(days=14)
+                exp_unix = int((datetime.now() + expiration).timestamp())
 
                 response = jsonify(
                     {
-                        "student": student.to_dict(),
-                        "permissions": permissions_and_role.get("permissions"),
-                        "role": permissions_and_role.get("role"),
+                        "student": student.to_dict(is_public_route=False),
+                        "permissions": permissions,
+                        "role": role,
                         "committees": committees,
                         "committee_positions": committee_positions,
+                        "expiration": exp_unix,
                     }
                 )
-                additional_claims = {
-                    "role": permissions_and_role.get("role"),
-                    "permissions": permissions_and_role.get("permissions"),
-                }
-
                 access_token = create_access_token(
-                    identity=student, fresh=False, additional_claims=additional_claims
+                    identity=student,
+                    fresh=False,
+                    expires_delta=expiration,
                 )
-                set_access_cookies(response, access_token)
+                set_access_cookies(
+                    response, access_token, max_age=expiration.total_seconds()
+                )
 
         except (RuntimeError, KeyError):
             # Case where there is not a valid JWT. Just return the original respone
@@ -215,8 +215,8 @@ def register_v1_routes(app: Flask):
 
         return response
 
-    # Non-Specific Routes
-    @app.route("/")
+    # Non-Specific Routes / Auth
+    @app.route("/api/v1")
     def index():
         """
         Index route.
@@ -229,10 +229,36 @@ def register_v1_routes(app: Flask):
                             </span> <br />"""
             for route in (ROUTES)
         ]
-        return f'<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}'
+        return f"<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}"
+
+    @app.route("/api/v1/uptime")
+    def uptime():
+        """
+        Uptime route.
+        """
+        return jsonify({"message": "OK"}), HTTPStatus.OK
+
+    @app.route("/api/v1/health")
+    def health():
+        """
+        Health route.
+        """
+        health_status = {"status": "healthy"}
+
+        try:
+            db.session.execute(text("SELECT 1"))
+            health_status["database"] = "healthy"
+        except SQLAlchemyError as e:
+            health_status["status"] = "unhealthy"
+            health_status["database"] = "unavailable"
+            health_status["error"] = str(e)
+
+        return jsonify(health_status), HTTPStatus.OK if health_status[
+            "database"
+        ] == "healthy" else HTTPStatus.SERVICE_UNAVAILABLE
 
     @app.route("/api/v1/csrf-token")
-    def get_csrf_token():
+    def get_csrf_token() -> Response:
         token = session.get("csrf_token")
         if not token:
             new_token = generate_csrf()
@@ -240,37 +266,90 @@ def register_v1_routes(app: Flask):
             return jsonify({"token": new_token})
         return jsonify({"token": token})
 
+    @app.route("/api/v1/login", methods=["POST"])
+    @csrf_protected
+    def login_credentials() -> Response:
+        """
+        Logs in a student
+            :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
+        """
+
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+        provided_languages = retrieve_languages(request.args)
+
+        data: dict[str, Any] = json.loads(json.dumps(data))
+
+        return login(data=data, provided_languages=provided_languages)
+
+    @app.route("/api/v1/logout", methods=["DELETE"])
+    @jwt_required()
+    def logout() -> Response:
+        """
+        Logs out a student
+            :return: Response - The response object, 200 if successful
+        """
+
+        token = get_jwt()
+        jti = token["jti"]
+
+        if not jti:
+            return jsonify({"success": "No session to log out"}), HTTPStatus.OK
+
+        revoked_token = RevokedTokens(
+            jti=jti,
+            originally_valid_until=datetime.fromtimestamp(token["exp"]),
+        )
+        response = make_response(
+            jsonify({"success": "Successfully logged out", "jti": jti})
+        )
+
+        unset_jwt_cookies(response)
+
+        db.session.add(revoked_token)
+        db.session.commit()
+
+        return response
+
     @app.route("/auth")
     def auth():
         """
-        Auth route.
+        OAuth route for KTH login. First step in the OAuth flow. See the /oidc route for the second step.
         """
         nonce = secrets.token_urlsafe(32)
 
         return_url = request.args.get("return_url", type=str, default="/")
+        remember = request.args.get("remember", type=bool, default=False)
         return_url = urllib.parse.quote(return_url)
         session["return_url"] = return_url
+        session["remember"] = remember
         session["oauth_nonce"] = nonce
 
         redirect_uri = url_for(endpoint="oidc_auth", _external=True)
         return oauth.kth.authorize_redirect(redirect_uri, nonce=nonce)
 
     @app.route("/oidc")
-    def oidc_auth():
+    def oidc_auth() -> Response:
         """
-        OIDC route.
+        OIDC route for KTH login. Second step in the OAuth flow, after the /auth route.
         """
         try:
             token = oauth.kth.authorize_access_token()
         except Exception as e:
             app.logger.error(f"OIDC authorization error: {str(e)}")
             return jsonify(
-                {"error": "An internal error has occurred."}
+                {
+                    "error": "An internal server error has occurred. Contact an administrator."
+                }
             ), HTTPStatus.INTERNAL_SERVER_ERROR
 
         if not token:
             return jsonify({"error": "Invalid credentials"}), 401
 
+        remember = session.get("remember", False)
         nonce = session.pop("oauth_nonce", None)
 
         student_data = oauth.kth.parse_id_token(token, nonce=nonce)
@@ -298,18 +377,22 @@ def register_v1_routes(app: Flask):
             db.session.commit()
 
         response = make_response({"student": student.to_dict(is_public_route=False)})
+        expiration = timedelta(hours=1) if not remember else timedelta(days=14)
         try:
-            permissions_and_role, additional_claims, committees, committee_positions = (
-                retrieve_extra_claims(student=student)
+            permissions, role = get_student_authorization(student)
+            committees, committee_positions = get_student_committee_details(
+                student=student
             )
 
+            exp_unix = int((datetime.now() + expiration).timestamp())
             response = make_response(
                 {
                     "student": student.to_dict(is_public_route=False),
-                    "permissions": permissions_and_role.get("permissions"),
-                    "role": permissions_and_role.get("role"),
+                    "permissions": permissions,
+                    "role": role,
                     "committees": committees,
                     "committee_positions": committee_positions,
+                    "expiration": exp_unix,
                 }
             )
         except Exception as e:
@@ -320,14 +403,12 @@ def register_v1_routes(app: Flask):
             response=response,
             encoded_access_token=create_access_token(
                 identity=student,
-                fresh=timedelta(minutes=30),
+                fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
+                expires_delta=timedelta(hours=1)
+                if not remember
+                else timedelta(days=14),
             ),
-            max_age=timedelta(hours=1),
-        )
-        set_refresh_cookies(
-            response=response,
-            encoded_refresh_token=create_refresh_token(identity=student),
-            max_age=timedelta(days=30).seconds,
+            max_age=expiration.total_seconds(),
         )
         return_url = session.pop("return_url", default=None)
         if return_url:

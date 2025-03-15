@@ -4,7 +4,11 @@ import Loading from '@/components/tooltips/Loading'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { Permission, Role } from '@/models/Permission'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import {
+  useAuthentication,
+  usePermissions,
+  useStudent,
+} from '@/providers/AuthenticationProvider'
 import { useRouter } from 'next/navigation'
 import { type JSX, useEffect, useState } from 'react'
 import CommitteeLandingPage from './landing'
@@ -32,12 +36,9 @@ export default function CommitteeRedirect({
   committeeName,
   committeeData,
 }: Props): JSX.Element {
-  const {
-    committees,
-    role,
-    permissions,
-    isLoading: authLoading,
-  } = useAuthentication()
+  const { committees, role } = useStudent()
+  const { isLoading: authLoading } = useAuthentication()
+  const { permissions } = usePermissions()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
 

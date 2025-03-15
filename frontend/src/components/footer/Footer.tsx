@@ -6,8 +6,8 @@ import {
   BuildingOffice2Icon,
   EnvelopeIcon,
 } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { JSX } from 'react'
 import ConnectSection from './connect'
 
@@ -52,7 +52,7 @@ export default async function Footer({
         </Link>
         <div className='w-full h-fit relative xs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
           <ul className='w-full h-fit xl:mt-2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
-            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4  px-0 text-center xs:text-left xxs:pl-4'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4 px-0 text-center xs:text-left xxs:pl-4'>
               <h4 className='text-2xl tracking-wider font-bold'>
                 {t('location')}
               </h4>
@@ -63,55 +63,33 @@ export default async function Footer({
                 </span>
               </p>
             </li>
-            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4 px-0 xxs:pl-4 grid xs:flex flex-col place-items-center items-start'>
+            <li className='w-full h-fit xl:w-1/4 border-t-2 mb-4 lg:mb-8 xl:mb-0 border-yellow-400 pt-4 px-0 xxs:pl-4 grid xs:flex flex-col place-items-center items-start gap-2'>
               <h4 className='w-fit h-fit'>
-                <Button
-                  asChild
-                  variant='link'
-                  className='text-2xl text-center xxs:text-left tracking-wider font-bold -ml-4 -mt-2 text-blue-600 dark:text-primary'
+                <Link
+                  href={`/${language}/contact`}
+                  className='text-2xl text-center xxs:text-left tracking-wider font-bold text-blue-600 dark:text-primary flex items-center hover:underline'
                   title='Go to Contact Page'
                   aria-label='Go to Contact Page'
                 >
-                  <Link
-                    href={`/${language}/contact`}
-                    className='w-fit flex items-center'
-                  >
-                    {t('contact')}
-                    <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
-                  </Link>
-                </Button>
+                  {t('contact')}
+                  <ArrowTopRightOnSquareIcon className='w-6 h-6 ml-2 mb-1' />
+                </Link>
               </h4>
-              <Button
-                asChild
-                variant='link'
-                className='-ml-4 text-blue-600 dark:text-primary'
-              >
-                <Link
+              <div className='flex items-center'>
+                <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
+                <a
                   href='mailto:styrelsen@medieteknik.com'
-                  className='flex items-center text-center mt-1'
+                  className='flex items-center text-center mt-1 text-blue-600 dark:text-primary hover:underline'
                   title='Email styrelsen@medieteknik.com'
                   aria-label='Email styrelsen@medieteknik.com'
                 >
-                  <EnvelopeIcon className='w-6 h-6 mr-2 text-black dark:text-white' />
                   <span>styrelsen@medieteknik.com</span>
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant='link'
-                className='-ml-4 text-blue-600 dark:text-primary'
-              >
-                <Link
-                  href='tel:802411-5647'
-                  className='flex items-center text-center mt-1
-                  '
-                  title='Call organization number 802411-5647'
-                  aria-label='Call organization number 802411-5647'
-                >
-                  <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
-                  <span>802411-5647</span>
-                </Link>
-              </Button>
+                </a>
+              </div>
+              <div className='flex items-center'>
+                <BuildingOffice2Icon className='w-6 h-6 mr-2 text-black dark:text-white' />
+                <span>802411-5647</span>
+              </div>
             </li>
             <li className='w-full h-fit xl:w-1/4 border-t-2 border-yellow-400 pt-4 pl-4'>
               <h4 className='text-2xl text-center xs:text-left tracking-wider font-bold'>

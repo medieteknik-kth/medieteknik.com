@@ -1,5 +1,4 @@
 import { CommitteePositionTooltip } from '@/components/tooltips/Tooltip'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   HoverCard,
@@ -7,6 +6,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import type { CommitteePosition } from '@/models/Committee'
+import Image from 'next/image'
 
 import type { JSX } from 'react'
 
@@ -37,7 +37,7 @@ export default function CommitteePositionTag({
 }: CommitteePositionTagProps): JSX.Element {
   return (
     <HoverCard>
-      <HoverCardTrigger className='flex items-center !p-0 py-0.5' asChild>
+      <HoverCardTrigger className='flex items-center p-0! py-0.5' asChild>
         <Button
           variant='link'
           className='text-black dark:text-yellow-400 h-fit w-fit tracking-tight'
@@ -45,15 +45,13 @@ export default function CommitteePositionTag({
           tabIndex={-1}
         >
           {includeImage && committeePosition.committee && (
-            <Avatar className='w-8 h-8 mr-2 bg-white rounded-md overflow-hidden'>
-              <AvatarImage
+            <div className='w-8 h-8 mr-2 bg-white rounded-md overflow-hidden'>
+              <Image
                 src={committeePosition.committee.logo_url}
+                alt={`${committeePosition.translations[0].title} logo`}
                 className='w-full h-full object-contain p-0.5'
               />
-              <AvatarFallback>
-                {`${committeePosition.translations[0].title} logo`}
-              </AvatarFallback>
-            </Avatar>
+            </div>
           )}
           <p className='text-xs xs:text-sm text-start font-semibold'>
             {(includeAt ? '@ ' : '') + committeePosition.translations[0].title}
@@ -61,7 +59,7 @@ export default function CommitteePositionTag({
           </p>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent className='w-fit'>
+      <HoverCardContent className='min-w-[20rem] w-fit'>
         <CommitteePositionTooltip position={committeePosition} />
       </HoverCardContent>
     </HoverCard>

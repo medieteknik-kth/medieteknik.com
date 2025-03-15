@@ -1,12 +1,11 @@
 import { Separator } from '@/components/ui/separator'
+import type { LanguageCode } from '@/models/Language'
+import type { JSX } from 'react'
 import SidebarAuth from './sidebar/client/sidebarAuth'
 import CategorySelect from './toolbar/categorySelect'
 import SearchBar from './toolbar/client/search'
 import StatusSelect from './toolbar/client/statusSelect'
 import ViewSelect from './toolbar/client/viewSelect'
-
-import type { JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode

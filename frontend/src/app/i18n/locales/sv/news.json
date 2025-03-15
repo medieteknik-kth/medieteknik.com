@@ -1,0 +1,13 @@
+{
+    "bulletin": "Aktuellt",
+    "news": "Nyheter",
+    "preview_image": "Förhandsvisningsbild",
+    "aspect_16_9": "Bildförhållande 16:9",
+    "author": "Författare",
+    "min_read": "min läsning",
+    "delete": "Radera artikel",
+    "delete_title": "Radera artikel",
+    "delete_description": "Detta kommer att radera artikeln permanent. Är du säker?",
+    "delete_cancel": "Avbryt",
+    "delete_confirm": "Radera"
+}

@@ -3,16 +3,17 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import {
   DocumentIcon,
   DocumentTextIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useState, type JSX } from 'react'
+import type { ChangeEvent, JSX } from 'react'
+import { useCallback, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -68,7 +69,7 @@ export default function SearchBar({ language }: Props): JSX.Element {
     >
       <Input
         type='search'
-        className='flex-grow lg:w-96'
+        className='grow lg:w-96'
         placeholder={t('search')}
         value={search}
         onChange={updateSearch}
@@ -82,7 +83,7 @@ export default function SearchBar({ language }: Props): JSX.Element {
       <Button
         size={'icon'}
         type='submit'
-        className='!w-10 h-10'
+        className='w-10! h-10'
         title='Deep search'
         aria-label='Deep search button'
       >
@@ -114,7 +115,7 @@ export default function SearchBar({ language }: Props): JSX.Element {
                   <Button variant={'ghost'} asChild>
                     <Link
                       href={d.translations[0].url}
-                      className='w-full text-start flex !justify-start gap-2 items-center'
+                      className='w-full text-start flex justify-start! gap-2 items-center'
                       target='_blank'
                       onClick={() => {
                         setSearchBarFocused(false)

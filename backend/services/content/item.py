@@ -3,8 +3,11 @@ Item Service (News, Event, Album, Document)
 """
 
 from datetime import datetime
+import re
 from typing import Any, Dict, List, Type
 from urllib.parse import quote, unquote
+
+import unidecode
 from models.content import (
     Item,
     MediaTranslation,
@@ -20,7 +23,6 @@ from models.content import (
 from models.core import Student, AuthorType, Author
 from models.committees import Committee, CommitteePosition
 from services.core import get_author_from_email
-from utility import normalize_to_ascii
 from utility import database
 from utility.constants import AVAILABLE_LANGUAGES
 from sqlalchemy import inspect
@@ -262,7 +264,7 @@ def create_item(
     db.session.flush()
 
     if not translation_data:
-        return str(item.item_id)
+        raise ValueError("At least one translation is required")
 
     for translation in translation_data:
         language_code = convert_iso_639_1_to_bcp_47(translation.get("language_code"))
@@ -309,7 +311,19 @@ def create_item(
 
     db.session.commit()
 
-    return str(item.item_id)
+    correct_id = None
+    if isinstance(item, News):
+        correct_id = item.news_id
+    elif isinstance(item, Event):
+        correct_id = item.event_id
+    elif isinstance(item, Media):
+        correct_id = item.media_id
+    elif isinstance(item, Document):
+        correct_id = item.document_id
+    else:
+        correct_id = item.item_id
+
+    return correct_id
 
 
 def update_translations(
@@ -400,12 +414,27 @@ def publish(
                     title = translation["title"]
                     break
 
-        seo_friendly_url = normalize_to_ascii(title).split(" ")
-        seo_friendly_url = (
-            "-".join(seo_friendly_url) + "-" + datetime.now().strftime("%Y-%m-%d")
+        # Remove emojis and special characters from the title
+        emoji_pattern = re.compile(
+            "["
+            "\U0001f600-\U0001f64f"  # emoticons
+            "\U0001f300-\U0001f5ff"  # symbols & pictographs
+            "\U0001f680-\U0001f6ff"  # transport & map symbols
+            "\U0001f1e0-\U0001f1ff"  # flags (iOS)
+            "\U00002702-\U000027b0"  # dingbats
+            "\U000024c2-\U0001f251"
+            "]+",
+            flags=re.UNICODE,
         )
-        seo_friendly_url = seo_friendly_url.lower()
 
+        title = emoji_pattern.sub(r"", title)
+        title = unidecode.unidecode(title)
+        title = re.sub(r"[^a-zA-Z0-9\s-]", "", title)
+
+        words = title.lower().split()
+
+        seo_friendly_url = "-".join(word for word in words if word)
+        seo_friendly_url = f"{seo_friendly_url}-{datetime.now().strftime('%Y-%m-%d')}"
         seo_friendly_url = quote(seo_friendly_url)
 
         setattr(item, "url", str(seo_friendly_url))

@@ -12,7 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { LanguageCode } from '@/models/Language'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import CookieSection from './cookie'
 
 interface Params {
@@ -31,7 +31,7 @@ export default async function Privacy(props: Props) {
     <main className='pb-4'>
       <HeadComponent title={t('title')} />
       <p className='text-center py-1 text-neutral-600 dark:text-neutral-300'>
-        {t('lastUpdated')} <span className='font-bold'>2024-10-23</span>
+        {t('lastUpdated')} <span className='font-bold'>2025-01-26</span>
       </p>
       <section id='policy' className='px-10 md:px-40 desktop:px-[475px]'>
         <StaticHeading

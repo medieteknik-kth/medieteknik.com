@@ -6,6 +6,8 @@
     "news_articles": "News Articles",
     "all_news": "All News (20 per page)",
     "table.title": "Title",
+    "table.created_at": "Created At",
+    "table.last_updated": "Last Updated",
     "table.status": "Status",
     "table.is_public": "Is Public",
     "table.actions": "Actions"

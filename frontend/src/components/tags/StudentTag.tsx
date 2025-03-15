@@ -1,20 +1,26 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
+import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
+import { useStudent } from '@/providers/AuthenticationProvider'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import { forwardRef } from 'react'
 import { StudentTooltip } from '../tooltips/Tooltip'
 
 interface StudentTagProps {
   student: Student
+  language: LanguageCode
   includeImage?: boolean
   includeAt?: boolean
   reverseImage?: boolean
+  size?: number
   children?: React.ReactNode
 }
 
@@ -34,16 +40,19 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
   (
     {
       student,
+      language,
       includeImage = false,
       includeAt = false,
       reverseImage = false,
+      size = 40,
       children,
     },
     ref
   ) => {
     const username = `${student.first_name} ${student.last_name || ''}`
+    const { student: authStudent } = useStudent()
     return (
-      <HoverCard>
+      <HoverCard openDelay={350}>
         <HoverCardTrigger className='h-fit w-fit flex items-center' asChild>
           <Button
             variant='link'
@@ -56,37 +65,58 @@ const StudentTag = forwardRef<HTMLButtonElement, StudentTagProps>(
             asChild
           >
             <Link
-              href={`/student/${student.student_id}`}
-              className='group !no-underline'
+              href={`/${language}/student/${student.student_id}`}
+              className='group'
+              style={{
+                textDecoration: 'none',
+              }}
             >
               {includeImage &&
                 (student.profile_picture_url ? (
                   <Image
-                    className='h-10 w-auto aspect-square object-contain rounded-full bg-white dark:bg-gray-800'
-                    width={40}
-                    height={40}
+                    className='object-contain rounded-full bg-white dark:bg-gray-800'
+                    style={{
+                      height: size,
+                      width: size,
+                    }}
+                    width={size}
+                    height={size}
                     src={student.profile_picture_url}
                     alt={username}
                   />
                 ) : (
-                  <p className='h-10 w-auto aspect-square object-contain p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none !no-underline font-bold'>
+                  <p
+                    className={`p-0.5 rounded-full bg-yellow-400 grid place-items-center select-none no-underline! font-bold ${size > 40 ? ' text-base' : 'text-xs'}`}
+                    style={{
+                      height: size,
+                      width: size,
+                    }}
+                  >
                     {`${student.first_name.charAt(0)}${student.last_name ? student.last_name.charAt(0) : ''}`}
                   </p>
                 ))}
-              <div className='flex flex-col items-start justify-center text-start overflow-hidden'>
+              <div
+                className={`flex flex-col ${reverseImage ? 'items-end' : 'items-start'} justify-center text-start  overflow-x-auto`}
+              >
                 <p
                   className='h-fit truncate max-w-full group-hover:underline'
                   title={username}
                 >
                   {(includeAt ? '@ ' : '') + username}
+                  {authStudent &&
+                    student.student_id === authStudent.student_id && (
+                      <span className='text-xs text-muted-foreground select-none'>
+                        &nbsp;{language === 'en' ? '(You)' : '(Du)'}
+                      </span>
+                    )}
                 </p>
                 <div className={`${children && 'leading-3'}`}>{children}</div>
               </div>
             </Link>
           </Button>
         </HoverCardTrigger>
-        <HoverCardContent className='z-40'>
-          <StudentTooltip student={student} />
+        <HoverCardContent className='z-40 w-fit'>
+          <StudentTooltip student={student} language={language} />
         </HoverCardContent>
       </HoverCard>
     )

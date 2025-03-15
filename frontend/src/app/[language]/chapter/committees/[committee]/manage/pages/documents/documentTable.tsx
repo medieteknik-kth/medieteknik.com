@@ -42,14 +42,13 @@ import {
   CheckBadgeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CloudArrowUpIcon,
   DocumentDuplicateIcon,
-  LockClosedIcon,
-  LockOpenIcon,
+  LinkIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import { GB, SE } from 'country-flag-icons/react/3x2'
-import Link from 'next/link'
+import { PinIcon } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import { type JSX, useEffect, useState } from 'react'
 import useSWR from 'swr'
 
@@ -242,8 +241,11 @@ export default function DocumentTable({
                         )?.url || ''
                       }
                     >
-                      <CloudArrowUpIcon className='w-5 h-5' />
-                      <SE title='GB' className='absolute bottom-0 w-3 h-3' />
+                      <LinkIcon className='w-5 h-5' />
+                      <SE
+                        title='GB'
+                        className='absolute bottom-0 right-0 w-3 h-3'
+                      />
                     </Link>
                   </Button>
                   <Button
@@ -266,8 +268,8 @@ export default function DocumentTable({
                         )?.url || ''
                       }
                     >
-                      <CloudArrowUpIcon className='w-5 h-5' />
-                      <GB className='absolute bottom-0 w-3 h-3' />
+                      <LinkIcon className='w-5 h-5' />
+                      <GB className='absolute bottom-0 right-0 w-3 h-3' />
                     </Link>
                   </Button>
                   <Button
@@ -280,9 +282,9 @@ export default function DocumentTable({
                     }}
                   >
                     {temporaryPinned.includes(document.document_id) ? (
-                      <LockClosedIcon className='w-5 h-5' />
+                      <PinIcon className='w-5 h-5 fill-white' />
                     ) : (
-                      <LockOpenIcon className='w-5 h-5' />
+                      <PinIcon className='w-5 h-5' />
                     )}
                   </Button>
                   <AlertDialog>

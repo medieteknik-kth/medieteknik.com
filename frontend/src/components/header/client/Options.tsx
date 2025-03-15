@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -16,7 +15,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import { LANGUAGES } from '@/utility/Constants'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import {
+  LANGUAGES,
+  LANGUAGE_COOKIE_NAME,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { LOCAL_STORAGE_LANGUAGE } from '@/utility/LocalStorage'
 import { Cog8ToothIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
@@ -45,6 +49,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const [isClient, setIsClient] = useState(false)
   const [cookiesShown, setCookiesShown] = useState(false)
   const [open, setOpen] = useState(false)
+  const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
     setIsClient(true)
@@ -59,6 +64,7 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
   const switchLanguage = useCallback(
     (newLanguage: string) => {
       const newPath = path.replace(/^\/[a-z]{2}/, `/${newLanguage}`)
+      document.cookie = `${LANGUAGE_COOKIE_NAME}=${newLanguage}; path=/; expires=${new Date(Date.now() + 31536000000)}; SameSite=Lax`
       window.localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLanguage)
       router.push(newPath)
     },
@@ -83,116 +89,122 @@ export default function OptionsMenu({ language }: Props): JSX.Element {
     return <></>
   }
 
-  return (
-    <div className='w-fit z-10'>
-      <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            className='w-16 h-full grid z-10 place-items-center rounded-none'
-            title={t('title')}
-            aria-label='Preferences Button'
-            size='icon'
-            variant='ghost'
-          >
-            <Cog8ToothIcon className='w-7 h-7' />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent asChild>
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('title')}</CardTitle>
-              <CardDescription>{t('description')}</CardDescription>
-            </CardHeader>
-            <CardContent className='flex flex-col gap-2'>
-              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                {t('language')}
-              </h4>
-              <div>
-                {SUPPORTED_LANGUAGES.map((lang) => (
-                  <Button
-                    key={lang}
-                    onClick={() => {
-                      setOpen(false)
-                      switchLanguage(lang)
-                    }}
-                    className='mx-1 cursor-pointer'
-                    variant={lang === language ? 'default' : 'secondary'}
-                    disabled={lang === language}
-                    title={`Switch to ${LANGUAGES[lang].name}`}
-                    aria-label={`Switch to ${LANGUAGES[lang].name}`}
-                  >
-                    <div className='w-full h-full flex items-center px-4'>
-                      <span className='w-6 h-6'>
-                        {LANGUAGES[lang as LanguageCode].flag_icon}
-                      </span>
-                      <span className='ml-2'>{LANGUAGES[lang].name}</span>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-
-              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                {t('theme')}
-                <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
-                  Beta
-                </sup>
-              </h4>
-              <div>
-                <Button
-                  onClick={() => switchTheme('light')}
-                  className='mx-1 cursor-pointer'
-                  variant={theme === 'light' ? 'default' : 'secondary'}
-                  disabled={theme === 'light'}
-                  title={t('light_theme')}
-                  aria-label={t('light_theme')}
-                >
-                  <div className='w-full h-full flex items-center px-4'>
-                    <SunIcon className='w-6 h-6' />
-                    <span className='ml-2'>{t('light_theme')}</span>
+  if (isClient && !isAuthenticated) {
+    return (
+      <div className='w-fit z-10 h-full'>
+        <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              className='w-16 h-full grid z-10 place-items-center rounded-none'
+              title={t('title')}
+              aria-label='Preferences Button'
+              size='icon'
+              variant='ghost'
+            >
+              <Cog8ToothIcon className='w-7 h-7' />
+            </Button>
+          </DropdownMenuTrigger>
+          {open && (
+            <DropdownMenuContent asChild>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('title')}</CardTitle>
+                  <CardDescription>{t('description')}</CardDescription>
+                </CardHeader>
+                <CardContent className='flex flex-col gap-2'>
+                  <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                    {t('language')}
+                  </h4>
+                  <div>
+                    {SUPPORTED_LANGUAGES.map((lang) => (
+                      <Button
+                        key={lang}
+                        onClick={() => {
+                          setOpen(false)
+                          switchLanguage(lang)
+                        }}
+                        className='mx-1 cursor-pointer'
+                        variant={lang === language ? 'default' : 'secondary'}
+                        disabled={lang === language}
+                        title={`Switch to ${LANGUAGES[lang].name}`}
+                        aria-label={`Switch to ${LANGUAGES[lang].name}`}
+                      >
+                        <div className='w-full h-full flex items-center px-4'>
+                          <span className='w-6 h-6'>
+                            {LANGUAGES[lang as LanguageCode].flag_icon}
+                          </span>
+                          <span className='ml-2'>{LANGUAGES[lang].name}</span>
+                        </div>
+                      </Button>
+                    ))}
                   </div>
-                </Button>
-                <Button
-                  onClick={() => switchTheme('dark')}
-                  className='mx-1 cursor-pointer'
-                  variant={theme === 'dark' ? 'default' : 'ghost'}
-                  disabled={theme === 'dark'}
-                  title={t('dark_theme')}
-                  aria-label={t('dark_theme')}
-                >
-                  <div className='w-full h-full flex items-center px-4'>
-                    <MoonIcon className='w-6 h-6' />
-                    <span className='ml-2'>{t('dark_theme')}</span>
+
+                  <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                    {t('theme')}
+                    <sup className='ml-1 text-xs text-red-600 select-none uppercase'>
+                      Beta
+                    </sup>
+                  </h4>
+                  <div>
+                    <Button
+                      onClick={() => switchTheme('light')}
+                      className='mx-1 cursor-pointer'
+                      variant={theme === 'light' ? 'default' : 'secondary'}
+                      disabled={theme === 'light'}
+                      title={t('light_theme')}
+                      aria-label={t('light_theme')}
+                    >
+                      <div className='w-full h-full flex items-center px-4'>
+                        <SunIcon className='w-6 h-6' />
+                        <span className='ml-2'>{t('light_theme')}</span>
+                      </div>
+                    </Button>
+                    <Button
+                      onClick={() => switchTheme('dark')}
+                      className='mx-1 cursor-pointer'
+                      variant={theme === 'dark' ? 'default' : 'ghost'}
+                      disabled={theme === 'dark'}
+                      title={t('dark_theme')}
+                      aria-label={t('dark_theme')}
+                    >
+                      <div className='w-full h-full flex items-center px-4'>
+                        <MoonIcon className='w-6 h-6' />
+                        <span className='ml-2'>{t('dark_theme')}</span>
+                      </div>
+                    </Button>
                   </div>
-                </Button>
-              </div>
 
-              <h4 className='text-lg font-semibold pb-1 tracking-wide'>
-                {t('privacy')}
-              </h4>
-              <div>
-                <Button
-                  onClick={() => {
-                    setCookiesShown(true)
-                    setOpen(false)
-                  }}
-                  className='w-full'
-                  variant='secondary'
-                  title={t('cookie_settings')}
-                  aria-label={t('cookie_settings')}
-                >
-                  {t('cookie_settings')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </DropdownMenuContent>
-      </DropdownMenu>
+                  <h4 className='text-lg font-semibold pb-1 tracking-wide'>
+                    {t('privacy')}
+                  </h4>
+                  <div>
+                    <Button
+                      onClick={() => {
+                        setCookiesShown(true)
+                        setOpen(false)
+                      }}
+                      className='w-full'
+                      variant='secondary'
+                      title={t('cookie_settings')}
+                      aria-label={t('cookie_settings')}
+                    >
+                      {t('cookie_settings')}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </DropdownMenuContent>
+          )}
+        </DropdownMenu>
 
-      {cookiesShown && (
-        <div className='w-full h-screen fixed grid place-items-center left-0 top-0 bg-black/30 z-50'>
-          <DetailedCookiePopup language={language} popup={setCookiesShown} />
-        </div>
-      )}
-    </div>
-  )
+        {cookiesShown && (
+          <div className='w-full h-screen fixed grid place-items-center left-0 top-0 bg-black/30 z-50'>
+            <DetailedCookiePopup language={language} popup={setCookiesShown} />
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return <></>
 }

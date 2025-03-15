@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import type Media from '@/models/items/Media'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import type { JSX } from 'react'
 
 interface Props {
@@ -30,7 +30,7 @@ export default async function ImageDisplay({
       <Link
         href={image.media_url}
         target='_blank'
-        className='group w-44 sm:w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform !p-0'
+        className='group w-44 sm:w-72 h-auto aspect-video relative rounded-lg flex flex-col hover:scale-105 transition-transform p-0!'
       >
         <Image
           src={image.media_url}

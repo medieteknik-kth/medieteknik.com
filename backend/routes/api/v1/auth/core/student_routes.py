@@ -4,44 +4,24 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, make_response, request
+from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import (
-    create_access_token,
+    get_jwt,
     get_jwt_identity,
     jwt_required,
-    set_access_cookies,
-    unset_jwt_cookies,
 )
 from http import HTTPStatus
-from typing import Any
-from sqlalchemy import func, or_
+from typing import Any, Dict
 from decorators import csrf_protected
-from models.committees import Committee, CommitteePosition
-from models.core import Profile, Student, StudentMembership
-from services.core import login, get_permissions, update
+from models.core import Profile, Student
+from services.core import update, retrieve_notifications, subscribe_to_notifications
+from services.utility.auth import (
+    get_student_authorization,
+    get_student_committee_details,
+)
 from utility import delete_file, upload_file, retrieve_languages, db
 
 student_bp = Blueprint("student", __name__)
-
-
-@student_bp.route("/login", methods=["POST"])
-@csrf_protected
-def student_login() -> Response:
-    """
-    Logs in a student
-        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
-    """
-
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-    provided_languages = retrieve_languages(request.args)
-
-    data: dict[str, Any] = json.loads(json.dumps(data))
-
-    return login(data=data, provided_languages=provided_languages)
 
 
 @student_bp.route("/", methods=["PUT"])
@@ -141,102 +121,40 @@ def update_reception() -> Response:
     reception_image = request.files.get("reception_image")
     reception_name = request.form.get("reception_name")
 
-    if not reception_image:
-        return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
+    if (
+        not reception_image and not reception_name
+    ):  # At least one of the fields is empty
+        return jsonify(
+            {"error": "At least one field must be specified"}
+        ), HTTPStatus.BAD_REQUEST
 
-    file_extension = reception_image.filename.split(".")[-1]
+    if reception_image:
+        file_extension = reception_image.filename.split(".")[-1]
 
-    if getattr(student, "reception_profile_picture_url"):
-        delete_file(
-            getattr(student, "reception_profile_picture_url"),
+        if getattr(student, "reception_profile_picture_url"):
+            delete_file(
+                getattr(student, "reception_profile_picture_url"),
+            )
+
+        result = upload_file(
+            file=reception_image,
+            file_name=f"{student.student_id}.{file_extension}",
+            content_type=f"image/{file_extension if file_extension != 'jpg' else 'jpeg'}",
+            timedelta=None,
+            path="profile/reception",
         )
 
-    result = upload_file(
-        file=reception_image,
-        file_name=f"{student.student_id}.{file_extension}",
-        path="profile/reception",
-    )
+        if not result:
+            return jsonify({"error": "Failed to upload"}), HTTPStatus.BAD_REQUEST
 
-    if not result:
-        return jsonify({"error": "Failed to upload"}), HTTPStatus.BAD_REQUEST
+        setattr(student, "reception_profile_picture_url", result)
 
-    setattr(student, "reception_profile_picture_url", result)
-    setattr(student, "reception_name", reception_name)
+    if reception_name:
+        setattr(student, "reception_name", reception_name)
 
     db.session.commit()
 
-    return jsonify({"url": result}), HTTPStatus.CREATED
-
-
-@student_bp.route("/refresh", methods=["POST"])
-@jwt_required(refresh=True)
-def refresh_token() -> Response:
-    """
-    Refreshes the student token
-        :return: Response - The response object, 401 if the credentials are invalid, 200 if successful
-    """
-
-    student_id = get_jwt_identity()
-    student = Student.query.filter_by(student_id=student_id).one_or_none()
-    provided_languages = retrieve_languages(request.args)
-
-    if not student:
-        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
-
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
-
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter(
-        StudentMembership.student_id == student_id,
-        or_(
-            StudentMembership.termination_date == None,  # noqa
-            StudentMembership.termination_date > func.now(),
-        ),
-    ).all()
-
-    for membership in student_memberships:
-        position = CommitteePosition.query.get(membership.committee_position_id)
-        if not position or not isinstance(position, CommitteePosition):
-            continue
-
-        committee = Committee.query.get(position.committee_id)
-        if not committee or not isinstance(committee, Committee):
-            continue
-
-        committees.append(committee.to_dict(provided_languages=provided_languages))
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
-
-    response = make_response(
-        {
-            "student": student.to_dict(is_public_route=False),
-            "committees": committees,
-            "committee_positions": committee_positions,
-            "role": permissions_and_role.get("role"),
-            "permissions": permissions_and_role.get("permissions"),
-        }
-    )
-    access_token = create_access_token(identity=student, fresh=False)
-    set_access_cookies(response=response, encoded_access_token=access_token)
-    response.status_code = HTTPStatus.OK
-    return response
-
-
-@student_bp.route("/logout", methods=["POST"])
-def student_logout() -> Response:
-    """
-    Logs out a student
-        :return: Response - The response object, 200 if successful
-    """
-
-    response = make_response()
-    unset_jwt_cookies(response)
-    response.status_code = HTTPStatus.OK
-    return response
+    return jsonify({"message": "Updated"}), HTTPStatus.CREATED
 
 
 @student_bp.route("/permissions", methods=["GET"])
@@ -248,7 +166,14 @@ def get_student_permissions() -> Response:
     """
 
     student_id = get_jwt_identity()
-    return jsonify(get_permissions(student_id)), HTTPStatus.OK
+    student: Student = Student.query.get_or_404(student_id)
+    permissions, role = get_student_authorization(student)
+    return jsonify(
+        {
+            "permissions": permissions,
+            "role": role,
+        }
+    ), HTTPStatus.OK
 
 
 @student_bp.route("/me", methods=["GET"])
@@ -260,48 +185,70 @@ def get_student_callback() -> Response:
     """
 
     provided_languages = retrieve_languages(request.args)
-    student_id = get_jwt_identity()
+    student_id = None
+    expiration = None
+
+    try:
+        student_id = get_jwt_identity()
+        jwt = get_jwt()
+        expiration = jwt["exp"]
+    except Exception:
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
 
     student: Student = Student.query.get_or_404(student_id)
 
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
+    permissions, role = get_student_authorization(student)
 
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter(
-        StudentMembership.student_id == student_id,
-        or_(
-            StudentMembership.termination_date == None,  # noqa
-            StudentMembership.termination_date > func.now(),
-        ),
-    ).all()
+    committees, committee_positions = get_student_committee_details(
+        provided_languages=provided_languages, student=student
+    )
 
-    for membership in student_memberships:
-        position = CommitteePosition.query.get_or_404(membership.committee_position_id)
+    student_dict = student.to_dict(is_public_route=False)
 
-        if not position.committee_id:
-            continue
-
-        committee: Committee = Committee.query.get_or_404(position.committee_id)
-
-        committee_dict = committee.to_dict(provided_languages=provided_languages)
-
-        if committee_dict in committees:
-            continue
-
-        committees.append(committee_dict)
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
-
-    return jsonify(
+    json_response = jsonify(
         {
-            "student": student.to_dict(is_public_route=False),
-            "role": permissions_and_role.get("role"),
-            "permissions": permissions_and_role.get("permissions"),
+            "student": student_dict,
             "committees": committees,
-            "positions": committee_positions,
-        }
-    ), HTTPStatus.OK
+            "committee_positions": committee_positions,
+            "permissions": permissions,
+            "role": role,
+            "expiration": expiration,
+        },
+    )
+
+    return json_response, HTTPStatus.OK
+
+
+@student_bp.route("/notifications", methods=["GET", "POST"])
+@jwt_required()
+def update_notifications() -> Response:
+    """
+    Updates the student notifications
+        :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
+    """
+
+    language = retrieve_languages(request.args)
+
+    student_id = get_jwt_identity()
+    student: Student | None = Student.query.filter_by(
+        student_id=student_id
+    ).one_or_none()
+
+    if not student or not isinstance(student, Student):
+        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
+
+    if request.method == "GET":
+        return retrieve_notifications(student_id, language)
+    else:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
+
+        data_dict: Dict[str, Any] = json.loads(json.dumps(data))
+
+        return subscribe_to_notifications(
+            data_dict=data_dict,
+            student_id=student_id,
+            language=language,
+        )

@@ -71,5 +71,7 @@ def get_calendar_ics() -> Response:
             events=events,
             language=provided_langauges[0],
         ),
+        status=HTTPStatus.OK,
+        headers={"Content-Type": "text/calendar"},
         mimetype="text/calendar",
     )

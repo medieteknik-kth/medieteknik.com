@@ -7,6 +7,7 @@ from datetime import timedelta
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
 from urllib.parse import unquote, urlparse
+from google.cloud import pubsub_v1
 
 
 json_key_path = (
@@ -15,10 +16,14 @@ json_key_path = (
     else "/app/service-account-file.json"
 )
 
+# Pub/Sub client
+publisher = pubsub_v1.PublisherClient.from_service_account_json(json_key_path)
+topic_path = publisher.topic_path(project="medieteknik", topic="deferred-tasks")
+
 client = storage.Client.from_service_account_json(json_credentials_path=json_key_path)
 
 bucket_name = "medieteknik-static"
-bucket = client.get_bucket(bucket_name)
+bucket = client.get_bucket(bucket_or_name=bucket_name)
 
 
 def upload_file(
@@ -28,6 +33,7 @@ def upload_file(
     language_code: str | None = None,
     content_disposition: str | None = None,
     content_type: str | None = None,
+    cache_control: str | None = None,
     timedelta: timedelta | None = timedelta(days=365),
 ) -> str | None:
     """
@@ -61,6 +67,8 @@ def upload_file(
             blob.content_disposition = content_disposition
         if content_type:
             blob.content_type = content_type
+        if cache_control:
+            blob.cache_control = cache_control
 
         url = None
         blob.upload_from_file(file)

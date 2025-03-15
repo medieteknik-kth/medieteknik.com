@@ -113,12 +113,16 @@ export default function EventDialog({
           </div>
           <div className='h-fit flex justify-start py-2 px-2 rounded-b-md'>
             {event.author.author_type === 'STUDENT' ? (
-              <StudentTag student={event.author as Student} includeAt={false} />
+              <StudentTag
+                student={event.author as Student}
+                language={language}
+                includeAt={false}
+              />
             ) : event.author.author_type === 'COMMITTEE' ? (
               <CommitteeTag
                 committee={event.author as Committee}
-                includeAt={false}
-                includeBackground={false}
+                language={language}
+                includeImage
               />
             ) : event.author.author_type === 'COMMITTEE_POSITION' ? (
               <CommitteePositionTag

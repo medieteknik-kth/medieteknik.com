@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -26,9 +25,13 @@ import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import { editCommitteeSchema } from '@/schemas/committee/edit'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -102,7 +105,8 @@ export default function EditCommittee({
 }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
-  const { permissions, positions } = useAuthentication()
+  const { positions } = useStudent()
+  const { permissions } = usePermissions()
   const { t } = useTranslation(language, 'committee_management')
 
   const form = useForm<z.infer<typeof editCommitteeSchema>>({

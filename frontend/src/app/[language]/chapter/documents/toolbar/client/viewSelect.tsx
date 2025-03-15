@@ -1,8 +1,9 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@/models/Language'
 import { useDocumentManagement } from '@/providers/DocumentProvider'
 import { Bars3Icon, Squares2X2Icon } from '@heroicons/react/24/outline'
 

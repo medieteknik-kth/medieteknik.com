@@ -1,47 +1,37 @@
 'use client'
 
-import Sidebar from '@/app/[language]/account/sidebar'
+import AccountForm from '@/app/[language]/account/pages/account/accountForm'
+import ProfileForm from '@/app/[language]/account/pages/account/profileForm'
+import ReceptionForm from '@/app/[language]/account/pages/account/receptionForm'
+import NotificationPage from '@/app/[language]/account/pages/notificationPage'
+import PreferencesPage from '@/app/[language]/account/pages/preferencesPage'
+import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import Loading from '@/components/tooltips/Loading'
-import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
-import CalendarProvider from '@/providers/CalendarProvider'
+import { Button } from '@/components/ui/button'
 import {
-  CalendarIcon,
-  DocumentDuplicateIcon,
-  LifebuoyIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline'
-import { useRouter, useSearchParams } from 'next/navigation'
-import React, {
-  type ForwardRefExoticComponent,
-  type JSX,
-  type LazyExoticComponent,
-  Suspense,
-  type SVGProps,
-  use,
-  useEffect,
-  useState,
-} from 'react'
-const AccountProfile = React.lazy(() => import('./pages/accountPage'))
-const PreferencesPage = React.lazy(() => import('./pages/preferencesPage'))
-//const CommitteesPage = React.lazy(() => import('./pages/committeesPage'))
-const ItemsPage = React.lazy(() => import('./pages/itemPage'))
-const CalendarPage = React.lazy(() => import('./pages/calendarPage'))
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { LanguageCode } from '@/models/Language'
+import {
+  useAuthentication,
+  useStudent,
+} from '@/providers/AuthenticationProvider'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import type React from 'react'
+import { type JSX, use, useCallback, useEffect, useState } from 'react'
 
-export type Tabs =
-  | 'account'
-  | 'preferences'
-  | 'committees'
-  | 'items'
-  | 'calendar'
-
-export interface AccountPages {
-  name: Tabs
-  icon: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>
-  page: LazyExoticComponent<
-    ({ language }: { language: LanguageCode }) => React.JSX.Element
-  >
+interface AllPages {
+  name: string
+  page?: React.ComponentType<{ language: LanguageCode }>
+  subNavs?: {
+    name: string
+    page: React.ComponentType<{ language: LanguageCode }>
+  }[]
 }
 
 interface Params {
@@ -64,17 +54,15 @@ interface Props {
  */
 export default function AccountPage(props: Props): JSX.Element {
   const { language } = use(props.params)
-  const [currentTab, setCurrentTab] = useState<Tabs | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [accountPages, setAccountPages] = useState<AccountPages[]>([])
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const category = searchParams.get('category') || 'account'
   const router = useRouter()
-
-  const {
-    student,
-    committees,
-    permissions,
-    isLoading: authLoading,
-  } = useAuthentication()
+  const { isLoading: authLoading } = useAuthentication()
+  const { student } = useStudent()
+  const { t } = useTranslation(language, 'account/account')
+  const [openCollapsible, setOpenCollapsible] = useState<boolean[]>([true])
 
   useEffect(() => {
     if (!authLoading) {
@@ -86,52 +74,44 @@ export default function AccountPage(props: Props): JSX.Element {
     }
   }, [student, language, router, authLoading])
 
-  useEffect(() => {
-    const defaultPages: AccountPages[] = [
-      {
-        name: 'account',
-        icon: UserIcon,
-        page: AccountProfile,
-      },
-      {
-        name: 'preferences',
-        icon: LifebuoyIcon,
-        page: PreferencesPage,
-      },
-      {
-        name: 'calendar',
-        icon: CalendarIcon,
-        page: CalendarPage,
-      },
-    ]
+  const createTabString = useCallback(
+    (tab: string) => {
+      const params = new URLSearchParams(searchParams.toString())
 
-    const additionalPages: AccountPages[] = []
-    if (permissions.author && permissions.author.length >= 1) {
-      additionalPages.push({
-        name: 'items',
-        icon: DocumentDuplicateIcon,
-        page: ItemsPage,
-      })
-    }
+      params.set('category', tab)
 
-    /*
-    if (committees.length >= 1) {
-      additionalPages.push({
-        name: 'committees',
-        icon: UserGroupIcon,
-        page: CommitteesPage,
-      })
-    }*/
+      return params.toString()
+    },
+    [searchParams]
+  )
 
-    setAccountPages([...defaultPages, ...additionalPages])
-  }, [permissions])
-
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    const tab = searchParams.get('category') || 'account'
-    setCurrentTab(tab as Tabs)
-  }, [searchParams])
+  const allPages: AllPages[] = [
+    {
+      name: 'account',
+      subNavs: [
+        {
+          name: 'account',
+          page: AccountForm,
+        },
+        {
+          name: 'profile',
+          page: ProfileForm,
+        },
+        {
+          name: 'reception',
+          page: ReceptionForm,
+        },
+      ],
+    },
+    {
+      name: 'preferences',
+      page: PreferencesPage,
+    },
+    {
+      name: 'notifications',
+      page: NotificationPage,
+    },
+  ]
 
   if (isLoading) {
     return <Loading language={language} />
@@ -142,33 +122,118 @@ export default function AccountPage(props: Props): JSX.Element {
   }
 
   return (
-    <main className='relative'>
+    <main id='account' className='relative md:max-h-screen'>
       <HeaderGap />
-      <div className='w-full h-full relative'>
-        <Sidebar
-          accountPages={accountPages}
-          currentTab={currentTab}
-          setCurrentTab={setCurrentTab}
-        />
-
-        <div className='w-full min-h-[1080px] h-fit flex dark:bg-[#111]'>
-          <div className='w-0 md:w-24' />
-          <Suspense fallback={<Loading language={language} />}>
-            {Array.from(accountPages).map((page) =>
-              currentTab === page.name.toLocaleLowerCase() ? (
-                page.name === 'calendar' ? (
-                  <CalendarProvider language={language} key='calendar'>
-                    <CalendarPage language={language} key='calendar' />
-                  </CalendarProvider>
-                ) : (
-                  <page.page key={page.name} language={language} />
-                )
-              ) : (
-                <div key={page.name} />
-              )
-            )}
-          </Suspense>
+      <div className='h-fit p-8 pt-0'>
+        <div className='border-b pb-4 border-yellow-400'>
+          <h1 className='text-3xl font-bold mt-4 tracking-tight'>
+            {t('title')}
+          </h1>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
+
+        <Tabs
+          className='flex flex-col md:flex-row'
+          orientation='vertical'
+          defaultValue={category}
+        >
+          <aside id='sidebar' className='h-fit w-full md:w-64 md:h-full'>
+            <TabsList className='w-full h-fit flex items-start flex-col gap-2 pt-4 bg-white! dark:bg-background!'>
+              {Array.from(allPages).map((page, index) => {
+                return page.subNavs ? (
+                  <Collapsible
+                    key={page.name}
+                    title={t(`upper_${page.name}`)}
+                    defaultOpen
+                    className='w-full'
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant={'ghost'}
+                        className='w-full flex justify-between gap-2 p-2 rounded-md mb-2'
+                        onClick={() => {
+                          setOpenCollapsible((prev) =>
+                            prev.map((_, i) => (i === index ? !prev[i] : false))
+                          )
+                        }}
+                      >
+                        <p className='capitalize'>{t(`upper_${page.name}`)}</p>
+                        <ChevronDownIcon
+                          className={`w-5 h-5 transition-transform duration-200 ${
+                            openCollapsible[index] ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className='border-l border-yellow-400 ml-2 pl-3 flex flex-col gap-2'>
+                      {page.subNavs.map((subNav) => (
+                        <TabsTrigger
+                          asChild
+                          value={subNav.name}
+                          title={t(`tab_${subNav.name}`)}
+                          key={subNav.name}
+                        >
+                          <Button
+                            variant={'ghost'}
+                            onClick={() => {
+                              router.push(
+                                `${pathname}?${createTabString(subNav.name)}`
+                              )
+                            }}
+                            className='w-full flex justify-start gap-2 p-2 rounded-md data-[state=active]:bg-muted!'
+                          >
+                            <p className='capitalize'>
+                              {t(`tab_${subNav.name}`)}
+                            </p>
+                          </Button>
+                        </TabsTrigger>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <TabsTrigger
+                    asChild
+                    value={page.name}
+                    key={page.name}
+                    title={t(`tab_${page.name}`)}
+                  >
+                    <Button
+                      key={page.name}
+                      variant={'ghost'}
+                      onClick={() => {
+                        router.push(`${pathname}?${createTabString(page.name)}`)
+                      }}
+                      className='w-full flex justify-start gap-2 p-2 rounded-md data-[state=active]:bg-muted!'
+                    >
+                      <p className='capitalize'>{t(`tab_${page.name}`)}</p>
+                    </Button>
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
+          </aside>
+          {allPages.map((page) =>
+            page.subNavs ? (
+              page.subNavs.map((subNav) => (
+                <TabsContent
+                  key={subNav.name}
+                  value={subNav.name}
+                  className='mt-0 grow z-10'
+                >
+                  <subNav.page language={language} />
+                </TabsContent>
+              ))
+            ) : (
+              <TabsContent
+                key={page.name}
+                value={page.name}
+                className='mt-0 grow z-10'
+              >
+                {page.page && <page.page language={language} />}
+              </TabsContent>
+            )
+          )}
+        </Tabs>
       </div>
     </main>
   )

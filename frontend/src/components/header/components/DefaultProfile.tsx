@@ -2,7 +2,6 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import PreferencesMenu from '@/components/header/components/PreferencesMenu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
@@ -15,15 +14,16 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import {
   AdjustmentsHorizontalIcon,
   Cog6ToothIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
+import Image from 'next/image'
 
-import { type JSX, useState } from 'react'
+import type { JSX } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -39,35 +39,35 @@ interface Props {
  * @returns {JSX.Element} The DefaultProfile component.
  */
 export default function DefaultProfile({ language }: Props): JSX.Element {
-  const { student } = useAuthentication()
+  const { student } = useStudent()
   const { t } = useTranslation(language, 'header')
-  const [openPreferences, setOpenPreferences] = useState(false)
 
-  if (!student) {
-    return <></>
-  }
+  const username = student
+    ? `${student.first_name} ${student.last_name || ''}`
+    : 'Gäst'
 
-  const username = `${student.first_name} ${student.last_name || ''}`
-
-  return (
+  return student ? (
     <>
       <div className='flex items-center px-2'>
-        <Avatar>
-          <AvatarImage
-            src={student.profile_picture_url}
-            width={40}
-            height={40}
-            alt='Profile Picture'
-            loading='lazy'
-          />
-          <AvatarFallback className='bg-primary text-black'>
-            {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
-          </AvatarFallback>
-        </Avatar>
-        <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px]'>
+        <div className='w-12 border border-white dark:border-black rounded-full bg-white overflow-hidden'>
+          {student.profile_picture_url ? (
+            <Image
+              src={student.profile_picture_url}
+              width={48}
+              height={48}
+              alt='Profile Picture'
+              loading='lazy'
+            />
+          ) : (
+            <div className='bg-primary text-black'>
+              {`${student.first_name.charAt(0)} ${student.last_name ? student.last_name.charAt(0) : ''}`}
+            </div>
+          )}
+        </div>
+        <DropdownMenuLabel className='w-full text-lg flex flex-col max-w-[300px]'>
           <p className='truncate'>{username}</p>
           <span className='font-normal text-sm text-muted-foreground leading-3'>
-            {student.email}
+            {student.email ?? ''}
           </span>
         </DropdownMenuLabel>
       </div>
@@ -120,6 +120,18 @@ export default function DefaultProfile({ language }: Props): JSX.Element {
           </Button>
         </DropdownMenuItem>
       </DropdownMenuGroup>
+    </>
+  ) : (
+    <>
+      <div className='flex items-center px-2'>
+        <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px]'>
+          <p className='truncate'>{username}</p>
+          <span className='font-normal text-sm text-muted-foreground leading-3'>
+            Välkommen
+          </span>
+        </DropdownMenuLabel>
+      </div>
+      <DropdownMenuSeparator />
     </>
   )
 }

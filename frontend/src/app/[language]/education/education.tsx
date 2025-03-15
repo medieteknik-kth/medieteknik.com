@@ -1,13 +1,12 @@
 import { useTranslation } from '@/app/i18n'
 import { HeadComponent, Section } from '@/components/static/Static'
-import { Button } from '@/components/ui/button'
 import {
   EnvelopeIcon,
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import KTH from 'public/images/svg/kth.svg'
 import Courses from './client/courses'
 import Masters from './client/masters'
@@ -35,46 +34,41 @@ export default async function Education(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
   const { t } = await useTranslation(language, 'education')
   return (
-    <main>
+    <main className='flex flex-col gap-8'>
       <HeadComponent title={t('title')} description={t('description')}>
         <div className='absolute left-20 bottom-4 flex gap-8'>
-          <Button
-            size={'icon'}
-            className='overflow-hidden hover:scale-110 transition-all'
+          <Link
+            href='https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150'
+            target='_blank'
+            rel='external'
             title='KTH Website (in Swedish)'
             aria-label='KTH Website (in Swedish)'
-            asChild
+            className='overflow-hidden hover:scale-110 transition-transform bg-white p-1 rounded-lg'
           >
-            <Link
-              href='https://www.kth.se/utbildning/civilingenjor/medieteknik/medieteknik-civilingenjor-300-hp-1.4150'
-              target='_blank'
-              rel='external'
-            >
-              <KTH className='w-10 h-10 rounded-md' />
-            </Link>
-          </Button>
-          <Button
-            variant={'outline'}
-            size={'icon'}
-            className='overflow-hidden hover:scale-110 transition-all'
-            asChild
+            <Image
+              src='https://storage.googleapis.com/medieteknik-static/static/logos/kth.svg'
+              alt={t('kth_login')}
+              width={40}
+              height={40}
+              unoptimized
+            />
+          </Link>
+          <Link
+            href='https://metastudent.se/'
+            target='_blank'
+            rel='external'
+            className='overflow-hidden hover:scale-110 transition-transform bg-white p-1 rounded-lg'
           >
-            <Link
-              href='https://metastudent.se/'
-              target='_blank'
-              rel='external'
-            >
-              <Image
-                src={
-                  'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg'
-                }
-                alt='img'
-                width={200}
-                height={200}
-                className='w-10 h-10'
-              />
-            </Link>
-          </Button>
+            <Image
+              src={
+                'https://storage.googleapis.com/medieteknik-static/committees/internationals.svg'
+              }
+              alt='img'
+              unoptimized={true} // Logos are SVGs, so they don't need to be optimized
+              width={40}
+              height={40}
+            />
+          </Link>
         </div>
       </HeadComponent>
 

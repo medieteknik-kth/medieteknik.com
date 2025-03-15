@@ -10,7 +10,6 @@ import {
   useMemo,
   useReducer,
   useRef,
-  type JSX,
 } from 'react'
 
 interface CalendarState {
@@ -129,7 +128,7 @@ export default function CalendarProvider({
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
       try {
-        const { data: events, error } = await getEvents(date, language)
+        const { data: events, error } = await getEvents(date, language, 0)
 
         if (error) {
           throw error

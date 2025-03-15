@@ -34,6 +34,7 @@ const fetcher = (url: string) =>
 
 interface Props {
   language: LanguageCode
+  remember?: boolean
 }
 
 /**
@@ -45,7 +46,7 @@ interface Props {
  *
  * @returns {JSX.Element} The login form
  */
-export default function LoginForm({ language }: Props): JSX.Element {
+export default function LoginForm({ language, remember }: Props): JSX.Element {
   const { t } = useTranslation(language, 'login')
 
   const { login, error: authError } = useAuthentication()
@@ -62,12 +63,13 @@ export default function LoginForm({ language }: Props): JSX.Element {
       email: '',
       password: '',
       csrf_token: '',
+      remember: false,
     },
   })
 
   if (error) {
     return (
-      <div className='flex flex-col gap-0.5'>
+      <div className='flex flex-col gap-0.5 w-full'>
         <p className='text-red-500 font-bold text-xl text-center'>
           {t('network_error')}
         </p>
@@ -80,7 +82,8 @@ export default function LoginForm({ language }: Props): JSX.Element {
     const success = await login(
       formData.email,
       formData.password,
-      formData.csrf_token || data.csrf_token
+      formData.csrf_token || data.csrf_token,
+      remember || false
     )
 
     if (success) {

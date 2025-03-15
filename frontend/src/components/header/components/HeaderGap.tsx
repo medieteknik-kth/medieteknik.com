@@ -7,5 +7,7 @@ import type { JSX } from 'react'
  * @returns {JSX.Element} The gap depening on the screen size
  */
 export default function HeaderGap(): JSX.Element {
-  return <div className='w-full h-20 lg:h-28 bg-inherit' />
+  return (
+    <div id='gap' className='w-full h-20 lg:h-28 bg-inherit hidden md:block' />
+  )
 }

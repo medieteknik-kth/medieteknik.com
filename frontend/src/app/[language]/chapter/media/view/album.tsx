@@ -2,8 +2,8 @@ import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
 import type { AlbumPagination } from '@/models/Pagination'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import FallbackImage from 'public/images/logo.webp'
 import type { JSX } from 'react'
 
@@ -29,6 +29,10 @@ export default async function Album({
   const { t } = await useTranslation(language, 'media')
 
   if (!albums || albums.total_items === 0) {
+    return <></>
+  }
+
+  if (!albums.items) {
     return <></>
   }
 

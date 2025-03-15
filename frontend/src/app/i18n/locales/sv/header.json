@@ -1,8 +1,13 @@
 {
     "home": "Hem",
     "profile": "Profil",
+    "guest": "Gäst",
+    "guest_welcome": "Hej, Gäst!",
     "login": "Logga In",
+    "navigation": "Navigering",
     "notifications": "Notifikationer",
+    "notifications_description": "Nyheter och uppdateringar",
+    "no_notifications": "Inga nya notifikationer",
     "navs": [
         {
             "title": "Aktuellt",
@@ -58,6 +63,7 @@
             "link": "/education"
         } 
     ],
+    "account": "Konto",
     "account_settings": "Kontoinställningar",
     "committees": "Dina nämnder",
     "logout": "Logga ut"

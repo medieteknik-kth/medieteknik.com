@@ -1,7 +1,13 @@
 {
     "title": "Medieteknik",
+    "long_title": "Sektionen för Medieteknik",
     "keywords": "Medieteknik, KTH, META, Kungliga Tekniska högskolan, Universitet, Civilingenjör",
     "description": "Hemsidan för Medieteknikprogrammet och sektionen på Kungliga Tekniska Högskolan (KTH) i Stockholm, Sverige.",
     "school": "Kungliga Tekniska Högskolan",
-    "loading": "Laddar..."
+    "loading": "Laddar...",
+    "different_language.title": "You have visited the site in another language ",
+    "different_language.currently_viewing": "Do you want view this content in ",
+    "different_language.switch_question": "Or do you want to switch to the language you have previously visited the site in?",
+    "different_language.remain": "Remain temporarily in",
+    "different_language.switch": "Switch to"
 }

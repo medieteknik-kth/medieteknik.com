@@ -1,0 +1,21 @@
+{
+    "title": "Skapa post",
+    "description": "Lägg till en ny post i nämnden",
+    "language_label": "Språk",
+    "title_label": "Titel",
+    "title_placeholder": "Ange titel",
+    "title_description": "Max 125 tecken",
+    "description_label": "Beskrivning",
+    "description_placeholder": "Ange postbeskrivning",
+    "description_description": "Max 500 tecken",
+    "email_label": "E-post",
+    "email_placeholder": "<ny_position>@medieteknik.com",
+    "category_label": "Kategori",
+    "category_placeholder": "Välj kategori",
+    "category_search_placeholder": "Sök efter en kategori",
+    "category_not_found": "Ingen kategori hittades.",
+    "weight_label": "Vikt",
+    "weight_placeholder": "Ange vikt (0-1000)",
+    "weight_description": "Behörighetsnivå, lämna på 1000 om du är osäker.",
+    "submit_button": "Skapa post"   
+}

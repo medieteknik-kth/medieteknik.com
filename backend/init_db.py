@@ -8,7 +8,7 @@ import argparse
 from main import app
 from sqlalchemy.exc import SQLAlchemyError
 from utility import db
-from models.utility import Analytics, Audit, Idempotency  # noqa: F401
+from models.utility import RevokedTokens  # noqa: F401
 from models.committees import (
     CommitteeCategory,  # noqa: F401
     CommitteeCategoryTranslation,  # noqa: F401
@@ -16,7 +16,6 @@ from models.committees import (
     CommitteeTranslation,  # noqa: F401
     CommitteePosition,  # noqa: F401
     CommitteePositionTranslation,  # noqa: F401
-    CommitteePositionResource,  # noqa: F401
     CommitteePositionRecruitment,  # noqa: F401
     CommitteePositionRecruitmentTranslation,  # noqa: F401
 )
@@ -40,11 +39,15 @@ from models.core import (
     Author,  # noqa: F401
     Calendar,  # noqa: F401
     Student,  # noqa: F401
+    NotificationSubscription,  # noqa: F401
+    NotificationPreferences,  # noqa: F401
+    Notifications,  # noqa: F401
+    NotificationsTranslation,  # noqa: F401
+    Permissions,  # noqa: F401
+    Role,  # noqa: F401
+    StudentPermission,  # noqa: F401
     Profile,  # noqa: F401
     StudentMembership,  # noqa: F401
-    Content,  # noqa: F401
-    Resource,  # noqa: F401
-    ContentTranslation,  # noqa: F401
     Language,  # noqa: F401
 )
 

@@ -1,6 +1,7 @@
 'use client'
 
 import type { LanguageCode } from '@/models/Language'
+import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import resourcesToBackend from 'i18next-resources-to-backend'
@@ -10,7 +11,7 @@ import {
   initReactI18next,
   useTranslation as useTranslationOrg,
 } from 'react-i18next'
-import { SUPPORTED_LANGUAGES, getOptions } from './settings'
+import { getOptions } from './settings'
 
 const isRunningOnServer = typeof window === 'undefined'
 

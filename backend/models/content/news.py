@@ -1,11 +1,10 @@
 import uuid
 from typing import List
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import inspect
 from utility.database import db
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.translation import get_translation
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 from models.content.base import Item
 
 
@@ -25,7 +24,9 @@ class News(Item):
 
     # Relationships
     item = db.relationship("Item", back_populates="news", passive_deletes=True)
-    translations = db.relationship("NewsTranslation", back_populates="news")
+    translations = db.relationship(
+        "NewsTranslation", back_populates="news", lazy="joined"
+    )
 
     __mapper_args__ = {"polymorphic_identity": "news"}
 
@@ -39,19 +40,26 @@ class News(Item):
         if not base_data:
             return None
 
+        translation_lookup = {
+            translation.language_code: translation for translation in self.translations
+        }
         translations = []
 
         for language_code in provided_languages:
-            translation = get_translation(
-                NewsTranslation, ["news_id"], {"news_id": self.news_id}, language_code
-            )
-            translations.append(translation)
+            translation: NewsTranslation | None = translation_lookup.get(language_code)
 
-        del base_data["news_id"]
+            if not translation or not isinstance(translation, NewsTranslation):
+                translation: NewsTranslation | None = translation_lookup.get(
+                    DEFAULT_LANGUAGE_CODE
+                ) or next(iter(translation_lookup.values()), None)
 
-        base_data["translations"] = [
-            translation.to_dict() for translation in translations
-        ]
+            if translation and isinstance(translation, NewsTranslation):
+                translations.append(translation.to_dict())
+
+        if is_public_route:
+            del base_data["news_id"]
+
+        base_data["translations"] = translations
 
         return base_data
 
@@ -78,10 +86,10 @@ class NewsTranslation(db.Model):
     language = db.relationship("Language", back_populates="news_translations")
 
     def to_dict(self):
-        columns = inspect(self.__class__)
+        columns = inspect(self)
 
         if not columns:
-            return {}
+            return None
 
         columns = columns.mapper.column_attrs.keys()
 

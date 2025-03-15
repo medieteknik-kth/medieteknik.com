@@ -13,9 +13,9 @@
     "informationCollection.table.sso_data": "KTH unique user ID and subsequent email assoicated with the ID",
     "informationCollection.table.personal": "At will, you are able to provide us with additional information about yourself. This information is optional and can be changed or deleted at any time by request to ",
     "informationCollection.table.personal_data": "First Name and Last Name\nProfile Picture\nSocial Media Links\nPasswords (hashed and salted)",
-    "informationCollection.table.priviliged": "Priviliged users are able to upload documents, create news posts, and host events. This information is stored for historical records.",
-    "informationCollection.table.priviliged_data": "News articles\nEvents\nDocuments",
-    "informationCollection.table.committee": "We collect information about your committee memberships to provide you with the ability to manage your memberships. This information is stored for  historical records. And will be nonymized upon request or when deleting an account.",
+    "informationCollection.table.priviliged": "Priviliged users are able to upload documents, media, create news posts, and host events. This information is stored for historical records.",
+    "informationCollection.table.priviliged_data": "News articles\nEvents\nDocuments\nMedia",
+    "informationCollection.table.committee": "We collect information about your committee memberships to provide you with the ability to manage your memberships. This information is stored for  historical records. And will be anonymized upon request or when deleting an account.",
     "informationCollection.table.committee_data": "Committee Memberships",
     "rights": "Your rights",
     "rights.access": "You have the right to request access to your personal data stored on our site.",
@@ -25,7 +25,7 @@
     "rights.restriction": "You have the right to request the restriction of processing your personal data stored on our site.",
     "rights.processing": "You have the right to object to the processing of your personal data stored on our site.",
     "rights.transfer": "You have the right to request the transfer of your personal data stored on our site.",
-    "rights.proof": "All requests can be made by contacting and providing proof of persons, this includes but is not limited to first name, last name, and school email address (ending in @kth.se) to ",
+    "rights.proof": "All requests can be made by contacting the current Webmaster in person or providing proof of persons digitally, this includes but is not limited to first name, last name, and school email address (ending in @kth.se) to ",
     "cookies": "Cookies",
     "cookies.description": "We may use 'cookies' to collect information about you and your activity across our site. A cookie is a small piece of data that our website stores on your computer, and accesses each time you visit, so we can understand how you use our site. This helps us serve you content based on preferences you have specified.",
     "cookies.table.name": "Cookie Name",
@@ -36,6 +36,6 @@
     "cookies.necessary.list": "List of 1st Party Necessary Cookies ",
     "cookies.necessary.list.session": "This cookie is used to identify your session on the site. It includes your session ID and is used to maintain your login state.",
     "cookies.necessary.list.access_token": "This cookie is used to maintain your login state.",
-    "cookies.necessary.list.refresh_token": "This cookie is used to maintain your login state. And obtain a new access token when the old one expires."
+    "cookies.necessary.list.language": "This cookie is used to save your language preference. Changeable in settings."
 
 }

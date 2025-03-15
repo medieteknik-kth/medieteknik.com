@@ -37,7 +37,8 @@
     "event.delete_confirmation": "Are you sure you want to delete this event? This will remove all occurrences of this event.",
     "delete": "Delete",
     "cancel": "Cancel",
-    "recruitment": "Currently Recruiting",
+    "recruitment": "Recruitment",
+    "committees": "Committees and Project Groups",
     "no_recruitment": "No Active Recruitment",
     "more_news": "More News",
     "end_news": "End of News"

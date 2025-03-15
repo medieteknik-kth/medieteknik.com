@@ -20,7 +20,9 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(1, { message: 'Please enter your password' })
-    .min(4, { message: 'Password must be at least 8 characters' }),
+    .min(4, { message: 'Password must be at least 8 characters' })
+    .max(100, { message: 'Password must be at most 100 characters' }),
+  remember: z.boolean().optional(),
 
   csrf_token: z.string().optional().or(z.literal('')),
 })

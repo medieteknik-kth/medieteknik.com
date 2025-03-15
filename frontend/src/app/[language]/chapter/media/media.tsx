@@ -30,7 +30,7 @@ interface Props {
 export default async function Media(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
   const { data: committees } = await getAllCommittees('sv')
-  const { data: albums } = await getAlbums(language)
+  const { data: albums } = await getAlbums(language, 0)
   const { t } = await useTranslation(language, 'media')
 
   return (

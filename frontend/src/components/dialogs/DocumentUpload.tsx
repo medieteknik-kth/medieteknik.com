@@ -1,5 +1,4 @@
 'use client'
-import { SUPPORTED_LANGUAGES } from '@/app/i18n/settings'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -36,9 +35,13 @@ import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
 import type Document from '@/models/items/Document'
 import type { DocumentTranslation } from '@/models/items/Document'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
-import { API_BASE_URL, LANGUAGES } from '@/utility/Constants'
+import {
+  API_BASE_URL,
+  LANGUAGES,
+  SUPPORTED_LANGUAGES,
+} from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -173,7 +176,7 @@ export default function DocumentUpload({
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [value, setValue] = useState('DOCUMENT')
-  const { student } = useAuthentication()
+  const { student } = useStudent()
   const [files, setFiles] = useState<File[]>([])
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024

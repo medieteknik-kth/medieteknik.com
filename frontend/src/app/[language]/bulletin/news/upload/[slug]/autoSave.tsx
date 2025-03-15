@@ -10,6 +10,7 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { mutate } from 'swr'
 
 export const AutoSaveResult = {
   SUCCESS: 'Saved',
@@ -25,7 +26,7 @@ const AutoSaveContext = createContext<{
   content: News
   updateContent: (content: News) => void
   autoSavePossible: boolean
-  saveCallback: (language_code: string, manual?: boolean) => Promise<string>
+  saveCallback: (language_code: string, override?: boolean) => Promise<string>
   notifications: string
   addNotification: (message: string) => void
   currentLanguage: LanguageCode
@@ -41,30 +42,35 @@ const AutoSaveContext = createContext<{
   switchCurrentLanguage: () => {},
 })
 
+interface Props {
+  slug: string
+  news_item: News
+  language: LanguageCode
+  children: React.ReactNode
+}
+
 export function AutoSaveProvdier({
   slug,
   news_item,
-  language_code,
+  language,
   children,
-}: {
-  slug: string
-  news_item: News
-  language_code: string
-  children: React.ReactNode
-}) {
+}: Props) {
   const [autoSavePossible, setAutoSavePossible] = useState(false)
   const [errorCount, setErrorCount] = useState(0)
   const [content, setContent] = useState<News>(news_item)
   const [notification, setNotification] = useState<string>('')
-  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(
-    language_code as LanguageCode
-  )
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(language)
 
   const saveCallback = useCallback(
-    async (language_code: string, manual = false) => {
-      if (!autoSavePossible && !manual)
+    async (language_code: string, override = false) => {
+      if (!autoSavePossible && !override)
         return Promise.resolve(AutoSaveResult.FAILED)
+      if (override) {
+        setAutoSavePossible(true)
+        setErrorCount(0)
+      }
       try {
+        const { created_at, ...rest } = content
         const response = await fetch(
           `${API_BASE_URL}/news/${slug}?language=${language_code}`,
           {
@@ -73,32 +79,38 @@ export function AutoSaveProvdier({
               'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify(content),
+            body: JSON.stringify({
+              ...rest,
+              last_updated: new Date().toISOString(),
+            }),
           }
         )
 
-        if (response.ok) {
-          setAutoSavePossible(false)
-          setErrorCount(0)
-          return AutoSaveResult.SUCCESS
+        if (!response.ok) {
+          setAutoSavePossible(true)
+          setErrorCount((prev) => prev + 1)
+
+          if (errorCount > 3) {
+            return AutoSaveResult.FAILED_MAX_RETRIES
+          }
+
+          setTimeout(() => {
+            setAutoSavePossible(false)
+            setErrorCount(0)
+          }, 1000 * 30)
+
+          return AutoSaveResult.FAILED_RETRY
         }
 
-        if (manual) {
-          return AutoSaveResult.FAILED
-        }
-        setAutoSavePossible(true)
-        setErrorCount((prev) => prev + 1)
-
-        if (errorCount > 3) {
-          return AutoSaveResult.FAILED_MAX_RETRIES
-        }
-
-        setTimeout(() => {
-          setAutoSavePossible(false)
-          setErrorCount(0)
-        }, 1000 * 30)
-
-        return AutoSaveResult.FAILED_RETRY
+        const updatedData = (await response.json()) as News
+        mutate(
+          `${API_BASE_URL}/news/${slug}?language=${language_code}`,
+          updatedData,
+          false
+        )
+        setAutoSavePossible(false)
+        setErrorCount(0)
+        return AutoSaveResult.SUCCESS
       } catch (error) {
         console.error(error)
         return AutoSaveResult.FAILED
@@ -121,8 +133,8 @@ export function AutoSaveProvdier({
     }, 5000)
   }, [])
 
-  const switchCurrentLanguage = useCallback((language: LanguageCode) => {
-    setCurrentLanguage(language)
+  const switchCurrentLanguage = useCallback((newLanguage: LanguageCode) => {
+    setCurrentLanguage(newLanguage)
   }, [])
 
   useEffect(() => {

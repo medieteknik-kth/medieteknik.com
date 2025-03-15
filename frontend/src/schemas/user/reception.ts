@@ -6,7 +6,7 @@ import { z } from 'zod'
  *  - src/app/[language]/reception/pages/reception/receptionForm.tsx
  */
 export const receptionSchema = z.object({
-  image: z.instanceof(window.File),
+  image: z.instanceof(window.File).optional().or(z.literal('')),
   receptionName: z.string().optional().or(z.literal('')),
   csrf_token: z.string().optional().or(z.literal('')),
 })

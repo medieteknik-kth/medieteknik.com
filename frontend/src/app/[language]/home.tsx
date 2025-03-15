@@ -1,14 +1,11 @@
+import About from '@/app/[language]/about'
 import { useTranslation } from '@/app/i18n'
-import Loading from '@/components/tooltips/Loading'
 import type { LanguageCode } from '@/models/Language'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import BlurredBG from 'public/images/landingpage_blurred.webp'
-import { type JSX, Suspense } from 'react'
+import type { JSX } from 'react'
 import './home.css'
-
-const About = dynamic(() => import('./about'), { ssr: true })
 
 interface Props {
   params: Promise<{
@@ -34,7 +31,7 @@ export default async function Home(props: Props): Promise<JSX.Element> {
       <div className='w-full h-screen min-h-[600px] max-h-[2400px]'>
         <div
           id='background'
-          className='w-full min-h-[600px] max-h-[2400px] absolute grid place-items-center -z-10 top-0 shadow-lg shadow-black'
+          className='w-full min-h-[600px] max-h-[2400px] absolute grid place-items-center -z-10 top-0'
         >
           <div className='w-full h-full bg-black/40 z-10' />
           <Image
@@ -47,27 +44,30 @@ export default async function Home(props: Props): Promise<JSX.Element> {
             blurDataURL={BlurredBG.src}
             loading='eager'
           />
-          <ChevronDownIcon
-            className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce z-20 motion-reduce:animate-none'
-            style={{
-              animationDuration: '1500ms',
-            }}
-          />
+          <ChevronDownIcon className='w-16 h-fit absolute bottom-4 left-0 right-0 mx-auto text-white animate-bounce z-20 motion-reduce:animate-none duration-[1500ms]' />
         </div>
         <div className='w-full h-full grid place-items-center'>
-          <div className='w-9/12 h-[300px] lg:h-[200px] flex flex-col items-center justify-center text-center'>
-            <h1 className='w-fit h-fit text-2xl xxs:text-4xl xs:text-6xl md:text-8xl text-yellow-400 font-semibold tracking-wide py-8 uppercase grid place-items-center'>
+          <div className='w-full text-center uppercase'>
+            <h1
+              className='text-yellow-400 font-semibold leading-tight'
+              style={{
+                fontSize: 'clamp(2rem, 4vw + 1rem, 8rem)',
+              }}
+            >
               {t('title')}
             </h1>
-            <h2 className='w-full md:w-[600px] lg:w-[800px] h-8 text-md xxs:text-xl sm:text-2xl text-white tracking-widest uppercase'>
+            <h2
+              className='text-white'
+              style={{
+                fontSize: 'clamp(1rem, 0.5vw + 1rem, 3rem)',
+              }}
+            >
               {t('school')}
             </h2>
           </div>
         </div>
       </div>
-      <Suspense fallback={<Loading language={language} />}>
-        <About language={language} />
-      </Suspense>
+      <About language={language} />
     </main>
   )
 }

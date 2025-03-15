@@ -1,10 +1,9 @@
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/components/ui/button'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { documentCategories } from '../utility/util'
-
+import type { LanguageCode } from '@/models/Language'
 import type { JSX } from 'react'
-import { LanguageCode } from '@/models/Language'
+import { documentCategories } from '../utility/util'
 
 interface Props {
   language: LanguageCode
@@ -26,10 +25,10 @@ export default async function CategorySelect({
   return (
     <TabsList className='flex gap-2 h-fit flex-wrap sm:flex-nowrap'>
       {documentCategories(t).map((category, index) => (
-        <TabsTrigger asChild key={index} value={category.title}>
+        <TabsTrigger asChild key={category.title} value={category.title}>
           <Button
             variant='outline'
-            className='w-full !justify-start'
+            className='w-full justify-start!'
             title={category.title}
           >
             {category.icon}

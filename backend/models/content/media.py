@@ -1,10 +1,9 @@
 import enum
 from typing import List
 import uuid
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String, inspect
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.translation import get_translation
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Enum, ForeignKey, String, inspect
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 from utility.database import db
 from models.content.base import Item
 
@@ -35,7 +34,9 @@ class Media(Item):
     # Relationships
     item = db.relationship("Item", back_populates="media")
     album = db.relationship("Album", back_populates="media")
-    translations = db.relationship("MediaTranslation", back_populates="media")
+    translations = db.relationship(
+        "MediaTranslation", back_populates="media", lazy="joined"
+    )
 
     __mapper_args__ = {"polymorphic_identity": "media"}
 
@@ -64,18 +65,23 @@ class Media(Item):
         if not data:
             return None
 
+        translation_lookup = {
+            translation.language_code: translation for translation in self.translations
+        }
         translations = []
 
         for language_code in provided_languages:
-            translation = get_translation(
-                MediaTranslation,
-                ["media_id"],
-                {"media_id": self.media_id},
-                language_code,
-            )
-            translations.append(translation)
+            translation: MediaTranslation | None = translation_lookup.get(language_code)
 
-        data["translations"] = [translation.to_dict() for translation in translations]
+            if not translation or not isinstance(translation, MediaTranslation):
+                translation: MediaTranslation | None = translation_lookup.get(
+                    DEFAULT_LANGUAGE_CODE
+                ) or next(iter(translation_lookup.values()), None)
+
+            if translation and isinstance(translation, MediaTranslation):
+                translations.append(translation.to_dict())
+
+        data["translations"] = translations
 
         del data["media_id"]
 

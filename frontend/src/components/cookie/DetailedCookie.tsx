@@ -16,14 +16,15 @@ import {
   UserIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import { type Dispatch, type JSX, type SetStateAction, useState } from 'react'
 import { Button } from '../ui/button'
 
 interface Props {
   language: LanguageCode
   popup: Dispatch<SetStateAction<boolean>>
+  onClose?: () => void
 }
 
 /**
@@ -38,6 +39,7 @@ interface Props {
 export default function DetailedCookiePopup({
   language,
   popup,
+  onClose,
 }: Props): JSX.Element {
   const { t } = useTranslation(language, 'cookies')
   // TODO: Create a cookie popup context?
@@ -121,6 +123,7 @@ export default function DetailedCookiePopup({
           variant={'ghost'}
           size={'icon'}
           onClick={() => {
+            onClose?.()
             saveCookieSettings({
               NECESSARY: true,
               FUNCTIONAL: sliders.FUNCTIONAL || false,
@@ -162,6 +165,7 @@ export default function DetailedCookiePopup({
               variant={'secondary'}
               className='w-1/2'
               onClick={() => {
+                onClose?.()
                 saveCookieSettings({
                   ...sliders,
                   FUNCTIONAL: sliders.FUNCTIONAL || false,
@@ -178,6 +182,7 @@ export default function DetailedCookiePopup({
             <Button
               className='w-1/2'
               onClick={() => {
+                onClose?.()
                 const updatedSliders = {
                   FUNCTIONAL: true,
                   ANALYTICS: true,

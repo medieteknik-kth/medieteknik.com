@@ -1,13 +1,12 @@
 import { useTranslation } from '@/app/i18n'
 import { HeadComponent } from '@/components/static/Static'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
+import type { LanguageCode } from '@/models/Language'
 import { DocumentManagementProvider } from '@/providers/DocumentProvider'
+import type { JSX } from 'react'
 import Sidebar from './sidebar'
 import View from './tabs/View'
 import Toolbar from './toolbar'
-
-import { LanguageCode } from '@/models/Language'
-import type { JSX } from 'react'
 
 interface Params {
   language: LanguageCode

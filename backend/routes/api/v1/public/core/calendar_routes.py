@@ -5,7 +5,7 @@ API Endpoint: '/api/v1/public/calendar'
 
 import datetime
 from http import HTTPStatus
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, make_response, request
 from services.content.public import get_main_calendar, get_events_monthly
 from utility import retrieve_languages
 
@@ -35,6 +35,13 @@ def get_events():
     if not date:
         date = datetime.datetime.now().strftime("%Y-%m")
 
-    return jsonify(
-        get_events_monthly(date_str=date, provided_languages=provided_languages)
-    ), HTTPStatus.OK
+    response = make_response(
+        jsonify(
+            get_events_monthly(date_str=date, provided_languages=provided_languages)
+        )
+    )
+
+    response.headers["Cache-Control"] = "pubilc, no-store, max-age=0"
+    response.status_code = HTTPStatus.OK
+
+    return response

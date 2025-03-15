@@ -1,19 +1,15 @@
 import uuid
-from textwrap import dedent
-from typing import List
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import (
     CheckConstraint,
     Column,
     DateTime,
     ForeignKey,
-    Integer,
     String,
     func,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
-from models.content.event import Event
 from utility.database import db
 
 
@@ -128,43 +124,3 @@ class Calendar(db.Model):
             dict: A dictionary containing the `name` and `is_root` attributes of the `Calendar` object.
         """
         return {"name": self.name, "is_root": self.is_root()}
-
-    def to_ics(self, events: List[Event], language: str):
-        """
-        Convert a list of events to an iCalendar (ics) string representation.
-
-        Args:
-            events (List[Event]): A list of Event objects to be converted.
-            language (str): The language code (e.g., "en-US") used for the calendar.
-
-        Returns:
-            str: The iCalendar string representation of the events.
-
-        This function creates an iCalendar string representation of a list of events. It starts by creating the header of the calendar, including the version, product ID, and calendar scale. Then, it iterates over each event in the list and converts it to an iCalendar event string using the `Event.to_ics()` method. If the event string is not empty, it is appended to the calendar string. Finally, the calendar string is terminated with the "END:VCALENDAR" line and returned.
-
-        Note:
-            - The `language` parameter is used to determine the language code for the calendar. The first two characters of the language code are used to generate the product ID.
-            - The `dedent()` function is used to remove any common leading whitespace from the generated calendar string.
-        """
-        calendar = dedent(f"""\
-        BEGIN:VCALENDAR
-        VERSION:2.0
-        X-WR-CALNAME:{self.name}
-        X-WR-TIMEZONE:Europe/Stockholm
-        PRODID:-//medieteknik//Calendar 1.0//{language[0:2].upper()}
-        CALSCALE:GREGORIAN""")
-
-        for event in events:
-            event_ics = event.to_ics(language)
-            if not event_ics:
-                continue
-
-            calendar += "\n"
-            calendar += event_ics
-
-        calendar += "\n"
-        calendar += "END:VCALENDAR"
-
-        calendar = dedent(calendar)
-
-        return calendar

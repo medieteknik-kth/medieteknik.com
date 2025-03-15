@@ -2,25 +2,24 @@
 Student service that handles the student's login, permissions, and role.
 """
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from http import HTTPStatus
-from flask import Request, Response, jsonify, make_response
+from flask import Request, Response, jsonify, make_response, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
-    create_refresh_token,
-    set_refresh_cookies,
 )
 from typing import Any, Dict, List
-from models.committees import Committee
-from models.committees import CommitteePosition
-from models.core import Author, AuthorType
-from models.core import StudentPermission
-from models.core import Student, StudentMembership
+from models.core import Student
+from services.utility.auth import (
+    get_student_authorization,
+    get_student_committee_details,
+)
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 from utility.gc import delete_file, upload_file
+import re
 
 
 def login(
@@ -33,19 +32,47 @@ def login(
         :return: Response - The response object containing the user's data and the access token.
 
     """
-    email = data.get("email")
-    password = data.get("password")
+    email: str = data.get("email")
+    password: str = data.get("password")
+    remember = data.get("remember", False)
 
     if email is None or password is None:
         return jsonify(
             {
                 "message": "Invalid credentials",
             }
-        )
+        ), HTTPStatus.UNAUTHORIZED
+
+    if len(password) > 128:
+        return jsonify(
+            {
+                "message": "Invalid credentials",
+            }
+        ), HTTPStatus.UNAUTHORIZED
+
+    if (
+        email.find("@kth.se") == -1 and email.find("@ug.kth.se") == -1
+    ) and not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify(
+            {
+                "message": "Invalid credentials",
+            }
+        ), HTTPStatus.UNAUTHORIZED
 
     student = Student.query.filter_by(email=email).first()
 
+    dummy_hash = generate_password_hash("dummy_password")
     if student is None or not isinstance(student, Student):
+        check_password_hash(
+            dummy_hash, "dummy_password"
+        )  # This is a dummy check to prevent timing attacks
+        return jsonify(
+            {
+                "message": "Invalid credentials",
+            }
+        ), HTTPStatus.UNAUTHORIZED
+
+    if not getattr(student, "password_hash"):
         return jsonify(
             {
                 "message": "Invalid credentials",
@@ -59,89 +86,35 @@ def login(
             }
         ), HTTPStatus.UNAUTHORIZED
 
-    permissions_and_role, additional_claims, committees, committee_positions = (
-        retrieve_extra_claims(provided_languages, student)
+    permissions, role = get_student_authorization(student)
+    committees, committee_positions = get_student_committee_details(
+        provided_languages=provided_languages, student=student
     )
-
+    expiration = timedelta(hours=1) if not remember else timedelta(days=14)
+    exp_unix = int((datetime.now() + expiration).timestamp())
     response = make_response(
         {
             "student": student.to_dict(is_public_route=False),
             "committees": committees,
             "committee_positions": committee_positions,
-            "permissions": permissions_and_role.get("permissions"),
-            "role": permissions_and_role.get("role"),
+            "permissions": permissions,
+            "role": role,
+            "expiration": exp_unix,
         }
     )
+    session["remember"] = remember
     response.status_code = HTTPStatus.OK
     set_access_cookies(
         response=response,
         encoded_access_token=create_access_token(
             identity=student,
-            fresh=timedelta(minutes=20),
-            additional_claims=additional_claims,
+            fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
+            expires_delta=expiration,
         ),
-        max_age=timedelta(hours=1),
-    )
-    set_refresh_cookies(
-        response=response,
-        encoded_refresh_token=create_refresh_token(identity=student),
-        max_age=timedelta(days=30).seconds,
+        max_age=expiration.total_seconds(),
     )
 
     return response
-
-
-def retrieve_extra_claims(
-    provided_languages: List[str] = AVAILABLE_LANGUAGES, student: Student | None = None
-) -> tuple[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]]:
-    """
-    Retrieves the student's permissions, role, committees, and committee positions, if they exist.
-        :param provided_languages: List[str] - The list of languages that the user can view.
-        :param student: Student - The student object.
-        :return: Tuple[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]], List[Dict[str, Any]]] - The permissions and role, additional claims, committees, and committee positions.
-    """
-    if student is None:
-        return None
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
-    additional_claims = {
-        "role": permissions_and_role.get("role"),
-        "permissions": permissions_and_role.get("permissions"),
-    }
-
-    committees = []
-    committee_positions = []
-    student_memberships = StudentMembership.query.filter_by(
-        student_id=student.student_id
-    ).all()
-
-    for membership in student_memberships:
-        position: CommitteePosition | None = CommitteePosition.query.get(
-            membership.committee_position_id
-        )
-
-        if not position:
-            continue
-
-        committee_positions.append(
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
-        )
-
-        committee: Committee | None = Committee.query.get(position.committee_id)
-
-        if not committee:
-            continue
-
-        committee_dict = committee.to_dict(provided_languages=provided_languages)
-
-        # Check if the committee already exists in the list
-        if committee_dict in committees:
-            continue
-
-        committees.append(committee_dict)
-
-    return permissions_and_role, additional_claims, committees, committee_positions
 
 
 def assign_password(data: Dict[str, Any]) -> bool:
@@ -238,66 +211,11 @@ def update(request: Request, student: Student) -> Response:
 
     db.session.commit()
     response = make_response()
-    permissions_and_role = get_permissions(getattr(student, "student_id"))
-    additional_claims = {
-        "role": permissions_and_role.get("role"),
-        "permissions": permissions_and_role.get("permissions"),
-    }
-    access_token = create_access_token(
-        identity=student, fresh=True, additional_claims=additional_claims
-    )
-    refresh_token = create_refresh_token(
-        identity=student, expires_delta=timedelta(days=30)
-    )
+    access_token = create_access_token(identity=student, fresh=True)
     set_access_cookies(
         response=response, encoded_access_token=access_token, max_age=timedelta(hours=1)
     )
 
-    set_refresh_cookies(response=response, encoded_refresh_token=refresh_token)
-
     response.status_code = HTTPStatus.OK
 
     return response
-
-
-def get_permissions(student_id: str) -> Dict[str, Any]:
-    """
-    Gets the student's permissions and role.
-        :param student_id: str - The student's ID.
-        :return: Dict[str, Any] - The student's permissions and role.
-    """
-    all_permissions_and_role = {
-        "role": None,
-        "permissions": {
-            "author": [],
-            "student": [],
-        },
-    }
-
-    author = Author.query.filter(
-        Author.author_type == AuthorType.STUDENT.value,
-        Author.student_id == student_id,
-    ).first()
-
-    if author and isinstance(author, Author):
-        author_data = author.to_dict()
-        if author_data:
-            all_permissions_and_role["permissions"]["author"] = author_data.get(
-                "resources"
-            )
-
-    student = Student.query.get(student_id)
-
-    if student and isinstance(student, Student):
-        permissions = StudentPermission.query.filter_by(student_id=student_id).first()
-
-        if permissions and isinstance(permissions, StudentPermission):
-            permission_data = permissions.to_dict()
-
-            if permission_data:
-                all_permissions_and_role["role"] = permission_data.get("role")
-                all_permissions_and_role["permissions"]["student"] = (
-                    permission_data.get("permissions")
-                )
-
-    return all_permissions_and_role

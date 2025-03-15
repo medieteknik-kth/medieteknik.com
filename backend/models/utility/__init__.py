@@ -2,8 +2,9 @@
 Utility models
 """
 
-from .analytics import Analytics
-from .audit import Audit
-from .idempotency import Idempotency
+from .auth import RevokedTokens
 
-__all__ = ["Analytics", "Audit", "Idempotency"]
+
+__all__ = [
+    "RevokedTokens",
+]

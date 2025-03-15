@@ -56,12 +56,15 @@ export default async function RecentMedia({
                   <ImageDisplay image={item} />
                   <div className='px-3 hidden'>
                     {item.author.author_type === 'STUDENT' ? (
-                      <StudentTag student={item.author as Student} />
+                      <StudentTag
+                        student={item.author as Student}
+                        language={language}
+                      />
                     ) : item.author.author_type === 'COMMITTEE' ? (
                       <CommitteeTag
                         committee={item.author}
-                        includeAt={false}
-                        includeBackground={false}
+                        language={language}
+                        includeImage
                       >
                         <span className='text-sm'>
                           {new Date(item.created_at).toLocaleDateString(

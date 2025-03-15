@@ -3,11 +3,12 @@
  */
 'use client'
 
+import { AuthenticationProvider } from '@/context/AuthenticationContext'
+import { NotificationProvider } from '@/context/NotificationContext'
 import type { LanguageCode } from '@/models/Language'
 import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
 import { ThemeProvider } from 'next-themes'
 import { type JSX, useCallback, useEffect, useState } from 'react'
-import { AuthenticationProvider } from './AuthenticationProvider'
 
 interface Props {
   language: LanguageCode
@@ -47,15 +48,17 @@ export default function ClientProviders({
 
   return (
     <AuthenticationProvider language={language}>
-      <ThemeProvider
-        attribute='class'
-        defaultTheme={standardTheme}
-        themes={['dark', 'light']}
-        enableSystem
-        disableTransitionOnChange
-      >
-        {children}
-      </ThemeProvider>
+      <NotificationProvider>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme={standardTheme}
+          themes={['dark', 'light']}
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </NotificationProvider>
     </AuthenticationProvider>
   )
 }

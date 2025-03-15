@@ -41,7 +41,7 @@ export default function NewsPaginationPage({
 
   return data.items.map((newsItem) => (
     <div key={newsItem.url} className='relative'>
-      <NewsCard key={newsItem.url} newsItem={newsItem} />
+      <NewsCard key={newsItem.url} language={language} newsItem={newsItem} />
     </div>
   ))
 }

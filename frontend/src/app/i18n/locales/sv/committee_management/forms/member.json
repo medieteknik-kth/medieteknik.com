@@ -1,0 +1,12 @@
+{
+    "remove_member_title": "Ta bort medlem",
+    "remove_member_description": "Välj en student som ska tas bort från nämnden",
+    "remove_self_error": "Du kan inte ta bort dig själv från denna nämnden. Om du vill lämna nämnden, vänligen kontakta en administratör eller någon högre upp i nämnden.",
+    "remove_button": "Ta bort",
+    "add_member_title": "Lägg till medlem",
+    "add_member_description": "Välj en student som ska läggas till i nämnden",
+    "add_member_position_label": "Funktionärspost",
+    "add_member_position_placeholder": "Välj en funktionärspost",
+    "add_member_position_not_found": "Inga funktionärsposter hittades",
+    "add_member_button": "Lägg till"
+}

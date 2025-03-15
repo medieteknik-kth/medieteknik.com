@@ -12,7 +12,7 @@ interface Props {
  * @name Body
  * @description The component that renders the body of the article
  *
- * @param {Props} props
+ * @param {object} props
  * @param {string} props.body - The body of the article
  *
  * @returns {JSX.Element} The body of the article

@@ -36,7 +36,7 @@ export async function generateMetadata(props: {
   return {
     title: title,
     description: data.translations[0].short_description,
-    keywords: `${data.translations[0].title}, news, ${
+    keywords: `${title}, news, ${
       data.author.author_type === 'COMMITTEE'
         ? data.author.translations[0].title
         : data.author.author_type === 'STUDENT'
@@ -61,9 +61,13 @@ export async function generateMetadata(props: {
       type: 'article',
       publishedTime: data.created_at,
       modifiedTime: data.last_updated || data.created_at,
-      images: data.translations[0].main_image_url && {
-        url: data.translations[0].main_image_url,
-        type: `image/${data.translations[0].main_image_url.split('.').pop()}`,
+      images: {
+        url:
+          data.translations[0].main_image_url ||
+          'https://storage.googleapis.com/medieteknik-static/static/16x9.webp',
+        type: data.translations[0].main_image_url
+          ? `image/${data.translations[0].main_image_url.split('.').pop()}`
+          : 'image/webp',
         width: 700,
         height: 320,
         alt: data.translations[0].title,

@@ -12,7 +12,7 @@ from sqlalchemy import (
     inspect,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP, UUID
-from utility.constants import AVAILABLE_LANGUAGES
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
@@ -74,7 +74,9 @@ class Event(Item):
         "RepeatableEvent", back_populates="event", uselist=False
     )
 
-    translations = db.relationship("EventTranslation", back_populates="event")
+    translations = db.relationship(
+        "EventTranslation", back_populates="event", lazy="joined"
+    )
 
     __mapper_args__ = {"polymorphic_identity": "event"}
 
@@ -106,18 +108,23 @@ class Event(Item):
         if not data:
             return None
 
+        translation_lookup = {
+            translation.language_code: translation for translation in self.translations
+        }
         translations = []
 
         for language_code in provided_languages:
-            translation = get_translation(
-                EventTranslation,
-                ["event_id"],
-                {"event_id": self.event_id},
-                language_code,
-            )
-            translations.append(translation)
+            translation: EventTranslation | None = translation_lookup.get(language_code)
 
-        data["translations"] = [translation.to_dict() for translation in translations]
+            if not translation or not isinstance(translation, EventTranslation):
+                translation: EventTranslation | None = translation_lookup.get(
+                    DEFAULT_LANGUAGE_CODE
+                ) or next(iter(translation_lookup.values()), None)
+
+            if translation and isinstance(translation, EventTranslation):
+                translations.append(translation.to_dict())
+
+        data["translations"] = translations
 
         if not isinstance(translation, EventTranslation):
             return None
@@ -141,7 +148,7 @@ class Event(Item):
 
         return dedent(f"""
             BEGIN:VEVENT
-            UID:{str(self.event_id) + '@medieteknik.com'}
+            UID:{str(self.event_id) + "@medieteknik.com"}
             DTSTAMP:{self.created_at.strftime("%Y%m%dT%H%M%S" + "Z")}
             SUMMARY:{translation.title}
             DESCRIPTION:{translation.description}

@@ -113,18 +113,18 @@ def get_committee_members() -> Response:
     """
 
     provided_languages = retrieve_languages(request.args)
-    date = request.args.get("date", type=str, default=None)
+    year = request.args.get("year", type=str, default=None)  # YYYY
+    semester = request.args.get("semester", type=str, default="VT")  # HT or VT
 
-    if (
-        not date
-        or not date.count("-") == 1
-        or not all(map(lambda x: x.isdigit(), date.split("-")))
-    ):
+    if not year or len(year) != 4 or not year.isdigit():
         return jsonify({"message": "Invalid date format"}), HTTPStatus.BAD_REQUEST
 
+    if semester not in ["HT", "VT"]:
+        return jsonify({"message": "Invalid semester format"}), HTTPStatus.BAD_REQUEST
+
     committee_memberships: List[StudentMembership] | None = get_officials(
-        provided_languages,
-        date,
+        year=year,
+        semester=semester,
     )
 
     if committee_memberships is None:

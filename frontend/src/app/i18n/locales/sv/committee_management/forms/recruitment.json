@@ -1,0 +1,18 @@
+{
+    "title": "Rekrytera position",
+    "description": "Rekrytera för en post i nämnden",
+    "language_label": "Språk",
+    "position_label": "Position",
+    "position_placeholder": "Välj position",
+    "position_search_placeholder": "Sök efter en position",
+    "position_not_found": "Ingen position tillgänglig.",
+    "end_date_label": "Slutdatum",
+    "link_label": "Länk",
+    "link_placeholder": "https://forms.gle/example",
+    "link_description": "Max 512 tecken",
+    "description_label": "Beskrivning",
+    "description_placeholder": "Vi letar efter en ny position...",
+    "description_description": "Max 200 tecken",
+    "error.position_not_found": "Position hittades inte",
+    "submit_button": "Rekrytera position"
+}

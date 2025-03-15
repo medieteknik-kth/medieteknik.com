@@ -41,35 +41,59 @@ export default function Calendar({
   )
 
   const MAX_NEXT_MONTH_DAYS = 14
-  const en_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  const sv_days = ['Mon', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+  const en_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
+  const en_days_extended = [
+    'day',
+    'sday',
+    'nesday',
+    'rsday',
+    'day',
+    'urday',
+    'day',
+  ] as const
+  const sv_days = ['Mon', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'] as const
+  const sv_days_extended = [
+    'dag',
+    'dag',
+    'dag',
+    'sdag',
+    'dag',
+    'dag',
+    'dag',
+  ] as const
 
   return (
     <div
       id='calendar'
-      className='w-full desktop:w-[1345px] h-fit min-h-[750px] relative'
+      className='w-full desktop:w-fit h-fit min-h-[750px] relative'
       aria-label='Calendar'
     >
-      <ul className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 font-bold text-lg border-l border-t rounded-t'>
+      <ul className='w-full desktop:w-fit grid grid-cols-7 grid-rows-1 gap-1 font-semibold xs:text-lg mb-2 md:mb-0'>
         {language === LANGUAGES.en.short_name
-          ? en_days.map((day) => (
+          ? en_days.map((day, index) => (
               <li
                 key={day}
-                className='week w-full desktop:w-48 py-1 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start tracking-[-0.3rem] sm:tracking-normal'
+                className='w-full desktop:w-48 py-1 text-center tracking-wide flex items-center select-none'
               >
                 {day}
+                <span className='hidden lg:inline'>
+                  {en_days_extended[index]}
+                </span>
               </li>
             ))
           : sv_days.map((day) => (
               <li
                 key={day}
-                className='week w-full desktop:w-48 py-1 px-0 xs:px-2 sm:pl-2 border-r border-inherit grid place-items-center sm:place-items-start'
+                className='w-full desktop:w-48 py-1 text-center tracking-wide flex items-center select-none'
               >
                 {day}
+                <span className='hidden md:inline'>
+                  {sv_days_extended[sv_days.indexOf(day)]}
+                </span>
               </li>
             ))}
       </ul>
-      <ul className='w-full desktop:w-fit h-[768px] grid grid-cols-7 grid-rows-[repeat(6,minmax(128px,1fr))] place-items-center overflow-hidden border-l border-b'>
+      <ul className='w-full desktop:w-fit h-[788px] grid grid-cols-7 gap-1 grid-rows-[repeat(6,minmax(128px,1fr))] place-items-center overflow-y-hidden'>
         {previousMonthLastWeek.map((mappedDate) => (
           <DateComponent
             date={mappedDate}

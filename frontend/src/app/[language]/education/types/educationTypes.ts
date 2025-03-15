@@ -67,10 +67,7 @@ export interface Master {
   kth_link: string
 
   // Additional information
-  flags?: {
-    flag: Flag // What type of flag it is
-    applies: string
-    description: string
-  }[]
+  avaliableUntil?: number
+  isNew?: boolean
   tags: string[]
 }

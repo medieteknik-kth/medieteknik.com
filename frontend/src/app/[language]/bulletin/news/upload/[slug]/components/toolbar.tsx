@@ -23,13 +23,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import type { LanguageCode } from '@/models/Language'
 import { useArticle } from '@/providers/ArticleProvider'
-import {
-  ArrowUturnLeftIcon,
-  ArrowUturnRightIcon,
-  AtSymbolIcon,
-  LinkIcon,
-  PhotoIcon,
-} from '@heroicons/react/24/outline'
+import { AtSymbolIcon, LinkIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import { type JSX, useCallback } from 'react'
 import { Transforms } from 'slate'
 import ToolbarMarks from './toolbar/marks'
@@ -180,28 +174,8 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
   }
 
   return (
-    <div className='w-full h-20 bg-white dark:bg-[#141414] fixed flex items-center px-20 top-48 left-0 z-10'>
+    <div className='w-full h-20 bg-white dark:bg-[#141414] fixed flex items-center px-20 top-52 left-0 z-10'>
       <div className='w-full h-16 border rounded flex px-4'>
-        <div className='flex items-center'>
-          <Button
-            size='icon'
-            variant='ghost'
-            className='mr-2'
-            title={t('undo')}
-            aria-label={t('undo')}
-          >
-            <ArrowUturnLeftIcon className='w-5 h-5 text-black dark:text-white' />
-          </Button>
-          <Button
-            size='icon'
-            variant='ghost'
-            title={t('redo')}
-            aria-label={t('redo')}
-          >
-            <ArrowUturnRightIcon className='w-5 h-5 text-black dark:text-white' />
-          </Button>
-        </div>
-        <Separator orientation='vertical' className='mx-4 h-10 my-auto' />
         <ToolbarText language={language} />
         <Separator orientation='vertical' className='mx-4 h-10 my-auto' />
 
@@ -282,7 +256,7 @@ export default function NewsToolbar({ language }: Props): JSX.Element {
           <Button
             size='icon'
             variant='ghost'
-            className='mr-1 cursor-not-allowed !pointer-events-auto'
+            className='mr-1 cursor-not-allowed pointer-events-auto!'
             title={`${t('insert')} ${t('image')}`}
             aria-label={`${t('insert')} ${t('image')}`}
             disabled

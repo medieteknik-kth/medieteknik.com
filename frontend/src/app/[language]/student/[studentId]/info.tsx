@@ -1,11 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import type Student from '@/models/Student'
 import type { Profile } from '@/models/Student'
-import Link from 'next/link'
-import FacebookSVG from 'public/images/svg/facebook.svg'
-import InstagramSVG from 'public/images/svg/instagram.svg'
-import LinkedInSVG from 'public/images/svg/linkedin.svg'
+import { Link } from 'next-view-transitions'
+import Image from 'next/image'
+import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.png'
+import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.png'
+import LinkedInLogo from 'public/images/logos/LI-In-Bug.png'
 import type { JSX } from 'react'
 
 interface Props {
@@ -29,18 +29,21 @@ export default async function StudentInfo({
   return (
     <section className='mt-48 md:mt-36 lg:mt-[184px] relative'>
       <div className='w-fit h-fit flex flex-col xs:flex-row items-center mx-2 sm:mx-5 md:mx-12 text-black dark:text-yellow-400'>
-        <Avatar className='w-32 md:w-52 h-auto aspect-square bg-yellow-400 border-4 border-yellow-400 shadow-md rounded-full overflow-hidden self-start'>
-          <AvatarImage
-            src={student.profile_picture_url}
-            alt='Profile Picture'
-            width={256}
-            height={256}
-          />
-          <AvatarFallback className='bg-yellow-400 text-6xl'>
-            {student.first_name.charAt(0) +
-              (student.last_name ? student.last_name.charAt(0) : '')}
-          </AvatarFallback>
-        </Avatar>
+        <div className='w-32 md:w-52 h-auto aspect-square bg-yellow-400 border-4 border-yellow-400 rounded-full overflow-hidden self-start grid place-items-center'>
+          {student.profile_picture_url ? (
+            <Image
+              src={student.profile_picture_url}
+              alt='Profile Picture'
+              width={256}
+              height={256}
+            />
+          ) : (
+            <div className='bg-yellow-400 text-6xl font-bold select-none'>
+              {student.first_name.charAt(0) +
+                (student.last_name ? student.last_name.charAt(0) : '')}
+            </div>
+          )}
+        </div>
         <div className='w-fit relative h-full flex flex-wrap items-center ml-4 gap-4 mt-2 xs:mt-20 md:mt-32'>
           <h1 className='grow text-2xl md:text-5xl dark:text-white font-semibold text-pretty max-h-24'>
             {`${student.first_name} ${student.last_name || ''}`}
@@ -62,9 +65,11 @@ export default async function StudentInfo({
                   target='_blank'
                   rel='noreferrer noopener'
                 >
-                  <InstagramSVG
-                    className='w-6 h-6'
-                    style={{ fill: '#E1306C' }}
+                  <Image
+                    src={InstagramLogo}
+                    width={30}
+                    height={30}
+                    alt='Instagram'
                   />
                 </Link>
               </Button>
@@ -79,9 +84,11 @@ export default async function StudentInfo({
                   rel='noreferrer noopener'
                   className='w-fit'
                 >
-                  <InstagramSVG
-                    className='w-6 h-6'
-                    style={{ fill: '#E1306C' }}
+                  <Image
+                    src={InstagramLogo}
+                    width={30}
+                    height={30}
+                    alt='Instagram'
                   />
                   <p>
                     {decodeURIComponent(profile.instagram_url).split('/')[3]}
@@ -103,9 +110,11 @@ export default async function StudentInfo({
                   target='_blank'
                   rel='noreferrer noopener'
                 >
-                  <FacebookSVG
-                    className='w-6 h-6'
-                    style={{ fill: '#1877F2' }}
+                  <Image
+                    src={FacebookLogo}
+                    width={30}
+                    height={30}
+                    alt='Facebook'
                   />
                 </Link>
               </Button>
@@ -120,9 +129,11 @@ export default async function StudentInfo({
                   rel='noreferrer noopener'
                   className='w-fit'
                 >
-                  <FacebookSVG
-                    className='w-6 h-6'
-                    style={{ fill: '#1877F2' }}
+                  <Image
+                    src={FacebookLogo}
+                    width={30}
+                    height={30}
+                    alt='Facebook'
                   />
                   <p>
                     {decodeURIComponent(profile.facebook_url).split('/')[3]}
@@ -144,9 +155,11 @@ export default async function StudentInfo({
                   target='_blank'
                   rel='noreferrer noopener'
                 >
-                  <LinkedInSVG
-                    className='w-6 h-6'
-                    style={{ fill: '#0A66C2' }}
+                  <Image
+                    src={LinkedInLogo}
+                    width={30}
+                    height={30}
+                    alt='LinkedIn'
                   />
                 </Link>
               </Button>
@@ -161,9 +174,11 @@ export default async function StudentInfo({
                   rel='noreferrer noopener'
                   className='w-fit'
                 >
-                  <LinkedInSVG
-                    className='w-6 h-6'
-                    style={{ fill: '#0A66C2' }}
+                  <Image
+                    src={LinkedInLogo}
+                    width={30}
+                    height={30}
+                    alt='LinkedIn'
                   />
                   <p>
                     {decodeURIComponent(profile.linkedin_url)

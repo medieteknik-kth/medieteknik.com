@@ -6,11 +6,13 @@ import type { LanguageCode } from '@/models/Language'
  * @extends Item
  * @description Describes a news item from the backend and API responses
  *
+ * @property {string} news_id - The ID of the news item, will only be avaliable on non public routes
  * @property {string} url - The URL of the news item
  * @property {NewsTranslation[]} translations - The translations of the news item
  */
 export default interface News extends Item {
-  url: string
+  news_id?: string
+  url?: string
   translations: NewsTranslation[]
 }
 

@@ -10,7 +10,6 @@ from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
-from main import app
 from models.committees import Committee, CommitteePosition
 from models.content import Event, RepeatableEvent
 from models.core import Student, StudentMembership, Author
@@ -20,6 +19,7 @@ from services.content import (
 )
 from services.content.public import get_main_calendar
 from utility.database import db
+from utility.logger import log_error
 
 
 events_bp = Blueprint("events", __name__)
@@ -103,7 +103,7 @@ def delete_event(event_id: str) -> Response:
     try:
         delete_item(Event, event_id)
     except SQLAlchemyError as e:
-        app.logger.error(f"Tried to delete event {event_id} but failed: {str(e)}")
+        log_error(f"Tried to delete event {event_id} but failed: {str(e)}")
         return jsonify(
             {"error": "An internal error has occurred!"}
         ), HTTPStatus.INTERNAL_SERVER_ERROR

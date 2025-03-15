@@ -1,4 +1,5 @@
-from sqlalchemy import func
+from datetime import datetime
+from sqlalchemy import and_, func, or_
 from typing import Any, Dict, List
 from models.committees import (
     Committee,
@@ -121,6 +122,8 @@ def get_member_from_position_id(position_id: int) -> Dict[str, Any] | None:
 
 def get_all_committee_members(
     committee: Committee,
+    date: str | None,
+    officials: bool,
     provided_languages: List[str],
     page: int = 1,
     per_page: int = 10,
@@ -128,11 +131,16 @@ def get_all_committee_members(
     """
     Retrieves all committee members from the database.
 
-    Args:
-        provided_languages (List[str]): The languages to include in the response.
-
-    Returns:
-        List[Dict[str, Any]]: A list of committee member dictionaries.
+    :param committee - The committee to retrieve members from
+    :type committee - Committee
+    :param date - The exact date (YYY-MM-DD) to retrieve members for if not None
+    :type date - str | None
+    :param provided_languages - The languages to include in the response
+    :type provided_languages - List[str]
+    :param page - The page number to retrieve
+    :type page - int
+    :param per_page - The number of items per page
+    :type per_page - int
     """
     if per_page > 25:
         per_page = 25
@@ -140,31 +148,80 @@ def get_all_committee_members(
         per_page = 1
 
     offset = (page - 1) * per_page
-    query = (
-        db.session.query(StudentMembership)
-        .join(
-            CommitteePosition,
-            CommitteePosition.committee_position_id
-            == StudentMembership.committee_position_id,
+    query = None
+
+    if date:
+        # Snapshot query, get all members that were active on the given date
+        target_date = datetime.strptime(date, "%Y-%m-%d")
+        query = (
+            db.session.query(StudentMembership)
+            .join(
+                CommitteePosition,
+                CommitteePosition.committee_position_id
+                == StudentMembership.committee_position_id,
+            )
+            .filter_by(
+                committee_id=committee.committee_id,
+            )
+            .filter(
+                and_(
+                    StudentMembership.initiation_date <= target_date,
+                    or_(
+                        StudentMembership.termination_date >= target_date,
+                        StudentMembership.termination_date.is_(None),
+                    ),
+                ),
+                CommitteePosition.role == "COMMITTEE"
+                if officials
+                else (
+                    or_(
+                        CommitteePosition.role == "COMMITTEE",
+                        CommitteePosition.role == "MEMBER",
+                    )
+                ),
+            )
+            .options(
+                joinedload(StudentMembership.student),  # type: ignore
+                joinedload(StudentMembership.committee_position),  # type: ignore
+            )
+            .limit(per_page)
+            .offset(offset)
         )
-        .filter_by(
-            committee_id=committee.committee_id,
+    else:
+        query = (
+            db.session.query(StudentMembership)
+            .join(
+                CommitteePosition,
+                CommitteePosition.committee_position_id
+                == StudentMembership.committee_position_id,
+            )
+            .filter_by(
+                committee_id=committee.committee_id,
+            )
+            .filter(
+                StudentMembership.termination_date.is_(None),
+                CommitteePosition.active.is_(True),
+                CommitteePosition.role == "COMMITTEE"
+                if officials
+                else (
+                    or_(
+                        CommitteePosition.role == "COMMITTEE",
+                        CommitteePosition.role == "MEMBER",
+                    )
+                ),
+            )
+            .join(
+                Student,
+                StudentMembership.student_id == Student.student_id,
+            )
+            .options(
+                joinedload(StudentMembership.student),  # type: ignore
+                joinedload(StudentMembership.committee_position),  # type: ignore
+            )
+            .limit(per_page)
+            .offset(offset)
         )
-        .filter(
-            CommitteePosition.active.is_(True),
-            StudentMembership.termination_date.is_(None),
-        )
-        .join(
-            Student,
-            StudentMembership.student_id == Student.student_id,
-        )
-        .options(
-            joinedload(StudentMembership.student),  # type: ignore
-            joinedload(StudentMembership.committee_position),  # type: ignore
-        )
-        .limit(per_page)
-        .offset(offset)
-    )
+
     committee_memberships = query.all()
 
     total_members = query.count()

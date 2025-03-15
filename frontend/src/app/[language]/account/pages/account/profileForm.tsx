@@ -14,15 +14,17 @@ import type { Profile } from '@/models/Student'
 import { profileSchema } from '@/schemas/user/profile'
 import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
-import FacebookSVG from 'public/images/svg/facebook.svg'
-import InstagramSVG from 'public/images/svg/instagram.svg'
-import LinkedInSVG from 'public/images/svg/linkedin.svg'
+import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.png'
+import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.png'
+import LinkedInLogo from 'public/images/logos/LI-In-Bug.png'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import type { z } from 'zod'
 
 import { useTranslation } from '@/app/i18n/client'
+import { Separator } from '@/components/ui/separator'
 import type { LanguageCode } from '@/models/Language'
+import Image from 'next/image'
 import type { JSX } from 'react'
 
 const fetcher = (url: string) =>
@@ -54,7 +56,7 @@ export default function ProfileForm({ language }: Props): JSX.Element {
     }
   )
 
-  const { t } = useTranslation(language, 'account')
+  const { t } = useTranslation(language, 'account/profile')
 
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -95,21 +97,28 @@ export default function ProfileForm({ language }: Props): JSX.Element {
 
   return (
     <Form {...profileForm}>
-      <div className='flex justify-center mb-8 2xl:mb-0 relative'>
+      <div className='w-full max-w-[1100px] flex mb-8 2xl:mb-0'>
         <form
-          className='w-2/3 flex flex-col *:py-2'
+          className='w-full flex flex-col gap-4 max-h-[725px] overflow-y-auto'
           onSubmit={profileForm.handleSubmit(postProfileForm)}
         >
-          <h2 className='text-xl font-bold border-b border-yellow-400 mb-1'>
-            {t('tab_account_profile_settings')}
-          </h2>
+          <div className='w-full mb-4 px-4 pt-4'>
+            <h2 className='text-lg font-bold'>{t('title')}</h2>
+            <p className='text-sm text-muted-foreground'>{t('description')}</p>
+            <Separator className='bg-yellow-400 mt-4' />
+          </div>
           <FormField
             control={profileForm.control}
             name='facebook'
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className='flex items-center'>
-                  <FacebookSVG className='w-6 h-6 mr-2 dark:fill-white' />
+              <FormItem className='px-4'>
+                <FormLabel className='text-sm font-semibold flex gap-2 items-center'>
+                  <Image
+                    src={FacebookLogo}
+                    width={32}
+                    height={32}
+                    alt='Facebook Logo'
+                  />
                   Facebook
                 </FormLabel>
                 <FormControl>
@@ -138,9 +147,15 @@ export default function ProfileForm({ language }: Props): JSX.Element {
             control={profileForm.control}
             name='instagram'
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className='flex items-center'>
-                  <InstagramSVG className='w-6 h-6 mr-2 dark:fill-white' />
+              <FormItem className='px-4'>
+                <FormLabel className='text-sm font-semibold flex gap-2 items-center'>
+                  <Image
+                    src={InstagramLogo}
+                    width={32}
+                    height={32}
+                    alt='Instagram Logo'
+                    className='mr-2'
+                  />
                   Instagram
                 </FormLabel>
                 <FormControl>
@@ -169,9 +184,15 @@ export default function ProfileForm({ language }: Props): JSX.Element {
             control={profileForm.control}
             name='linkedin'
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className='flex items-center dark:fill-white'>
-                  <LinkedInSVG className='w-6 h-6 mr-2' />
+              <FormItem className='px-4'>
+                <FormLabel className='text-sm font-semibold flex gap-2 items-center'>
+                  <Image
+                    src={LinkedInLogo}
+                    width={38}
+                    height={32}
+                    alt='LinkedIn Logo'
+                    className='mr-2'
+                  />
                   LinkedIn
                 </FormLabel>
                 <FormControl>
@@ -197,7 +218,9 @@ export default function ProfileForm({ language }: Props): JSX.Element {
             )}
           />
 
-          <Button type='submit'>{t('save_changes')}</Button>
+          <Button className='mx-4' type='submit'>
+            {t('save')}
+          </Button>
         </form>
       </div>
     </Form>

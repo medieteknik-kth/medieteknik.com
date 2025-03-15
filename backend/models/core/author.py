@@ -7,11 +7,11 @@ from sqlalchemy import (
     Column,
     ForeignKey,
     Enum,
-    inspect,
     text,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
 
 
@@ -139,34 +139,33 @@ class Author(db.Model):
             else_=None,
         )
 
-    def to_dict(self) -> Dict[str, Any] | None:
+    def to_dict(
+        self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
+    ) -> Dict[str, Any] | None:
         """
         Returns a dictionary representation of the model.
 
         Returns:
             Dict[str, Any] | None: A dictionary containing the model's attributes.
         """
-        columns = inspect(self)
 
-        if not columns:
-            return None
+        author_data = {}
+        if self.author_type == AuthorType.STUDENT and self.student:
+            author_data = self.student.to_dict(is_public_route=is_public_route)
+        elif self.author_type == AuthorType.COMMITTEE and self.committee:
+            author_data = self.committee.to_dict(provided_languages=provided_languages)
+        elif (
+            self.author_type == AuthorType.COMMITTEE_POSITION
+            and self.committee_position
+        ):
+            author_data = self.committee_position.to_dict(
+                provided_languages=provided_languages,
+                is_public_route=is_public_route,
+                include_parent=True,
+            )
 
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
+        author_data["author_type"] = (
+            self.author_type.value if self.author_type else None
+        )
 
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            elif isinstance(value, List):
-                value = [v.value if isinstance(v, enum.Enum) else v for v in value]
-
-            data[column] = value
-
-        if not data:
-            return {}
-
-        data["author_type"] = self.author_type
-        del data["author_id"]
-
-        return data
+        return author_data

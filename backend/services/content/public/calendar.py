@@ -2,6 +2,7 @@ from calendar import monthrange
 from datetime import datetime, timedelta
 from typing import List
 from sqlalchemy import and_, or_
+from sqlalchemy.orm import joinedload
 from models.content import Event
 from models.core import Calendar
 from services.content.event import generate_events
@@ -49,13 +50,17 @@ def get_events_monthly(
     )  # Make end_date inclusive
 
     # Adjusted filter conditions for overlapping events and inclusivity
-    events = Event.query.filter(
-        Event.calendar_id == main_calendar.calendar_id,
-        or_(
-            Event.start_date <= end_date,  # Starts before or on the end date
-            Event.start_date >= start_date,  # Starts after or on the start date
-        ),
-    ).all()
+    events = (
+        Event.query.options(joinedload(Event.repeatable_event))
+        .filter(
+            Event.calendar_id == main_calendar.calendar_id,
+            or_(
+                Event.start_date <= end_date,  # Starts before or on the end date
+                Event.start_date >= start_date,  # Starts after or on the start date
+            ),
+        )
+        .all()
+    )
 
     all_event_occurrences = []
     for event in events:

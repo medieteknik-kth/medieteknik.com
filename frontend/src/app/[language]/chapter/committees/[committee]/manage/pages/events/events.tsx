@@ -62,7 +62,7 @@ export default function EventPage({ language }: Props): JSX.Element {
       </h2>
       <div className='flex flex-col mt-4'>
         <div className='flex mb-4'>
-          <Card className='w-72 relative'>
+          <Card className='w-96 relative'>
             <CardHeader>
               <CardTitle>{t('hosted_events')}</CardTitle>
               <CardDescription>

@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import type { CommitteePosition } from '@/models/Committee'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import Link from 'next/link'
 import FallbackLogo from 'public/images/logo.webp'
 
 import type { JSX } from 'react'
@@ -28,7 +28,7 @@ interface Props {
  */
 export default function PositionDisplay({ position }: Props): JSX.Element {
   return (
-    <Card className='h-full'>
+    <Card id={`position-${position.email}`} className='h-full'>
       <CardHeader>
         <CardTitle className='flex gap-2 items-center truncate'>
           {position.committee && (
