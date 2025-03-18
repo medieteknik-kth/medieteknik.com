@@ -76,7 +76,7 @@ export default function ContextSearch({
           if (diffHours > 24 || Object.keys(previousData).length === 0) {
             const { data: newData, error: searchError } =
               await getSearchEntries(language, 0)
-              
+
             if (newData) {
               await setIndexedDBSearchEntries(language, newData)
               updateSearchEntries(newData)
@@ -416,13 +416,16 @@ export default function ContextSearch({
                                 asChild
                               >
                                 <Link
-                                  href={'url' in data ? data.url : ''}
+                                  href={
+                                    'url' in data
+                                      ? `/${language}/bulletin/news/${data.url}`
+                                      : ''
+                                  }
                                   onClick={() => {
                                     setOpenDialog(false)
                                     setContentVisibility(false)
                                   }}
                                   className='px-2 py-1.5 cursor-pointer flex items-center gap-2'
-                                  target='_blank'
                                 >
                                   <div className='bg-white p-1 overflow-hidden rounded-lg text-black'>
                                     {'main_image_url' in data.translation &&
@@ -562,6 +565,7 @@ export default function ContextSearch({
                                   setContentVisibility(false)
                                 }}
                                 className='px-2 py-1.5 cursor-pointer'
+                                target='_blank'
                               >
                                 <div className='bg-white rounded-lg p-1 overflow-hidden text-black'>
                                   <DocumentIcon className='h-5 w-5' />
@@ -611,7 +615,7 @@ export default function ContextSearch({
                             asChild
                           >
                             <Link
-                              href={news.url}
+                              href={`/${language}/bulletin/news/${news.url}`}
                               onClick={() => {
                                 setOpenDialog(false)
                                 setContentVisibility(false)

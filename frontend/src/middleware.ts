@@ -24,25 +24,26 @@ export const Config = {
 
 const BLACKLISTED_URLS_REGEX = new RegExp(
   [
-    '^/_next',
-    '^/_vercel',
-    '^/\\.well-known',
-    '^/static',
-    '^/robots\\.txt',
-    '^/sitemap\\.xml',
-    '^/manifest\\.webmanifest',
-    '^/favicon',
-    '^/icon',
-    '^/service-worker\\.js',
-    '^/web-app-manifest-192x192\\.png',
-    '^/web-app-manifest-192x192-maskable\\.png',
-    '^/web-app-manifest-512x512\\.png',
-    '^/screenshots',
-    '^/apple-icon\\.png',
-    '^/react_devtools_backend_compact\\.js\\.map',
-    '^/installHook\\.js\\.map',
-    '^/ads\\.txt',
-    '^/__nextjs_original-stack-frame',
+    '/_next.*',
+    '/vercel.*',
+    '/_vercel.*',
+    '/\\.well-known.*',
+    '/static.*',
+    '/robots\\.txt',
+    '/sitemap\\.xml',
+    '/manifest\\.webmanifest',
+    '/favicon.*',
+    '/icon.*',
+    '/service-worker\\.js',
+    '/web-app-manifest-192x192\\.png',
+    '/web-app-manifest-192x192-maskable\\.png',
+    '/web-app-manifest-512x512\\.png',
+    '/screenshots.*',
+    '/apple-icon\\.png',
+    '/react_devtools_backend_compact\\.js\\.map',
+    '/installHook\\.js\\.map',
+    '/ads\\.txt',
+    '/__nextjs_original-stack-frame.*',
   ].join('|')
 )
 
@@ -208,8 +209,8 @@ async function handleLanguage(request: NextRequest): Promise<NextResponse> {
  */
 function generateCSP(nonce: string): string {
   return `default-src 'self'; 
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline';
-    connect-src 'self' ${process.env.NODE_ENV === 'development' ? 'http://localhost:80 http://localhost:* ws://localhost:3000 https://api.medieteknik.com' : 'https://api.medieteknik.com'} https://vercel.live https://www.kth.se wss://ws-us3.pusher.com blob: https://storage.googleapis.com https://va.vercel-scripts.com;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''};
+    connect-src 'self' ${process.env.NODE_ENV === 'development' ? 'http://localhost:80 http://localhost:* ws://localhost:3000' : 'ws://medieteknik.com https://api.medieteknik.com'} https://vercel.live https://www.kth.se wss://ws-us3.pusher.com blob: https://storage.googleapis.com https://va.vercel-scripts.com;
     media-src blob:; 
     img-src 'self' https://storage.googleapis.com https://vercel.live https://vercel.com https://i.ytimg.com data: blob:; 
     style-src 'self' https://vercel.live 'unsafe-inline'; 

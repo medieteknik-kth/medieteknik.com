@@ -237,7 +237,7 @@ export function AddMemberForm({
     const json_data = JSON.stringify(data)
     try {
       const response = await fetch(
-        `${API_BASE_URL}/committee_positions/assign`,
+        `${API_BASE_URL}/committee_positions/assign/${data.position_id}`,
         {
           method: 'POST',
           credentials: 'include',

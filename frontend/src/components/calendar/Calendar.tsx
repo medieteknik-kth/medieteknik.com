@@ -51,7 +51,7 @@ export default function Calendar({
     'urday',
     'day',
   ] as const
-  const sv_days = ['Mon', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'] as const
+  const sv_days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'] as const
   const sv_days_extended = [
     'dag',
     'dag',

@@ -213,7 +213,7 @@ export function NarrowScreenProfileButton({
         )}
       </SheetTrigger>
       {sheetOpen && (
-        <SheetContent side={'right'} className='overflow-y-auto p-0'>
+        <SheetContent side={'right'} className='overflow-y-auto p-0!'>
           <SheetHeader className='p-4 pb-2'>
             {student ? (
               <Link
@@ -252,13 +252,13 @@ export function NarrowScreenProfileButton({
               </>
             )}
           </SheetHeader>
-          <div className='px-2 pt-3 mb-2'>
+          <div className='px-2 pt-3 mb-2 h-full max-h-[calc(100dvh-15rem)] overflow-y-auto'>
             <div className='px-2 mb-2'>
               <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
                 {t('navigation')}
               </p>
             </div>
-            <nav className='w-full h-fit z-10 justify-between max-h-[30vh] overflow-y-auto'>
+            <nav className='w-full h-fit z-10 justify-between'>
               <ul className='space-y-2'>
                 <li>
                   <Link
@@ -319,117 +319,116 @@ export function NarrowScreenProfileButton({
                 ))}
               </ul>
             </nav>
+            {student && (
+              <div className='py-2'>
+                <div className='px-2 mb-2'>
+                  <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
+                    {t('account')}
+                  </p>
+                </div>
+                <div className='space-y-1.5 overflow-y-auto'>
+                  <Button
+                    variant={'ghost'}
+                    asChild
+                    className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-2 justify-start'
+                  >
+                    <Link
+                      href={`/${language}/account`}
+                      className=''
+                      onClick={() => setSheetOpen(false)}
+                    >
+                      <Cog6ToothIcon className='w-6 h-6' />
+                      {t('account_settings')}
+                    </Link>
+                  </Button>
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button
+                        variant={'ghost'}
+                        className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3 justify-between'
+                        onClick={addAllRead}
+                      >
+                        <div className='flex items-center gap-2'>
+                          <BellIcon className='w-6 h-6' />
+                          {t('notifications')}
+                        </div>
+                        <Badge
+                          className={`ml-auto ${isAllRead() ? 'hidden' : ''}`}
+                        >
+                          NEW
+                        </Badge>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent
+                      side={'bottom'}
+                      className='min-h-[75vh] overflow-y-auto px-1 sm:px-6'
+                    >
+                      <SheetHeader>
+                        <SheetTitle>
+                          {t('notifications')}
+                          <sup>
+                            <span className='text-xs text-red-500 font-semibold ml-1 tracking-wide select-none'>
+                              Beta
+                            </span>
+                          </sup>
+                        </SheetTitle>
+                        <SheetDescription className='text-muted-foreground'>
+                          {t('notifications_description')}
+                        </SheetDescription>
+                      </SheetHeader>
+                      {notifications.length === 0 ? (
+                        <div className='w-full min-h-20 h-full grid place-items-center z-10 tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800 rounded-md'>
+                          {commonT('no_notifications')}
+                        </div>
+                      ) : (
+                        (Array.isArray(notifications) ? notifications : []).map(
+                          (notification) =>
+                            notification.translations[0].url ? (
+                              <div
+                                key={notification.notification_id}
+                                className='relative w-full h-full'
+                              >
+                                <div
+                                  className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                                />
+
+                                <Link
+                                  href={`/${language}/${notification.translations[0].url}`}
+                                  className='w-full h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                                >
+                                  <NotificationContent
+                                    notification={notification}
+                                    language={language}
+                                  />
+                                </Link>
+                              </div>
+                            ) : (
+                              <div
+                                key={notification.notification_id}
+                                className='relative w-full h-full'
+                              >
+                                <div
+                                  className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                                />
+
+                                <div className='w-full h-20 flex items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'>
+                                  <NotificationContent
+                                    notification={notification}
+                                    language={language}
+                                  />
+                                </div>
+                              </div>
+                            )
+                        )
+                      )}
+                    </SheetContent>
+                  </Sheet>
+                </div>
+              </div>
+            )}
           </div>
 
-          {student && (
-            <div className='px-2'>
-              <div className='px-2 mb-2'>
-                <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
-                  {t('account')}
-                </p>
-              </div>
-              <div className='space-y-1.5 overflow-y-auto'>
-                <Button
-                  variant={'ghost'}
-                  asChild
-                  className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-2 justify-start'
-                >
-                  <Link
-                    href={`/${language}/account`}
-                    className=''
-                    onClick={() => setSheetOpen(false)}
-                  >
-                    <Cog6ToothIcon className='w-6 h-6' />
-                    {t('account_settings')}
-                  </Link>
-                </Button>
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button
-                      variant={'ghost'}
-                      className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3 justify-between'
-                      onClick={addAllRead}
-                    >
-                      <div className='flex items-center gap-2'>
-                        <BellIcon className='w-6 h-6' />
-                        {t('notifications')}
-                      </div>
-                      <Badge
-                        className={`ml-auto ${isAllRead() ? 'hidden' : ''}`}
-                      >
-                        NEW
-                      </Badge>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent
-                    side={'bottom'}
-                    className='min-h-[75vh] overflow-y-auto px-1 sm:px-6'
-                  >
-                    <SheetHeader>
-                      <SheetTitle>
-                        {t('notifications')}
-                        <sup>
-                          <span className='text-xs text-red-500 font-semibold ml-1 tracking-wide select-none'>
-                            Beta
-                          </span>
-                        </sup>
-                      </SheetTitle>
-                      <SheetDescription className='text-muted-foreground'>
-                        {t('notifications_description')}
-                      </SheetDescription>
-                    </SheetHeader>
-                    {notifications.length === 0 ? (
-                      <div className='w-full min-h-20 h-full grid place-items-center z-10 tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800 rounded-md'>
-                        {commonT('no_notifications')}
-                      </div>
-                    ) : (
-                      (Array.isArray(notifications) ? notifications : []).map(
-                        (notification) =>
-                          notification.translations[0].url ? (
-                            <div
-                              key={notification.notification_id}
-                              className='relative w-full h-full'
-                            >
-                              <div
-                                className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
-                              />
-
-                              <Link
-                                href={`/${language}/${notification.translations[0].url}`}
-                                className='w-full h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
-                              >
-                                <NotificationContent
-                                  notification={notification}
-                                  language={language}
-                                />
-                              </Link>
-                            </div>
-                          ) : (
-                            <div
-                              key={notification.notification_id}
-                              className='relative w-full h-full'
-                            >
-                              <div
-                                className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
-                              />
-
-                              <div className='w-full h-20 flex items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'>
-                                <NotificationContent
-                                  notification={notification}
-                                  language={language}
-                                />
-                              </div>
-                            </div>
-                          )
-                      )
-                    )}
-                  </SheetContent>
-                </Sheet>
-              </div>
-            </div>
-          )}
-
-          <SheetFooter className='flex flex-col! gap-4 bottom-4 absolute left-6 right-6'>
+          <SheetFooter className='flex flex-col! gap-4 bottom-0 absolute left-0 right-0 bg-white pb-2 px-4'>
             <div className='grid grid-cols-1 xs:grid-cols-2 gap-1 xs:gap-4'>
               <div className='space-y-1.5'>
                 <Label className='text-xs font-medium text-muted-foreground px-1'>

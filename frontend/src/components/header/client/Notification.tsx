@@ -38,7 +38,6 @@ interface Props {
  */
 export default function NotificationMenu({ language }: Props): JSX.Element {
   const { t } = useTranslation(language, 'header')
-  const { t: commonT } = useTranslation(language, 'common')
   const [open, setOpen] = useState(false)
   let { notifications } = useNotifications()
   const { isAuthenticated } = useAuthentication()
@@ -138,51 +137,50 @@ export default function NotificationMenu({ language }: Props): JSX.Element {
                 <ul className='w-full h-96 overflow-y-auto flex flex-col gap-1'>
                   {notifications.length === 0 ? (
                     <li className='w-md lg:w-lg xl:w-xl min-h-20 h-full grid place-items-center z-10 tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800 rounded-md'>
-                      {commonT('no_notifications')}
+                      {t('no_notifications')}
                     </li>
                   ) : (
-                    (Array.isArray(notifications) ? notifications : []).map(
-                      (notification) =>
-                        notification.translations[0].url ? (
-                          <li
-                            key={notification.notification_id}
-                            className='relative w-full h-fit'
+                    notifications.map((notification) =>
+                      notification.translations[0].url ? (
+                        <li
+                          key={notification.notification_id}
+                          className='relative w-full h-fit'
+                        >
+                          <div
+                            className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                          />
+                          <Link
+                            href={`/${language}${notification.translations[0].url}`}
+                            className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                            title={notification.translations[0].body}
+                            aria-label={notification.translations[0].body}
                           >
-                            <div
-                              className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                            <NotificationContent
+                              notification={notification}
+                              language={language}
                             />
-                            <Link
-                              href={`/${language}${notification.translations[0].url}`}
-                              className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
-                              title={notification.translations[0].body}
-                              aria-label={notification.translations[0].body}
-                            >
-                              <NotificationContent
-                                notification={notification}
-                                language={language}
-                              />
-                            </Link>
-                          </li>
-                        ) : (
-                          <li
-                            key={notification.notification_id}
-                            className='relative w-full h-fit'
+                          </Link>
+                        </li>
+                      ) : (
+                        <li
+                          key={notification.notification_id}
+                          className='relative w-full h-fit'
+                        >
+                          <div
+                            className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                          />
+                          <div
+                            className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
+                            title={notification.translations[0].body}
+                            aria-label={notification.translations[0].body}
                           >
-                            <div
-                              className={`bg-primary w-1 h-1 rounded-full absolute left-0 top-0 bottom-0 my-auto ${isRead(notification.notification_id) ? 'hidden' : ''}`}
+                            <NotificationContent
+                              notification={notification}
+                              language={language}
                             />
-                            <div
-                              className='w-md lg:w-lg xl:w-xl h-fit grid grid-cols-[auto_1fr] items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 ease-in-out rounded-lg'
-                              title={notification.translations[0].body}
-                              aria-label={notification.translations[0].body}
-                            >
-                              <NotificationContent
-                                notification={notification}
-                                language={language}
-                              />
-                            </div>
-                          </li>
-                        )
+                          </div>
+                        </li>
+                      )
                     )
                   )}
                 </ul>
