@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "watch-sw": "esbuild --watch --minify src/sw/service-worker.ts --outfile=public/service-worker.js",
     "build": "next build",
+    "dev-build-sw": "NODE_ENV=development node scripts/build-sw.js",
+    "build-sw": "NODE_ENV=production node scripts/build-sw.js",
     "start": "next start",
     "lint": "next lint",
     "test": "jest && playwright test",
@@ -79,9 +82,9 @@
     "zod": "^3.23.4"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "15.2.2",
     "@biomejs/biome": "^1.9.4",
     "@eslint/js": "^9.13.0",
+    "@next/bundle-analyzer": "15.2.2",
     "@next/eslint-plugin-next": "15.2.2",
     "@playwright/test": "^1.47.2",
     "@svgr/webpack": "^8.1.0",
@@ -90,8 +93,10 @@
     "@types/node": "^20",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
+    "@types/serviceworker": "^0.0.126",
     "@types/tinycolor2": "^1.4.6",
     "depcheck": "^1.4.7",
+    "esbuild": "^0.25.1",
     "eslint": "^9.13.0",
     "eslint-config-next": "15.2.2",
     "globals": "^15.11.0",
