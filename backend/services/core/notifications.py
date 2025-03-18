@@ -85,24 +85,24 @@ def retrieve_notifications(student_id: Any, language_code: str) -> Response:
         )
     ).first()
 
-    if not notification_preferences or not isinstance(
-        notification_preferences, NotificationPreferences
-    ):
-        return jsonify({}), HTTPStatus.OK
-
     all_filters = []
-
-    if getattr(notification_preferences, "site_updates"):
-        all_filters.append(Notifications.notification_type == NotificationType.UPDATE)
 
     # All students should receive announcements, use sparingly...
     all_filters.append(Notifications.notification_type == NotificationType.ANNOUNCEMENT)
 
     committees = {}
 
-    for committee in getattr(notification_preferences, "committees"):
-        types = {k: committee[k] for k in ("news", "event") if k in committee}
-        committees[committee["committee_id"]] = types
+    if notification_preferences and isinstance(
+        notification_preferences, NotificationPreferences
+    ):
+        if getattr(notification_preferences, "site_updates"):
+            all_filters.append(
+                Notifications.notification_type == NotificationType.UPDATE
+            )
+
+        for committee in getattr(notification_preferences, "committees"):
+            types = {k: committee[k] for k in ("news", "event") if k in committee}
+            committees[committee["committee_id"]] = types
 
     notifications = Notifications.query
 

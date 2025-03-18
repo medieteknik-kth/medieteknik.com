@@ -71,7 +71,7 @@ class Student(db.Model):
     student_type = Column(
         Enum(StudentType), nullable=False, default=StudentType.MEDIETEKNIK
     )
-    password_hash = Column(String(length=1000), nullable=False)
+    password_hash = Column(String(length=1000), nullable=True)
 
     # Relationships
     profile = db.relationship("Profile", back_populates="student", uselist=False)

@@ -39,7 +39,7 @@ def csrf_protected(f: FunctionType) -> FunctionType:
                 "Request object is missing! Make sure you're using the decorator in a endpoint."
             )
 
-        if request.metod == "OPTIONS":
+        if request.method == "OPTIONS":
             return f(*args, **kwargs)
 
         csrf_token: str = ""

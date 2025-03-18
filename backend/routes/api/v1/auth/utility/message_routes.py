@@ -13,7 +13,7 @@ message_bp = Blueprint("message", __name__)
 
 
 @message_bp.route("/process-tasks", methods=["POST"])
-@verify_google_oidc_token("https://api.medieteknik.com/")
+@verify_google_oidc_token("https://api.medieteknik.com")
 def process_tasks() -> Tuple[Dict[str, Any], int]:
     """
     Process deferred tasks from Pub/Sub.
@@ -41,6 +41,10 @@ def process_tasks() -> Tuple[Dict[str, Any], int]:
         task_type = message_data.get("task_type")
 
         match task_type:
+            case "test":
+                print("Message data:", message_data)
+                return {"message": "Test successful!"}, HTTPStatus.OK
+
             case "add_notification":
                 # TODO: Add notification
                 add_notification(message_data)
@@ -50,6 +54,11 @@ def process_tasks() -> Tuple[Dict[str, Any], int]:
                 # handle_discord_message(message_data)
 
                 return {"message": "Discord message sent"}, HTTPStatus.OK
+
+            case "upload_to_instagram":
+                # upload_to_instagram(message_data)
+
+                return {"message": "Uploaded to Instagram"}, HTTPStatus.OK
             case _:
                 return {
                     "error": "Invalid task type, not retrying"

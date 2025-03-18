@@ -124,7 +124,7 @@ def check():
 
 
 @scheduler_bp.route("/upcoming_events", methods=["POST"])
-@verify_google_oidc_token("https://api.medieteknik.com/")
+@verify_google_oidc_token("https://api.medieteknik.com")
 def check_upcoming_events():
     """
     Check for upcoming events and send notifications to subscribed users.

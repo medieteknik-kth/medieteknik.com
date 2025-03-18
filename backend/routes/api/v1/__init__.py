@@ -71,6 +71,7 @@ def register_v1_routes(app: Flask):
         calendar_bp,
         student_bp,
         scheduler_bp,
+        message_bp,
     )
 
     # Public Routes
@@ -132,6 +133,8 @@ def register_v1_routes(app: Flask):
         student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
     )
     app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
+
+    app.register_blueprint(message_bp, url_prefix=f"{PROTECTED_PATH}/messages")
 
     @app.after_request
     def add_headers(response: Response):
@@ -370,7 +373,6 @@ def register_v1_routes(app: Flask):
             student = Student(
                 email=student_email,
                 first_name=student_email,
-                password_hash="",
             )
 
             db.session.add(student)
