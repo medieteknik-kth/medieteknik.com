@@ -1,0 +1,12 @@
+{
+    "name": "medieteknik",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "shared/*"
+    ],
+    "packageManager": "bun@1.2.1",
+    "devDependencies": {
+        "turbo": "2.4.4"
+    }
+}

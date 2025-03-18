@@ -1,0 +1,9 @@
+{
+    "name": "backend",
+    "private": true,
+    "scripts": {
+        "dev": "docker-compose up -d --build && docker-compose logs -f",
+        "start": "docker-compose up -d",
+        "build": "docker-compose up -d --build"
+    }
+}
