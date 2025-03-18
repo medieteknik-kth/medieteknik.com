@@ -1,10 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.png'
-import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.png'
-import LinkedInLogo from 'public/images/logos/LI-In-Bug.png'
-import YouTubeLogo from 'public/images/logos/yt_icon_rgb.png'
+import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.webp'
+import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.webp'
+import LinkedInLogo from 'public/images/logos/LI-In-Bug.webp'
 import MBDSVG from 'public/images/svg/mbd.svg'
 import type { JSX } from 'react'
 
@@ -72,26 +71,6 @@ export default async function ConnectSection(): Promise<JSX.Element> {
               width={38}
               height={32}
               alt='LinkedIn Icon'
-            />
-          </Link>
-        </Button>
-      </li>
-      <li className='hidden' title='YouTube'>
-        {/* TODO: Get consent from YouTube/Google */}
-        <Button asChild size='icon' variant='ghost'>
-          <Link
-            href='https://www.youtube.com/channel/UCfd-63pepDHT9uZku8KbQTA'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='w-full h-full dark:fill-white dark:hover:fill-yellow-400 p-2'
-            title='YouTube'
-            aria-label="Links to Medieteknik's YouTube page"
-          >
-            <Image
-              src={YouTubeLogo}
-              width={30}
-              height={30}
-              alt='Instagram Icon'
             />
           </Link>
         </Button>

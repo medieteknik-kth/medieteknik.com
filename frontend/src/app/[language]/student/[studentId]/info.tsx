@@ -3,9 +3,9 @@ import type Student from '@/models/Student'
 import type { Profile } from '@/models/Student'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
-import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.png'
-import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.png'
-import LinkedInLogo from 'public/images/logos/LI-In-Bug.png'
+import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.webp'
+import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.webp'
+import LinkedInLogo from 'public/images/logos/LI-In-Bug.webp'
 import type { JSX } from 'react'
 
 interface Props {
