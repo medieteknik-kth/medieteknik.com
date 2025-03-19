@@ -65,22 +65,22 @@ export function NotificationContent({ notification, language }: Props) {
           <p className='text-xs mb-0.5'>
             {notification.notification_type === 'announcement' && (
               <span className='px-2 py-0.5 border rounded-xl border-neutral-600 text-neutral-600 bg-neutral-600/10 dark:border-neutral-500 dark:text-neutral-500 dark:bg-neutral-500/25'>
-                Announcement
+                {language === 'sv' ? 'Meddelande' : 'Announcement'}
               </span>
             )}
             {notification.notification_type === 'update' && (
               <span className='px-2 py-0.5 border rounded-xl border-emerald-600 text-emerald-600 bg-emerald-600/10 dark:border-emerald-500 dark:text-emerald-500 dark:bg-emerald-500/25'>
-                Update
+                {language === 'sv' ? 'Uppdatering' : 'Update'}
               </span>
             )}
             {notification.notification_type === 'news' && (
               <span className='px-2 py-0.5 border rounded-xl border-blue-600 text-blue-600 bg-blue-600/10 dark:border-blue-500 dark:text-blue-500 dark:bg-blue-500/25'>
-                News
+                {language === 'sv' ? 'Nyhet' : 'News'}
               </span>
             )}
             {notification.notification_type === 'event' && (
               <span className='px-2 py-0.5 border rounded-xl border-red-600 text-red-600 bg-red-600/10 dark:border-red-500 dark:text-red-500 dark:bg-red-500/25'>
-                Event
+                {language === 'sv' ? 'Event' : 'Event'}
               </span>
             )}
           </p>
