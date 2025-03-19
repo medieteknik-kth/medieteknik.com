@@ -5,7 +5,7 @@
         "apps/*",
         "shared/*"
     ],
-    "packageManager": "bun@1.2.1",
+    "packageManager": "bun@1.2.5",
     "devDependencies": {
         "turbo": "2.4.4"
     }
