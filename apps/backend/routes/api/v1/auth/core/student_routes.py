@@ -20,6 +20,7 @@ from services.utility.auth import (
     get_student_committee_details,
 )
 from utility import delete_file, upload_file, retrieve_languages, db
+from utility.translation import convert_iso_639_1_to_bcp_47
 
 student_bp = Blueprint("student", __name__)
 
@@ -227,7 +228,8 @@ def update_notifications() -> Response:
         :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
     """
 
-    language = retrieve_languages(request.args)
+    language = request.args.get("language", "en")
+    language = convert_iso_639_1_to_bcp_47(language)
 
     student_id = get_jwt_identity()
     student: Student | None = Student.query.filter_by(
