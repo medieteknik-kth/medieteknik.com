@@ -78,6 +78,10 @@ class Event(Item):
         "EventTranslation", back_populates="event", lazy="joined"
     )
 
+    discord_messages = db.relationship(
+        "DiscordMessages", back_populates="events", cascade="all, delete-orphan"
+    )
+
     __mapper_args__ = {"polymorphic_identity": "event"}
 
     def to_dict(
