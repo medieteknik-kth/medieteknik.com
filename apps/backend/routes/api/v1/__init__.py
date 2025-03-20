@@ -72,6 +72,7 @@ def register_v1_routes(app: Flask):
         student_bp,
         scheduler_bp,
         message_bp,
+        tasks_bp,
     )
 
     # Public Routes
@@ -135,6 +136,8 @@ def register_v1_routes(app: Flask):
     app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
 
     app.register_blueprint(message_bp, url_prefix=f"{PROTECTED_PATH}/messages")
+
+    app.register_blueprint(tasks_bp, url_prefix=f"{PROTECTED_PATH}/tasks")
 
     @app.after_request
     def add_headers(response: Response):
