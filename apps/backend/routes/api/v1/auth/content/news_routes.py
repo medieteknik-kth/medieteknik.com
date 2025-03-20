@@ -21,7 +21,7 @@ from services.content import (
     update_item,
 )
 from services.core import get_author_from_email
-from services.utility import send_discord_topic, send_notification_topic, TopicType
+from services.utility import send_notification_topic, TopicType
 from services.utility.tasks import schedule_news
 from utility import (
     AVAILABLE_LANGUAGES,
