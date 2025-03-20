@@ -24,6 +24,8 @@ from .utility.scheduler_routes import scheduler_bp
 
 from .utility.message_routes import message_bp
 
+from .utility.task_routes import tasks_bp
+
 __all__ = [
     "album_bp",
     "calendar_bp",
@@ -36,4 +38,5 @@ __all__ = [
     "student_bp",
     "scheduler_bp",
     "message_bp",
+    "tasks_bp",
 ]

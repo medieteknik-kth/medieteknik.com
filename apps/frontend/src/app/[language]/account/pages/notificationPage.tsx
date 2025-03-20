@@ -178,19 +178,22 @@ export default function NotificationPage({ language }: Props) {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/students/notifications`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          push: push,
-          subscription: notificationSubscription,
-          preferences: notificationPreferences,
-        }),
-      })
+      const response = await fetch(
+        `${API_BASE_URL}/students/notifications?language=${language}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            push: push,
+            subscription: notificationSubscription,
+            preferences: notificationPreferences,
+          }),
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to update notification settings')

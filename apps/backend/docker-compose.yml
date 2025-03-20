@@ -10,7 +10,7 @@ services:
       - database
   database:
     container_name: medieteknik_db
-    image: postgres:latest
+    image: postgres:16
     ports:
       - "5432:5432"
     environment:

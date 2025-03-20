@@ -30,7 +30,7 @@
     "ui_ux.removed_1_explanation": "Ändrades på grund av att många dagar faktiskt inte hade några evenemang och det tog upp mycket utrymme. Kalendern är nu huvudfokus på sidan och rekryteringspanelen är nu mer synlig. Du kan fortfarande se detaljerad information om du klickar på ett evenemang i kalendern.",
     "qol.new_1": "Ett \"Kom ihåg mig\"-alternativ har lagts till på inloggningssidan",
     "qol.new_1_explanation": "Det kommer att hålla dig inloggad i 14 dagar, om du inte loggar ut eller rensar dina cookies. Detta är en säkerhetsfunktion, så var försiktig om du använder en offentlig dator eller en delad enhet.",
-    "qol.new_2": "Du kan nu spara och återvända till dina utkast nyhetsartiklar",
+    "qol.new_2": "Du kan nu spara och återuppta dina/nämndens utkast nyhetsartiklar",
     "qol.new_2_explanation": "Du kan komma åt dem via nämnd dashboard:en. Detta är ett bra sätt att spara sitt arbete och komma tillbaka till det senare.",
     "qol.new_3": "Du kan nu förhandsgranska nyhetsartiklar innan de publiceras",
     "bugfixes_1": "Att använda emojis i nyhets titlar bryter inte längre URL:en",

@@ -9,6 +9,7 @@ from .student import assign_password
 from .student import update
 
 from .notifications import add_notification
+from .notifications import send_notification
 from .notifications import retrieve_notifications
 from .notifications import subscribe_to_notifications
 
@@ -19,6 +20,7 @@ __all__ = [
     "assign_password",
     "update",
     "add_notification",
+    "send_notification",
     "retrieve_notifications",
     "subscribe_to_notifications",
 ]

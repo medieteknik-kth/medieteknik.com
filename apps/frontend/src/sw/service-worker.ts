@@ -423,6 +423,7 @@ self.addEventListener(
       data: {
         dateOfArrival: Date.now(),
         primaryKey: '1',
+        url: 'https://www.google.com',
       },
     }
 
@@ -430,6 +431,12 @@ self.addEventListener(
       const data = event.data.json() as PushMessageData
       options.body = data.body || options.body
       options.title = data.title || 'New Notification'
+      options.tag = data.tag || options.tag
+      options.data = {
+        dateOfArrival: data.data?.dateOfArrival || Date.now(),
+        primaryKey: data.data?.primaryKey || '1',
+        url: data.url || options.data?.url,
+      }
     } catch (error) {
       console.warn('[Service Worker] Error parsing push data:', error)
     }
@@ -460,6 +467,13 @@ self.addEventListener(
     if (DEBUG_MODE)
       console.log('[Service Worker] Notification click event:', event)
     event.notification.close()
+
+    // Check if the notification has a URL
+    if (event.notification.data?.url) {
+      const url = new URL(event.notification.data.url)
+      event.waitUntil(clients.openWindow(url.href))
+      return
+    }
 
     event.waitUntil(clients.openWindow('https://www.google.com'))
   }

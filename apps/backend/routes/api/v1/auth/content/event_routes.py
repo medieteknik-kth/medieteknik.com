@@ -8,7 +8,7 @@ import uuid
 from flask import Blueprint, Response, request, jsonify
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
-from typing import Any
+from typing import Any, Dict, List
 from sqlalchemy.exc import SQLAlchemyError
 from models.committees import Committee, CommitteePosition
 from models.content import Event, RepeatableEvent
@@ -18,6 +18,7 @@ from services.content import (
     delete_item,
 )
 from services.content.public import get_main_calendar
+from services.utility import TopicType, send_discord_topic, send_notification_topic
 from utility.database import db
 from utility.logger import log_error
 
@@ -151,6 +152,7 @@ def create_event() -> Response:
         return jsonify({"error": "No email provided"}), HTTPStatus.BAD_REQUEST
 
     data["calendar_id"] = get_main_calendar().calendar_id
+    translations: List[Dict[str, Any]] = data.get("translations")
 
     id = create_item(
         author_table=author_table,
@@ -177,5 +179,73 @@ def create_event() -> Response:
 
         db.session.add(repeatable_event)
         db.session.commit()
+
+    if author_type.upper() == "COMMITTEE":
+        # Find translation with 'en' language
+        translation = next(
+            (
+                translation
+                for translation in translations
+                if translation.get("language_code") == "en"
+            ),
+            None,
+        )
+
+        if translation is None:
+            log_error(f"Translation not found for event {id}! {translations}")
+            return {"id": id}, HTTPStatus.CREATED
+
+        event = Event.query.filter(Event.event_id == id).first()
+
+        if event is None:
+            log_error(f"Event {id} not found!")
+            return {"id": id}, HTTPStatus.CREATED
+
+        title = translation.get("title")
+        description = translation.get("description")
+        location = event.location
+        start_date = event.start_date
+        end_date = event.end_date
+        author_name: str = author.get("translations")[0].get("title")
+        author_url = f"https://medieteknik.com/chapter/committees/{author_name.lower()}"
+
+        try:
+            # If this fails, the event will still be created
+            send_discord_topic(
+                type=TopicType.EVENT,
+                topic_data={
+                    "title": title,
+                    "description": description,
+                    "location": location,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "author_name": author_name,
+                    "author_url": author_url,
+                    "event_id": id,
+                },
+            )
+
+            send_notification_topic(
+                type=TopicType.EVENT,
+                topic_data={
+                    "notification_type": "EVENT",
+                    "translations": [
+                        {
+                            "language_code": "en",
+                            "title": title,
+                            "body": description,
+                            "url": "https://www.medieteknik.com/sv/bulletin",
+                        }
+                    ],
+                    "notification_metadata": {
+                        "event_location": location,
+                        "event_start_date": start_date,
+                    },
+                    "committee_id": author.get("committee_id"),
+                    "event_id": id,
+                },
+            )
+        except Exception as e:
+            log_error(f"Failed to send topic message for event {id}: {str(e)}")
 
     return {"id": id}, HTTPStatus.CREATED

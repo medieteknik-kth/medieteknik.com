@@ -21,6 +21,8 @@ from services.content import (
     update_item,
 )
 from services.core import get_author_from_email
+from services.utility import send_notification_topic, TopicType
+from services.utility.tasks import schedule_news
 from utility import (
     AVAILABLE_LANGUAGES,
     upload_file,
@@ -28,6 +30,8 @@ from utility import (
 )
 from utility.database import db
 from sqlalchemy.sql import exists, select
+
+from utility.logger import log_error
 
 
 news_bp = Blueprint("news", __name__)
@@ -323,49 +327,41 @@ def publish_news(identifier: str) -> Response:
     if not publish_result:
         return jsonify({"error": "Failed to publish"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
-    """
-    TODO: Implement Pub/Sub service for notifications and Discord messages, after the endpoints are in production
-    try:
-        # Defer notification and Discord message creation to the Pub/Sub service
-        base_task_data = {
-            "notification_type": "NEWS",
-            "notification_metadata": None,
-            "translation": [
-                {
-                    "language_code": translation_data.get("language_code"),
-                    "title": translation_data.get("title"),
-                    "body": translation_data.get("short_description"),
-                    "url": publish_result,
-                }
-                for translation_data in translation_data
-            ],
-            "committee_id": author.get("committee_id")
-            if author.get("committee_id")
-            else None,
-        }
+    if author_type.upper() == "COMMITTEE":
+        author_name = author.get("translations")[0].get("title")
 
-        notification_task_data = {
-            "task_type": "add_notification",
-            **base_task_data,
-        }
-
-        notification_data = json.dumps(notification_task_data).encode("utf-8")
-        publisher.publish(topic=topic_path, data=notification_data)
-
-        if (
-            os.environ.get("DISCORD_WEBHOOK_URL") is not None
-            and os.environ.get("DISCORD_WEBHOOK_URL") != ""
-        ):
-            discord_task_data = {
-                "task_type": "send_discord_message",
-                **base_task_data,
-            }
-            discord_data = json.dumps(discord_task_data).encode("utf-8")
-            publisher.publish(topic=topic_path, data=discord_data)
-
-    except Exception as e:
-        print(f"Unable to send Pub/Sub message, error: {str(e)}")"""
-
+        if author_name:
+            try:
+                schedule_news(
+                    news_id=news_item.news_id,
+                    author_name=author_name,
+                    url=f"https://www.medieteknik.com/bulletin/news/{news_item.url}",
+                    delay_seconds=120,
+                )
+                send_notification_topic(
+                    type=TopicType.NEWS,
+                    topic_data={
+                        "notification_type": "NEWS",
+                        "translations": [
+                            {
+                                "language_code": "en",
+                                "title": f"{translation_data[0].get('title')}",
+                                "body": f"{author_name} has published a news item.",
+                                "url": f"https://www.medieteknik.com/bulletin/news/{news_item.url}",
+                            },
+                            {
+                                "language_code": "sv",
+                                "title": f"{translation_data[1].get('title')}",
+                                "body": f"{author_name} har publicerat en nyhetsartikel.",
+                                "url": f"https://www.medieteknik.com/bulletin/news/{news_item.url}",
+                            },
+                        ],
+                        "committee_id": author.get("committee_id"),
+                        "news_id": news_item.news_id,
+                    },
+                )
+            except Exception as e:
+                log_error(f"Error sending a message: {e}")
     return jsonify({"url": publish_result}), HTTPStatus.CREATED
 
 

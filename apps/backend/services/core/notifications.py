@@ -1,9 +1,11 @@
+import json
+import time
 from http import HTTPStatus
 from os import environ
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
+from urllib.parse import urlparse
 from flask import Response, jsonify
 from sqlalchemy import and_, or_
-from utility.database import db
 from models.core.notifications import (
     NotificationPreferences,
     NotificationSubscription,
@@ -12,37 +14,39 @@ from models.core.notifications import (
     NotificationsTranslation,
 )
 from cryptography.fernet import Fernet
+from pywebpush import webpush, WebPushException
+from utility import log_error, convert_iso_639_1_to_bcp_47, db
 
 
-def add_notification(data: Dict[str, Any]) -> Response:
+def add_notification(message_data: Dict[str, Any]) -> Tuple[bool, str]:
     """
     Adds a notification to the database.
         :param data: Dict[str, Any] - The data containing the notification
         :return: Response - The response object, 400 if no data is provided, 201 if successful
     """
 
+    data: Dict[str, Any] = message_data.get("message_data")
+
     notification_type: str | None = data.get("notification_type")
     notification_metadata: Dict[str, Any] | None = data.get("notification_metadata")
     translation: List[Dict[str, Any]] | None = data.get("translations")
-    committee_id: int | None = data.get("committee_id")
+    committee_id: int | None = data.get("committee_id", None)
+    event_id: str | None = data.get("event_id", None)
+    news_id: str | None = data.get("news_id", None)
 
-    if not notification_type or not notification_metadata or not translation:
-        return jsonify({"error": "Invalid data"}), HTTPStatus.BAD_REQUEST
+    if not notification_type or not translation:
+        return False, f"Invalid data provided: {data}"
 
     if notification_type not in NotificationType.__members__:
-        return jsonify({"error": "Invalid notification type"}), HTTPStatus.BAD_REQUEST
+        return False, "Invalid notification type"
 
-    if committee_id:
-        notification = Notifications(
-            notification_type=NotificationType[notification_type.upper()],
-            notification_metadata=notification_metadata,
-            committee_id=committee_id,
-        )
-    else:
-        notification = Notifications(
-            notification_type=NotificationType[notification_type.upper()],
-            notification_metadata=notification_metadata,
-        )
+    notification = Notifications(
+        notification_type=NotificationType[notification_type.upper()],
+        notification_metadata=notification_metadata or {},
+        committee_id=committee_id,
+        news_id=news_id,
+        event_id=event_id,
+    )
 
     db.session.add(notification)
     db.session.commit()
@@ -51,22 +55,87 @@ def add_notification(data: Dict[str, Any]) -> Response:
         title: str | None = translation_data.get("title")
         body: str | None = translation_data.get("body")
         url: str | None = translation_data.get("url")
+        language_code: str | None = translation_data.get("language_code")
 
-        if not title or not body:
-            return jsonify({"error": "Invalid translation"}), HTTPStatus.BAD_REQUEST
+        if not title or not body or not url or not language_code:
+            db.session.delete(notification)
+            db.session.commit()
+            return False, "Invalid translation data"
 
         notification_translation = NotificationsTranslation(
             notification_id=notification.notification_id,
             title=title,
             body=body,
             url=url,
-            language_code=translation_data.get("language_code"),
+            language_code=convert_iso_639_1_to_bcp_47(language_code),
         )
 
         db.session.add(notification_translation)
     db.session.commit()
 
-    return jsonify({"message": "Notification added"}), HTTPStatus.CREATED
+    return True, "Notification added"
+
+
+def send_notification(
+    data: Dict[str, Any], subscription: NotificationSubscription
+) -> Tuple[bool, str]:
+    cipher = Fernet(environ.get("FERNET_KEY"))
+
+    body = data.get("body")
+    title = data.get("title")
+    url = data.get("url")
+    tag = data.get("tag")
+    primaryKey = data.get("primaryKey")
+
+    parsed_url = urlparse(subscription.endpoint)
+    p256dh = cipher.decrypt(subscription.p256dh.encode()).decode()
+    auth = cipher.decrypt(subscription.auth.encode()).decode()
+    payload = {
+        "title": title,
+        "body": body,
+        "tag": tag,
+        "data": {
+            "url": url,
+            "primaryKey": primaryKey if primaryKey else None,
+        },
+    }
+
+    try:
+        result = webpush(
+            subscription_info={
+                "endpoint": subscription.endpoint,
+                "keys": {
+                    "p256dh": p256dh,
+                    "auth": auth,
+                },
+            },
+            data=json.dumps(payload),
+            vapid_private_key=environ.get("VAPID_PRIVATE_KEY"),
+            ttl=3_600,  # 1 hour
+            vapid_claims={
+                "sub": "mailto:webmaster@medieteknik.com",
+                "aud": f"{parsed_url.scheme}://{parsed_url.netloc}",
+                # "aud": "http://localhost:3000",
+                "exp": int(time.time()) + 3_600,
+            },
+            headers={
+                "X-WNS-RequestForStatus": "true",
+            },
+        )
+
+        if result.status_code == 410 or result.status_code == 404:
+            print("Subscription is no longer valid, deleting...")
+            db.session.delete(subscription)
+            db.session.commit()
+
+    except WebPushException as e:
+        log_error(f"Error sending notification: {e}")
+        return False, f"Error: {e}"
+    except Exception as e:
+        log_error(f"Error sending notification: {e}")
+        return False, f"Error: {e}"
+
+    return True, "Notification sent"
 
 
 def retrieve_notifications(student_id: Any, language_code: str) -> Response:

@@ -1,11 +1,16 @@
+"""
+Message Routes (Protected), for GCP Pub/Sub
+API Endpoint: '/api/v1/message'
+"""
+
 import base64
-from http import HTTPStatus
 import json
+from http import HTTPStatus
 from typing import Any, Dict, Tuple
 from flask import Blueprint, request
-
 from decorators.google_oidc import verify_google_oidc_token
 from services.core.notifications import add_notification
+from services.utility.discord import send_discord_message
 from utility.logger import log_error
 
 
@@ -21,17 +26,19 @@ def process_tasks() -> Tuple[Dict[str, Any], int]:
     """
 
     if not request.is_json:
-        return {"error": "Invalid request"}, HTTPStatus.BAD_REQUEST
+        return {"error": "Invalid request"}, HTTPStatus.NO_CONTENT
 
     try:
         envelope = request.get_json()
 
         if not envelope or "message" not in envelope:
-            return {"error": "Invalid request"}, HTTPStatus.BAD_REQUEST
+            print("Envelope:", envelope)
+            return {"error": "Invalid request"}, HTTPStatus.NO_CONTENT
 
         pubsub_message = envelope["message"]
 
         if "data" not in pubsub_message:
+            print("Pub/Sub:", pubsub_message)
             return {"message": "No data!"}, HTTPStatus.NO_CONTENT
 
         message_data = json.loads(
@@ -45,13 +52,15 @@ def process_tasks() -> Tuple[Dict[str, Any], int]:
                 print("Message data:", message_data)
                 return {"message": "Test successful!"}, HTTPStatus.OK
 
-            case "add_notification":
-                # TODO: Add notification
+            case "send_notification":
                 add_notification(message_data)
 
                 return {"message": "Notification added"}, HTTPStatus.OK
             case "send_discord_message":
-                # handle_discord_message(message_data)
+                success, message = send_discord_message(message_data)
+
+                if not success:
+                    return {"error": message}, HTTPStatus.NO_CONTENT
 
                 return {"message": "Discord message sent"}, HTTPStatus.OK
 
@@ -59,6 +68,7 @@ def process_tasks() -> Tuple[Dict[str, Any], int]:
                 # upload_to_instagram(message_data)
 
                 return {"message": "Uploaded to Instagram"}, HTTPStatus.OK
+
             case _:
                 return {
                     "error": "Invalid task type, not retrying"
@@ -67,4 +77,4 @@ def process_tasks() -> Tuple[Dict[str, Any], int]:
     except Exception as e:
         log_error(f"Error processing Pub/Sub message: {str(e)}")
 
-        return {"error": str(e)}, HTTPStatus.BAD_REQUEST
+        return {"error": str(e)}, HTTPStatus.NO_CONTENT  # Do not retry

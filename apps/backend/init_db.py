@@ -51,6 +51,8 @@ from models.core import (
     Language,  # noqa: F401
 )
 
+from models.utility import DiscordMessages  # noqa: F401
+
 
 def init_db():
     """
