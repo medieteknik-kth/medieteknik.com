@@ -19,6 +19,8 @@ from .database import db
 
 from .gc import publisher
 from .gc import topic_path
+from .gc import tasks
+from .gc import parent
 from .gc import upload_file
 from .gc import delete_file
 
@@ -49,6 +51,7 @@ __all__ = [
     "db",
     "publisher",
     "topic_path",
+    "tasks",
     "upload_file",
     "delete_file",
     "log_error",

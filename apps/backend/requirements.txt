@@ -13,5 +13,6 @@ psycopg2
 google-cloud-storage
 google-cloud-scheduler
 google-cloud-pubsub
+google-cloud-tasks
 cryptography
 pywebpush

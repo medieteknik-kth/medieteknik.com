@@ -7,8 +7,7 @@ from datetime import timedelta
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
 from urllib.parse import unquote, urlparse
-from google.cloud import pubsub_v1
-
+from google.cloud import pubsub_v1, tasks_v2
 
 json_key_path = (
     "/mnt/env/service-account-file.json"
@@ -20,6 +19,13 @@ json_key_path = (
 publisher = pubsub_v1.PublisherClient.from_service_account_json(json_key_path)
 topic_path = publisher.topic_path(project="medieteknik", topic="deferred-tasks")
 
+# Cloud Tasks client
+tasks = tasks_v2.CloudTasksClient.from_service_account_json(json_key_path)
+parent = tasks.queue_path(
+    project="medieteknik", location="europe-west3", queue="deferred-tasks"
+)
+
+# Storage client
 client = storage.Client.from_service_account_json(json_credentials_path=json_key_path)
 
 bucket_name = "medieteknik-static"
