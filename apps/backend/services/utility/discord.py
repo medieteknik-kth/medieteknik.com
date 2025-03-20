@@ -25,7 +25,7 @@ def send_discord_message(message_data: Dict[str, Any]) -> Tuple[bool, str]:
     if not webhook_url:
         return False, "No Discord webhook URL found!"
 
-    message_type = message_data.get("message_type")
+    message_type = message_data.get("message_type").upper()
     data = message_data.get("message_data")
 
     if not message_type or not data:

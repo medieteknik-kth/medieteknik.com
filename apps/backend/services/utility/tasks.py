@@ -41,7 +41,7 @@ def schedule_news(
             body=json.dumps(
                 {
                     "task_type": "send_discord_message",
-                    "message_type": "news",
+                    "message_type": "NEWS",
                     "message_data": {
                         "news_id": news_id,
                         "url": url,
@@ -50,7 +50,7 @@ def schedule_news(
                 }
             ).encode(),
             oidc_token=tasks_v2.OidcToken(
-                service_account_email=environ.get("GOOGLE_SERVICE_ACCOUNT_EMAIL"),
+                service_account_email=environ.get("GOOGLE_SERVICE_ACCOUNT"),
                 audience=aud,
             ),
         ),
