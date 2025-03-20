@@ -52,6 +52,7 @@ __all__ = [
     "publisher",
     "topic_path",
     "tasks",
+    "parent",
     "upload_file",
     "delete_file",
     "log_error",
