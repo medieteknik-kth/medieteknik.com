@@ -2,12 +2,11 @@
 Item Service (News, Event, Album, Document)
 """
 
-from datetime import datetime
 import re
+import unidecode
+from datetime import datetime
 from typing import Any, Dict, List, Type
 from urllib.parse import quote, unquote
-
-import unidecode
 from models.content import (
     Item,
     MediaTranslation,
@@ -23,12 +22,8 @@ from models.content import (
 from models.core import Student, AuthorType, Author
 from models.committees import Committee, CommitteePosition
 from services.core import get_author_from_email
-from utility import database
-from utility.constants import AVAILABLE_LANGUAGES
-from sqlalchemy import inspect
+from utility import database, AVAILABLE_LANGUAGES, convert_iso_639_1_to_bcp_47
 from dateutil import parser
-
-from utility.translation import convert_iso_639_1_to_bcp_47
 
 
 db = database.db
@@ -188,51 +183,20 @@ def create_item(
     all_authors_items = item_table.query.filter_by(author_id=author.author_id).all()
 
     if all_authors_items:
-        authors_items_ids = []
-
         translation_table = None
         if isinstance(item_table, News) or item_table is News:
-            authors_items_ids = [a.news_id for a in all_authors_items]
             translation_table = NewsTranslation
         elif isinstance(item_table, Event) or item_table is Event:
-            authors_items_ids = [a.event_id for a in all_authors_items]
             translation_table = EventTranslation
         elif isinstance(item_table, Media) or item_table is Media:
-            authors_items_ids = [a.media_id for a in all_authors_items]
             translation_table = MediaTranslation
         elif isinstance(item_table, Document) or item_table is Document:
-            authors_items_ids = [a.document_id for a in all_authors_items]
             translation_table = DocumentTranslation
         else:
             raise NotImplementedError(f"Unsupported item type: {item_table}")
 
         if not translation_table:
             raise NotImplementedError(f"Unsupported item type: {item_table}")
-
-        mapper = inspect(translation_table)
-        if not mapper:
-            raise NotImplementedError(f"Unsupported item type: {item_table}")
-        primary_key_columns = mapper.primary_key
-        translation_pk = primary_key_columns[0]
-
-        original_title = data["translations"][0]["title"]
-        title_query = translation_table.query.filter(
-            translation_pk.in_(authors_items_ids),
-            translation_table.title == original_title,
-        )
-
-        count = 0
-        new_title = original_title
-        while title_query.count() > 0:
-            count += 1
-            new_title = f"{original_title} ({count})"
-
-            title_query = translation_table.query.filter(
-                translation_pk.in_(authors_items_ids),
-                translation_table.title == new_title,
-            )
-
-        data["translations"][0]["title"] = new_title
 
     translation_data: List[Dict[str, Any]] = data.get("translations")
 
@@ -252,6 +216,8 @@ def create_item(
     for key, value in data.items():
         if hasattr(item, key):
             if "date" in key:
+                if not value:
+                    continue
                 setattr(
                     item,
                     key,
@@ -268,30 +234,34 @@ def create_item(
 
     for translation in translation_data:
         language_code = convert_iso_639_1_to_bcp_47(translation.get("language_code"))
-        del translation["language_code"]
+
+        translation_data = {
+            k: v for k, v in translation.items() if k != "language_code"
+        }
+
         if isinstance(item, News):
             translation = NewsTranslation(
                 news_id=item.news_id,
                 language_code=language_code,
-                **translation,
+                **translation_data,
             )
         elif isinstance(item, Event):
             translation = EventTranslation(
                 event_id=item.event_id,
                 language_code=language_code,
-                **translation,
+                **translation_data,
             )
         elif isinstance(item, Media):
             translation = MediaTranslation(
                 media_id=item.media_id,
                 language_code=language_code,
-                **translation,
+                **translation_data,
             )
         elif isinstance(item, Document):
             translation = DocumentTranslation(
                 document_id=item.document_id,
                 language_code=language_code,
-                **translation,
+                **translation_data,
             )
         else:
             raise NotImplementedError(f"Unsupported item type: {type(item_table)}")
