@@ -1,7 +1,7 @@
 import enum
-from textwrap import dedent
-from typing import List
 import uuid
+from datetime import timedelta
+from typing import List
 from sqlalchemy import (
     Boolean,
     Column,
@@ -9,11 +9,12 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    func,
     inspect,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP, UUID
+from sqlalchemy.ext.hybrid import hybrid_property
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
-from utility.translation import get_translation
 from utility.database import db
 from models.content.base import Item
 
@@ -78,11 +79,25 @@ class Event(Item):
         "EventTranslation", back_populates="event", lazy="joined"
     )
 
+    notifications = db.relationship(
+        "Notifications", back_populates="event", cascade="all, delete-orphan"
+    )
+
     discord_messages = db.relationship(
         "DiscordMessages", back_populates="events", cascade="all, delete-orphan"
     )
 
     __mapper_args__ = {"polymorphic_identity": "event"}
+
+    @hybrid_property
+    def end_date(self):
+        if self.start_date is None or self.duration is None:
+            return None
+        return self.start_date + timedelta(minutes=self.duration)
+
+    @end_date.expression
+    def end_date(cls):
+        return cls.start_date + func.make_interval(mins=cls.duration)
 
     def to_dict(
         self,
@@ -141,27 +156,6 @@ class Event(Item):
             data["start_date"] = custom_start_date
 
         return data
-
-    def to_ics(self, language: str):
-        translation = get_translation(
-            EventTranslation, ["event_id"], {"event_id": self.event_id}, language
-        )
-
-        if not isinstance(translation, EventTranslation):
-            return None
-
-        return dedent(f"""
-            BEGIN:VEVENT
-            UID:{str(self.event_id) + "@medieteknik.com"}
-            DTSTAMP:{self.created_at.strftime("%Y%m%dT%H%M%S" + "Z")}
-            SUMMARY:{translation.title}
-            DESCRIPTION:{translation.description}
-            LOCATION:{self.location}
-            LAST-MODIFIED:{self.last_updated.strftime("%Y%m%dT%H%M%S" + "Z")}
-            DTSTART:{self.start_date.strftime("%Y%m%dT%H%M%S" + "Z")}
-            DTEND:{self.end_date.strftime("%Y%m%dT%H%M%S") + "Z"}
-            END:VEVENT
-            """)
 
 
 class EventTranslation(db.Model):

@@ -1,6 +1,6 @@
 import enum
-from typing import Any, Dict, List
 import uuid
+from typing import Any, Dict, List
 from sqlalchemy import (
     TIMESTAMP,
     Boolean,
@@ -164,10 +164,29 @@ class Notifications(db.Model):
         unique=False,
     )
 
+    event_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("event.event_id"),
+        nullable=True,
+        unique=False,
+    )
+
+    news_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("news.news_id"),
+        nullable=True,
+        unique=False,
+    )
+
     # Relationships
     committee = db.relationship("Committee", back_populates="notifications")
+    event = db.relationship("Event", back_populates="notifications")
+    news = db.relationship("News", back_populates="notifications")
     translations = db.relationship(
-        "NotificationsTranslation", back_populates="notifications", lazy="joined"
+        "NotificationsTranslation",
+        back_populates="notifications",
+        lazy="joined",
+        cascade="all, delete-orphan",
     )
 
     def to_dict(

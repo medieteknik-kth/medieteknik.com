@@ -28,6 +28,10 @@ class News(Item):
         "NewsTranslation", back_populates="news", lazy="joined"
     )
 
+    notifications = db.relationship(
+        "Notifications", back_populates="news", cascade="all, delete-orphan"
+    )
+
     discord_messages = db.relationship(
         "DiscordMessages", back_populates="news", cascade="all, delete-orphan"
     )
