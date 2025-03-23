@@ -3,7 +3,6 @@ import type { AlbumTranslation } from '@/models/Album'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name SearchResponse
@@ -93,7 +92,7 @@ export const getSearchEntries = async (
   revalidate = 86_400 // 24 hours
 ): Promise<ApiResponse<SearchResponse>> => {
   const { data, error } = await fetchData<SearchResponse>(
-    `${API_BASE_URL}/public/search?language=${language}`,
+    `/public/search?language=${language}`,
     {
       next: {
         revalidate: revalidate,

@@ -28,7 +28,6 @@ import { useToast } from '@/components/ui/use-toast'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { NewsPagination } from '@/models/Pagination'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckBadgeIcon,
   ChevronLeftIcon,
@@ -64,7 +63,7 @@ const fetcher = (url: string) =>
 export default function NewsTable({ language, committee }: Props): JSX.Element {
   const [pageIndex, setPageIndex] = useState(1)
   const { data: news, error: swrError } = useSWR<NewsPagination>(
-    `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/news?language=${language}&page=${pageIndex}`,
+    `/api/committees/${committee.translations[0].title.toLowerCase()}/news?language=${language}&page=${pageIndex}`,
     fetcher
   )
   const { t } = useTranslation(language, 'committee_management/news')

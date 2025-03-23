@@ -31,7 +31,6 @@ import type Student from '@/models/Student'
 import type Event from '@/models/items/Event'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCalendar } from '@/providers/CalendarProvider'
-import { API_BASE_URL } from '@/utility/Constants'
 import { ClockIcon, MapPinIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 import type { JSX } from 'react'
@@ -98,7 +97,7 @@ export default function DetailedEvent({
   const deleteEvent = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/events/${event.event_id}?author_type=${event.author.author_type}`,
+        `/api/events/${event.event_id}?author_type=${event.author.author_type}`,
         {
           method: 'DELETE',
           credentials: 'include',

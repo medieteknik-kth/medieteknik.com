@@ -32,11 +32,7 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import type { LanguageCode } from '@/models/Language'
 import { uploadNewsSchema } from '@/schemas/items/news'
-import {
-  API_BASE_URL,
-  LANGUAGES,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import {
   DocumentTextIcon,
   EyeIcon,
@@ -111,7 +107,7 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/news/${slug}/publish?language=${language}`,
+        `/api/news/${slug}/publish?language=${language}`,
         {
           method: 'PUT',
           credentials: 'include',
@@ -220,9 +216,7 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
               const res = await saveCallback(language, true)
 
               if (res === AutoSaveResult.SUCCESS) {
-                await mutate(
-                  `${API_BASE_URL}/news/${slug}?language=${language}`
-                )
+                await mutate(`/api/news/${slug}?language=${language}`)
                 push(
                   `/${language}/bulletin/news/upload/${slug}/preview${
                     content.author.author_type === 'COMMITTEE'

@@ -1,7 +1,6 @@
 'use client'
 import NewsCard from '@/app/[language]/bulletin/components/newsCard'
 import type { NewsPagination } from '@/models/Pagination'
-import { API_BASE_URL } from '@/utility/Constants'
 import useSWR from 'swr'
 
 import type { LanguageCode } from '@/models/Language'
@@ -29,7 +28,7 @@ export default function NewsPaginationPage({
   index,
 }: Props): JSX.Element | JSX.Element[] {
   const { data } = useSWR<NewsPagination>(
-    `${API_BASE_URL}/public/news?page=${index}&language=${language}`,
+    `/api/public/news?page=${index}&language=${language}`,
     fetcher
   )
 

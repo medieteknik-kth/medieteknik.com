@@ -44,6 +44,7 @@ const BLACKLISTED_URLS_REGEX = new RegExp(
     '/installHook\\.js\\.map',
     '/ads\\.txt',
     '/__nextjs_original-stack-frame.*',
+    '/api/.*',
   ].join('|')
 )
 

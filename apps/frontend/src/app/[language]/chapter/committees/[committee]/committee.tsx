@@ -1,7 +1,6 @@
 //import ExploreMore from './client/explore'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import type Committee from '@/models/Committee'
-import { API_BASE_URL } from '@/utility/Constants'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
@@ -32,14 +31,11 @@ export async function generateStaticParams(): Promise<
   { language: string; committee: string }[]
 > {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/public/committees?language=sv`,
-      {
-        next: {
-          revalidate: 2_592_000, // 3 months
-        },
-      }
-    )
+    const response = await fetch('/api/public/committees?language=sv', {
+      next: {
+        revalidate: 2_592_000, // 30 days
+      },
+    })
 
     if (response.ok) {
       const data = (await response.json()) as Committee[]

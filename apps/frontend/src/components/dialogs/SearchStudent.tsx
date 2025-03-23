@@ -13,7 +13,6 @@ import {
 import type { LanguageCode } from '@/models/Language'
 import type { StudentPagination } from '@/models/Pagination'
 import type Student from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckIcon,
   MagnifyingGlassIcon,
@@ -150,7 +149,7 @@ export default function SearchStudent({
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
 
   const { data, error, isLoading } = useSWR<StudentPagination>(
-    `${API_BASE_URL}/public/students?page=${pageIndex}${
+    `/api/public/students?page=${pageIndex}${
       searchQuery ? `&q=${searchQuery}` : ''
     }`,
     fetcher

@@ -12,7 +12,6 @@ import {
 import { Input } from '@/components/ui/input'
 import type { Profile } from '@/models/Student'
 import { profileSchema } from '@/schemas/user/profile'
-import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.webp'
 import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.webp'
@@ -46,15 +45,11 @@ interface Props {
  * @returns {JSX.Element} The profile form
  */
 export default function ProfileForm({ language }: Props): JSX.Element {
-  const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/students/profile`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      refreshWhenHidden: false,
-      shouldRetryOnError: false,
-    }
-  )
+  const { data, error, isLoading } = useSWR('/api/students/profile', fetcher, {
+    revalidateOnFocus: false,
+    refreshWhenHidden: false,
+    shouldRetryOnError: false,
+  })
 
   const { t } = useTranslation(language, 'account/profile')
 
@@ -76,7 +71,7 @@ export default function ProfileForm({ language }: Props): JSX.Element {
         linkedin_url: data.linkedin === '' ? null : data.linkedin,
       }
 
-      const response = await fetch(`${API_BASE_URL}/students/profile`, {
+      const response = await fetch('/api/students/profile', {
         method: 'PUT',
         credentials: 'include',
         headers: {

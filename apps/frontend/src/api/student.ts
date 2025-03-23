@@ -6,7 +6,6 @@ import type {
   Profile,
   StudentCommitteePosition,
 } from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name getStudentPublic
@@ -34,14 +33,11 @@ export const getStudentPublic = async (
     student: Student
     profile?: Profile
     memberships: IndividualCommitteePosition[]
-  }>(
-    `${API_BASE_URL}/public/students/${studentId}?language=${language_code}&detailed=${detailed}`,
-    {
-      next: {
-        revalidate: revalidate,
-      },
-    }
-  )
+  }>(`/students/${studentId}?language=${language_code}&detailed=${detailed}`, {
+    next: {
+      revalidate: revalidate,
+    },
+  })
 
   if (error) {
     return { data, error }
@@ -68,7 +64,7 @@ export const getOfficials = async (
 ): Promise<ApiResponse<StudentCommitteePosition[]>> => {
   // TODO: Change the API endpoint to something like this '/public/officials/'?
   const { data, error } = await fetchData<StudentCommitteePosition[]>(
-    `${API_BASE_URL}/public/students/committee_members?language=${language_code}&year=${year}&semester=${semester}`,
+    `/students/committee_members?language=${language_code}&year=${year}&semester=${semester}`,
     {
       next: {
         revalidate: revalidate,

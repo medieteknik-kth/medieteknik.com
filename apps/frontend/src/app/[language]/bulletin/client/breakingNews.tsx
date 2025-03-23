@@ -13,7 +13,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/use-toast'
 import type { LanguageCode } from '@/models/Language'
 import type News from '@/models/items/News'
-import { API_BASE_URL } from '@/utility/Constants'
 import { LinkIcon, TagIcon } from '@heroicons/react/24/outline'
 import { Link } from 'next-view-transitions'
 import type { JSX } from 'react'
@@ -39,7 +38,7 @@ export default function BreakingNews({
   const { toast } = useToast()
   const { t } = useTranslation(language, 'bulletin')
   const { data, error, isLoading } = useSWR<News[]>(
-    `${API_BASE_URL}/public/news/latest?language=${language}`,
+    `/api/public/news/latest?language=${language}`,
     fetcher,
     {
       fallbackData: [],

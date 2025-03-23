@@ -5,7 +5,6 @@ import Loading from '@/components/tooltips/Loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { LanguageCode } from '@/models/Language'
 import type News from '@/models/items/News'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CogIcon,
   DocumentIcon,
@@ -54,7 +53,7 @@ export default function UploadNews(props: Props): JSX.Element {
 
   // TODO: Maybe a server component?
   const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/news/${slug}?language=${language}`,
+    `/api/news/${slug}?language=${language}`,
     fetcher
   )
 

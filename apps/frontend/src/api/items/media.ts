@@ -3,7 +3,6 @@ import type Album from '@/models/Album'
 import type { LanguageCode } from '@/models/Language'
 import type { AlbumPagination, MediaPagination } from '@/models/Pagination'
 import type Media from '@/models/items/Media'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name getMediaData
@@ -20,7 +19,7 @@ export const getMediaData = async (
   revalidate = 3_600
 ): Promise<ApiResponse<MediaPagination>> => {
   const { data, error } = await fetchData<MediaPagination>(
-    `${API_BASE_URL}/public/media/author/${committee_id}?language=${language_code}`,
+    `/public/media/author/${committee_id}?language=${language_code}`,
     {
       next: {
         revalidate: revalidate, // 1 hour or user defined
@@ -48,7 +47,7 @@ export const getAlbums = async (
   revalidate = 3_600
 ): Promise<ApiResponse<AlbumPagination>> => {
   const { data, error } = await fetchData<AlbumPagination>(
-    `${API_BASE_URL}/public/albums?language=${language_code}`,
+    `/public/albums?language=${language_code}`,
     {
       next: {
         revalidate: revalidate, // 1 hour or user defined
@@ -80,7 +79,7 @@ export const getAlbumAndMedia = async (
   const { data, error } = await fetchData<{
     album: Album
     media: Media[]
-  }>(`${API_BASE_URL}/public/albums/${slug}?language=${language_code}`, {
+  }>(`/public/albums/${slug}?language=${language_code}`, {
     next: {
       revalidate: revalidate, // 24 hours or user defined
     },
@@ -106,7 +105,7 @@ export const getLatestMedia = async (
   revalidate = 3_600
 ): Promise<ApiResponse<Media[]>> => {
   const { data, error } = await fetchData<Media[]>(
-    `${API_BASE_URL}/public/media/latest?language=${language_code}`,
+    `/public/media/latest?language=${language_code}`,
     {
       next: {
         revalidate: revalidate, // 1 hour or user defined

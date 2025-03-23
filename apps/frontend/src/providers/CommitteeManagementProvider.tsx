@@ -7,7 +7,6 @@ import type {
 import type { LanguageCode } from '@/models/Language'
 import type { StudentMembershipPagination } from '@/models/Pagination'
 import type { StudentMembership } from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
   useContext,
@@ -191,14 +190,14 @@ export function CommitteeManagementProvider({
       try {
         const [dataResponse, recruitmentResponse] = await Promise.all([
           fetch(
-            `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/data?language=${language}`,
+            `/api/committees/${committee.translations[0].title.toLowerCase()}/data?language=${language}`,
             {
               method: 'GET',
               credentials: 'include',
             }
           ),
           fetch(
-            `${API_BASE_URL}/public/committee_positions/recruiting?committee=${committee.translations[0].title.toLowerCase()}&language=${language}`,
+            `/api/public/committee_positions/recruiting?committee=${committee.translations[0].title.toLowerCase()}&language=${language}`,
             {
               method: 'GET',
             }

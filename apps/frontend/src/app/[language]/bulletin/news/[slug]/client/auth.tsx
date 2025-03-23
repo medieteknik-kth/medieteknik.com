@@ -18,7 +18,6 @@ import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type News from '@/models/items/News'
 import { useStudent } from '@/providers/AuthenticationProvider'
-import { API_BASE_URL } from '@/utility/Constants'
 
 import type { JSX } from 'react'
 
@@ -39,7 +38,7 @@ export default function NewsAuth({ language, news_data }: Props): JSX.Element {
     }
     const encodedURL = encodeURIComponent(news_data.url)
     try {
-      const response = await fetch(`${API_BASE_URL}/news/${encodedURL}`, {
+      const response = await fetch(`/api/news/${encodedURL}`, {
         method: 'DELETE',
         credentials: 'include',
       })

@@ -1,7 +1,6 @@
 import { type ApiResponse, fetchData } from '@/api/api'
 import type { LanguageCode } from '@/models/Language'
 import type Event from '@/models/items/Event'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name getEvents
@@ -19,7 +18,7 @@ export const getEvents = async (
 ): Promise<ApiResponse<Event[]>> => {
   const convertedDate = date.toISOString().substring(0, 7)
   const { data, error } = await fetchData<Event[]>(
-    `${API_BASE_URL}/public/calendar/events?date=${convertedDate}&language=${language}`,
+    `/public/calendar/events?date=${convertedDate}&language=${language}`,
     {
       next: {
         revalidate: revalidate,

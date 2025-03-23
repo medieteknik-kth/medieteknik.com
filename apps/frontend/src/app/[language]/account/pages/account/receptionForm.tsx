@@ -31,7 +31,6 @@ import {
   useStudent,
 } from '@/providers/AuthenticationProvider'
 import { receptionSchema } from '@/schemas/user/reception'
-import { API_BASE_URL } from '@/utility/Constants'
 import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
@@ -110,11 +109,7 @@ export default function ReceptionForm({ language }: Props): JSX.Element {
     },
   })
 
-  const {
-    data: csrf,
-    error,
-    isLoading,
-  } = useSWR(`${API_BASE_URL}/csrf-token`, fetcher)
+  const { data: csrf, error, isLoading } = useSWR('/api/csrf-token', fetcher)
 
   useEffect(() => {
     if (csrf) {
@@ -138,7 +133,7 @@ export default function ReceptionForm({ language }: Props): JSX.Element {
     formData.append('csrf_token', data.csrf_token || csrf.token)
 
     try {
-      const response = await fetch(`${API_BASE_URL}/students/reception`, {
+      const response = await fetch('/api/students/reception', {
         method: 'PUT',
         headers: {
           'X-CSRF-Token': csrfToken || data.csrf_token || '',

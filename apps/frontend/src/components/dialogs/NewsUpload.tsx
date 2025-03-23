@@ -22,7 +22,6 @@ import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { createNewsSchema } from '@/schemas/items/news'
-import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type JSX, useEffect, useState } from 'react'
@@ -91,17 +90,14 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
     }
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/news?language=${language}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(json),
-        }
-      )
+      const response = await fetch(`/api/news?language=${language}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(json),
+      })
 
       if (response.ok) {
         const jsonResponse = await response.json()

@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { API_BASE_URL, IS_DEVELOPMENT } from '@/utility/Constants'
+import { IS_DEVELOPMENT } from '@/utility/Constants'
 import type { JSX } from 'react'
 import { useEffect, useState } from 'react'
 
@@ -51,7 +51,7 @@ async function updateNotifications(
 ): Promise<void> {
   const { email, push, iana, site_updates, committees } = data
   try {
-    const response = await fetch(`${API_BASE_URL}/students/notifications`, {
+    const response = await fetch('/api/students/notifications', {
       method: 'POST',
       credentials: 'include',
       headers: {

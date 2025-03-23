@@ -30,7 +30,6 @@ import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   BuildingOffice2Icon,
   CircleStackIcon,
@@ -83,13 +82,10 @@ export default function MembersPage({
 
   const deleteRecruitment = async (id: string) => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/committee_positions/${id}/recruit`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        }
-      )
+      const response = await fetch(`/api/committee_positions/${id}/recruit`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
 
       if (!response.ok) {
         alert('Failed to delete recruitment')
@@ -260,7 +256,7 @@ export default function MembersPage({
                   />
                 )}
               </Dialog>
-              
+
               <Dialog>
                 <DialogTrigger asChild>
                   <Button

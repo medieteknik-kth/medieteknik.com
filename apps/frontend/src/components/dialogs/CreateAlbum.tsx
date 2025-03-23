@@ -20,7 +20,7 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { LanguageCode } from '@/models/Language'
 import { albumUploadSchema } from '@/schemas/items/album'
-import { API_BASE_URL, LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
@@ -45,7 +45,7 @@ export default function CreateAlbum({ language, callback }: Props) {
 
   const postForm = async (data: z.infer<typeof albumUploadSchema>) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/albums`, {
+      const response = await fetch('/api/albums', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

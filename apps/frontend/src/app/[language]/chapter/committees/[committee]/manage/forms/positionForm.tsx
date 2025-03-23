@@ -42,11 +42,7 @@ import type { LanguageCode } from '@/models/Language'
 import { Role } from '@/models/Permission'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { addPositionSchema } from '@/schemas/committee/position'
-import {
-  API_BASE_URL,
-  LANGUAGES,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -157,7 +153,7 @@ export default function PositionForm({
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/committee_positions/`, {
+      const response = await fetch('/api/committee_positions/', {
         method: 'POST',
         credentials: 'include',
         headers: {

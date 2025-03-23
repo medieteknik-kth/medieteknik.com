@@ -1,6 +1,5 @@
 import type { LanguageCode } from '@/models/Language'
 import type { AuthenticationResponse } from '@/models/response/AuthenticationResponse'
-import { API_BASE_URL } from '@/utility/Constants'
 
 const CACHE_REVALIDATION_PERIOD_SECONDS = 60
 
@@ -27,7 +26,7 @@ export const authService = {
       csrf_token: csrf_token,
       remember: remember ?? false,
     }
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch('/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,16 +52,13 @@ export const authService = {
   getUserData: async (
     language: LanguageCode
   ): Promise<AuthenticationResponse> => {
-    const response = await fetch(
-      `${API_BASE_URL}/students/me?language=${language}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-        next: {
-          revalidate: CACHE_REVALIDATION_PERIOD_SECONDS,
-        },
-      }
-    )
+    const response = await fetch(`/api/students/me?language=${language}`, {
+      method: 'GET',
+      credentials: 'include',
+      next: {
+        revalidate: CACHE_REVALIDATION_PERIOD_SECONDS,
+      },
+    })
 
     if (!response.ok) {
       throw new Error('Failed to fetch user data')
@@ -77,7 +73,7 @@ export const authService = {
    * @returns {Promise<void>}
    */
   logout: async (): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/logout`, {
+    const response = await fetch('/api/logout', {
       method: 'DELETE',
       credentials: 'include',
     })
