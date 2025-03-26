@@ -1,5 +1,6 @@
 import type { Language, LanguageCode } from '@/models/Language'
 import { GB, SE } from 'country-flag-icons/react/3x2'
+import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 export const SITE_VERSION = '0.6.2'
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
@@ -14,6 +15,9 @@ export const LOCAL_STORAGE_NOTIFICATION_KEY: string = 'notification'
 export const LOCAL_STORAGE_READ_NOTIFICATIONS_KEY: string = 'read-notifications'
 
 export const LANGUAGE_COOKIE_NAME: string = 'language'
+export const COOKIE_VERSION_NAME: string = 'cookie_version'
+export const COOKIE_VERSION_VALUE: string = '1'
+
 export const DEFAULT_NS: string = 'translation'
 export const LANGUAGES: Language = {
   sv: {
@@ -39,5 +43,20 @@ export const LANGUAGES: Language = {
         }}
       />
     ),
+  },
+}
+
+export const COOKIE_SETTINGS: Record<string, Partial<ResponseCookie>> = {
+  language: {
+    path: process.env.NODE_ENV === 'development' ? '/' : '.medieteknik.com',
+    sameSite: 'strict',
+    expires: new Date(Date.now() + 31_536_000_000), // 1 year
+    secure: process.env.NODE_ENV === 'production',
+  },
+  cookie_version: {
+    path: process.env.NODE_ENV === 'development' ? '/' : '.medieteknik.com',
+    sameSite: 'strict',
+    expires: new Date(Date.now() + 31_536_000_000), // 1 year
+    secure: process.env.NODE_ENV === 'production',
   },
 }
