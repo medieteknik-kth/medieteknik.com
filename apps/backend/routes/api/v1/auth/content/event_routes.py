@@ -112,7 +112,7 @@ def delete_event(event_id: str) -> Response:
     return jsonify({}), HTTPStatus.NO_CONTENT
 
 
-@events_bp.route("/", methods=["POST"])
+@events_bp.route("", methods=["POST"])
 @jwt_required()
 def create_event() -> Response:
     """

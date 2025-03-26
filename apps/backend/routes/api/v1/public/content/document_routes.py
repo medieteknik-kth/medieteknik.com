@@ -15,7 +15,7 @@ from utility import retrieve_languages
 public_documents_bp = Blueprint("public_documents", __name__)
 
 
-@public_documents_bp.route("/", methods=["GET"])
+@public_documents_bp.route("", methods=["GET"])
 def get_documents() -> Response:
     """
     Retrieves all documents with optional search and status filters

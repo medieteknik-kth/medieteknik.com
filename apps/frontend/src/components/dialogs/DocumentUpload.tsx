@@ -217,7 +217,7 @@ export default function DocumentUpload({
     })
 
     try {
-      const response = await fetch('/api/documents/', {
+      const response = await fetch('/api/documents', {
         method: 'POST',
         credentials: 'include',
         body: formData,

@@ -143,7 +143,7 @@ export default function AccountForm({ language }: Props): JSX.Element {
     formData.append('csrf_token', data.csrf_token || csrf.token)
 
     try {
-      const response = await fetch('/api/students/', {
+      const response = await fetch('/api/students', {
         method: 'PUT',
         headers: {
           'X-CSRF-Token': data.csrf_token || csrf.token,

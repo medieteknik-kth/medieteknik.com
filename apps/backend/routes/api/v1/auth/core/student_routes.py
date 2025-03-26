@@ -25,7 +25,7 @@ from utility.translation import convert_iso_639_1_to_bcp_47
 student_bp = Blueprint("student", __name__)
 
 
-@student_bp.route("/", methods=["PUT"])
+@student_bp.route("", methods=["PUT"])
 @csrf_protected
 @jwt_required()
 def update_student() -> Response:

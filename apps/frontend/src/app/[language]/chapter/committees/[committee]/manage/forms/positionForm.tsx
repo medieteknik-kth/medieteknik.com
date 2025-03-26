@@ -153,7 +153,7 @@ export default function PositionForm({
     }
 
     try {
-      const response = await fetch('/api/committee_positions/', {
+      const response = await fetch('/api/committee_positions', {
         method: 'POST',
         credentials: 'include',
         headers: {

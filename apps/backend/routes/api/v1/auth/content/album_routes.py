@@ -15,7 +15,7 @@ from utility import db, convert_iso_639_1_to_bcp_47
 album_bp = Blueprint("album", __name__)
 
 
-@album_bp.route("/", methods=["POST"])
+@album_bp.route("", methods=["POST"])
 @jwt_required()
 def create_album() -> Response:
     """

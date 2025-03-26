@@ -8,7 +8,6 @@ from flask import Blueprint, Response, jsonify, request
 from models.core import Author
 from models.content import Media
 from services.content.public.item import (
-    get_items,
     get_items_from_author,
     get_latest_items,
 )
@@ -17,17 +16,6 @@ from utility.translation import retrieve_languages
 
 public_media_bp = Blueprint("public_media", __name__)
 
-
-@public_media_bp.route("/")
-def get_all_media() -> Response:
-    """
-    Retrieves all media
-        :return: Response - The response object, 200 if successful
-    """
-
-    provided_languages = retrieve_languages(request.args)
-
-    return jsonify(get_items(Media, provided_languages)), HTTPStatus.OK
 
 
 @public_media_bp.route("/author/<string:author_id>")

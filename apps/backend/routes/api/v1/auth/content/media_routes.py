@@ -18,7 +18,7 @@ from utility import AVAILABLE_LANGUAGES, upload_file, convert_iso_639_1_to_bcp_4
 media_bp = Blueprint("media", __name__)
 
 
-@media_bp.route("/", methods=["POST"])
+@media_bp.route("", methods=["POST"])
 @jwt_required()
 def create_media() -> Response:
     """

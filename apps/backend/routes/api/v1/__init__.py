@@ -53,7 +53,6 @@ def register_v1_routes(app: Flask):
         public_bp,
         public_album_bp,
         public_news_bp,
-        public_events_bp,
         public_media_bp,
         public_documents_bp,
         public_student_bp,
@@ -94,9 +93,6 @@ def register_v1_routes(app: Flask):
     )
     app.register_blueprint(
         public_news_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.NEWS.value}"
-    )
-    app.register_blueprint(
-        public_events_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.EVENTS.value}"
     )
     app.register_blueprint(
         public_documents_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}"
@@ -152,7 +148,7 @@ def register_v1_routes(app: Flask):
         if request.path.startswith(f"{PUBLIC_PATH}") and not response.headers.get(
             "Cache-Control"
         ):
-            response.headers["Cache-Control"] = "public, max-age=600"
+            response.headers["Cache-Control"] = "public, max-age=60"  # 1 minute
         elif request.path.startswith(f"{PROTECTED_PATH}") and not response.headers.get(
             "Cache-Control"
         ):
