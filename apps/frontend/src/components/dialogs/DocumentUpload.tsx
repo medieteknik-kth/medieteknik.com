@@ -37,11 +37,7 @@ import type Document from '@/models/items/Document'
 import type { DocumentTranslation } from '@/models/items/Document'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
-import {
-  API_BASE_URL,
-  LANGUAGES,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -221,7 +217,7 @@ export default function DocumentUpload({
     })
 
     try {
-      const response = await fetch(`${API_BASE_URL}/documents/`, {
+      const response = await fetch('/api/documents', {
         method: 'POST',
         credentials: 'include',
         body: formData,

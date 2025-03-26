@@ -13,7 +13,7 @@ from utility import retrieve_languages
 public_student_bp = Blueprint("public_student", __name__)
 
 
-@public_student_bp.route("/", methods=["GET"])
+@public_student_bp.route("", methods=["GET"])
 def get_students() -> Response:
     """
     Retrieves all students

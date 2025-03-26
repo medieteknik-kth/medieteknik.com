@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
 import type Student from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   ArrowPathRoundedSquareIcon,
   ArrowUpTrayIcon,
@@ -57,18 +56,19 @@ export default function CalendarExport({ student }: Props): JSX.Element {
           </div>
           <div className='grid grid-cols-12'>
             <p className='w-auto text-sm text-nowrap h-10 border rounded-md px-2 pt-1 pb-2 overflow-x-scroll overflow-y-hidden mr-2 col-span-11 grid items-center'>
-              {`${API_BASE_URL}/calendar/ics?u=${student.student_id}`}
+              {`/api/calendar/ics?u=${student.student_id}`}
             </p>
             <Button
               size={'icon'}
               variant={'outline'}
               onClick={() => {
+                // TODO: Double check the export API...
                 navigator.clipboard.writeText(
-                  `${API_BASE_URL}/calendar/ics?u=${student.student_id}`
+                  `/api/calendar/ics?u=${student.student_id}`
                 )
                 toast({
                   title: 'Copied to clipboard',
-                  description: `${API_BASE_URL}/calendar/ics?u=${student.student_id}`,
+                  description: `/api/calendar/ics?u=${student.student_id}`,
                   duration: 2500,
                 })
               }}
@@ -87,7 +87,7 @@ export default function CalendarExport({ student }: Props): JSX.Element {
           <div className='flex gap-2 flex-wrap'>
             <Button asChild>
               <Link
-                href={`${API_BASE_URL}/calendar/ics?u=${student.student_id}`}
+                href={`/api/calendar/ics?u=${student.student_id}`}
                 target='_blank'
               >
                 Export to ICS

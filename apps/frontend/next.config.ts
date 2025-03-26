@@ -18,7 +18,6 @@ const experimentalConfig: ExperimentalConfig = {
 
 const nextConfig: NextConfig = {
   experimental: experimentalConfig,
-  productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {
@@ -38,6 +37,20 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
+  async rewrites() {
+    // "Rewrites are applied to client-side routing" - https://nextjs.org/docs/pages/api-reference/config/next-config-js/rewrites
+    const apiUrl =
+      process.env.NODE_ENV === 'development'
+        ? `${process.env.NEXT_PUBLIC_API_URL}/:path*`
+        : `${process.env.API_URL}/:path*`
+    return [
+      {
+        source: '/api/:path*',
+        destination: apiUrl,
+      },
+    ]
   },
 
   async headers() {

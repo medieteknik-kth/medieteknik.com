@@ -32,7 +32,6 @@ import {
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { API_BASE_URL } from '@/utility/Constants'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 
 interface Props {
@@ -62,7 +61,7 @@ export default function CurrentMembers({ language }: Props) {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/committee_positions/assign/${committee_position_id}`,
+        `/api/committee_positions/assign/${committee_position_id}`,
         {
           method: 'DELETE',
           credentials: 'include',

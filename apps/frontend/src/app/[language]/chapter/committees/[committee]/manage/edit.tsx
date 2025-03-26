@@ -27,11 +27,7 @@ import type { LanguageCode } from '@/models/Language'
 import { Permission } from '@/models/Permission'
 import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import { editCommitteeSchema } from '@/schemas/committee/edit'
-import {
-  API_BASE_URL,
-  LANGUAGES,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -161,7 +157,7 @@ export default function EditCommittee({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}`,
+        `/api/committees/${committee.translations[0].title.toLowerCase()}`,
         {
           method: 'PUT',
           credentials: 'include',

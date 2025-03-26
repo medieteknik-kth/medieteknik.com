@@ -36,7 +36,6 @@ import type Student from '@/models/Student'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { addMember } from '@/schemas/committee/member'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   ChevronUpDownIcon,
   MinusIcon,
@@ -66,17 +65,14 @@ export function RemoveMemberForm({ language }: Props) {
   const publish = async (data: z.infer<typeof addMember>) => {
     const json_data = JSON.stringify(data)
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/committee_positions/assign`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: json_data,
-        }
-      )
+      const response = await fetch('/api/committee_positions/assign', {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json_data,
+      })
 
       if (response.ok) {
         window.location.reload()
@@ -237,7 +233,7 @@ export function AddMemberForm({
     const json_data = JSON.stringify(data)
     try {
       const response = await fetch(
-        `${API_BASE_URL}/committee_positions/assign/${data.position_id}`,
+        `/api/committee_positions/assign/${data.position_id}`,
         {
           method: 'POST',
           credentials: 'include',

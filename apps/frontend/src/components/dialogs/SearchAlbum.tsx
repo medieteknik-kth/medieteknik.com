@@ -14,7 +14,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type Album from '@/models/Album'
 import type { LanguageCode } from '@/models/Language'
 import type { AlbumPagination } from '@/models/Pagination'
-import { API_BASE_URL } from '@/utility/Constants'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useRef, useState } from 'react'
 import useSWR from 'swr'
@@ -35,7 +34,7 @@ export default function SearchAlbum({ language, albums, callback }: Props) {
   const { t } = useTranslation(language, 'media')
 
   const { data, error, isLoading } = useSWR<AlbumPagination>(
-    `${API_BASE_URL}/public/albums?page=${pageIndex}${
+    `/api/public/albums?page=${pageIndex}${
       searchQuery ? `&q=${searchQuery}` : ''
     }`,
     fetcher

@@ -25,7 +25,7 @@ from utility.translation import convert_iso_639_1_to_bcp_47
 student_bp = Blueprint("student", __name__)
 
 
-@student_bp.route("/", methods=["PUT"])
+@student_bp.route("", methods=["PUT"])
 @csrf_protected
 @jwt_required()
 def update_student() -> Response:
@@ -178,7 +178,7 @@ def get_student_permissions() -> Response:
 
 
 @student_bp.route("/me", methods=["GET"])
-@jwt_required()
+@jwt_required(optional=True)
 def get_student_callback() -> Response:
     """
     Retrieves the student information
@@ -186,15 +186,18 @@ def get_student_callback() -> Response:
     """
 
     provided_languages = retrieve_languages(request.args)
-    student_id = None
-    expiration = None
 
-    try:
-        student_id = get_jwt_identity()
-        jwt = get_jwt()
-        expiration = jwt["exp"]
-    except Exception:
-        return jsonify({"error": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
+    student_id: str | None = get_jwt_identity()
+    jwt = get_jwt()
+
+    if not student_id or not jwt:
+        return jsonify(
+            {
+                "error": "Unauthorized",
+            }
+        ), HTTPStatus.OK
+
+    expiration = jwt["exp"]
 
     student: Student = Student.query.get_or_404(student_id)
 

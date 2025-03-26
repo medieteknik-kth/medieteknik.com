@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { API_BASE_URL, IS_DEVELOPMENT } from '@/utility/Constants'
+import { IS_DEVELOPMENT } from '@/utility/Constants'
 import type { JSX } from 'react'
 import { useEffect, useState } from 'react'
 
@@ -50,8 +50,12 @@ async function updateNotifications(
   notificationSubscription: PushSubscription
 ): Promise<void> {
   const { email, push, iana, site_updates, committees } = data
+  const baseUrl =
+    process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_PUBLIC_API_URL
+      : process.env.API_URL
   try {
-    const response = await fetch(`${API_BASE_URL}/students/notifications`, {
+    const response = await fetch('/api/students/notifications', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -86,68 +90,66 @@ export default function ServiceWorkerRegister(): JSX.Element {
   const [wasPreviouslySubscribed, setWasPreviouslySubscribed] = useState(false)
 
   useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      window.addEventListener('load', () => {
-        const swUrl = new URL('/service-worker.js', window.location.origin).href
-        navigator.serviceWorker
-          .register(swUrl, {
-            scope: '/',
-          })
-          .then(async (registration) => {
-            if (IS_DEVELOPMENT) {
-              console.log('Service worker registered: ', registration)
-            }
-
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-              // Check if the app is running in standalone mode (PWA)
-              // See the `manifest.ts` file for the PWA configuration
-              if (
-                'serviceWorker' in navigator &&
-                'periodicSync' in registration
-              ) {
-                // Register for periodic sync
-                // NOTE: This is mainly available in a PWA app and only in some browsers:
-                // https://developer.mozilla.org/en-US/docs/Web/API/Web_Periodic_Background_Synchronization_API#specifications
-                navigator.serviceWorker.ready.then((periodicRegistration) => {
-                  if (!periodicRegistration.active) {
-                    console.warn('No active service worker found')
-                    return
-                  }
-
-                  periodicRegistration.active.postMessage({
-                    type: 'REGISTER_PERIODIC_SYNC',
-                  })
-                })
-              }
-            }
-
-            const subscription =
-              await registration.pushManager.getSubscription()
-
-            if (!subscription) {
-              // If the user is not subscribed, we can check if they were previously subscribed
-              // and show the resubscribe dialog
-              const previousSubcription = localStorage.getItem(
-                'notificationSettings'
-              )
-
-              if (previousSubcription) {
-                const { push } = JSON.parse(previousSubcription)
-                if (push) {
-                  setWasPreviouslySubscribed(true)
-                }
-              }
-            }
-
-            await registration.update()
-          })
-          .catch((error) => {
-            console.log('Service worker registration failed: ', error)
-          })
-      })
-    } else {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       console.warn('Service worker is not supported')
+      return
     }
+
+    const registerServiceWorker = async () => {
+      try {
+        const swUrl = new URL('/service-worker.js', window.location.origin).href
+        const registration = await navigator.serviceWorker.register(swUrl, {
+          scope: '/',
+        })
+
+        if (IS_DEVELOPMENT) {
+          console.log('Service worker registered: ', registration)
+        }
+
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          // Check if the app is running in standalone mode (PWA)
+          // See the `manifest.ts` file for the PWA configuration
+          if ('serviceWorker' in navigator && 'periodicSync' in registration) {
+            // Register for periodic sync
+            // NOTE: This is mainly available in a PWA app and only in some browsers:
+            // https://developer.mozilla.org/en-US/docs/Web/API/Web_Periodic_Background_Synchronization_API#specifications
+            navigator.serviceWorker.ready.then((periodicRegistration) => {
+              if (!periodicRegistration.active) {
+                console.warn('No active service worker found')
+                return
+              }
+
+              periodicRegistration.active.postMessage({
+                type: 'REGISTER_PERIODIC_SYNC',
+              })
+            })
+          }
+        }
+
+        const subscription = await registration.pushManager.getSubscription()
+
+        if (!subscription) {
+          // If the user is not subscribed, we can check if they were previously subscribed
+          // and show the resubscribe dialog
+          const previousSubcription = localStorage.getItem(
+            'notificationSettings'
+          )
+
+          if (previousSubcription) {
+            const { push } = JSON.parse(previousSubcription)
+            if (push) {
+              setWasPreviouslySubscribed(true)
+            }
+          }
+        }
+
+        await registration.update()
+      } catch (error) {
+        console.error('Service worker registration failed:', error)
+      }
+    }
+
+    registerServiceWorker()
   }, [])
 
   if (!wasPreviouslySubscribed) {
@@ -190,6 +192,7 @@ export default function ServiceWorkerRegister(): JSX.Element {
         <AlertDialogFooter>
           <AlertDialogCancel
             onClick={() => {
+              localStorage.removeItem('notificationSettings')
               setWasPreviouslySubscribed(false)
             }}
           >

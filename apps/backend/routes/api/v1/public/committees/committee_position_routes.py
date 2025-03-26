@@ -22,7 +22,7 @@ from utility import retrieve_languages
 public_committee_position_bp = Blueprint("public_committee_position", __name__)
 
 
-@public_committee_position_bp.route("/", methods=["GET"])
+@public_committee_position_bp.route("", methods=["GET"])
 def get_all_positions() -> Response:
     """
     Retrieves all committee positions

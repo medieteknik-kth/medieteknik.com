@@ -2,7 +2,6 @@ import { type ApiResponse, fetchData } from '@/api/api'
 import type { LanguageCode } from '@/models/Language'
 import type { NewsPagination } from '@/models/Pagination'
 import type News from '@/models/items/News'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name getNewsPagniation
@@ -19,7 +18,7 @@ export const getNewsPagniation = async (
   revalidate = 3_600
 ): Promise<ApiResponse<NewsPagination>> => {
   const { data, error } = await fetchData<NewsPagination>(
-    `${API_BASE_URL}/public/news?page=${page}&language=${language_code}`,
+    `/public/news?page=${page}&language=${language_code}`,
     {
       next: {
         revalidate: revalidate, // 1 hour or user defined
@@ -50,7 +49,7 @@ export const getNewsData = async (
 ): Promise<ApiResponse<News>> => {
   const encodedSlug = encodeURIComponent(slug)
   const { data, error } = await fetchData<News>(
-    `${API_BASE_URL}/public/news/${encodedSlug}?language=${language_code}`,
+    `/public/news/${encodedSlug}?language=${language_code}`,
     {
       next: {
         revalidate: revalidate,

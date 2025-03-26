@@ -7,7 +7,6 @@ import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
 import type { LanguageCode } from '@/models/Language'
 import type { NewsPagination } from '@/models/Pagination'
-import { API_BASE_URL } from '@/utility/Constants'
 import { type JSX, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
@@ -40,7 +39,7 @@ const useNews = (
   isError: boolean
 } => {
   const { data, error, isLoading } = useSWR<NewsPagination>(
-    `${API_BASE_URL}/public/news?page=${index}&language=${language}`,
+    `/api/public/news?page=${index}&language=${language}`,
     fetcher,
     {
       revalidateOnFocus: false,

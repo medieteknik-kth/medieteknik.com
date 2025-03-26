@@ -4,7 +4,6 @@ import type {
   CommitteePositionRecruitment,
 } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name getCommitteePositions
@@ -21,7 +20,7 @@ export const getCommitteePositions = async (
   revalidate = 86_400 // 24 hours
 ): Promise<ApiResponse<CommitteePosition[]>> => {
   const { data, error } = await fetchData<CommitteePosition[]>(
-    `${API_BASE_URL}/public/committee_positions?language=${language_code}&type=${type}`,
+    `/public/committee_positions?language=${language_code}&type=${type}`,
     {
       next: {
         revalidate: revalidate,
@@ -49,7 +48,7 @@ export const getRecruitment = async (
   revalidate = 1_800
 ): Promise<ApiResponse<CommitteePositionRecruitment[]>> => {
   const { data, error } = await fetchData<CommitteePositionRecruitment[]>(
-    `${API_BASE_URL}/public/committee_positions/recruiting?language=${language_code}`,
+    `/public/committee_positions/recruiting?language=${language_code}`,
     {
       next: {
         revalidate: revalidate,

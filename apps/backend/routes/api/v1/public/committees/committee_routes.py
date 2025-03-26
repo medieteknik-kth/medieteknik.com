@@ -22,7 +22,7 @@ public_committee_category_bp = Blueprint("public_committee_category", __name__)
 public_committee_bp = Blueprint("public_committee", __name__)
 
 
-@public_committee_category_bp.route("/", methods=["GET"])
+@public_committee_category_bp.route("", methods=["GET"])
 def get_committee_categories() -> Response:
     """
     Retrieves all committee categories
@@ -58,7 +58,7 @@ def get_committee_category_by_name(committee_category_title: str) -> Response:
     return jsonify(result), HTTPStatus.OK
 
 
-@public_committee_bp.route("/", methods=["GET"])
+@public_committee_bp.route("", methods=["GET"])
 def get_committees() -> Response:
     """
     Retrieves all committees

@@ -16,7 +16,6 @@ import {
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   ChevronLeftIcon,
   PhotoIcon,
@@ -45,9 +44,7 @@ export async function generateStaticParams(): Promise<
   { language: string; slug: string }[]
 > {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/public/committees?language=sv`
-    )
+    const response = await fetch('/api/public/committees?language=sv')
 
     if (response.ok) {
       const data = (await response.json()) as Committee[]

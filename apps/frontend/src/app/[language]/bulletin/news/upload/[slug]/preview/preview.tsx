@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePositionPagination } from '@/models/Pagination'
 import type News from '@/models/items/News'
-import { API_BASE_URL } from '@/utility/Constants'
 import { Link } from 'next-view-transitions'
 import { useSearchParams } from 'next/navigation'
 import { use } from 'react'
@@ -30,7 +29,7 @@ export default function PreviewPage(props: Props) {
   const { language, slug } = use(props.params)
   const formattedDate = new Date().toISOString().split('T')[0]
   const { data: newsData, error: newsError } = useSWR<News>(
-    `${API_BASE_URL}/news/${slug}?language=${language}`,
+    `/api/news/${slug}?language=${language}`,
     fetcher,
     {
       revalidateOnMount: true,
@@ -43,7 +42,7 @@ export default function PreviewPage(props: Props) {
 
   const { data: members, error: membersError } =
     useSWR<StudentCommitteePositionPagination>(
-      `${API_BASE_URL}/public/committees/${searchParams.get('committee')}/members?language=${language}&page=${1}&per_page=${25}&snapshot_date=${formattedDate}&officials=true`,
+      `/api/public/committees/${searchParams.get('committee')}/members?language=${language}&page=${1}&per_page=${25}&snapshot_date=${formattedDate}&officials=true`,
       fetcher,
       {
         revalidateOnFocus: false,

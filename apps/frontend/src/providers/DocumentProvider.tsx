@@ -3,7 +3,6 @@
 import type { LanguageCode } from '@/models/Language'
 import type { DocumentPagination } from '@/models/Pagination'
 import type Document from '@/models/items/Document'
-import { API_BASE_URL } from '@/utility/Constants'
 import { useSearchParams } from 'next/navigation'
 import {
   type JSX,
@@ -205,7 +204,7 @@ export function DocumentManagementProvider({
       try {
         const searchQuery = searchParams.get('q') || ''
         const response = await fetch(
-          `${API_BASE_URL}/public/documents?language=${language}${
+          `/api/public/documents?language=${language}${
             state.status === 'archived' ? '&status=archived' : ''
           }&page=${state.page}${
             searchQuery ? `&search=${encodeURI(searchQuery.toLowerCase())}` : ''

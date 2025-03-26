@@ -1,5 +1,4 @@
 'use client'
-import { getEvents } from '@/api/calendar'
 import type { LanguageCode } from '@/models/Language'
 import type Event from '@/models/items/Event'
 import {
@@ -128,11 +127,15 @@ export default function CalendarProvider({
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
       try {
-        const { data: events, error } = await getEvents(date, language, 0)
+        const convertedDate = date.toISOString().substring(0, 7)
+        const response = await fetch(
+          `/api/public/calendar/events?date=${convertedDate}&language=${language}`
+        )
 
-        if (error) {
-          throw error
+        if (!response.ok) {
+          throw new Error('Failed to fetch events')
         }
+        const events: Event[] = await response.json()
 
         if (isMounted.current && events) {
           dispatch({ type: 'SET_EVENTS', payload: events })

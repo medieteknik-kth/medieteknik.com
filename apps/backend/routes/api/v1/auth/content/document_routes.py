@@ -24,7 +24,7 @@ from utility import (
 documents_bp = Blueprint("documents", __name__)
 
 
-@documents_bp.route("/", methods=["POST"])
+@documents_bp.route("", methods=["POST"])
 @jwt_required()
 def create_document() -> Response:
     """

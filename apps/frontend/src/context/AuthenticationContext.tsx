@@ -8,7 +8,7 @@ import {
 } from '@/context/authReducer'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import type { AuthenticationResponse } from '@/models/response/AuthenticationResponse'
+import type { SuccessfulAuthenticationResponse } from '@/models/response/AuthenticationResponse'
 import type { JSX } from 'react'
 import {
   createContext,
@@ -28,7 +28,7 @@ interface Props {
   children: React.ReactNode
 }
 
-function getUniqueCommittees(json: AuthenticationResponse) {
+function getUniqueCommittees(json: SuccessfulAuthenticationResponse) {
   return (
     (json.committees &&
       Array.from(new Set(json.committees.map((c) => c.committee_id)))
@@ -102,6 +102,23 @@ export function AuthenticationProvider({
     try {
       const json = await authService.getUserData(language)
 
+      if ('error' in json) {
+        dispatch({ type: 'LOGOUT' })
+        dispatch({
+          type: 'SET_LOADING',
+          payload: false,
+        })
+        dispatch({
+          type: 'SET_STALE',
+          payload: false,
+        })
+        dispatch({
+          type: 'SET_ERROR',
+          payload: json.error,
+        })
+        return
+      }
+
       setJwtTokenExpirationChecked(json.expiration)
       dispatch({
         type: 'SET_STUDENT_DATA',
@@ -150,12 +167,16 @@ export function AuthenticationProvider({
   }, [jwtTokenExpiration])
 
   useEffect(() => {
-    if (!state.student || state.stale) {
+    if (state.stale) {
       checkUserData()
     }
 
     const interval = setInterval(() => {
       if (!state.student) {
+        return
+      }
+
+      if (jwtExpirationRef.current === 0) {
         return
       }
 

@@ -44,7 +44,6 @@ import type { LanguageCode } from '@/models/Language'
 import type { EventPagniation } from '@/models/Pagination'
 import type Event from '@/models/items/Event'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CalendarDaysIcon,
   ChevronLeftIcon,
@@ -81,7 +80,7 @@ export default function EventTable({
   const { total_events, setEventsTotal } = useCommitteeManagement()
   const [pageIndex, setPageIndex] = useState(1)
   const { data: events, error: swrError } = useSWR<EventPagniation>(
-    `${API_BASE_URL}/committees/${committee?.translations[0].title.toLowerCase()}/events?language=${language}&page=${pageIndex}`,
+    `/api/committees/${committee?.translations[0].title.toLowerCase()}/events?language=${language}&page=${pageIndex}`,
     fetcher
   )
   const { t } = useTranslation(language, 'committee_management/events')
@@ -89,7 +88,7 @@ export default function EventTable({
   const deleteEvent = async (event: Event) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/events/${event.event_id}?author_type=${event.author.author_type}`,
+        `/api/events/${event.event_id}?author_type=${event.author.author_type}`,
         {
           method: 'DELETE',
           credentials: 'include',

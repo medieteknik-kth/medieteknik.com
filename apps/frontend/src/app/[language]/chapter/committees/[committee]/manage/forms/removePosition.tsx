@@ -32,7 +32,6 @@ import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { removePositionSchema } from '@/schemas/committee/position'
-import { API_BASE_URL } from '@/utility/Constants'
 import { ChevronUpDownIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
@@ -85,7 +84,7 @@ export default function RemovePositionForm({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/committee_positions/${data.position_id}`,
+        `/api/committee_positions/${data.position_id}`,
         {
           method: 'DELETE',
           credentials: 'include',

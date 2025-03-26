@@ -8,7 +8,7 @@ import {
 import type { LanguageCode } from '@/models/Language'
 import type { Notification } from '@/models/Notification'
 import { useStudent } from '@/providers/AuthenticationProvider'
-import { API_BASE_URL, FALLBACK_LANGUAGE } from '@/utility/Constants'
+import { FALLBACK_LANGUAGE } from '@/utility/Constants'
 import type { JSX } from 'react'
 import {
   createContext,
@@ -33,7 +33,7 @@ export function NotificationProvider({
   const retrieveNotifications = useCallback(async (language: LanguageCode) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/students/notifications?language=${language}`,
+        `/api/students/notifications?language=${language}`,
         {
           method: 'GET',
           credentials: 'include',

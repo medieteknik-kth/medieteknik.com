@@ -20,7 +20,6 @@ import {
 } from '@/components/ui/popover'
 import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePosition } from '@/models/Student'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -70,7 +69,7 @@ export default function Officials({ language, currentMembers }: Props) {
     startTransition(async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/public/students/committee_members?language=${language}&year=${year}&semester=${semester}`,
+          `/api/public/students/committee_members?language=${language}&year=${year}&semester=${semester}`,
           {
             next: {
               revalidate: year === currentYear.toString() ? 60 : 3_600,

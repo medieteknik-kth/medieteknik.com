@@ -37,11 +37,7 @@ import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { createRecruitmentSchema } from '@/schemas/committee/recruitment'
-import {
-  API_BASE_URL,
-  LANGUAGES,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -176,7 +172,7 @@ export default function RecruitmentForm({ language, onSuccess }: Props) {
     }
 
     const response = await fetch(
-      `${API_BASE_URL}/committee_positions/${position.committee_position_id}/recruit`,
+      `/api/committee_positions/${position.committee_position_id}/recruit`,
       {
         method: 'POST',
         credentials: 'include',

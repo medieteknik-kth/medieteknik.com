@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input'
 import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
-import { API_BASE_URL } from '@/utility/Constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AccordionItem } from '@radix-ui/react-accordion'
 import { useRouter } from 'next/navigation'
@@ -51,10 +50,7 @@ export default function LoginForm({ language, remember }: Props): JSX.Element {
 
   const { login, error: authError } = useAuthentication()
   const [errorMessage, setErrorMessage] = useState('')
-  const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/csrf-token`,
-    fetcher
-  )
+  const { data, error, isLoading } = useSWR('/api/csrf-token', fetcher)
   const router = useRouter()
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({

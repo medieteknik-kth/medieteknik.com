@@ -16,7 +16,7 @@ import type Student from '@/models/Student'
  * @property {CommitteePosition[]} positions - The positions the student holds in committees or independent, if any.
  * @property {number} expiration - The expiration date of the authentication token in milliseconds since epoch.
  */
-export interface AuthenticationResponse {
+export interface SuccessfulAuthenticationResponse {
   student: Student
   role?: 'OTHER'
   permissions?: {
@@ -27,3 +27,11 @@ export interface AuthenticationResponse {
   committee_positions?: CommitteePosition[]
   expiration: number
 }
+
+interface FailedAuthenticationResponse {
+  error: string
+}
+
+export type AuthenticationResponse =
+  | SuccessfulAuthenticationResponse
+  | FailedAuthenticationResponse

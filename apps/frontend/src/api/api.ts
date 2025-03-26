@@ -62,8 +62,13 @@ export async function fetchData<T>(
   url: string,
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
+  const baseUrl =
+    process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_PUBLIC_API_URL
+      : process.env.API_URL
+
   try {
-    const response = await fetch(url, options)
+    const response = await fetch(`${baseUrl}${url}`, options)
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)

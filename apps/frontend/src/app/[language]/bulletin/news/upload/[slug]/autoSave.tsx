@@ -2,7 +2,6 @@
 
 import type { LanguageCode } from '@/models/Language'
 import type News from '@/models/items/News'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   createContext,
   useCallback,
@@ -72,7 +71,7 @@ export function AutoSaveProvdier({
       try {
         const { created_at, ...rest } = content
         const response = await fetch(
-          `${API_BASE_URL}/news/${slug}?language=${language_code}`,
+          `/api/news/${slug}?language=${language_code}`,
           {
             method: 'PUT',
             headers: {
@@ -104,7 +103,7 @@ export function AutoSaveProvdier({
 
         const updatedData = (await response.json()) as News
         mutate(
-          `${API_BASE_URL}/news/${slug}?language=${language_code}`,
+          `/api/news/${slug}?language=${language_code}`,
           updatedData,
           false
         )

@@ -12,7 +12,7 @@ from utility import retrieve_languages
 public_album_bp = Blueprint("public_album", __name__)
 
 
-@public_album_bp.route("/", methods=["GET"])
+@public_album_bp.route("", methods=["GET"])
 def get_albums() -> Response:
     """
     Retrieves all albums

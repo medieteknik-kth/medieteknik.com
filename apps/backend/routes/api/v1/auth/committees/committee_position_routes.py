@@ -26,7 +26,7 @@ from utility.translation import convert_iso_639_1_to_bcp_47
 committee_position_bp = Blueprint("committee_position", __name__)
 
 
-@committee_position_bp.route("/", methods=["POST"])
+@committee_position_bp.route("", methods=["POST"])
 @jwt_required()
 def create_committee_position() -> Response:
     """

@@ -19,7 +19,7 @@ from services.content.public import (
 public_news_bp = Blueprint("public_news", __name__)
 
 
-@public_news_bp.route("/", methods=["GET"])
+@public_news_bp.route("", methods=["GET"])
 def get_news() -> Response:
     """
     Retrieves all news

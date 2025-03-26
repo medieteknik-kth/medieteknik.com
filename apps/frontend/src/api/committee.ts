@@ -3,7 +3,6 @@ import type Committee from '@/models/Committee'
 import type { CommitteeData } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePositionPagination } from '@/models/Pagination'
-import { API_BASE_URL } from '@/utility/Constants'
 
 /**
  * @name getPublicCommitteeData
@@ -20,7 +19,7 @@ export const getPublicCommitteeData = async (
   revalidate = 3_600 // 1 hour
 ): Promise<ApiResponse<Committee>> => {
   const { data, error } = await fetchData<Committee>(
-    `${API_BASE_URL}/public/committees/${committee}${
+    `/public/committees/${committee}${
       language_code ? `?language=${language_code}` : ''
     }`,
     {
@@ -50,9 +49,7 @@ export const getAllCommittees = async (
   revalidate = 86_400 // 24 hours
 ): Promise<ApiResponse<Committee[]>> => {
   const { data, error } = await fetchData<Committee[]>(
-    `${API_BASE_URL}/public/committees${
-      language_code ? `?language=${language_code}` : ''
-    }`,
+    `/public/committees${language_code ? `?language=${language_code}` : ''}`,
     {
       next: {
         revalidate: revalidate,
@@ -82,7 +79,7 @@ export const getCommittee = async (
   revalidate = 3_600
 ): Promise<ApiResponse<Committee>> => {
   const { data, error } = await fetchData<Committee>(
-    `${API_BASE_URL}/committees/${committee}?language=${language_code}`,
+    `/committees/${committee}?language=${language_code}`,
     {
       credentials: 'include',
       next: {
@@ -117,7 +114,7 @@ export const getCommitteeData = async (
   revalidate = 1_800 // 30 minutes
 ): Promise<ApiResponse<CommitteeData>> => {
   const { data, error } = await fetchData<CommitteeData>(
-    `${API_BASE_URL}/committees/${committee}/data`,
+    `/committees/${committee}/data`,
     {
       credentials: 'include',
       next: {
@@ -154,7 +151,7 @@ export const getCommitteeMembers = async (
   revalidate = 3_600
 ): Promise<ApiResponse<StudentCommitteePositionPagination>> => {
   const { data, error } = await fetchData<StudentCommitteePositionPagination>(
-    `${API_BASE_URL}/public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}${date ? `&snapshot_date=${date}` : ''}&officials=${officials}`,
+    `/public/committees/${committee}/members?language=${language_code}&page=${page}&per_page=${per_page}${date ? `&snapshot_date=${date}` : ''}&officials=${officials}`,
     {
       next: {
         revalidate: revalidate,

@@ -37,7 +37,6 @@ import {
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { DocumentPagination } from '@/models/Pagination'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckBadgeIcon,
   ChevronLeftIcon,
@@ -79,7 +78,7 @@ export default function DocumentTable({
   const [pageIndex, setPageIndex] = useState(1)
   const { t } = useTranslation(language, 'committee_management/documents')
   const { data: documents, error: swrError } = useSWR<DocumentPagination>(
-    `${API_BASE_URL}/committees/${committee.translations[0].title.toLowerCase()}/documents?page=${pageIndex}`,
+    `/api/committees/${committee.translations[0].title.toLowerCase()}/documents?page=${pageIndex}`,
     fetcher
   )
   const [temporaryPinned, setTemporaryPinned] = useState<string[]>([])
@@ -104,13 +103,10 @@ export default function DocumentTable({
 
   const pinDocument = async (documentId: string) => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/documents/${documentId}/pin`,
-        {
-          method: 'PUT',
-          credentials: 'include',
-        }
-      )
+      const response = await fetch(`/api/documents/${documentId}/pin`, {
+        method: 'PUT',
+        credentials: 'include',
+      })
       if (response.ok) {
         setTemporaryPinned((prev) => {
           if (prev.includes(documentId)) {
@@ -126,7 +122,7 @@ export default function DocumentTable({
 
   const deleteDocument = async (documentId: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/documents/${documentId}`, {
+      const response = await fetch(`/api/documents/${documentId}`, {
         method: 'DELETE',
         credentials: 'include',
       })

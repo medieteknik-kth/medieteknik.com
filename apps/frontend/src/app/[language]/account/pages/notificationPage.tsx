@@ -37,7 +37,6 @@ import { toast } from '@/components/ui/use-toast'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { notificationSchema } from '@/schemas/user/notification'
-import { API_BASE_URL } from '@/utility/Constants'
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -66,7 +65,7 @@ export default function NotificationPage({ language }: Props) {
   const [allNews, setAllNews] = useState(false)
   const [allEvents, setAllEvents] = useState(false)
   const { data, error, isLoading } = useSWR<Committee[]>(
-    `${API_BASE_URL}/public/committees?language=${language}`,
+    `/api/public/committees?language=${language}`,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -179,7 +178,7 @@ export default function NotificationPage({ language }: Props) {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/students/notifications?language=${language}`,
+        `/api/students/notifications?language=${language}`,
         {
           method: 'POST',
           credentials: 'include',

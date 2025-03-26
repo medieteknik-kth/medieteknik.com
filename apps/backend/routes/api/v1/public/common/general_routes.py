@@ -6,27 +6,12 @@ API Endpoint: '/api/v1/public'
 from http import HTTPStatus
 import json
 from flask import Blueprint, Response, jsonify, request
-from models.core import Language
 from services.utility.search import update_search_cache
-from utility import ROUTES
 from utility.cache import get_cache
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 from utility.translation import convert_iso_639_1_to_bcp_47, retrieve_languages
 
 public_bp = Blueprint("public", __name__)
-LANGUAGE_ROUTE_PREFIX: str = ROUTES.LANGUAGES.value
-
-
-@public_bp.route(LANGUAGE_ROUTE_PREFIX, methods=["GET"])
-def get_languages() -> Response:
-    """
-    Retrieves all languages
-        :return: Response - The response object, 200 if successful
-    """
-
-    languages: list[Language] = Language.query.all()
-    languages_dict = [language.to_dict() for language in languages]
-    return jsonify(languages_dict), HTTPStatus.OK
 
 
 @public_bp.route("/search", methods=["GET"])

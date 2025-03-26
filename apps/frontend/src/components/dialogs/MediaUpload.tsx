@@ -38,11 +38,7 @@ import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { mediaUploadSchema } from '@/schemas/items/media'
-import {
-  API_BASE_URL,
-  LANGUAGES,
-  SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
+import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
@@ -174,7 +170,7 @@ export default function MediaUpload({
     })
 
     try {
-      const response = await fetch(`${API_BASE_URL}/media`, {
+      const response = await fetch('/api/media', {
         method: 'POST',
         credentials: 'include',
         body: formData,
