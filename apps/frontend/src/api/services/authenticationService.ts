@@ -47,7 +47,7 @@ export const authService = {
    * Get user data function that makes a GET request to the server to get the user data.
    *
    * @param {LanguageCode} language - The language code of the user.
-   * @returns {Promise<AuthenticationResponse>}
+   * @returns {Promise<SuccessfulAuthenticationResponse>}
    */
   getUserData: async (
     language: LanguageCode

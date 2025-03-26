@@ -99,7 +99,7 @@ export const initialState: AuthenticationState = {
   positions: [],
   error: null,
   isLoading: true,
-  stale: false,
+  stale: true,
 }
 
 /**
