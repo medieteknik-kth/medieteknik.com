@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./apps",
+        "paths": {
+            "@shared/*": [
+                "shared/*"
+            ]
+        }
+    }
+}

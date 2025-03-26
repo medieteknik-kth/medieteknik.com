@@ -50,10 +50,6 @@ async function updateNotifications(
   notificationSubscription: PushSubscription
 ): Promise<void> {
   const { email, push, iana, site_updates, committees } = data
-  const baseUrl =
-    process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_API_URL
-      : process.env.API_URL
   try {
     const response = await fetch('/api/students/notifications', {
       method: 'POST',
