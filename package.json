@@ -2,8 +2,9 @@
     "name": "medieteknik",
     "private": true,
     "workspaces": [
-        "apps/*",
-        "shared/*"
+        "apps/backend/*",
+        "apps/frontend/*",
+        "apps/shared/*"
     ],
     "packageManager": "bun@1.2.5",
     "devDependencies": {
