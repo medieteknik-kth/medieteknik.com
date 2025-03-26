@@ -11,7 +11,7 @@ from google.protobuf import timestamp_pb2
 
 
 def schedule_news(
-    news_id: str, author_name: str, url: str, delay_seconds=60
+    news_id: any, author_name: str, url: str, delay_seconds=60
 ) -> tasks_v2.Task:
     """Schedules a news message to be sent to Discord.
     :param news_id: The news ID.
@@ -27,6 +27,10 @@ def schedule_news(
     """
     endpoint_url = "https://api.medieteknik.com/api/v1/tasks/schedule-news"
     aud = "https://api.medieteknik.com"
+
+    # Mainly for UUIDs
+    if not isinstance(news_id, str):
+        news_id = str(news_id)
 
     timestamp = timestamp_pb2.Timestamp()
     timestamp.FromDatetime(
