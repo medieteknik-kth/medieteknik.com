@@ -7,5 +7,6 @@
         "source.fixAll.eslint": "always"
     },
     "eslint.run": "onSave",
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+	"tailwindCSS.experimental.configFile": "apps/shared/styles/globals.css"
 }

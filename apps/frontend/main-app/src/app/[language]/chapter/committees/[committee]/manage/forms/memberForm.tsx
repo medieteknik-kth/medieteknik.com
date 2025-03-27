@@ -35,7 +35,7 @@ import { Role } from '@/models/Permission'
 import type Student from '@/models/Student'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { addMember } from '@/schemas/committee/member'
+import { removeMember } from '@/schemas/committee/member'
 import {
   ChevronUpDownIcon,
   MinusIcon,
@@ -55,24 +55,30 @@ export function RemoveMemberForm({ language }: Props) {
   const { student } = useStudent()
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
   const { t } = useTranslation(language, 'committee_management/forms/member')
-  const form = useForm<z.infer<typeof addMember>>({
-    resolver: zodResolver(addMember),
+  const form = useForm<z.infer<typeof removeMember>>({
+    resolver: zodResolver(removeMember),
     defaultValues: {
       students: [],
+      committee_position_id: '',
     },
   })
 
-  const publish = async (data: z.infer<typeof addMember>) => {
-    const json_data = JSON.stringify(data)
+  const publish = async (data: z.infer<typeof removeMember>) => {
+    const { committee_position_id, students } = data
     try {
-      const response = await fetch('/api/committee_positions/assign', {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json_data,
-      })
+      const response = await fetch(
+        `/api/committee_positions/assign/${committee_position_id}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            students,
+          }),
+        }
+      )
 
       if (response.ok) {
         window.location.reload()
@@ -145,6 +151,12 @@ export function RemoveMemberForm({ language }: Props) {
                 .includes(student.email)
             }
             onClick={() => {
+              form.setValue(
+                'committee_position_id',
+                members.items.find(
+                  (member) => member.student.email === student.email
+                )?.committee_position_id ?? ''
+              )
               form.setValue(
                 'students',
                 selectedStudents.map((student) => ({

@@ -1,6 +1,5 @@
 import { type ApiResponse, fetchData } from '@/api/api'
 import type Committee from '@/models/Committee'
-import type { CommitteeData } from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import type { StudentCommitteePositionPagination } from '@/models/Pagination'
 
@@ -51,72 +50,6 @@ export const getAllCommittees = async (
   const { data, error } = await fetchData<Committee[]>(
     `/public/committees${language_code ? `?language=${language_code}` : ''}`,
     {
-      next: {
-        revalidate: revalidate,
-      },
-    }
-  )
-
-  if (error) {
-    return { data, error }
-  }
-
-  return { data, error: null }
-}
-
-/**
- * @name getCommittee
- * @description Get the data for a committee
- *
- * @param {string} committee - The committee to get data for
- * @param {LanguageCode} language_code - The language to get the data in
- * @param {number} revalidate - The time in seconds to revalidate the data (default: 1 hour)
- * @returns {Promise<ApiResponse<Committee>>} The API response with the committee data or an error
- */
-export const getCommittee = async (
-  committee: string,
-  language_code: LanguageCode,
-  revalidate = 3_600
-): Promise<ApiResponse<Committee>> => {
-  const { data, error } = await fetchData<Committee>(
-    `/committees/${committee}?language=${language_code}`,
-    {
-      credentials: 'include',
-      next: {
-        revalidate: revalidate,
-      },
-    }
-  )
-
-  if (error) {
-    return { data, error }
-  }
-
-  return {
-    data: {
-      ...data,
-      author_type: 'COMMITTEE',
-    },
-    error: null,
-  }
-}
-
-/**
- * @name getCommitteeData
- * @description Get the "private" data for a committee
- *
- * @param {string} committee - The committee to get data for
- * @param {number} revalidate - The time in seconds to revalidate the data (default: 30 minutes)
- * @returns {Promise<ApiResponse<CommitteeData>>} The API response with the committee data or an error
- */
-export const getCommitteeData = async (
-  committee: string,
-  revalidate = 1_800 // 30 minutes
-): Promise<ApiResponse<CommitteeData>> => {
-  const { data, error } = await fetchData<CommitteeData>(
-    `/committees/${committee}/data`,
-    {
-      credentials: 'include',
       next: {
         revalidate: revalidate,
       },

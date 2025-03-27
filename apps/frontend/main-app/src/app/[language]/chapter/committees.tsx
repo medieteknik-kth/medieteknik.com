@@ -10,14 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  Carousel,
-  type CarouselApi,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
+import type { CarouselApi } from '@/components/ui/carousel'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import Autoplay from 'embla-carousel-autoplay'
@@ -46,33 +39,40 @@ export default function Committees({
   committees,
 }: Props): JSX.Element {
   const [api, setApi] = useState<CarouselApi>()
-  const [_, setSelectedIndex] = useState(0)
-  const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({})
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [emblaMainRef, emblaMainApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align: 'start',
+    },
+    [Autoplay({ delay: 6_000, stopOnInteraction: false })]
+  )
+  const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
+    containScroll: 'keepSnaps',
+    dragFree: true,
+  })
   const { t } = useTranslation(language, 'chapter')
 
-  const onThumbClick = (index: number) =>
-    useCallback(() => {
-      if (!api || !emblaThumbsApi) {
-        return
-      }
-      api.scrollTo(index)
-    }, [index])
+  const onThumbClick = useCallback(
+    (index: number) => {
+      if (!emblaMainApi || !emblaThumbsApi) return
+      emblaMainApi.scrollTo(index)
+    },
+    [emblaMainApi, emblaThumbsApi]
+  )
 
   const onSelect = useCallback(() => {
-    if (!api || !emblaThumbsApi) {
-      return
-    }
-    setSelectedIndex(api.selectedScrollSnap())
-    emblaThumbsApi.scrollTo(api.selectedScrollSnap())
-  }, [api, emblaThumbsApi])
+    if (!emblaMainApi || !emblaThumbsApi) return
+    setSelectedIndex(emblaMainApi.selectedScrollSnap())
+    emblaThumbsApi.scrollTo(emblaMainApi.selectedScrollSnap())
+  }, [emblaMainApi, emblaThumbsApi])
 
   useEffect(() => {
-    if (!api || !emblaThumbsApi) {
-      return
-    }
+    if (!emblaMainApi) return
     onSelect()
-    api.on('select', onSelect).on('reInit', onSelect)
-  }, [api, onSelect, emblaThumbsApi])
+
+    emblaMainApi.on('select', onSelect).on('reInit', onSelect)
+  }, [emblaMainApi, onSelect])
 
   const translation = (committee: Committee) =>
     committee.translations.find(
@@ -91,25 +91,16 @@ export default function Committees({
         {t('committees')}
       </Link>
       <div className='w-full px-4'>
-        <Carousel
-          className='w-full'
-          setApi={setApi}
-          opts={{
-            loop: true,
-            align: 'center',
-            watchDrag: true,
-          }}
-          plugins={[Autoplay({ delay: 5000 })]}
-        >
-          <CarouselContent className='-ml-4'>
+        <div className='overflow-hidden' ref={emblaMainRef}>
+          <div className='flex touch-pan-y touch-pinch-zoom'>
             {committees
               .sort((a, b) =>
                 a.translations[0].title.localeCompare(b.translations[0].title)
               )
               .map((committee) => (
-                <CarouselItem
+                <div
                   key={committee.translations[0].title}
-                  className='basis-full lg:basis-1/2 xl:basis-1/3 min-h-[300px] pl-4'
+                  className='flex-shrink-0 w-full ml-1 basis-[100%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/4'
                 >
                   <Card className='h-full flex flex-col justify-between'>
                     <CardHeader className='flex flex-row flex-wrap items-center gap-4'>
@@ -154,50 +145,42 @@ export default function Committees({
                       </Button>
                     </CardFooter>
                   </Card>
-                </CarouselItem>
+                </div>
               ))}
-          </CarouselContent>
-          <CarouselPrevious
-            title='previous'
-            aria-label='previous committee'
-            className='hidden md:flex'
-          />
-          <CarouselNext
-            title='next'
-            aria-label='next committee'
-            className='hidden md:flex'
-          />
-        </Carousel>
+          </div>
+        </div>
 
-        <div
-          ref={emblaThumbsRef}
-          className='w-full flex flex-wrap gap-4 justify-center py-2'
-        >
-          {committees
-            .sort((a, b) =>
-              a.translations[0].title.localeCompare(b.translations[0].title)
-            )
-            .map((committee, index) => (
-              <Button
-                key={committee.translations[0].title}
-                variant='outline'
-                size='icon'
-                className={`w-16 h-auto aspect-square p-2.5 overflow-visible relative hover:brightness-95 bg-white hover:bg-white ${
-                  api?.selectedScrollSnap() === index && 'brightness-95'
-                }`}
-                onClick={onThumbClick(index)}
-                title={`${translation(committee)?.title} thumbnail'`}
-              >
-                <Image
-                  src={committee.logo_url}
-                  alt={`${committee.translations[0].title} logo`}
-                  unoptimized={true} // Logos are SVGs, so they don't need to be optimized
-                  width={64}
-                  height={64}
-                  className='w-auto h-full object-contain overflow-visible'
-                />
-              </Button>
-            ))}
+        <div className='py-2'>
+          <div ref={emblaThumbsRef} className='overflow-hidden'>
+            <div className='flex gap-2'>
+              {committees
+                .sort((a, b) =>
+                  a.translations[0].title.localeCompare(b.translations[0].title)
+                )
+                .map((committee, index) => (
+                  <div key={committee.translations[0].title}>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      className={`w-16 h-auto aspect-square p-2.5 overflow-visible relative hover:brightness-95 bg-white hover:bg-white ${
+                        selectedIndex === index ? 'brightness-95' : ''
+                      }`}
+                      onClick={() => onThumbClick(index)}
+                      title={`${translation(committee)?.title} thumbnail'`}
+                    >
+                      <Image
+                        src={committee.logo_url}
+                        alt={`${committee.translations[0].title} logo`}
+                        unoptimized={true} // Logos are SVGs, so they don't need to be optimized
+                        width={64}
+                        height={64}
+                        className='w-auto h-full object-contain overflow-visible'
+                      />
+                    </Button>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
