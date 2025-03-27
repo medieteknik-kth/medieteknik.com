@@ -10,6 +10,20 @@ const experimentalConfig: ExperimentalConfig = {
 
 const nextConfig: NextConfig = {
   experimental: experimentalConfig,
+
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'storage.googleapis.com',
+        protocol: 'https',
+        pathname: '/medieteknik-static/**',
+      },
+      {
+        hostname: 'www.medieteknik.com',
+        protocol: 'https',
+      },
+    ],
+  },
 }
 
 export default nextConfig

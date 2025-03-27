@@ -17,7 +17,7 @@ export default function UploadForm({ committees }: Props) {
   const [client, setClient] = useState(false)
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-between p-24'>
+    <div className='flex min-h-screen flex-col items-center justify-between container'>
       <Tabs value={page} onValueChange={setPage} className='w-full h-full'>
         <TabsContent
           value='template'
