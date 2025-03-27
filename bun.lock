@@ -7,12 +7,12 @@
         "turbo": "2.4.4",
       },
     },
-    "apps/backend": {
+    "apps/backend/core-api": {
       "name": "backend",
     },
-    "apps/frontend": {
+    "apps/frontend/main-app": {
       "name": "frontend",
-      "version": "0.6.1",
+      "version": "0.6.2",
       "dependencies": {
         "@heroicons/react": "^2.2.0",
         "@hookform/resolvers": "^3.3.4",
@@ -49,9 +49,10 @@
         "cmdk": "^1.0.0",
         "country-flag-icons": "^1.5.13",
         "date-fns": "^4.1.0",
-        "embla-carousel-autoplay": "^8.1.7",
-        "embla-carousel-class-names": "^8.1.7",
-        "embla-carousel-react": "^8.1.5",
+        "embla-carousel": "^8.5.2",
+        "embla-carousel-autoplay": "^8.5.2",
+        "embla-carousel-class-names": "^8.5.2",
+        "embla-carousel-react": "^8.5.2",
         "i18next": "^23.16.5",
         "i18next-browser-languagedetector": "^7.2.1",
         "i18next-resources-to-backend": "^1.2.1",
@@ -950,7 +951,7 @@
 
     "babel-preset-jest": ["babel-preset-jest@29.6.3", "", { "dependencies": { "babel-plugin-jest-hoist": "^29.6.3", "babel-preset-current-node-syntax": "^1.0.0" }, "peerDependencies": { "@babel/core": "^7.0.0" } }, "sha512-0B3bhxR6snWXJZtR/RliHTDPRgn1sNHOR0yVtq/IiQFyuOVjFS+wuio/R4gSNkyYmKmJB4wGZv2NZanmKmTnNA=="],
 
-    "backend": ["backend@workspace:apps/backend"],
+    "backend": ["backend@workspace:apps/backend/core-api"],
 
     "balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
 
@@ -1262,7 +1263,7 @@
 
     "for-each": ["for-each@0.3.5", "", { "dependencies": { "is-callable": "^1.2.7" } }, "sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg=="],
 
-    "frontend": ["frontend@workspace:apps/frontend"],
+    "frontend": ["frontend@workspace:apps/frontend/main-app"],
 
     "fs.realpath": ["fs.realpath@1.0.0", "", {}, "sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw=="],
 
