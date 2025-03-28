@@ -1,8 +1,9 @@
 import { getAllCommittees } from '@/api/committee'
 import UploadForm from '@/app/[language]/upload/form'
+import HeaderGap from '@/components/header/components/HeaderGap'
 
 export default async function Upload() {
-  const { data: committees, error } = await getAllCommittees('en', 0)
+  const { data: committees, error } = await getAllCommittees('en')
   if (error) {
     return (
       <div>
@@ -12,5 +13,10 @@ export default async function Upload() {
       </div>
     )
   }
-  return <UploadForm committees={committees} />
+  return (
+    <main>
+      <HeaderGap />
+      <UploadForm committees={committees} />
+    </main>
+  )
 }

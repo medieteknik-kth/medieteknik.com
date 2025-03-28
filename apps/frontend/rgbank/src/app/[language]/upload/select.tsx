@@ -67,7 +67,6 @@ export default function SelectTemplate({ onClickCallback }: Props) {
           className='w-full h-16'
           onClick={() => {
             if (onClickCallback) {
-              console.log(selectedTemplate)
               onClickCallback(selectedTemplate)
             }
           }}
