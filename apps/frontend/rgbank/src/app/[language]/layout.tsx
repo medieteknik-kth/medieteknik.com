@@ -1,4 +1,5 @@
 import Footer from '@/components/footer/Footer'
+import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/toaster'
 import type { LanguageCode } from '@/models/Language'
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
@@ -52,8 +53,10 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
         </div>
       </noscript>
 
+      <Header language={language} />
       {children}
       <Footer language={language} />
+
       <Script id='language-attributes' nonce={nonce ?? ''}>
         {`document.documentElement.lang = "${language}";
 document.documentElement.dir = "${dir(language)}";`}
