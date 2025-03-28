@@ -9,14 +9,36 @@ import FormProvider from '@/components/context/FormContext'
 import { AnimatedTabsContent } from '@/components/ui/animated-tabs'
 import { Tabs } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
-import { useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useState } from 'react'
 
 interface Props {
   committees: Committee[]
 }
 
 export default function UploadForm({ committees }: Props) {
-  const [page, setPage] = useState('template')
+  const searchParams = useSearchParams()
+  const template = searchParams.get('template') || 'select'
+  const [page, setPage] = useState(template)
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const handleTabChange = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+
+      params.set('template', value)
+
+      router.replace(`${pathname}?${params.toString()}`)
+    },
+    [pathname, router, searchParams]
+  )
+
+  const removeSearchParams = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('template')
+    router.replace(`${pathname}?${params.toString()}`)
+  }, [pathname, router, searchParams])
 
   // TODO: Create a provider for the forms
 
@@ -27,11 +49,12 @@ export default function UploadForm({ committees }: Props) {
           <AnimatedTabsContent
             activeValue={page}
             animationStyle='slide'
-            value='template'
+            value='select'
             className='h-full w-full flex flex-col sm:p-4 md:p-8'
           >
             <SelectTemplate
               onClickCallback={(template) => {
+                handleTabChange(template)
                 setPage(template)
               }}
             />
@@ -45,7 +68,8 @@ export default function UploadForm({ committees }: Props) {
             <Invoice
               committees={committees}
               onBack={() => {
-                setPage('template')
+                removeSearchParams()
+                setPage('select')
               }}
               onFinalize={() => {
                 setPage('invoice-finalize')
@@ -69,7 +93,8 @@ export default function UploadForm({ committees }: Props) {
             <Expense
               committees={committees}
               onBack={() => {
-                setPage('template')
+                removeSearchParams()
+                setPage('select')
               }}
               onFinalize={() => {
                 setPage('expense-finalize')

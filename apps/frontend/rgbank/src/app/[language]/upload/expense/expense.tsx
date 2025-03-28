@@ -13,6 +13,7 @@ import {
   CheckIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import { subDays } from 'date-fns'
 import { useCallback, useState } from 'react'
 
 interface Props {
@@ -129,8 +130,9 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
           <Input
             type='date'
             className=''
-            defaultValue={expenseData.date?.toISOString().split('T')[0]}
-            placeholder={new Date().toISOString()}
+            defaultValue={
+              subDays(expenseData.date, 1).toISOString().split('T')[0]
+            }
             onChange={(e) => {
               const date = new Date(e.target.value)
               if (date > new Date()) {
