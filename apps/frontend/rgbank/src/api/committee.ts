@@ -12,7 +12,7 @@ import type { LanguageCode } from '@/models/Language'
  */
 export const getAllCommittees = async (
   language_code: LanguageCode,
-  revalidate = 86_400 // 24 hours
+  revalidate = 2_678_400 // 24 hours
 ): Promise<ApiResponse<Committee[]>> => {
   const { data, error } = await fetchData<Committee[]>(
     `/public/committees${language_code ? `?language=${language_code}` : ''}`,
