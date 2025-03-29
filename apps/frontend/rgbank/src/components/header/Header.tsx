@@ -18,9 +18,7 @@ interface Props {
  *
  * @returns {Promise<JSX.Element>} - The header of the page
  */
-export default async function Header({
-  language,
-}: Props): Promise<JSX.Element> {
+export default function Header({ language }: Props): JSX.Element {
   return (
     <header
       id='header'

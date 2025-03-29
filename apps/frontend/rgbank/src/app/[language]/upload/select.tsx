@@ -1,5 +1,6 @@
 'use client'
 
+import { PopIn } from '@/components/animation/pop-in'
 import { Button } from '@/components/ui/button'
 import {
   ArrowRightIcon,
@@ -27,40 +28,48 @@ export default function SelectTemplate({ onClickCallback }: Props) {
       <div className='pb-20'>
         <ul className='w-full h-96 grid grid-cols-2 p-10 gap-8'>
           <li className='h-full place-self-end'>
-            <button
-              className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
-              type='button'
-              onClick={() => setSelectedTemplate('expense')}
-              disabled={selectedTemplate === 'expense'}
-            >
-              <div className='w-8 h-8 border absolute right-4 top-6 rounded-full'>
-                <CheckIcon
-                  className={`w-8 h-8 bg-yellow-400 rounded-full p-1.5 ${
-                    selectedTemplate === 'expense' ? 'opacity-100' : 'opacity-0'
-                  } transition-all duration-300`}
-                />
-              </div>
-              <CreditCardIcon className='w-20 h-20' />
-              <p className='font-bold text-xl'>Expense</p>
-            </button>
+            <PopIn className='h-full'>
+              <button
+                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
+                type='button'
+                onClick={() => setSelectedTemplate('expense')}
+                disabled={selectedTemplate === 'expense'}
+              >
+                <div className='w-8 h-8 border absolute right-4 top-6 rounded-full'>
+                  <CheckIcon
+                    className={`w-8 h-8 bg-yellow-400 rounded-full p-1.5 ${
+                      selectedTemplate === 'expense'
+                        ? 'opacity-100'
+                        : 'opacity-0'
+                    } transition-all duration-300`}
+                  />
+                </div>
+                <CreditCardIcon className='w-20 h-20' />
+                <p className='font-bold text-xl'>Expense</p>
+              </button>
+            </PopIn>
           </li>
           <li className='h-full place-self-start'>
-            <button
-              type='button'
-              className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
-              onClick={() => setSelectedTemplate('invoice')}
-              disabled={selectedTemplate === 'invoice'}
-            >
-              <div className='w-8 h-8 border absolute right-4 top-6 rounded-full'>
-                <CheckIcon
-                  className={`w-8 h-8 bg-yellow-400 rounded-full p-1.5 ${
-                    selectedTemplate === 'invoice' ? 'opacity-100' : 'opacity-0'
-                  } transition-all duration-300`}
-                />
-              </div>
-              <DocumentTextIcon className='w-20 h-20' />
-              <p className='font-bold text-xl'>Invoice</p>
-            </button>
+            <PopIn className='h-full'>
+              <button
+                type='button'
+                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
+                onClick={() => setSelectedTemplate('invoice')}
+                disabled={selectedTemplate === 'invoice'}
+              >
+                <div className='w-8 h-8 border absolute right-4 top-6 rounded-full'>
+                  <CheckIcon
+                    className={`w-8 h-8 bg-yellow-400 rounded-full p-1.5 ${
+                      selectedTemplate === 'invoice'
+                        ? 'opacity-100'
+                        : 'opacity-0'
+                    } transition-all duration-300`}
+                  />
+                </div>
+                <DocumentTextIcon className='w-20 h-20' />
+                <p className='font-bold text-xl'>Invoice</p>
+              </button>
+            </PopIn>
           </li>
         </ul>
         <Button

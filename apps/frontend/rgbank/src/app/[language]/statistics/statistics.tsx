@@ -1,5 +1,6 @@
 'use client'
 
+import { PopIn } from '@/components/animation/pop-in'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import {
   Card,
@@ -19,11 +20,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
   Cell,
   Legend,
-  Line,
-  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -100,71 +101,79 @@ export default function Statistics() {
 
         {/* Overview Cards */}
         <div className='grid gap-6 md:grid-cols-3'>
-          <Card>
-            <CardHeader className='pb-2'>
-              <CardDescription>Total Expenses</CardDescription>
-              <CardTitle className='text-4xl flex items-center'>
-                <span className='text-2xl mr-2 text-muted-foreground select-none'>
-                  SEK
-                </span>
-                {totalExpenses.toLocaleString()}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='text-sm text-muted-foreground'>Year to date</div>
-            </CardContent>
-          </Card>
+          <PopIn>
+            <Card>
+              <CardHeader className='pb-2'>
+                <CardDescription>Total Expenses</CardDescription>
+                <CardTitle className='text-4xl flex items-center'>
+                  <span className='text-2xl mr-2 text-muted-foreground select-none'>
+                    SEK
+                  </span>
+                  {totalExpenses.toLocaleString()}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='text-sm text-muted-foreground'>
+                  Year to date
+                </div>
+              </CardContent>
+            </Card>
+          </PopIn>
 
-          <Card>
-            <CardHeader className='pb-2'>
-              <CardDescription>Current Month</CardDescription>
-              <CardTitle className='text-3xl flex items-center'>
-                <span className='text-2xl mr-2 text-muted-foreground select-none'>
-                  SEK
-                </span>
-                {currentMonth.toLocaleString()}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='flex items-center text-sm'>
-                {isMonthlyIncrease ? (
-                  <ArrowUpIcon className='h-4 w-4 mr-1 text-red-500' />
-                ) : (
-                  <ArrowDownIcon className='h-4 w-4 mr-1 text-green-500' />
-                )}
-                <span
-                  className={
-                    isMonthlyIncrease ? 'text-red-500' : 'text-green-500'
-                  }
-                >
-                  {Math.abs(monthlyChange).toFixed(1)}% from last month
-                </span>
-              </div>
-            </CardContent>
-          </Card>
+          <PopIn>
+            <Card>
+              <CardHeader className='pb-2'>
+                <CardDescription>Current Month</CardDescription>
+                <CardTitle className='text-3xl flex items-center'>
+                  <span className='text-2xl mr-2 text-muted-foreground select-none'>
+                    SEK
+                  </span>
+                  {currentMonth.toLocaleString()}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='flex items-center text-sm'>
+                  {isMonthlyIncrease ? (
+                    <ArrowUpIcon className='h-4 w-4 mr-1 text-red-500' />
+                  ) : (
+                    <ArrowDownIcon className='h-4 w-4 mr-1 text-green-500' />
+                  )}
+                  <span
+                    className={
+                      isMonthlyIncrease ? 'text-red-500' : 'text-green-500'
+                    }
+                  >
+                    {Math.abs(monthlyChange).toFixed(1)}% from last month
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </PopIn>
 
-          <Card>
-            <CardHeader className='pb-2'>
-              <CardDescription>Year Filter</CardDescription>
-              <Select value={yearFilter} onValueChange={setYearFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder='Select Year' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='2020'>2020</SelectItem>
-                  <SelectItem value='2021'>2021</SelectItem>
-                  <SelectItem value='2022'>2022</SelectItem>
-                  <SelectItem value='2023'>2023</SelectItem>
-                  <SelectItem value='2024'>2024</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardHeader>
-            <CardContent>
-              <div className='text-sm text-muted-foreground'>
-                Filter all charts and data
-              </div>
-            </CardContent>
-          </Card>
+          <PopIn>
+            <Card>
+              <CardHeader className='pb-2'>
+                <CardDescription>Year Filter</CardDescription>
+                <Select value={yearFilter} onValueChange={setYearFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select Year' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='2020'>2020</SelectItem>
+                    <SelectItem value='2021'>2021</SelectItem>
+                    <SelectItem value='2022'>2022</SelectItem>
+                    <SelectItem value='2023'>2023</SelectItem>
+                    <SelectItem value='2024'>2024</SelectItem>
+                  </SelectContent>
+                </Select>
+              </CardHeader>
+              <CardContent>
+                <div className='text-sm text-muted-foreground'>
+                  Filter all charts and data
+                </div>
+              </CardContent>
+            </Card>
+          </PopIn>
         </div>
 
         {/* Leaderboards Section */}
@@ -196,149 +205,166 @@ export default function Statistics() {
             </div>
 
             <TabsContent value='individuals'>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Top Spenders - Individuals</CardTitle>
-                  <CardDescription>
-                    {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'}{' '}
-                    highest expense contributors
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className='rounded-md border'>
-                    <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
-                      <div className='col-span-1'>#</div>
-                      <div className='col-span-5'>Name</div>
-                      <div className='col-span-3'>Committee</div>
-                      <div className='col-span-3 text-right'>Amount</div>
-                    </div>
-                    {individualLeaderboardData.map((person, index) => (
-                      <div
-                        key={person.name}
-                        className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                      >
-                        <div className='col-span-1 font-medium'>
-                          {index + 1}
-                        </div>
-                        <div className='col-span-5'>{person.name}</div>
-                        <div className='col-span-3'>{person.committee}</div>
-                        <div className='col-span-3 text-right font-medium'>
-                          <span className='mr-2 text-muted-foreground select-none'>
-                            SEK
-                          </span>
-                          {person.amount.toLocaleString()}
-                        </div>
+              <PopIn>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Top Spenders - Individuals</CardTitle>
+                    <CardDescription>
+                      {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'}{' '}
+                      highest expense contributors
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className='rounded-md border'>
+                      <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
+                        <div className='col-span-1'>#</div>
+                        <div className='col-span-5'>Name</div>
+                        <div className='col-span-3'>Committee</div>
+                        <div className='col-span-3 text-right'>Amount</div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      {individualLeaderboardData.map((person, index) => (
+                        <div
+                          key={person.name}
+                          className='grid grid-cols-12 p-4 text-sm items-center border-t'
+                        >
+                          <div className='col-span-1 font-medium'>
+                            {index + 1}
+                          </div>
+                          <div className='col-span-5'>{person.name}</div>
+                          <div className='col-span-3'>{person.committee}</div>
+                          <div className='col-span-3 text-right font-medium'>
+                            <span className='mr-2 text-muted-foreground select-none'>
+                              SEK
+                            </span>
+                            {person.amount.toLocaleString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </PopIn>
             </TabsContent>
 
             <TabsContent value='committees'>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Top Spenders - Committees</CardTitle>
-                  <CardDescription>
-                    {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'}{' '}
-                    highest expense departments
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className='rounded-md border'>
-                    <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
-                      <div className='col-span-1'>#</div>
-                      <div className='col-span-5'>Committee</div>
-                      <div className='col-span-3'>Members</div>
-                      <div className='col-span-3 text-right'>Amount</div>
-                    </div>
-                    {committeeLeaderboardData.map((committee, index) => (
-                      <div
-                        key={committee.name}
-                        className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                      >
-                        <div className='col-span-1 font-medium'>
-                          {index + 1}
-                        </div>
-                        <div className='col-span-5'>{committee.name}</div>
-                        <div className='col-span-3'>{committee.members}</div>
-                        <div className='col-span-3 text-right font-medium'>
-                          ${committee.amount.toLocaleString()}
-                        </div>
+              <PopIn>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Top Spenders - Committees</CardTitle>
+                    <CardDescription>
+                      {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'}{' '}
+                      highest expense departments
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className='rounded-md border'>
+                      <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
+                        <div className='col-span-1'>#</div>
+                        <div className='col-span-5'>Committee</div>
+                        <div className='col-span-3'>Members</div>
+                        <div className='col-span-3 text-right'>Amount</div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      {committeeLeaderboardData.map((committee, index) => (
+                        <div
+                          key={committee.name}
+                          className='grid grid-cols-12 p-4 text-sm items-center border-t'
+                        >
+                          <div className='col-span-1 font-medium'>
+                            {index + 1}
+                          </div>
+                          <div className='col-span-5'>{committee.name}</div>
+                          <div className='col-span-3'>{committee.members}</div>
+                          <div className='col-span-3 text-right font-medium'>
+                            ${committee.amount.toLocaleString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </PopIn>
             </TabsContent>
           </Tabs>
         </div>
 
         {/* Chart Section */}
         <div className='grid gap-6 md:grid-cols-2'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Monthly Expenses</CardTitle>
-              <CardDescription>
-                Expense trends throughout the year
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='h-80'>
-              <ResponsiveContainer width='100%' height='100%'>
-                <LineChart
-                  data={monthlyData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          <PopIn>
+            <Card>
+              <CardHeader>
+                <CardTitle>Monthly Expenses</CardTitle>
+                <CardDescription>
+                  Expense trends throughout the year
+                </CardDescription>
+              </CardHeader>
+              <CardContent className='h-80'>
+                <ResponsiveContainer
+                  width='100%'
+                  height='100%'
+                  className='text-sm'
                 >
-                  <CartesianGrid strokeDasharray='3 3' />
-                  <XAxis dataKey='name' />
-                  <YAxis />
-                  <Tooltip formatter={(value) => `$${value}`} />
-                  <Line
-                    type='monotone'
-                    dataKey='amount'
-                    stroke='hsl(var(--primary))'
-                    strokeWidth={2}
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Expenses by Committee</CardTitle>
-              <CardDescription>Distribution across departments</CardDescription>
-            </CardHeader>
-
-            <CardContent className='h-80'>
-              <ResponsiveContainer width='100%' height='100%'>
-                <PieChart>
-                  <Pie
-                    data={committeeData}
-                    cx='50%'
-                    cy='50%'
-                    labelLine={false}
-                    outerRadius={80}
-                    fill='#8884d8'
-                    dataKey='value'
-                    label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
+                  <AreaChart
+                    data={monthlyData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
-                    {committeeData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${entry.name}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `$${value}`} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+                    <CartesianGrid strokeDasharray='3 3' />
+                    <XAxis dataKey='name' />
+                    <YAxis />
+                    <Tooltip formatter={(value) => `$${value}`} />
+                    <Area
+                      type='monotone'
+                      dataKey='amount'
+                      name='amount'
+                      stroke='hsl(var(--primary))'
+                      fillOpacity={0.2}
+                      fill='hsl(var(--primary))'
+                      dot={{ stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+                      activeDot={{ r: 8 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </PopIn>
+
+          <PopIn>
+            <Card>
+              <CardHeader>
+                <CardTitle>Expenses by Committee</CardTitle>
+                <CardDescription>
+                  Distribution across departments
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className='h-80'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <PieChart>
+                    <Pie
+                      data={committeeData}
+                      cx='50%'
+                      cy='50%'
+                      labelLine={false}
+                      outerRadius={80}
+                      fill='#8884d8'
+                      dataKey='value'
+                      label={({ name, percent }) =>
+                        `${name} ${(percent * 100).toFixed(0)}%`
+                      }
+                    >
+                      {committeeData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${entry.name}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => `$${value}`} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </PopIn>
         </div>
       </div>
     </main>
