@@ -73,11 +73,10 @@ export default function FinalizeExpense({ committees, onBack }: Props) {
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
-          <p className='text-2xl font-bold'>Finalize</p>
-          <h1 className='text-muted-foreground'>
-            {' '}
+          <h1 className='text-2xl font-bold'>Finalize</h1>
+          <p className='text-muted-foreground'>
             Review your expense details before finalizing.
-          </h1>
+          </p>
         </div>
         <button
           type='button'

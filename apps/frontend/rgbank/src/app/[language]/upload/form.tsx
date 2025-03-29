@@ -10,7 +10,7 @@ import { AnimatedTabsContent } from '@/components/ui/animated-tabs'
 import { Tabs } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface Props {
   committees: Committee[]
@@ -46,6 +46,10 @@ export default function UploadForm({ committees }: Props) {
       behavior: 'smooth',
     })
   }, [])
+
+  useEffect(() => {
+    setPage(template)
+  }, [template])
 
   return (
     <FormProvider>

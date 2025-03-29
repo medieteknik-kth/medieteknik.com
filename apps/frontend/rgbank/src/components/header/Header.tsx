@@ -32,7 +32,7 @@ export default async function Header({
           asChild
           className='h-full items-center justify-center'
         >
-          <Link href={`/${language}`}>
+          <Link href={`/${language}?template=select`}>
             <Image
               src={Logo.src}
               alt='Medieteknik Logo'
@@ -50,7 +50,7 @@ export default async function Header({
           asChild
           className='uppercase h-full bg-inherit'
         >
-          <Link href={`/${language}/upload`}>New Expense</Link>
+          <Link href={`/${language}/upload?template=expense`}>New Expense</Link>
         </Button>
 
         <Button
@@ -58,7 +58,7 @@ export default async function Header({
           asChild
           className='uppercase h-full bg-inherit'
         >
-          <Link href={`/${language}/upload`}>New Invoice</Link>
+          <Link href={`/${language}/upload?template=invoice`}>New Invoice</Link>
         </Button>
 
         <Button
