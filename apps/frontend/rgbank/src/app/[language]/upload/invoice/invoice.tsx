@@ -279,7 +279,7 @@ export default function Invoice({
               isCompleted={completedSteps[4]}
               isActive={true}
             >
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 flex-wrap'>
                 <div>
                   <Label>
                     Invoice date

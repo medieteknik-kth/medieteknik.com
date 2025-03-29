@@ -111,7 +111,10 @@ export default function Categorize({
     <>
       <ul className='space-y-2 mt-4'>
         {categories.map((category, index) => (
-          <li key={category.id} className='grid grid-cols-12 gap-4'>
+          <li
+            key={category.id}
+            className='flex md:grid grid-cols-12 md:gap-4 items-center gap-2 flex-wrap'
+          >
             <div className='w-full flex flex-col gap-2 col-span-3'>
               {index === 0 && (
                 <Label>

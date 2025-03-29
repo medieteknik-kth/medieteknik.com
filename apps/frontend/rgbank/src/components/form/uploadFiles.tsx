@@ -103,7 +103,9 @@ export default function UploadFiles({
             <input {...getInputProps()} />
             <div className='h-96 flex flex-col items-center justify-center gap-2 hover:bg-neutral-200! dark:hover:bg-neutral-800! rounded-md transition-colors cursor-pointer border-2 border-dashed border-neutral-300 dark:border-neutral-700'>
               <ArrowUpOnSquareIcon className='w-8 h-8' />
-              <p>Drag and drop your file here, or click to select a file.</p>
+              <p className='text-sm text-center text-muted-foreground'>
+                Drag and drop your file here, or click to select a file.
+              </p>
             </div>
           </div>
         )}

@@ -59,7 +59,7 @@ export function FormStep({
       )}
     >
       <div className='relative flex items-start gap-4'>
-        <div className='flex-shrink-0'>
+        <div className='flex-shrink-0 hidden sm:flex'>
           <div
             className={cn(
               'w-10 h-10 rounded-full flex items-center justify-center',
@@ -163,7 +163,7 @@ export function FormSteps({
 }: FormStepsProps) {
   return (
     <div className={cn('space-y-8', className)}>
-      <div className='flex items-center justify-between'>
+      <div className='flex items-center justify-between flex-wrap gap-4'>
         <div className='space-y-1'>
           {title && <h2 className='text-2xl font-bold'>{title}</h2>}
           {description && (
