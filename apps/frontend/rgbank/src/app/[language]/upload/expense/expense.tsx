@@ -195,7 +195,7 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
         <div>
           <div className='flex items-center gap-4 pb-2'>
             <div className='w-8 h-8 border rounded-full'>
-              {completedSteps[3] && !isDigitalReceiptRequired ? (
+              {completedSteps[3] ? (
                 <CheckIcon className='w-8 h-8 bg-green-400/70 rounded-full p-1.5' />
               ) : (
                 <XMarkIcon className='w-8 h-8 bg-red-400/70 rounded-full p-1.5' />
@@ -224,7 +224,11 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
         </div>
 
         <Button
-          disabled={completedSteps.some((step, index) => !step && index !== 3)}
+          disabled={completedSteps.some(
+            (step, index) =>
+              !step &&
+              ((index !== 3 && !isDigitalReceiptRequired) || index !== 4)
+          )}
           onClick={() => {
             setExpenseData({
               ...expenseData,

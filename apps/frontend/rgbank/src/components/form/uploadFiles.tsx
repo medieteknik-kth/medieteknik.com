@@ -136,6 +136,9 @@ export default function UploadFiles({
                   if (file.name.endsWith('.pdf')) {
                     if (setIsDigitalReceiptRequired) {
                       setIsDigitalReceiptRequired(false)
+                      if (files.length === 1) {
+                        completeStep(2)
+                      }
                     }
                   }
                   toast({

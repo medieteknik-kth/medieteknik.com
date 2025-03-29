@@ -201,7 +201,6 @@ export default function Categorize({
                 type='text'
                 placeholder='Category'
                 value={category.category}
-                onBlur={(e) => {}}
                 onChange={(e) => {
                   const newCategories = [...categories]
                   newCategories[index].category = e.target.value
