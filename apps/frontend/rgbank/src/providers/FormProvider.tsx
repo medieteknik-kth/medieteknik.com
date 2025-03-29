@@ -61,6 +61,7 @@ interface fileContextData {
   setFiles: (files: File[]) => void
   removeFile: (file: File) => void
   addFile: (file: File) => void
+  removeAllFiles: () => void
 }
 
 export function useFiles(): fileContextData {
@@ -70,7 +71,7 @@ export function useFiles(): fileContextData {
     throw new Error('useFiles must be used within a FormProvider')
   }
 
-  const { files, setFiles, removeFile, addFile } = context
+  const { files, setFiles, removeFile, addFile, removeAllFiles } = context
 
-  return { files, setFiles, removeFile, addFile }
+  return { files, setFiles, removeFile, addFile, removeAllFiles }
 }

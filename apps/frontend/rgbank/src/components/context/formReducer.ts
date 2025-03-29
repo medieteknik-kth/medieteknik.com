@@ -13,6 +13,7 @@ export interface FormContextType extends FormState {
   setFiles: (files: File[]) => void
   removeFile: (file: File) => void
   addFile: (file: File) => void
+  removeAllFiles: () => void
   setInvoiceData: (data: InvoiceData) => void
   setExpenseData: (data: ExpenseData) => void
 }
@@ -22,6 +23,7 @@ type FormAction =
   | { type: 'SET_FILES'; payload: File[] }
   | { type: 'ADD_FILE'; payload: File }
   | { type: 'REMOVE_FILE'; payload: File }
+  | { type: 'REMOVE_ALL_FILES' }
   | { type: 'SET_INVOICE_DATA'; payload: InvoiceData }
   | { type: 'SET_EXPENSE_DATA'; payload: ExpenseData }
 
@@ -29,7 +31,6 @@ export const initialState: FormState = {
   error: null,
   files: [],
   invoiceData: {
-    hasChapterPaid: false,
     files: [],
     description: '',
     isOriginalInvoice: false,
@@ -59,6 +60,8 @@ export function formReducer(state: FormState, action: FormAction): FormState {
         ...state,
         files: state.files.filter((file) => file.name !== action.payload.name),
       }
+    case 'REMOVE_ALL_FILES':
+      return { ...state, files: [] }
     case 'SET_INVOICE_DATA':
       return { ...state, invoiceData: action.payload }
     case 'SET_EXPENSE_DATA':

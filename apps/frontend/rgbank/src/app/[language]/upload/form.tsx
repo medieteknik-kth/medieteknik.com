@@ -40,7 +40,12 @@ export default function UploadForm({ committees }: Props) {
     router.replace(`${pathname}?${params.toString()}`)
   }, [pathname, router, searchParams])
 
-  // TODO: Create a provider for the forms
+  const moveToTop = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }, [])
 
   return (
     <FormProvider>
@@ -63,16 +68,23 @@ export default function UploadForm({ committees }: Props) {
             activeValue={page}
             animationStyle='slide'
             value='invoice'
-            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8'
+            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <Invoice
               committees={committees}
+              toExpense={() => {
+                handleTabChange('expense')
+                setPage('expense')
+              }}
               onBack={() => {
                 removeSearchParams()
                 setPage('select')
               }}
               onFinalize={() => {
-                setPage('invoice-finalize')
+                moveToTop()
+                setTimeout(() => {
+                  setPage('invoice-finalize')
+                }, 200)
               }}
             />
           </AnimatedTabsContent>
@@ -80,15 +92,20 @@ export default function UploadForm({ committees }: Props) {
             activeValue={page}
             animationStyle='slide'
             value='invoice-finalize'
-            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8'
+            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
-            <FinalizeInvoice />
+            <FinalizeInvoice
+              committees={committees}
+              onBack={() => {
+                setPage('invoice')
+              }}
+            />
           </AnimatedTabsContent>
           <AnimatedTabsContent
             activeValue={page}
             animationStyle='slide'
             value='expense'
-            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8'
+            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <Expense
               committees={committees}
@@ -97,7 +114,10 @@ export default function UploadForm({ committees }: Props) {
                 setPage('select')
               }}
               onFinalize={() => {
-                setPage('expense-finalize')
+                moveToTop()
+                setTimeout(() => {
+                  setPage('expense-finalize')
+                }, 200)
               }}
             />
           </AnimatedTabsContent>
@@ -105,7 +125,7 @@ export default function UploadForm({ committees }: Props) {
             activeValue={page}
             animationStyle='slide'
             value='expense-finalize'
-            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8'
+            className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <FinalizeExpense
               committees={committees}

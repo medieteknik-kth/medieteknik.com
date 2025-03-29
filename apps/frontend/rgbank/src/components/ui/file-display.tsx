@@ -1,6 +1,7 @@
 'use client'
 
-import { DocumentTextIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { DocumentIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import * as pdfjs from 'pdfjs-dist'
 import {
   type JSX,
@@ -72,13 +73,11 @@ const PDFPreview = ({ file }: PDFPreviewProps): JSX.Element => {
     }
   }, [file])
 
-  console.log(imageSrc)
-
   return imageSrc ? (
     <img
       src={imageSrc}
       alt={file.name}
-      className='max-h-[30rem] object-cover'
+      className='w-full rounded-md object-contain max-h-64'
     />
   ) : (
     <p>Loading Image</p>
@@ -118,49 +117,71 @@ export default function FileDisplay({
   children,
 }: Props): JSX.Element {
   return (
-    <div className='w-full flex flex-wrap mt-2 gap-2'>
-      {files.map((file) => (
-        <li
-          key={`${file.name}-${file.size}`}
-          className={`rounded-md w-fit h-fit px-4 flex items-center flex-wrap justify-between gap-2 bg-white border dark:bg-neutral-800 hover:scale-[101%] transition-transform duration-200 ease-in-out ${preview ? 'h-auto pt-4 pb-2' : 'py-2'}`}
-        >
-          <div
-            className={`flex items-center gap-2 ${preview ? 'flex-col' : ''}`}
+    <ScrollArea className='w-full'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+        {files.map((file) => (
+          <li
+            key={`${file.name}-${file.size}`}
+            className='rounded-lg border bg-card overflow-hidden flex flex-col'
           >
-            {preview ? (
-              file.name.endsWith('.pdf') ? (
-                <PDFPreview file={file} />
+            <div className='relative aspect-video bg-muted/20 flex items-center justify-center overflow-hidden'>
+              {preview ? (
+                file.name.endsWith('.pdf') ? (
+                  <PDFPreview file={file} />
+                ) : file.type.startsWith('image/') ? (
+                  <img
+                    src={URL.createObjectURL(file) || '/placeholder.svg'}
+                    alt={file.name}
+                    className='w-full h-full object-cover'
+                  />
+                ) : (
+                  <div className='flex items-center justify-center w-full h-full'>
+                    <div className='bg-primary/10 p-4 rounded-full'>
+                      <DocumentIcon className='w-8 h-8 text-primary' />
+                    </div>
+                  </div>
+                )
               ) : (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className='w-full h-auto rounded-md object-cover max-h-96'
-                />
-              )
-            ) : file.name.endsWith('.pdf') && !preview ? (
-              <DocumentTextIcon className='w-8 h-8 text-red-500' />
-            ) : (
-              <PhotoIcon className='w-8 h-8 text-gray-500' />
-            )}
-
-            <div className={`${preview ? 'self-start mt-auto' : ''}`}>
-              <p className='text-sm'>{file.name}</p>
-              <p className='text-xs text-muted-foreground'>
-                {calculateFileSize(file.size)}
-              </p>
+                <div className='flex items-center justify-center w-full h-full'>
+                  <div className='bg-primary/10 p-4 rounded-full'>
+                    {file.type.startsWith('image/') ? (
+                      <PhotoIcon className='w-8 h-8 text-primary' />
+                    ) : (
+                      <DocumentIcon className='w-8 h-8 text-primary' />
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
 
-          {children &&
-            (typeof children === 'function'
-              ? children(file)
-              : isValidElement(children)
-                ? cloneElement(children as React.ReactElement<{ file: File }>, {
-                    file,
-                  })
-                : children)}
-        </li>
-      ))}
-    </div>
+            <div className='p-3 flex justify-between flex-1'>
+              <div>
+                <h4
+                  className='font-medium text-sm line-clamp-1'
+                  title={file.name}
+                >
+                  {file.name}
+                </h4>
+                <p className='text-xs text-muted-foreground mt-1'>
+                  {calculateFileSize(file.size)}
+                </p>
+              </div>
+
+              {children &&
+                (typeof children === 'function'
+                  ? children(file)
+                  : isValidElement(children)
+                    ? cloneElement(
+                        children as React.ReactElement<{ file: File }>,
+                        {
+                          file,
+                        }
+                      )
+                    : children)}
+            </div>
+          </li>
+        ))}
+      </div>
+    </ScrollArea>
   )
 }

@@ -1,0 +1,86 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Separator } from '@/components/ui/separator'
+import type { ExpenseData } from '@/models/Expense'
+import {
+  AdjustmentsHorizontalIcon,
+  CalendarIcon,
+  CreditCardIcon,
+} from '@heroicons/react/24/outline'
+
+interface Props {
+  expenseData: ExpenseData
+  totalAmount: number
+}
+
+export function ExpenseMetadata({ expenseData, totalAmount }: Props) {
+  return (
+    <Card className='shadow-md'>
+      <CardHeader className='pb-3'>
+        <CardTitle className='text-lg font-semibold leading-tight'>
+          Metadata
+        </CardTitle>
+      </CardHeader>
+      <CardContent className='space-y-4'>
+        {/* Amount */}
+        <div className='flex items-start gap-4'>
+          <div className='bg-primary/10 p-2 rounded-md'>
+            <CreditCardIcon className='w-6 h-6 text-primary' />
+          </div>
+          <div className='flex-1'>
+            <p className='text-sm text-muted-foreground font-medium'>Amount</p>
+            <p className='mt-1 text-lg font-semibold'>{totalAmount} SEK</p>
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Digital Reciept */}
+        <div className='flex items-start gap-4'>
+          <div className='bg-primary/10 p-2 rounded-md'>
+            <AdjustmentsHorizontalIcon className='w-6 h-6 text-primary' />
+          </div>
+          <div className='flex-1'>
+            <p className='text-sm text-muted-foreground font-medium mb-2'>
+              Reciept Status
+            </p>
+            <div className='grid grid-cols-2 gap-y-2'>
+              <div className='flex items-center gap-2'>
+                <Checkbox
+                  id='original'
+                  disabled
+                  checked={expenseData.isDigital}
+                />
+                <label htmlFor='original' className='text-sm'>
+                  Digital Receipt
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Dates */}
+        <div className='flex items-start gap-4'>
+          <div className='bg-primary/10 p-2 rounded-md'>
+            <CalendarIcon className='w-6 h-6 text-primary' />
+          </div>
+          <div className='flex-1'>
+            <p className='text-sm text-muted-foreground font-medium mb-2'>
+              Important Dates
+            </p>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <p className='text-sm text-muted-foreground'>Expense Date</p>
+                <p className='font-medium'>
+                  {expenseData.date.toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}

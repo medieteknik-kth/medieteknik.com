@@ -34,6 +34,10 @@ export default function FormProvider({ children }: Props) {
     dispatch({ type: 'ADD_FILE', payload: file })
   }, [])
 
+  const removeAllFiles = useCallback(() => {
+    dispatch({ type: 'REMOVE_ALL_FILES' })
+  }, [])
+
   const setInvoiceData = useCallback((data: InvoiceData) => {
     dispatch({ type: 'SET_INVOICE_DATA', payload: data })
   }, [])
@@ -49,6 +53,7 @@ export default function FormProvider({ children }: Props) {
       setFiles,
       removeFile,
       addFile,
+      removeAllFiles,
       setError,
       setInvoiceData,
       setExpenseData,
@@ -58,6 +63,7 @@ export default function FormProvider({ children }: Props) {
     setError,
     setFiles,
     removeFile,
+    removeAllFiles,
     addFile,
     setExpenseData,
     setInvoiceData,

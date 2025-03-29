@@ -1,4 +1,6 @@
 'use client'
+
+import { FormStep, FormSteps } from '@/app/[language]/upload/components/step'
 import Categorize from '@/components/form/categorize'
 import UploadFiles from '@/components/form/uploadFiles'
 import { Button } from '@/components/ui/button'
@@ -8,11 +10,6 @@ import { Label } from '@/components/ui/label'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import { useExpense, useFiles, useGeneralForm } from '@/providers/FormProvider'
-import {
-  ArrowLeftIcon,
-  CheckIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
 import { subDays } from 'date-fns'
 import { useCallback, useState } from 'react'
 
@@ -29,11 +26,13 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
   const [completedSteps, setCompletedSteps] = useState([
     expenseData.files.length > 0,
     expenseData.date !== undefined,
-    expenseData.files.length > 0 ? expenseData.isDigital : true,
+    expenseData.files.some((file) => file.name.toLowerCase().endsWith('.pdf'))
+      ? expenseData.isDigital
+      : true,
     expenseData.categories.length > 0,
   ])
   const [categories, setCategories] = useState<Category[]>([])
-  const { files } = useFiles()
+  const { files, removeAllFiles } = useFiles()
 
   const [isDigitalReceiptRequired, setIsDigitalReceiptRequired] =
     useState(false)
@@ -56,74 +55,45 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
 
   return (
     <>
-      <div className='grid grid-cols-3 items-center'>
-        <Button
-          className='w-fit flex gap-4'
-          variant={'outline'}
-          onClick={() => {
-            setCompletedSteps([false, false, true, false])
-            setError('')
-            setIsDigitalReceiptRequired(false)
-
-            onBack()
-          }}
+      <FormSteps
+        title='Upload your expense'
+        description='Please upload your expense receipt and fill in the required details.'
+        backButtonLabel='Back to upload'
+        onBackClick={() => {
+          removeAllFiles()
+          setExpenseData({
+            ...expenseData,
+            files: [],
+            date: new Date(),
+            isDigital: false,
+            categories: [],
+          })
+          onBack()
+        }}
+        showBackButton
+      >
+        <FormStep
+          title='Upload your receipt image'
+          description='Upload your receipt image in PDF, PNG, JPG, JPEG, or AVIF format.'
+          stepNumber={1}
+          isCompleted={completedSteps[0]}
+          isActive={true}
         >
-          <ArrowLeftIcon className='w-4 h-4' />
-          Back
-        </Button>
-        <div>
-          <p className='text-center text-sm text-muted-foreground'>
-            Fill in the details of your expense.
-          </p>
-          <h1 className='text-3xl font-bold text-center'>Expense</h1>
-        </div>
-      </div>
-      <div className='flex flex-col gap-4 mt-8'>
-        <div>
-          <div className='flex items-center gap-4 pb-2'>
-            <div className='w-8 h-8 border rounded-full'>
-              {completedSteps[0] ? (
-                <CheckIcon className='w-8 h-8 bg-green-400/70 rounded-full p-1.5' />
-              ) : (
-                <XMarkIcon className='w-8 h-8 bg-red-400/70 rounded-full p-1.5' />
-              )}
-            </div>
-            <div>
-              <h2 className='text-lg font-bold leading-5'>
-                Step 1: Upload your receipt image. <br />
-              </h2>
-              <p className='text-sm text-muted-foreground'>
-                (PDF, PNG, JPG, JPEG, AVIF)
-              </p>
-            </div>
-          </div>
           <UploadFiles
             fileUploadStep={0}
             completeStep={completeStep}
             uncompleteStep={uncompleteStep}
             setIsDigitalReceiptRequired={setIsDigitalReceiptRequired}
           />
-        </div>
+        </FormStep>
 
-        <div>
-          <div className='flex items-center gap-4 pb-2'>
-            <div className='w-8 h-8 border rounded-full'>
-              {completedSteps[1] ? (
-                <CheckIcon className='w-8 h-8 bg-green-400/70 rounded-full p-1.5' />
-              ) : (
-                <XMarkIcon className='w-8 h-8 bg-red-400/70 rounded-full p-1.5' />
-              )}
-            </div>
-            <div>
-              <h2 className='text-lg font-bold leading-5'>
-                Step 2: Enter in the date of the expense. <br />
-              </h2>
-              <p className='text-sm text-muted-foreground'>
-                (Date must be in the past)
-              </p>
-            </div>
-          </div>
-
+        <FormStep
+          title='Enter the date of the expense'
+          description='Enter the date of the expense. The date must be in the past.'
+          stepNumber={2}
+          isCompleted={completedSteps[1]}
+          isActive={true}
+        >
           <Label>
             Date <span className='text-red-500'>*</span>
           </Label>
@@ -148,27 +118,15 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
               }
             }}
           />
-        </div>
+        </FormStep>
 
-        <div>
-          <div className='flex items-center gap-4 pb-2'>
-            <div className='w-8 h-8 border rounded-full'>
-              {completedSteps[2] ? (
-                <CheckIcon className='w-8 h-8 bg-green-400/70 rounded-full p-1.5' />
-              ) : (
-                <XMarkIcon className='w-8 h-8 bg-red-400/70 rounded-full p-1.5' />
-              )}
-            </div>
-            <div>
-              <h2 className='text-lg font-bold leading-5'>
-                Step 3: Is it a digital expense? <br />
-              </h2>
-              <p className='text-sm text-muted-foreground'>
-                (Select if the expense is digital or not)
-              </p>
-            </div>
-          </div>
-
+        <FormStep
+          title='Is it a digital expense?'
+          description='Select if the expense is digital or not.'
+          stepNumber={3}
+          isCompleted={completedSteps[2]}
+          isActive={isDigitalReceiptRequired}
+        >
           <div className='flex items-center gap-2'>
             <Checkbox
               id='digital'
@@ -190,27 +148,15 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
             />
             <Label htmlFor='digital'>This is a digital expense</Label>
           </div>
-        </div>
+        </FormStep>
 
-        <div>
-          <div className='flex items-center gap-4 pb-2'>
-            <div className='w-8 h-8 border rounded-full'>
-              {completedSteps[3] ? (
-                <CheckIcon className='w-8 h-8 bg-green-400/70 rounded-full p-1.5' />
-              ) : (
-                <XMarkIcon className='w-8 h-8 bg-red-400/70 rounded-full p-1.5' />
-              )}
-            </div>
-            <div>
-              <h2 className='text-lg font-bold leading-5'>
-                Step 4: Divide the amount by category(ies). <br />
-              </h2>
-              <p className='text-sm text-muted-foreground'>
-                (Select the categories and enter the amount for each one)
-              </p>
-            </div>
-          </div>
-
+        <FormStep
+          title='Categorize the expense'
+          description='Select the categories and enter the amount for each one.'
+          stepNumber={4}
+          isCompleted={completedSteps[3]}
+          isActive={true}
+        >
           <Categorize
             defaultValue={expenseData.categories}
             setFormCategories={(categories) => {
@@ -221,9 +167,10 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
             uncompleteStep={uncompleteStep}
             committees={committees}
           />
-        </div>
+        </FormStep>
 
         <Button
+          className='w-full h-16 mt-8'
           disabled={completedSteps.some(
             (step, index) =>
               !step &&
@@ -241,7 +188,7 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
         >
           Finalize Expense
         </Button>
-      </div>
+      </FormSteps>
     </>
   )
 }

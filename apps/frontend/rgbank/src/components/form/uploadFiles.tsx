@@ -15,17 +15,6 @@ const acceptedImages = {
   'image/webp': ['.webp'],
   'application/pdf': ['.pdf'],
 }
-const calculateFileSize = (size: number) => {
-  // Convert bytes to KB, MB, GB, etc.
-  const units = ['bytes', 'KB', 'MB', 'GB', 'TB']
-  let unitIndex = 0
-  let fileSize = size
-  while (fileSize >= 1024 && unitIndex < units.length - 1) {
-    fileSize /= 1024
-    unitIndex++
-  }
-  return `${fileSize.toFixed(2)} ${units[unitIndex]}`
-}
 
 interface Props {
   fileUploadStep: number
@@ -121,7 +110,7 @@ export default function UploadFiles({
       </Dropzone>
       <ul className='flex flex-wrap mt-2 gap-2'>
         {files && (
-          <FileDisplay files={files}>
+          <FileDisplay files={files} preview>
             {(file) => (
               <Button
                 className='cursor-pointer'
