@@ -1,3 +1,4 @@
+import ClientWrapper from '@/components/client/ClientWrapper'
 import Footer from '@/components/footer/Footer'
 import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/toaster'
@@ -54,7 +55,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
       </noscript>
 
       <Header language={language} />
-      {children}
+      <ClientWrapper>{children}</ClientWrapper>
       <Footer language={language} />
 
       <Script id='language-attributes' nonce={nonce ?? ''}>
