@@ -3,6 +3,7 @@ import {
   INDEXEDDB_NAME,
   INDEXEDDB_STORE_NAME,
   INDEXEDDB_VERSION,
+  IS_DEVELOPMENT,
 } from '@/utility/Constants'
 
 /**
@@ -131,7 +132,9 @@ export async function setIndexedDBSearchEntries(
   await updateTimestamp(db, key)
 
   request.onsuccess = () => {
-    console.log('Data saved successfully')
+    if (IS_DEVELOPMENT) {
+      console.log('Data saved successfully')
+    }
   }
   request.onerror = (event) => {
     console.error('Error saving data:', (event.target as IDBRequest).error)
