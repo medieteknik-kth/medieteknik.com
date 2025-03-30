@@ -49,6 +49,7 @@ export default function ContextSearch({
   const [activeFilters, setActiveFilters] = useState<string[]>([
     'committee',
     'committee_position',
+    'document',
   ])
   const [entriesFromClient, setEntriesFromClient] = useState<boolean>(false)
   const { t } = useTranslation(language, 'header/context_search')
@@ -190,7 +191,7 @@ export default function ContextSearch({
       <Button
         variant={'defaultOutline'}
         size={'icon'}
-        className='rounded-full md:rounded-xl overflow-hidden h-[4.5rem] md:h-6 w-[4.5rem] md:w-fit flex items-center md:gap-0.5 md:px-2 md:opacity-60 hover:opacity-100 transition-opacity duration-500 ease-in-out'
+        className='hidden rounded-xl overflow-hidden h-6 w-fit md:flex items-center gap-0.5 px-2 opacity-60 hover:opacity-100 transition-opacity duration-500 ease-in-out'
         title={t('title')}
         aria-label='Search Button'
         onClick={() => setOpenDialog(!openDialog)}
