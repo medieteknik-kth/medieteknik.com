@@ -21,7 +21,7 @@ from utility import log_error, convert_iso_639_1_to_bcp_47, db
 def add_notification(message_data: Dict[str, Any]) -> Tuple[bool, str]:
     """
     Adds a notification to the database.
-        :param data: Dict[str, Any] - The data containing the notification
+        :param message_data: Dict[str, Any] - The data containing the notification
         :return: Response - The response object, 400 if no data is provided, 201 if successful
     """
 
