@@ -43,6 +43,7 @@ from models.core import (
     NotificationPreferences,  # noqa: F401
     Notifications,  # noqa: F401
     NotificationsTranslation,  # noqa: F401
+    SentNotifications,  # noqa: F401
     Permissions,  # noqa: F401
     Role,  # noqa: F401
     StudentPermission,  # noqa: F401
