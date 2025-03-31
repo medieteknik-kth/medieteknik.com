@@ -28,6 +28,7 @@ from .notifications import Notifications
 from .notifications import NotificationSubscription
 from .notifications import NotificationPreferences
 from .notifications import NotificationsTranslation
+from .notifications import SentNotifications
 
 from .permissions import Permissions
 from .permissions import Role
@@ -49,6 +50,7 @@ __all__ = [
     "NotificationPreferences",
     "Notifications",
     "NotificationsTranslation",
+    "SentNotifications",
     "Permissions",
     "Role",
     "StudentPermission",

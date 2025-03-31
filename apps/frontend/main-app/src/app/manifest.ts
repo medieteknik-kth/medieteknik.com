@@ -12,7 +12,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'Medieteknik',
     categories: ['education', 'news', 'social'],
     id: '/',
-    start_url: '.',
+    start_url: '/',
     description:
       'Website for the Media Technology programme at KTH (Royal Institute of Technology).',
     theme_color: '#FACC15',
@@ -20,6 +20,14 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'portrait-primary',
     display_override: ['window-controls-overlay'],
     display: 'standalone',
+    dir: 'ltr',
+    lang: 'sv',
+    scope: 'https://www.medieteknik.com',
+    prefer_related_applications: false,
+    related_applications: [],
+    launch_handler: {
+      client_mode: 'auto',
+    },
     icons: [
       {
         src: '/web-app-manifest-192x192.png',

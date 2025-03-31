@@ -10,6 +10,7 @@ import OptionsMenu from '@/components/header/client/Options'
 import CommitteeDialog from '@/components/header/components/CommitteeDialog'
 import ContextSearch from '@/components/header/components/ContextSearch'
 import HeaderNavigationMenu from '@/components/header/components/HeaderNavigationMenu'
+import QuickAccessMenu from '@/components/header/components/QuickAccess'
 import type { HeaderElement } from '@/components/header/util/HeaderElement'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
@@ -102,6 +103,7 @@ export default async function Header({
           language={language}
           cachedSearchEntries={cachedSearchEntries}
         />
+        <QuickAccessMenu language={language} />
 
         <div className='hidden md:flex items-center justify-end w-fit h-full place-self-end'>
           <OptionsMenu language={language} />
