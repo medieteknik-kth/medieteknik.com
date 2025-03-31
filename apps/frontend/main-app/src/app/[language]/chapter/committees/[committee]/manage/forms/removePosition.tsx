@@ -103,8 +103,6 @@ export default function RemovePositionForm({
     }
   }
 
-  console.log(studentPositions)
-
   return (
     <DialogContent>
       <DialogHeader>

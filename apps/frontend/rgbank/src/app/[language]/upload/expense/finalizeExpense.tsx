@@ -3,7 +3,7 @@
 import { CategoryOverviewByCommittee } from '@/app/[language]/upload/components/categories'
 import FileOverview from '@/app/[language]/upload/components/files'
 import { ExpenseMetadata } from '@/app/[language]/upload/expense/components/expense-metadata'
-import { expenseSchema } from '@/app/schemas/expense'
+import { expenseSchema } from '@/schemas/expense'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
 import { useExpense } from '@/providers/FormProvider'

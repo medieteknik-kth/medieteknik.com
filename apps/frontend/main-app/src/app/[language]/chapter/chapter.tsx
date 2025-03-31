@@ -25,8 +25,6 @@ export default async function Chapter(props: Props) {
     semester
   )
 
-  console.log(members)
-
   const { t } = await useTranslation(language, 'chapter')
 
   return (
