@@ -1,6 +1,7 @@
 import { fontFigtree } from '@/app/fonts'
 import '@shared/styles/globals.css'
 import type { Metadata } from 'next'
+import { ViewTransitions } from 'next-view-transitions'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,15 +14,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang='en'
-      suppressHydrationWarning
-      className={`${fontFigtree.className}`}
-      style={{
-        WebkitFontSmoothing: 'antialiased',
-      }}
-    >
-      <body>{children}</body>
-    </html>
+    <ViewTransitions>
+      <html
+        lang='en'
+        suppressHydrationWarning
+        className={`${fontFigtree.className}`}
+        style={{
+          WebkitFontSmoothing: 'antialiased',
+        }}
+      >
+        <body>{children}</body>
+      </html>
+    </ViewTransitions>
   )
 }
