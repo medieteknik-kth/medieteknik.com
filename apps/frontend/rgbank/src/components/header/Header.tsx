@@ -1,3 +1,4 @@
+import ProfileMenu from '@/components/header/client/ProfileMenu'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
 import { Link } from 'next-view-transitions'
@@ -74,6 +75,10 @@ export default function Header({ language }: Props): JSX.Element {
         >
           <Link href={`/${language}/statistics`}>Statistics</Link>
         </Button>
+      </div>
+
+      <div className='place-self-end h-full'>
+        <ProfileMenu />
       </div>
     </header>
   )

@@ -3,6 +3,7 @@ import Footer from '@/components/footer/Footer'
 import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/toaster'
 import type { LanguageCode } from '@/models/Language'
+import Providers from '@/providers/Providers'
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { dir } from 'i18next'
 import type { Viewport } from 'next'
@@ -54,9 +55,11 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
         </div>
       </noscript>
 
-      <Header language={language} />
-      <ClientWrapper language={language}>{children}</ClientWrapper>
-      <Footer language={language} />
+      <Providers language={language}>
+        <Header language={language} />
+        <ClientWrapper>{children}</ClientWrapper>
+        <Footer language={language} />
+      </Providers>
 
       <Script id='language-attributes' nonce={nonce ?? ''}>
         {`document.documentElement.lang = "${language}";
