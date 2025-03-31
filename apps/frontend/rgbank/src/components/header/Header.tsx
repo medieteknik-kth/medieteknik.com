@@ -65,7 +65,9 @@ export default function Header({ language }: Props): JSX.Element {
           asChild
           className='uppercase h-full bg-inherit'
         >
-          <Link href={`/${language}/upload`}>Your Uploads</Link>
+          <Link href={`/${language}/account?category=activity`}>
+            Your Uploads
+          </Link>
         </Button>
 
         <Button
