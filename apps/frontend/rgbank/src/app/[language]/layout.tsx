@@ -55,7 +55,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
       </noscript>
 
       <Header language={language} />
-      <ClientWrapper>{children}</ClientWrapper>
+      <ClientWrapper language={language}>{children}</ClientWrapper>
       <Footer language={language} />
 
       <Script id='language-attributes' nonce={nonce ?? ''}>
