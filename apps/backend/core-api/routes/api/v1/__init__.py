@@ -35,6 +35,7 @@ from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
 from utility.database import db
 from utility.translation import retrieve_languages
+from utility.authorization import jwt
 
 
 def register_v1_routes(app: Flask):
@@ -214,6 +215,17 @@ def register_v1_routes(app: Flask):
         except (RuntimeError, KeyError):
             # Case where there is not a valid JWT. Just return the original respone
             pass
+
+        return response
+
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error: str) -> Response:
+        """
+        Callback for invalid token.
+        """
+        response = make_response({"error": f"Invalid token: {error}"})
+        unset_jwt_cookies(response)
+        response.status_code = HTTPStatus.UNAUTHORIZED
 
         return response
 

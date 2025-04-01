@@ -18,13 +18,13 @@ import type Student from '@/models/Student'
  */
 export interface SuccessfulAuthenticationResponse {
   student: Student
-  role?: 'OTHER'
-  permissions?: {
+  role: 'OTHER'
+  permissions: {
     author: AuthorResource[]
     student: Permission[]
   }
-  committees?: Committee[]
-  committee_positions?: CommitteePosition[]
+  committees: Committee[]
+  committee_positions: CommitteePosition[]
   expiration: number
 }
 

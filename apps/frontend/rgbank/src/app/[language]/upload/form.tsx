@@ -1,5 +1,6 @@
 'use client'
 
+import LoginWrapper from '@/app/[language]/login/client/loginWrapper'
 import Expense from '@/app/[language]/upload/expense/expense'
 import FinalizeExpense from '@/app/[language]/upload/expense/finalizeExpense'
 import FinalizeInvoice from '@/app/[language]/upload/invoice/finalizeInvoice'
@@ -7,15 +8,11 @@ import Invoice from '@/app/[language]/upload/invoice/invoice'
 import SelectTemplate from '@/app/[language]/upload/select'
 import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
 import FormProvider from '@/components/context/FormContext'
-import { Button } from '@/components/ui/button'
 import { Tabs } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { useStudent } from '@/providers/AuthenticationProvider'
-import { Link } from 'next-view-transitions'
-import Image from 'next/image'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import Logo from 'public/images/logo.webp'
 import { useCallback, useEffect, useState } from 'react'
 
 interface Props {
@@ -24,7 +21,7 @@ interface Props {
 }
 
 export default function UploadForm({ language, committees }: Props) {
-  const { student } = useStudent()
+  const { isAuthenticated, isLoading } = useAuthentication()
   const searchParams = useSearchParams()
   const template = searchParams.get('template') || 'select'
   const [page, setPage] = useState(template)
@@ -62,18 +59,14 @@ export default function UploadForm({ language, committees }: Props) {
     setPage(template)
   }, [template])
 
-  if (!student) {
+  if (isLoading) {
+    return <div className='h-[40.5rem]' />
+  }
+
+  if (!isAuthenticated) {
     return (
-      <div className='h-96 grid place-items-center'>
-        <div className='flex flex-col items-center justify-center'>
-          <Image src={Logo} alt='Logo' width={64} height={64} unoptimized />
-          <h1 className='text-2xl font-bold'>Please login to continue</h1>
-        </div>
-        <div className='flex flex-col items-center justify-center'>
-          <Button className='w-full' asChild>
-            <Link href={loginUrl}>Login</Link>
-          </Button>
-        </div>
+      <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
+        <LoginWrapper language={language} onSuccess={() => {}} />
       </div>
     )
   }

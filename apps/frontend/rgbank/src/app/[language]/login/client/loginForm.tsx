@@ -33,6 +33,8 @@ const fetcher = (url: string) =>
 interface Props {
   language: LanguageCode
   remember?: boolean
+  onSuccess?: () => void
+  onError?: () => void
 }
 
 /**
@@ -44,8 +46,13 @@ interface Props {
  *
  * @returns {JSX.Element} The login form
  */
-export default function LoginForm({ language, remember }: Props): JSX.Element {
-  const { login, error: authError } = useAuthentication()
+export default function LoginForm({
+  language,
+  remember,
+  onSuccess,
+  onError,
+}: Props): JSX.Element {
+  const { login, error: authError, setStale } = useAuthentication()
   const [errorMessage, setErrorMessage] = useState('')
   const { data, error, isLoading } = useSWR('/api/csrf-token', fetcher)
   const router = useRouter()
@@ -80,12 +87,21 @@ export default function LoginForm({ language, remember }: Props): JSX.Element {
     )
 
     if (success) {
-      router.back()
+      setStale(true)
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        router.back()
+      }
     } else {
       if (authError) {
         setErrorMessage(authError)
       } else {
         setErrorMessage('Login error')
+      }
+
+      if (onError) {
+        onError()
       }
     }
   }

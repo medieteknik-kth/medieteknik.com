@@ -9,9 +9,11 @@ import { useEffect, useState } from 'react'
 
 interface Props {
   language: LanguageCode
+  onSuccess?: () => void
+  onError?: () => void
 }
 
-export default function LoginWrapper({ language }: Props) {
+export default function LoginWrapper({ language, onSuccess, onError }: Props) {
   const [remember, setRemember] = useState(false)
 
   useEffect(() => {
@@ -45,7 +47,11 @@ export default function LoginWrapper({ language }: Props) {
       </div>
 
       <div className='w-full text-lg mt-4'>
-        <LoginForm language={language} />
+        <LoginForm
+          language={language}
+          onSuccess={onSuccess}
+          onError={onError}
+        />
       </div>
     </>
   )

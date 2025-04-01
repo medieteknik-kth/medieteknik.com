@@ -69,8 +69,9 @@ export function AuthenticationProvider({
           remember
         )
         if (result) {
+          const json = (await result.json()) as SuccessfulAuthenticationResponse
           dispatch({ type: 'LOGIN' })
-          dispatch({ type: 'SET_STALE', payload: true })
+          dispatch({ type: 'SET_STUDENT_DATA', payload: json })
           return true
         }
         return result
@@ -125,7 +126,7 @@ export function AuthenticationProvider({
         payload: {
           student: json.student,
           committees: getUniqueCommittees(json),
-          positions: json.committee_positions || [],
+          committee_positions	: json.committee_positions	 || [],
           role: json.role || 'OTHER',
           permissions: json.permissions || {
             author: [],

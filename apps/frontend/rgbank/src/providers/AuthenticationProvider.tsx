@@ -161,7 +161,7 @@ export function useStudent(): studentContextData {
     )
   }
 
-  const { student, role, committees, positions } = context
+  const { student, role, committees, committee_positions: positions } = context
 
   return { student, role, committees, positions }
 }

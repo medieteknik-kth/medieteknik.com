@@ -4,7 +4,7 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, make_response, request
 from flask_jwt_extended import (
     get_jwt,
     get_jwt_identity,
@@ -185,17 +185,30 @@ def get_student_callback() -> Response:
         :return: Response - The response object, 404 if the student doesn't exist, 200 if successful
     """
 
+    def unauthorized_response():
+        access_cookie = request.cookies.get("access_token_cookie")
+        response = make_response({"message": "Unauthorized"})
+
+        if access_cookie:
+            response.set_cookie(
+                "access_token_cookie",
+                value="",
+                expires=0,
+                httponly=True,
+                secure=True,
+                samesite="None",
+            )
+
+        response.status_code = HTTPStatus.UNAUTHORIZED
+        return response
+
     provided_languages = retrieve_languages(request.args)
 
     student_id: str | None = get_jwt_identity()
     jwt = get_jwt()
 
     if not student_id or not jwt:
-        return jsonify(
-            {
-                "error": "Unauthorized",
-            }
-        ), HTTPStatus.OK
+        return jsonify({"message": "Unauthorized"}), HTTPStatus.UNAUTHORIZED
 
     expiration = jwt["exp"]
 

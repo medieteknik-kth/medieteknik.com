@@ -19,7 +19,7 @@ export const authService = {
     password: string,
     csrf_token: string,
     remember?: boolean
-  ): Promise<boolean> => {
+  ): Promise<Response> => {
     const json_data = {
       email: email.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
       password: password.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
@@ -40,7 +40,7 @@ export const authService = {
       throw new Error('Invalid credentials')
     }
 
-    return true
+    return response
   },
 
   /**

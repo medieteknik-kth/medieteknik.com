@@ -38,7 +38,7 @@ interface AuthenticationState {
   /**
    * The positions the student holds in committees or independent.
    */
-  positions: CommitteePosition[]
+  committee_positions: CommitteePosition[]
 
   /**
    * The error message if any error occurs during authentication.
@@ -75,7 +75,7 @@ type AuthenticationAction =
       payload: {
         student: Student
         committees: Committee[]
-        positions: CommitteePosition[]
+        committee_positions: CommitteePosition[]
         role: Role
         permissions: {
           author: AuthorResource[]
@@ -96,7 +96,7 @@ export const initialState: AuthenticationState = {
     student: [],
   },
   committees: [],
-  positions: [],
+  committee_positions: [],
   error: null,
   isLoading: true,
   stale: true,
@@ -131,7 +131,7 @@ export function authenticationReducer(
         },
         role: 'OTHER',
         committees: [],
-        positions: [],
+        committee_positions: [],
         isAuthenticated: false,
         error: null,
       }
@@ -140,7 +140,7 @@ export function authenticationReducer(
         ...state,
         student: action.payload.student,
         committees: action.payload.committees,
-        positions: action.payload.positions,
+        committee_positions: action.payload.committee_positions || [],
         role: action.payload.role,
         permissions: action.payload.permissions,
         isAuthenticated: true,
