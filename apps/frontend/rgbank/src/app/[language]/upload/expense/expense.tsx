@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import { useExpense, useFiles, useGeneralForm } from '@/providers/FormProvider'
@@ -25,6 +26,7 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
 
   const [completedSteps, setCompletedSteps] = useState([
     expenseData.files.length > 0,
+    expenseData.description.length > 0,
     expenseData.date !== undefined,
     expenseData.files.some((file) => file.name.toLowerCase().endsWith('.pdf'))
       ? expenseData.isDigital
@@ -77,7 +79,7 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
           description='Upload your receipt image in PDF, PNG, JPG, JPEG, or AVIF format.'
           stepNumber={1}
           isCompleted={completedSteps[0]}
-          isActive={true}
+          isActive
         >
           <UploadFiles
             fileUploadStep={0}
@@ -88,11 +90,36 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
         </FormStep>
 
         <FormStep
-          title='Enter the date of the expense'
-          description='Enter the date of the expense. The date must be in the past.'
+          title='Enter a description for the expense'
+          description='Enter a description for the expense.'
           stepNumber={2}
           isCompleted={completedSteps[1]}
-          isActive={true}
+          isActive
+        >
+          <Textarea
+            className='resize-none'
+            placeholder='Enter a description for the expense'
+            defaultValue={expenseData.description}
+            onChange={(e) => {
+              setExpenseData({
+                ...expenseData,
+                description: e.target.value,
+              })
+              if (e.target.value.length > 0) {
+                completeStep(1)
+              } else {
+                uncompleteStep(1)
+              }
+            }}
+          />
+        </FormStep>
+
+        <FormStep
+          title='Enter the date of the expense'
+          description='Enter the date of the expense. The date must be in the past.'
+          stepNumber={3}
+          isCompleted={completedSteps[2]}
+          isActive
         >
           <Label>
             Date <span className='text-red-500'>*</span>
@@ -107,14 +134,14 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
               const date = new Date(e.target.value)
               if (date > new Date()) {
                 setError('Date must be in the past')
-                uncompleteStep(1)
+                uncompleteStep(2)
               } else {
                 setExpenseData({
                   ...expenseData,
                   date: date,
                 })
                 setError('')
-                completeStep(1)
+                completeStep(2)
               }
             }}
           />
@@ -123,14 +150,15 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
         <FormStep
           title='Is it a digital expense?'
           description='Select if the expense is digital or not.'
-          stepNumber={3}
-          isCompleted={completedSteps[2]}
+          stepNumber={4}
+          isCompleted={completedSteps[3]}
           isActive={isDigitalReceiptRequired}
         >
           <div className='flex items-center gap-2'>
             <Checkbox
               id='digital'
               className='w-6! h-6'
+              checked={expenseData.isDigital}
               onCheckedChange={(checked) => {
                 if (checked === 'indeterminate') return
                 setExpenseData({
@@ -139,9 +167,9 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
                 })
                 if (isDigitalReceiptRequired) {
                   if (checked) {
-                    completeStep(2)
+                    completeStep(3)
                   } else {
-                    uncompleteStep(2)
+                    uncompleteStep(3)
                   }
                 }
               }}
@@ -153,16 +181,16 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
         <FormStep
           title='Categorize the expense'
           description='Select the categories and enter the amount for each one.'
-          stepNumber={4}
-          isCompleted={completedSteps[3]}
-          isActive={true}
+          stepNumber={5}
+          isCompleted={completedSteps[4]}
+          isActive
         >
           <Categorize
             defaultValue={expenseData.categories}
             setFormCategories={(categories) => {
               setCategories(categories)
             }}
-            categoryStep={3}
+            categoryStep={4}
             completeStep={completeStep}
             uncompleteStep={uncompleteStep}
             committees={committees}
@@ -174,7 +202,7 @@ export default function Expense({ committees, onBack, onFinalize }: Props) {
           disabled={completedSteps.some(
             (step, index) =>
               !step &&
-              ((index !== 3 && !isDigitalReceiptRequired) || index !== 4)
+              ((index !== 4 && !isDigitalReceiptRequired) || index !== 5)
           )}
           onClick={() => {
             setExpenseData({

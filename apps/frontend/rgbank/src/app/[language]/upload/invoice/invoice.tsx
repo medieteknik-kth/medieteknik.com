@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import type { PaidStatus } from '@/models/Invoice'
@@ -116,7 +117,7 @@ export default function Invoice({
           description='Please select the payment status of the invoice.'
           stepNumber={1}
           isCompleted={completedSteps[0]}
-          isActive={true}
+          isActive
         >
           <RadioGroup
             defaultValue={paidStatus}
@@ -188,7 +189,7 @@ export default function Invoice({
               description='Please upload the invoice image.'
               stepNumber={2}
               isCompleted={completedSteps[1]}
-              isActive={true}
+              isActive
             >
               <UploadFiles
                 fileUploadStep={1}
@@ -202,15 +203,14 @@ export default function Invoice({
               description='Please describe the contents of the invoice.'
               stepNumber={3}
               isCompleted={completedSteps[2]}
-              isActive={true}
+              isActive
             >
               <div>
                 <Label htmlFor='description' className='text-sm font-medium'>
                   Description
                   <span className='text-red-500'>*</span>
                 </Label>
-                <Input
-                  type='text'
+                <Textarea
                   placeholder='Invoice description'
                   defaultValue={invoiceData.description}
                   onChange={(e) => {
@@ -230,7 +230,7 @@ export default function Invoice({
               description='Please select the invoice details.'
               stepNumber={4}
               isCompleted={completedSteps[3]}
-              isActive={true}
+              isActive
             >
               <div className='space-y-2'>
                 <div className='flex items-center gap-2'>
@@ -277,7 +277,7 @@ export default function Invoice({
               description='Please select the invoice dates.'
               stepNumber={5}
               isCompleted={completedSteps[4]}
-              isActive={true}
+              isActive
             >
               <div className='flex items-center gap-2 flex-wrap'>
                 <div>
@@ -336,7 +336,7 @@ export default function Invoice({
               description='Please categorize the invoice.'
               stepNumber={6}
               isCompleted={completedSteps[5]}
-              isActive={true}
+              isActive
             >
               <Categorize
                 defaultValue={invoiceData.categories}
@@ -352,6 +352,7 @@ export default function Invoice({
 
             <Button
               className='w-full h-16 mt-4'
+              disabled={completedSteps.includes(false)}
               onClick={() => {
                 setInvoiceData({
                   ...invoiceData,

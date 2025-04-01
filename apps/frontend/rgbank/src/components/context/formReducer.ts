@@ -41,6 +41,7 @@ export const initialState: FormState = {
   },
   expenseData: {
     files: [],
+    description: '',
     date: new Date(),
     isDigital: false,
     categories: [],

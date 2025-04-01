@@ -49,7 +49,7 @@ export default function UploadFiles({
             }
             if (file.name.endsWith('.pdf')) {
               if (setIsDigitalReceiptRequired) {
-                uncompleteStep(2)
+                uncompleteStep(3)
                 setIsDigitalReceiptRequired(true)
               }
             }
@@ -128,7 +128,7 @@ export default function UploadFiles({
                     if (setIsDigitalReceiptRequired) {
                       setIsDigitalReceiptRequired(false)
                       if (files.length === 1) {
-                        completeStep(2)
+                        completeStep(3)
                       }
                     }
                   }

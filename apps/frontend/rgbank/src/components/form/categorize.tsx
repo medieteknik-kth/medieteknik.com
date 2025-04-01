@@ -40,7 +40,7 @@ export default function Categorize({
   completeStep,
   committees,
 }: Props) {
-  let categoryIndex = 0 // Used to generate unique IDs for categories
+  let categoryIndex = 0
   const [dropdownOpen, setDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
   const [categories, setCategories] = useState<Category[]>([
     ...(defaultValue && defaultValue.length > 0
@@ -70,13 +70,13 @@ export default function Categorize({
       ...prev,
       {
         id: categoryIndex,
-        author: '',
+        author: categories[0].author,
         category: '',
         type: '',
         amount: '0',
       },
     ])
-  }, [categoryIndex])
+  }, [categoryIndex, categories[0].author])
 
   const validateCategories = useCallback(() => {
     const isValid = categories.every(
@@ -131,6 +131,7 @@ export default function Categorize({
                   <Button
                     variant={'outline'}
                     // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                    disabled={index !== 0}
                     role='combobox'
                     className='w-full items-center justify-between'
                   >
@@ -266,6 +267,7 @@ export default function Categorize({
               className='col-span-1 mt-auto'
               variant={'destructive'}
               size={'icon'}
+              tabIndex={-1}
               disabled={categories.length === 1 && index === 0}
               onClick={() => {
                 const newCategories = [...categories]
@@ -283,6 +285,7 @@ export default function Categorize({
         variant={'outline'}
         size={'sm'}
         onClick={addCategory}
+        disabled={categories[0].author === ''}
       >
         Add Category
       </Button>
