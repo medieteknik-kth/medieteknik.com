@@ -18,6 +18,7 @@ interface Params {
 interface Props {
   children: React.ReactNode
   params: Promise<Params>
+  modal: React.ReactNode
 }
 
 /**
@@ -41,7 +42,7 @@ export const viewport: Viewport = {
 
 export default async function RootLayout(props: Props): Promise<JSX.Element> {
   const { language } = await props.params
-  const { children } = props
+  const { children, modal } = props
   const headerList = await headers()
   const nonce = headerList.get('x-nonce')
 
@@ -59,6 +60,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
         <Header language={language} />
         <ClientWrapper>{children}</ClientWrapper>
         <Footer language={language} />
+        {modal}
       </Providers>
 
       <Script id='language-attributes' nonce={nonce ?? ''}>

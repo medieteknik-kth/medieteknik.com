@@ -1,3 +1,4 @@
+import AuthenticatedNavigation from '@/components/header/client/AuthenticatedNavigation'
 import ProfileMenu from '@/components/header/client/ProfileMenu'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
@@ -44,31 +45,7 @@ export default function Header({ language }: Props): JSX.Element {
           </Link>
         </Button>
 
-        <Button
-          variant={'ghost'}
-          asChild
-          className='uppercase h-full bg-inherit'
-        >
-          <Link href={`/${language}/upload?template=expense`}>New Expense</Link>
-        </Button>
-
-        <Button
-          variant={'ghost'}
-          asChild
-          className='uppercase h-full bg-inherit'
-        >
-          <Link href={`/${language}/upload?template=invoice`}>New Invoice</Link>
-        </Button>
-
-        <Button
-          variant={'ghost'}
-          asChild
-          className='uppercase h-full bg-inherit'
-        >
-          <Link href={`/${language}/account?category=activity`}>
-            Your Uploads
-          </Link>
-        </Button>
+        <AuthenticatedNavigation language={language} />
 
         <Button
           variant={'ghost'}

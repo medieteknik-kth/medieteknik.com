@@ -5,23 +5,34 @@ import FinalizeExpense from '@/app/[language]/upload/expense/finalizeExpense'
 import FinalizeInvoice from '@/app/[language]/upload/invoice/finalizeInvoice'
 import Invoice from '@/app/[language]/upload/invoice/invoice'
 import SelectTemplate from '@/app/[language]/upload/select'
-import FormProvider from '@/components/context/FormContext'
 import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
+import FormProvider from '@/components/context/FormContext'
+import { Button } from '@/components/ui/button'
 import { Tabs } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
+import type { LanguageCode } from '@/models/Language'
+import { useStudent } from '@/providers/AuthenticationProvider'
+import { Link } from 'next-view-transitions'
+import Image from 'next/image'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import Logo from 'public/images/logo.webp'
 import { useCallback, useEffect, useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
 }
 
-export default function UploadForm({ committees }: Props) {
+export default function UploadForm({ language, committees }: Props) {
+  const { student } = useStudent()
   const searchParams = useSearchParams()
   const template = searchParams.get('template') || 'select'
   const [page, setPage] = useState(template)
   const pathname = usePathname()
   const router = useRouter()
+  const loginUrl = `/${language}/login${
+    pathname !== '/' ? `?return_url=${pathname}` : ''
+  }`
 
   const handleTabChange = useCallback(
     (value: string) => {
@@ -50,6 +61,22 @@ export default function UploadForm({ committees }: Props) {
   useEffect(() => {
     setPage(template)
   }, [template])
+
+  if (!student) {
+    return (
+      <div className='h-96 grid place-items-center'>
+        <div className='flex flex-col items-center justify-center'>
+          <Image src={Logo} alt='Logo' width={64} height={64} unoptimized />
+          <h1 className='text-2xl font-bold'>Please login to continue</h1>
+        </div>
+        <div className='flex flex-col items-center justify-center'>
+          <Button className='w-full' asChild>
+            <Link href={loginUrl}>Login</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <FormProvider>
