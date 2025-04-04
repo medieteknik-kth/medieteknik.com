@@ -88,6 +88,19 @@ class Student(db.Model):
         "NotificationPreferences", back_populates="student", uselist=False
     )
 
+    rgbank_account_bank_information = db.relationship(
+        "AccountBankInformation", back_populates="student", uselist=False
+    )
+    rgbank_expenses = db.relationship(
+        "Expense", back_populates="student", cascade="all, delete-orphan"
+    )
+    rgbank_invoices = db.relationship(
+        "Invoice", back_populates="student", cascade="all, delete-orphan"
+    )
+    rgbank_messages = db.relationship(
+        "Message", back_populates="sender", cascade="all, delete-orphan"
+    )
+
     def __repr__(self):
         return "<Student %r>" % self.student_id
 

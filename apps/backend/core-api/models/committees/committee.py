@@ -43,6 +43,10 @@ class Committee(db.Model):
     calendar = db.relationship("Calendar", back_populates="committee", uselist=False)
     notifications = db.relationship("Notifications", back_populates="committee")
 
+    rgbank_expense_domain = db.relationship(
+        "ExpenseDomain", back_populates="committee", uselist=False
+    )
+
     def __repr__(self):
         return "<Committee %r>" % self.committee_id
 
