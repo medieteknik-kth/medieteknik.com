@@ -54,6 +54,14 @@ export default function Header({ language }: Props): JSX.Element {
         >
           <Link href={`/${language}/statistics`}>Statistics</Link>
         </Button>
+
+        <Button
+          variant={'ghost'}
+          asChild
+          className='uppercase h-full bg-inherit'
+        >
+          <Link href={`/${language}/admin`}>Admin</Link>
+        </Button>
       </div>
 
       <div className='place-self-end h-full'>
