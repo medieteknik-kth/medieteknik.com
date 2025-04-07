@@ -21,6 +21,8 @@ from .gc import publisher
 from .gc import topic_path
 from .gc import tasks
 from .gc import parent
+from .gc import medieteknik_bucket
+from .gc import rgbank_bucket
 from .gc import upload_file
 from .gc import delete_file
 
@@ -53,6 +55,8 @@ __all__ = [
     "topic_path",
     "tasks",
     "parent",
+    "medieteknik_bucket",
+    "rgbank_bucket",
     "upload_file",
     "delete_file",
     "log_error",
