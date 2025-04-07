@@ -80,15 +80,14 @@ export function CategoryOverviewByCommittee({ categories, committees }: Props) {
                     <Table>
                       <TableHeader>
                         <TableRow className='bg-muted/50'>
-                          <TableHead className='w-[40%]'>Category</TableHead>
-                          <TableHead className='w-[30%]'>Type</TableHead>
-                          <TableHead className='w-[30%]'>Amount</TableHead>
+                          <TableHead className='w-1/2'>Category</TableHead>
+                          <TableHead className='w-1/2'>Amount</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {authorCategories.map((category, index) => (
                           <TableRow
-                            key={`${category.author}-${category.type}-${index}`}
+                            key={`${category.author}-${index}`}
                             className={
                               index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
                             }
@@ -96,7 +95,6 @@ export function CategoryOverviewByCommittee({ categories, committees }: Props) {
                             <TableCell className='font-medium'>
                               {category.category}
                             </TableCell>
-                            <TableCell>{category.type}</TableCell>
                             <TableCell className='font-medium'>
                               {category.amount.replace(/,/g, '.')} SEK
                             </TableCell>

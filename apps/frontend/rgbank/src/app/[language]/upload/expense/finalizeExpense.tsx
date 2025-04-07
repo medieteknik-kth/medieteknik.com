@@ -2,28 +2,39 @@
 
 import { CategoryOverviewByCommittee } from '@/app/[language]/upload/components/categories'
 import FileOverview from '@/app/[language]/upload/components/files'
+import FinishedUpload from '@/app/[language]/upload/components/finishedUpload'
 import { ExpenseMetadata } from '@/app/[language]/upload/expense/components/expense-metadata'
-import { expenseSchema } from '@/schemas/expense'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
-import { useExpense } from '@/providers/FormProvider'
+import type { LanguageCode } from '@/models/Language'
+import { useExpense, useFiles } from '@/providers/FormProvider'
+import { expenseSchema } from '@/schemas/expense'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
   onBack: () => void
 }
 
-export default function FinalizeExpense({ committees, onBack }: Props) {
+export default function FinalizeExpense({
+  language,
+  committees,
+  onBack,
+}: Props) {
+  const [success, setSuccess] = useState(false)
+  const router = useRouter()
   const expenseForm = useForm<z.infer<typeof expenseSchema>>({
     resolver: zodResolver(expenseSchema),
   })
 
   const { expenseData } = useExpense()
+  const { removeAllFiles } = useFiles()
 
   const totalAmount = expenseData.categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
@@ -32,25 +43,40 @@ export default function FinalizeExpense({ committees, onBack }: Props) {
 
   const postExpense = async (data: z.infer<typeof expenseSchema>) => {
     const formData = new FormData()
-    formData.append('files', JSON.stringify(data.files))
-    formData.append('date', data.date.toString())
+
+    for (const file of data.files) {
+      formData.append('files', file)
+    }
+
+    formData.append('description', data.description)
+    formData.append('date', data.date.toISOString())
     formData.append('isDigital', data.digital.toString())
     formData.append('categories', JSON.stringify(data.categories))
 
     try {
-      const response = await fetch('/api/expense', {
+      const response = await fetch('/api/rgbank/expenses', {
         method: 'POST',
         credentials: 'include',
         body: formData,
       })
 
       if (!response.ok) {
-        throw new Error('Failed to upload expense')
+        throw new Error(`Failed to upload files: ${response.statusText}`)
       }
 
-      const result = await response.json()
-      console.log('Expense uploaded successfully:', result)
-      // TODO: Handle success (e.g., show a success message, redirect, etc.)
+      setSuccess(true)
+      window.scrollTo(0, 0)
+
+      setTimeout(() => {
+        expenseForm.reset()
+        expenseData.categories = []
+        expenseData.files = []
+        removeAllFiles()
+        expenseData.description = ''
+        expenseData.date = new Date()
+        expenseData.isDigital = false
+        router.replace(`/${language}`)
+      }, 2500)
     } catch (error) {
       console.error('Error uploading files:', error)
     }
@@ -59,17 +85,23 @@ export default function FinalizeExpense({ committees, onBack }: Props) {
   useEffect(() => {
     expenseForm.setValue('files', expenseData.files)
     expenseForm.setValue('date', expenseData.date)
+    expenseForm.setValue('description', expenseData.description)
     expenseForm.setValue('digital', expenseData.isDigital)
     expenseForm.setValue('categories', expenseData.categories)
   }, [
     expenseData.categories,
     expenseData.date,
+    expenseData.description,
     expenseData.files,
     expenseData.isDigital,
     expenseForm,
   ])
 
-  return (
+  return success ? (
+    <div className='grid place-items-center h-[40.5rem]'>
+      <FinishedUpload />
+    </div>
+  ) : (
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>

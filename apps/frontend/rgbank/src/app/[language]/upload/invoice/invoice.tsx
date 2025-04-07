@@ -13,12 +13,14 @@ import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import type { PaidStatus } from '@/models/Invoice'
+import type { LanguageCode } from '@/models/Language'
 import { useFiles, useInvoice } from '@/providers/FormProvider'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { addDays, startOfDay } from 'date-fns'
 import { useCallback, useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
   toExpense: () => void
   onBack: () => void
@@ -26,6 +28,7 @@ interface Props {
 }
 
 export default function Invoice({
+  language,
   committees,
   toExpense,
   onBack,

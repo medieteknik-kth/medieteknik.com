@@ -2,6 +2,7 @@
 
 import { PopIn } from '@/components/animation/pop-in'
 import { Button } from '@/components/ui/button'
+import type { LanguageCode } from '@/models/Language'
 import {
   ArrowRightIcon,
   CheckIcon,
@@ -11,10 +12,11 @@ import {
 import { useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   onClickCallback: (template: string) => void
 }
 
-export default function SelectTemplate({ onClickCallback }: Props) {
+export default function SelectTemplate({ language, onClickCallback }: Props) {
   const [selectedTemplate, setSelectedTemplate] = useState('')
 
   return (

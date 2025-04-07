@@ -10,17 +10,24 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
+import type { LanguageCode } from '@/models/Language'
 import { useExpense, useFiles, useGeneralForm } from '@/providers/FormProvider'
 import { subDays } from 'date-fns'
 import { useCallback, useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
   onBack: () => void
   onFinalize: () => void
 }
 
-export default function Expense({ committees, onBack, onFinalize }: Props) {
+export default function Expense({
+  language,
+  committees,
+  onBack,
+  onFinalize,
+}: Props) {
   const { setError } = useGeneralForm()
   const { expenseData, setExpenseData } = useExpense()
 

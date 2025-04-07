@@ -82,6 +82,7 @@ export default function UploadForm({ language, committees }: Props) {
             className='h-full w-full flex flex-col sm:p-4 md:p-8'
           >
             <SelectTemplate
+              language={language}
               onClickCallback={(template) => {
                 handleTabChange(template)
                 setPage(template)
@@ -95,6 +96,7 @@ export default function UploadForm({ language, committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <Invoice
+              language={language}
               committees={committees}
               toExpense={() => {
                 handleTabChange('expense')
@@ -119,6 +121,7 @@ export default function UploadForm({ language, committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <FinalizeInvoice
+              language={language}
               committees={committees}
               onBack={() => {
                 setPage('invoice')
@@ -132,6 +135,7 @@ export default function UploadForm({ language, committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <Expense
+              language={language}
               committees={committees}
               onBack={() => {
                 removeSearchParams()
@@ -152,6 +156,7 @@ export default function UploadForm({ language, committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <FinalizeExpense
+              language={language}
               committees={committees}
               onBack={() => {
                 setPage('expense')

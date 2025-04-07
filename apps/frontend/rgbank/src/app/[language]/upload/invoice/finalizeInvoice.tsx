@@ -2,26 +2,120 @@
 
 import { CategoryOverviewByCommittee } from '@/app/[language]/upload/components/categories'
 import FileOverview from '@/app/[language]/upload/components/files'
+import FinishedUpload from '@/app/[language]/upload/components/finishedUpload'
 import { InvoiceMetadata } from '@/app/[language]/upload/invoice/components/invoice-metadata'
 import { Button } from '@/components/ui/button'
 import type Committee from '@/models/Committee'
-import { useInvoice } from '@/providers/FormProvider'
+import type { LanguageCode } from '@/models/Language'
+import { useFiles, useInvoice } from '@/providers/FormProvider'
+import { invoiceSchema } from '@/schemas/invoice'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import type { z } from 'zod'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
   onBack: () => void
 }
 
-export default function FinalizeInvoice({ committees, onBack }: Props) {
-  const { invoiceData } = useInvoice()
+export default function FinalizeInvoice({
+  language,
+  committees,
+  onBack,
+}: Props) {
+  const [success, setSuccess] = useState(false)
+  const router = useRouter()
+  const invoiceForm = useForm<z.infer<typeof invoiceSchema>>({
+    resolver: zodResolver(invoiceSchema),
+  })
 
+  const { invoiceData } = useInvoice()
+  const { removeAllFiles } = useFiles()
   const totalAmount = invoiceData.categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
     return acc + (Number.isNaN(amount) ? 0 : amount)
   }, 0)
 
-  return (
+  const postInvoice = async (data: z.infer<typeof invoiceSchema>) => {
+    const formData = new FormData()
+
+    for (const file of data.files) {
+      formData.append('files', file)
+    }
+
+    formData.append('description', data.description)
+    formData.append('date_issued', data.date.toISOString())
+    formData.append('due_date', data.dueDate.toISOString())
+    formData.append('is_original', data.isOriginal?.toString() || 'false')
+    formData.append('is_booked', data.isBooked?.toString() || 'false')
+    formData.append('already_paid', data.hasChapterPaid?.toString() || 'false')
+    formData.append('categories', JSON.stringify(data.categories))
+
+    try {
+      const response = await fetch('/api/rgbank/invoices', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to upload files: ${response.statusText}`)
+      }
+
+      setSuccess(true)
+      window.scrollTo(0, 0)
+
+      setTimeout(() => {
+        invoiceForm.reset()
+        invoiceData.categories = []
+        invoiceData.files = []
+        removeAllFiles()
+        invoiceData.description = ''
+        invoiceData.invoiceDate = new Date()
+        invoiceData.invoiceDueDate = new Date()
+        invoiceData.isOriginalInvoice = false
+        invoiceData.isInvoiceBooked = false
+        invoiceData.paidStatus = undefined
+        router.replace(`/${language}`)
+      }, 2500)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    invoiceForm.setValue(
+      'hasChapterPaid',
+      invoiceData.paidStatus === 'yes_chapter' || false
+    )
+    invoiceForm.setValue('files', invoiceData.files)
+    invoiceForm.setValue('description', invoiceData.description)
+    invoiceForm.setValue('isOriginal', invoiceData.isOriginalInvoice)
+    invoiceForm.setValue('isBooked', invoiceData.isInvoiceBooked)
+    invoiceForm.setValue('date', invoiceData.invoiceDate)
+    invoiceForm.setValue('dueDate', invoiceData.invoiceDueDate)
+    invoiceForm.setValue('categories', invoiceData.categories)
+  }, [
+    invoiceData.paidStatus,
+    invoiceData.files,
+    invoiceData.description,
+    invoiceData.isOriginalInvoice,
+    invoiceData.isInvoiceBooked,
+    invoiceData.invoiceDate,
+    invoiceData.invoiceDueDate,
+    invoiceData.categories,
+    invoiceForm,
+  ])
+
+  return success ? (
+    <div className='grid place-items-center h-[40.5rem]'>
+      <FinishedUpload />
+    </div>
+  ) : (
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
@@ -52,7 +146,16 @@ export default function FinalizeInvoice({ committees, onBack }: Props) {
           committees={committees}
         />
 
-        <Button>Submit Invoice</Button>
+        <Button
+          className='w-full h-16 mt-8'
+          onClick={() => {
+            invoiceForm.handleSubmit((data) => {
+              postInvoice(data)
+            })()
+          }}
+        >
+          Submit Invoice
+        </Button>
       </div>
     </>
   )

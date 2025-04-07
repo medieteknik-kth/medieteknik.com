@@ -7,6 +7,7 @@ export const expenseSchema = z.object({
   date: z.coerce.date().refine((date) => date <= new Date(), {
     message: 'Date must be in the past',
   }),
+  description: z.string().min(1, { message: 'Description is required' }),
   digital: z.boolean(),
   categories: z
     .array(

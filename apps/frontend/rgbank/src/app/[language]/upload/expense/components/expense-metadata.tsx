@@ -5,6 +5,7 @@ import type { ExpenseData } from '@/models/Expense'
 import {
   AdjustmentsHorizontalIcon,
   CalendarIcon,
+  ChatBubbleLeftIcon,
   CreditCardIcon,
 } from '@heroicons/react/24/outline'
 
@@ -30,6 +31,21 @@ export function ExpenseMetadata({ expenseData, totalAmount }: Props) {
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium'>Amount</p>
             <p className='mt-1 text-lg font-semibold'>{totalAmount} SEK</p>
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Description */}
+        <div className='flex items-start gap-4'>
+          <div className='bg-primary/10 p-2 rounded-md'>
+            <ChatBubbleLeftIcon className='w-6 h-6 text-primary' />
+          </div>
+          <div className='flex-1'>
+            <p className='text-sm text-muted-foreground font-medium'>
+              Description
+            </p>
+            <p className='mt-1'>{expenseData.description}</p>
           </div>
         </div>
 
