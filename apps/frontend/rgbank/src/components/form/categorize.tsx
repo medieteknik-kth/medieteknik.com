@@ -50,7 +50,6 @@ export default function Categorize({
             id: 0,
             author: '',
             category: '',
-            type: '',
             amount: '0',
           },
         ]),
@@ -72,7 +71,6 @@ export default function Categorize({
         id: categoryIndex,
         author: categories[0].author,
         category: '',
-        type: '',
         amount: '0',
       },
     ])
@@ -83,7 +81,6 @@ export default function Categorize({
       (category) =>
         category.author !== '' &&
         category.category !== '' &&
-        category.type !== '' &&
         category.amount !== '' &&
         category.amount !== '0' &&
         (Number.isNaN(category.amount)
@@ -115,7 +112,7 @@ export default function Categorize({
             key={category.id}
             className='flex md:grid grid-cols-12 md:gap-4 items-center gap-2 flex-wrap'
           >
-            <div className='w-full flex flex-col gap-2 col-span-3'>
+            <div className='w-full flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label>
                   Author <span className='text-red-500'>*</span>
@@ -195,7 +192,7 @@ export default function Categorize({
               </Popover>
             </div>
 
-            <div className='w-full flex flex-col gap-2 col-span-3'>
+            <div className='w-full flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label>
                   Category <span className='text-red-500'>*</span>
@@ -214,25 +211,6 @@ export default function Categorize({
             </div>
 
             <div className='w-full flex flex-col gap-2 col-span-3'>
-              {index === 0 && (
-                <Label>
-                  Type <span className='text-red-500'>*</span>
-                </Label>
-              )}
-
-              <Input
-                type='text'
-                placeholder='Type'
-                value={category.type}
-                onChange={(e) => {
-                  const newCategories = [...categories]
-                  newCategories[index].type = e.target.value
-                  setCategories(newCategories)
-                }}
-              />
-            </div>
-
-            <div className='w-full flex flex-col gap-2 col-span-2'>
               {index === 0 && (
                 <Label>
                   Amount (SEK) <span className='text-red-500'>*</span>

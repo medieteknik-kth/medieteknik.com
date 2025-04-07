@@ -17,10 +17,9 @@ export const invoiceSchema = z.object({
   categories: z
     .array(
       z.object({
-        id: z.string().optional().or(z.literal('')),
+        id: z.number().optional().or(z.literal('')),
         author: z.string().min(1, { message: 'Author is required' }),
         category: z.string().min(1, { message: 'Category is required' }),
-        type: z.string().min(1, { message: 'Type is required' }),
         amount: z.string().min(1, { message: 'Amount is required' }),
       })
     )
