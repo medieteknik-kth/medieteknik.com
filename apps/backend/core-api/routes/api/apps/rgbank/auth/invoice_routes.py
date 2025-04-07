@@ -1,3 +1,4 @@
+import json
 import uuid
 from datetime import timedelta
 from typing import List
@@ -111,7 +112,7 @@ def create_invoice() -> Response:
         is_booked=is_booked,
         date_issued=date_issued,
         due_date=due_date,
-        categories=categories,
+        categories=json.loads(categories),
         status=PaymentStatus.UNCONFIRMED,
         student_id=student_id,
     )

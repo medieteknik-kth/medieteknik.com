@@ -109,7 +109,7 @@ def create_expense() -> Response:
         description=description,
         date=date,
         is_digital=is_digital,
-        categories=categories,
+        categories=json.loads(categories),
         status="UNCONFIRMED",
         student_id=student_id,
     )
