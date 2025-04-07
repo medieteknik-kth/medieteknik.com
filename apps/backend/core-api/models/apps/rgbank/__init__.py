@@ -18,9 +18,11 @@ from .bank import AccountBankInformation
 from .expense import ExpenseDomain
 from .expense import Expense
 from .expense import Invoice
+from .expense import PaymentStatus
 
+from .permissions import RGBankAccessLevels
 from .permissions import RGBankPermissions
-from .permissions import RGBankPermissionType
+from .permissions import RGBankViewPermissions
 
 from .thread import Thread
 from .thread import Message
@@ -30,8 +32,10 @@ __all__ = [
     "ExpenseDomain",
     "Expense",
     "Invoice",
+    "PaymentStatus",
+    "RGBankAccessLevels",
     "RGBankPermissions",
-    "RGBankPermissionType",
+    "RGBankViewPermissions",
     "Thread",
     "Message",
 ]

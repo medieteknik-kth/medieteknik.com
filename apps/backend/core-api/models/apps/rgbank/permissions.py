@@ -1,10 +1,11 @@
 import enum
-from sqlalchemy import UUID, Column, Enum, ForeignKey
+import uuid
+from sqlalchemy import UUID, Column, Enum, ForeignKey, MetaData, text
 from models.committees.committee_position import CommitteePosition
 from utility.database import db
 
 
-class RGBankPermissionType(enum.Enum):
+class RGBankViewPermissions(enum.Enum):
     """RGBank permission types."""
 
     NONE = 0
@@ -12,14 +13,34 @@ class RGBankPermissionType(enum.Enum):
     ALL_COMMITTEES = 2
 
 
+class RGBankAccessLevels(enum.Enum):
+    """RGBank permission types."""
+
+    NONE = 0
+    VIEW = 1
+    EDIT = 2
+
+
 class RGBankPermissions(db.Model):
     __tablename__ = "rgbank_permissions"
     __table_args__ = {"schema": "rgbank"}
 
-    permission_id = Column(UUID(as_uuid=True), primary_key=True, nullable=False)
+    permission_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("gen_random_uuid()"),
+        default=uuid.uuid4,
+    )
 
-    permission_level = Column(
-        Enum(RGBankPermissionType), nullable=False, default=RGBankPermissionType.NONE
+    view_permission_level = Column(
+        Enum(RGBankViewPermissions, metadata=MetaData(schema="rgbank")),
+        nullable=False,
+        default=RGBankViewPermissions.NONE,
+    )
+    access_level = Column(
+        Enum(RGBankAccessLevels, metadata=MetaData(schema="rgbank")),
+        nullable=False,
+        default=RGBankAccessLevels.NONE,
     )
 
     # Foreign keys
@@ -27,6 +48,7 @@ class RGBankPermissions(db.Model):
         UUID(as_uuid=True),
         ForeignKey(CommitteePosition.committee_position_id),
         nullable=False,
+        unique=True,
     )
 
     # Relationships

@@ -8,6 +8,7 @@ from sqlalchemy import (
     DateTime,
     Enum,
     ForeignKey,
+    MetaData,
     String,
     text,
     func,
@@ -19,7 +20,7 @@ from models.core.student import Student
 from utility.database import db
 
 
-class Status(enum.Enum):
+class PaymentStatus(enum.Enum):
     BOOKED = "BOOKED"  # Invoice booked in the system
     PAID = "PAID"  # Payment received
     CONFIRMED = "CONFIRMED"  # Valid expense / Awaiting payment
@@ -39,7 +40,7 @@ class ExpenseDomain(db.Model):
         server_default=text("gen_random_uuid()"),
     )
 
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=True)
     parts = Column(ARRAY(String), nullable=False, default=[])
 
     # Foreign Keys
@@ -80,7 +81,11 @@ class Expense(db.Model):
     date = Column(DateTime, nullable=False)
     is_digital = Column(Boolean, default=False, nullable=False)
     categories = Column(JSONB, nullable=False)
-    status = Column(Enum(Status), nullable=False, default=Status.UNCONFIRMED)
+    status = Column(
+        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")),
+        nullable=False,
+        default=PaymentStatus.UNCONFIRMED,
+    )
 
     # Meta information
     created_at = Column(DateTime, default=func.now(), server_default=text("now()"))
@@ -98,20 +103,37 @@ class Expense(db.Model):
     )
 
     @hybrid_property
-    def amount(self):
-        # Get the amount from the categories JSONB field
+    def amount(self) -> float:
+        """Calculate the total amount from the categories JSONB field."""
         total_amount = 0
         for category in self.categories:
             total_amount += category.get("amount", 0)
 
         return total_amount
 
+    @hybrid_property
+    def committee(self) -> Committee | None:
+        """Get the committee associated with the expense.
+        If the expense has no categories where the author is a committee,
+        return None.
+        """
+        author = self.categories[0].get("author") if self.categories else None
+
+        committee = Committee.query.get(author) if author else None
+        return committee if committee else None
+
     @amount.expression
     def amount(cls):
-        # Expression for SQLAlchemy to use in queries
+        """Expression for SQLAlchemy to use in queries."""
         return func.sum(
             func.coalesce(func.jsonb_extract_path_text(cls.categories, "amount"), 0)
         )
+
+    @committee.expression
+    def committee(cls):
+        """Expression for SQLAlchemy to use in queries."""
+        author = func.jsonb_extract_path_text(cls.categories, "author")
+        return Committee.query.get(author) if author else None
 
     def __repr__(self):
         return f"<Expense {self.expense_id}>"
@@ -140,6 +162,7 @@ class Invoice(db.Model):
         server_default=text("gen_random_uuid()"),
     )
 
+    already_paid = Column(Boolean, default=False, nullable=False)
     file_urls = Column(ARRAY(String), nullable=False)
     description = Column(String, nullable=False)
     is_original = Column(Boolean, default=False, nullable=False)
@@ -147,7 +170,11 @@ class Invoice(db.Model):
     date_issued = Column(DateTime, nullable=False)
     due_date = Column(DateTime, nullable=False)
     categories = Column(JSONB, nullable=False)
-    status = Column(Enum(Status), nullable=False, default=Status.UNCONFIRMED)
+    status = Column(
+        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")),
+        nullable=False,
+        default=PaymentStatus.UNCONFIRMED,
+    )
 
     # Meta information
     created_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
@@ -165,20 +192,36 @@ class Invoice(db.Model):
     )
 
     @hybrid_property
-    def amount(self):
-        # Get the amount from the categories JSONB field
+    def amount(self) -> float:
+        """Calculate the total amount from the categories JSONB field."""
         total_amount = 0
         for category in self.categories:
             total_amount += category.get("amount", 0)
 
         return total_amount
 
+    @hybrid_property
+    def committee(self) -> Committee | None:
+        """Get the committee associated with the invoice.
+        If the invoice has no categories, return None.
+        """
+        author = self.categories[0].get("author") if self.categories else None
+
+        committee = Committee.query.get(author) if author else None
+        return committee if committee else None
+
     @amount.expression
     def amount(cls):
-        # Expression for SQLAlchemy to use in queries
+        """Expression for SQLAlchemy to use in queries."""
         return func.sum(
             func.coalesce(func.jsonb_extract_path_text(cls.categories, "amount"), 0)
         )
+
+    @committee.expression
+    def committee(cls):
+        """Expression for SQLAlchemy to use in queries."""
+        author = func.jsonb_extract_path_text(cls.categories, "author")
+        return Committee.query.get(author) if author else None
 
     def __repr__(self):
         return f"<Invoice {self.invoice_id}>"
@@ -186,6 +229,7 @@ class Invoice(db.Model):
     def to_dict(self):
         return {
             "invoice_id": str(self.invoice_id),
+            "already_paid": self.already_paid,
             "file_urls": self.file_urls,
             "description": self.description,
             "is_original": self.is_original,
