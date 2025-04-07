@@ -75,66 +75,104 @@ def register_v1_routes(app: Flask):
         tasks_bp,
     )
 
+    from ..apps.rgbank import (
+        account_bp,
+        expense_domain_bp,
+        public_expense_domain_bp,
+        expense_bp,
+        invoice_bp,
+    )
+
     # Public Routes
-    app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
-    app.register_blueprint(
-        public_committee_category_bp,
-        url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}",
-    )
-    app.register_blueprint(public_calendar_bp, url_prefix=f"{PUBLIC_PATH}/calendar")
-    app.register_blueprint(
-        public_committee_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}"
-    )
-    app.register_blueprint(
-        public_committee_position_bp,
-        url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
-    )
-    app.register_blueprint(
-        public_student_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.STUDENTS.value}"
-    )
-    app.register_blueprint(
-        public_news_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.NEWS.value}"
-    )
-    app.register_blueprint(
-        public_documents_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}"
-    )
-    app.register_blueprint(
-        public_media_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.MEDIA.value}"
-    )
-    app.register_blueprint(
-        public_album_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.ALBUMS.value}"
-    )
+    def register_public_routes():
+        app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
+        app.register_blueprint(
+            public_committee_category_bp,
+            url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}",
+        )
+        app.register_blueprint(public_calendar_bp, url_prefix=f"{PUBLIC_PATH}/calendar")
+        app.register_blueprint(
+            public_committee_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}"
+        )
+        app.register_blueprint(
+            public_committee_position_bp,
+            url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
+        )
+        app.register_blueprint(
+            public_student_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.STUDENTS.value}"
+        )
+        app.register_blueprint(
+            public_news_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.NEWS.value}"
+        )
+        app.register_blueprint(
+            public_documents_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}"
+        )
+        app.register_blueprint(
+            public_media_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.MEDIA.value}"
+        )
+        app.register_blueprint(
+            public_album_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.ALBUMS.value}"
+        )
 
     # Protected Routes
-    app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
-    app.register_blueprint(
-        committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
-    )
-    app.register_blueprint(
-        committee_position_bp,
-        url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
-    )
-    app.register_blueprint(news_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.NEWS.value}")
-    app.register_blueprint(
-        events_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.EVENTS.value}"
-    )
-    app.register_blueprint(
-        documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
-    )
-    app.register_blueprint(
-        media_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.MEDIA.value}"
-    )
-    app.register_blueprint(
-        album_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
-    )
-    app.register_blueprint(
-        student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
-    )
-    app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
+    def register_protected_routes():
+        app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
+        app.register_blueprint(
+            committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
+        )
+        app.register_blueprint(
+            committee_position_bp,
+            url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
+        )
+        app.register_blueprint(
+            news_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.NEWS.value}"
+        )
+        app.register_blueprint(
+            events_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.EVENTS.value}"
+        )
+        app.register_blueprint(
+            documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
+        )
+        app.register_blueprint(
+            media_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.MEDIA.value}"
+        )
+        app.register_blueprint(
+            album_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
+        )
+        app.register_blueprint(
+            student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
+        )
+        app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
 
-    app.register_blueprint(message_bp, url_prefix=f"{PROTECTED_PATH}/messages")
+        app.register_blueprint(message_bp, url_prefix=f"{PROTECTED_PATH}/messages")
 
-    app.register_blueprint(tasks_bp, url_prefix=f"{PROTECTED_PATH}/tasks")
+        app.register_blueprint(tasks_bp, url_prefix=f"{PROTECTED_PATH}/tasks")
+
+    # RGBank Routes
+    def register_rgbank_routes():
+        app.register_blueprint(
+            account_bp, url_prefix=f"{PROTECTED_PATH}/rgbank/account"
+        )
+        app.register_blueprint(
+            expense_domain_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/expense-domains",
+        )
+        app.register_blueprint(
+            public_expense_domain_bp,
+            url_prefix=f"{PUBLIC_PATH}/rgbank/expense-domains",
+        )
+        app.register_blueprint(
+            expense_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/expenses",
+        )
+        app.register_blueprint(
+            invoice_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/invoices",
+        )
+
+    register_public_routes()
+    register_protected_routes()
+    register_rgbank_routes()
 
     @app.after_request
     def add_headers(response: Response):
