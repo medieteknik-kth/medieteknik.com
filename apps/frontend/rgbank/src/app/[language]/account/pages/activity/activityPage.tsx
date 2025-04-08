@@ -1,3 +1,4 @@
+import { fontJetBrainsMono } from '@/app/fonts'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -6,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ExpenseBadge } from '@/components/ui/expense-badge'
+import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
 import {
   Table,
@@ -16,38 +17,40 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import type { ExpenseResponse } from '@/models/Expense'
+import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
 import { ArrowDownIcon } from '@heroicons/react/24/outline'
 import { Link } from 'next-view-transitions'
 
 interface Props {
   language: LanguageCode
+  expenses?: ExpenseResponse[]
+  invoices?: InvoiceResponse[]
 }
 
-export default function ActivityPage({ language }: Props) {
-  const awaitingApproval = [
-    {
-      id: 1,
-      type: 'invoice',
-      committee: 'Styrelsen',
-      date: '2023-10-01',
-      amount: 1000,
-    },
-    {
-      id: 2,
-      type: 'expense',
-      committee: 'Styrelsen',
-      date: '2023-10-02',
-      amount: 2000,
-    },
-    {
-      id: 3,
-      type: 'invoice',
-      committee: 'Styrelsen',
-      date: '2023-10-03',
-      amount: 3000,
-    },
-  ]
+export default function ActivityPage({ language, expenses, invoices }: Props) {
+  let totalExpenditure = invoices
+    ? invoices.reduce((acc, invoice) => {
+        if (invoice.status === 'PAID' || invoice.status === 'BOOKED') {
+          return acc + (invoice.amount || 0)
+        }
+
+        return acc
+      }, 0) || 0
+    : 0
+
+  console.log(expenses)
+
+  totalExpenditure += expenses
+    ? expenses.reduce((acc, expense) => {
+        if (expense.status === 'PAID' || expense.status === 'BOOKED') {
+          return acc + (expense.amount || 0)
+        }
+
+        return acc
+      }, 0) || 0
+    : 0
 
   return (
     <section className='w-full h-fit max-w-[1100px] mb-8 2xl:mb-0'>
@@ -68,7 +71,7 @@ export default function ActivityPage({ language }: Props) {
                 <span className='text-2xl mr-2 text-muted-foreground select-none'>
                   SEK
                 </span>
-                20 000
+                {totalExpenditure}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -95,114 +98,111 @@ export default function ActivityPage({ language }: Props) {
         </div>
 
         <div className='mx-4 flex flex-col gap-4'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Awaiting Approval</CardTitle>
-              <CardDescription>
-                You have 3 transactions awaiting approval.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className='rounded-md border'>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Committee</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead className='text-right'>Amount</TableHead>
-                      <TableHead className='text-right'>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {awaitingApproval.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          <Button
-                            variant={'link'}
-                            className='p-0 h-auto font-medium'
-                            asChild
-                          >
-                            <Link href={`/${language}/expense/${item.id}`}>
-                              {item.id}
-                            </Link>
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <ExpenseBadge
-                            type={item.type as 'invoice' | 'expense'}
-                          />
-                        </TableCell>
-                        <TableCell>{item.committee}</TableCell>
-                        <TableCell>{item.date}</TableCell>
-                        <TableCell className='text-right'>
-                          <span className='text-muted-foreground select-none mr-1 text-xs'>
-                            SEK
-                          </span>
-                          {item.amount}
-                        </TableCell>
-                        <TableCell className='text-right'>
-                          <Button variant={'link'}>Cancel</Button>
-                        </TableCell>
+          {expenses && expenses.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Expenses</CardTitle>
+                <CardDescription>
+                  You have 3 transactions awaiting approval.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='rounded-md border'>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Author</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead className='text-right'>Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
+                    </TableHeader>
+                    <TableBody>
+                      {expenses?.map((expense) => (
+                        <TableRow key={expense.expense_id}>
+                          <TableCell>{expense.expense_id}</TableCell>
+                          <TableCell>
+                            {expense.committee?.translations[0].title}
+                          </TableCell>
+                          <TableCell>
+                            {new Date(expense.date).toLocaleDateString(
+                              language
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Previous Transactions</CardTitle>
-              <CardDescription>
-                Previous transactions that have been approved.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className='rounded-md border'>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Committee</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead className='text-right'>Amount</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {awaitingApproval.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          <Button
-                            variant={'link'}
-                            className='p-0 h-auto font-medium'
-                          >
-                            {item.id}
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <ExpenseBadge
-                            type={item.type as 'invoice' | 'expense'}
-                          />
-                        </TableCell>
-                        <TableCell>{item.committee}</TableCell>
-                        <TableCell>{item.date}</TableCell>
-                        <TableCell className='text-right'>
-                          <span className='text-muted-foreground select-none mr-1 text-xs'>
-                            SEK
-                          </span>
-                          {item.amount}
-                        </TableCell>
+          {invoices && invoices.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Invoices</CardTitle>
+                <CardDescription>
+                  You have <span>{invoices.length} invoices</span> transactions
+                  awaiting approval.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='rounded-md border'>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead className='text-right'>Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
+                    </TableHeader>
+                    <TableBody>
+                      {invoices?.map((invoice) => (
+                        <TableRow key={invoice.invoice_id}>
+                          <TableCell
+                            className={`${fontJetBrainsMono.className} font-mono`}
+                          >
+                            <Button variant='link' size='sm' asChild>
+                              <Link
+                                href={`/${language}/invoice/${invoice.invoice_id}`}
+                              >
+                                {invoice.invoice_id}
+                              </Link>
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <ExpenseStatusBadge status={invoice.status} />
+                          </TableCell>
+                          <TableCell>
+                            {invoice.amount?.toLocaleString(language, {
+                              style: 'currency',
+                              currency: 'SEK',
+                            })}
+                          </TableCell>
+                          <TableCell className='text-right space-x-2'>
+                            <Button variant='outline' size='sm' asChild>
+                              <Link
+                                href={`/${language}/invoice/${invoice.invoice_id}`}
+                              >
+                                View
+                              </Link>
+                            </Button>
+                            {invoice.status === 'UNCONFIRMED' && (
+                              <Button variant='destructive' size='sm'>
+                                Delete
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </section>

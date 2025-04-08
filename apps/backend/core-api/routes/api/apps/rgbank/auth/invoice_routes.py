@@ -5,8 +5,9 @@ from typing import List
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
+from models.apps.rgbank.bank import AccountBankInformation
 from models.apps.rgbank.expense import Invoice, PaymentStatus
-from models.core.student import StudentMembership
+from models.core.student import Student, StudentMembership
 from services.apps.rgbank.auth_service import has_access, has_full_authority
 from utility import db, upload_file, rgbank_bucket
 
@@ -84,6 +85,7 @@ def create_invoice() -> Response:
                 content_type="application/pdf"
                 if file_extension == "pdf"
                 else f"image/{file_extension}",
+                content_disposition="attachment",
                 bucket=rgbank_bucket,
                 timedelta=timedelta(days=90),
             )
@@ -148,12 +150,36 @@ def get_invoice(invoice_id: str) -> Response:
     )
 
     if is_authorized:
-        return jsonify(invoice.to_dict()), HTTPStatus.OK
+        student: Student = Student.query.filter_by(student_id=student_id).first()
+        if not student or not isinstance(student, Student):
+            return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
+
+        bank_information = AccountBankInformation.query.filter_by(
+            student_id=student.student_id
+        ).first()
+
+        thread = invoice.thread
+
+        if not bank_information or not isinstance(
+            bank_information, AccountBankInformation
+        ):
+            return jsonify(
+                {"error": "Bank information not found"}
+            ), HTTPStatus.NOT_FOUND
+
+        return jsonify(
+            {
+                "invoice": invoice.to_dict(),
+                "student": student.to_dict(),
+                "bank_information": bank_information.to_dict(),
+                "thread": thread.to_dict() if thread else None,
+            }
+        ), HTTPStatus.OK
 
     return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
 
 
-@invoice_bp.route("<string:student_id>", methods=["GET"])
+@invoice_bp.route("/student/<string:student_id>", methods=["GET"])
 @jwt_required()
 def get_invoices_by_student(student_id: str) -> Response:
     """Gets all invoices by student ID
@@ -172,7 +198,7 @@ def get_invoices_by_student(student_id: str) -> Response:
     invoices = Invoice.query.filter_by(student_id=student_id).all()
 
     if not invoices:
-        return jsonify({"message": "No invoices found"}), HTTPStatus.NOT_FOUND
+        return jsonify([]), HTTPStatus.NOT_FOUND
 
     return jsonify([invoice.to_dict() for invoice in invoices]), HTTPStatus.OK
 

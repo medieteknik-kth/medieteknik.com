@@ -5,13 +5,21 @@ import ActivityPage from '@/app/[language]/account/pages/activity/activityPage'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { ExpenseResponse } from '@/models/Expense'
+import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { use, useCallback } from 'react'
+import useSWR from 'swr'
 
 interface Page {
   name: string
-  page?: React.ComponentType<{ language: LanguageCode }>
+  page?: React.ComponentType<{
+    language: LanguageCode
+    expenses?: ExpenseResponse[]
+    invoices?: InvoiceResponse[]
+  }>
 }
 
 interface Params {
@@ -22,12 +30,37 @@ interface Props {
   params: Promise<Params>
 }
 
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  }).then((res) => res.json())
+
 export default function Account(props: Props) {
   const { language } = use(props.params)
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const category = searchParams.get('category') || 'account'
   const router = useRouter()
+  const { student } = useStudent()
+  const { data: expenses, error: expenseError } = useSWR<ExpenseResponse[]>(
+    `/api/rgbank/expenses/student/${student?.student_id}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+      fallbackData: [],
+    }
+  )
+
+  const { data: invoices, error: invoiceError } = useSWR<InvoiceResponse[]>(
+    `/api/rgbank/invoices/student/${student?.student_id}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+      fallbackData: [],
+    }
+  )
 
   const createTabString = useCallback(
     (tab: string) => {
@@ -50,6 +83,18 @@ export default function Account(props: Props) {
       page: ActivityPage,
     },
   ]
+
+  if (!student) {
+    return <></>
+  }
+
+  if (expenseError) {
+    console.error('Error fetching expenses:', expenseError)
+  }
+
+  if (invoiceError) {
+    console.error('Error fetching invoices:', invoiceError)
+  }
 
   return (
     <main className='relative'>
@@ -91,7 +136,13 @@ export default function Account(props: Props) {
               key={page.name}
               value={page.name}
             >
-              {page.page && <page.page language={language} />}
+              {page.page && (
+                <page.page
+                  language={language}
+                  expenses={expenses}
+                  invoices={invoices}
+                />
+              )}
             </TabsContent>
           ))}
         </Tabs>

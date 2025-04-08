@@ -85,6 +85,7 @@ def create_expense() -> Response:
                     content_type="application/pdf"
                     if file_extension == "pdf"
                     else f"image/{file_extension}",
+                    content_disposition="attachment",
                     bucket=rgbank_bucket,
                     timedelta=timedelta(days=90),
                 )
@@ -150,7 +151,7 @@ def get_expense(expense_id: str) -> Response:
     return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
 
 
-@expense_bp.route("/<string:student_id>", methods=["GET"])
+@expense_bp.route("/student/<string:student_id>", methods=["GET"])
 @jwt_required()
 def get_expenses_by_student(student_id: str) -> Response:
     """Gets all expenses by student ID
@@ -169,7 +170,7 @@ def get_expenses_by_student(student_id: str) -> Response:
     expenses: List[Expense] = Expense.query.filter_by(student_id=student_id).all()
 
     if not expenses:
-        return jsonify({"message": "No expenses found"}), HTTPStatus.NOT_FOUND
+        return jsonify([]), HTTPStatus.NOT_FOUND
 
     return jsonify([expense.to_dict() for expense in expenses]), HTTPStatus.OK
 

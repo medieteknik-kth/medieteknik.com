@@ -106,8 +106,12 @@ class Expense(db.Model):
     def amount(self) -> float:
         """Calculate the total amount from the categories JSONB field."""
         total_amount = 0
+
         for category in self.categories:
-            total_amount += category.get("amount", 0)
+            try:
+                total_amount += float(category.get("amount", 0))
+            except (ValueError, TypeError):
+                total_amount += 0
 
         return total_amount
 
@@ -148,6 +152,8 @@ class Expense(db.Model):
             "categories": self.categories,
             "status": self.status.name,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "committee": self.committee.to_dict() if self.committee else None,
+            "amount": self.amount,
         }
 
 
@@ -196,7 +202,10 @@ class Invoice(db.Model):
         """Calculate the total amount from the categories JSONB field."""
         total_amount = 0
         for category in self.categories:
-            total_amount += category.get("amount", 0)
+            try:
+                total_amount += float(category.get("amount", 0))
+            except (ValueError, TypeError):
+                total_amount += 0
 
         return total_amount
 
@@ -239,4 +248,6 @@ class Invoice(db.Model):
             "categories": self.categories,
             "status": self.status.name,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "committee": self.committee.to_dict() if self.committee else None,
+            "amount": self.amount,
         }

@@ -50,7 +50,7 @@ export function ExpenseStatusBadge({
   className,
 }: ExpenseStatusBadgeProps) {
   switch (status) {
-    case 'pending':
+    case 'UNCONFIRMED':
       return (
         <div
           className={cn(
@@ -58,10 +58,10 @@ export function ExpenseStatusBadge({
             className
           )}
         >
-          Pending
+          Unconfirmed
         </div>
       )
-    case 'approved':
+    case 'CONFIRMED':
       return (
         <div
           className={cn(
@@ -69,10 +69,10 @@ export function ExpenseStatusBadge({
             className
           )}
         >
-          Approved
+          Confirmed
         </div>
       )
-    case 'rejected':
+    case 'REJECTED':
       return (
         <div
           className={cn(
@@ -83,6 +83,29 @@ export function ExpenseStatusBadge({
           Rejected
         </div>
       )
+    case 'BOOKED':
+      return (
+        <div
+          className={cn(
+            'w-fit flex items-center gap-2 text-blue-500 bg-blue-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            className
+          )}
+        >
+          Booked
+        </div>
+      )
+    case 'CLARIFICATION':
+      return (
+        <div
+          className={cn(
+            'w-fit flex items-center gap-2 text-orange-500 bg-orange-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            className
+          )}
+        >
+          Clarification
+        </div>
+      )
+
     default:
       return (
         <div className='flex items-center gap-2 text-gray-500'>Unknown</div>

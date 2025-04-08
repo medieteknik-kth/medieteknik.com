@@ -72,8 +72,7 @@ def has_access(
 
 
 def has_full_authority(memberships: List[StudentMembership]) -> Tuple[bool, str]:
-    """
-    Check if the student has full authority over the expense.
+    """Check if the student has full authority over the expense.
 
     :param student_id: The ID of the student.
     :type student_id: str

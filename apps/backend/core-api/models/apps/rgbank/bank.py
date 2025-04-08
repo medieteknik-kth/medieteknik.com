@@ -30,3 +30,10 @@ class AccountBankInformation(db.Model):
     student = db.relationship(
         "Student", back_populates="rgbank_account_bank_information"
     )
+
+    def to_dict(self):
+        return {
+            "bank_name": self.bank_name,
+            "sorting_number": self.sorting_number,
+            "account_number": self.account_number,
+        }
