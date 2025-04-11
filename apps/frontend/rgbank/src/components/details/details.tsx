@@ -1,3 +1,5 @@
+'use client'
+
 import { ExpenseBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -8,17 +10,33 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
-  invoice: InvoiceResponse
+  invoice?: InvoiceResponse
+  expense?: ExpenseResponse
 }
 
-export default function Details({ language, invoice }: Props) {
+export default function DetailsSection({ language, invoice, expense }: Props) {
+  if (!invoice && !expense) {
+    return null
+  }
+
+  if (invoice && expense) {
+    return null
+  }
+
+  const item = invoice ?? expense
+
+  if (!item) {
+    return null
+  }
+
   return (
-    <section className='flex flex-col gap-4'>
+    <section className='flex flex-col gap-4 mt-2'>
       <div className='grid grid-cols-2 gap-4'>
         <div>
           <h3 className='text-sm font-medium text-muted-foreground'>Type</h3>
@@ -30,43 +48,62 @@ export default function Details({ language, invoice }: Props) {
             <span className='text-base text-muted-foreground select-none'>
               SEK
             </span>{' '}
-            {invoice.amount?.toLocaleString(language, {
+            {item.amount?.toLocaleString(language, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
-            })}{' '}
-          </p>
-        </div>
-        <div>
-          <h3 className='text-sm font-medium text-muted-foreground'>
-            Date Issued
-          </h3>
-          <p className='mt-1'>
-            {new Date(invoice.date_issued).toLocaleDateString(language, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
             })}
           </p>
         </div>
-        <div>
-          <h3 className='text-sm font-medium text-muted-foreground'>
-            Due Date
-          </h3>
-          <p className='mt-1'>
-            {new Date(invoice.due_date).toLocaleDateString(language, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
-        </div>
+        {invoice ? (
+          <>
+            <div>
+              <h3 className='text-sm font-medium text-muted-foreground'>
+                Date Issued
+              </h3>
+              <p className='mt-1'>
+                {new Date(invoice.date_issued).toLocaleDateString(language, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
+            <div>
+              <h3 className='text-sm font-medium text-muted-foreground'>
+                Due Date
+              </h3>
+              <p className='mt-1'>
+                {new Date(invoice.due_date).toLocaleDateString(language, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
+          </>
+        ) : (
+          expense && (
+            <div>
+              <h3 className='text-sm font-medium text-muted-foreground'>
+                Date
+              </h3>
+              <p className='mt-1'>
+                {new Date(expense.date).toLocaleDateString(language, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
+          )
+        )}
       </div>
       <Separator />
       <div>
         <h3 className='text-sm font-medium text-muted-foreground'>
           Description
         </h3>
-        <p className='mt-1'>{invoice.description}</p>
+        <p className='mt-1'>{item.description}</p>
       </div>
       <Separator />
       <div>
@@ -83,11 +120,11 @@ export default function Details({ language, invoice }: Props) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoice.categories.map((category) => (
+              {item.categories.map((category) => (
                 <TableRow key={category.id}>
-                  {invoice.committee ? (
+                  {item.committee ? (
                     <TableCell>
-                      {invoice.committee?.translations[0].title}
+                      {item.committee?.translations[0].title}
                     </TableCell>
                   ) : (
                     <TableCell>{category.author}</TableCell>

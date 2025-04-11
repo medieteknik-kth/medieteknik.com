@@ -1,15 +1,16 @@
 import json
-from typing import List
 import uuid
+from typing import List
 from datetime import timedelta
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
-from models.apps.rgbank.expense import Expense, PaymentStatus
-from models.core.student import StudentMembership
-from services.apps.rgbank.auth_service import has_access, has_full_authority
-from utility.gc import upload_file, rgbank_bucket
-from utility.database import db
+from models.apps.rgbank import Expense, PaymentStatus, MessageType, Thread
+from models.apps.rgbank.bank import AccountBankInformation
+from models.core import StudentMembership
+from models.core.student import Student
+from services.apps.rgbank import has_access, has_full_authority, add_message
+from utility import db, upload_file, rgbank_bucket
 
 expense_bp = Blueprint("expense", __name__)
 
@@ -36,7 +37,7 @@ def create_expense() -> Response:
     date = form_data.get("date")
     description = form_data.get("description")
     is_digital = form_data.get("is_digital", "false").lower() == "true"
-    categories = json.loads(form_data.get("categories", "[]"))
+    categories = form_data.get("categories")
 
     if not date or not categories or not files or not description:
         return jsonify(
@@ -145,10 +146,32 @@ def get_expense(expense_id: str) -> Response:
         memberships=memberships,
     )
 
-    if is_authorized:
-        return jsonify(expense.to_dict()), HTTPStatus.OK
+    if not is_authorized:
+        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
 
-    return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+    student: Student = Student.query.filter_by(student_id=student_id).first()
+    if not student or not isinstance(student, Student):
+        return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
+
+    bank_information = AccountBankInformation.query.filter_by(
+        student_id=student.student_id
+    ).first()
+
+    if not bank_information or not isinstance(bank_information, AccountBankInformation):
+        return jsonify({"error": "Bank information not found"}), HTTPStatus.NOT_FOUND
+
+    thread = Thread.query.filter_by(
+        expense_id=expense_id,
+    ).first()
+
+    return jsonify(
+        {
+            "expense": expense.to_dict(),
+            "student": student.to_dict(),
+            "bank_information": bank_information.to_dict(),
+            "thread": thread.to_dict() if thread else None,
+        }
+    ), HTTPStatus.OK
 
 
 @expense_bp.route("/student/<string:student_id>", methods=["GET"])
@@ -211,7 +234,7 @@ def update_expense(expense_id: str) -> Response:
     return jsonify({"message": "Expense updated successfully"}), HTTPStatus.OK
 
 
-@expense_bp.route("/<string:expense_id>/status", methods=["PUT"])
+@expense_bp.route("/<string:expense_id>/status", methods=["PATCH"])
 @jwt_required()
 def update_expense_status(expense_id: str) -> Response:
     """Updates an expense by ID, updates everything except the file urls
@@ -245,6 +268,29 @@ def update_expense_status(expense_id: str) -> Response:
     status = data.get("status")
     if not status:
         return jsonify({"message": "Status is required"}), HTTPStatus.BAD_REQUEST
+
+    comment = data.get("comment")
+    previous_status = expense.status
+    new_status = data.get("status")
+    thread = Thread.query.filter_by(
+        expense_id=expense_id,
+    ).first()
+
+    thread_id = thread.thread_id if thread else None
+
+    try:
+        add_message(
+            thread_id=thread_id,
+            sender_id=None,
+            message_text=f"status_changed_{status.lower()}" if not comment else comment,
+            type=MessageType.SYSTEM,
+            create_thread_if_not_exists=True,
+            expense_id=expense_id,
+            previous_status=previous_status,
+            new_status=new_status,
+        )
+    except ValueError as e:
+        return jsonify({"message": str(e)}), HTTPStatus.BAD_REQUEST
 
     expense.status = status
     db.session.commit()
@@ -286,3 +332,69 @@ def delete_expense(expense_id: str) -> Response:
     db.session.commit()
 
     return jsonify({"message": "Expense deleted successfully"}), HTTPStatus.OK
+
+
+@expense_bp.route("/<string:expense_id>/messages", methods=["POST"])
+@jwt_required()
+def add_expense_message(expense_id: str) -> Response:
+    """Sends a message to the committee for an expense by ID
+
+    :param expense_id: The ID of the expense to send a message for
+    :type expense_id: str
+    :return: The response object, 404 if the expense is not found, 200 if successful
+    :rtype: Response
+    """
+    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+
+    if (
+        expense.status == PaymentStatus.CONFIRMED
+        or expense.status == PaymentStatus.REJECTED
+        or expense.status == PaymentStatus.PAID
+        or expense.status == PaymentStatus.BOOKED
+    ):
+        return jsonify(
+            {
+                "error": "You cannot send a message for an expense that is not unconfirmed or requires clarification"
+            }
+        ), HTTPStatus.BAD_REQUEST
+
+    student_id = get_jwt_identity()
+    memberships: List[StudentMembership] = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        StudentMembership.termination_date.is_(None),
+    ).all()
+
+    is_authorized, message = has_access(
+        cost_item=expense,
+        student_id=student_id,
+        memberships=memberships,
+    )
+
+    if not is_authorized:
+        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+    message_text = data.get("message")
+    if not message_text:
+        return jsonify({"message": "Content is required"}), HTTPStatus.BAD_REQUEST
+
+    thread = Thread.query.filter_by(
+        expense_id=expense_id,
+    ).first()
+    thread_id = thread.thread_id if thread else None
+
+    try:
+        add_message(
+            thread_id=thread_id,
+            sender_id=str(student_id),
+            message_text=str(message_text),
+            create_thread_if_not_exists=True,
+            expense_id=expense_id,
+        )
+    except ValueError as e:
+        return jsonify({"message": str(e)}), HTTPStatus.BAD_REQUEST
+
+    return jsonify({"message": "Message sent successfully"}), HTTPStatus.CREATED

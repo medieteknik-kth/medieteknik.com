@@ -46,7 +46,7 @@ export default function AccountPage({ language }: Props) {
     resolver: zodResolver(bankSchema),
     defaultValues: {
       bank_name: '',
-      sorting_number: '',
+      clearing_number: '',
       account_number: '',
     },
   })
@@ -146,23 +146,23 @@ export default function AccountPage({ language }: Props) {
           />
 
           <FormField
-            name='sorting_number'
+            name='clearing_number'
             render={({ field }) => (
               <div className='px-4'>
                 <FormLabel
-                  htmlFor='sorting_number'
+                  htmlFor='clearing_number'
                   className='text-sm font-semibold'
                 >
-                  Sorting Number
+                  Clearing Number
                 </FormLabel>
                 <FormMessage />
 
                 <p className='text-xs text-muted-foreground'>
-                  Sorting number is a unique identifier for your bank account.
+                  Clearing number is a unique identifier for your bank account.
                   It is used to identify the bank associated with your account.
                 </p>
                 <FormControl>
-                  <Input id='sorting_number' {...field} />
+                  <Input id='clearing_number' {...field} />
                 </FormControl>
               </div>
             )}

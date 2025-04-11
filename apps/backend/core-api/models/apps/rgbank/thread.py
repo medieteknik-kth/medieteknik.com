@@ -1,8 +1,24 @@
+import enum
 import uuid
-from sqlalchemy import TIMESTAMP, UUID, Column, ForeignKey, Index, String, text
-from models.apps.rgbank.expense import Expense, Invoice
+from sqlalchemy import (
+    TIMESTAMP,
+    UUID,
+    Column,
+    Enum,
+    ForeignKey,
+    Index,
+    MetaData,
+    String,
+    text,
+)
+from models.apps.rgbank.expense import Expense, Invoice, PaymentStatus
 from models.core.student import Student
 from utility.database import db
+
+
+class MessageType(enum.Enum):
+    STUDENT = "STUDENT"  # Student
+    SYSTEM = "SYSTEM"  # System, status update, etc.
 
 
 class Thread(db.Model):
@@ -65,14 +81,28 @@ class Message(db.Model):
 
     content = Column(String, nullable=False)
     created_at = Column(TIMESTAMP, default=db.func.now(), server_default=text("now()"))
+
+    # Will only be for when the sender/student is not the same as the receiver
     read_at = Column(TIMESTAMP, default=None, server_default=None, nullable=True)
+    message_type = Column(
+        Enum(MessageType, metadata=MetaData(schema="rgbank")),
+        nullable=False,
+        default=MessageType.STUDENT,
+    )
+
+    previous_status = Column(
+        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")), nullable=True
+    )
+    new_status = Column(
+        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")), nullable=True
+    )
 
     # Foreign Keys
     thread_id = Column(UUID(as_uuid=True), ForeignKey(Thread.thread_id), nullable=False)
     sender_id = Column(
         UUID(as_uuid=True),
         ForeignKey(Student.student_id),
-        nullable=False,
+        nullable=True,
         index=True,
     )
 
@@ -90,16 +120,24 @@ class Message(db.Model):
     )
 
     def to_dict(self):
-        sender = Student.query.filter_by(student_id=self.sender_id).first()
-        if sender:
-            sender = sender.to_dict()
-        else:
-            sender = None
+        sender = None
+
+        if self.sender_id:
+            sender_obj: Student | None = Student.query.filter_by(
+                student_id=self.sender_id
+            ).first()
+            if sender_obj and isinstance(sender_obj, Student):
+                sender = sender_obj.to_dict()
 
         return {
             "message_id": str(self.message_id),
             "content": self.content,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "read_at": self.read_at.isoformat() if self.read_at else None,
+            "previous_status": self.previous_status.name
+            if self.previous_status
+            else None,
+            "new_status": self.new_status.name if self.new_status else None,
             "sender": sender,
+            "message_type": self.message_type.name,
         }

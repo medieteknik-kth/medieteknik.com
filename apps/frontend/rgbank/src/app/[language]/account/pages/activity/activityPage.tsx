@@ -1,3 +1,5 @@
+'use client'
+
 import { fontJetBrainsMono } from '@/app/fonts'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,6 +10,13 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
+import { Input } from '@/components/ui/input'
+import { NumberTicker } from '@/components/ui/number-ticker'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 import {
   Table,
@@ -18,10 +27,22 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { ExpenseResponse } from '@/models/Expense'
+import {
+  EXPENSE_STATUS_LIST,
+  type ExpenseStatus,
+  availableStatuses,
+} from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
-import { ArrowDownIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowTrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowsUpDownIcon,
+  FunnelIcon,
+} from '@heroicons/react/24/outline'
+import { isSameMonth, subMonths } from 'date-fns'
 import { Link } from 'next-view-transitions'
+import { useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -30,27 +51,70 @@ interface Props {
 }
 
 export default function ActivityPage({ language, expenses, invoices }: Props) {
-  let totalExpenditure = invoices
-    ? invoices.reduce((acc, invoice) => {
-        if (invoice.status === 'PAID' || invoice.status === 'BOOKED') {
-          return acc + (invoice.amount || 0)
-        }
+  const [invoiceFilters, setInvoiceFilters] =
+    useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
+  const [expenseFilters, setExpenseFilters] =
+    useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
 
-        return acc
-      }, 0) || 0
-    : 0
+  const allExpenses = expenses ?? []
+  const allInvoices = invoices ?? []
 
-  console.log(expenses)
+  // Calculate sums in a single pass for each array
+  const now = new Date()
+  const prevMonth = subMonths(now, 1)
 
-  totalExpenditure += expenses
-    ? expenses.reduce((acc, expense) => {
-        if (expense.status === 'PAID' || expense.status === 'BOOKED') {
-          return acc + (expense.amount || 0)
-        }
+  let totalExpenditure = 0
+  let currentMonthSum = 0
+  let previousMonthSum = 0
 
-        return acc
-      }, 0) || 0
-    : 0
+  // Process all expenses in one loop
+  for (const expense of allExpenses) {
+    const isPaidOrBooked =
+      expense.status === 'PAID' || expense.status === 'BOOKED'
+    const amount = expense.amount || 0
+
+    if (isPaidOrBooked) {
+      totalExpenditure += amount
+
+      const createdDate = new Date(expense.created_at)
+      if (isSameMonth(createdDate, now)) {
+        currentMonthSum += amount
+      } else if (isSameMonth(createdDate, prevMonth)) {
+        previousMonthSum += amount
+      }
+    }
+  }
+
+  // Process all invoices in one loop
+  for (const invoice of allInvoices) {
+    const isPaidOrBooked =
+      invoice.status === 'PAID' || invoice.status === 'BOOKED'
+    const amount = invoice.amount || 0
+
+    if (isPaidOrBooked) {
+      totalExpenditure += amount
+
+      const createdDate = new Date(invoice.created_at)
+      if (isSameMonth(createdDate, now)) {
+        currentMonthSum += amount
+      } else if (isSameMonth(createdDate, prevMonth)) {
+        previousMonthSum += amount
+      }
+    }
+  }
+
+  const percentageChange =
+    previousMonthSum !== 0
+      ? ((currentMonthSum - previousMonthSum) / previousMonthSum) * 100
+      : 100
+
+  const noChange = percentageChange === 0
+  const isPositiveChange = percentageChange < 0
+
+  const percentageChangeFormatted = percentageChange.toLocaleString(language, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return (
     <section className='w-full h-fit max-w-[1100px] mb-8 2xl:mb-0'>
@@ -71,11 +135,18 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
                 <span className='text-2xl mr-2 text-muted-foreground select-none'>
                   SEK
                 </span>
-                {totalExpenditure}
+                <NumberTicker
+                  value={totalExpenditure}
+                  decimalPlaces={2}
+                  language={language}
+                />
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='text-sm text-muted-foreground'>Year to date</div>
+              <div className='text-sm text-muted-foreground'>
+                {/* TODO: Add flavor text? */}
+                Lorem ipsum dolor sit
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -85,13 +156,34 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
                 <span className='text-2xl mr-2 text-muted-foreground select-none'>
                   SEK
                 </span>
-                2 000
+                <NumberTicker
+                  value={currentMonthSum}
+                  decimalPlaces={2}
+                  language={language}
+                />
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='flex items-center text-sm'>
-                <ArrowDownIcon className='h-4 w-4 mr-1 text-green-500' />
-                <span className={'text-green-500'}>20.5% from last month</span>
+              <div className='flex items-center text-sm gap-2'>
+                {noChange ? (
+                  <ArrowsUpDownIcon className='h-4 w-4 text-yellow-500' />
+                ) : isPositiveChange ? (
+                  <ArrowTrendingDownIcon className='h-4 w-4 text-green-500' />
+                ) : (
+                  <ArrowTrendingUpIcon className='h-4 w-4 text-red-500' />
+                )}
+                <span
+                  className={
+                    noChange
+                      ? 'text-yellow-500'
+                      : isPositiveChange
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                  }
+                >
+                  <span>{percentageChangeFormatted} % </span>
+                  from last month
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -103,34 +195,127 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
               <CardHeader>
                 <CardTitle>Expenses</CardTitle>
                 <CardDescription>
-                  You have 3 transactions awaiting approval.
+                  You have <span>{expenses.length} expenses</span>
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                <div className='flex flex-col gap-4 mb-2'>
+                  <div>
+                    <Input />
+                  </div>
+                  <div className='space-y-2 overflow-hidden'>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant={'outline'} className='space-x-2'>
+                          <FunnelIcon className='h-4 w-4' />
+                          <p>Filters</p>
+                          {Math.abs(6 - expenseFilters.length) > 0 && (
+                            <span className='text-xs text-muted-foreground'>
+                              {Math.abs(6 - expenseFilters.length)}
+                              {expenseFilters.length < 5
+                                ? ' filters'
+                                : ' filter'}
+                            </span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div className='flex flex-col gap-2'>
+                          <div className='text-sm text-muted-foreground'>
+                            Select the status you want to filter by
+                          </div>
+                          <div className='grid grid-cols-2 gap-2'>
+                            {availableStatuses.map((status) => (
+                              <Button
+                                key={status.value}
+                                variant={'outline'}
+                                size='sm'
+                                className={`${
+                                  !expenseFilters.includes(status.value)
+                                    ? 'grayscale-100'
+                                    : ''
+                                }`}
+                                onClick={() => {
+                                  setExpenseFilters((prev) =>
+                                    prev.includes(status.value)
+                                      ? prev.filter((s) => s !== status.value)
+                                      : [...prev, status.value]
+                                  )
+                                }}
+                              >
+                                <ExpenseStatusBadge status={status.value} />
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
                 <div className='rounded-md border'>
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Author</TableHead>
-                        <TableHead>Date</TableHead>
+                        <TableHead className='w-96!'>ID</TableHead>
+                        <TableHead>Created at</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Amount</TableHead>
                         <TableHead className='text-right'>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {expenses?.map((expense) => (
-                        <TableRow key={expense.expense_id}>
-                          <TableCell>{expense.expense_id}</TableCell>
-                          <TableCell>
-                            {expense.committee?.translations[0].title}
-                          </TableCell>
-                          <TableCell>
-                            {new Date(expense.date).toLocaleDateString(
-                              language
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {expenses
+                        ?.filter((expense) =>
+                          expenseFilters.includes(expense.status)
+                        )
+                        .map((expense) => (
+                          <TableRow key={expense.expense_id}>
+                            <TableCell
+                              className={`${fontJetBrainsMono.className} font-mono`}
+                            >
+                              <Button variant='link' size='sm' asChild>
+                                <Link
+                                  href={`/${language}/expense/${expense.expense_id}`}
+                                >
+                                  {expense.expense_id}
+                                </Link>
+                              </Button>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(expense.created_at).toLocaleDateString(
+                                language,
+                                {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                }
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <ExpenseStatusBadge status={expense.status} />
+                            </TableCell>
+                            <TableCell>
+                              {expense.amount?.toLocaleString(language, {
+                                style: 'currency',
+                                currency: 'SEK',
+                              })}
+                            </TableCell>
+                            <TableCell className='text-right space-x-2'>
+                              <Button variant='outline' size='sm' asChild>
+                                <Link
+                                  href={`/${language}/exepense/${expense.expense_id}`}
+                                >
+                                  View
+                                </Link>
+                              </Button>
+                              {expense.status === 'UNCONFIRMED' && (
+                                <Button variant='destructive' size='sm'>
+                                  Delete
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -143,60 +328,127 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
               <CardHeader>
                 <CardTitle>Invoices</CardTitle>
                 <CardDescription>
-                  You have <span>{invoices.length} invoices</span> transactions
-                  awaiting approval.
+                  You have <span>{invoices.length} invoices</span>.
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                <div className='flex flex-col gap-4 mb-2'>
+                  <div>
+                    <Input />
+                  </div>
+                  <div className='space-y-2 overflow-hidden'>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant={'outline'} className='space-x-2'>
+                          <FunnelIcon className='h-4 w-4' />
+                          <p>Filters</p>
+                          {Math.abs(6 - invoiceFilters.length) > 0 && (
+                            <span className='text-xs text-muted-foreground'>
+                              {Math.abs(6 - invoiceFilters.length)}
+                              {invoiceFilters.length < 5
+                                ? ' filters'
+                                : ' filter'}
+                            </span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div className='flex flex-col gap-2'>
+                          <div className='text-sm text-muted-foreground'>
+                            Select the status you want to filter by
+                          </div>
+                          <div className='grid grid-cols-2 gap-2'>
+                            {availableStatuses.map((status) => (
+                              <Button
+                                key={status.value}
+                                variant={'outline'}
+                                size='sm'
+                                className={`${
+                                  !invoiceFilters.includes(status.value)
+                                    ? 'grayscale-100'
+                                    : ''
+                                }`}
+                                onClick={() => {
+                                  setInvoiceFilters((prev) =>
+                                    prev.includes(status.value)
+                                      ? prev.filter((s) => s !== status.value)
+                                      : [...prev, status.value]
+                                  )
+                                }}
+                              >
+                                <ExpenseStatusBadge status={status.value} />
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
                 <div className='rounded-md border'>
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>ID</TableHead>
+                        <TableHead>Created at</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead className='text-right'>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {invoices?.map((invoice) => (
-                        <TableRow key={invoice.invoice_id}>
-                          <TableCell
-                            className={`${fontJetBrainsMono.className} font-mono`}
-                          >
-                            <Button variant='link' size='sm' asChild>
-                              <Link
-                                href={`/${language}/invoice/${invoice.invoice_id}`}
-                              >
-                                {invoice.invoice_id}
-                              </Link>
-                            </Button>
-                          </TableCell>
-                          <TableCell>
-                            <ExpenseStatusBadge status={invoice.status} />
-                          </TableCell>
-                          <TableCell>
-                            {invoice.amount?.toLocaleString(language, {
-                              style: 'currency',
-                              currency: 'SEK',
-                            })}
-                          </TableCell>
-                          <TableCell className='text-right space-x-2'>
-                            <Button variant='outline' size='sm' asChild>
-                              <Link
-                                href={`/${language}/invoice/${invoice.invoice_id}`}
-                              >
-                                View
-                              </Link>
-                            </Button>
-                            {invoice.status === 'UNCONFIRMED' && (
-                              <Button variant='destructive' size='sm'>
-                                Delete
+                      {invoices
+                        ?.filter((invoice) =>
+                          invoiceFilters.includes(invoice.status)
+                        )
+                        .map((invoice) => (
+                          <TableRow key={invoice.invoice_id}>
+                            <TableCell
+                              className={`${fontJetBrainsMono.className} font-mono`}
+                            >
+                              <Button variant='link' size='sm' asChild>
+                                <Link
+                                  href={`/${language}/invoice/${invoice.invoice_id}`}
+                                >
+                                  {invoice.invoice_id}
+                                </Link>
                               </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(invoice.created_at).toLocaleDateString(
+                                language,
+                                {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                }
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <ExpenseStatusBadge status={invoice.status} />
+                            </TableCell>
+                            <TableCell>
+                              {invoice.amount?.toLocaleString(language, {
+                                style: 'currency',
+                                currency: 'SEK',
+                              })}
+                            </TableCell>
+                            <TableCell className='text-right space-x-2'>
+                              <Button variant='outline' size='sm' asChild>
+                                <Link
+                                  href={`/${language}/invoice/${invoice.invoice_id}`}
+                                >
+                                  View
+                                </Link>
+                              </Button>
+                              {invoice.status === 'UNCONFIRMED' && (
+                                <Button variant='destructive' size='sm'>
+                                  Delete
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </div>

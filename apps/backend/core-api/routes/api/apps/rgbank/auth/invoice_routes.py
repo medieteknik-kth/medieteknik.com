@@ -5,10 +5,15 @@ from typing import List
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
-from models.apps.rgbank.bank import AccountBankInformation
-from models.apps.rgbank.expense import Invoice, PaymentStatus
-from models.core.student import Student, StudentMembership
-from services.apps.rgbank.auth_service import has_access, has_full_authority
+from models.apps.rgbank import (
+    AccountBankInformation,
+    Invoice,
+    PaymentStatus,
+    MessageType,
+    Thread,
+)
+from models.core import Student, StudentMembership
+from services.apps.rgbank import has_access, has_full_authority, add_message
 from utility import db, upload_file, rgbank_bucket
 
 invoice_bp = Blueprint("invoice", __name__)
@@ -149,34 +154,32 @@ def get_invoice(invoice_id: str) -> Response:
         memberships=memberships,
     )
 
-    if is_authorized:
-        student: Student = Student.query.filter_by(student_id=student_id).first()
-        if not student or not isinstance(student, Student):
-            return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
+    if not is_authorized:
+        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
 
-        bank_information = AccountBankInformation.query.filter_by(
-            student_id=student.student_id
-        ).first()
+    student: Student = Student.query.filter_by(student_id=student_id).first()
+    if not student or not isinstance(student, Student):
+        return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
 
-        thread = invoice.thread
+    bank_information = AccountBankInformation.query.filter_by(
+        student_id=student.student_id
+    ).first()
 
-        if not bank_information or not isinstance(
-            bank_information, AccountBankInformation
-        ):
-            return jsonify(
-                {"error": "Bank information not found"}
-            ), HTTPStatus.NOT_FOUND
+    if not bank_information or not isinstance(bank_information, AccountBankInformation):
+        return jsonify({"error": "Bank information not found"}), HTTPStatus.NOT_FOUND
 
-        return jsonify(
-            {
-                "invoice": invoice.to_dict(),
-                "student": student.to_dict(),
-                "bank_information": bank_information.to_dict(),
-                "thread": thread.to_dict() if thread else None,
-            }
-        ), HTTPStatus.OK
+    thread: Thread = Thread.query.filter_by(
+        invoice_id=invoice.invoice_id,
+    ).first()
 
-    return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+    return jsonify(
+        {
+            "invoice": invoice.to_dict(),
+            "student": student.to_dict(),
+            "bank_information": bank_information.to_dict(),
+            "thread": thread.to_dict(include_messages=True) if thread else None,
+        }
+    ), HTTPStatus.OK
 
 
 @invoice_bp.route("/student/<string:student_id>", methods=["GET"])
@@ -238,7 +241,7 @@ def update_invoice(invoice_id: str) -> Response:
     return jsonify({"message": "Invoice updated successfully"}), HTTPStatus.OK
 
 
-@invoice_bp.route("/<string:invoice_id>/status", methods=["PUT"])
+@invoice_bp.route("/<string:invoice_id>/status", methods=["PATCH"])
 @jwt_required()
 def update_invoice_status(invoice_id: str) -> Response:
     """Updates the status of an invoice by ID
@@ -248,7 +251,7 @@ def update_invoice_status(invoice_id: str) -> Response:
     :return: The response object, 400 if no data is provided, 404 if the invoice is not found, 200 if successful
     :rtype: Response
     """
-    invoice = Invoice.query.filter_by(invoice_id=invoice_id).first_or_404()
+    invoice: Invoice = Invoice.query.filter_by(invoice_id=invoice_id).first_or_404()
 
     student_id = get_jwt_identity()
     memberships = StudentMembership.query.filter(
@@ -266,9 +269,32 @@ def update_invoice_status(invoice_id: str) -> Response:
     if not data:
         return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
 
-    status = data.get("status")
+    status: str = data.get("status")
     if not status:
         return jsonify({"error": "Status is required"}), HTTPStatus.BAD_REQUEST
+
+    comment = data.get("comment")
+    previous_status = invoice.status
+    new_status = data.get("status")
+    thread = Thread.query.filter_by(
+        invoice_id=invoice_id,
+    ).first()
+
+    thread_id = thread.thread_id if thread else None
+
+    try:
+        add_message(
+            thread_id=thread_id,
+            sender_id=None,
+            message_text=f"status_changed_{status.lower()}" if not comment else comment,
+            type=MessageType.SYSTEM,
+            create_thread_if_not_exists=True,
+            invoice_id=invoice_id,
+            previous_status=previous_status,
+            new_status=new_status,
+        )
+    except ValueError as e:
+        return jsonify({"error": str(e)}), HTTPStatus.BAD_REQUEST
 
     invoice.status = status
     db.session.commit()
@@ -308,3 +334,69 @@ def delete_invoice(invoice_id: str) -> Response:
     db.session.commit()
 
     return jsonify({"message": "Invoice deleted successfully"}), HTTPStatus.OK
+
+
+@invoice_bp.route("/<string:invoice_id>/messages", methods=["POST"])
+@jwt_required()
+def add_invoice_message(invoice_id: str) -> Response:
+    """Adds a message to an invoice by ID
+
+    :param invoice_id: The ID of the invoice to add a message to
+    :type invoice_id: str
+    :return: The response object, 400 if no data is provided, 404 if the invoice is not found, 200 if successful
+    :rtype: Response
+    """
+    invoice: Invoice = Invoice.query.filter_by(invoice_id=invoice_id).first_or_404()
+
+    if (
+        invoice.status == PaymentStatus.CONFIRMED
+        or invoice.status == PaymentStatus.REJECTED
+        or invoice.status == PaymentStatus.PAID
+        or invoice.status == PaymentStatus.BOOKED
+    ):
+        return jsonify(
+            {
+                "error": "You cannot send a message for an expense that is not unconfirmed or requires clarification"
+            }
+        ), HTTPStatus.BAD_REQUEST
+
+    student_id = get_jwt_identity()
+    memberships: List[StudentMembership] = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        StudentMembership.termination_date.is_(None),
+    ).all()
+
+    is_authorized, message = has_access(
+        cost_item=invoice,
+        student_id=student_id,
+        memberships=memberships,
+    )
+
+    if not is_authorized:
+        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+    message_text = data.get("message")
+    if not message_text:
+        return jsonify({"error": "Message is required"}), HTTPStatus.BAD_REQUEST
+
+    thread: Thread | None = Thread.query.filter_by(
+        invoice_id=invoice.invoice_id,
+    ).first()
+    thread_id = thread.thread_id if thread else None
+
+    try:
+        add_message(
+            thread_id=thread_id,
+            sender_id=str(student_id),
+            message_text=str(message_text),
+            create_thread_if_not_exists=True,
+            invoice_id=invoice_id,
+        )
+    except ValueError as e:
+        return jsonify({"error": str(e)}), HTTPStatus.BAD_REQUEST
+
+    return jsonify({"message": "Message added successfully"}), HTTPStatus.CREATED

@@ -1,6 +1,9 @@
+import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import type { ExpenseStatus } from '@/models/General'
+import type Student from '@/models/Student'
+import type { Thread } from '@/models/Thread'
 
 export interface ExpenseData {
   files: File[]
@@ -21,4 +24,11 @@ export interface ExpenseResponse {
   created_at: string
   committee?: Committee
   amount?: number
+}
+
+export interface ExpenseResponseDetailed {
+  expense: ExpenseResponse
+  student: Student
+  bank_information: AccountBankInformation
+  thread?: Thread
 }

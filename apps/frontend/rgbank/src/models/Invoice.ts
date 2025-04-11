@@ -34,7 +34,7 @@ export interface InvoiceResponse {
   amount?: number
 }
 
-export interface InvoiceResponseWithStudentDetails {
+export interface InvoiceResponseDetailed {
   invoice: InvoiceResponse
   student: Student
   bank_information: AccountBankInformation

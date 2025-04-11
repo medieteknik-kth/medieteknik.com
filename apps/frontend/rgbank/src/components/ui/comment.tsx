@@ -1,9 +1,9 @@
-import { Badge } from '@/components/ui/badge'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
 import type { CommitteePosition } from '@/models/Committee'
 import type { ExpenseStatus } from '@/models/General'
 import type Student from '@/models/Student'
+import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 
@@ -22,9 +22,10 @@ interface CommentProps {
 }
 
 interface StatusUpdateProps {
+  date: string
   previousStatus: ExpenseStatus
   newStatus: ExpenseStatus
-  date: string
+  message?: string
 }
 
 export default function Comment({
@@ -65,13 +66,14 @@ export default function Comment({
           className={`flex items-center gap-2 ${notSameUser ? 'flex-row-reverse' : ''}`}
         >
           <p className='text-sm font-semibold'>
-            {student ? student.first_name : 'System'}
+            {student ? (
+              <>
+                {student.first_name} {student.last_name}{' '}
+              </>
+            ) : (
+              'System'
+            )}
           </p>
-          <Badge variant={'outline'} className='text-xs font-normal'>
-            {committeePosition
-              ? committeePosition.translations[0].title
-              : 'System'}
-          </Badge>
           <p className='text-xs text-muted-foreground'>
             {new Date(date).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -91,14 +93,15 @@ export default function Comment({
 }
 
 export function StatusUpdate({
+  date,
   previousStatus,
   newStatus,
-  date,
+  message,
 }: StatusUpdateProps) {
   return (
     <div className='space-y-2'>
       <Separator />
-      <div>
+      <div className='space-y-1'>
         <p>
           <span className='text-xs text-muted-foreground'>
             {new Date(date).toLocaleDateString('en-US', {
@@ -110,9 +113,12 @@ export function StatusUpdate({
             })}
           </span>
         </p>
-        <div>
-          <ExpenseStatusBadge status={newStatus} className='w-full mt-1' />
+        <div className='flex items-center gap-2'>
+          <ExpenseStatusBadge status={previousStatus} className='' />
+          <ArrowRightIcon className='h-4 w-4' />
+          <ExpenseStatusBadge status={newStatus} className='' />
         </div>
+        {message && <p className='text-sm text-muted-foreground'>{message}</p>}
       </div>
       <Separator />
     </div>

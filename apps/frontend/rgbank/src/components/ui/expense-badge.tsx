@@ -1,6 +1,14 @@
 import { cn } from '@/lib/utils'
 import type { ExpenseStatus, ExpenseType } from '@/models/General'
-import { CreditCardIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import {
+  CheckIcon,
+  ClipboardDocumentCheckIcon,
+  ClockIcon,
+  CreditCardIcon,
+  DocumentTextIcon,
+  ExclamationTriangleIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 
 interface ExpenseBadgeProps {
   type: ExpenseType
@@ -50,25 +58,39 @@ export function ExpenseStatusBadge({
   className,
 }: ExpenseStatusBadgeProps) {
   switch (status) {
-    case 'UNCONFIRMED':
+    case 'BOOKED':
       return (
         <div
           className={cn(
-            'w-fit flex items-center gap-2 text-yellow-500 bg-yellow-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            'w-fit flex items-center gap-2 text-blue-500 bg-blue-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
         >
-          Unconfirmed
+          <ClipboardDocumentCheckIcon className='h-4 w-4' />
+          Booked
+        </div>
+      )
+    case 'PAID':
+      return (
+        <div
+          className={cn(
+            'w-fit flex items-center gap-2 text-indigo-500 bg-indigo-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            className
+          )}
+        >
+          <CreditCardIcon className='h-4 w-4' />
+          Paid
         </div>
       )
     case 'CONFIRMED':
       return (
         <div
           className={cn(
-            'w-fit flex items-center gap-2 text-green-500 bg-green-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            'w-fit flex items-center gap-2 text-fuchsia-500 bg-fuchsia-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
         >
+          <CheckIcon className='h-4 w-4' />
           Confirmed
         </div>
       )
@@ -80,20 +102,11 @@ export function ExpenseStatusBadge({
             className
           )}
         >
+          <XMarkIcon className='h-4 w-4' />
           Rejected
         </div>
       )
-    case 'BOOKED':
-      return (
-        <div
-          className={cn(
-            'w-fit flex items-center gap-2 text-blue-500 bg-blue-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
-            className
-          )}
-        >
-          Booked
-        </div>
-      )
+
     case 'CLARIFICATION':
       return (
         <div
@@ -102,7 +115,20 @@ export function ExpenseStatusBadge({
             className
           )}
         >
+          <ExclamationTriangleIcon className='h-4 w-4' />
           Clarification
+        </div>
+      )
+    case 'UNCONFIRMED':
+      return (
+        <div
+          className={cn(
+            'w-fit flex items-center gap-2 text-yellow-500 bg-yellow-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            className
+          )}
+        >
+          <ClockIcon className='h-4 w-4' />
+          Unconfirmed
         </div>
       )
 

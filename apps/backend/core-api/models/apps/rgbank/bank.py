@@ -1,7 +1,9 @@
+from os import environ
 import uuid
 from sqlalchemy import UUID, Column, ForeignKey, String, text
 from models.core.student import Student
 from utility.database import db
+from cryptography.fernet import Fernet
 
 
 class AccountBankInformation(db.Model):
@@ -15,8 +17,8 @@ class AccountBankInformation(db.Model):
         server_default=text("gen_random_uuid()"),
     )
     bank_name = Column(String, nullable=False)
-    sorting_number = Column(String(6), nullable=False)
-    account_number = Column(String(13), nullable=False)
+    clearing_number = Column(String, nullable=False)
+    account_number = Column(String, nullable=False)
 
     # Foreign Keys
     student_id = Column(
@@ -32,8 +34,10 @@ class AccountBankInformation(db.Model):
     )
 
     def to_dict(self):
+        cipher = Fernet(environ.get("FERNET_KEY"))
+
         return {
-            "bank_name": self.bank_name,
-            "sorting_number": self.sorting_number,
-            "account_number": self.account_number,
+            "bank_name": cipher.decrypt(self.bank_name.encode()).decode(),
+            "clearing_number": cipher.decrypt(self.clearing_number.encode()).decode(),
+            "account_number": cipher.decrypt(self.account_number.encode()).decode(),
         }

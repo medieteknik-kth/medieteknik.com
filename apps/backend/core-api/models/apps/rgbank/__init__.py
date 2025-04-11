@@ -26,6 +26,7 @@ from .permissions import RGBankViewPermissions
 
 from .thread import Thread
 from .thread import Message
+from .thread import MessageType
 
 __all__ = [
     "AccountBankInformation",
@@ -38,4 +39,5 @@ __all__ = [
     "RGBankViewPermissions",
     "Thread",
     "Message",
+    "MessageType",
 ]
