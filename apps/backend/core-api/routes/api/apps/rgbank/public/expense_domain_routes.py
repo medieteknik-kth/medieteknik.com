@@ -1,7 +1,7 @@
 from typing import List
 from flask import Blueprint, Response, jsonify
 from http import HTTPStatus
-from models.apps.rgbank.expense import ExpenseDomain
+from models.apps.rgbank import ExpenseDomain
 
 public_expense_domain_bp = Blueprint("public_expense_domain", __name__)
 

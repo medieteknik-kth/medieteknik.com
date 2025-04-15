@@ -2,10 +2,9 @@ from typing import List
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
-from models.apps.rgbank.expense import ExpenseDomain
-from models.apps.rgbank.permissions import RGBankPermissions
-from models.core.student import StudentMembership
-from utility.database import db
+from models.apps.rgbank import ExpenseDomain, RGBankPermissions
+from models.core import StudentMembership
+from utility import db
 
 expense_domain_bp = Blueprint("expense_domain", __name__)
 

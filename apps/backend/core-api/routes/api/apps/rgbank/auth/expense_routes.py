@@ -5,11 +5,22 @@ from datetime import timedelta
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
-from models.apps.rgbank import Expense, PaymentStatus, MessageType, Thread
-from models.apps.rgbank.bank import AccountBankInformation
-from models.core import StudentMembership
-from models.core.student import Student
-from services.apps.rgbank import has_access, has_full_authority, add_message
+from models.apps.rgbank import (
+    AccountBankInformation,
+    Expense,
+    PaymentStatus,
+    MessageType,
+    Thread,
+)
+from models.core import Student, StudentMembership
+from services.apps.rgbank import (
+    add_committee_statistic,
+    add_expense_count,
+    add_student_statistic,
+    has_access,
+    has_full_authority,
+    add_message,
+)
 from utility import db, upload_file, rgbank_bucket
 
 expense_bp = Blueprint("expense", __name__)
@@ -160,7 +171,7 @@ def get_expense(expense_id: str) -> Response:
     if not bank_information or not isinstance(bank_information, AccountBankInformation):
         return jsonify({"error": "Bank information not found"}), HTTPStatus.NOT_FOUND
 
-    thread = Thread.query.filter_by(
+    thread: Thread = Thread.query.filter_by(
         expense_id=expense_id,
     ).first()
 
@@ -269,9 +280,18 @@ def update_expense_status(expense_id: str) -> Response:
     if not status:
         return jsonify({"message": "Status is required"}), HTTPStatus.BAD_REQUEST
 
+    expense_status = PaymentStatus[expense.status.name]
+    new_status = PaymentStatus[status.upper()]
+
+    if new_status < expense_status:
+        return jsonify(
+            {
+                "error": f"You cannot change the status to a lower status, {expense_status.value} -> {new_status.value}"
+            }
+        ), HTTPStatus.BAD_REQUEST
+
     comment = data.get("comment")
     previous_status = expense.status
-    new_status = data.get("status")
     thread = Thread.query.filter_by(
         expense_id=expense_id,
     ).first()
@@ -291,6 +311,18 @@ def update_expense_status(expense_id: str) -> Response:
         )
     except ValueError as e:
         return jsonify({"message": str(e)}), HTTPStatus.BAD_REQUEST
+
+    if new_status == PaymentStatus.BOOKED:
+        add_student_statistic(student_id=expense.student_id, value=expense.amount)
+        add_committee_statistic(
+            committee_id=expense.committee.committee_id,
+            value=expense.amount,
+        )
+        add_expense_count(
+            student_id=expense.student_id,
+            committee_id=expense.committee.committee_id,
+            expense_count=1,
+        )
 
     expense.status = status
     db.session.commit()

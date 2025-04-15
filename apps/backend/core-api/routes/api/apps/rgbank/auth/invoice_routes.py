@@ -13,7 +13,14 @@ from models.apps.rgbank import (
     Thread,
 )
 from models.core import Student, StudentMembership
-from services.apps.rgbank import has_access, has_full_authority, add_message
+from services.apps.rgbank import (
+    add_committee_statistic,
+    add_expense_count,
+    add_student_statistic,
+    has_access,
+    has_full_authority,
+    add_message,
+)
 from utility import db, upload_file, rgbank_bucket
 
 invoice_bp = Blueprint("invoice", __name__)
@@ -198,7 +205,7 @@ def get_invoices_by_student(student_id: str) -> Response:
             {"error": "You are not authorized to view this student's invoices"}
         ), HTTPStatus.UNAUTHORIZED
 
-    invoices = Invoice.query.filter_by(student_id=student_id).all()
+    invoices: List[Invoice] = Invoice.query.filter_by(student_id=student_id).all()
 
     if not invoices:
         return jsonify([]), HTTPStatus.NOT_FOUND
@@ -273,9 +280,18 @@ def update_invoice_status(invoice_id: str) -> Response:
     if not status:
         return jsonify({"error": "Status is required"}), HTTPStatus.BAD_REQUEST
 
+    invoice_status = PaymentStatus[invoice.status.name]
+    new_status = PaymentStatus[status.upper()]
+
+    if new_status < invoice_status:
+        return jsonify(
+            {
+                "error": f"You cannot change the status to a lower status, {invoice_status.value} -> {new_status.value}"
+            }
+        ), HTTPStatus.BAD_REQUEST
+
     comment = data.get("comment")
     previous_status = invoice.status
-    new_status = data.get("status")
     thread = Thread.query.filter_by(
         invoice_id=invoice_id,
     ).first()
@@ -295,6 +311,18 @@ def update_invoice_status(invoice_id: str) -> Response:
         )
     except ValueError as e:
         return jsonify({"error": str(e)}), HTTPStatus.BAD_REQUEST
+
+    if new_status == PaymentStatus.BOOKED:
+        add_student_statistic(student_id=invoice.student_id, value=invoice.amount)
+        add_committee_statistic(
+            committee_id=invoice.committee.committee_id,
+            value=invoice.amount,
+        )
+        add_expense_count(
+            student_id=invoice.student_id,
+            committee_id=invoice.committee.committee_id,
+            invoice_count=1,
+        )
 
     invoice.status = status
     db.session.commit()

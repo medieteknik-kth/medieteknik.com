@@ -4,7 +4,7 @@ from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from cryptography.fernet import Fernet
 from http import HTTPStatus
-from models.core.student import StudentMembership
+from models.core import StudentMembership
 from models.apps.rgbank import AccountBankInformation
 from services.apps.rgbank import has_full_authority
 from utility import db

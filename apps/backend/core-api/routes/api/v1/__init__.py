@@ -81,10 +81,13 @@ def register_v1_routes(app: Flask):
         public_expense_domain_bp,
         expense_bp,
         invoice_bp,
+        statistics_bp,
+        public_statistics_bp,
     )
 
     # Public Routes
     def register_public_routes():
+        """Register all public routes."""
         app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
         app.register_blueprint(
             public_committee_category_bp,
@@ -116,6 +119,7 @@ def register_v1_routes(app: Flask):
 
     # Protected Routes
     def register_protected_routes():
+        """Register all routes with the protected prefix, requiring authentication."""
         app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
         app.register_blueprint(
             committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
@@ -150,6 +154,7 @@ def register_v1_routes(app: Flask):
 
     # RGBank Routes
     def register_rgbank_routes():
+        """ "Register all routes for the RGBank app."""
         app.register_blueprint(
             account_bp, url_prefix=f"{PROTECTED_PATH}/rgbank/account"
         )
@@ -168,6 +173,14 @@ def register_v1_routes(app: Flask):
         app.register_blueprint(
             invoice_bp,
             url_prefix=f"{PROTECTED_PATH}/rgbank/invoices",
+        )
+        app.register_blueprint(
+            statistics_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/statistics",
+        )
+        app.register_blueprint(
+            public_statistics_bp,
+            url_prefix=f"{PUBLIC_PATH}/rgbank/statistics",
         )
 
     register_public_routes()

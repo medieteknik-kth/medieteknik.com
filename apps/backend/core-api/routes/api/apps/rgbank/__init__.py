@@ -12,6 +12,9 @@ from .auth.expense_routes import expense_bp
 
 from .auth.invoice_routes import invoice_bp
 
+from .auth.statistics_routes import statistics_bp
+from .public.statistics_routes import public_statistics_bp
+
 
 __all__ = [
     "account_bp",
@@ -19,4 +22,6 @@ __all__ = [
     "public_expense_domain_bp",
     "expense_bp",
     "invoice_bp",
+    "statistics_bp",
+    "public_statistics_bp",
 ]
