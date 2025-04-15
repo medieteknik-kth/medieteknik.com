@@ -74,6 +74,10 @@ export async function fetchData<T>(
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
+    if (response.status === 204) {
+      return createSuccessResponse<T>([] as T)
+    }
+
     const data: T = await response.json()
     return createSuccessResponse<T>(data)
   } catch (error) {
