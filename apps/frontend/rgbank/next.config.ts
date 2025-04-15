@@ -1,15 +1,11 @@
 import type { NextConfig } from 'next'
 import type { ExperimentalConfig } from 'next/dist/server/config-shared'
 
-const experimentalConfig: ExperimentalConfig = {
-  turbo: {
-    moduleIdStrategy: 'named',
-  },
-  allowedDevOrigins: ['app.localhost'],
-}
+const experimentalConfig: ExperimentalConfig = {}
 
 const nextConfig: NextConfig = {
   experimental: experimentalConfig,
+  allowedDevOrigins: ['app.localhost'],
 
   images: {
     remotePatterns: [
@@ -37,15 +33,6 @@ const nextConfig: NextConfig = {
         destination: apiUrl,
       },
     ]
-  },
-
-  webpack: (config) => {
-    config.resolve.alias['@shared'] = require('node:path').resolve(
-      __dirname,
-      '../../shared'
-    )
-
-    return config
   },
 }
 
