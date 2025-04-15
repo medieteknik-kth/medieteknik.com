@@ -62,7 +62,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
-            'w-fit flex items-center gap-2 text-blue-500 bg-blue-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            'w-fit flex items-center gap-2 text-emerald-500 bg-emerald-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
         >
@@ -70,30 +70,7 @@ export function ExpenseStatusBadge({
           Booked
         </div>
       )
-    case 'PAID':
-      return (
-        <div
-          className={cn(
-            'w-fit flex items-center gap-2 text-indigo-500 bg-indigo-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
-            className
-          )}
-        >
-          <CreditCardIcon className='h-4 w-4' />
-          Paid
-        </div>
-      )
-    case 'CONFIRMED':
-      return (
-        <div
-          className={cn(
-            'w-fit flex items-center gap-2 text-fuchsia-500 bg-fuchsia-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
-            className
-          )}
-        >
-          <CheckIcon className='h-4 w-4' />
-          Confirmed
-        </div>
-      )
+
     case 'REJECTED':
       return (
         <div
@@ -104,6 +81,32 @@ export function ExpenseStatusBadge({
         >
           <XMarkIcon className='h-4 w-4' />
           Rejected
+        </div>
+      )
+
+    case 'PAID':
+      return (
+        <div
+          className={cn(
+            'w-fit flex items-center gap-2 text-blue-500 bg-blue-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            className
+          )}
+        >
+          <CreditCardIcon className='h-4 w-4' />
+          Paid
+        </div>
+      )
+
+    case 'CONFIRMED':
+      return (
+        <div
+          className={cn(
+            'w-fit flex items-center gap-2 text-sky-500 bg-sky-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
+            className
+          )}
+        >
+          <CheckIcon className='h-4 w-4' />
+          Confirmed
         </div>
       )
 

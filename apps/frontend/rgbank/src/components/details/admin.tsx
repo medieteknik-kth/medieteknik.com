@@ -20,7 +20,11 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { ExpenseResponse } from '@/models/Expense'
-import { type ExpenseStatus, availableStatuses } from '@/models/General'
+import {
+  EXPENSE_STATUS_VALUES,
+  type ExpenseStatus,
+  availableStatuses,
+} from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
 import { useGeneralDetail } from '@/providers/DetailProvider'
@@ -102,6 +106,12 @@ export default function AdminSection({
           <CardTitle>Update Status</CardTitle>
           <CardDescription>
             Change the status of this invoice and notify the submitter.
+            <br />
+            <span className='text-xs text-muted-foreground'>
+              Note: You can only change the status to a higher value. For
+              example, you cannot change the status from 'CONFIRMED' back to
+              'UNCONFIRMED'.
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
@@ -124,7 +134,18 @@ export default function AdminSection({
                 </SelectTrigger>
                 <SelectContent>
                   {availableStatuses.map((status) => (
-                    <SelectItem key={status.value} value={status.value}>
+                    <SelectItem
+                      key={status.value}
+                      value={status.value}
+                      disabled={
+                        EXPENSE_STATUS_VALUES[
+                          item.status as keyof typeof EXPENSE_STATUS_VALUES
+                        ] >=
+                        EXPENSE_STATUS_VALUES[
+                          status.value as keyof typeof EXPENSE_STATUS_VALUES
+                        ]
+                      }
+                    >
                       <div className='flex items-center gap-2'>
                         <ExpenseStatusBadge status={status.value} />
                       </div>
@@ -145,16 +166,19 @@ export default function AdminSection({
             <div className='space-y-2'>
               <Label htmlFor='comment'>
                 Comment{' '}
-                {selectedStatus === 'rejected' && (
+                {(selectedStatus === 'REJECTED' ||
+                  selectedStatus === 'CLARIFICATION') && (
                   <span className='text-destructive'>*</span>
                 )}
               </Label>
               <Textarea
                 id='comment'
                 placeholder={
-                  selectedStatus === 'rejected'
+                  selectedStatus === 'REJECTED'
                     ? 'Please provide a reason for rejection (required)'
-                    : 'Add an optional comment about this status change'
+                    : selectedStatus === 'CLARIFICATION'
+                      ? 'Please provide a reason for clarification (required)'
+                      : 'Add an optional comment about this status change'
                 }
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -164,6 +188,12 @@ export default function AdminSection({
                 <p className='text-xs text-muted-foreground'>
                   A comment is required when rejecting an expense to explain the
                   reason.
+                </p>
+              )}
+              {selectedStatus === 'CLARIFICATION' && (
+                <p className='text-xs text-muted-foreground'>
+                  A comment is required when requesting clarification to explain
+                  the reason.
                 </p>
               )}
             </div>
@@ -183,10 +213,13 @@ export default function AdminSection({
             }}
             disabled={
               (selectedStatus === 'REJECTED' && comment.length === 0) ||
+              (selectedStatus === 'CLARIFICATION' && comment.length === 0) ||
               !selectedStatus
             }
           >
-            Update Status
+            {selectedStatus === 'REJECTED' || selectedStatus === 'BOOKED'
+              ? 'Close Expense'
+              : 'Update Expense'}
           </Button>
         </CardFooter>
       </Card>

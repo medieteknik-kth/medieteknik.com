@@ -1,5 +1,7 @@
 'use client'
 
+import { getCommitteesAllTime, getCommitteesYear } from '@/api/statistics/committee'
+import { getStudentsOverTimeYear, getStudentsYear, getTopStudentsAllTime, getTopStudentsYear } from '@/api/statistics/students'
 import { PopIn } from '@/components/animation/pop-in'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Badge } from '@/components/ui/badge'
@@ -47,9 +49,11 @@ import {
   YAxis,
 } from 'recharts'
 
+
+
+
 interface Props {
   language: LanguageCode
-  allYears: number[]
   providedYear?: string
   allTimeCommitteesStatistics: Statistic[]
   yearCommitteesStatistics: Statistic[]
@@ -74,9 +78,8 @@ const COLORS = [
   '#9966FF',
 ]
 
-export default function Statistics({
+export default function StatisticsYear({
   language,
-  allYears,
   providedYear,
   allTimeCommitteesStatistics,
   yearCommitteesStatistics,
@@ -159,24 +162,24 @@ export default function Statistics({
               className={cn(
                 'text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r/oklch',
                 Number.parseInt(yearFilter) % 10 === 0
-                  ? 'from-[#FF5733] to-[#FFC300]' // Neon Orange to Neon Yellow
+                  ? 'from-[#FF0080] to-[#FF8C00]' // Neon Pink to Neon Orange
                   : Number.parseInt(yearFilter) % 10 === 1
-                    ? 'from-[#DAF7A6] to-[#FF33FF]' // Neon LightGreen to Neon Magenta
+                    ? 'from-[#00C49F] to-[#FFBB28]' // Neon Green to Neon Yellow
                     : Number.parseInt(yearFilter) % 10 === 2
-                      ? 'from-[#33FF57] to-[#33FFF3]' // Neon Green to Neon Aqua
+                      ? 'from-[#0088FE] to-[#FF6384]' // Neon Blue to Neon Pink
                       : Number.parseInt(yearFilter) % 10 === 3
-                        ? 'from-[#FF3333] to-[#FF5733]' // Neon Red to Neon Orange
+                        ? 'from-[#8A2BE2] to-[#00FFFF]' // Neon Purple to Neon Cyan
                         : Number.parseInt(yearFilter) % 10 === 4
-                          ? 'from-[#33FFBD] to-[#FF33A6]' // Neon Teal to Neon Pink
+                          ? 'from-[#FF4500] to-[#FFFF00]' // Neon OrangeRed to Neon Yellow
                           : Number.parseInt(yearFilter) % 10 === 5
-                            ? 'from-[#5733FF] to-[#33A6FF]' // Neon Purple to Neon Blue
+                            ? 'from-[#1E90FF] to-[#00FF7F]' // Neon DodgerBlue to Neon SpringGreen
                             : Number.parseInt(yearFilter) % 10 === 6
-                              ? 'from-[#FFC300] to-[#DAF7A6]' // Neon Yellow to Neon LightGreen
+                              ? 'from-[#DC143C] to-[#ADFF2F]' // Neon Crimson to Neon GreenYellow
                               : Number.parseInt(yearFilter) % 10 === 7
-                                ? 'from-[#FF33A6] to-[#33FFBD]' // Neon Pink to Neon Teal
+                                ? 'from-[#9400D3] to-[#7FFFD4]' // Neon DarkViolet to Neon Aquamarine
                                 : Number.parseInt(yearFilter) % 10 === 8
-                                  ? 'from-[#33FFF3] to-[#33FF57]' // Neon Aqua to Neon Green
-                                  : 'from-[#FF5733] to-[#FF3333]' // Neon Orange to Neon Red
+                                  ? 'from-[#FFD700] to-[#FF69B4]' // Neon Gold to Neon HotPink
+                                  : 'from-[#00FA9A] to-[#800080]' // Neon MediumSpringGreen to Neon Purple
               )}
             >
               Expense Statistics
@@ -202,12 +205,7 @@ export default function Statistics({
                   <div className='flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mr-4'>
                     <BanknotesIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
                   </div>
-                  {totalExpenses.toLocaleString(language, {
-                    currency: 'SEK',
-                    style: 'currency',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  SEK {totalExpenses.toLocaleString()}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -230,12 +228,7 @@ export default function Statistics({
                     <div className='flex items-center justify-center w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 mr-4'>
                       <ChartBarIcon className='h-6 w-6 text-green-600 dark:text-green-400' />
                     </div>
-                    {currentMonth.toLocaleString(language, {
-                      currency: 'SEK',
-                      style: 'currency',
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    SEK {currentMonth.toLocaleString()}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -278,11 +271,12 @@ export default function Statistics({
                       <SelectValue placeholder='Select Year' />
                     </SelectTrigger>
                     <SelectContent>
-                      {allYears.map((year) => (
-                        <SelectItem key={year} value={year.toString()}>
-                          {year}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value='2020'>2020</SelectItem>
+                      <SelectItem value='2021'>2021</SelectItem>
+                      <SelectItem value='2022'>2022</SelectItem>
+                      <SelectItem value='2023'>2023</SelectItem>
+                      <SelectItem value='2024'>2024</SelectItem>
+                      <SelectItem value='2025'>2025</SelectItem>
                     </SelectContent>
                   </Select>
                 </CardTitle>
@@ -326,7 +320,7 @@ export default function Statistics({
 
             <TabsContent value='individuals'>
               <PopIn>
-                <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 dark:shadow-primary/10'>
+                <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300'>
                   <CardHeader>
                     <CardTitle>Top Spenders - Individuals</CardTitle>
                     <CardDescription>
@@ -341,84 +335,41 @@ export default function Statistics({
                         <div className='col-span-5'>Name</div>
                         <div className='col-span-3 text-right'>Amount</div>
                       </div>
-                      {leaderboardView === 'yearly' ? (
-                        yearTopStudentsStatistics.length === 0 ? (
-                          <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
-                            <div className='col-span-12 text-center text-muted-foreground'>
-                              No statistics available for this year
-                            </div>
+                      {yearTopStudentsStatistics.length === 0 && (
+                        <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
+                          <div className='col-span-12 text-center text-muted-foreground'>
+                            No statistics available for this year
                           </div>
-                        ) : (
-                          yearTopStudentsStatistics.map((statistic, index) => {
-                            if (!statistic.student) return null
-
-                            return (
-                              <div
-                                key={
-                                  statistic.student.first_name +
-                                  statistic.student.last_name
-                                }
-                                className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                              >
-                                <div
-                                  className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
-                                >
-                                  {index + 1}
-                                </div>
-                                <div className='col-span-5'>
-                                  {`${statistic.student.first_name} ${statistic.student.last_name}`}
-                                </div>
-                                <div className='col-span-3 text-right font-medium'>
-                                  <span className='mr-2 text-muted-foreground select-none'>
-                                    SEK
-                                  </span>
-                                  {statistic.total_value.toLocaleString()}
-                                </div>
-                              </div>
-                            )
-                          })
-                        )
-                      ) : (
-                        leaderboardView === 'total' &&
-                        (allTimeTopStudentsStatistics.length === 0 ? (
-                          <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
-                            <div className='col-span-12 text-center text-muted-foreground'>
-                              No statistics available for this year
-                            </div>
-                          </div>
-                        ) : (
-                          allTimeTopStudentsStatistics.map(
-                            (statistic, index) => {
-                              if (!statistic.student) return null
-
-                              return (
-                                <div
-                                  key={
-                                    statistic.student.first_name +
-                                    statistic.student.last_name
-                                  }
-                                  className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                                >
-                                  <div
-                                    className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
-                                  >
-                                    {index + 1}
-                                  </div>
-                                  <div className='col-span-5'>
-                                    {`${statistic.student.first_name} ${statistic.student.last_name}`}
-                                  </div>
-                                  <div className='col-span-3 text-right font-medium'>
-                                    <span className='mr-2 text-muted-foreground select-none'>
-                                      SEK
-                                    </span>
-                                    {statistic.total_value.toLocaleString()}
-                                  </div>
-                                </div>
-                              )
-                            }
-                          )
-                        ))
+                        </div>
                       )}
+                      {yearTopStudentsStatistics.map((statistic, index) => {
+                        if (!statistic.student) return null
+
+                        return (
+                          <div
+                            key={
+                              statistic.student.first_name +
+                              statistic.student.last_name
+                            }
+                            className='grid grid-cols-12 p-4 text-sm items-center border-t'
+                          >
+                            <div
+                              className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
+                            >
+                              {index + 1}
+                            </div>
+                            <div className='col-span-5'>
+                              {`${statistic.student.first_name} ${statistic.student.last_name}`}
+                            </div>
+                            <div className='col-span-3 text-right font-medium'>
+                              <span className='mr-2 text-muted-foreground select-none'>
+                                SEK
+                              </span>
+                              {statistic.total_value.toLocaleString()}
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   </CardContent>
                 </Card>
@@ -427,7 +378,7 @@ export default function Statistics({
 
             <TabsContent value='committees'>
               <PopIn>
-                <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 dark:shadow-primary/10'>
+                <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300'>
                   <CardHeader>
                     <CardTitle>Top Spenders - Committees</CardTitle>
                     <CardDescription>
@@ -442,80 +393,38 @@ export default function Statistics({
                         <div className='col-span-5'>Committee</div>
                         <div className='col-span-3 text-right'>Amount</div>
                       </div>
-                      {leaderboardView === 'yearly' ? (
-                        yearCommitteesStatistics.length === 0 ? (
-                          <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
-                            <div className='col-span-12 text-center text-muted-foreground'>
-                              No statistics available for this year
-                            </div>
+                      {yearCommitteesStatistics.length === 0 && (
+                        <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
+                          <div className='col-span-12 text-center text-muted-foreground'>
+                            No statistics available for this year
                           </div>
-                        ) : (
-                          yearCommitteesStatistics.map((statistic, index) => {
-                            if (!statistic.committee) return null
-
-                            return (
-                              <div
-                                key={statistic.committee.translations[0].title}
-                                className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                              >
-                                <div
-                                  className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
-                                >
-                                  {index + 1}
-                                </div>
-                                <div className='col-span-5'>
-                                  {statistic.committee.translations[0].title}
-                                </div>
-                                <div className='col-span-3 text-right font-medium'>
-                                  <span className='mr-2 text-muted-foreground select-none'>
-                                    SEK
-                                  </span>
-                                  {statistic.value.toLocaleString()}
-                                </div>
-                              </div>
-                            )
-                          })
-                        )
-                      ) : (
-                        leaderboardView === 'total' &&
-                        (allTimeCommitteesStatistics.length === 0 ? (
-                          <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
-                            <div className='col-span-12 text-center text-muted-foreground'>
-                              No statistics available for this year
-                            </div>
-                          </div>
-                        ) : (
-                          allTimeCommitteesStatistics.map(
-                            (statistic, index) => {
-                              if (!statistic.committee) return null
-
-                              return (
-                                <div
-                                  key={
-                                    statistic.committee.translations[0].title
-                                  }
-                                  className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                                >
-                                  <div
-                                    className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
-                                  >
-                                    {index + 1}
-                                  </div>
-                                  <div className='col-span-5'>
-                                    {statistic.committee.translations[0].title}
-                                  </div>
-                                  <div className='col-span-3 text-right font-medium'>
-                                    <span className='mr-2 text-muted-foreground select-none'>
-                                      SEK
-                                    </span>
-                                    {statistic.value.toLocaleString()}
-                                  </div>
-                                </div>
-                              )
-                            }
-                          )
-                        ))
+                        </div>
                       )}
+                      {yearCommitteesStatistics.map((statistic, index) => {
+                        if (!statistic.committee) return null
+
+                        return (
+                          <div
+                            key={statistic.committee.translations[0].title}
+                            className='grid grid-cols-12 p-4 text-sm items-center border-t'
+                          >
+                            <div
+                              className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
+                            >
+                              {index + 1}
+                            </div>
+                            <div className='col-span-5'>
+                              {statistic.committee.translations[0].title}
+                            </div>
+                            <div className='col-span-3 text-right font-medium'>
+                              <span className='mr-2 text-muted-foreground select-none'>
+                                SEK
+                              </span>
+                              {statistic.value.toLocaleString()}
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   </CardContent>
                 </Card>
@@ -527,7 +436,7 @@ export default function Statistics({
         {/* Chart Section */}
         <div className='grid gap-6 md:grid-cols-2 z-10'>
           <PopIn>
-            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 dark:shadow-primary/10'>
+            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300'>
               <CardHeader>
                 <CardTitle>Monthly Expenses</CardTitle>
                 <CardDescription>
@@ -565,7 +474,7 @@ export default function Statistics({
           </PopIn>
 
           <PopIn>
-            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 dark:shadow-primary/10'>
+            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300'>
               <CardHeader>
                 <CardTitle>Expenses by Committee</CardTitle>
                 <CardDescription>

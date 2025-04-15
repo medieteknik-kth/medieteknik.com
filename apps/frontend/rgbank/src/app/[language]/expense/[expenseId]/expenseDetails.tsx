@@ -42,7 +42,7 @@ export default function ExpenseDetails({ language }: Props) {
               {expense.expense_id}
             </h1>
             <p className='text-muted-foreground'>
-              Invoice submitted by{' '}
+              Expense submitted by{' '}
               <span className='font-semibold'>
                 {student.first_name} {student.last_name}
               </span>

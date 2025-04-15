@@ -4,21 +4,20 @@ import AccountPage from '@/app/[language]/account/pages/account/accountPage'
 import ActivityPage from '@/app/[language]/account/pages/activity/activityPage'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { ExpenseResponse } from '@/models/Expense'
-import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
-import { useStudent } from '@/providers/AuthenticationProvider'
+import {
+  useAuthentication,
+  useStudent,
+} from '@/providers/AuthenticationProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { use, useCallback } from 'react'
-import useSWR from 'swr'
+import { use, useCallback, useEffect, useState } from 'react'
 
 interface Page {
   name: string
   page?: React.ComponentType<{
     language: LanguageCode
-    expenses?: ExpenseResponse[]
-    invoices?: InvoiceResponse[]
   }>
 }
 
@@ -30,37 +29,25 @@ interface Props {
   params: Promise<Params>
 }
 
-const fetcher = (url: string) =>
-  fetch(url, {
-    credentials: 'include',
-  }).then((res) => res.json())
-
 export default function Account(props: Props) {
   const { language } = use(props.params)
+  const [isLoading, setIsLoading] = useState(true)
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const category = searchParams.get('category') || 'account'
   const router = useRouter()
   const { student } = useStudent()
-  const { data: expenses, error: expenseError } = useSWR<ExpenseResponse[]>(
-    `/api/rgbank/expenses/student/${student?.student_id}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
-      fallbackData: [],
-    }
-  )
+  const { isLoading: authLoading } = useAuthentication()
 
-  const { data: invoices, error: invoiceError } = useSWR<InvoiceResponse[]>(
-    `/api/rgbank/invoices/student/${student?.student_id}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
-      fallbackData: [],
+  useEffect(() => {
+    if (!authLoading) {
+      if (!student) {
+        router.push(`/${language}`)
+      } else {
+        setIsLoading(false)
+      }
     }
-  )
+  }, [student, language, router, authLoading])
 
   const createTabString = useCallback(
     (tab: string) => {
@@ -83,18 +70,6 @@ export default function Account(props: Props) {
       page: ActivityPage,
     },
   ]
-
-  if (!student) {
-    return <></>
-  }
-
-  if (expenseError) {
-    console.error('Error fetching expenses:', expenseError)
-  }
-
-  if (invoiceError) {
-    console.error('Error fetching invoices:', invoiceError)
-  }
 
   return (
     <main className='relative'>
@@ -130,21 +105,19 @@ export default function Account(props: Props) {
               ))}
             </TabsList>
           </aside>
-          {allPages.map((page) => (
-            <TabsContent
-              className='w-full md:w-3/4 h-fit pt-4'
-              key={page.name}
-              value={page.name}
-            >
-              {page.page && (
-                <page.page
-                  language={language}
-                  expenses={expenses}
-                  invoices={invoices}
-                />
-              )}
-            </TabsContent>
-          ))}
+          {isLoading ? (
+            <Skeleton className='w-full max-w-[1100px] md:w-3/4 h-[800px] mt-4 mb-8 2xl:mb-0' />
+          ) : (
+            allPages.map((page) => (
+              <TabsContent
+                className='w-full md:w-3/4 h-fit pt-4'
+                key={page.name}
+                value={page.name}
+              >
+                {page.page && <page.page language={language} />}
+              </TabsContent>
+            ))
+          )}
         </Tabs>
       </div>
     </main>

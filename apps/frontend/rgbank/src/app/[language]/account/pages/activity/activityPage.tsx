@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ import {
 } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
+import { useStudent } from '@/providers/AuthenticationProvider'
 import {
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
@@ -43,6 +45,7 @@ import {
 import { isSameMonth, subMonths } from 'date-fns'
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
+import useSWR from 'swr'
 
 interface Props {
   language: LanguageCode
@@ -50,7 +53,41 @@ interface Props {
   invoices?: InvoiceResponse[]
 }
 
-export default function ActivityPage({ language, expenses, invoices }: Props) {
+const fetcher = (url: string) =>
+  fetch(url, {
+    credentials: 'include',
+  }).then((res) => res.json())
+
+export default function ActivityPage({ language }: Props) {
+  const { student } = useStudent()
+  const {
+    data: expenses,
+    isLoading: expensesLoading,
+    error: expenseError,
+  } = useSWR<ExpenseResponse[]>(
+    student ? `/api/rgbank/expenses/student/${student.student_id}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+      fallbackData: [],
+    }
+  )
+
+  const {
+    data: invoices,
+    isLoading: invoicesLoading,
+    error: invoiceError,
+  } = useSWR<InvoiceResponse[]>(
+    student ? `/api/rgbank/invoices/student/${student.student_id}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+      fallbackData: [],
+    }
+  )
+
   const [invoiceFilters, setInvoiceFilters] =
     useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
   const [expenseFilters, setExpenseFilters] =
@@ -200,9 +237,6 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
               </CardHeader>
               <CardContent>
                 <div className='flex flex-col gap-4 mb-2'>
-                  <div>
-                    <Input />
-                  </div>
                   <div className='space-y-2 overflow-hidden'>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -256,7 +290,7 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className='w-96!'>ID</TableHead>
+                        <TableHead className='w-96'>ID</TableHead>
                         <TableHead>Created at</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Amount</TableHead>
@@ -264,58 +298,79 @@ export default function ActivityPage({ language, expenses, invoices }: Props) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {expenses
-                        ?.filter((expense) =>
-                          expenseFilters.includes(expense.status)
-                        )
-                        .map((expense) => (
-                          <TableRow key={expense.expense_id}>
-                            <TableCell
-                              className={`${fontJetBrainsMono.className} font-mono`}
-                            >
-                              <Button variant='link' size='sm' asChild>
-                                <Link
-                                  href={`/${language}/expense/${expense.expense_id}`}
-                                >
-                                  {expense.expense_id}
-                                </Link>
-                              </Button>
+                      {expensesLoading &&
+                        Array.from({ length: 5 }).map((_, index) => (
+                          <TableRow key={crypto.randomUUID()}>
+                            <TableCell>
+                              <Skeleton className='h-4 w-96' />
                             </TableCell>
                             <TableCell>
-                              {new Date(expense.created_at).toLocaleDateString(
-                                language,
-                                {
-                                  year: 'numeric',
-                                  month: '2-digit',
-                                  day: '2-digit',
-                                }
-                              )}
+                              <Skeleton className='h-4 w-44' />
                             </TableCell>
                             <TableCell>
-                              <ExpenseStatusBadge status={expense.status} />
+                              <Skeleton className='h-4 w-32' />
                             </TableCell>
                             <TableCell>
-                              {expense.amount?.toLocaleString(language, {
-                                style: 'currency',
-                                currency: 'SEK',
-                              })}
+                              <Skeleton className='h-4 w-44' />
                             </TableCell>
-                            <TableCell className='text-right space-x-2'>
-                              <Button variant='outline' size='sm' asChild>
-                                <Link
-                                  href={`/${language}/exepense/${expense.expense_id}`}
-                                >
-                                  View
-                                </Link>
-                              </Button>
-                              {expense.status === 'UNCONFIRMED' && (
-                                <Button variant='destructive' size='sm'>
-                                  Delete
-                                </Button>
-                              )}
+                            <TableCell>
+                              <Skeleton className='h-4 w-24' />
                             </TableCell>
                           </TableRow>
                         ))}
+
+                      {!expensesLoading &&
+                        expenses
+                          ?.filter((expense) =>
+                            expenseFilters.includes(expense.status)
+                          )
+                          .map((expense) => (
+                            <TableRow key={expense.expense_id}>
+                              <TableCell
+                                className={`${fontJetBrainsMono.className} font-mono`}
+                              >
+                                <Button variant='link' size='sm' asChild>
+                                  <Link
+                                    href={`/${language}/expense/${expense.expense_id}`}
+                                  >
+                                    {expense.expense_id}
+                                  </Link>
+                                </Button>
+                              </TableCell>
+                              <TableCell>
+                                {new Date(
+                                  expense.created_at
+                                ).toLocaleDateString(language, {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                })}
+                              </TableCell>
+                              <TableCell>
+                                <ExpenseStatusBadge status={expense.status} />
+                              </TableCell>
+                              <TableCell>
+                                {expense.amount?.toLocaleString(language, {
+                                  style: 'currency',
+                                  currency: 'SEK',
+                                })}
+                              </TableCell>
+                              <TableCell className='text-right space-x-2'>
+                                <Button variant='outline' size='sm' asChild>
+                                  <Link
+                                    href={`/${language}/expense/${expense.expense_id}`}
+                                  >
+                                    View
+                                  </Link>
+                                </Button>
+                                {expense.status === 'UNCONFIRMED' && (
+                                  <Button variant='destructive' size='sm'>
+                                    Delete
+                                  </Button>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                     </TableBody>
                   </Table>
                 </div>
