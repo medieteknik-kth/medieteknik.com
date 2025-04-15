@@ -1,9 +1,9 @@
-from os import environ
 import uuid
-from sqlalchemy import UUID, Column, ForeignKey, String, text
-from models.core.student import Student
-from utility.database import db
+from os import environ
 from cryptography.fernet import Fernet
+from sqlalchemy import UUID, Column, ForeignKey, String, text
+from models.core import Student
+from utility import db
 
 
 class AccountBankInformation(db.Model):
@@ -32,6 +32,9 @@ class AccountBankInformation(db.Model):
     student = db.relationship(
         "Student", back_populates="rgbank_account_bank_information"
     )
+
+    def __repr__(self):
+        return f"<AccountBankInformation {self.bank_id}>"
 
     def to_dict(self):
         cipher = Fernet(environ.get("FERNET_KEY"))

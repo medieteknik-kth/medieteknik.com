@@ -15,18 +15,44 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
-from models.committees.committee import Committee
-from models.core.student import Student
-from utility.database import db
+from models.committees import Committee
+from models.core import Student
+from utility import db
 
 
-class PaymentStatus(enum.Enum):
-    BOOKED = "BOOKED"  # Invoice booked in the system
-    PAID = "PAID"  # Payment received
-    CONFIRMED = "CONFIRMED"  # Valid expense / Awaiting payment
-    REJECTED = "REJECTED"  # Invalid expense
-    CLARIFICATION = "CLARIFICATION"  # Awaiting clarification
-    UNCONFIRMED = "UNCONFIRMED"  # Just created, not yet confirmed
+class PaymentStatus(enum.IntEnum):
+    """
+    Payment status codes for expenses in the RG Bank system.
+    Status codes are grouped by category:
+    - Unconfirmed statuses [0-9]: Initial states before validation
+    - Additional information needed statuses [10-19]: States requiring further action
+    - Confirmed statuses [20-29]: Valid expenses awaiting payment
+    - Payment statuses [30-39]: States related to payment processing
+    - Finished statuses [40-49]: Terminal states of the expense workflow
+    Attributes:
+        UNCONFIRMED (0): Initial state for newly created expenses awaiting approval
+        CLARIFICATION (10): Expense needs additional information or clarification
+        CONFIRMED (20): Validated expense that is awaiting payment
+        PAID (30): Payment for the expense has been processed successfully
+        REJECTED (40): Expense has been marked as invalid
+        BOOKED (41): Expense has been recorded in the accounting system
+    """
+
+    # [0-9] Unconfirmed statuses
+    UNCONFIRMED = 0  # Just created / Awaiting approval
+
+    # [10-19] Additional information needed statuses
+    CLARIFICATION = 10  # Awaiting clarification
+
+    # [20-29] Confirmed statuses
+    CONFIRMED = 20  # Valid expense / Awaiting payment
+
+    # [30-39] Payment statuses
+    PAID = 30  # Payment received
+
+    # [40-49] Finished statuses
+    REJECTED = 40  # Invalid expense
+    BOOKED = 41  # Invoice booked in the system
 
 
 class ExpenseDomain(db.Model):

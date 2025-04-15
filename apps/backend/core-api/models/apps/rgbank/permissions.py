@@ -1,8 +1,8 @@
 import enum
 import uuid
 from sqlalchemy import UUID, Column, Enum, ForeignKey, MetaData, text
-from models.committees.committee_position import CommitteePosition
-from utility.database import db
+from models.committees import CommitteePosition
+from utility import db
 
 
 class RGBankViewPermissions(enum.Enum):

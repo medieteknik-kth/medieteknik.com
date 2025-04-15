@@ -11,9 +11,9 @@ from sqlalchemy import (
     String,
     text,
 )
-from models.apps.rgbank.expense import Expense, Invoice, PaymentStatus
-from models.core.student import Student
-from utility.database import db
+from models.apps.rgbank import Expense, Invoice, PaymentStatus
+from models.core import Student
+from utility import db
 
 
 class MessageType(enum.Enum):
@@ -47,6 +47,9 @@ class Thread(db.Model):
     messages = db.relationship(
         "Message", back_populates="thread", cascade="all, delete-orphan", uselist=True
     )
+
+    def __repr__(self):
+        return "<Thread %r>" % self.thread_id
 
     def to_dict(self, include_messages=True):
         if include_messages:
@@ -119,6 +122,9 @@ class Message(db.Model):
         {"schema": "rgbank"},
     )
 
+    def __repr__(self):
+        return "<Message %r>" % self.message_id
+
     def to_dict(self):
         sender = None
 
@@ -135,9 +141,9 @@ class Message(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "read_at": self.read_at.isoformat() if self.read_at else None,
             "previous_status": self.previous_status.name
-            if self.previous_status
+            if self.previous_status is not None
             else None,
-            "new_status": self.new_status.name if self.new_status else None,
+            "new_status": self.new_status.name if self.new_status is not None else None,
             "sender": sender,
             "message_type": self.message_type.name,
         }

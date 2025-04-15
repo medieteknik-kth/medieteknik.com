@@ -24,6 +24,9 @@ from .permissions import RGBankAccessLevels
 from .permissions import RGBankPermissions
 from .permissions import RGBankViewPermissions
 
+from .statistics import Statistics
+from .statistics import ExpenseCount
+
 from .thread import Thread
 from .thread import Message
 from .thread import MessageType
@@ -37,6 +40,8 @@ __all__ = [
     "RGBankAccessLevels",
     "RGBankPermissions",
     "RGBankViewPermissions",
+    "Statistics",
+    "ExpenseCount",
     "Thread",
     "Message",
     "MessageType",

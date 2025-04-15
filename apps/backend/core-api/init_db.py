@@ -16,6 +16,8 @@ from models.apps.rgbank import (
     Expense,  # noqa: F401
     Invoice,  # noqa: F401
     RGBankPermissions,  # noqa: F401
+    Statistics,  # noqa: F401
+    ExpenseCount,  # noqa: F401
     Thread,  # noqa: F401
     Message,  # noqa: F401
 )

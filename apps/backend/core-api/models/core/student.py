@@ -89,16 +89,20 @@ class Student(db.Model):
     )
 
     rgbank_account_bank_information = db.relationship(
-        "AccountBankInformation", back_populates="student", uselist=False
+        "AccountBankInformation",
+        back_populates="student",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
-    rgbank_expenses = db.relationship(
-        "Expense", back_populates="student", cascade="all, delete-orphan"
-    )
-    rgbank_invoices = db.relationship(
-        "Invoice", back_populates="student", cascade="all, delete-orphan"
-    )
-    rgbank_messages = db.relationship(
-        "Message", back_populates="sender", cascade="all, delete-orphan"
+    rgbank_expenses = db.relationship("Expense", back_populates="student")
+    rgbank_invoices = db.relationship("Invoice", back_populates="student")
+    rgbank_messages = db.relationship("Message", back_populates="sender")
+    rgbank_statistics = db.relationship("Statistics", back_populates="student")
+    rgbank_expense_count = db.relationship(
+        "ExpenseCount",
+        back_populates="student",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
 
     def __repr__(self):
