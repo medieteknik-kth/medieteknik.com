@@ -69,6 +69,7 @@ export function useAuthentication(): authenticationContextData {
  * @interface permissionsContextData
  * @description The data returned by the `usePermissions` hook
  * @property { permissions: { student?: Permission[]; author?: AuthorResource[] } }
+ * @property { rgbank_permissions?: { access_level: number; view_permission_level: number } }
  * @property { hasPermission: (permission: Permission) => boolean }
  * @property { canAuthor: (resourceType: AuthorResource) => boolean }
  * @see {@link usePermissions}
@@ -77,6 +78,10 @@ interface permissionsContextData {
   permissions: {
     student?: Permission[]
     author?: AuthorResource[]
+  }
+  rgbank_permissions?: {
+    access_level: number
+    view_permission_level: number
   }
   hasPermission: (permission: Permission) => boolean
   canAuthor: (resourceType: AuthorResource) => boolean
@@ -108,7 +113,7 @@ export function usePermissions(): permissionsContextData {
     )
   }
 
-  const { permissions } = context
+  const { permissions, rgbank_permissions } = context
 
   function hasPermission(permission: Permission) {
     return permissions.student?.includes(permission) || false
@@ -118,7 +123,7 @@ export function usePermissions(): permissionsContextData {
     return permissions.author?.includes(resourceType) || false
   }
 
-  return { permissions, hasPermission, canAuthor }
+  return { permissions, rgbank_permissions, hasPermission, canAuthor }
 }
 
 /**

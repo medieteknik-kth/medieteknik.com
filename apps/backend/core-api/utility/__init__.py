@@ -11,6 +11,8 @@ from .constants import PROTECTED_PATH
 from .constants import AVAILABLE_LANGUAGES
 from .constants import DEFAULT_LANGUAGE_CODE
 from .constants import ROUTES
+from .constants import DEFAULT_FILTER
+from .constants import POSSIBLE_FILTERS
 
 from .csrf import csrf
 from .csrf import validate_csrf
@@ -48,6 +50,8 @@ __all__ = [
     "AVAILABLE_LANGUAGES",
     "DEFAULT_LANGUAGE_CODE",
     "ROUTES",
+    "DEFAULT_FILTER",
+    "POSSIBLE_FILTERS",
     "csrf",
     "validate_csrf",
     "db",

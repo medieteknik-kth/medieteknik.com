@@ -26,6 +26,10 @@ export interface SuccessfulAuthenticationResponse {
   committees: Committee[]
   committee_positions: CommitteePosition[]
   expiration: number
+  rgbank_permissions: {
+    access_level: number
+    view_permission_level: number
+  }
 }
 
 interface FailedAuthenticationResponse {

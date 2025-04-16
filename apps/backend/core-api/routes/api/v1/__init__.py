@@ -30,7 +30,14 @@ from services.utility.auth import (
     get_student_committee_details,
 )
 from sqlalchemy.exc import SQLAlchemyError
-from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
+from utility.constants import (
+    API_VERSION,
+    DEFAULT_FILTER,
+    POSSIBLE_FILTERS,
+    PROTECTED_PATH,
+    PUBLIC_PATH,
+    ROUTES,
+)
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
 from utility.database import db
@@ -338,6 +345,10 @@ def register_v1_routes(app: Flask):
         Logs in a student
             :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
         """
+        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
+
+        if filter not in POSSIBLE_FILTERS:
+            return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
 
         data = request.get_json()
 
@@ -348,7 +359,7 @@ def register_v1_routes(app: Flask):
 
         data: dict[str, Any] = json.loads(json.dumps(data))
 
-        return login(data=data, provided_languages=provided_languages)
+        return login(data=data, provided_languages=provided_languages, filter=filter)
 
     @app.route("/api/v1/logout", methods=["DELETE"])
     @jwt_required()

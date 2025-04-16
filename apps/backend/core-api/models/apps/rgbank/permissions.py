@@ -5,7 +5,7 @@ from models.committees import CommitteePosition
 from utility import db
 
 
-class RGBankViewPermissions(enum.Enum):
+class RGBankViewPermissions(enum.IntEnum):
     """RGBank permission types."""
 
     NONE = 0
@@ -13,7 +13,7 @@ class RGBankViewPermissions(enum.Enum):
     ALL_COMMITTEES = 2
 
 
-class RGBankAccessLevels(enum.Enum):
+class RGBankAccessLevels(enum.IntEnum):
     """RGBank permission types."""
 
     NONE = 0

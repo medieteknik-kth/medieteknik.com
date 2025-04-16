@@ -26,7 +26,7 @@ export const authService = {
       csrf_token: csrf_token,
       remember: remember ?? false,
     }
-    const response = await fetch('/api/login', {
+    const response = await fetch('/api/login?filter=rgbank', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,13 +52,16 @@ export const authService = {
   getUserData: async (
     language: LanguageCode
   ): Promise<AuthenticationResponse> => {
-    const response = await fetch(`/api/students/me?language=${language}`, {
-      method: 'GET',
-      credentials: 'include',
-      next: {
-        revalidate: CACHE_REVALIDATION_PERIOD_SECONDS,
-      },
-    })
+    const response = await fetch(
+      `/api/students/me?language=${language}&filter=rgbank`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        next: {
+          revalidate: CACHE_REVALIDATION_PERIOD_SECONDS,
+        },
+      }
+    )
 
     if (!response.ok) {
       throw new Error('Failed to fetch user data')

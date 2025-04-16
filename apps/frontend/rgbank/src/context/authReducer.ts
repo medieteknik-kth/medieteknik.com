@@ -31,6 +31,14 @@ interface AuthenticationState {
   }
 
   /**
+   * RGBank permissions
+   */
+  rgbank_permissions?: {
+    access_level: number
+    view_permission_level: number
+  }
+
+  /**
    * The committees the student is a member of.
    */
   committees: Committee[]
@@ -81,6 +89,10 @@ type AuthenticationAction =
           author: AuthorResource[]
           student: Permission[]
         }
+        rgbank_permissions?: {
+          access_level: number
+          view_permission_level: number
+        }
       }
     }
   | { type: 'SET_LOADING'; payload: boolean }
@@ -94,6 +106,10 @@ export const initialState: AuthenticationState = {
   permissions: {
     author: [],
     student: [],
+  },
+  rgbank_permissions: {
+    access_level: 0,
+    view_permission_level: 0,
   },
   committees: [],
   committee_positions: [],
@@ -129,6 +145,10 @@ export function authenticationReducer(
           author: [],
           student: [],
         },
+        rgbank_permissions: {
+          access_level: 0,
+          view_permission_level: 0,
+        },
         role: 'OTHER',
         committees: [],
         committee_positions: [],
@@ -143,6 +163,7 @@ export function authenticationReducer(
         committee_positions: action.payload.committee_positions || [],
         role: action.payload.role,
         permissions: action.payload.permissions,
+        rgbank_permissions: action.payload.rgbank_permissions,
         isAuthenticated: true,
         error: null,
       }

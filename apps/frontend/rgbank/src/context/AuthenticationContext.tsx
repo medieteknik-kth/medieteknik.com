@@ -126,11 +126,15 @@ export function AuthenticationProvider({
         payload: {
           student: json.student,
           committees: getUniqueCommittees(json),
-          committee_positions	: json.committee_positions	 || [],
+          committee_positions: json.committee_positions || [],
           role: json.role || 'OTHER',
           permissions: json.permissions || {
             author: [],
             student: [],
+          },
+          rgbank_permissions: json.rgbank_permissions || {
+            access_level: 0,
+            view_permission_level: 0,
           },
         },
       })

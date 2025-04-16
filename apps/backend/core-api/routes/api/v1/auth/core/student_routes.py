@@ -4,15 +4,20 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, make_response, request
+from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import (
     get_jwt,
     get_jwt_identity,
     jwt_required,
 )
 from http import HTTPStatus
-from typing import Any, Dict
+from typing import Any, Dict, List
 from decorators import csrf_protected
+from models.apps.rgbank.permissions import (
+    RGBankAccessLevels,
+    RGBankPermissions,
+    RGBankViewPermissions,
+)
 from models.core import Profile, Student
 from services.core import update, retrieve_notifications, subscribe_to_notifications
 from services.utility.auth import (
@@ -20,6 +25,7 @@ from services.utility.auth import (
     get_student_committee_details,
 )
 from utility import delete_file, upload_file, retrieve_languages, db
+from utility.constants import DEFAULT_FILTER, POSSIBLE_FILTERS
 from utility.translation import convert_iso_639_1_to_bcp_47
 
 student_bp = Blueprint("student", __name__)
@@ -184,23 +190,10 @@ def get_student_callback() -> Response:
     Retrieves the student information
         :return: Response - The response object, 404 if the student doesn't exist, 200 if successful
     """
+    filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
 
-    def unauthorized_response():
-        access_cookie = request.cookies.get("access_token_cookie")
-        response = make_response({"message": "Unauthorized"})
-
-        if access_cookie:
-            response.set_cookie(
-                "access_token_cookie",
-                value="",
-                expires=0,
-                httponly=True,
-                secure=True,
-                samesite="None",
-            )
-
-        response.status_code = HTTPStatus.UNAUTHORIZED
-        return response
+    if filter not in POSSIBLE_FILTERS:
+        return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
 
     provided_languages = retrieve_languages(request.args)
 
@@ -222,15 +215,42 @@ def get_student_callback() -> Response:
 
     student_dict = student.to_dict(is_public_route=False)
 
+    response_dict = {
+        "student": student_dict,
+        "committees": committees,
+        "committee_positions": committee_positions,
+        "permissions": permissions,
+        "role": role,
+        "expiration": expiration,
+    }
+
+    if filter == "rgbank":
+        rgbank_permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
+            RGBankPermissions.committee_position_id.in_(
+                [
+                    committee_position.get("committee_position_id")
+                    for committee_position in committee_positions
+                ]
+            )
+        ).all()
+
+        highest_view_permission = RGBankViewPermissions.NONE
+        highest_access_level = RGBankAccessLevels.NONE
+
+        for permission in rgbank_permissions:
+            if permission.view_permission_level > highest_view_permission:
+                highest_view_permission = permission.view_permission_level
+
+            if permission.access_level > highest_access_level:
+                highest_access_level = permission.access_level
+
+        response_dict["rgbank_permissions"] = {
+            "view_permission_level": highest_view_permission,
+            "access_level": highest_access_level,
+        }
+
     json_response = jsonify(
-        {
-            "student": student_dict,
-            "committees": committees,
-            "committee_positions": committee_positions,
-            "permissions": permissions,
-            "role": role,
-            "expiration": expiration,
-        },
+        response_dict,
     )
 
     return json_response, HTTPStatus.OK

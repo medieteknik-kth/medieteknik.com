@@ -1,3 +1,4 @@
+import AdminButton from '@/components/header/client/AdminButton'
 import AuthenticatedNavigation from '@/components/header/client/AuthenticatedNavigation'
 import ProfileMenu from '@/components/header/client/ProfileMenu'
 import { Button } from '@/components/ui/button'
@@ -55,13 +56,7 @@ export default function Header({ language }: Props): JSX.Element {
           <Link href={`/${language}/statistics`}>Statistics</Link>
         </Button>
 
-        <Button
-          variant={'ghost'}
-          asChild
-          className='uppercase h-full bg-inherit'
-        >
-          <Link href={`/${language}/admin`}>Admin</Link>
-        </Button>
+        <AdminButton language={language} />
       </div>
 
       <div className='place-self-end h-full'>
