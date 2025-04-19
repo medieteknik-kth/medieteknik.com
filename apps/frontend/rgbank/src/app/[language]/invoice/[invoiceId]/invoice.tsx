@@ -26,13 +26,7 @@ export default function InvoicePage(props: Props) {
   const { language, invoiceId } = use(props.params)
   const { data, error } = useSWR<InvoiceResponseDetailed>(
     `/api/rgbank/invoices/${invoiceId}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      refreshWhenHidden: false,
-    }
+    fetcher
   )
 
   if (error) {

@@ -26,13 +26,7 @@ export default function ExpensePage(props: Props) {
   const { language, expenseId } = use(props.params)
   const { data, error } = useSWR<ExpenseResponseDetailed>(
     `/api/rgbank/expenses/${expenseId}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      refreshWhenHidden: false,
-    }
+    fetcher
   )
 
   if (error) {
