@@ -1,6 +1,6 @@
 import AdminButton from '@/components/header/client/AdminButton'
 import AuthenticatedNavigation from '@/components/header/client/AuthenticatedNavigation'
-import ProfileMenu from '@/components/header/client/ProfileMenu'
+import { WideScreenProfileButton } from '@/components/header/client/DropdownMenu'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
 import { Link } from 'next-view-transitions'
@@ -25,9 +25,9 @@ export default function Header({ language }: Props): JSX.Element {
   return (
     <header
       id='header'
-      className='left-2 right-2 bottom-2 md:left-5 md:right-5 md:top-5 rounded-md h-16 lg:h-24 bg-white dark:bg-[#111] fixed grid md:flex lg:grid grid-rows-1 grid-cols-5 md:grid-cols-2 justify-between place-items-center z-50 transition-all border dark:border-yellow-400 shadow-md'
+      className='left-2 right-2 bottom-2 md:left-5 md:right-5 md:top-5 rounded-md h-16 lg:h-24 bg-white dark:bg-[#111] fixed grid md:flex lg:grid grid-rows-1 grid-cols-5 md:grid-cols-3 2xl:grid-cols-2 justify-between place-items-center z-50 transition-all border dark:border-yellow-400 shadow-md'
     >
-      <div className='hidden md:flex h-full place-self-start'>
+      <div className='hidden md:flex h-full place-self-start md:col-span-2 2xl:col-span-1'>
         <Button
           variant={'ghost'}
           asChild
@@ -60,7 +60,7 @@ export default function Header({ language }: Props): JSX.Element {
       </div>
 
       <div className='place-self-end h-full'>
-        <ProfileMenu />
+        <WideScreenProfileButton language={language} />
       </div>
     </header>
   )

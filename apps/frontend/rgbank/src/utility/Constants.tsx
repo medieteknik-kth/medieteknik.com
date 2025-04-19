@@ -1,5 +1,9 @@
-import type { LanguageCode } from '@/models/Language'
+import type { Language, LanguageCode } from '@/models/Language'
+import { GB, SE } from 'country-flag-icons/react/3x2'
 import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+
+export const SITE_VERSION = '0.1.0'
+export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 
 export const FALLBACK_LANGUAGE: LanguageCode = 'en'
 export const SUPPORTED_LANGUAGES: LanguageCode[] = [FALLBACK_LANGUAGE, 'sv']
@@ -20,5 +24,32 @@ export const COOKIE_SETTINGS: Record<string, Partial<ResponseCookie>> = {
     sameSite: 'strict',
     expires: new Date(Date.now() + 31_536_000_000), // 1 year
     secure: process.env.NODE_ENV === 'production',
+  },
+}
+
+export const LANGUAGES: Language = {
+  sv: {
+    short_name: 'sv',
+    name: 'Svenska',
+    flag_icon: (
+      <SE
+        style={{
+          width: 'inherit',
+          height: 'inherit',
+        }}
+      />
+    ),
+  },
+  en: {
+    short_name: 'en',
+    name: 'English',
+    flag_icon: (
+      <GB
+        style={{
+          width: 'inherit',
+          height: 'inherit',
+        }}
+      />
+    ),
   },
 }

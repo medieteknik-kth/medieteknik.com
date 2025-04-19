@@ -32,8 +32,6 @@ export async function generateStaticParams() {
       year,
     }))
   )
-  console.log('paths', paths)
-
   return paths
 }
 

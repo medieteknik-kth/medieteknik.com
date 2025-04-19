@@ -41,8 +41,6 @@ export default function FinalizeExpense({
     return acc + (Number.isNaN(amount) ? 0 : amount)
   }, 0)
 
-  console.log(expenseData.categories)
-
   const postExpense = async (data: z.infer<typeof expenseSchema>) => {
     const formData = new FormData()
 
@@ -127,7 +125,11 @@ export default function FinalizeExpense({
       <div className='flex flex-col mt-8 gap-8'>
         <FileOverview language={language} files={expenseData.files} />
 
-        <ExpenseMetadata language={language}  expenseData={expenseData} totalAmount={totalAmount} />
+        <ExpenseMetadata
+          language={language}
+          expenseData={expenseData}
+          totalAmount={totalAmount}
+        />
 
         <CategoryOverviewByCommittee
           language={language}

@@ -32,7 +32,7 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
           <li className='h-full place-self-end'>
             <PopIn className='h-full'>
               <button
-                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
+                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
                 type='button'
                 onClick={() => setSelectedTemplate('expense')}
                 disabled={selectedTemplate === 'expense'}
@@ -55,7 +55,7 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
             <PopIn className='h-full'>
               <button
                 type='button'
-                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
+                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
                 onClick={() => setSelectedTemplate('invoice')}
                 disabled={selectedTemplate === 'invoice'}
               >

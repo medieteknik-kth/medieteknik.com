@@ -31,6 +31,7 @@ import {
   ChartBarIcon,
 } from '@heroicons/react/24/outline'
 import { getYear, setMonth } from 'date-fns'
+import { useTheme } from 'next-themes'
 import { redirect } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import {
@@ -89,6 +90,7 @@ export default function Statistics({
 }: Props) {
   const [yearFilter] = useState(providedYear || getYear(new Date()).toString())
   const [leaderboardView, setLeaderboardView] = useState('yearly')
+  const { theme } = useTheme()
 
   const changeYear = useCallback(
     (year: string) => {
@@ -547,7 +549,13 @@ export default function Statistics({
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='month' />
                     <YAxis />
-                    <Tooltip formatter={(value) => `SEK ${value}`} />
+                    <Tooltip
+                      formatter={(value) => `SEK ${value}`}
+                      contentStyle={{
+                        backgroundColor: theme === 'dark' ? '#111' : '#fff',
+                        borderRadius: '8px',
+                      }}
+                    />
                     <Area
                       type='monotone'
                       dataKey='amount'
