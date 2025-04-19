@@ -5,8 +5,11 @@ This module contains the services for the RGBank application.
 
 from .auth_service import has_access
 from .auth_service import has_full_authority
+from .auth_service import get_bank_account
 
 from .message_service import add_message
+
+from .permission_service import attach_permissions
 
 from .statistics_service import add_committee_statistic
 from .statistics_service import add_student_statistic
@@ -19,7 +22,9 @@ from .statistics_service import get_monthly_value_by_year
 __all__ = [
     "has_access",
     "has_full_authority",
+    "get_bank_account",
     "add_message",
+    "attach_permissions",
     "add_committee_statistic",
     "add_student_statistic",
     "get_committee_statistic",

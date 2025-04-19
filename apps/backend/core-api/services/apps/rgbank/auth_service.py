@@ -1,10 +1,11 @@
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 from models.apps.rgbank import (
     Expense,
     Invoice,
     RGBankPermissions,
     RGBankViewPermissions,
 )
+from models.apps.rgbank.bank import AccountBankInformation
 from models.core.student import StudentMembership
 
 
@@ -100,3 +101,22 @@ def has_full_authority(memberships: List[StudentMembership]) -> Tuple[bool, str]
         ),
         "You have permission to view all committees.",
     )
+
+
+def get_bank_account(student_id: str) -> Dict[str, Any] | None:
+    """
+    Get the bank account of the student.
+
+    :param student_id: The ID of the student.
+    :type student_id: str
+    :return: The bank account of the student.
+    :rtype: str
+    """
+    bank: AccountBankInformation | None = AccountBankInformation.query.filter_by(
+        student_id=student_id
+    ).first()
+
+    if not bank or not isinstance(bank, AccountBankInformation):
+        return None
+
+    return bank.to_dict()

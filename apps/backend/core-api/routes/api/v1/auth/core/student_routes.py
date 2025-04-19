@@ -4,21 +4,18 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, request, session
 from flask_jwt_extended import (
     get_jwt,
     get_jwt_identity,
     jwt_required,
 )
 from http import HTTPStatus
-from typing import Any, Dict, List
+from typing import Any, Dict
 from decorators import csrf_protected
-from models.apps.rgbank.permissions import (
-    RGBankAccessLevels,
-    RGBankPermissions,
-    RGBankViewPermissions,
-)
 from models.core import Profile, Student
+from services.apps.rgbank.auth_service import get_bank_account
+from services.apps.rgbank.permission_service import attach_permissions
 from services.core import update, retrieve_notifications, subscribe_to_notifications
 from services.utility.auth import (
     get_student_authorization,
@@ -195,6 +192,8 @@ def get_student_callback() -> Response:
     if filter not in POSSIBLE_FILTERS:
         return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
 
+    session["filter"] = filter
+
     provided_languages = retrieve_languages(request.args)
 
     student_id: str | None = get_jwt_identity()
@@ -225,29 +224,13 @@ def get_student_callback() -> Response:
     }
 
     if filter == "rgbank":
-        rgbank_permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
-            RGBankPermissions.committee_position_id.in_(
-                [
-                    committee_position.get("committee_position_id")
-                    for committee_position in committee_positions
-                ]
-            )
-        ).all()
-
-        highest_view_permission = RGBankViewPermissions.NONE
-        highest_access_level = RGBankAccessLevels.NONE
-
-        for permission in rgbank_permissions:
-            if permission.view_permission_level > highest_view_permission:
-                highest_view_permission = permission.view_permission_level
-
-            if permission.access_level > highest_access_level:
-                highest_access_level = permission.access_level
-
-        response_dict["rgbank_permissions"] = {
-            "view_permission_level": highest_view_permission,
-            "access_level": highest_access_level,
-        }
+        attach_permissions(
+            committee_positions=committee_positions,
+            response_dict=response_dict,
+        )
+        response_dict["rgbank_bank_account"] = get_bank_account(
+            student_id=student.student_id
+        )
 
     json_response = jsonify(
         response_dict,
