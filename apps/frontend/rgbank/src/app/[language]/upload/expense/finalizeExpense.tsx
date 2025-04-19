@@ -125,11 +125,12 @@ export default function FinalizeExpense({
       </div>
 
       <div className='flex flex-col mt-8 gap-8'>
-        <FileOverview files={expenseData.files} />
+        <FileOverview language={language} files={expenseData.files} />
 
-        <ExpenseMetadata expenseData={expenseData} totalAmount={totalAmount} />
+        <ExpenseMetadata language={language}  expenseData={expenseData} totalAmount={totalAmount} />
 
         <CategoryOverviewByCommittee
+          language={language}
           committees={committees}
           categories={expenseData.categories}
         />

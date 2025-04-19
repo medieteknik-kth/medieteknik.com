@@ -27,7 +27,7 @@ export default async function Upload(props: Props) {
   return (
     <main className='bg-neutral-100 dark:bg-neutral-900'>
       <HeaderGap />
-      <div className='container py-4'>
+      <div className='px-2 xs:px-0 xs:container py-4'>
         <UploadForm language={language} committees={committees} />
       </div>
     </main>

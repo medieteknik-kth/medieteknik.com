@@ -191,7 +191,7 @@ export default function Statistics({
         </div>
 
         {/* Overview Cards */}
-        <div className='grid gap-6 md:grid-cols-3 z-10'>
+        <div className='grid gap-6 xl:grid-cols-3 z-10'>
           <PopIn className={!isCurrentYear ? 'col-span-2' : ''}>
             <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-red-600/10'>
               <CardHeader className='pb-2'>

@@ -137,11 +137,16 @@ export default function FinalizeInvoice({
       </div>
 
       <div className='flex flex-col mt-8 gap-8'>
-        <FileOverview files={invoiceData.files} />
+        <FileOverview language={language} files={invoiceData.files} />
 
-        <InvoiceMetadata invoiceData={invoiceData} totalAmount={totalAmount} />
+        <InvoiceMetadata
+          language={language}
+          invoiceData={invoiceData}
+          totalAmount={totalAmount}
+        />
 
         <CategoryOverviewByCommittee
+          language={language}
           categories={invoiceData.categories}
           committees={committees}
         />

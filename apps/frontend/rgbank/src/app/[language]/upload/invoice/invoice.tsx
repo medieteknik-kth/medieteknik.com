@@ -41,7 +41,7 @@ export default function Invoice({
   const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
     invoiceData.paidStatus !== undefined,
-    invoiceData.files.length > 0,
+    files.length > 0,
     invoiceData.description !== '',
     true,
     invoiceData.invoiceDate <= new Date() &&
@@ -77,10 +77,8 @@ export default function Invoice({
       const invoiceDate = inputInvoiceDate || invoiceData.invoiceDate
       const dueDate = inputDueDate || invoiceData.invoiceDueDate
 
-      const minimumDate = startOfDay(addDays(new Date(), 2))
       const today = new Date()
-      const isValid =
-        invoiceDate < today && dueDate > invoiceDate && dueDate > minimumDate
+      const isValid = invoiceDate < today && dueDate > invoiceDate
 
       if (isValid) {
         completeStep(4)
@@ -311,11 +309,6 @@ export default function Invoice({
                   <Label>
                     Invoice due date
                     <span className='text-red-500'>*</span>{' '}
-                    <span>
-                      <span className='text-sm text-muted-foreground'>
-                        (Minimum: {addDays(new Date(), 2).toLocaleDateString()})
-                      </span>
-                    </span>
                   </Label>
                   <Input
                     type='date'

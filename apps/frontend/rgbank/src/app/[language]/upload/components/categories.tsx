@@ -12,13 +12,19 @@ import {
 } from '@/components/ui/table'
 import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
+import type { LanguageCode } from '@/models/Language'
 
 interface Props {
+  language: LanguageCode
   categories: Category[]
   committees: Committee[]
 }
 
-export function CategoryOverviewByCommittee({ categories, committees }: Props) {
+export function CategoryOverviewByCommittee({
+  language,
+  categories,
+  committees,
+}: Props) {
   const totalAmount = categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
     return acc + (Number.isNaN(amount) ? 0 : amount)
@@ -37,7 +43,14 @@ export function CategoryOverviewByCommittee({ categories, committees }: Props) {
             <div className='flex-1'>
               <div className='flex items-center gap-2'>
                 <h3 className='font-semibold'>{categories[0].author}</h3>
-                <Badge variant='outline'>{totalAmount.toFixed(2)} SEK</Badge>
+                <Badge variant='outline'>
+                  {totalAmount.toLocaleString(language, {
+                    currency: 'SEK',
+                    style: 'currency',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Badge>
               </div>
 
               <div className='mt-3 rounded-md border overflow-hidden'>
@@ -60,7 +73,14 @@ export function CategoryOverviewByCommittee({ categories, committees }: Props) {
                           {category.category}
                         </TableCell>
                         <TableCell className='font-medium'>
-                          {category.amount.replace(/,/g, '.')} SEK
+                          {Number.parseFloat(
+                            category.amount.replace(/,/g, '.')
+                          ).toLocaleString(language, {
+                            currency: 'SEK',
+                            style: 'currency',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </TableCell>
                       </TableRow>
                     ))}

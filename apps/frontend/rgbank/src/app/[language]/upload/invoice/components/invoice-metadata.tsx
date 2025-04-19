@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
 import type { InvoiceData } from '@/models/Invoice'
+import type { LanguageCode } from '@/models/Language'
 import {
   AdjustmentsHorizontalIcon,
   CalendarIcon,
@@ -12,11 +13,12 @@ import {
 } from '@heroicons/react/24/outline'
 
 interface Props {
+  language: LanguageCode
   invoiceData: InvoiceData
   totalAmount: number
 }
 
-export function InvoiceMetadata({ invoiceData, totalAmount }: Props) {
+export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
   return (
     <Card className='shadow-md'>
       <CardHeader className='pb-3'>
@@ -110,7 +112,14 @@ export function InvoiceMetadata({ invoiceData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium'>Amount</p>
-            <p className='mt-1 text-lg font-semibold'>{totalAmount} SEK</p>
+            <p className='mt-1 text-lg font-semibold'>
+              {totalAmount.toLocaleString(language, {
+                currency: 'SEK',
+                style: 'currency',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
           </div>
         </div>
 

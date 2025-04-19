@@ -33,9 +33,9 @@ export default function Expense({
 }: Props) {
   const { setError } = useGeneralForm()
   const { expenseData, setExpenseData } = useExpense()
-
+  const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
-    expenseData.files.length > 0,
+    files.length > 0,
     expenseData.description.length > 0,
     expenseData.date !== undefined,
     expenseData.files.some((file) => file.name.toLowerCase().endsWith('.pdf'))
@@ -44,7 +44,6 @@ export default function Expense({
     expenseData.categories.length > 0,
   ])
   const [categories, setCategories] = useState<Category[]>([])
-  const { files, removeAllFiles } = useFiles()
 
   const [isDigitalReceiptRequired, setIsDigitalReceiptRequired] =
     useState(false)

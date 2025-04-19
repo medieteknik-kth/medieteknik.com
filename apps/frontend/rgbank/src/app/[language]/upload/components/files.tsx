@@ -1,8 +1,10 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import FileDisplay from '@/components/ui/file-display'
+import type { LanguageCode } from '@/models/Language'
 
 interface Props {
+  language: LanguageCode
   files: File[]
 }
 

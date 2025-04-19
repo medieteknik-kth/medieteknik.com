@@ -116,9 +116,9 @@ export default function Categorize({
         {categories.map((category, index) => (
           <li
             key={category.id}
-            className='flex md:grid grid-cols-12 md:gap-4 items-center gap-2 flex-wrap'
+            className='w-full flex xl:grid grid-cols-12 md:gap-4 items-center gap-2 flex-wrap'
           >
-            <div className='w-full flex flex-col gap-2 col-span-4'>
+            <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label>
                   Author <span className='text-red-500'>*</span>
@@ -163,7 +163,7 @@ export default function Categorize({
                   <Command>
                     <CommandInput placeholder='Search' />
                     <CommandList>
-                      <CommandEmpty>'None found</CommandEmpty>
+                      <CommandEmpty>None found</CommandEmpty>
                       <CommandGroup>
                         {allDomains.map((domain) => (
                           <CommandItem
@@ -173,6 +173,15 @@ export default function Categorize({
                               const newCategories = [...categories]
                               newCategories[index].author = currentValue
                               setDropdownOpen(-1)
+                              setCategories([
+                                {
+                                  id: index,
+                                  author: currentValue,
+                                  amount: '0',
+                                  category: '',
+                                },
+                              ])
+
                               validateCategories()
                             }}
                             className='flex items-center justify-between'
@@ -200,7 +209,7 @@ export default function Categorize({
               </Popover>
             </div>
 
-            <div className='w-full flex flex-col gap-2 col-span-4'>
+            <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label>
                   Category <span className='text-red-500'>*</span>
@@ -217,9 +226,9 @@ export default function Categorize({
                     variant={'outline'}
                     // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                     role='combobox'
-                    className='w-full items-center justify-between'
+                    className='grow items-center justify-between'
                   >
-                    <div className='flex items-center gap-2'>
+                    <div className='flex items-center gap-2 max-w-64 2xl:max-w-max'>
                       <div className='bg-white p-1 rounded-lg'>
                         <Image
                           src={
@@ -233,7 +242,9 @@ export default function Categorize({
                           height={24}
                         />
                       </div>
-                      {category.category || 'Select part'}
+                      <p className='truncate'>
+                        {category.category || 'Select part'}
+                      </p>
                     </div>
                     <ChevronDownIcon className='w-5 h-5' />
                   </Button>
