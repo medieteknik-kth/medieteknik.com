@@ -1,5 +1,5 @@
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
-import { handleAuth } from '@/utility/middleware/auth'
+import { handleAuth } from '@/utility/middleware/authorization'
 import { handleCookieUpdates } from '@/utility/middleware/cookie'
 import { setResponseHeaders } from '@/utility/middleware/headers'
 import { handleLanguage } from '@/utility/middleware/language'
@@ -43,10 +43,10 @@ export const config = {
 }
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
-  let response = await handleLanguage(request)
-  response = await setResponseHeaders(response) // Add request if needed
-  response = await handleCookieUpdates(request, response)
-  response = await handleAuth(request, response)
+  let response = await handleAuth(request)
+  response = handleLanguage(request, response)
+  response = setResponseHeaders(response)
+  response = handleCookieUpdates(request, response)
 
   return response
 }

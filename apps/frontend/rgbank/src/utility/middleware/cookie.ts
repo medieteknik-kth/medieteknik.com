@@ -3,42 +3,47 @@ import {
   COOKIE_VERSION_NAME,
   COOKIE_VERSION_VALUE,
 } from '@/utility/Constants'
-import { mergeResponses } from '@/utility/middleware/util'
-import { type NextRequest, NextResponse } from 'next/server'
+import type { NextRequest, NextResponse } from 'next/server'
 
 /**
  * @name handleCookieUpdates
  * @description Handles cookie updates for the application. It checks if the incoming cookie is present and if the cookie version is up to date. If the cookie version is not up to date, it updates the cookie and sets a new cookie version.
  * @param {NextRequest} request - The incoming request object.
  * @param {NextResponse} response - The response object to be modified.
- * @returns {Promise<NextResponse>} - The modified response object with updated cookies.
+ * @returns The modified response object with updated cookies.
  */
-export async function handleCookieUpdates(
+export function handleCookieUpdates(
   request: NextRequest,
   response: NextResponse
-): Promise<NextResponse> {
+): NextResponse {
   const cookieVersion = request.cookies.get(COOKIE_VERSION_NAME)
-  const cookieName = 'language'
-  const incomingCookie = request.cookies.get(cookieName)
-  const expectedOptions = COOKIE_SETTINGS[cookieName]
 
-  if (incomingCookie) {
-    if (cookieVersion && cookieVersion.value === COOKIE_VERSION_VALUE) {
-      return response
-    }
-
-    const newResponse = NextResponse.redirect(
-      new URL(`/${incomingCookie.value}`, request.url)
-    )
-    newResponse.cookies.set(cookieName, incomingCookie.value, expectedOptions)
-    const modifiedResponse = mergeResponses(response, newResponse)
-    modifiedResponse.cookies.set(
-      COOKIE_VERSION_NAME,
-      COOKIE_VERSION_VALUE,
-      COOKIE_SETTINGS[COOKIE_VERSION_NAME]
-    )
-    return modifiedResponse
+  if (cookieVersion && cookieVersion.value === COOKIE_VERSION_VALUE) {
+    return response
   }
+
+  const relevantCookies = Object.entries(COOKIE_SETTINGS).filter(
+    ([cookieName]) => request.cookies.has(cookieName)
+  )
+
+  // If already on the correct language path, update the cookie version without redirecting to prevent constant redirects.
+  for (const [cookieName, expectedOptions] of relevantCookies) {
+    // Check if the cookie is already set
+    if (request.cookies.has(cookieName)) {
+      const cookie = request.cookies.get(cookieName)
+      if (cookie && COOKIE_SETTINGS[cookieName]) {
+        response.cookies.set(cookieName, cookie.value, expectedOptions)
+      }
+    }
+  }
+
+  // Set the cookie version to the latest version
+  // This is to ensure that the cookie version is always up to date.
+  response.cookies.set(
+    COOKIE_VERSION_NAME,
+    COOKIE_VERSION_VALUE,
+    COOKIE_SETTINGS[COOKIE_VERSION_NAME]
+  )
 
   return response
 }

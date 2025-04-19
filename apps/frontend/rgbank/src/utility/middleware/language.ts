@@ -5,6 +5,7 @@ import {
   LANGUAGE_COOKIE_NAME,
   SUPPORTED_LANGUAGES,
 } from '@/utility/Constants'
+import { mergeResponses } from '@/utility/middleware/util'
 import { NextURL } from 'next/dist/server/web/next-url'
 import { type NextRequest, NextResponse } from 'next/server'
 
@@ -33,17 +34,18 @@ const BLACKLISTED_URLS_REGEX = new RegExp(
 )
 
 /**
- * Handles the language redirection and cookie setting based on the request headers and cookies.
+ * @name handleLanguage
+ * @description Handles the language redirection and cookie setting based on the request headers and cookies.
  *
  * @param {NextRequest} request - The incoming request object.
- * @return {Promise<NextResponse>} - The response object with the appropriate redirection or cookie setting.
+ * @return The response object with the appropriate redirection or cookie setting.
  */
-export async function handleLanguage(
-  request: NextRequest
-): Promise<NextResponse> {
+export function handleLanguage(
+  request: NextRequest,
+  response: NextResponse
+): NextResponse {
   // Blacklisted URLs, which should not be redirected
   const isBlacklisted = BLACKLISTED_URLS_REGEX.test(request.nextUrl.pathname)
-  let response = NextResponse.next()
 
   if (isBlacklisted) {
     return response
@@ -168,11 +170,23 @@ export async function handleLanguage(
       )
     }
 
-    response = NextResponse.redirect(
-      new NextURL(`/${language}${request.nextUrl.pathname}`, request.nextUrl)
+    const redirectUrl = new NextURL(
+      `/${language}${request.nextUrl.pathname}`,
+      request.nextUrl
     )
 
-    return response
+    if (request.nextUrl.searchParams.size > 0) {
+      request.nextUrl.searchParams.forEach((value, key) => {
+        redirectUrl.searchParams.set(key, value)
+      })
+    }
+
+    const newResponse = mergeResponses(
+      response,
+      NextResponse.redirect(redirectUrl)
+    )
+
+    return newResponse
   }
 
   return response

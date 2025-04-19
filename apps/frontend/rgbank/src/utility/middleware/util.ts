@@ -4,10 +4,10 @@ import type { NextResponse } from 'next/server'
 /**
  * @name mergeResponses
  * @description Merges the cookies and headers from the old response into the new response.
- * This is useful for preserving cookies and headers when redirecting or modifying responses.
+ * This is useful for preserving cookies and headers when redirecting or modifying responses. Does not overwrite redirects.
  * @param {NextResponse} oldResponse - The original response object.
  * @param {NextResponse} newResponse - The new response object to merge into.
- * @returns {NextResponse} - The new response object with merged cookies and headers.
+ * @returns The new response object with merged cookies and headers.
  */
 export function mergeResponses(
   oldResponse: NextResponse,

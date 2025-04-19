@@ -3,7 +3,7 @@
  * @description Generates a Content Security Policy (CSP) string based on the provided nonce and environment.
  *
  * @param {string} nonce - The nonce to be used in the CSP.
- * @returns {string} - The generated CSP string.
+ * @returns The generated CSP string.
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
  */
 export function generateCSP(nonce: string): string {

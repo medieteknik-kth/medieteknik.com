@@ -4,15 +4,13 @@ import type { NextResponse } from 'next/server'
 /**
  * @name setResponseHeaders
  * @description Sets the response headers for the application.
- *   * Content-Security-Policy header with a nonce,
- *   * x-nonce header,
- *   * Strict-Transport-Security header if in production.
+ *   * `Content-Security-Policy` header with a nonce,
+ *   * `x-nonce` header,
+ *   * `Strict-Transport-Security` header if in production.
  * @param {NextResponse} response - The response object to be modified.
- * @returns {Promise<NextResponse>} - The modified response object with updated headers.
+ * @returns The modified response object with updated headers.
  */
-export async function setResponseHeaders(
-  response: NextResponse
-): Promise<NextResponse> {
+export function setResponseHeaders(response: NextResponse): NextResponse {
   const nonce = crypto.randomUUID()
 
   response.headers.set('Content-Security-Policy', generateCSP(nonce))
