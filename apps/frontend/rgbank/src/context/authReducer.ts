@@ -1,3 +1,4 @@
+import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type Committee from '@/models/Committee'
 import type { CommitteePosition } from '@/models/Committee'
 import type { AuthorResource } from '@/models/Items'
@@ -37,6 +38,11 @@ interface AuthenticationState {
     access_level: number
     view_permission_level: number
   }
+
+  /**
+   * The bank account information of the student.
+   */
+  rgbank_bank_account?: AccountBankInformation
 
   /**
    * The committees the student is a member of.
@@ -93,6 +99,7 @@ type AuthenticationAction =
           access_level: number
           view_permission_level: number
         }
+        rgbank_bank_account?: AccountBankInformation
       }
     }
   | { type: 'SET_LOADING'; payload: boolean }
@@ -111,6 +118,7 @@ export const initialState: AuthenticationState = {
     access_level: 0,
     view_permission_level: 0,
   },
+  rgbank_bank_account: undefined,
   committees: [],
   committee_positions: [],
   error: null,
@@ -149,6 +157,7 @@ export function authenticationReducer(
           access_level: 0,
           view_permission_level: 0,
         },
+        rgbank_bank_account: undefined,
         role: 'OTHER',
         committees: [],
         committee_positions: [],
@@ -164,6 +173,7 @@ export function authenticationReducer(
         role: action.payload.role,
         permissions: action.payload.permissions,
         rgbank_permissions: action.payload.rgbank_permissions,
+        rgbank_bank_account: action.payload.rgbank_bank_account,
         isAuthenticated: true,
         error: null,
       }

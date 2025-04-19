@@ -12,7 +12,10 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { toast } from '@/components/ui/use-toast'
 import type { LanguageCode } from '@/models/Language'
-import { useStudent } from '@/providers/AuthenticationProvider'
+import {
+  useAuthentication,
+  useStudent,
+} from '@/providers/AuthenticationProvider'
 import { bankSchema } from '@/schemas/bank'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -20,6 +23,7 @@ import type { z } from 'zod'
 
 interface Props {
   language: LanguageCode
+  includeBanner?: boolean
 }
 
 function getMainDomain(): string {
@@ -40,14 +44,15 @@ function getMainDomain(): string {
   return hostname // Fallback to the full hostname
 }
 
-export default function AccountPage({ language }: Props) {
-  const { student } = useStudent()
+export default function AccountPage({ language, includeBanner = true }: Props) {
+  const { student, bank_account } = useStudent()
+  const { setStale } = useAuthentication()
   const bankInformationForm = useForm<z.infer<typeof bankSchema>>({
     resolver: zodResolver(bankSchema),
     defaultValues: {
-      bank_name: '',
-      clearing_number: '',
-      account_number: '',
+      bank_name: bank_account?.bank_name || '',
+      clearing_number: bank_account?.clearing_number || '',
+      account_number: bank_account?.account_number || '',
     },
   })
 
@@ -78,6 +83,7 @@ export default function AccountPage({ language }: Props) {
         throw new Error('Failed to save bank information')
       }
 
+      setStale(true)
       toast({
         title: 'Bank information saved',
         description: 'Your bank information has been saved successfully.',
@@ -102,21 +108,23 @@ export default function AccountPage({ language }: Props) {
 
   return (
     <section className='w-full max-w-[1100px] flex flex-col mb-8 2xl:mb-0'>
-      <div className='w-full mb-4 px-4 pt-4'>
-        <h2 className='text-lg font-bold'>Account</h2>
-        <p className='text-sm text-muted-foreground'>
-          Accounts relevant to this app, you can manage the rest of your account
-          in the{' '}
-          <a
-            href={`https://${getMainDomain()}/${language}/account`} // TODO: Add link to main app settings
-            className='text-primary underline hover:text-primary/90'
-          >
-            main app settings
-          </a>
-          .
-        </p>
-        <Separator className='bg-yellow-400 mt-4' />
-      </div>
+      {includeBanner && (
+        <div className='w-full mb-4 px-4 pt-4'>
+          <h2 className='text-lg font-bold'>Account</h2>
+          <p className='text-sm text-muted-foreground'>
+            Accounts relevant to this app, you can manage the rest of your
+            account in the{' '}
+            <a
+              href={`https://${getMainDomain()}/${language}/account`} // TODO: Add link to main app settings
+              className='text-primary underline hover:text-primary/90'
+            >
+              main app settings
+            </a>
+            .
+          </p>
+          <Separator className='bg-yellow-400 mt-4' />
+        </div>
+      )}
       <form
         onSubmit={bankInformationForm.handleSubmit(onSubmit)}
         className='w-full flex flex-col gap-4 max-h-[725px] overflow-y-auto'

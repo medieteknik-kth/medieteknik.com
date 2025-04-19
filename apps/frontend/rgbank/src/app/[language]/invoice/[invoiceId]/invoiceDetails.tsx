@@ -20,7 +20,9 @@ import {
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { LanguageCode } from '@/models/Language'
+import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import { useGeneralDetail, useInvoiceDetail } from '@/providers/DetailProvider'
+import { canChangeExpense } from '@/utility/expense/admin'
 import { useState } from 'react'
 
 interface Props {
@@ -29,7 +31,9 @@ interface Props {
 
 export default function InvoiceDetails({ language }: Props) {
   const { invoice, updateStatus } = useInvoiceDetail()
-  const { student, bankAccount } = useGeneralDetail()
+  const { student: studentAuthor } = useGeneralDetail()
+  const { committees } = useStudent()
+  const { rgbank_permissions: permissions } = usePermissions()
   const [currentTab, setCurrentTab] = useState('details')
 
   return (
@@ -44,7 +48,7 @@ export default function InvoiceDetails({ language }: Props) {
             <p className='text-muted-foreground'>
               Invoice submitted by{' '}
               <span className='font-semibold'>
-                {student.first_name} {student.last_name}
+                {studentAuthor.first_name} {studentAuthor.last_name}
               </span>
             </p>
           </div>
@@ -73,7 +77,11 @@ export default function InvoiceDetails({ language }: Props) {
                   <TabsTrigger value='details'>Details</TabsTrigger>
                   <TabsTrigger value='files'>Files</TabsTrigger>
                   <TabsTrigger value='comments'>Comments</TabsTrigger>
-                  <TabsTrigger value='admin'>Admin</TabsTrigger>
+                  {canChangeExpense(
+                    committees,
+                    invoice.committee,
+                    permissions
+                  ) && <TabsTrigger value='admin'>Admin</TabsTrigger>}
                 </TabsList>
                 <AnimatedTabsContent
                   activeValue={currentTab}

@@ -20,7 +20,9 @@ import {
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { LanguageCode } from '@/models/Language'
+import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import { useExpenseDetail, useGeneralDetail } from '@/providers/DetailProvider'
+import { canChangeExpense } from '@/utility/expense/admin'
 import { useState } from 'react'
 
 interface Props {
@@ -29,7 +31,9 @@ interface Props {
 
 export default function ExpenseDetails({ language }: Props) {
   const { expense, updateStatus } = useExpenseDetail()
-  const { student, bankAccount } = useGeneralDetail()
+  const { student } = useGeneralDetail()
+  const { committees } = useStudent()
+  const { rgbank_permissions: permissions } = usePermissions()
   const [currentTab, setCurrentTab] = useState('details')
 
   return (
@@ -73,7 +77,11 @@ export default function ExpenseDetails({ language }: Props) {
                   <TabsTrigger value='details'>Details</TabsTrigger>
                   <TabsTrigger value='files'>Files</TabsTrigger>
                   <TabsTrigger value='comments'>Comments</TabsTrigger>
-                  <TabsTrigger value='admin'>Admin</TabsTrigger>
+                  {canChangeExpense(
+                    committees,
+                    expense.committee,
+                    permissions
+                  ) && <TabsTrigger value='admin'>Admin</TabsTrigger>}
                 </TabsList>
                 <AnimatedTabsContent
                   activeValue={currentTab}

@@ -1,5 +1,6 @@
 'use client'
 
+import AccountPage from '@/app/[language]/account/pages/account/accountPage'
 import LoginWrapper from '@/app/[language]/login/client/loginWrapper'
 import Expense from '@/app/[language]/upload/expense/expense'
 import FinalizeExpense from '@/app/[language]/upload/expense/finalizeExpense'
@@ -11,7 +12,10 @@ import FormProvider from '@/components/context/FormContext'
 import { Tabs } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import { useAuthentication } from '@/providers/AuthenticationProvider'
+import {
+  useAuthentication,
+  useStudent,
+} from '@/providers/AuthenticationProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -22,14 +26,12 @@ interface Props {
 
 export default function UploadForm({ language, committees }: Props) {
   const { isAuthenticated, isLoading } = useAuthentication()
+  const { bank_account } = useStudent()
   const searchParams = useSearchParams()
   const template = searchParams.get('template') || 'select'
   const [page, setPage] = useState(template)
   const pathname = usePathname()
   const router = useRouter()
-  const loginUrl = `/${language}/login${
-    pathname !== '/' ? `?return_url=${pathname}` : ''
-  }`
 
   const handleTabChange = useCallback(
     (value: string) => {
@@ -66,7 +68,25 @@ export default function UploadForm({ language, committees }: Props) {
   if (!isAuthenticated) {
     return (
       <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
-        <LoginWrapper language={language} onSuccess={() => {}} />
+        <LoginWrapper language={language} />
+      </div>
+    )
+  }
+
+  if (!bank_account) {
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col items-center gap-y-20 sm:p-4 md:p-8'>
+        <div>
+          <p className='text-center text-sm text-muted-foreground'>
+            To upload an invoice or expense, you need to fill in your bank
+            account information. This is required for us to process your invoice
+            or expense. You can do this in the account settings.
+          </p>
+          <h1 className='text-3xl font-bold text-center'>
+            Bank account information required
+          </h1>
+        </div>
+        <AccountPage language={language} includeBanner={false} />
       </div>
     )
   }

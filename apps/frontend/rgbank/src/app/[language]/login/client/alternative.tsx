@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import type { JSX } from 'react'
 
 interface Props {
@@ -25,14 +26,17 @@ export default function AlternativeLogin({
   return_url,
   remember,
 }: Props): JSX.Element {
+  const searchParams = useSearchParams()
+  const returnUrl = searchParams.get('return_url') || return_url
+
   const loginKTH = () => {
     const redirectURL =
       process.env.NODE_ENV === 'production'
         ? `https://api.medieteknik.com/auth${
-            return_url && `?return_url=${return_url}&remember=${remember}`
+            returnUrl && `?return_url=${returnUrl}&remember=${remember}`
           }`
         : `http://localhost:8080/auth${
-            return_url && `?return_url=${return_url}&remember=${remember}`
+            returnUrl && `?return_url=${returnUrl}&remember=${remember}`
           }`
     window.location.href = `${redirectURL}`
   }

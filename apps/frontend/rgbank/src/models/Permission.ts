@@ -50,3 +50,8 @@ export const Permission = {
  * This type is a union of all the values of the `Permission` object.
  */
 export type Permission = (typeof Permission)[keyof typeof Permission]
+
+export interface RGBankPermissions {
+  access_level: number
+  view_permission_level: number
+}

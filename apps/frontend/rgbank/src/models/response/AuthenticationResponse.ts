@@ -1,3 +1,4 @@
+import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type Committee from '@/models/Committee'
 import type { CommitteePosition } from '@/models/Committee'
 import type { AuthorResource } from '@/models/Items'
@@ -26,10 +27,11 @@ export interface SuccessfulAuthenticationResponse {
   committees: Committee[]
   committee_positions: CommitteePosition[]
   expiration: number
-  rgbank_permissions: {
+  rgbank_permissions?: {
     access_level: number
     view_permission_level: number
   }
+  rgbank_bank_account?: AccountBankInformation
 }
 
 interface FailedAuthenticationResponse {

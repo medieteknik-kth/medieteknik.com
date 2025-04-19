@@ -21,7 +21,7 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AccordionItem } from '@radix-ui/react-accordion'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { type JSX, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -56,6 +56,8 @@ export default function LoginForm({
   const [errorMessage, setErrorMessage] = useState('')
   const { data, error, isLoading } = useSWR('/api/csrf-token', fetcher)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const returnUrl = searchParams.get('return_url')
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -91,7 +93,12 @@ export default function LoginForm({
       if (onSuccess) {
         onSuccess()
       } else {
-        router.back()
+        if (returnUrl) {
+          console.log('Redirecting to', returnUrl)
+          router.push(returnUrl)
+        } else {
+          router.back()
+        }
       }
     } else {
       if (authError) {

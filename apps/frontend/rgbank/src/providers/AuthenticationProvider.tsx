@@ -1,10 +1,11 @@
 'use client'
 
 import { AuthenticationContext } from '@/context/AuthenticationContext'
+import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type Committee from '@/models/Committee'
 import type { CommitteePosition } from '@/models/Committee'
 import type { AuthorResource } from '@/models/Items'
-import type { Permission, Role } from '@/models/Permission'
+import type { Permission, RGBankPermissions, Role } from '@/models/Permission'
 import type Student from '@/models/Student'
 import { useContext } from 'react'
 
@@ -79,10 +80,7 @@ interface permissionsContextData {
     student?: Permission[]
     author?: AuthorResource[]
   }
-  rgbank_permissions?: {
-    access_level: number
-    view_permission_level: number
-  }
+  rgbank_permissions?: RGBankPermissions
   hasPermission: (permission: Permission) => boolean
   canAuthor: (resourceType: AuthorResource) => boolean
 }
@@ -140,6 +138,7 @@ interface studentContextData {
   role: Role
   committees: Committee[]
   positions: CommitteePosition[]
+  bank_account?: AccountBankInformation
 }
 
 /**
@@ -166,7 +165,13 @@ export function useStudent(): studentContextData {
     )
   }
 
-  const { student, role, committees, committee_positions: positions } = context
+  const {
+    student,
+    role,
+    committees,
+    committee_positions: positions,
+    rgbank_bank_account: bank_account,
+  } = context
 
-  return { student, role, committees, positions }
+  return { student, role, committees, positions, bank_account }
 }

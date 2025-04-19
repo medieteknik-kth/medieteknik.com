@@ -136,6 +136,7 @@ export function AuthenticationProvider({
             access_level: 0,
             view_permission_level: 0,
           },
+          rgbank_bank_account: json.rgbank_bank_account,
         },
       })
       dispatch({ type: 'SET_STALE', payload: false })
