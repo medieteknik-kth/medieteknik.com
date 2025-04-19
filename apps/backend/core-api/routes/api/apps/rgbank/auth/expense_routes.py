@@ -178,7 +178,7 @@ def get_expense(expense_id: str) -> Response:
     return jsonify(
         {
             "expense": expense.to_dict(),
-            "student": student.to_dict(),
+            "student": student.to_dict(is_public_route=False),
             "bank_information": bank_information.to_dict(),
             "thread": thread.to_dict() if thread else None,
         }

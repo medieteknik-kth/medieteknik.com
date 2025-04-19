@@ -182,7 +182,7 @@ def get_invoice(invoice_id: str) -> Response:
     return jsonify(
         {
             "invoice": invoice.to_dict(),
-            "student": student.to_dict(),
+            "student": student.to_dict(is_public_route=False),
             "bank_information": bank_information.to_dict(),
             "thread": thread.to_dict(include_messages=True) if thread else None,
         }
