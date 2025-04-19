@@ -75,7 +75,7 @@ def create_expense_domain() -> Response:
     new_domain = ExpenseDomain(
         title=title,
         parts=parts,
-        commitee_id=committee_id,
+        committee_id=committee_id,
     )
 
     db.session.add(new_domain)
@@ -86,9 +86,9 @@ def create_expense_domain() -> Response:
     ), HTTPStatus.CREATED
 
 
-@expense_domain_bp.route("/<string:expense_id>", methods=["PUT"])
+@expense_domain_bp.route("/<string:expense_domain_id>", methods=["PUT"])
 @jwt_required()
-def update_expense_domain(expense_id: str) -> Response:
+def update_expense_domain(expense_domain_id: str) -> Response:
     """
     Updates an expense domain
         :return: Response - The response object, 200 if successful
@@ -99,11 +99,13 @@ def update_expense_domain(expense_id: str) -> Response:
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
     ).all()
+
     permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
         RGBankPermissions.committee_position_id.in_(
             [position.committee_position_id for position in positions]
         )
     ).all()
+
     if not permissions:
         return jsonify(
             {"error": "You do not have permission to create an expense domain"}
@@ -121,7 +123,7 @@ def update_expense_domain(expense_id: str) -> Response:
             {"error": "You do not have permission to create an expense domain"}
         ), HTTPStatus.FORBIDDEN
 
-    expense_domain: ExpenseDomain = ExpenseDomain.query.get_or_404(expense_id)
+    expense_domain: ExpenseDomain = ExpenseDomain.query.get_or_404(expense_domain_id)
 
     data = request.get_json()
 
@@ -130,12 +132,6 @@ def update_expense_domain(expense_id: str) -> Response:
 
     title: str | None = data.get("title")
     parts: List[str] | None = data.get("parts")
-    committee_id: str | None = data.get("committee_id")
-
-    if title and committee_id:
-        return jsonify(
-            {"error": "Only one of title or committee_id can be provided"}
-        ), HTTPStatus.BAD_REQUEST
 
     if title:
         expense_domain.title = title
@@ -151,13 +147,7 @@ def update_expense_domain(expense_id: str) -> Response:
 
         expense_domain.parts = parts
 
-    if committee_id:
-        if not isinstance(committee_id, str):
-            return jsonify(
-                {"error": "Committee ID must be a string"}
-            ), HTTPStatus.BAD_REQUEST
-
-        expense_domain.committee_id = committee_id
+    db.session.commit()
 
     return jsonify({"message": "Expense domain updated successfully"}), HTTPStatus.OK
 

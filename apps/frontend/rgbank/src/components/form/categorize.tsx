@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import type Committee from '@/models/Committee'
+import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
@@ -25,6 +26,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 interface Props {
   defaultValue?: Category[]
+  expenseDomains: ExpenseDomain[]
   setFormCategories: (categories: Category[]) => void
   categoryStep: number
   uncompleteStep: (step: number) => void
@@ -34,6 +36,7 @@ interface Props {
 
 export default function Categorize({
   defaultValue,
+  expenseDomains,
   setFormCategories,
   categoryStep,
   uncompleteStep,
@@ -42,6 +45,7 @@ export default function Categorize({
 }: Props) {
   let categoryIndex = 0
   const [dropdownOpen, setDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
+  const [partDropdownOpen, setPartDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
   const [categories, setCategories] = useState<Category[]>([
     ...(defaultValue && defaultValue.length > 0
       ? defaultValue
@@ -55,13 +59,15 @@ export default function Categorize({
         ]),
   ])
 
-  const allCommittees = [
-    ...committees.map((committee) => ({
-      value: committee.committee_id,
-      label: committee.translations[0].title,
-      icon: committee.logo_url,
-    })),
-  ]
+  const allDomains = expenseDomains.map((domain) => {
+    return {
+      label: domain.title,
+      value: domain.expense_part_id,
+      icon: committees.find(
+        (committee) => committee.committee_id === domain.committee_id
+      )?.logo_url,
+    }
+  })
 
   const addCategory = useCallback(() => {
     categoryIndex++
@@ -136,8 +142,8 @@ export default function Categorize({
                       <div className='bg-white p-1 rounded-lg'>
                         <Image
                           src={
-                            allCommittees.find(
-                              (committee) => committee.value === category.author
+                            allDomains.find(
+                              (domain) => domain.label === category.author
                             )?.icon || Logo.src
                           }
                           alt='Committee'
@@ -146,8 +152,8 @@ export default function Categorize({
                           height={24}
                         />
                       </div>
-                      {allCommittees.find(
-                        (committee) => committee.value === category.author
+                      {allDomains.find(
+                        (domain) => domain.label === category.author
                       )?.label || 'Select a committee'}
                     </div>
                     <ChevronDownIcon className='w-5 h-5' />
@@ -159,10 +165,10 @@ export default function Categorize({
                     <CommandList>
                       <CommandEmpty>'None found</CommandEmpty>
                       <CommandGroup>
-                        {allCommittees.map((committee) => (
+                        {allDomains.map((domain) => (
                           <CommandItem
-                            key={committee.value}
-                            value={committee.value}
+                            key={domain.value}
+                            value={domain.label}
                             onSelect={(currentValue) => {
                               const newCategories = [...categories]
                               newCategories[index].author = currentValue
@@ -172,16 +178,18 @@ export default function Categorize({
                             className='flex items-center justify-between'
                           >
                             <div className='flex items-center gap-2'>
-                              <div className='bg-white p-1 rounded-lg'>
-                                <Image
-                                  src={committee.icon}
-                                  alt={committee.label}
-                                  unoptimized
-                                  width={24}
-                                  height={24}
-                                />
-                              </div>
-                              {committee.label}
+                              {domain.icon && (
+                                <div className='bg-white p-1 rounded-lg'>
+                                  <Image
+                                    src={domain.icon}
+                                    alt={domain.label}
+                                    unoptimized
+                                    width={24}
+                                    height={24}
+                                  />
+                                </div>
+                              )}
+                              {domain.label}
                             </div>
                           </CommandItem>
                         ))}
@@ -198,16 +206,68 @@ export default function Categorize({
                   Category <span className='text-red-500'>*</span>
                 </Label>
               )}
-              <Input
-                type='text'
-                placeholder='Category'
-                value={category.category}
-                onChange={(e) => {
-                  const newCategories = [...categories]
-                  newCategories[index].category = e.target.value
-                  setCategories(newCategories)
+              <Popover
+                open={partDropdownOpen === index}
+                onOpenChange={() => {
+                  setPartDropdownOpen((prev) => (prev === index ? -1 : index))
                 }}
-              />
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={'outline'}
+                    // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                    role='combobox'
+                    className='w-full items-center justify-between'
+                  >
+                    <div className='flex items-center gap-2'>
+                      <div className='bg-white p-1 rounded-lg'>
+                        <Image
+                          src={
+                            allDomains.find(
+                              (domain) => domain.label === category.author
+                            )?.icon || Logo.src
+                          }
+                          alt='Committee'
+                          unoptimized
+                          width={24}
+                          height={24}
+                        />
+                      </div>
+                      {category.category || 'Select part'}
+                    </div>
+                    <ChevronDownIcon className='w-5 h-5' />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className='w-96! p-0'>
+                  <Command>
+                    <CommandInput placeholder='Search' />
+                    <CommandList>
+                      <CommandEmpty>None found</CommandEmpty>
+                      <CommandGroup>
+                        {expenseDomains
+                          .find((domain) => domain.title === category.author)
+                          ?.parts.map((part) => (
+                            <CommandItem
+                              key={part}
+                              value={part}
+                              onSelect={(currentValue) => {
+                                const newCategories = [...categories]
+                                newCategories[index].category = currentValue
+                                setPartDropdownOpen(-1)
+                                validateCategories()
+                              }}
+                              className='flex items-center justify-between'
+                            >
+                              <div className='flex items-center gap-2'>
+                                {part}
+                              </div>
+                            </CommandItem>
+                          ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className='w-full flex flex-col gap-2 col-span-3'>

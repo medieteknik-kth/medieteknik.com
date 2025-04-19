@@ -1,82 +1,121 @@
+'use client'
+
+import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
+import { toast } from '@/components/ui/use-toast'
 import type Committee from '@/models/Committee'
+import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { LanguageCode } from '@/models/Language'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import { useState } from 'react'
+import useSWR from 'swr'
 
 interface Props {
   language: LanguageCode
   committees?: Committee[]
 }
 
-type Subcategory = {
-  id: string
-  name: string
-}
-
-export type Lowercategory = {
-  id: string
-  name: string
-  logo_url?: string
-  subcategories: Subcategory[]
-}
-
-export type Category = {
-  id: string
-  name: string
-  description: string
-  lowercategories: Lowercategory[]
-}
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function SettingsPage({ language, committees }: Props) {
-  const [upperCategoryOpen, setUpperCategoryOpen] = useState<
-    Record<string, boolean>
-  >({})
-  const [lowerCategoryOpen, setLowerCategoryOpen] = useState<
-    Record<string, boolean>
-  >({})
-
-  const upperCategories: Category[] = [
+  const [selectedDomain, setSelectedDomain] = useState<string>('')
+  const [newDomain, setNewDomain] = useState<string>('')
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [parts, setParts] = useState<{ value: string; id: number }[]>([])
+  const [newTitle, setNewTitle] = useState<string>('')
+  const [totalParts, setTotalParts] = useState(100)
+  const { data: expenseDomains, error } = useSWR<ExpenseDomain[]>(
+    '/api/public/rgbank/expense-domains',
+    fetcher,
     {
-      id: 'general',
-      name: 'General',
-      description: 'General settings for the application',
-      lowercategories: [],
-    },
-    {
-      id: 'committees',
-      name: 'Committees',
-      description: 'Settings for committees',
-      lowercategories:
-        committees?.map((committee) => ({
-          id: committee.committee_id,
-          name: committee.translations[0].title,
-          logo_url: committee.logo_url,
-          subcategories: [
-            {
-              id: 'test',
-              name: 'Test subcategory',
-            },
-          ],
-        })) || [],
-    },
-  ]
+      fallbackData: [],
+    }
+  )
 
-  const toggleUpperCategory = (category: string) => {
-    setUpperCategoryOpen((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }))
-  }
-
-  const toggleLowerCategory = (category: string) => {
-    setLowerCategoryOpen((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }))
+  if (error || !expenseDomains) {
+    return (
+      <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
+        <h1 className='text-3xl font-bold'>Error loading settings</h1>
+        <p className='text-muted-foreground'>
+          An error occurred while loading the settings. Please try again later.
+        </p>
+      </div>
+    )
   }
 
   if (!committees) {
     return null
+  }
+
+  const allDomains = expenseDomains.map((domain) => {
+    return {
+      label: domain.title,
+      value: domain.expense_part_id,
+      icon: committees.find(
+        (committee) => committee.committee_id === domain.committee_id
+      )?.logo_url,
+    }
+  })
+
+  const onNewDomainSubmit = async () => {
+    if ((newDomain === '' && selectedDomain === '') || parts.length === 0) {
+      return
+    }
+
+    const domainId = expenseDomains.find(
+      (domain) => domain.title === selectedDomain
+    )?.expense_part_id
+
+    const title =
+      newTitle ||
+      newDomain ||
+      expenseDomains.find((domain) => domain.title === selectedDomain)?.title ||
+      ''
+
+    const newDomainData = {
+      title: title,
+      parts: parts.map((part) => part.value),
+    }
+
+    try {
+      const response = await fetch(
+        `/api/rgbank/expense-domains${domainId ? `/${domainId}` : ''}`,
+        {
+          method: domainId ? 'PUT' : 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newDomainData),
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+
+      toast({
+        title: 'New domain created',
+        description: 'The new domain has been created successfully.',
+      })
+    } catch (error) {
+      console.error('Error creating new domain:', error)
+    }
   }
 
   return (
@@ -90,6 +129,177 @@ export default function SettingsPage({ language, committees }: Props) {
         <Separator className='bg-yellow-400 mt-4' />
       </div>
 
+      <div className='px-4'>
+        <h3 className='text-sm font-semibold'>Domains</h3>
+
+        <div className='grid grid-cols-2 grid-rows-[auto_auto] gap-4'>
+          <p className='text-xs text-muted-foreground'>
+            Select the domain for the expense. This will be used to filter the
+            expenses in the application.
+          </p>
+          <p className='text-xs text-muted-foreground'>
+            Or create a new domain
+          </p>
+          <Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                role='combobox'
+                className='min-w-96 items-center justify-between'
+              >
+                <div className='flex items-center gap-2'>
+                  {allDomains.find((domain) => domain.label === selectedDomain)
+                    ?.icon && (
+                    <div className='bg-white p-1 rounded-lg'>
+                      <Image
+                        src={
+                          allDomains.find(
+                            (domain) => domain.label === selectedDomain
+                          )?.icon || ''
+                        }
+                        alt=''
+                        unoptimized
+                        width={24}
+                        height={24}
+                      />
+                    </div>
+                  )}
+                  {allDomains.find((domain) => domain.label === selectedDomain)
+                    ?.label || 'Select a domain'}
+                </div>
+                <ChevronDownIcon className='w-5 h-5' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-96! p-0'>
+              <Command>
+                <CommandInput placeholder='Search' />
+                <CommandList>
+                  <CommandEmpty>None found</CommandEmpty>
+                  <CommandGroup>
+                    {allDomains.map((domain) => (
+                      <CommandItem
+                        key={domain.value}
+                        value={domain.label}
+                        onSelect={(currentValue) => {
+                          setSelectedDomain(currentValue)
+                          setDropdownOpen(false)
+                          setParts(
+                            expenseDomains
+                              .find((domain) => domain.title === currentValue)
+                              ?.parts.map((part, index) => ({
+                                value: part,
+                                id: index,
+                              })) || []
+                          )
+                        }}
+                        className='flex items-center gap-2 h-11 cursor-pointer'
+                      >
+                        {domain.icon && (
+                          <div className='bg-white p-1 rounded-lg'>
+                            <Image
+                              src={domain.icon}
+                              alt=''
+                              unoptimized
+                              width={24}
+                              height={24}
+                            />
+                          </div>
+                        )}
+                        <div className='flex items-center gap-2'>
+                          {domain.label}
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <Input
+            onChange={(e) => {
+              if (selectedDomain !== '') {
+                setSelectedDomain('')
+              }
+              setNewDomain(e.target.value)
+            }}
+          />
+        </div>
+      </div>
+
+      {selectedDomain && (
+        <div className='px-4 mt-4'>
+          <h3 className='text-sm font-semibold'>Title</h3>
+          <p className='text-xs text-muted-foreground'>Enter a new title</p>
+          <Input
+            value={newTitle}
+            onChange={(e) => {
+              setNewTitle(e.target.value)
+            }}
+            placeholder='Enter new domain title'
+            className='w-full'
+          />
+        </div>
+      )}
+
+      <div className='px-4 mt-4'>
+        <h3 className='text-sm font-semibold'>Parts</h3>
+        <p className='text-xs text-muted-foreground'>
+          Inspect or add parts to this domain
+        </p>
+
+        {(selectedDomain !== '' || newDomain !== '') && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              onNewDomainSubmit()
+            }}
+            className='flex flex-col gap-2'
+          >
+            {parts.map((part) => (
+              <div key={part.id} className='max-w-96 flex items-center gap-2'>
+                <Input
+                  value={part.value}
+                  onChange={(e) => {
+                    setParts((prev) =>
+                      prev.map((p) =>
+                        p.id === part.id ? { ...p, value: e.target.value } : p
+                      )
+                    )
+                  }}
+                  placeholder='Enter new part name'
+                  className='w-full'
+                />
+                <Button
+                  type='button'
+                  variant='destructive'
+                  disabled={parts.length < 2}
+                  onClick={() => {
+                    setParts((prev) => prev.filter((p) => p.id !== part.id))
+                  }}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+
+            <Button
+              type='button'
+              variant={'outline'}
+              disabled={
+                parts.length > 1 && parts[parts.length - 1].value === ''
+              }
+              onClick={() => {
+                setTotalParts((prev) => prev + 1)
+                setParts((prev) => [...prev, { value: '', id: totalParts }])
+              }}
+            >
+              Add Part
+            </Button>
+            <Button type='submit'>Save Changes</Button>
+          </form>
+        )}
+      </div>
     </section>
   )
 }

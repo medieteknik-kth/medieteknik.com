@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
+import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
 import type { PaidStatus } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
@@ -22,6 +23,7 @@ import { useCallback, useState } from 'react'
 interface Props {
   language: LanguageCode
   committees: Committee[]
+  expenseDomains: ExpenseDomain[]
   toExpense: () => void
   onBack: () => void
   onFinalize: () => void
@@ -30,6 +32,7 @@ interface Props {
 export default function Invoice({
   language,
   committees,
+  expenseDomains,
   toExpense,
   onBack,
   onFinalize,
@@ -343,6 +346,7 @@ export default function Invoice({
             >
               <Categorize
                 defaultValue={invoiceData.categories}
+                expenseDomains={expenseDomains}
                 setFormCategories={(categories) => {
                   setCategories(categories)
                 }}

@@ -11,6 +11,7 @@ import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
 import FormProvider from '@/components/context/FormContext'
 import { Tabs } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
+import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { LanguageCode } from '@/models/Language'
 import {
   useAuthentication,
@@ -18,13 +19,23 @@ import {
 } from '@/providers/AuthenticationProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
+import useSWR from 'swr'
 
 interface Props {
   language: LanguageCode
   committees: Committee[]
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
 export default function UploadForm({ language, committees }: Props) {
+  const { data: expenseDomains, error } = useSWR<ExpenseDomain[]>(
+    '/api/public/rgbank/expense-domains',
+    fetcher,
+    {
+      fallbackData: [],
+    }
+  )
   const { isAuthenticated, isLoading } = useAuthentication()
   const { bank_account } = useStudent()
   const searchParams = useSearchParams()
@@ -69,6 +80,21 @@ export default function UploadForm({ language, committees }: Props) {
     return (
       <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
         <LoginWrapper language={language} />
+      </div>
+    )
+  }
+
+  if (!expenseDomains || error) {
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col items-center gap-y-20 sm:p-4 md:p-8'>
+        <div>
+          <p className='text-center text-sm text-muted-foreground'>
+            We are currently experiencing issues with our expense domains.
+            Please try again later.
+          </p>
+          <h1 className='text-3xl font-bold text-center'>Error</h1>
+        </div>
+        <AccountPage language={language} includeBanner={false} />
       </div>
     )
   }
@@ -118,6 +144,7 @@ export default function UploadForm({ language, committees }: Props) {
             <Invoice
               language={language}
               committees={committees}
+              expenseDomains={expenseDomains}
               toExpense={() => {
                 handleTabChange('expense')
                 setPage('expense')
@@ -157,6 +184,7 @@ export default function UploadForm({ language, committees }: Props) {
             <Expense
               language={language}
               committees={committees}
+              expenseDomains={expenseDomains}
               onBack={() => {
                 removeSearchParams()
                 setPage('select')

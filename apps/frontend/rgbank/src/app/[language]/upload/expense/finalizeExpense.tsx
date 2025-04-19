@@ -41,6 +41,8 @@ export default function FinalizeExpense({
     return acc + (Number.isNaN(amount) ? 0 : amount)
   }, 0)
 
+  console.log(expenseData.categories)
+
   const postExpense = async (data: z.infer<typeof expenseSchema>) => {
     const formData = new FormData()
 

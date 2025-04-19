@@ -197,6 +197,7 @@ def register_v1_routes(app: Flask):
             url_prefix=f"{PUBLIC_PATH}/rgbank/statistics",
         )
 
+    # Register all routes
     register_public_routes()
     register_protected_routes()
     register_rgbank_routes()

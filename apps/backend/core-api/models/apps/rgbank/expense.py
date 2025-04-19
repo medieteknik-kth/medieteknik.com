@@ -70,7 +70,7 @@ class ExpenseDomain(db.Model):
     parts = Column(ARRAY(String), nullable=False, default=[])
 
     # Foreign Keys
-    commitee_id = Column(
+    committee_id = Column(
         UUID(as_uuid=True),
         ForeignKey(Committee.committee_id),
         nullable=True,
@@ -87,7 +87,7 @@ class ExpenseDomain(db.Model):
             "expense_part_id": str(self.expense_part_id),
             "title": self.title,
             "parts": self.parts,
-            "committee_id": str(self.commitee_id) if self.commitee_id else None,
+            "committee_id": str(self.committee_id) if self.committee_id else None,
         }
 
 
