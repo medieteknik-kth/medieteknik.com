@@ -1,7 +1,6 @@
 'use client'
 
-import AdminPage from '@/app/[language]/admin/pages/admin'
-import OverviewPage from '@/app/[language]/admin/pages/overview'
+import OverviewPage from '@/app/[language]/admin/pages/overview/overview'
 import SettingsPage from '@/app/[language]/admin/pages/settings'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Button } from '@/components/ui/button'
@@ -9,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -27,12 +26,8 @@ interface Page {
 export default function Admin({ language, committees }: Props) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const category = searchParams.get('category') || 'admin'
+  const category = searchParams.get('category') || 'overview'
   const router = useRouter()
-  const [openCollapsible, setOpenCollapsible] = useState<boolean[]>([
-    false,
-    false,
-  ])
 
   const createTabString = useCallback(
     (tab: string) => {
@@ -46,10 +41,6 @@ export default function Admin({ language, committees }: Props) {
   )
 
   const allPages: Page[] = [
-    {
-      name: 'admin',
-      page: AdminPage,
-    },
     {
       name: 'overview',
       page: OverviewPage,
