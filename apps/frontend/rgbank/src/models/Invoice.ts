@@ -20,18 +20,19 @@ export interface InvoiceData {
 
 export interface InvoiceResponse {
   invoice_id: string
-  already_paid: boolean
-  file_urls: string[]
+  already_paid?: boolean
+  file_urls?: string[]
   description: string
-  is_original: boolean
-  is_booked: boolean
+  is_original?: boolean
+  is_booked?: boolean
   date_issued: string
   due_date: string
-  categories: Category[]
+  categories?: Category[]
   status: ExpenseStatus
   created_at: string
   committee?: Committee
   amount?: number
+  student?: Student
 }
 
 export interface InvoiceResponseDetailed {

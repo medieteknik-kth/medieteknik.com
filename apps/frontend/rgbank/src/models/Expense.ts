@@ -15,15 +15,16 @@ export interface ExpenseData {
 
 export interface ExpenseResponse {
   expense_id: string
-  file_urls: string[]
+  file_urls?: string[]
   description: string
   date: string
-  isDigital: boolean
-  categories: Category[]
+  isDigital?: boolean
+  categories?: Category[]
   status: ExpenseStatus
   created_at: string
   committee?: Committee
   amount?: number
+  student?: Student
 }
 
 export interface ExpenseResponseDetailed {
