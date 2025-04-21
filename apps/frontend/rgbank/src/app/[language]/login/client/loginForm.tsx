@@ -90,12 +90,16 @@ export default function LoginForm({
 
     if (success) {
       setStale(true)
-      if (onSuccess) {
-        onSuccess()
+
+      if (returnUrl) {
+        router.push(returnUrl)
+
+        if (onSuccess) {
+          onSuccess()
+        }
       } else {
-        if (returnUrl) {
-          console.log('Redirecting to', returnUrl)
-          router.push(returnUrl)
+        if (onSuccess) {
+          onSuccess()
         } else {
           router.back()
         }

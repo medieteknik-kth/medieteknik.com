@@ -79,7 +79,7 @@ export default function UploadForm({ language, committees }: Props) {
   if (!isAuthenticated) {
     return (
       <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
-        <LoginWrapper language={language} />
+        <LoginWrapper language={language} onSuccess={() => {}} />
       </div>
     )
   }
