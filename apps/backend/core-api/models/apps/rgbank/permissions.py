@@ -1,7 +1,9 @@
 import enum
 import uuid
 from sqlalchemy import UUID, Column, Enum, ForeignKey, MetaData, text
+from sqlalchemy.ext.hybrid import hybrid_property
 from models.committees import CommitteePosition
+from models.committees.committee import Committee
 from utility import db
 
 
@@ -56,6 +58,16 @@ class RGBankPermissions(db.Model):
         "CommitteePosition",
         back_populates="rgbank_permissions",
     )
+
+    @hybrid_property
+    def committee(self) -> Committee:
+        """Committee relationship."""
+        return self.committee_position.committee
+
+    @committee.expression
+    def committee(cls):
+        """Committee relationship expression."""
+        return cls.committee_position.committee
 
     def __repr__(self):
         return f"<RGBankPermissions {self.name}>"

@@ -17,6 +17,7 @@ from services.apps.rgbank import (
     add_committee_statistic,
     add_expense_count,
     add_student_statistic,
+    retrieve_accessible_cost_items,
     has_access,
     has_full_authority,
     add_message,
@@ -137,6 +138,41 @@ def create_invoice() -> Response:
     return jsonify({"message": "Invoice created successfully"}), HTTPStatus.CREATED
 
 
+@invoice_bp.route("/all", methods=["GET"])
+@jwt_required()
+def all_invoices():
+    """Gets all invoices
+
+    :return: The response object, 200 if successful
+    :rtype: Response
+    """
+    student_id = get_jwt_identity()
+    memberships: List[StudentMembership] = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        StudentMembership.termination_date.is_(None),
+    ).all()
+    page = request.args.get("page", 1, type=int)
+
+    invoices: List[Invoice] = retrieve_accessible_cost_items(
+        cost_item=Invoice,
+        memberships=memberships,
+        page=page,
+    )
+
+    if not invoices:
+        return jsonify([]), HTTPStatus.NOT_FOUND
+
+    return jsonify(
+        [
+            invoice.to_dict(
+                short=True,
+                is_public_route=False,
+            )
+            for invoice in invoices
+        ]
+    ), HTTPStatus.OK
+
+
 @invoice_bp.route("/<string:invoice_id>", methods=["GET"])
 @jwt_required()
 def get_invoice(invoice_id: str) -> Response:
@@ -205,7 +241,11 @@ def get_invoices_by_student(student_id: str) -> Response:
             {"error": "You are not authorized to view this student's invoices"}
         ), HTTPStatus.UNAUTHORIZED
 
-    invoices: List[Invoice] = Invoice.query.filter_by(student_id=student_id).all()
+    invoices: List[Invoice] = (
+        Invoice.query.filter_by(student_id=student_id)
+        .order_by(Invoice.created_at.desc())
+        .all()
+    )
 
     if not invoices:
         return jsonify([]), HTTPStatus.NOT_FOUND

@@ -149,7 +149,11 @@ class Expense(db.Model):
         """
         author = self.categories[0].get("author") if self.categories else None
 
-        committee = Committee.query.get(author) if author else None
+        committee = None
+        try:
+            committee = Committee.query.get(author) if author else None
+        except Exception:
+            return None
         return committee if committee else None
 
     @amount.expression
@@ -163,24 +167,45 @@ class Expense(db.Model):
     def committee(cls):
         """Expression for SQLAlchemy to use in queries."""
         author = func.jsonb_extract_path_text(cls.categories, "author")
-        return Committee.query.get(author) if author else None
+        try:
+            return Committee.query.get(author) if author else None
+        except Exception:
+            return None
 
     def __repr__(self):
         return f"<Expense {self.expense_id}>"
 
-    def to_dict(self):
-        return {
-            "expense_id": str(self.expense_id),
-            "file_urls": self.file_urls,
-            "description": self.description,
-            "date": self.date.isoformat() if self.date else None,
-            "is_digital": self.is_digital,
-            "categories": self.categories,
-            "status": self.status.name,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "committee": self.committee.to_dict() if self.committee else None,
-            "amount": self.amount,
-        }
+    def to_dict(self, short: bool = False, is_public_route: bool = True):
+        if short:
+            base_dict = {
+                "expense_id": str(self.expense_id),
+                "description": self.description,
+                "date": self.date.isoformat() if self.date else None,
+                "status": self.status.name,
+                "created_at": self.created_at.isoformat() if self.created_at else None,
+                "committee": self.committee.to_dict() if self.committee else None,
+                "amount": self.amount,
+            }
+        else:
+            base_dict = {
+                "expense_id": str(self.expense_id),
+                "file_urls": self.file_urls,
+                "description": self.description,
+                "date": self.date.isoformat() if self.date else None,
+                "is_digital": self.is_digital,
+                "categories": self.categories,
+                "status": self.status.name,
+                "created_at": self.created_at.isoformat() if self.created_at else None,
+                "committee": self.committee.to_dict() if self.committee else None,
+                "amount": self.amount,
+            }
+
+        if not is_public_route:
+            base_dict["student"] = (
+                self.student.to_dict(is_public_route=False) if self.student else None
+            )
+
+        return base_dict
 
 
 class Invoice(db.Model):
@@ -242,7 +267,11 @@ class Invoice(db.Model):
         """
         author = self.categories[0].get("author") if self.categories else None
 
-        committee = Committee.query.get(author) if author else None
+        committee = None
+        try:
+            committee = Committee.query.get(author) if author else None
+        except Exception:
+            return None
         return committee if committee else None
 
     @amount.expression
@@ -256,24 +285,51 @@ class Invoice(db.Model):
     def committee(cls):
         """Expression for SQLAlchemy to use in queries."""
         author = func.jsonb_extract_path_text(cls.categories, "author")
-        return Committee.query.get(author) if author else None
+        try:
+            return Committee.query.get(author) if author else None
+        except Exception:
+            return None
 
     def __repr__(self):
         return f"<Invoice {self.invoice_id}>"
 
-    def to_dict(self):
-        return {
-            "invoice_id": str(self.invoice_id),
-            "already_paid": self.already_paid,
-            "file_urls": self.file_urls,
-            "description": self.description,
-            "is_original": self.is_original,
-            "is_booked": self.is_booked,
-            "date_issued": self.date_issued.isoformat() if self.date_issued else None,
-            "due_date": self.due_date.isoformat() if self.due_date else None,
-            "categories": self.categories,
-            "status": self.status.name,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "committee": self.committee.to_dict() if self.committee else None,
-            "amount": self.amount,
-        }
+    def to_dict(self, short: bool = False, is_public_route: bool = True):
+        if short:
+            base_dict = {
+                "invoice_id": str(self.invoice_id),
+                "description": self.description,
+                "date_issued": self.date_issued.isoformat()
+                if self.date_issued
+                else None,
+                "due_date": self.due_date.isoformat() if self.due_date else None,
+                "status": self.status.name,
+                "created_at": self.created_at.isoformat() if self.created_at else None,
+                "committee": self.committee.to_dict() if self.committee else None,
+                "amount": self.amount,
+            }
+
+        else:
+            base_dict = {
+                "invoice_id": str(self.invoice_id),
+                "already_paid": self.already_paid,
+                "file_urls": self.file_urls,
+                "description": self.description,
+                "is_original": self.is_original,
+                "is_booked": self.is_booked,
+                "date_issued": self.date_issued.isoformat()
+                if self.date_issued
+                else None,
+                "due_date": self.due_date.isoformat() if self.due_date else None,
+                "categories": self.categories,
+                "status": self.status.name,
+                "created_at": self.created_at.isoformat() if self.created_at else None,
+                "committee": self.committee.to_dict() if self.committee else None,
+                "amount": self.amount,
+            }
+
+        if not is_public_route:
+            base_dict["student"] = (
+                self.student.to_dict(is_public_route=False) if self.student else None
+            )
+
+        return base_dict

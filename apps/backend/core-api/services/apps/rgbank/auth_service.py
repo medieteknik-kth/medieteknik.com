@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Type, Union
 from models.apps.rgbank import (
     Expense,
     Invoice,
@@ -7,6 +7,7 @@ from models.apps.rgbank import (
 )
 from models.apps.rgbank.bank import AccountBankInformation
 from models.core.student import StudentMembership
+from utility.logger import log_error
 
 
 def has_access(
@@ -101,6 +102,62 @@ def has_full_authority(memberships: List[StudentMembership]) -> Tuple[bool, str]
         ),
         "You have permission to view all committees.",
     )
+
+
+def retrieve_accessible_cost_items(
+    cost_item: Type[Union[Expense, Invoice]],
+    memberships: List[StudentMembership],
+    page: int = 1,
+) -> List[Expense | Invoice] | None:
+    # Gets all costs items the student has access to
+
+    if cost_item is not Expense and cost_item is not Invoice:
+        log_error(f"Invalid cost item type. type: {type(cost_item)}")
+        return None
+
+    if not memberships:
+        return None
+
+    permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
+        RGBankPermissions.committee_position_id.in_(
+            [membership.committee_position_id for membership in memberships]
+        )
+    ).all()
+
+    if not permissions:
+        return None
+
+    committee = None
+    all_access = False
+
+    for permission in permissions:
+        if permission.view_permission_level == RGBankViewPermissions.ALL_COMMITTEES:
+            committee = None
+            all_access = True
+            break
+
+        if permission.view_permission_level == RGBankViewPermissions.OWN_COMMITTEE:
+            committee = permission.committee
+
+    if all_access:
+        cost_items = cost_item.query.order_by(cost_item.created_at.desc()).all()
+
+    if committee:
+        if not cost_item.committee:
+            return None
+
+        cost_items = (
+            cost_item.query.filter_by(
+                cost_item.committee.committee_id == committee.committee_id,
+            )
+            .order_by(cost_item.created_at.desc())
+            .all()
+        )
+
+    if not cost_items:
+        return None
+
+    return cost_items
 
 
 def get_bank_account(student_id: str) -> Dict[str, Any] | None:

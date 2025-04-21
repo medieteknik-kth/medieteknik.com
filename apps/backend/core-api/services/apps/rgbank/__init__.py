@@ -6,6 +6,7 @@ This module contains the services for the RGBank application.
 from .auth_service import has_access
 from .auth_service import has_full_authority
 from .auth_service import get_bank_account
+from .auth_service import retrieve_accessible_cost_items
 
 from .message_service import add_message
 
@@ -23,6 +24,7 @@ __all__ = [
     "has_access",
     "has_full_authority",
     "get_bank_account",
+    "retrieve_accessible_cost_items",
     "add_message",
     "attach_permissions",
     "add_committee_statistic",
