@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Input } from '@/components/ui/input'
+import Loading from '@/components/ui/loading'
 import { NumberTicker } from '@/components/ui/number-ticker'
 import {
   Popover,
@@ -68,8 +69,6 @@ export default function ActivityPage({ language }: Props) {
     student ? `/api/rgbank/expenses/student/${student.student_id}` : null,
     fetcher,
     {
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
       fallbackData: [],
     }
   )
@@ -93,8 +92,27 @@ export default function ActivityPage({ language }: Props) {
   const [expenseFilters, setExpenseFilters] =
     useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
 
-  const allExpenses = expenses ?? []
-  const allInvoices = invoices ?? []
+  const allExpenses = expenses || []
+  const allInvoices = invoices || []
+
+  if (invoiceError || expenseError) {
+    return <div>Error loading invoices</div>
+  }
+
+  if (
+    !invoices ||
+    invoicesLoading ||
+    !Array.isArray(invoices) ||
+    !expenses ||
+    expensesLoading ||
+    !Array.isArray(expenses)
+  ) {
+    return (
+      <section className='h-screen w-full flex items-center justify-center'>
+        <Loading language={language} />
+      </section>
+    )
+  }
 
   // Calculate sums in a single pass for each array
   const now = new Date()
