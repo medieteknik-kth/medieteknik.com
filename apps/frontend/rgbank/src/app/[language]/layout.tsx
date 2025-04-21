@@ -6,7 +6,7 @@ import type { LanguageCode } from '@/models/Language'
 import Providers from '@/providers/Providers'
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { dir } from 'i18next'
-import type { Viewport } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { headers } from 'next/headers'
 import Script from 'next/script'
 import type { JSX } from 'react'
@@ -38,6 +38,34 @@ export const viewport: Viewport = {
   colorScheme: 'light',
   width: 'device-width',
   initialScale: 1,
+}
+
+export async function generateMetadata(props: {
+  params: Promise<Params>
+}): Promise<Metadata> {
+  const params = await props.params
+  const value = 'RGBank'
+
+  const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1)
+  return {
+    title: {
+      default: `${capitalizedValue} - Medieteknik`,
+      template: `%s | ${capitalizedValue} - Medieteknik`,
+    },
+    alternates: {
+      canonical: `https://www.medieteknik.com/${params.language}`,
+      languages: {
+        sv: 'https://www.medieteknik.com/sv',
+        en: 'https://www.medieteknik.com/en',
+        'x-default': 'https://www.medieteknik.com',
+      },
+    },
+
+    other: {
+      'msapplication-TileColor': '#ffffff',
+      'google-adsense-account': 'ca-pub-2106963438710910',
+    },
+  }
 }
 
 export default async function RootLayout(props: Props): Promise<JSX.Element> {
