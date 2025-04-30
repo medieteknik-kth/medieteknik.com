@@ -1,4 +1,5 @@
 import enum
+from typing import List
 import uuid
 from sqlalchemy import (
     TIMESTAMP,
@@ -14,6 +15,7 @@ from sqlalchemy import (
 from models.apps.rgbank import Expense, Invoice, PaymentStatus
 from models.core import Student
 from utility import db
+from utility.logger import log_error
 
 
 class MessageType(enum.Enum):
@@ -45,7 +47,12 @@ class Thread(db.Model):
     expense = db.relationship("Expense", back_populates="thread")
     invoice = db.relationship("Invoice", back_populates="thread")
     messages = db.relationship(
-        "Message", back_populates="thread", cascade="all, delete-orphan", uselist=True
+        "Message",
+        back_populates="thread",
+        cascade="all, delete-orphan",
+        lazy="joined",
+        uselist=True,
+        join_depth=1,
     )
 
     def __repr__(self):
@@ -53,12 +60,20 @@ class Thread(db.Model):
 
     def to_dict(self, include_messages=True):
         if include_messages:
-            messages = [
-                message.to_dict() for message in self.messages if message.read_at
-            ]
-            unread_messages = [
-                message.to_dict() for message in self.messages if not message.read_at
-            ]
+            messages = []
+            unread_messages = []
+
+            for message in self.messages:
+                try:
+                    msg_dict = message.to_dict()
+                    if message.read_at is None:
+                        unread_messages.append(msg_dict)
+                    else:
+                        messages.append(msg_dict)
+                except Exception as e:
+                    log_error(
+                        f"Error converting message {message.message_id} to dict: {e}"
+                    )
 
             return {
                 "thread_id": str(self.thread_id),
@@ -111,7 +126,7 @@ class Message(db.Model):
 
     # Relationships
     thread = db.relationship("Thread", back_populates="messages")
-    sender = db.relationship("Student", back_populates="rgbank_messages")
+    sender = db.relationship("Student", back_populates="rgbank_messages", lazy="joined")
 
     __table_args__ = (
         Index(
@@ -126,14 +141,10 @@ class Message(db.Model):
         return "<Message %r>" % self.message_id
 
     def to_dict(self):
-        sender = None
+        sender_dict = None
 
-        if self.sender_id:
-            sender_obj: Student | None = Student.query.filter_by(
-                student_id=self.sender_id
-            ).first()
-            if sender_obj and isinstance(sender_obj, Student):
-                sender = sender_obj.to_dict()
+        if self.sender_id and self.sender:
+            sender_dict = self.sender.to_dict()
 
         return {
             "message_id": str(self.message_id),
@@ -144,6 +155,6 @@ class Message(db.Model):
             if self.previous_status is not None
             else None,
             "new_status": self.new_status.name if self.new_status is not None else None,
-            "sender": sender,
+            "sender": sender_dict,
             "message_type": self.message_type.name,
         }

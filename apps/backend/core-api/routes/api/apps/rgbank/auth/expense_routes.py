@@ -131,6 +131,13 @@ def create_expense() -> Response:
     db.session.add(new_expense)
     db.session.commit()
 
+    new_thread = Thread(
+        expense_id=new_expense.expense_id,
+    )
+
+    db.session.add(new_thread)
+    db.session.commit()
+
     return jsonify({"message": "Expense created successfully"}), HTTPStatus.CREATED
 
 
@@ -201,25 +208,24 @@ def get_expense(expense_id: str) -> Response:
     if not student or not isinstance(student, Student):
         return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
 
-    bank_information = AccountBankInformation.query.filter_by(
+    bank_information: AccountBankInformation = AccountBankInformation.query.filter_by(
         student_id=student.student_id
-    ).first()
+    ).first_or_404()
 
-    if not bank_information or not isinstance(bank_information, AccountBankInformation):
-        return jsonify({"error": "Bank information not found"}), HTTPStatus.NOT_FOUND
-
-    thread: Thread = Thread.query.filter_by(
+    thread: Thread | None = Thread.query.filter_by(
         expense_id=expense_id,
     ).first()
 
-    return jsonify(
-        {
-            "expense": expense.to_dict(),
-            "student": student.to_dict(is_public_route=False),
-            "bank_information": bank_information.to_dict(),
-            "thread": thread.to_dict() if thread else None,
-        }
-    ), HTTPStatus.OK
+    base_dict = {
+        "expense": expense.to_dict(),
+        "student": student.to_dict(is_public_route=False),
+        "bank_information": bank_information.to_dict(),
+    }
+
+    if thread and isinstance(thread, Thread):
+        base_dict["thread"] = thread.to_dict()
+
+    return jsonify(base_dict), HTTPStatus.OK
 
 
 @expense_bp.route("/student/<string:student_id>", methods=["GET"])
@@ -355,13 +361,16 @@ def update_expense_status(expense_id: str) -> Response:
 
     if new_status == PaymentStatus.BOOKED:
         add_student_statistic(student_id=expense.student_id, value=expense.amount)
-        add_committee_statistic(
-            committee_id=expense.committee.committee_id,
-            value=expense.amount,
-        )
+
+        if expense.committee:
+            add_committee_statistic(
+                committee_id=expense.committee.committee_id,
+                value=expense.amount,
+            )
+
         add_expense_count(
             student_id=expense.student_id,
-            committee_id=expense.committee.committee_id,
+            committee_id=expense.committee.committee_id if expense.committee else None,
             expense_count=1,
         )
 

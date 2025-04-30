@@ -43,6 +43,8 @@ from .translation import normalize_to_ascii
 from .translation import retrieve_languages
 from .translation import update_translation_or_create
 
+from .uuid_util import is_valid_uuid
+
 __all__ = [
     "jwt",
     "oauth",
@@ -76,4 +78,5 @@ __all__ = [
     "normalize_to_ascii",
     "retrieve_languages",
     "update_translation_or_create",
+    "is_valid_uuid",
 ]

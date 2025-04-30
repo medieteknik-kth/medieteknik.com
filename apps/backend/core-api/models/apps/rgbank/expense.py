@@ -18,6 +18,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from models.committees import Committee
 from models.core import Student
 from utility import db
+from utility.uuid_util import is_valid_uuid
 
 
 class PaymentStatus(enum.IntEnum):
@@ -103,6 +104,7 @@ class Expense(db.Model):
     )
 
     file_urls = Column(ARRAY(String), nullable=False)
+    title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     date = Column(DateTime, nullable=False)
     is_digital = Column(Boolean, default=False, nullable=False)
@@ -141,21 +143,6 @@ class Expense(db.Model):
 
         return total_amount
 
-    @hybrid_property
-    def committee(self) -> Committee | None:
-        """Get the committee associated with the expense.
-        If the expense has no categories where the author is a committee,
-        return None.
-        """
-        author = self.categories[0].get("author") if self.categories else None
-
-        committee = None
-        try:
-            committee = Committee.query.get(author) if author else None
-        except Exception:
-            return None
-        return committee if committee else None
-
     @amount.expression
     def amount(cls):
         """Expression for SQLAlchemy to use in queries."""
@@ -163,14 +150,18 @@ class Expense(db.Model):
             func.coalesce(func.jsonb_extract_path_text(cls.categories, "amount"), 0)
         )
 
-    @committee.expression
-    def committee(cls):
-        """Expression for SQLAlchemy to use in queries."""
-        author = func.jsonb_extract_path_text(cls.categories, "author")
-        try:
-            return Committee.query.get(author) if author else None
-        except Exception:
-            return None
+    @hybrid_property
+    def committee_id(self):
+        return self.categories[0].get("author") if self.categories else None
+
+    @committee_id.expression
+    def committee_id(cls):
+        return func.jsonb_extract_path_text(cls.categories, "author")
+
+    @property
+    def committee(self) -> Committee | None:
+        author = self.committee_id
+        return Committee.query.get(author) if is_valid_uuid(author) else None
 
     def __repr__(self):
         return f"<Expense {self.expense_id}>"
@@ -179,6 +170,7 @@ class Expense(db.Model):
         if short:
             base_dict = {
                 "expense_id": str(self.expense_id),
+                "title": self.title,
                 "description": self.description,
                 "date": self.date.isoformat() if self.date else None,
                 "status": self.status.name,
@@ -190,6 +182,7 @@ class Expense(db.Model):
             base_dict = {
                 "expense_id": str(self.expense_id),
                 "file_urls": self.file_urls,
+                "title": self.title,
                 "description": self.description,
                 "date": self.date.isoformat() if self.date else None,
                 "is_digital": self.is_digital,
@@ -221,6 +214,7 @@ class Invoice(db.Model):
 
     already_paid = Column(Boolean, default=False, nullable=False)
     file_urls = Column(ARRAY(String), nullable=False)
+    title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     is_original = Column(Boolean, default=False, nullable=False)
     is_booked = Column(Boolean, default=False, nullable=False)
@@ -260,20 +254,6 @@ class Invoice(db.Model):
 
         return total_amount
 
-    @hybrid_property
-    def committee(self) -> Committee | None:
-        """Get the committee associated with the invoice.
-        If the invoice has no categories, return None.
-        """
-        author = self.categories[0].get("author") if self.categories else None
-
-        committee = None
-        try:
-            committee = Committee.query.get(author) if author else None
-        except Exception:
-            return None
-        return committee if committee else None
-
     @amount.expression
     def amount(cls):
         """Expression for SQLAlchemy to use in queries."""
@@ -281,14 +261,18 @@ class Invoice(db.Model):
             func.coalesce(func.jsonb_extract_path_text(cls.categories, "amount"), 0)
         )
 
-    @committee.expression
-    def committee(cls):
-        """Expression for SQLAlchemy to use in queries."""
-        author = func.jsonb_extract_path_text(cls.categories, "author")
-        try:
-            return Committee.query.get(author) if author else None
-        except Exception:
-            return None
+    @hybrid_property
+    def committee_id(self):
+        return self.categories[0].get("author") if self.categories else None
+
+    @committee_id.expression
+    def committee_id(cls):
+        return func.jsonb_extract_path_text(cls.categories, "author")
+
+    @property
+    def committee(self) -> Committee | None:
+        author = self.committee_id
+        return Committee.query.get(author) if is_valid_uuid(author) else None
 
     def __repr__(self):
         return f"<Invoice {self.invoice_id}>"
@@ -297,6 +281,7 @@ class Invoice(db.Model):
         if short:
             base_dict = {
                 "invoice_id": str(self.invoice_id),
+                "title": self.title,
                 "description": self.description,
                 "date_issued": self.date_issued.isoformat()
                 if self.date_issued
@@ -313,6 +298,7 @@ class Invoice(db.Model):
                 "invoice_id": str(self.invoice_id),
                 "already_paid": self.already_paid,
                 "file_urls": self.file_urls,
+                "title": self.title,
                 "description": self.description,
                 "is_original": self.is_original,
                 "is_booked": self.is_booked,

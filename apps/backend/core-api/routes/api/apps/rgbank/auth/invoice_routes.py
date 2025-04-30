@@ -354,13 +354,15 @@ def update_invoice_status(invoice_id: str) -> Response:
 
     if new_status == PaymentStatus.BOOKED:
         add_student_statistic(student_id=invoice.student_id, value=invoice.amount)
-        add_committee_statistic(
-            committee_id=invoice.committee.committee_id,
-            value=invoice.amount,
-        )
+        if invoice.committee:
+            add_committee_statistic(
+                committee_id=invoice.committee.committee_id,
+                value=invoice.amount,
+            )
+
         add_expense_count(
             student_id=invoice.student_id,
-            committee_id=invoice.committee.committee_id,
+            committee_id=invoice.committee.committee_id if invoice.committee else None,
             invoice_count=1,
         )
 
