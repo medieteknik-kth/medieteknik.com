@@ -42,8 +42,11 @@ export default function ExpenseDetails({ language }: Props) {
         <div className='flex items-center gap-2'>
           <BackButton />
           <div>
-            <h1 className={`${fontJetBrainsMono.className} font-mono text-xl`}>
-              {expense.expense_id}
+            <h1
+              className={`${fontJetBrainsMono.className} font-mono text-xl max-w-96 truncate`}
+              title={expense.title}
+            >
+              {expense.title}
             </h1>
             <p className='text-muted-foreground'>
               Expense submitted by{' '}

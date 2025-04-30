@@ -1,11 +1,13 @@
 'use client'
 
 import InvoiceDetails from '@/app/[language]/invoice/[invoiceId]/invoiceDetails'
-import DetailProvider from '@/components/context/DetailContext'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import DetailProvider from '@/context/DetailContext'
 import type { InvoiceResponseDetailed } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
-import { use } from 'react'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useRouter } from 'next/navigation'
+import { use, useEffect } from 'react'
 import useSWR from 'swr'
 
 interface Params {
@@ -23,11 +25,21 @@ const fetcher = (url: string) =>
   }).then((res) => res.json())
 
 export default function InvoicePage(props: Props) {
+  const { isLoading, isAuthenticated } = useAuthentication()
+  const router = useRouter()
   const { language, invoiceId } = use(props.params)
   const { data, error } = useSWR<InvoiceResponseDetailed>(
     `/api/rgbank/invoices/${invoiceId}`,
     fetcher
   )
+
+  useEffect(() => {
+    if (isLoading) return
+
+    if (!isAuthenticated) {
+      router.push(`/${language}`)
+    }
+  }, [isLoading, isAuthenticated, language, router])
 
   if (error) {
     return (

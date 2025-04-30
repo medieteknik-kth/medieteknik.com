@@ -1,6 +1,6 @@
 'use client'
 
-import { DetailContext } from '@/components/context/DetailContext'
+import { DetailContext } from '@/context/DetailContext'
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { ExpenseStatus } from '@/models/General'

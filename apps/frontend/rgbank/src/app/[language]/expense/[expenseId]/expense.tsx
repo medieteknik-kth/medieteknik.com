@@ -1,11 +1,13 @@
 'use client'
 
 import ExpenseDetails from '@/app/[language]/expense/[expenseId]/expenseDetails'
-import DetailProvider from '@/components/context/DetailContext'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import DetailProvider from '@/context/DetailContext'
 import type { ExpenseResponseDetailed } from '@/models/Expense'
 import type { LanguageCode } from '@/models/Language'
-import { use } from 'react'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
+import { useRouter } from 'next/navigation'
+import { use, useEffect } from 'react'
 import useSWR from 'swr'
 
 interface Params {
@@ -23,11 +25,21 @@ const fetcher = (url: string) =>
   }).then((res) => res.json())
 
 export default function ExpensePage(props: Props) {
+  const { isLoading, isAuthenticated } = useAuthentication()
+  const router = useRouter()
   const { language, expenseId } = use(props.params)
   const { data, error } = useSWR<ExpenseResponseDetailed>(
     `/api/rgbank/expenses/${expenseId}`,
     fetcher
   )
+
+  useEffect(() => {
+    if (isLoading) return
+
+    if (!isAuthenticated) {
+      router.push(`/${language}`)
+    }
+  }, [isLoading, isAuthenticated, language, router])
 
   if (error) {
     return (

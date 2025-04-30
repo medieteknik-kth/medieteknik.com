@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
+import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -24,6 +25,7 @@ interface Page {
 }
 
 export default function Admin({ language, committees }: Props) {
+  const { isLoading, isAuthenticated } = useAuthentication()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const category = searchParams.get('category') || 'overview'
@@ -51,6 +53,14 @@ export default function Admin({ language, committees }: Props) {
     },
   ]
 
+  useEffect(() => {
+    if (isLoading) return
+
+    if (!isAuthenticated) {
+      router.push(`/${language}`)
+    }
+  }, [isLoading, isAuthenticated, language, router])
+
   return (
     <main>
       <HeaderGap />
@@ -63,11 +73,11 @@ export default function Admin({ language, committees }: Props) {
         </div>
 
         <Tabs
-          className='flex flex-col md:flex-row'
+          className='flex flex-col lg:flex-row'
           orientation='vertical'
           defaultValue={category}
         >
-          <aside id='sidebar' className='h-fit w-full md:w-64 md:h-full'>
+          <aside id='sidebar' className='h-fit w-full lg:w-64 md:h-full'>
             <TabsList className='w-full h-fit flex items-start flex-col gap-2 pt-4 bg-white! dark:bg-background!'>
               {allPages.map((page) => (
                 <TabsTrigger asChild value={page.name} key={page.name}>

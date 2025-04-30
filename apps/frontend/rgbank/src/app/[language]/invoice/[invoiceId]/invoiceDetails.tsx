@@ -42,8 +42,11 @@ export default function InvoiceDetails({ language }: Props) {
         <div className='flex items-center gap-2'>
           <BackButton />
           <div>
-            <h1 className={`${fontJetBrainsMono.className} font-mono text-xl`}>
-              {invoice.invoice_id}
+            <h1
+              className={`${fontJetBrainsMono.className} font-mono text-xl max-w-96 truncate`}
+              title={invoice.title}
+            >
+              {invoice.title}
             </h1>
             <p className='text-muted-foreground'>
               Invoice submitted by{' '}

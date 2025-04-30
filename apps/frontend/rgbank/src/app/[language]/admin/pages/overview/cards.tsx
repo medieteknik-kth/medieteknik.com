@@ -28,7 +28,7 @@ import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
 import { FunnelIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { type Dispatch, type SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -36,11 +36,7 @@ interface Props {
   expenses: ExpenseResponse[]
 }
 
-export default function OverviewCards({
-  language,
-  invoices,
-  expenses,
-}: Props) {
+export default function OverviewCards({ language, invoices, expenses }: Props) {
   const [invoiceSearch, setInvoiceSearch] = useState('')
   const [expenseSearch, setExpenseSearch] = useState('')
   const [invoiceFilters, setInvoiceFilters] =
@@ -48,8 +44,8 @@ export default function OverviewCards({
   const [expenseFilters, setExpenseFilters] =
     useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
   return (
-    <div className='flex flex-col gap-4'>
-      <Card>
+    <div className='space-y-4'>
+      <Card className='w-full'>
         <CardHeader>
           <CardTitle>Invoices</CardTitle>
         </CardHeader>
@@ -113,7 +109,7 @@ export default function OverviewCards({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='pl-7'>ID</TableHead>
+                  <TableHead className='pl-7 w-36'>Title</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>User</TableHead>
                   <TableHead>Date Created</TableHead>
@@ -142,7 +138,7 @@ export default function OverviewCards({
                           <Link
                             href={`/${language}/invoice/${invoice.invoice_id}`}
                           >
-                            {invoice.invoice_id}
+                            <p className='max-w-36 truncate'>{invoice.title}</p>
                           </Link>
                         </Button>
                       </TableCell>
@@ -173,7 +169,7 @@ export default function OverviewCards({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className='w-full'>
         <CardHeader>
           <CardTitle>Expenses</CardTitle>
         </CardHeader>
@@ -236,7 +232,7 @@ export default function OverviewCards({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='pl-7'>ID</TableHead>
+                  <TableHead className='pl-7 w-36'>Title</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>User</TableHead>
                   <TableHead>Date Created</TableHead>
@@ -265,7 +261,7 @@ export default function OverviewCards({
                           <Link
                             href={`/${language}/expense/${expense.expense_id}`}
                           >
-                            {expense.expense_id}
+                            <p className='max-w-36 truncate'>{expense.title}</p>
                           </Link>
                         </Button>
                       </TableCell>

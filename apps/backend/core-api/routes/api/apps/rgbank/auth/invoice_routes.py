@@ -46,6 +46,7 @@ def create_invoice() -> Response:
         return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
 
     already_paid = form_data.get("already_paid", "false").lower() == "true"
+    title = form_data.get("title")
     description = form_data.get("description")
     is_original = form_data.get("is_original", "false").lower() == "true"
     is_booked = form_data.get("is_booked", "false").lower() == "true"
@@ -122,6 +123,7 @@ def create_invoice() -> Response:
         invoice_id=new_invoice_id,
         already_paid=already_paid,
         file_urls=file_urls,
+        title=title,
         description=description,
         is_original=is_original,
         is_booked=is_booked,

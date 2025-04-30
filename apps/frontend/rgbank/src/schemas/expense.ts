@@ -7,6 +7,9 @@ export const expenseSchema = z.object({
   date: z.coerce.date().refine((date) => date <= new Date(), {
     message: 'Date must be in the past',
   }),
+  title: z.string().min(1, { message: 'Title is required' }).max(150, {
+    message: 'Title must be less than 150 characters',
+  }),
   description: z.string().min(1, { message: 'Description is required' }),
   digital: z.boolean(),
   categories: z

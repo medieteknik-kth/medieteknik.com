@@ -4,7 +4,7 @@ import {
   type DetailContextType,
   detailReducer,
   initialState,
-} from '@/components/context/detailReducer'
+} from '@/context/detailReducer'
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { ExpenseStatus } from '@/models/General'
@@ -36,7 +36,7 @@ export default function DetailProvider({ children, defaultValues }: Props) {
     dispatch({ type: 'SET_EXPENSE', payload: expense })
   }, [])
 
-  const setThread = useCallback((thread: Thread ) => {
+  const setThread = useCallback((thread: Thread) => {
     dispatch({ type: 'SET_THREAD', payload: thread })
   }, [])
 

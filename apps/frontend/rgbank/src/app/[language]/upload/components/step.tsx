@@ -32,6 +32,11 @@ interface FormStepProps {
   isActive?: boolean
 
   /**
+   * Whether the step is required
+   */
+  required?: boolean
+
+  /**
    * Optional CSS class names
    */
   className?: string
@@ -48,6 +53,7 @@ export function FormStep({
   stepNumber,
   isCompleted = false,
   isActive = false,
+  required = false,
   className,
   children,
 }: FormStepProps) {
@@ -76,13 +82,18 @@ export function FormStep({
               <span className='text-sm font-medium'>{stepNumber}</span>
             )}
           </div>
-
-          {/* Vertical line connecting steps */}
         </div>
 
         <div className='flex-1 space-y-4'>
           <div>
-            <h3 className='text-lg font-semibold leading-tight'>{title}</h3>
+            <h3 className='text-lg font-semibold leading-tight'>
+              {title}
+              {required && (
+                <sup className='text-red-500 dark:text-red-300 text-sm font-normal'>
+                  *
+                </sup>
+              )}
+            </h3>
             {description && (
               <p className='text-sm text-muted-foreground mt-1'>
                 {description}
@@ -169,6 +180,9 @@ export function FormSteps({
           {description && (
             <p className='text-muted-foreground'>{description}</p>
           )}
+          <p className='text-red-500 dark:text-red-300 text-xs select-none'>
+            * singifies a required field
+          </p>
         </div>
 
         {showBackButton && onBackClick && (

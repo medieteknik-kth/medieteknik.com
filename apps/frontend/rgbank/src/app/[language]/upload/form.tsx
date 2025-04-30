@@ -1,15 +1,16 @@
 'use client'
 
 import AccountPage from '@/app/[language]/account/pages/account/accountPage'
-import LoginWrapper from '@/app/[language]/login/client/loginWrapper'
 import Expense from '@/app/[language]/upload/expense/expense'
 import FinalizeExpense from '@/app/[language]/upload/expense/finalizeExpense'
 import FinalizeInvoice from '@/app/[language]/upload/invoice/finalizeInvoice'
 import Invoice from '@/app/[language]/upload/invoice/invoice'
 import SelectTemplate from '@/app/[language]/upload/select'
 import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
-import FormProvider from '@/components/context/FormContext'
+import LoginWrapper from '@/components/login/loginWrapper'
+import Loading from '@/components/ui/loading'
 import { Tabs } from '@/components/ui/tabs'
+import FormProvider from '@/context/FormContext'
 import type Committee from '@/models/Committee'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { LanguageCode } from '@/models/Language'
@@ -73,7 +74,11 @@ export default function UploadForm({ language, committees }: Props) {
   }, [template])
 
   if (isLoading) {
-    return <div className='h-[40.5rem]' />
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
+        <Loading language={language} />
+      </div>
+    )
   }
 
   if (!isAuthenticated) {

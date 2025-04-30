@@ -48,10 +48,10 @@ export default function InvoiceCard({ language, invoice, short }: Props) {
             )}
           </div>
           <CardTitle
-            className={`${fontJetBrainsMono.className} font-mono text-lg font-bold truncate tracking-tight`}
+            className={`${fontJetBrainsMono.className} font-mono text-lg font-bold truncate tracking-tight max-w-96`}
             title={invoice.invoice_id}
           >
-            {invoice.invoice_id}
+            {invoice.title}
           </CardTitle>
           {short ? (
             <VisuallyHidden>

@@ -35,12 +35,11 @@ export default function Expense({
   const { expenseData, setExpenseData } = useExpense()
   const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
+    expenseData.title.length > 0,
     files.length > 0,
     expenseData.description.length > 0,
     expenseData.date !== undefined,
-    expenseData.files.some((file) => file.name.toLowerCase().endsWith('.pdf'))
-      ? expenseData.isDigital
-      : true,
+    true,
     expenseData.categories.length > 0,
   ])
   const [categories, setCategories] = useState<Category[]>([])
@@ -84,11 +83,38 @@ export default function Expense({
         showBackButton
       >
         <FormStep
-          title='Upload your receipt image'
-          description='Upload your receipt image in PDF, PNG, JPG, JPEG, or AVIF format.'
+          title='Name your expense'
+          description='Enter a name for your expense.'
           stepNumber={1}
           isCompleted={completedSteps[0]}
           isActive
+          required
+        >
+          <Input
+            placeholder='Enter a name for your expense'
+            defaultValue={expenseData.title}
+            maxLength={150}
+            onChange={(e) => {
+              setExpenseData({
+                ...expenseData,
+                title: e.target.value,
+              })
+              if (e.target.value.length > 0) {
+                completeStep(0)
+              } else {
+                uncompleteStep(0)
+              }
+            }}
+          />
+        </FormStep>
+
+        <FormStep
+          title='Upload your receipt image'
+          description='Upload your receipt image in PDF, PNG, JPG, JPEG, or AVIF format.'
+          stepNumber={2}
+          isCompleted={completedSteps[1]}
+          isActive
+          required
         >
           <UploadFiles
             fileUploadStep={0}
@@ -101,9 +127,10 @@ export default function Expense({
         <FormStep
           title='Enter a description for the expense'
           description='Enter a description for the expense.'
-          stepNumber={2}
-          isCompleted={completedSteps[1]}
+          stepNumber={3}
+          isCompleted={completedSteps[2]}
           isActive
+          required
         >
           <Textarea
             className='resize-none'
@@ -126,13 +153,12 @@ export default function Expense({
         <FormStep
           title='Enter the date of the expense'
           description='Enter the date of the expense. The date must be in the past.'
-          stepNumber={3}
-          isCompleted={completedSteps[2]}
+          stepNumber={4}
+          isCompleted={completedSteps[3]}
           isActive
+          required
         >
-          <Label>
-            Date <span className='text-red-500'>*</span>
-          </Label>
+          <Label>Date</Label>
           <Input
             type='date'
             className=''
@@ -143,14 +169,14 @@ export default function Expense({
               const date = new Date(e.target.value)
               if (date > new Date()) {
                 setError('Date must be in the past')
-                uncompleteStep(2)
+                uncompleteStep(3)
               } else {
                 setExpenseData({
                   ...expenseData,
                   date: date,
                 })
                 setError('')
-                completeStep(2)
+                completeStep(3)
               }
             }}
           />
@@ -159,8 +185,8 @@ export default function Expense({
         <FormStep
           title='Is it a digital expense?'
           description='Select if the expense is digital or not.'
-          stepNumber={4}
-          isCompleted={completedSteps[3]}
+          stepNumber={5}
+          isCompleted={completedSteps[4]}
           isActive={isDigitalReceiptRequired}
         >
           <div className='flex items-center gap-2'>
@@ -176,9 +202,9 @@ export default function Expense({
                 })
                 if (isDigitalReceiptRequired) {
                   if (checked) {
-                    completeStep(3)
+                    completeStep(4)
                   } else {
-                    uncompleteStep(3)
+                    uncompleteStep(4)
                   }
                 }
               }}
@@ -190,9 +216,10 @@ export default function Expense({
         <FormStep
           title='Categorize the expense'
           description='Select the categories and enter the amount for each one.'
-          stepNumber={5}
-          isCompleted={completedSteps[4]}
+          stepNumber={6}
+          isCompleted={completedSteps[5]}
           isActive
+          required
         >
           <Categorize
             defaultValue={expenseData.categories}
@@ -200,7 +227,7 @@ export default function Expense({
             setFormCategories={(categories) => {
               setCategories(categories)
             }}
-            categoryStep={4}
+            categoryStep={5}
             completeStep={completeStep}
             uncompleteStep={uncompleteStep}
             committees={committees}
@@ -212,7 +239,7 @@ export default function Expense({
           disabled={completedSteps.some(
             (step, index) =>
               !step &&
-              ((index !== 4 && !isDigitalReceiptRequired) || index !== 5)
+              ((index !== 5 && !isDigitalReceiptRequired) || index !== 6)
           )}
           onClick={() => {
             setExpenseData({

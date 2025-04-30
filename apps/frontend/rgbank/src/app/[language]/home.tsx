@@ -36,12 +36,14 @@ export default async function Home(props: Props) {
           <br />
           {/* TODO: Better description */}
           <p>
-            Hello! This is a simple invoice upload form. You can upload your
-            invoice here, and it will be processed. The invoice will be sent
-            financial board for review. Once the invoice is approved, it will be
-            sent to the chapter for payment. You will be notified via email once
-            the invoice is approved or rejected. If you have any questions,
-            please contact the financial board.
+            Hello! This is an accounting system, where you can upload your
+            invoices and expenses.
+            <br />
+            <br />
+            This is a work in progress, so please be patient with us. If you
+            have any questions or feedback, please let us know.
+            <br />
+            <br />
           </p>
         </div>
       </div>

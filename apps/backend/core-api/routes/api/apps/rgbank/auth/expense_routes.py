@@ -47,6 +47,7 @@ def create_expense() -> Response:
         ), HTTPStatus.BAD_REQUEST
 
     date = form_data.get("date")
+    title = form_data.get("title")
     description = form_data.get("description")
     is_digital = form_data.get("is_digital", "false").lower() == "true"
     categories = form_data.get("categories")
@@ -120,6 +121,7 @@ def create_expense() -> Response:
     new_expense = Expense(
         expense_id=new_expense_id,
         file_urls=file_urls,
+        title=title,
         description=description,
         date=date,
         is_digital=is_digital,

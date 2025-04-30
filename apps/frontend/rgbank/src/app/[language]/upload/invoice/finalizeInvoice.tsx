@@ -47,6 +47,7 @@ export default function FinalizeInvoice({
       formData.append('files', file)
     }
 
+    formData.append('title', invoiceData.title)
     formData.append('description', data.description)
     formData.append('date_issued', data.date.toISOString())
     formData.append('due_date', data.dueDate.toISOString())
@@ -151,9 +152,18 @@ export default function FinalizeInvoice({
           committees={committees}
         />
 
+        {invoiceForm.formState.errors && (
+          <div className='text-red-500 text-sm'>
+            {Object.values(invoiceForm.formState.errors).map((error) => (
+              <p key={error.message}>{error.message}</p>
+            ))}
+          </div>
+        )}
+
         <Button
           className='w-full h-16 mt-8'
           onClick={() => {
+            console.log(invoiceForm.getValues())
             invoiceForm.handleSubmit((data) => {
               postInvoice(data)
             })()

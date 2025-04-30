@@ -32,6 +32,7 @@ export const initialState: FormState = {
   files: [],
   invoiceData: {
     files: [],
+    title: '',
     description: '',
     isOriginalInvoice: false,
     isInvoiceBooked: false,
@@ -41,6 +42,7 @@ export const initialState: FormState = {
   },
   expenseData: {
     files: [],
+    title: '',
     description: '',
     date: new Date(),
     isDigital: false,

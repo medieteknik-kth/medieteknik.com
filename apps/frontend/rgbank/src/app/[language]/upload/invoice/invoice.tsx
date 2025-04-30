@@ -41,6 +41,7 @@ export default function Invoice({
   const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
     invoiceData.paidStatus !== undefined,
+    invoiceData.title.length > 0,
     files.length > 0,
     invoiceData.description !== '',
     true,
@@ -81,9 +82,9 @@ export default function Invoice({
       const isValid = invoiceDate < today && dueDate > invoiceDate
 
       if (isValid) {
-        completeStep(4)
+        completeStep(5)
       } else {
-        uncompleteStep(4)
+        uncompleteStep(5)
       }
     },
     [
@@ -122,6 +123,7 @@ export default function Invoice({
           stepNumber={1}
           isCompleted={completedSteps[0]}
           isActive
+          required
         >
           <RadioGroup
             defaultValue={paidStatus}
@@ -189,14 +191,40 @@ export default function Invoice({
         ) : (
           <>
             <FormStep
-              title='Upload the invoice'
-              description='Please upload the invoice image.'
+              title='Name your invoice'
+              description='Enter a name for your invoice.'
               stepNumber={2}
               isCompleted={completedSteps[1]}
               isActive
+              required
+            >
+              <Input
+                placeholder='Enter a name for your invoice'
+                defaultValue={invoiceData.title}
+                maxLength={150}
+                onChange={(e) => {
+                  setInvoiceData({
+                    ...invoiceData,
+                    title: e.target.value,
+                  })
+                  if (e.target.value.length > 0) {
+                    completeStep(1)
+                  } else {
+                    uncompleteStep(1)
+                  }
+                }}
+              />
+            </FormStep>
+            <FormStep
+              title='Upload the invoice'
+              description='Please upload the invoice image.'
+              stepNumber={3}
+              isCompleted={completedSteps[2]}
+              isActive
+              required
             >
               <UploadFiles
-                fileUploadStep={1}
+                fileUploadStep={2}
                 completeStep={completeStep}
                 uncompleteStep={uncompleteStep}
               />
@@ -205,14 +233,14 @@ export default function Invoice({
             <FormStep
               title='Describe the contents'
               description='Please describe the contents of the invoice.'
-              stepNumber={3}
-              isCompleted={completedSteps[2]}
+              stepNumber={4}
+              isCompleted={completedSteps[3]}
               isActive
+              required
             >
               <div>
                 <Label htmlFor='description' className='text-sm font-medium'>
                   Description
-                  <span className='text-red-500'>*</span>
                 </Label>
                 <Textarea
                   placeholder='Invoice description'
@@ -220,9 +248,9 @@ export default function Invoice({
                   onChange={(e) => {
                     setDescription(e.target.value)
                     if (e.target.value.length > 0) {
-                      completeStep(2)
+                      completeStep(3)
                     } else {
-                      uncompleteStep(2)
+                      uncompleteStep(3)
                     }
                   }}
                 />
@@ -232,8 +260,8 @@ export default function Invoice({
             <FormStep
               title='Invoice details'
               description='Please select the invoice details.'
-              stepNumber={4}
-              isCompleted={completedSteps[3]}
+              stepNumber={5}
+              isCompleted={completedSteps[4]}
               isActive
             >
               <div className='space-y-2'>
@@ -279,9 +307,10 @@ export default function Invoice({
             <FormStep
               title='Invoice dates'
               description='Please select the invoice dates.'
-              stepNumber={5}
-              isCompleted={completedSteps[4]}
+              stepNumber={6}
+              isCompleted={completedSteps[5]}
               isActive
+              required
             >
               <div className='flex items-center gap-2 flex-wrap'>
                 <div>
@@ -333,8 +362,8 @@ export default function Invoice({
             <FormStep
               title='Categorize the invoice'
               description='Please categorize the invoice.'
-              stepNumber={6}
-              isCompleted={completedSteps[5]}
+              stepNumber={7}
+              isCompleted={completedSteps[6]}
               isActive
             >
               <Categorize
@@ -343,7 +372,7 @@ export default function Invoice({
                 setFormCategories={(categories) => {
                   setCategories(categories)
                 }}
-                categoryStep={5}
+                categoryStep={6}
                 completeStep={completeStep}
                 uncompleteStep={uncompleteStep}
                 committees={committees}

@@ -4,7 +4,7 @@ import {
   type FormContextType,
   formReducer,
   initialState,
-} from '@/components/context/formReducer'
+} from '@/context/formReducer'
 import type { ExpenseData } from '@/models/Expense'
 import type { InvoiceData } from '@/models/Invoice'
 import { createContext, useCallback, useMemo, useReducer } from 'react'

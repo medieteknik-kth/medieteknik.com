@@ -16,7 +16,6 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { IS_DEVELOPMENT, SITE_VERSION } from '@/utility/Constants'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { type JSX, useState } from 'react'
 
 interface ProfileButtonProps {
@@ -28,10 +27,6 @@ export function WideScreenProfileButton({
 }: ProfileButtonProps): JSX.Element {
   const { logout, isAuthenticated } = useAuthentication()
   const [open, setOpen] = useState(false)
-  const pathname = usePathname()
-  const loginUrl = `/${language}/login${
-    pathname !== '/' ? `?return_url=${pathname}` : ''
-  }`
 
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
@@ -39,7 +34,7 @@ export function WideScreenProfileButton({
         <ProfileButton />
       </DropdownMenuTrigger>
       {open && (
-        <DropdownMenuContent className='w-72 lg:w-96 h-fit mr-5 vb dark:bg-[#111]'>
+        <DropdownMenuContent className='w-72 lg:w-96 h-fit mr-5 dark:bg-[#111]'>
           <DefaultProfile language={language} />
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
@@ -57,7 +52,7 @@ export function WideScreenProfileButton({
             ) : (
               <DropdownMenuItem>
                 <Button className='w-full' asChild>
-                  <Link href={loginUrl}>Log in</Link>
+                  <Link href={`/${language}`}>Log in</Link>
                 </Button>
               </DropdownMenuItem>
             )}

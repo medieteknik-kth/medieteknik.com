@@ -48,6 +48,7 @@ export default function FinalizeExpense({
       formData.append('files', file)
     }
 
+    formData.append('title', expenseData.title)
     formData.append('description', data.description)
     formData.append('date', data.date.toISOString())
     formData.append('isDigital', data.digital.toString())

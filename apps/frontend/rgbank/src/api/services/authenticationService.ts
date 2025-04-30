@@ -84,7 +84,5 @@ export const authService = {
     if (!response.ok) {
       throw new Error('Failed to logout')
     }
-
-    window.location.reload()
   },
 }

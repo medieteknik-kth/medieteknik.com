@@ -30,6 +30,7 @@ import type { LanguageCode } from '@/models/Language'
 import { useGeneralDetail } from '@/providers/DetailProvider'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
+import { mutate } from 'swr'
 
 interface Props {
   language: LanguageCode
@@ -91,6 +92,15 @@ export default function AdminSection({
         created_at: new Date().toISOString(),
         message_id: crypto.randomUUID(),
       })
+
+      if (invoice) {
+        mutate(`/api/rgbank/invoices/${invoice.invoice_id}`)
+      }
+
+      if (expense) {
+        mutate(`/api/rgbank/expenses/${expense.expense_id}`)
+      }
+
       setComment('')
       setSelectedStatus('')
     } catch (error) {

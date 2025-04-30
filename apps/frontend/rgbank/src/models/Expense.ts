@@ -7,6 +7,7 @@ import type { Thread } from '@/models/Thread'
 
 export interface ExpenseData {
   files: File[]
+  title: string
   description: string
   date: Date
   isDigital: boolean
@@ -16,6 +17,7 @@ export interface ExpenseData {
 export interface ExpenseResponse {
   expense_id: string
   file_urls?: string[]
+  title: string
   description: string
   date: string
   isDigital?: boolean

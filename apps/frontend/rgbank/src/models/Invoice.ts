@@ -10,6 +10,7 @@ export type PaidStatus = 'no_chapter' | 'yes_chapter'
 export interface InvoiceData {
   paidStatus?: PaidStatus
   files: File[]
+  title: string
   description: string
   isOriginalInvoice: boolean
   isInvoiceBooked: boolean
@@ -22,6 +23,7 @@ export interface InvoiceResponse {
   invoice_id: string
   already_paid?: boolean
   file_urls?: string[]
+  title: string
   description: string
   is_original?: boolean
   is_booked?: boolean

@@ -1,7 +1,7 @@
 'use client'
 
-import AlternativeLogin from '@/app/[language]/login/client/alternative'
-import LoginForm from '@/app/[language]/login/client/loginForm'
+import AlternativeLogin from '@/components/login/alternative'
+import LoginForm from '@/components/login/loginForm'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import type { LanguageCode } from '@/models/Language'

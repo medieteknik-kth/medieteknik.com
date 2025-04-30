@@ -1,6 +1,6 @@
 'use client'
 
-import { FormContext } from '@/components/context/FormContext'
+import { FormContext } from '@/context/FormContext'
 import type { ExpenseData } from '@/models/Expense'
 import type { InvoiceData } from '@/models/Invoice'
 import { useContext } from 'react'

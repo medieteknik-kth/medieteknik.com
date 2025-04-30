@@ -10,6 +10,7 @@ import {
   ChatBubbleLeftIcon,
   Cog6ToothIcon,
   CreditCardIcon,
+  H1Icon,
 } from '@heroicons/react/24/outline'
 
 interface Props {
@@ -53,6 +54,17 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
         </div>
 
         <Separator />
+
+        {/* Title */}
+        <div className='flex items-start gap-4'>
+          <div className='bg-primary/10 p-2 rounded-md'>
+            <H1Icon className='w-6 h-6 text-primary' />
+          </div>
+          <div className='flex-1'>
+            <p className='text-sm text-muted-foreground font-medium'>Title</p>
+            <p className='mt-1'>{invoiceData.title}</p>
+          </div>
+        </div>
 
         {/* Description */}
         <div className='flex items-start gap-4'>
