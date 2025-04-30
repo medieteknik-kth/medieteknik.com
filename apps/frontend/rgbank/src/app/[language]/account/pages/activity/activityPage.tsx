@@ -244,9 +244,9 @@ export default function ActivityPage({ language }: Props) {
           </Card>
         </div>
 
-        <div className='mx-4 flex flex-col gap-4'>
+        <div className='mx-4 space-y-4'>
           {expenses && expenses.length > 0 && (
-            <Card>
+            <Card className='w-full'>
               <CardHeader>
                 <CardTitle>Expenses</CardTitle>
                 <CardDescription>
@@ -308,7 +308,7 @@ export default function ActivityPage({ language }: Props) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className='w-96'>ID</TableHead>
+                        <TableHead className='pl-7 w-36'>Title</TableHead>
                         <TableHead>Created at</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Amount</TableHead>
@@ -351,7 +351,9 @@ export default function ActivityPage({ language }: Props) {
                                   <Link
                                     href={`/${language}/expense/${expense.expense_id}`}
                                   >
-                                    {expense.expense_id}
+                                    <p className='max-w-36 truncate'>
+                                      {expense.title}
+                                    </p>
                                   </Link>
                                 </Button>
                               </TableCell>
@@ -397,7 +399,7 @@ export default function ActivityPage({ language }: Props) {
           )}
 
           {invoices && invoices.length > 0 && (
-            <Card>
+            <Card className='w-full'>
               <CardHeader>
                 <CardTitle>Invoices</CardTitle>
                 <CardDescription>
@@ -462,7 +464,7 @@ export default function ActivityPage({ language }: Props) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>ID</TableHead>
+                        <TableHead className='pl-7 w-36'>Title</TableHead>
                         <TableHead>Created at</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Amount</TableHead>
@@ -483,7 +485,9 @@ export default function ActivityPage({ language }: Props) {
                                 <Link
                                   href={`/${language}/invoice/${invoice.invoice_id}`}
                                 >
-                                  {invoice.invoice_id}
+                                  <p className='max-w-36 truncate'>
+                                    {invoice.title}
+                                  </p>
                                 </Link>
                               </Button>
                             </TableCell>

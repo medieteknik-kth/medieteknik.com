@@ -93,6 +93,7 @@ export default function FinalizeInvoice({
       'hasChapterPaid',
       invoiceData.paidStatus === 'yes_chapter' || false
     )
+    invoiceForm.setValue('title', invoiceData.title)
     invoiceForm.setValue('files', invoiceData.files)
     invoiceForm.setValue('description', invoiceData.description)
     invoiceForm.setValue('isOriginal', invoiceData.isOriginalInvoice)
@@ -101,6 +102,7 @@ export default function FinalizeInvoice({
     invoiceForm.setValue('dueDate', invoiceData.invoiceDueDate)
     invoiceForm.setValue('categories', invoiceData.categories)
   }, [
+    invoiceData.title,
     invoiceData.paidStatus,
     invoiceData.files,
     invoiceData.description,

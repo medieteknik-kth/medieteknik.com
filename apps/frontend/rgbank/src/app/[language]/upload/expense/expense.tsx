@@ -117,7 +117,7 @@ export default function Expense({
           required
         >
           <UploadFiles
-            fileUploadStep={0}
+            fileUploadStep={1}
             completeStep={completeStep}
             uncompleteStep={uncompleteStep}
             setIsDigitalReceiptRequired={setIsDigitalReceiptRequired}
@@ -142,9 +142,9 @@ export default function Expense({
                 description: e.target.value,
               })
               if (e.target.value.length > 0) {
-                completeStep(1)
+                completeStep(2)
               } else {
-                uncompleteStep(1)
+                uncompleteStep(2)
               }
             }}
           />

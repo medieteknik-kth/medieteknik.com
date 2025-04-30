@@ -84,12 +84,14 @@ export default function FinalizeExpense({
   }
 
   useEffect(() => {
+    expenseForm.setValue('title', expenseData.title)
     expenseForm.setValue('files', expenseData.files)
     expenseForm.setValue('date', expenseData.date)
     expenseForm.setValue('description', expenseData.description)
     expenseForm.setValue('digital', expenseData.isDigital)
     expenseForm.setValue('categories', expenseData.categories)
   }, [
+    expenseData.title,
     expenseData.categories,
     expenseData.date,
     expenseData.description,

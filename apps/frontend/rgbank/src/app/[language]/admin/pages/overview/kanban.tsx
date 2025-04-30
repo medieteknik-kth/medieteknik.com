@@ -95,7 +95,7 @@ export default function OverviewKanban({
       </div>
       <ScrollArea className='w-[calc(100vw-2rem)] md:w-[calc(100vw-20rem)] pb-10'>
         <div className='flex w-max gap-5'>
-          <div className='flex flex-col gap-4 min-w-80 w-full max-w-max pl-4 pb-4'>
+          <div className='flex flex-col gap-4 min-w-80 w-full pl-4 pb-4'>
             <div className='flex items-center gap-2'>
               <h3 className='text-lg tracking-wide font-semibold'>New</h3>
               <Badge variant={'outline'}>
@@ -139,7 +139,7 @@ export default function OverviewKanban({
 
           <Separator orientation='vertical' className='h-[calc(100vh-4rem)]' />
 
-          <div className='flex flex-col gap-4 min-w-80 w-full max-w-max pb-4'>
+          <div className='flex flex-col gap-4 min-w-80 w-full pb-4'>
             <div className='flex items-center gap-2'>
               <h3 className='text-lg tracking-wide font-semibold'>Pending</h3>
               <Badge variant={'outline'}>
@@ -189,7 +189,7 @@ export default function OverviewKanban({
 
           <Separator orientation='vertical' className='h-[calc(100vh-4rem)]' />
 
-          <div className='flex flex-col gap-4 min-w-80 w-full max-w-max pr-36 pb-4'>
+          <div className='flex flex-col gap-4 min-w-80 w-full pr-36 pb-4'>
             <div className='flex items-center gap-2'>
               <h3 className='text-lg tracking-wide font-semibold'>Completed</h3>
               <Badge variant={'outline'}>
