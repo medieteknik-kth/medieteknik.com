@@ -12,6 +12,7 @@ import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useGeneralDetail } from '@/providers/DetailProvider'
+import { sortByCreatedAt } from '@/utility/sortUtils'
 import { useState } from 'react'
 
 interface Props {
@@ -140,43 +141,37 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
       <Separator />
       <div className='space-y-4'>
         {allMessages && allMessages.length > 0 ? (
-          allMessages
-            .sort(
-              (a, b) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime()
-            )
-            .map((message) => {
-              if (!message.sender) {
-                if (!message.previous_status || !message.new_status) {
-                  return null
-                }
-
-                return (
-                  <StatusUpdate
-                    key={message.message_id}
-                    date={message.created_at}
-                    previousStatus={message.previous_status}
-                    newStatus={message.new_status}
-                    message={message.content}
-                  />
-                )
+          sortByCreatedAt(allMessages).map((message) => {
+            if (!message.sender) {
+              if (!message.previous_status || !message.new_status) {
+                return null
               }
 
               return (
-                <Comment
+                <StatusUpdate
                   key={message.message_id}
                   date={message.created_at}
-                  committeePosition={null}
-                  notSameUser={message.sender.student_id !== student.student_id}
-                  student={message.sender}
-                  message={{
-                    message: message.content,
-                    type: 'comment',
-                  }}
+                  previousStatus={message.previous_status}
+                  newStatus={message.new_status}
+                  message={message.content}
                 />
               )
-            })
+            }
+
+            return (
+              <Comment
+                key={message.message_id}
+                date={message.created_at}
+                committeePosition={null}
+                notSameUser={message.sender.student_id !== student.student_id}
+                student={message.sender}
+                message={{
+                  message: message.content,
+                  type: 'comment',
+                }}
+              />
+            )
+          })
         ) : (
           <div className='flex items-center justify-center w-full h-32 text-sm text-muted-foreground'>
             No comments yet.

@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
+import { sortByCreatedAt } from '@/utility/sortUtils'
 import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
@@ -40,10 +41,7 @@ export default function OverviewKanban({
     ...expenses.map((e) => ({ ...e, type: 'expense' as const })),
   ]
 
-  const sortedCombined = combined.sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  )
+  const sortedCombined = sortByCreatedAt(combined)
 
   return (
     <div className='max-w-[100rem] overflow-hidden space-y-4'>

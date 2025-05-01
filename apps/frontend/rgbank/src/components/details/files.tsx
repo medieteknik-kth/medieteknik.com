@@ -35,7 +35,7 @@ export default function FilesSection({ language, expense, invoice }: Props) {
 
   return (
     <div className='flex flex-col gap-4 mt-2'>
-      {item.file_urls.map((file) => (
+      {item.file_urls?.map((file) => (
         <div
           key={file.split(id)[1].split('?')[0].substring(1)}
           className='h-52 border border-dashed rounded-md flex flex-col items-center justify-center gap-2'

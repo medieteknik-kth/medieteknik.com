@@ -53,12 +53,13 @@
     "zod": "^3.23.4"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "19.1.1",
     "@types/react-dom": "19.1.2",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "jest": "^29.7.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
   "overrides": {
     "@types/react": "19.1.1",

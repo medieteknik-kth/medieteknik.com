@@ -351,7 +351,10 @@ export default function ActivityPage({ language }: Props) {
                                   <Link
                                     href={`/${language}/expense/${expense.expense_id}`}
                                   >
-                                    <p className='max-w-36 truncate'>
+                                    <p
+                                      className='max-w-36 truncate'
+                                      title={expense.title}
+                                    >
                                       {expense.title}
                                     </p>
                                   </Link>
@@ -485,7 +488,10 @@ export default function ActivityPage({ language }: Props) {
                                 <Link
                                   href={`/${language}/invoice/${invoice.invoice_id}`}
                                 >
-                                  <p className='max-w-36 truncate'>
+                                  <p
+                                    className='max-w-36 truncate'
+                                    title={invoice.title}
+                                  >
                                     {invoice.title}
                                   </p>
                                 </Link>
