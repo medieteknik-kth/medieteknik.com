@@ -1,5 +1,4 @@
-from models.apps.rgbank.expense import PaymentStatus
-from models.apps.rgbank.thread import Message, MessageType, Thread
+from models.apps.rgbank import PaymentStatus, Message, MessageType, Thread
 from utility import db
 
 

@@ -5,9 +5,9 @@ from models.apps.rgbank import (
     RGBankPermissions,
     RGBankViewPermissions,
 )
-from models.apps.rgbank.bank import AccountBankInformation
-from models.core.student import StudentMembership
-from utility.logger import log_error
+from models.apps.rgbank import AccountBankInformation
+from models.core import StudentMembership
+from utility import log_error
 
 
 def has_access(

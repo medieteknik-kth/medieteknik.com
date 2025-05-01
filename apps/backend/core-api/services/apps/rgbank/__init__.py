@@ -17,8 +17,6 @@ from .statistics_service import add_student_statistic
 from .statistics_service import get_committee_statistic
 from .statistics_service import get_student_statistic
 from .statistics_service import add_expense_count
-from .statistics_service import get_top_students
-from .statistics_service import get_monthly_value_by_year
 
 __all__ = [
     "has_access",
@@ -32,6 +30,4 @@ __all__ = [
     "get_committee_statistic",
     "get_student_statistic",
     "add_expense_count",
-    "get_top_students",
-    "get_monthly_value_by_year",
 ]
