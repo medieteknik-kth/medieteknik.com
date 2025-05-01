@@ -374,6 +374,37 @@ def update_invoice_status(invoice_id: str) -> Response:
     return jsonify({"message": "Invoice status updated successfully"}), HTTPStatus.OK
 
 
+@invoice_bp.route("/<string:invoice_id>/categories", methods=["PATCH"])
+@jwt_required()
+def update_expense_categories(invoice_id: str) -> Response:
+    invoice: Invoice = Invoice.query.filter_by(invoice_id=invoice_id).first_or_404()
+
+    student_id = get_jwt_identity()
+
+    memberships: List[StudentMembership] = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        StudentMembership.termination_date.is_(None),
+    ).all()
+
+    has_authority, message = has_full_authority(
+        memberships=memberships,
+    )
+
+    if not has_authority:
+        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+    new_categories = data.get("categories")
+    if not new_categories:
+        return jsonify({"message": "Categories are required"}), HTTPStatus.BAD_REQUEST
+
+    invoice.categories = json.loads(new_categories)
+    db.session.commit()
+
+
 @invoice_bp.route("/<string:invoice_id>", methods=["DELETE"])
 @jwt_required()
 def delete_invoice(invoice_id: str) -> Response:

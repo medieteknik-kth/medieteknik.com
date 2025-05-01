@@ -40,7 +40,11 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
       <div className='grid grid-cols-2 gap-4'>
         <div>
           <h3 className='text-sm font-medium text-muted-foreground'>Type</h3>
-          <ExpenseBadge type='invoice' className='mt-1' />
+          {expense ? (
+            <ExpenseBadge type='expense' className='mt-1' />
+          ) : (
+            <ExpenseBadge type='invoice' className='mt-1' />
+          )}
         </div>
         <div>
           <h3 className='text-sm font-medium text-muted-foreground'>Amount</h3>
@@ -120,7 +124,7 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {item.categories.map((category) => (
+              {item.categories?.map((category) => (
                 <TableRow key={category.id}>
                   {item.committee ? (
                     <TableCell>

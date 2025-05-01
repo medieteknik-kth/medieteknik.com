@@ -13,7 +13,7 @@ interface Props {
 
 export default async function Upload(props: Props) {
   const { language } = await props.params
-  const { data: committees, error } = await getAllCommittees('en')
+  const { data: committees, error } = await getAllCommittees(language)
   if (error) {
     return (
       <div>

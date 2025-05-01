@@ -382,6 +382,37 @@ def update_expense_status(expense_id: str) -> Response:
     return jsonify({"message": "Expense status updated successfully"}), HTTPStatus.OK
 
 
+@expense_bp.route("/<string:expense_id>/categories", methods=["PATCH"])
+@jwt_required()
+def update_expense_categories(expense_id: str) -> Response:
+    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+
+    student_id = get_jwt_identity()
+
+    memberships: List[StudentMembership] = StudentMembership.query.filter(
+        StudentMembership.student_id == student_id,
+        StudentMembership.termination_date.is_(None),
+    ).all()
+
+    has_authority, message = has_full_authority(
+        memberships=memberships,
+    )
+
+    if not has_authority:
+        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
+
+    new_categories = data.get("categories")
+    if not new_categories:
+        return jsonify({"message": "Categories are required"}), HTTPStatus.BAD_REQUEST
+
+    expense.categories = new_categories
+    db.session.commit()
+
+
 @expense_bp.route("/<string:expense_id>", methods=["DELETE"])
 @jwt_required()
 def delete_expense(expense_id: str) -> Response:

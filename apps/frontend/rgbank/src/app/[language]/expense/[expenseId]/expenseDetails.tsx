@@ -6,7 +6,7 @@ import ExpenseStudentInformation from '@/app/[language]/expense/[expenseId]/user
 import { fontJetBrainsMono } from '@/app/fonts'
 import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
 import { PopIn } from '@/components/animation/pop-in'
-import AdminSection from '@/components/details/admin'
+import AdminSection from '@/components/details/admin/admin'
 import CommentsSection from '@/components/details/comments'
 import DetailsSection from '@/components/details/details'
 import FilesSection from '@/components/details/files'

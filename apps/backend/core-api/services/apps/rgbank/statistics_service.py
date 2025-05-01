@@ -1,10 +1,6 @@
 import datetime
-from typing import Any, Dict, List, Tuple
-
-from sqlalchemy import func
-from models.apps.rgbank import Statistics
-from models.apps.rgbank.statistics import ExpenseCount
-from models.core.student import Student
+from typing import Any, Dict, List
+from models.apps.rgbank import Statistics, ExpenseCount
 from utility import db, AVAILABLE_LANGUAGES
 
 # --- STUDENT STATISTICS --- #
@@ -139,105 +135,6 @@ def get_student_statistic(
         return None
 
     return statistic.to_dict(provided_languages=provided_languages)
-
-
-def get_top_students(
-    count: int = 10,
-    minimum: float = 0.0,
-    year: int = None,
-    month: int = None,
-) -> List[Dict[str, Any]] | None:
-    """Gets the top students based on their statistics.
-
-    :param count: The number of top students to retrieve. Defaults to 10.
-    :type count: int, optional
-    :param minimum: The minimum value for the statistics. Defaults to 0.0.
-    :type minimum: float, optional
-    :param year: The year of the statistics. Defaults to None.
-    :type year: int, optional
-    :param month: The month of the statistics. Defaults to None.
-    :type month: int, optional
-    :param provided_languages: The languages provided. Defaults to AVAILABLE_LANGUAGES.
-    :type provided_languages: List[str], optional
-    :return: A list of dictionaries containing the top students' statistics.
-    :rtype: List[Dict[str, Any]]"""
-
-    subquery = (
-        db.session.query(
-            Statistics.student_id,
-            func.sum(Statistics.value).label("total_value"),
-        )
-        .filter(
-            Statistics.year == year,
-            Statistics.month == month,
-            Statistics.value >= minimum,
-            Statistics.is_all_time.is_(not year and not month),
-        )
-        .group_by(
-            Statistics.student_id,
-        )
-        .subquery()
-    )
-
-    result: List[Tuple[Student, float]] = (
-        db.session.query(
-            Student,
-            subquery.c.total_value,
-        )
-        .join(
-            subquery,
-            Student.student_id == subquery.c.student_id,
-        )
-        .order_by(
-            subquery.c.total_value.desc(),
-        )
-        .limit(count)
-        .all()
-    )
-
-    if not result:
-        return None
-
-    leaderboard = [
-        {
-            "student": student.to_dict(),
-            "total_value": total_value,
-        }
-        for student, total_value in result
-    ]
-
-    return leaderboard
-
-
-def get_monthly_value_by_year(year: int) -> List[Dict[str, Any]] | None:
-    """Gets the value for each month of a given year.
-
-    :param year: The year to retrieve the statistics for.
-    :type year: int
-    :return: A list of dictionaries containing the month and value for each month.
-    :rtype: List[Dict[str, Any]] | None"""
-
-    result = (
-        db.session.query(
-            Statistics.month,
-            func.sum(Statistics.value).label("total_value"),
-        )
-        .filter(
-            Statistics.year == year,
-            Statistics.month.is_not(None),
-            Statistics.is_all_time.is_(False),
-            Statistics.student_id.isnot(None),
-        )
-        .group_by(Statistics.month)
-        .all()
-    )
-
-    if not result:
-        return None
-
-    return [
-        {"month": month, "total_value": total_value} for month, total_value in result
-    ]
 
 
 # --- COMMITTEE STATISTICS --- #
@@ -396,8 +293,8 @@ def add_expense_count(
         raise ValueError("Either student_id or committee_id must be provided.")
 
     if student_id:
-        expense_count_obj: ExpenseCount | None = ExpenseCount.query.filter(
-            ExpenseCount.student_id == student_id
+        expense_count_obj: ExpenseCount | None = ExpenseCount.query.filter_by(
+            student_id=student_id
         ).first()
 
         if not expense_count_obj or not isinstance(expense_count_obj, ExpenseCount):
