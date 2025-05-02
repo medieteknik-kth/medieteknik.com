@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import {
   Accordion,
   AccordionContent,
@@ -58,6 +59,7 @@ export default function LoginForm({
   const router = useRouter()
   const searchParams = useSearchParams()
   const returnUrl = searchParams.get('return_url')
+  const { t } = useTranslation(language, 'login')
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -133,12 +135,12 @@ export default function LoginForm({
         </p>
       )}
       <h2 className='w-full tracking-wide font-semibold border-t pt-2'>
-        Alternative login methods
+        {t('alternativeLogin')}
       </h2>
       <Accordion type='multiple'>
         <AccordionItem value='email'>
           <AccordionTrigger className='text-base'>
-            Account login
+            {t('accountLogin')}
           </AccordionTrigger>
           <AccordionContent>
             <Form {...loginForm}>
@@ -152,7 +154,7 @@ export default function LoginForm({
                           fontSize: 'inherit',
                         }}
                       >
-                        Email
+                        {t('email')}
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -175,7 +177,7 @@ export default function LoginForm({
                           fontSize: 'inherit',
                         }}
                       >
-                        Password
+                        {t('password')}
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -205,7 +207,7 @@ export default function LoginForm({
                     loginForm.setValue('csrf_token', data.token)
                   }}
                 >
-                  Login
+                  {t('login')}
                 </Button>
               </form>
             </Form>

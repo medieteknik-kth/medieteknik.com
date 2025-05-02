@@ -1,6 +1,8 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { cn } from '@/lib/utils'
+import type { LanguageCode } from '@/models/Language'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { CheckIcon } from 'lucide-react'
 import type React from 'react'
@@ -126,6 +128,11 @@ export function FormStep({
 
 interface FormStepsProps {
   /**
+   * The language code for translations
+   */
+  language: LanguageCode
+
+  /**
    * Optional title for the form steps
    */
   title?: string
@@ -164,6 +171,7 @@ interface FormStepsProps {
 }
 
 export function FormSteps({
+  language,
   title,
   description,
   className,
@@ -172,6 +180,7 @@ export function FormSteps({
   backButtonLabel = 'Back',
   children,
 }: FormStepsProps) {
+  const { t } = useTranslation(language, 'upload/base')
   return (
     <div className={cn('space-y-8', className)}>
       <div className='flex items-center justify-between flex-wrap gap-4'>
@@ -181,7 +190,7 @@ export function FormSteps({
             <p className='text-muted-foreground'>{description}</p>
           )}
           <p className='text-red-500 dark:text-red-300 text-xs select-none'>
-            * singifies a required field
+            {t('*')}
           </p>
         </div>
 

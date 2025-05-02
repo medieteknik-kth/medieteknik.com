@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -19,12 +20,14 @@ import {
 import type Committee from '@/models/Committee'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
+import type { LanguageCode } from '@/models/Language'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 import { useCallback, useEffect, useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   defaultValue?: Category[]
   expenseDomains: ExpenseDomain[]
   setFormCategories: (categories: Category[]) => void
@@ -35,6 +38,7 @@ interface Props {
 }
 
 export default function Categorize({
+  language,
   defaultValue,
   expenseDomains,
   setFormCategories,
@@ -58,7 +62,7 @@ export default function Categorize({
           },
         ]),
   ])
-
+  const { t } = useTranslation(language, 'upload/categorize')
   const allDomains = expenseDomains.map((domain) => {
     return {
       label: domain.title,
@@ -121,7 +125,7 @@ export default function Categorize({
             <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label>
-                  Author <span className='text-red-500'>*</span>
+                  {t('domain')} <span className='text-red-500'>*</span>
                 </Label>
               )}
               <Popover
@@ -154,16 +158,18 @@ export default function Categorize({
                       </div>
                       {allDomains.find(
                         (domain) => domain.label === category.author
-                      )?.label || 'Select a committee'}
+                      )?.label || t('domain.select')}
                     </div>
                     <ChevronDownIcon className='w-5 h-5' />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className='w-96! p-0'>
                   <Command>
-                    <CommandInput placeholder='Search' />
+                    <CommandInput
+                      placeholder={t('domain.search.placeholder')}
+                    />
                     <CommandList>
-                      <CommandEmpty>None found</CommandEmpty>
+                      <CommandEmpty>{t('domain.noneFound')}</CommandEmpty>
                       <CommandGroup>
                         {allDomains.map((domain) => (
                           <CommandItem
@@ -212,7 +218,7 @@ export default function Categorize({
             <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label>
-                  Category <span className='text-red-500'>*</span>
+                  {t('category')} <span className='text-red-500'>*</span>
                 </Label>
               )}
               <Popover
@@ -243,7 +249,7 @@ export default function Categorize({
                         />
                       </div>
                       <p className='truncate'>
-                        {category.category || 'Select part'}
+                        {category.category || t('category.select')}
                       </p>
                     </div>
                     <ChevronDownIcon className='w-5 h-5' />
@@ -251,9 +257,11 @@ export default function Categorize({
                 </PopoverTrigger>
                 <PopoverContent className='w-96! p-0'>
                   <Command>
-                    <CommandInput placeholder='Search' />
+                    <CommandInput
+                      placeholder={t('category.search.placeholder')}
+                    />
                     <CommandList>
-                      <CommandEmpty>None found</CommandEmpty>
+                      <CommandEmpty>{t('category.noneFound')}</CommandEmpty>
                       <CommandGroup>
                         {expenseDomains
                           .find((domain) => domain.title === category.author)
@@ -284,7 +292,7 @@ export default function Categorize({
             <div className='w-full flex flex-col gap-2 col-span-3'>
               {index === 0 && (
                 <Label>
-                  Amount (SEK) <span className='text-red-500'>*</span>
+                  {t('amount')} <span className='text-red-500'>*</span>
                 </Label>
               )}
               <Input
@@ -336,7 +344,7 @@ export default function Categorize({
         onClick={addCategory}
         disabled={categories[0].author === ''}
       >
-        Add Category
+        {t('addCategory')}
       </Button>
     </>
   )

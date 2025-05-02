@@ -2,6 +2,7 @@
 
 import OverviewPage from '@/app/[language]/admin/pages/overview/overview'
 import SettingsPage from '@/app/[language]/admin/pages/settings'
+import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -30,6 +31,7 @@ export default function Admin({ language, committees }: Props) {
   const pathname = usePathname()
   const category = searchParams.get('category') || 'overview'
   const router = useRouter()
+  const { t } = useTranslation(language, 'admin/admin')
 
   const createTabString = useCallback(
     (tab: string) => {
@@ -66,10 +68,10 @@ export default function Admin({ language, committees }: Props) {
       <HeaderGap />
       <div className='h-fit p-8 pt-0'>
         <div className='border-b pb-4 border-yellow-400'>
-          <h1 className='text-3xl font-bold mt-4 tracking-tight'>Admin</h1>
-          <p className='text-muted-foreground'>
-            Admin page for managing the application and its users.
-          </p>
+          <h1 className='text-3xl font-bold mt-4 tracking-tight'>
+            {t('title')}
+          </h1>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
 
         <Tabs
@@ -89,7 +91,7 @@ export default function Admin({ language, committees }: Props) {
                     }}
                     className='w-full flex justify-start gap-2 p-2 rounded-md data-[state=active]:bg-muted!'
                   >
-                    <p className='capitalize'>{page.name}</p>
+                    <p className='capitalize'>{t(page.name)}</p>
                   </Button>
                 </TabsTrigger>
               ))}

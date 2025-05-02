@@ -2,6 +2,7 @@
 
 import AccountPage from '@/app/[language]/account/pages/account/accountPage'
 import ActivityPage from '@/app/[language]/account/pages/activity/activityPage'
+import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -38,6 +39,7 @@ export default function Account(props: Props) {
   const router = useRouter()
   const { student } = useStudent()
   const { isLoading: authLoading } = useAuthentication()
+  const { t } = useTranslation(language, 'account')
 
   useEffect(() => {
     if (!authLoading) {
@@ -76,10 +78,10 @@ export default function Account(props: Props) {
       <HeaderGap />
       <div className='h-fit p-8 pt-0'>
         <div className='border-b pb-4 border-yellow-400'>
-          <h1 className='text-3xl font-bold mt-4 tracking-tight'>Account</h1>
-          <p className='text-muted-foreground'>
-            Manage your account and see your activity.
-          </p>
+          <h1 className='text-3xl font-bold mt-4 tracking-tight'>
+            {t('title')}
+          </h1>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
 
         <Tabs
@@ -99,7 +101,7 @@ export default function Account(props: Props) {
                     }}
                     className='w-full flex justify-start gap-2 p-2 rounded-md data-[state=active]:bg-muted!'
                   >
-                    <p className='capitalize'>{page.name}</p>
+                    <p className='capitalize'>{t(page.name)}</p>
                   </Button>
                 </TabsTrigger>
               ))}

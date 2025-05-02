@@ -1,0 +1,8 @@
+{
+    "about.title": "About",
+    "about.description": "This is an app to submit your invoices and expenses to the chapter.",
+    "contact.title": "Contact",
+    "issues.title": "Problems?",
+    "issues.description": "If you have any issues with the app, please ",
+    "issues.description.github": "create an issue on GitHub."
+}

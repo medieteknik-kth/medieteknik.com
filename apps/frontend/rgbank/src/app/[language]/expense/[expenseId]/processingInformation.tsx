@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
@@ -6,24 +9,26 @@ import type { LanguageCode } from '@/models/Language'
 import { useExpenseDetail } from '@/providers/DetailProvider'
 
 interface Props {
-  langauge: LanguageCode
+  language: LanguageCode
 }
 
-export default function ExpenseProcessingInformation({ langauge }: Props) {
+export default function ExpenseProcessingInformation({ language }: Props) {
   const { expense } = useExpenseDetail()
+  const { t } = useTranslation(language, 'processing')
 
   return (
     <PopIn delay={0.1}>
       <Card>
         <CardHeader>
-          <CardTitle>Processing Information</CardTitle>
+          <CardTitle>{t('processing.title')}</CardTitle>
         </CardHeader>
         <CardContent className='flex flex-col gap-4'>
           <div>
             <h3 className='text-sm font-medium text-muted-foreground'>
-              Current Status
+              {t('processing.status')}
             </h3>
             <ExpenseStatusBadge
+              language={language}
               status={expense.status}
               className='w-full mt-1'
             />
@@ -31,10 +36,10 @@ export default function ExpenseProcessingInformation({ langauge }: Props) {
           <Separator />
           <div>
             <h3 className='text-sm font-medium text-muted-foreground'>
-              Submitted On
+              {t('processing.submitted')}
             </h3>
             <p className='mt-1'>
-              {new Date(expense.created_at).toLocaleDateString(langauge, {
+              {new Date(expense.created_at).toLocaleDateString(language, {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',

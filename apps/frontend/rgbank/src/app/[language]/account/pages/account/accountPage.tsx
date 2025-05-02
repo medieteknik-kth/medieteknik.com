@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -47,6 +48,7 @@ function getMainDomain(): string {
 export default function AccountPage({ language, includeBanner = true }: Props) {
   const { student, bank_account } = useStudent()
   const { setStale } = useAuthentication()
+  const { t } = useTranslation(language, 'account')
   const bankInformationForm = useForm<z.infer<typeof bankSchema>>({
     resolver: zodResolver(bankSchema),
     defaultValues: {
@@ -59,8 +61,8 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
   const onSubmit = async (data: z.infer<typeof bankSchema>) => {
     if (!student) {
       toast({
-        title: 'Error saving bank information',
-        description: 'You must be logged in to save bank information.',
+        title: t('bank_account.error.title'),
+        description: t('bank_account.notLoggedIn.description'),
         variant: 'destructive',
       })
       return
@@ -80,26 +82,26 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to save bank information')
+        throw new Error(t('bank_account.error.description'))
       }
 
       setStale(true)
       toast({
-        title: 'Bank information saved',
-        description: 'Your bank information has been saved successfully.',
+        title: t('bank_account.success.title'),
+        description: t('bank_account.success.description'),
         variant: 'default',
       })
     } catch (error) {
       if (error instanceof Error) {
         toast({
-          title: 'Error saving bank information',
+          title: t('bank_account.error.title'),
           description: error.message,
           variant: 'destructive',
         })
       } else {
         toast({
-          title: 'Error saving bank information',
-          description: 'An unknown error occurred.',
+          title: t('bank_account.error.title'),
+          description: t('bank_account.error.description'),
           variant: 'destructive',
         })
       }
@@ -110,17 +112,9 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
     <section className='w-full max-w-[1100px] flex flex-col mb-8 2xl:mb-0'>
       {includeBanner && (
         <div className='w-full mb-4 px-4 pt-4'>
-          <h2 className='text-lg font-bold'>Account</h2>
+          <h2 className='text-lg font-bold'>{t('bank_account.title')}</h2>
           <p className='text-sm text-muted-foreground'>
-            Accounts relevant to this app, you can manage the rest of your
-            account in the{' '}
-            <a
-              href={`https://${getMainDomain()}/${language}/account`} // TODO: Add link to main app settings
-              className='text-primary underline hover:text-primary/90'
-            >
-              main app settings
-            </a>
-            .
+            {t('bank_account.description')}
           </p>
           <Separator className='bg-yellow-400 mt-4' />
         </div>
@@ -138,16 +132,19 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
                   htmlFor='bank_name'
                   className='text-sm font-semibold'
                 >
-                  Bank Name
+                  {t('bank_account.name.title')}
                 </FormLabel>
                 <FormMessage />
 
                 <p className='text-xs text-muted-foreground'>
-                  Bank name is the name of the bank associated with your
-                  account.
+                  {t('bank_account.name.description')}
                 </p>
                 <FormControl>
-                  <Input id='bank_name' {...field} />
+                  <Input
+                    id='bank_name'
+                    {...field}
+                    placeholder={t('bank_account.name.placeholder')}
+                  />
                 </FormControl>
               </div>
             )}
@@ -161,16 +158,19 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
                   htmlFor='clearing_number'
                   className='text-sm font-semibold'
                 >
-                  Clearing Number
+                  {t('bank_account.clearing_number.title')}
                 </FormLabel>
                 <FormMessage />
 
                 <p className='text-xs text-muted-foreground'>
-                  Clearing number is a unique identifier for your bank account.
-                  It is used to identify the bank associated with your account.
+                  {t('bank_account.clearing_number.description')}
                 </p>
                 <FormControl>
-                  <Input id='clearing_number' {...field} />
+                  <Input
+                    id='clearing_number'
+                    {...field}
+                    placeholder={t('bank_account.clearing_number.placeholder')}
+                  />
                 </FormControl>
               </div>
             )}
@@ -184,17 +184,19 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
                   htmlFor='account_number'
                   className='text-sm font-semibold'
                 >
-                  Account Number
+                  {t('bank_account.account_number.title')}
                 </FormLabel>
                 <FormMessage />
 
                 <p className='text-xs text-muted-foreground'>
-                  Account number is an identifier for your bank account. It is
-                  used to identify who owns the account and who should the money
-                  be sent to.
+                  {t('bank_account.account_number.description')}
                 </p>
                 <FormControl>
-                  <Input id='account_number' {...field} />
+                  <Input
+                    id='account_number'
+                    {...field}
+                    placeholder={t('bank_account.account_number.placeholder')}
+                  />
                 </FormControl>
               </div>
             )}

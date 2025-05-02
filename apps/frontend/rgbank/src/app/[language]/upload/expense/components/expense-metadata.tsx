@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
@@ -18,41 +21,25 @@ interface Props {
 }
 
 export function ExpenseMetadata({ language, expenseData, totalAmount }: Props) {
+  const { t } = useTranslation(language, 'upload/finalize/expense')
+
   return (
     <Card className='shadow-md'>
       <CardHeader className='pb-3'>
         <CardTitle className='text-lg font-semibold leading-tight'>
-          Metadata
+          {t('metadata.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
-        {/* Amount */}
-        <div className='flex items-start gap-4'>
-          <div className='bg-primary/10 p-2 rounded-md'>
-            <CreditCardIcon className='w-6 h-6 text-primary' />
-          </div>
-          <div className='flex-1'>
-            <p className='text-sm text-muted-foreground font-medium'>Amount</p>
-            <p className='mt-1 text-lg font-semibold'>
-              {totalAmount.toLocaleString(language, {
-                currency: 'SEK',
-                style: 'currency',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
-          </div>
-        </div>
-
-        <Separator />
-
         {/* Title */}
         <div className='flex items-start gap-4'>
           <div className='bg-primary/10 p-2 rounded-md'>
             <H1Icon className='w-6 h-6 text-primary' />
           </div>
           <div className='flex-1'>
-            <p className='text-sm text-muted-foreground font-medium'>Title</p>
+            <p className='text-sm text-muted-foreground font-medium'>
+              {t('metadata.text.title')}
+            </p>
             <p className='mt-1'>{expenseData.title}</p>
           </div>
         </div>
@@ -64,7 +51,7 @@ export function ExpenseMetadata({ language, expenseData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium'>
-              Description
+              {t('metadata.text.description')}
             </p>
             <p className='mt-1'>{expenseData.description}</p>
           </div>
@@ -79,7 +66,7 @@ export function ExpenseMetadata({ language, expenseData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium mb-2'>
-              Reciept Status
+              {t('metadata.status.title')}
             </p>
             <div className='grid grid-cols-2 gap-y-2'>
               <div className='flex items-center gap-2'>
@@ -89,10 +76,32 @@ export function ExpenseMetadata({ language, expenseData, totalAmount }: Props) {
                   checked={expenseData.isDigital}
                 />
                 <label htmlFor='original' className='text-sm'>
-                  Digital Receipt
+                  {t('metadata.status.digital')}
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Amount */}
+        <div className='flex items-start gap-4'>
+          <div className='bg-primary/10 p-2 rounded-md'>
+            <CreditCardIcon className='w-6 h-6 text-primary' />
+          </div>
+          <div className='flex-1'>
+            <p className='text-sm text-muted-foreground font-medium'>
+              {t('metadata.amount')}
+            </p>
+            <p className='mt-1 text-lg font-semibold'>
+              {totalAmount.toLocaleString(language, {
+                currency: 'SEK',
+                style: 'currency',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
           </div>
         </div>
 
@@ -105,11 +114,13 @@ export function ExpenseMetadata({ language, expenseData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium mb-2'>
-              Important Dates
+              {t('metadata.dates.title')}
             </p>
             <div className='grid grid-cols-2 gap-4'>
               <div>
-                <p className='text-sm text-muted-foreground'>Expense Date</p>
+                <p className='text-sm text-muted-foreground'>
+                  {t('metadata.dates.expense')}
+                </p>
                 <p className='font-medium'>
                   {expenseData.date.toLocaleDateString()}
                 </p>

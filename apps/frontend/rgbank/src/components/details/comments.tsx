@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Comment, { StatusUpdate } from '@/components/ui/comment'
@@ -26,6 +27,9 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
   const { student } = useStudent()
   const [currentMessage, setCurrentMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const { t } = useTranslation(language, 'processing')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
 
   if (!invoice && !expense) {
     return null
@@ -90,15 +94,14 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
   return (
     <div className='space-y-6 mt-2'>
       <div className='flex items-center justify-between'>
-        <h3 className='text-lg font-medium'>Comments & Updates</h3>
+        <h3 className='text-lg font-medium'>{t('comments.title')}</h3>
         {thread && (
           <Badge variant='outline' className='text-xs'>
-            {
-              allMessages?.filter(
+            {t('comments.total', {
+              count: allMessages?.filter(
                 (message) => message.message_type !== 'SYSTEM'
-              ).length
-            }{' '}
-            messages
+              ).length,
+            })}
           </Badge>
         )}
       </div>
@@ -113,17 +116,20 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
         {errorMessage && (
           <div className='text-red-500 text-sm'>{errorMessage}</div>
         )}
-        <Label htmlFor='comment'>Add a comment</Label>
+        <Label htmlFor='comment'>{t('comments.add.label')}</Label>
         <Textarea
           id='comment'
-          placeholder='Add a comment or question about this expense...'
+          placeholder={t('comments.add.placeholder', {
+            type: invoice
+              ? invoiceT('invoice').toLowerCase()
+              : expenseT('expense').toLowerCase(),
+          })}
           className='min-h-[100px]'
           onChange={(e) => setCurrentMessage(e.target.value)}
         />
         {item.status !== 'UNCONFIRMED' && item.status !== 'CLARIFICATION' && (
           <div className='text-xs text-muted-foreground'>
-            You can only add comments when the invoice is in unconfirmed or
-            requires more clarification
+            {t('comments.add.disabled')}
           </div>
         )}
         <div className='flex justify-end gap-2'>
@@ -133,7 +139,7 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
               item.status !== 'UNCONFIRMED' && item.status !== 'CLARIFICATION'
             }
           >
-            Add Comment
+            {t('comments.add.button')}
           </Button>
         </div>
       </form>
@@ -149,6 +155,7 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
 
               return (
                 <StatusUpdate
+                  language={language}
                   key={message.message_id}
                   date={message.created_at}
                   previousStatus={message.previous_status}
@@ -174,7 +181,7 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
           })
         ) : (
           <div className='flex items-center justify-center w-full h-32 text-sm text-muted-foreground'>
-            No comments yet.
+            {t('comments.empty')}
           </div>
         )}
       </div>

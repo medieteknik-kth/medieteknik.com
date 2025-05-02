@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function FilesSection({ language, expense, invoice }: Props) {
+  const { t } = useTranslation(language, 'processing')
   if (!invoice && !expense) {
     return null
   }
@@ -50,7 +52,7 @@ export default function FilesSection({ language, expense, invoice }: Props) {
             <Button className='flex items-center gap-2' asChild>
               <a href={file} target='_blank' rel='noopener noreferrer'>
                 <ArrowDownTrayIcon className='h-4 w-4' />
-                Download
+                {t('files.download')}
               </a>
             </Button>
           </div>

@@ -1,0 +1,20 @@
+{
+    "title": "Slutför faktura",
+    "description": "Granska dina fakturadetaljer innan du slutför.",
+    "back": "Tillbaka",
+    "error": "Misslyckades med att skapa faktura",
+    "metadata.title": "Faktura Metadata",
+    "metadata.paidStatus": "Betald status",
+    "metadata.paidStatus.paid": "Ja, sektionen har betalat",
+    "metadata.paidStatus.unpaid": "Nej, sektionen ska betala",
+    "metadata.text.title": "Titel",
+    "metadata.text.description": "Beskrivning",
+    "metadata.status.title": "Faktura status",
+    "metadata.status.original": "Originalfaktura",
+    "metadata.status.booked": "Bokförd",
+    "metadata.amount": "Belopp",
+    "metadata.dates.title": "Viktiga datum",
+    "metadata.dates.invoice": "Datum för fakturan",
+    "metadata.dates.payment": "Förfallodatum för fakturan",
+    "submit": "Skicka faktura"
+}

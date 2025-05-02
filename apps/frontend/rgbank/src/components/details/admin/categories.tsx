@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -53,6 +54,9 @@ export default function AdminCategoriesSection({ language, item }: Props) {
   } = useSWR<ExpenseDomain[]>('/api/public/rgbank/expense-domains', fetcher, {
     fallbackData: [],
   })
+  const { t } = useTranslation(language, 'processing')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
   let categoryIndex = 100
 
   const addCategory = useCallback(() => {
@@ -135,16 +139,17 @@ export default function AdminCategoriesSection({ language, item }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Update Categories</CardTitle>
+        <CardTitle>{t('admin.categories.title')}</CardTitle>
         <CardDescription>
-          Change the categories{' '}
-          {isInvoice ? 'for the invoice' : 'for the expense'}.
+          {t('admin.categories.description', {
+            type: isInvoice ? invoiceT('invoice') : expenseT('expense'),
+          })}
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-6'>
         <Button variant='outline' className='space-x-2' onClick={addCategory}>
           <PlusIcon className='h-4 w-4' />
-          <p>Add Category</p>
+          <p>{t('admin.categories.add')}</p>
         </Button>
         <form
           onSubmit={(e) => {
@@ -163,7 +168,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                   {index + 1}
                 </div>
                 <div className='w-full flex flex-col gap-2 col-span-4'>
-                  <Label>Author</Label>
+                  <Label>{t('admin.categories.domain')}</Label>
                   <Popover
                     open={dropdownOpen === index}
                     onOpenChange={() => {
@@ -181,16 +186,20 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                         <div className='flex items-center gap-2'>
                           {allDomains.find(
                             (domain) => domain.label === category.author
-                          )?.label || 'Select a committee'}
+                          )?.label || t('admin.categories.domain.placeholder')}
                         </div>
                         <ChevronDownIcon className='w-5 h-5' />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className='w-96! p-0'>
                       <Command>
-                        <CommandInput placeholder='Search' />
+                        <CommandInput
+                          placeholder={t('admin.categories.search')}
+                        />
                         <CommandList>
-                          <CommandEmpty>None found</CommandEmpty>
+                          <CommandEmpty>
+                            {t('admin.categories.empty')}
+                          </CommandEmpty>
                           <CommandGroup>
                             {allDomains.map((domain) => (
                               <CommandItem
@@ -224,7 +233,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                 </div>
 
                 <div className='grow flex flex-col gap-2 col-span-4'>
-                  <Label>Category</Label>
+                  <Label>{t('admin.categories.category')}</Label>
                   <Popover
                     open={partDropdownOpen === index}
                     onOpenChange={() => {
@@ -242,7 +251,8 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                       >
                         <div className='flex items-center gap-2 max-w-64 2xl:max-w-max'>
                           <p className='truncate'>
-                            {category.category || 'Select part'}
+                            {category.category ||
+                              t('admin.categories.category.select')}
                           </p>
                         </div>
                         <ChevronDownIcon className='w-5 h-5' />
@@ -250,9 +260,13 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     </PopoverTrigger>
                     <PopoverContent className='w-96! p-0'>
                       <Command>
-                        <CommandInput placeholder='Search' />
+                        <CommandInput
+                          placeholder={t('admin.categories.search')}
+                        />
                         <CommandList>
-                          <CommandEmpty>None found</CommandEmpty>
+                          <CommandEmpty>
+                            {t('admin.categories.empty')}
+                          </CommandEmpty>
                           <CommandGroup>
                             {expenseDomains
                               .find(
@@ -282,7 +296,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                 </div>
 
                 <div className='w-full flex flex-col gap-2 col-span-3'>
-                  <Label>Amount (SEK)</Label>
+                  <Label>{t('admin.categories.amount')}</Label>
                   <Input
                     type='text'
                     placeholder='Amount'
@@ -310,7 +324,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
               </li>
             ))}
           </ul>
-          <Button type='submit'>Save Categories</Button>
+          <Button type='submit'>{t('admin.categories.submit')}</Button>
         </form>
       </CardContent>
     </Card>

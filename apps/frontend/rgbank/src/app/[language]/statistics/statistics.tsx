@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import {
@@ -47,6 +48,7 @@ export default function Statistics({
   const [yearFilter] = useState(providedYear || getYear(new Date()).toString())
   const [leaderboardView, setLeaderboardView] = useState('yearly')
   const { theme } = useTheme()
+  const { t } = useTranslation(language, 'statistics')
 
   const changeYear = useCallback(
     (year: string) => {
@@ -106,15 +108,13 @@ export default function Statistics({
                                   : 'from-[#FF5733] to-[#FF3333]' // Neon Orange to Neon Red
               )}
             >
-              Expense Statistics
+              {t('title')}
             </h1>
             <span className='text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-300'>
               {yearFilter}
             </span>
           </div>
-          <p className='text-muted-foreground'>
-            Overview of expenses and trends over time. Updates every week.
-          </p>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
 
         {/* Overview Cards */}
@@ -123,7 +123,7 @@ export default function Statistics({
             <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-red-600/10'>
               <CardHeader className='pb-2'>
                 <CardDescription className='text-sm font-medium text-muted-foreground'>
-                  Total Expenses
+                  {t('totalExpenses')}
                 </CardDescription>
                 <CardTitle className='text-4xl font-bold flex items-center'>
                   <div className='flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mr-4'>
@@ -140,7 +140,7 @@ export default function Statistics({
               <CardContent>
                 <div className='text-sm text-muted-foreground flex items-center'>
                   <CalendarIcon className='h-5 w-5 mr-1 text-muted-foreground' />
-                  {isCurrentYear ? 'Year to date' : 'For the year'}
+                  {isCurrentYear ? t('yearToDate') : t('forTheYear')}
                 </div>
               </CardContent>
             </Card>
@@ -150,7 +150,7 @@ export default function Statistics({
             <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-blue-600/10'>
               <CardHeader className='pb-2'>
                 <CardDescription className='text-sm font-medium text-muted-foreground'>
-                  Year Filter
+                  {t('yearFilter.label')}
                 </CardDescription>
                 <CardTitle className='text-2xl font-bold flex items-center gap-4'>
                   <div className='flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30'>
@@ -172,7 +172,7 @@ export default function Statistics({
               </CardHeader>
               <CardContent>
                 <div className='text-sm text-muted-foreground'>
-                  Filter all charts and data
+                  {t('yearFilter.description')}
                 </div>
               </CardContent>
             </Card>
@@ -184,24 +184,27 @@ export default function Statistics({
           <PopIn>
             <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-green-600/10'>
               <CardHeader>
-                <CardTitle>Top Spenders - Committees</CardTitle>
+                <CardTitle>{t('committeeLeaderboard.title')}</CardTitle>
                 <CardDescription>
-                  {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'} highest
-                  expense departments
+                  {t('committeeLeaderboard.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className='rounded-md border'>
                   <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
-                    <div className='col-span-1'>#</div>
-                    <div className='col-span-5'>Committee</div>
-                    <div className='col-span-3 text-right'>Amount</div>
+                    <div className='col-span-1 pl-2'>#</div>
+                    <div className='col-span-5'>
+                      {t('committeeLeaderboard.committee')}
+                    </div>
+                    <div className='col-span-3 text-right'>
+                      {t('committeeLeaderboard.amount')}
+                    </div>
                   </div>
                   {leaderboardView === 'yearly' ? (
                     yearCommitteesStatistics.length === 0 ? (
                       <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
                         <div className='col-span-12 text-center text-muted-foreground'>
-                          No statistics available for this year
+                          {t('committeeLeaderboard.none')}
                         </div>
                       </div>
                     ) : (
@@ -236,7 +239,7 @@ export default function Statistics({
                     (allTimeCommitteesStatistics.length === 0 ? (
                       <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
                         <div className='col-span-12 text-center text-muted-foreground'>
-                          No statistics available for this year
+                          {t('committeeLeaderboard.none')}
                         </div>
                       </div>
                     ) : (

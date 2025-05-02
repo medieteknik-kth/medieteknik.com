@@ -1,4 +1,7 @@
+'use client'
+
 import { fontJetBrainsMono } from '@/app/fonts'
+import { useTranslation } from '@/app/i18n/client'
 import {
   Card,
   CardContent,
@@ -22,6 +25,8 @@ interface Props {
 }
 
 export default function ExpenseCard({ language, expense, short }: Props) {
+  const { t } = useTranslation(language, 'activities')
+
   return (
     <Link
       href={`/${language}/expense/${expense.expense_id}`}
@@ -30,8 +35,12 @@ export default function ExpenseCard({ language, expense, short }: Props) {
       <Card>
         <CardHeader>
           <div className='flex items-center gap-2'>
-            <ExpenseBadge type={expense.type} />
-            <ExpenseStatusBadge status={expense.status} short />
+            <ExpenseBadge language={language} type={expense.type} />
+            <ExpenseStatusBadge
+              language={language}
+              status={expense.status}
+              short
+            />
             {expense.committee && (
               <div
                 className='p-1 bg-white rounded-lg'
@@ -64,8 +73,8 @@ export default function ExpenseCard({ language, expense, short }: Props) {
         {!short && (
           <>
             <CardContent className='grid grid-cols-[auto_auto] grid-rows-2 pb-0'>
-              <p className='text-sm'>Created at</p>
-              <p className='text-sm'>Amount</p>
+              <p className='text-sm'>{t('activity.table.createdAt')}</p>
+              <p className='text-sm'>{t('activity.table.amount')}</p>
               <p className='text-sm text-muted-foreground'>
                 {new Date(expense.created_at).toLocaleDateString()}
               </p>

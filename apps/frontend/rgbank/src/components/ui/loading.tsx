@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import type { LanguageCode } from '@/models/Language'
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export default function Loading({ language }: Props) {
+  const { t } = useTranslation(language, 'loading')
   return (
     <div className='w-full min-h-full h-screen flex items-center justify-center my-2 gap-2'>
       <svg
@@ -15,7 +17,7 @@ export default function Loading({ language }: Props) {
         viewBox='0 0 100 100'
         fill='currentColor'
       >
-        <title>Loading</title>
+        <title>{t('title')}</title>
         <path
           fill='none'
           stroke='inherit'
@@ -31,7 +33,7 @@ export default function Loading({ language }: Props) {
           d='M50 10 a 40 40 0 0 1 40 40'
         />
       </svg>
-      <p className='font-bold tracking-tight'>Loading</p>
+      <p className='font-bold tracking-tight'>{t('title')}</p>
     </div>
   )
 }

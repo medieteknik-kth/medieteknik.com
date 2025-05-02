@@ -7,6 +7,7 @@ export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 
 export const FALLBACK_LANGUAGE: LanguageCode = 'en'
 export const SUPPORTED_LANGUAGES: LanguageCode[] = [FALLBACK_LANGUAGE, 'sv']
+export const DEFAULT_NS: string = 'translation'
 
 export const LANGUAGE_COOKIE_NAME: string = 'language'
 export const COOKIE_VERSION_NAME: string = 'cookie_version'

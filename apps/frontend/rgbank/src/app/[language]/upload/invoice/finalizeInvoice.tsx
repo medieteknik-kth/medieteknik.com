@@ -4,8 +4,8 @@ import { CategoryOverviewByCommittee } from '@/app/[language]/upload/components/
 import FileOverview from '@/app/[language]/upload/components/files'
 import FinishedUpload from '@/app/[language]/upload/components/finishedUpload'
 import { InvoiceMetadata } from '@/app/[language]/upload/invoice/components/invoice-metadata'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
-import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { useFiles, useInvoice } from '@/providers/FormProvider'
 import { invoiceSchema } from '@/schemas/invoice'
@@ -18,23 +18,19 @@ import type { z } from 'zod'
 
 interface Props {
   language: LanguageCode
-  committees: Committee[]
   onBack: () => void
 }
 
-export default function FinalizeInvoice({
-  language,
-  committees,
-  onBack,
-}: Props) {
+export default function FinalizeInvoice({ language, onBack }: Props) {
   const [success, setSuccess] = useState(false)
   const router = useRouter()
   const invoiceForm = useForm<z.infer<typeof invoiceSchema>>({
     resolver: zodResolver(invoiceSchema),
   })
-
   const { invoiceData } = useInvoice()
   const { removeAllFiles } = useFiles()
+  const { t } = useTranslation(language, 'upload/finalize/invoice')
+
   const totalAmount = invoiceData.categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
     return acc + (Number.isNaN(amount) ? 0 : amount)
@@ -64,7 +60,7 @@ export default function FinalizeInvoice({
       })
 
       if (!response.ok) {
-        throw new Error(`Failed to upload files: ${response.statusText}`)
+        throw new Error(t('error'))
       }
 
       setSuccess(true)
@@ -116,16 +112,14 @@ export default function FinalizeInvoice({
 
   return success ? (
     <div className='grid place-items-center h-[40.5rem]'>
-      <FinishedUpload />
+      <FinishedUpload language={language} />
     </div>
   ) : (
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
-          <h1 className='text-2xl font-bold'>Finalize</h1>
-          <p className='text-muted-foreground'>
-            Review your invoice details before finalizing.
-          </p>
+          <h1 className='text-2xl font-bold'>{t('title')}</h1>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
         <button
           type='button'
@@ -135,7 +129,7 @@ export default function FinalizeInvoice({
           }}
         >
           <ChevronLeftIcon className='w-4 h-4' />
-          Back
+          {t('back')}
         </button>
       </div>
 
@@ -151,7 +145,6 @@ export default function FinalizeInvoice({
         <CategoryOverviewByCommittee
           language={language}
           categories={invoiceData.categories}
-          committees={committees}
         />
 
         {invoiceForm.formState.errors && (
@@ -171,7 +164,7 @@ export default function FinalizeInvoice({
             })()
           }}
         >
-          Submit Invoice
+          {t('submit')}
         </Button>
       </div>
     </>

@@ -1,6 +1,7 @@
 'use client'
 
 import InvoiceDetails from '@/app/[language]/invoice/[invoiceId]/invoiceDetails'
+import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import DetailProvider from '@/context/DetailContext'
 import type { InvoiceResponseDetailed } from '@/models/Invoice'
@@ -32,6 +33,8 @@ export default function InvoicePage(props: Props) {
     `/api/rgbank/invoices/${invoiceId}`,
     fetcher
   )
+  const { t } = useTranslation(language, 'processing')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
 
   useEffect(() => {
     if (isLoading) return
@@ -44,9 +47,15 @@ export default function InvoicePage(props: Props) {
   if (error) {
     return (
       <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
-        <h1 className='text-3xl font-bold'>Error loading invoice</h1>
+        <h1 className='text-3xl font-bold'>
+          {t('error.title', {
+            type: invoiceT('invoice').toLowerCase(),
+          })}
+        </h1>
         <p className='text-muted-foreground'>
-          An error occurred while loading the invoice. Please try again later.
+          {t('error.description', {
+            type: invoiceT('invoice').toLowerCase(),
+          })}
         </p>
       </div>
     )
@@ -54,9 +63,15 @@ export default function InvoicePage(props: Props) {
   if (!data) {
     return (
       <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
-        <h1 className='text-3xl font-bold'>Loading invoice...</h1>
+        <h1 className='text-3xl font-bold'>
+          {t('loading.title', {
+            type: invoiceT('invoice').toLowerCase(),
+          })}
+        </h1>
         <p className='text-muted-foreground'>
-          Please wait while we load the invoice details.
+          {t('loading.description', {
+            type: invoiceT('invoice').toLowerCase(),
+          })}
         </p>
       </div>
     )

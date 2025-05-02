@@ -1,0 +1,14 @@
+{
+    "title": "Statistik",
+    "description": "Översikt över utgifter och trender över tid. Uppdateras varje vecka.",
+    "totalExpenses": "Totala Utgifter",
+    "yearToDate": "Hittills i år",
+    "forTheYear": "För Året",
+    "yearFilter.label": "Välj År",
+    "yearFilter.description": "Filtrera alla diagram och data",
+    "committeeLeaderboard.title": "Nämnder Ledartavla",
+    "committeeLeaderboard.description": "Toppnämnder efter totala utgifter",
+    "committeeLeaderboard.committee": "Nämnder",
+    "committeeLeaderboard.amount": "Belopp",
+    "committeeLeaderboard.none": "Ingen statistik tillgänglig för detta år"
+}

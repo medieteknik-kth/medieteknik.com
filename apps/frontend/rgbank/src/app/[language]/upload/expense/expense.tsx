@@ -1,6 +1,7 @@
 'use client'
 
 import { FormStep, FormSteps } from '@/app/[language]/upload/components/step'
+import { useTranslation } from '@/app/i18n/client'
 import Categorize from '@/components/form/categorize'
 import UploadFiles from '@/components/form/uploadFiles'
 import { Button } from '@/components/ui/button'
@@ -43,6 +44,7 @@ export default function Expense({
     expenseData.categories.length > 0,
   ])
   const [categories, setCategories] = useState<Category[]>([])
+  const { t } = useTranslation(language, 'upload/expense')
 
   const [isDigitalReceiptRequired, setIsDigitalReceiptRequired] =
     useState(false)
@@ -66,9 +68,10 @@ export default function Expense({
   return (
     <>
       <FormSteps
-        title='Upload your expense'
-        description='Please upload your expense receipt and fill in the required details.'
-        backButtonLabel='Back to upload'
+        language={language}
+        title={t('title')}
+        description={t('description')}
+        backButtonLabel={t('back')}
         onBackClick={() => {
           removeAllFiles()
           setExpenseData({
@@ -83,15 +86,15 @@ export default function Expense({
         showBackButton
       >
         <FormStep
-          title='Name your expense'
-          description='Enter a name for your expense.'
+          title={t('step_1.title')}
+          description={t('step_1.description')}
           stepNumber={1}
           isCompleted={completedSteps[0]}
           isActive
           required
         >
           <Input
-            placeholder='Enter a name for your expense'
+            placeholder={t('step_1.placeholder')}
             defaultValue={expenseData.title}
             maxLength={150}
             onChange={(e) => {
@@ -109,14 +112,15 @@ export default function Expense({
         </FormStep>
 
         <FormStep
-          title='Upload your receipt image'
-          description='Upload your receipt image in PDF, PNG, JPG, JPEG, or AVIF format.'
+          title={t('step_2.title')}
+          description={t('step_2.description')}
           stepNumber={2}
           isCompleted={completedSteps[1]}
           isActive
           required
         >
           <UploadFiles
+            language={language}
             fileUploadStep={1}
             completeStep={completeStep}
             uncompleteStep={uncompleteStep}
@@ -125,8 +129,8 @@ export default function Expense({
         </FormStep>
 
         <FormStep
-          title='Enter a description for the expense'
-          description='Enter a description for the expense.'
+          title={t('step_3.title')}
+          description={t('step_3.description')}
           stepNumber={3}
           isCompleted={completedSteps[2]}
           isActive
@@ -134,7 +138,7 @@ export default function Expense({
         >
           <Textarea
             className='resize-none'
-            placeholder='Enter a description for the expense'
+            placeholder={t('step_3.placeholder')}
             defaultValue={expenseData.description}
             onChange={(e) => {
               setExpenseData({
@@ -151,17 +155,16 @@ export default function Expense({
         </FormStep>
 
         <FormStep
-          title='Enter the date of the expense'
-          description='Enter the date of the expense. The date must be in the past.'
+          title={t('step_4.title')}
+          description={t('step_4.description')}
           stepNumber={4}
           isCompleted={completedSteps[3]}
           isActive
           required
         >
-          <Label>Date</Label>
+          <Label>{t('step_4.label')}</Label>
           <Input
             type='date'
-            className=''
             defaultValue={
               subDays(expenseData.date, 1).toISOString().split('T')[0]
             }
@@ -183,8 +186,8 @@ export default function Expense({
         </FormStep>
 
         <FormStep
-          title='Is it a digital expense?'
-          description='Select if the expense is digital or not.'
+          title={t('step_5.title')}
+          description={t('step_5.description')}
           stepNumber={5}
           isCompleted={completedSteps[4]}
           isActive={isDigitalReceiptRequired}
@@ -209,19 +212,20 @@ export default function Expense({
                 }
               }}
             />
-            <Label htmlFor='digital'>This is a digital expense</Label>
+            <Label htmlFor='digital'>{t('step_5.label')}</Label>
           </div>
         </FormStep>
 
         <FormStep
-          title='Categorize the expense'
-          description='Select the categories and enter the amount for each one.'
+          title={t('step_6.title')}
+          description={t('step_6.description')}
           stepNumber={6}
           isCompleted={completedSteps[5]}
           isActive
           required
         >
           <Categorize
+            language={language}
             defaultValue={expenseData.categories}
             expenseDomains={expenseDomains}
             setFormCategories={(categories) => {
@@ -251,7 +255,7 @@ export default function Expense({
             onFinalize()
           }}
         >
-          Finalize Expense
+          {t('finalize')}
         </Button>
       </FormSteps>
     </>

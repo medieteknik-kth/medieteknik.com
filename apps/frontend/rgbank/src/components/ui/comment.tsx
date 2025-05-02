@@ -2,6 +2,7 @@ import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
 import type { CommitteePosition } from '@/models/Committee'
 import type { ExpenseStatus } from '@/models/General'
+import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
@@ -22,6 +23,7 @@ interface CommentProps {
 }
 
 interface StatusUpdateProps {
+  language: LanguageCode
   date: string
   previousStatus: ExpenseStatus
   newStatus: ExpenseStatus
@@ -93,6 +95,7 @@ export default function Comment({
 }
 
 export function StatusUpdate({
+  language,
   date,
   previousStatus,
   newStatus,
@@ -114,9 +117,17 @@ export function StatusUpdate({
           </span>
         </p>
         <div className='flex items-center gap-2'>
-          <ExpenseStatusBadge status={previousStatus} className='' />
+          <ExpenseStatusBadge
+            language={language}
+            status={previousStatus}
+            className=''
+          />
           <ArrowRightIcon className='h-4 w-4' />
-          <ExpenseStatusBadge status={newStatus} className='' />
+          <ExpenseStatusBadge
+            language={language}
+            status={newStatus}
+            className=''
+          />
         </div>
         {message && <p className='text-sm text-muted-foreground'>{message}</p>}
       </div>

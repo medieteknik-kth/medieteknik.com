@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -10,21 +11,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import type { LanguageCode } from '@/models/Language'
 
 interface Props {
   language: LanguageCode
   categories: Category[]
-  committees: Committee[]
 }
 
-export function CategoryOverviewByCommittee({
-  language,
-  categories,
-  committees,
-}: Props) {
+export function CategoryOverviewByCommittee({ language, categories }: Props) {
+  const { t } = useTranslation(language, 'upload/finalize/categories')
   const totalAmount = categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
     return acc + (Number.isNaN(amount) ? 0 : amount)
@@ -34,7 +30,7 @@ export function CategoryOverviewByCommittee({
     <Card className='shadow-md'>
       <CardHeader className='pb-3'>
         <CardTitle className='text-lg font-semibold leading-tight'>
-          Categories
+          {t('title')}
         </CardTitle>
       </CardHeader>
       <CardContent className='space-y-6'>
@@ -57,8 +53,8 @@ export function CategoryOverviewByCommittee({
                 <Table>
                   <TableHeader>
                     <TableRow className='bg-muted/50'>
-                      <TableHead className='w-1/2'>Category</TableHead>
-                      <TableHead className='w-1/2'>Amount</TableHead>
+                      <TableHead className='w-1/2'>{t('category')}</TableHead>
+                      <TableHead className='w-1/2'>{t('amount')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -92,7 +88,7 @@ export function CategoryOverviewByCommittee({
         </div>
         {categories.length === 0 && (
           <div className='text-center py-6 text-muted-foreground'>
-            No categories found
+            {t('notFound')}
           </div>
         )}
       </CardContent>

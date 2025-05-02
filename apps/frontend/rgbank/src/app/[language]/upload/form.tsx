@@ -6,6 +6,7 @@ import FinalizeExpense from '@/app/[language]/upload/expense/finalizeExpense'
 import FinalizeInvoice from '@/app/[language]/upload/invoice/finalizeInvoice'
 import Invoice from '@/app/[language]/upload/invoice/invoice'
 import SelectTemplate from '@/app/[language]/upload/select'
+import { useTranslation } from '@/app/i18n/client'
 import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
 import LoginWrapper from '@/components/login/loginWrapper'
 import Loading from '@/components/ui/loading'
@@ -44,6 +45,8 @@ export default function UploadForm({ language, committees }: Props) {
   const [page, setPage] = useState(template)
   const pathname = usePathname()
   const router = useRouter()
+  const { t: errors } = useTranslation(language, 'errors')
+  const { t: account } = useTranslation(language, 'errors')
 
   const handleTabChange = useCallback(
     (value: string) => {
@@ -94,10 +97,11 @@ export default function UploadForm({ language, committees }: Props) {
       <div className='min-h-[40.5rem] h-full flex flex-col items-center gap-y-20 sm:p-4 md:p-8'>
         <div>
           <p className='text-center text-sm text-muted-foreground'>
-            We are currently experiencing issues with our expense domains.
-            Please try again later.
+            {errors('domains.notFound')}
           </p>
-          <h1 className='text-3xl font-bold text-center'>Error</h1>
+          <h1 className='text-3xl font-bold text-center'>
+            {errors('generic')}
+          </h1>
         </div>
         <AccountPage language={language} includeBanner={false} />
       </div>
@@ -109,12 +113,10 @@ export default function UploadForm({ language, committees }: Props) {
       <div className='min-h-[40.5rem] h-full flex flex-col items-center gap-y-20 sm:p-4 md:p-8'>
         <div>
           <p className='text-center text-sm text-muted-foreground'>
-            To upload an invoice or expense, you need to fill in your bank
-            account information. This is required for us to process your invoice
-            or expense. You can do this in the account settings.
+            {account('bank_account.missing.description')}
           </p>
           <h1 className='text-3xl font-bold text-center'>
-            Bank account information required
+            {account('bank_account.missing.title')}
           </h1>
         </div>
         <AccountPage language={language} includeBanner={false} />
@@ -174,7 +176,6 @@ export default function UploadForm({ language, committees }: Props) {
           >
             <FinalizeInvoice
               language={language}
-              committees={committees}
               onBack={() => {
                 setPage('invoice')
               }}
@@ -210,7 +211,6 @@ export default function UploadForm({ language, committees }: Props) {
           >
             <FinalizeExpense
               language={language}
-              committees={committees}
               onBack={() => {
                 setPage('expense')
               }}

@@ -4,8 +4,8 @@ import { CategoryOverviewByCommittee } from '@/app/[language]/upload/components/
 import FileOverview from '@/app/[language]/upload/components/files'
 import FinishedUpload from '@/app/[language]/upload/components/finishedUpload'
 import { ExpenseMetadata } from '@/app/[language]/upload/expense/components/expense-metadata'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
-import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
 import { useExpense, useFiles } from '@/providers/FormProvider'
 import { expenseSchema } from '@/schemas/expense'
@@ -18,23 +18,18 @@ import type { z } from 'zod'
 
 interface Props {
   language: LanguageCode
-  committees: Committee[]
   onBack: () => void
 }
 
-export default function FinalizeExpense({
-  language,
-  committees,
-  onBack,
-}: Props) {
+export default function FinalizeExpense({ language, onBack }: Props) {
   const [success, setSuccess] = useState(false)
   const router = useRouter()
   const expenseForm = useForm<z.infer<typeof expenseSchema>>({
     resolver: zodResolver(expenseSchema),
   })
-
   const { expenseData } = useExpense()
   const { removeAllFiles } = useFiles()
+  const { t } = useTranslation(language, 'upload/finalize/expense')
 
   const totalAmount = expenseData.categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
@@ -62,7 +57,7 @@ export default function FinalizeExpense({
       })
 
       if (!response.ok) {
-        throw new Error(`Failed to upload files: ${response.statusText}`)
+        throw new Error(t('error'))
       }
 
       setSuccess(true)
@@ -79,7 +74,7 @@ export default function FinalizeExpense({
         router.replace(`/${language}`)
       }, 2500)
     } catch (error) {
-      console.error('Error uploading files:', error)
+      console.error(error)
     }
   }
 
@@ -102,16 +97,14 @@ export default function FinalizeExpense({
 
   return success ? (
     <div className='grid place-items-center h-[40.5rem]'>
-      <FinishedUpload />
+      <FinishedUpload language={language} />
     </div>
   ) : (
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
-          <h1 className='text-2xl font-bold'>Finalize</h1>
-          <p className='text-muted-foreground'>
-            Review your expense details before finalizing.
-          </p>
+          <h1 className='text-2xl font-bold'>{t('title')}</h1>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
         <button
           type='button'
@@ -121,7 +114,7 @@ export default function FinalizeExpense({
           }}
         >
           <ChevronLeftIcon className='w-4 h-4' />
-          Back
+          {t('back')}
         </button>
       </div>
 
@@ -136,7 +129,6 @@ export default function FinalizeExpense({
 
         <CategoryOverviewByCommittee
           language={language}
-          committees={committees}
           categories={expenseData.categories}
         />
       </div>
@@ -149,7 +141,7 @@ export default function FinalizeExpense({
           })()
         }}
       >
-        Submit Expense
+        {t('submit')}
       </Button>
     </>
   )

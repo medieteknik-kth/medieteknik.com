@@ -1,0 +1,9 @@
+{
+    "booked": "Bokförd",
+    "rejected": "Avvisad",
+    "paid": "Utbetald",
+    "confirmed": "Attesterad",
+    "clarification": "Förtydligande",
+    "unconfirmed": "Obekräftad",
+    "unknown": "Okänd"
+}

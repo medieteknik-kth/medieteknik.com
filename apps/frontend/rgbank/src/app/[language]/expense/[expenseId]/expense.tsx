@@ -1,6 +1,7 @@
 'use client'
 
 import ExpenseDetails from '@/app/[language]/expense/[expenseId]/expenseDetails'
+import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import DetailProvider from '@/context/DetailContext'
 import type { ExpenseResponseDetailed } from '@/models/Expense'
@@ -32,6 +33,8 @@ export default function ExpensePage(props: Props) {
     `/api/rgbank/expenses/${expenseId}`,
     fetcher
   )
+  const { t } = useTranslation(language, 'processing')
+  const { t: expenseT } = useTranslation(language, 'expense')
 
   useEffect(() => {
     if (isLoading) return
@@ -44,9 +47,15 @@ export default function ExpensePage(props: Props) {
   if (error) {
     return (
       <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
-        <h1 className='text-3xl font-bold'>Error loading expense</h1>
+        <h1 className='text-3xl font-bold'>
+          {t('error.title', {
+            type: expenseT('expense').toLowerCase(),
+          })}
+        </h1>
         <p className='text-muted-foreground'>
-          An error occurred while loading the expense. Please try again later.
+          {t('error.description', {
+            type: expenseT('expense').toLowerCase(),
+          })}
         </p>
       </div>
     )
@@ -54,9 +63,15 @@ export default function ExpensePage(props: Props) {
   if (!data) {
     return (
       <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
-        <h1 className='text-3xl font-bold'>Loading expense...</h1>
+        <h1 className='text-3xl font-bold'>
+          {t('loading.title', {
+            type: expenseT('expense').toLowerCase(),
+          })}
+        </h1>
         <p className='text-muted-foreground'>
-          Please wait while we load the expense details.
+          {t('loading.description', {
+            type: expenseT('expense').toLowerCase(),
+          })}
         </p>
       </div>
     )

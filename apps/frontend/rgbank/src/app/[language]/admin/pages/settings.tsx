@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -46,13 +47,17 @@ export default function SettingsPage({ language, committees }: Props) {
       fallbackData: [],
     }
   )
+  const { t } = useTranslation(language, 'admin/settings')
+  const { t: errors } = useTranslation(language, 'errors')
 
   if (error || !expenseDomains) {
     return (
       <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
-        <h1 className='text-3xl font-bold'>Error loading settings</h1>
+        <h1 className='text-3xl font-bold'>
+          {errors('settings.failed.title')}
+        </h1>
         <p className='text-muted-foreground'>
-          An error occurred while loading the settings. Please try again later.
+          {errors('settings.failed.description')}
         </p>
       </div>
     )
@@ -110,36 +115,34 @@ export default function SettingsPage({ language, committees }: Props) {
       }
 
       toast({
-        title: 'New domain created',
-        description: 'The new domain has been created successfully.',
+        title: t('domains.parts.success.title'),
+        description: t('domains.parts.success.description'),
       })
     } catch (error) {
-      console.error('Error creating new domain:', error)
+      console.error(
+        t('domains.parts.error', {
+          error: (error as Error).message,
+        })
+      )
     }
   }
 
   return (
     <section className='w-full h-fit max-w-[1100px] mb-8 2xl:mb-0'>
       <div className='-full mb-4 px-4 pt-4'>
-        <h2 className='text-lg font-bold'>Settings</h2>
-        <p className='text-sm text-muted-foreground'>
-          This page shows the settings for the application. You can change the
-          settings here.
-        </p>
+        <h2 className='text-lg font-bold'>{t('title')}</h2>
+        <p className='text-sm text-muted-foreground'>{t('description')}</p>
         <Separator className='bg-yellow-400 mt-4' />
       </div>
 
       <div className='px-4'>
-        <h3 className='text-sm font-semibold'>Domains</h3>
+        <h3 className='text-sm font-semibold'>{t('domains.title')}</h3>
 
         <div className='grid grid-cols-2 grid-rows-[auto_auto] gap-4'>
           <p className='text-xs text-muted-foreground'>
-            Select the domain for the expense. This will be used to filter the
-            expenses in the application.
+            {t('domains.description')}
           </p>
-          <p className='text-xs text-muted-foreground'>
-            Or create a new domain
-          </p>
+          <p className='text-xs text-muted-foreground'>{t('domains.new')}</p>
           <Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -166,16 +169,16 @@ export default function SettingsPage({ language, committees }: Props) {
                     </div>
                   )}
                   {allDomains.find((domain) => domain.label === selectedDomain)
-                    ?.label || 'Select a domain'}
+                    ?.label || t('domains.parts.select')}
                 </div>
                 <ChevronDownIcon className='w-5 h-5' />
               </Button>
             </PopoverTrigger>
             <PopoverContent className='w-96! p-0'>
               <Command>
-                <CommandInput placeholder='Search' />
+                <CommandInput placeholder={t('domains.parts.search')} />
                 <CommandList>
-                  <CommandEmpty>None found</CommandEmpty>
+                  <CommandEmpty>{t('domains.parts.notFound')}</CommandEmpty>
                   <CommandGroup>
                     {allDomains.map((domain) => (
                       <CommandItem
@@ -229,23 +232,25 @@ export default function SettingsPage({ language, committees }: Props) {
 
       {selectedDomain && (
         <div className='px-4 mt-4'>
-          <h3 className='text-sm font-semibold'>Title</h3>
-          <p className='text-xs text-muted-foreground'>Enter a new title</p>
+          <h3 className='text-sm font-semibold'>{t('domains.new.title')}</h3>
+          <p className='text-xs text-muted-foreground'>
+            {t('domains.new.description')}
+          </p>
           <Input
             value={newTitle}
             onChange={(e) => {
               setNewTitle(e.target.value)
             }}
-            placeholder='Enter new domain title'
+            placeholder={t('domains.new.placeholder')}
             className='w-full'
           />
         </div>
       )}
 
       <div className='px-4 mt-4'>
-        <h3 className='text-sm font-semibold'>Parts</h3>
+        <h3 className='text-sm font-semibold'>{t('domains.parts.title')}</h3>
         <p className='text-xs text-muted-foreground'>
-          Inspect or add parts to this domain
+          {t('domains.parts.description')}
         </p>
 
         {(selectedDomain !== '' || newDomain !== '') && (
@@ -278,7 +283,7 @@ export default function SettingsPage({ language, committees }: Props) {
                     setParts((prev) => prev.filter((p) => p.id !== part.id))
                   }}
                 >
-                  Remove
+                  {t('domains.parts.remove')}
                 </Button>
               </div>
             ))}
@@ -294,9 +299,9 @@ export default function SettingsPage({ language, committees }: Props) {
                 setParts((prev) => [...prev, { value: '', id: totalParts }])
               }}
             >
-              Add Part
+              {t('domains.parts.new')}
             </Button>
-            <Button type='submit'>Save Changes</Button>
+            <Button type='submit'>{t('domains.parts.save')}</Button>
           </form>
         )}
       </div>

@@ -1,0 +1,12 @@
+{
+    "domain": "Resultatställe",
+    "domain.search.placeholder": "Sök efter ett resultatställe",
+    "domain.select": "Välj resultatställe",
+    "domain.noneFound": "Inga resultatställen hittades",
+    "category": "Budgetpost",
+    "category.search.placeholder": "Sök efter en budgetpost",
+    "category.select": "Välj budgetpost",
+    "category.noneFound": "Inga budgetposter hittades",
+    "amount": "Belopp (SEK)",
+    "addCategory": "Lägg till budgetpost"
+}

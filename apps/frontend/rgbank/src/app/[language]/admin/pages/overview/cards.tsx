@@ -1,10 +1,12 @@
 'use client'
 
 import { fontJetBrainsMono } from '@/app/fonts'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
@@ -44,26 +46,39 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
     useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
   const [expenseFilters, setExpenseFilters] =
     useState<ExpenseStatus[]>(EXPENSE_STATUS_LIST)
+  const { t } = useTranslation(language, 'activities')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
+
   return (
     <div className='space-y-4'>
       <Card className='w-full'>
         <CardHeader>
-          <CardTitle>Expenses</CardTitle>
+          <CardTitle>{expenseT('expense')}</CardTitle>
         </CardHeader>
 
         <CardContent className='space-y-4'>
-          <Input
-            placeholder='Search'
-            value={expenseSearch}
-            onChange={(e) => setExpenseSearch(e.target.value)}
-          />
+          <div>
+            <Label
+              htmlFor='expense_search'
+              className='text-sm font-medium text-muted-foreground'
+            >
+              {t('activity.filter.search.label')}
+            </Label>
+            <Input
+              id='expense_search'
+              placeholder={t('activity.filter.search.placeholder')}
+              value={expenseSearch}
+              onChange={(e) => setExpenseSearch(e.target.value)}
+            />
+          </div>
           <div className='flex flex-col gap-4 mb-2'>
             <div className='space-y-2 overflow-hidden'>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant={'outline'} className='space-x-2'>
                     <FunnelIcon className='h-4 w-4' />
-                    <p>Filters</p>
+                    <p>{t('activity.filter.title')}</p>
                     {Math.abs(6 - expenseFilters.length) > 0 && (
                       <span className='text-xs text-muted-foreground'>
                         {Math.abs(6 - expenseFilters.length)}
@@ -75,7 +90,7 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
                 <PopoverContent>
                   <div className='flex flex-col gap-2'>
                     <div className='text-sm text-muted-foreground'>
-                      Select the status you want to filter by
+                      {t('activity.filter.description')}
                     </div>
                     <div className='grid grid-cols-2 gap-2'>
                       {availableStatuses.map((status) => (
@@ -96,7 +111,10 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
                             )
                           }}
                         >
-                          <ExpenseStatusBadge status={status.value} />
+                          <ExpenseStatusBadge
+                            language={language}
+                            status={status.value}
+                          />
                         </Button>
                       ))}
                     </div>
@@ -109,11 +127,13 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='pl-7 w-36'>Title</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Date Created</TableHead>
-                  <TableHead>Amount</TableHead>
+                  <TableHead className='pl-7 w-36'>
+                    {t('activity.table.title')}
+                  </TableHead>
+                  <TableHead>{t('activity.table.status')}</TableHead>
+                  <TableHead>{t('activity.table.user')}</TableHead>
+                  <TableHead>{t('activity.table.createdAt')}</TableHead>
+                  <TableHead>{t('activity.table.amount')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -137,7 +157,10 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
                         </Button>
                       </TableCell>
                       <TableCell>
-                        <ExpenseStatusBadge status={expense.status} />
+                        <ExpenseStatusBadge
+                          language={language}
+                          status={expense.status}
+                        />
                       </TableCell>
                       {expense.student && (
                         <TableCell>
@@ -166,22 +189,31 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
 
       <Card className='w-full'>
         <CardHeader>
-          <CardTitle>Invoices</CardTitle>
+          <CardTitle>{invoiceT('invoice')}</CardTitle>
         </CardHeader>
 
         <CardContent className='space-y-4'>
-          <Input
-            placeholder='Search'
-            value={invoiceSearch}
-            onChange={(e) => setInvoiceSearch(e.target.value)}
-          />
+          <div>
+            <Label
+              htmlFor='invoice_search'
+              className='text-sm font-medium text-muted-foreground'
+            >
+              {t('activity.filter.search.label')}
+            </Label>
+            <Input
+              id='invoice_search'
+              placeholder={t('activity.filter.search.placeholder')}
+              value={invoiceSearch}
+              onChange={(e) => setInvoiceSearch(e.target.value)}
+            />
+          </div>
           <div className='flex gap-4 mb-2'>
             <div className='space-y-2 overflow-hidden'>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant={'outline'} className='space-x-2'>
                     <FunnelIcon className='h-4 w-4' />
-                    <p>Filters</p>
+                    <p>{t('activity.filter.title')}</p>
                     {Math.abs(6 - invoiceFilters.length) > 0 && (
                       <span className='text-xs text-muted-foreground'>
                         {Math.abs(6 - invoiceFilters.length)}
@@ -193,7 +225,7 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
                 <PopoverContent>
                   <div className='flex flex-col gap-2'>
                     <div className='text-sm text-muted-foreground'>
-                      Select the status you want to filter by
+                      {t('activity.filter.description')}
                     </div>
                     <div className='grid grid-cols-2 gap-2'>
                       {availableStatuses.map((status) => (
@@ -214,7 +246,10 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
                             )
                           }}
                         >
-                          <ExpenseStatusBadge status={status.value} />
+                          <ExpenseStatusBadge
+                            language={language}
+                            status={status.value}
+                          />
                         </Button>
                       ))}
                     </div>
@@ -228,11 +263,13 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='pl-7 w-36'>Title</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Date Created</TableHead>
-                  <TableHead>Amount</TableHead>
+                  <TableHead className='pl-7 w-36'>
+                    {t('activity.table.title')}
+                  </TableHead>
+                  <TableHead>{t('activity.table.status')}</TableHead>
+                  <TableHead>{t('activity.table.user')}</TableHead>
+                  <TableHead>{t('activity.table.createdAt')}</TableHead>
+                  <TableHead>{t('activity.table.amount')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -256,7 +293,10 @@ export default function OverviewCards({ language, invoices, expenses }: Props) {
                         </Button>
                       </TableCell>
                       <TableCell>
-                        <ExpenseStatusBadge status={invoice.status} />
+                        <ExpenseStatusBadge
+                          language={language}
+                          status={invoice.status}
+                        />
                       </TableCell>
                       {invoice.student && (
                         <TableCell>

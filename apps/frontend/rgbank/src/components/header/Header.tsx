@@ -1,3 +1,4 @@
+import { useTranslation } from '@/app/i18n'
 import AdminButton from '@/components/header/client/AdminButton'
 import AuthenticatedNavigation from '@/components/header/client/AuthenticatedNavigation'
 import { WideScreenProfileButton } from '@/components/header/client/DropdownMenu'
@@ -21,7 +22,11 @@ interface Props {
  *
  * @returns {Promise<JSX.Element>} - The header of the page
  */
-export default function Header({ language }: Props): JSX.Element {
+export default async function Header({
+  language,
+}: Props): Promise<JSX.Element> {
+  const { t } = await useTranslation(language, 'header')
+
   return (
     <header
       id='header'
@@ -53,7 +58,7 @@ export default function Header({ language }: Props): JSX.Element {
           asChild
           className='uppercase h-full bg-inherit'
         >
-          <Link href={`/${language}/statistics`}>Statistics</Link>
+          <Link href={`/${language}/statistics`}>{t('nav.statistics')}</Link>
         </Button>
 
         <AdminButton language={language} />

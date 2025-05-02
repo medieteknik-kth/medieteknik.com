@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -20,11 +23,13 @@ interface Props {
 }
 
 export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
+  const { t } = useTranslation(language, 'upload/finalize/invoice')
+
   return (
     <Card className='shadow-md'>
       <CardHeader className='pb-3'>
         <CardTitle className='text-lg font-semibold leading-tight'>
-          Metadata
+          {t('metadata.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -35,7 +40,7 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium'>
-              Paid Status
+              {t('metadata.paidStatus')}
             </p>
             <div className='mt-1'>
               <Badge
@@ -46,8 +51,8 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
                 }
               >
                 {invoiceData.paidStatus === 'no_chapter'
-                  ? 'No, the chapter should pay'
-                  : 'Yes, the chapter has paid'}
+                  ? t('metadata.paidStatus.unpaid')
+                  : t('metadata.paidStatus.paid')}
               </Badge>
             </div>
           </div>
@@ -61,7 +66,9 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
             <H1Icon className='w-6 h-6 text-primary' />
           </div>
           <div className='flex-1'>
-            <p className='text-sm text-muted-foreground font-medium'>Title</p>
+            <p className='text-sm text-muted-foreground font-medium'>
+              {t('metadata.text.title')}
+            </p>
             <p className='mt-1'>{invoiceData.title}</p>
           </div>
         </div>
@@ -73,7 +80,7 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium'>
-              Description
+              {t('metadata.text.description')}
             </p>
             <p className='mt-1'>{invoiceData.description}</p>
           </div>
@@ -88,7 +95,7 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium mb-2'>
-              Invoice Status
+              {t('metadata.status.title')}
             </p>
             <div className='grid grid-cols-2 gap-y-2'>
               <div className='flex items-center gap-2'>
@@ -98,7 +105,7 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
                   checked={invoiceData.isOriginalInvoice}
                 />
                 <label htmlFor='original' className='text-sm'>
-                  Original Invoice
+                  {t('metadata.status.original')}
                 </label>
               </div>
               <div className='flex items-center gap-2'>
@@ -108,7 +115,7 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
                   checked={invoiceData.isInvoiceBooked}
                 />
                 <label htmlFor='booked' className='text-sm'>
-                  Booked
+                  {t('metadata.status.booked')}
                 </label>
               </div>
             </div>
@@ -123,7 +130,9 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
             <CreditCardIcon className='w-6 h-6 text-primary' />
           </div>
           <div className='flex-1'>
-            <p className='text-sm text-muted-foreground font-medium'>Amount</p>
+            <p className='text-sm text-muted-foreground font-medium'>
+              {t('metadata.amount')}
+            </p>
             <p className='mt-1 text-lg font-semibold'>
               {totalAmount.toLocaleString(language, {
                 currency: 'SEK',
@@ -144,17 +153,21 @@ export function InvoiceMetadata({ language, invoiceData, totalAmount }: Props) {
           </div>
           <div className='flex-1'>
             <p className='text-sm text-muted-foreground font-medium mb-2'>
-              Important Dates
+              {t('metadata.dates.title')}
             </p>
             <div className='grid grid-cols-2 gap-4'>
               <div>
-                <p className='text-sm text-muted-foreground'>Invoice Date</p>
+                <p className='text-sm text-muted-foreground'>
+                  {t('metadata.dates.invoice')}
+                </p>
                 <p className='font-medium'>
                   {invoiceData.invoiceDate.toLocaleDateString()}
                 </p>
               </div>
               <div>
-                <p className='text-sm text-muted-foreground'>Due Date</p>
+                <p className='text-sm text-muted-foreground'>
+                  {t('metadata.dates.payment')}
+                </p>
                 <p className='font-medium'>
                   {invoiceData.invoiceDueDate.toLocaleDateString()}
                 </p>

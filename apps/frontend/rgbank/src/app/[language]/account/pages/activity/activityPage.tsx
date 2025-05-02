@@ -1,6 +1,7 @@
 'use client'
 
 import { fontJetBrainsMono } from '@/app/fonts'
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -10,7 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
-import { Input } from '@/components/ui/input'
 import Loading from '@/components/ui/loading'
 import { NumberTicker } from '@/components/ui/number-ticker'
 import {
@@ -72,6 +72,11 @@ export default function ActivityPage({ language }: Props) {
       fallbackData: [],
     }
   )
+  const { t } = useTranslation(language, 'account')
+  const { t: errors } = useTranslation(language, 'errors')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
+  const { t: activitiesT } = useTranslation(language, 'activities')
 
   const {
     data: invoices,
@@ -96,7 +101,7 @@ export default function ActivityPage({ language }: Props) {
   const allInvoices = invoices || []
 
   if (invoiceError || expenseError) {
-    return <div>Error loading invoices</div>
+    return <div>{errors('invoiceOrExpense.notFound')}</div>
   }
 
   if (
@@ -171,13 +176,23 @@ export default function ActivityPage({ language }: Props) {
     maximumFractionDigits: 2,
   })
 
+  const specialNumbers = [
+    42, 420, 666, 3_141, 8_008, 13_337, 420_69, 123_456, 666_666, 777_777,
+    999_999,
+  ]
+  const benchmarkNumbers = [
+    500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000, 10_000_000,
+  ]
+
+  const randomNumber = Math.floor(Math.random() * 3) + 1
+
   return (
     <section className='w-full h-fit max-w-[1100px] mb-8 2xl:mb-0'>
       <div className='w-full flex flex-col gap-4 h-fit'>
         <div className='-full px-4 pt-4'>
-          <h2 className='text-lg font-bold'>Activity</h2>
+          <h2 className='text-lg font-bold'>{t('activity.title')}</h2>
           <p className='text-sm text-muted-foreground'>
-            View your activity history and manage your account settings.
+            {t('activity.description')}
           </p>
           <Separator className='bg-yellow-400 mt-4' />
         </div>
@@ -185,7 +200,9 @@ export default function ActivityPage({ language }: Props) {
         <div className='grid gap-4 grid-cols-2 mx-4'>
           <Card>
             <CardHeader className='pb-2'>
-              <CardDescription>Total Expenditure</CardDescription>
+              <CardDescription>
+                {t('activity.total_expenditure')}
+              </CardDescription>
               <CardTitle className='text-4xl flex items-center'>
                 <span className='text-2xl mr-2 text-muted-foreground select-none'>
                   SEK
@@ -200,13 +217,25 @@ export default function ActivityPage({ language }: Props) {
             <CardContent>
               <div className='text-sm text-muted-foreground'>
                 {/* TODO: Add flavor text? */}
-                Lorem ipsum dolor sit
+                {specialNumbers.includes(totalExpenditure) ? (
+                  <span className='text-yellow-500'>
+                    {t(`activity.total_expenditure.quip.${totalExpenditure}.1`)}
+                  </span>
+                ) : (
+                  <span className='text-muted-foreground italic'>
+                    {t(
+                      `activity.total_expenditure.quip.below_${benchmarkNumbers.find(
+                        (num) => totalExpenditure <= num
+                      )}.${randomNumber}`
+                    )}
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className='pb-2'>
-              <CardDescription>Current Month</CardDescription>
+              <CardDescription>{t('activity.current_month')}</CardDescription>
               <CardTitle className='text-4xl flex items-center'>
                 <span className='text-2xl mr-2 text-muted-foreground select-none'>
                   SEK
@@ -237,7 +266,7 @@ export default function ActivityPage({ language }: Props) {
                   }
                 >
                   <span>{percentageChangeFormatted} % </span>
-                  from last month
+                  {t('activity.current_month.difference')}
                 </span>
               </div>
             </CardContent>
@@ -248,9 +277,11 @@ export default function ActivityPage({ language }: Props) {
           {expenses && expenses.length > 0 && (
             <Card className='w-full'>
               <CardHeader>
-                <CardTitle>Expenses</CardTitle>
+                <CardTitle>{expenseT('expense')}</CardTitle>
                 <CardDescription>
-                  You have <span>{expenses.length} expenses</span>
+                  {t('activity.totalExpenses', {
+                    count: expenses.length,
+                  })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -260,7 +291,7 @@ export default function ActivityPage({ language }: Props) {
                       <PopoverTrigger asChild>
                         <Button variant={'outline'} className='space-x-2'>
                           <FunnelIcon className='h-4 w-4' />
-                          <p>Filters</p>
+                          <p>{activitiesT('activity.filter.title')}</p>
                           {Math.abs(6 - expenseFilters.length) > 0 && (
                             <span className='text-xs text-muted-foreground'>
                               {Math.abs(6 - expenseFilters.length)}
@@ -274,7 +305,7 @@ export default function ActivityPage({ language }: Props) {
                       <PopoverContent>
                         <div className='flex flex-col gap-2'>
                           <div className='text-sm text-muted-foreground'>
-                            Select the status you want to filter by
+                            {activitiesT('activity.filter.description')}
                           </div>
                           <div className='grid grid-cols-2 gap-2'>
                             {availableStatuses.map((status) => (
@@ -295,7 +326,10 @@ export default function ActivityPage({ language }: Props) {
                                   )
                                 }}
                               >
-                                <ExpenseStatusBadge status={status.value} />
+                                <ExpenseStatusBadge
+                                  language={language}
+                                  status={status.value}
+                                />
                               </Button>
                             ))}
                           </div>
@@ -308,11 +342,21 @@ export default function ActivityPage({ language }: Props) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className='pl-7 w-36'>Title</TableHead>
-                        <TableHead>Created at</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead className='text-right'>Actions</TableHead>
+                        <TableHead className='pl-7 w-36'>
+                          {activitiesT('activity.table.title')}
+                        </TableHead>
+                        <TableHead>
+                          {activitiesT('activity.table.createdAt')}
+                        </TableHead>
+                        <TableHead>
+                          {activitiesT('activity.table.status')}
+                        </TableHead>
+                        <TableHead>
+                          {activitiesT('activity.table.amount')}
+                        </TableHead>
+                        <TableHead className='text-right'>
+                          {activitiesT('activity.table.actions')}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -370,7 +414,10 @@ export default function ActivityPage({ language }: Props) {
                                 })}
                               </TableCell>
                               <TableCell>
-                                <ExpenseStatusBadge status={expense.status} />
+                                <ExpenseStatusBadge
+                                  language={language}
+                                  status={expense.status}
+                                />
                               </TableCell>
                               <TableCell>
                                 {expense.amount?.toLocaleString(language, {
@@ -383,12 +430,14 @@ export default function ActivityPage({ language }: Props) {
                                   <Link
                                     href={`/${language}/expense/${expense.expense_id}`}
                                   >
-                                    View
+                                    {activitiesT('activity.table.actions.view')}
                                   </Link>
                                 </Button>
                                 {expense.status === 'UNCONFIRMED' && (
                                   <Button variant='destructive' size='sm'>
-                                    Delete
+                                    {activitiesT(
+                                      'activity.table.actions.delete'
+                                    )}
                                   </Button>
                                 )}
                               </TableCell>
@@ -404,22 +453,21 @@ export default function ActivityPage({ language }: Props) {
           {invoices && invoices.length > 0 && (
             <Card className='w-full'>
               <CardHeader>
-                <CardTitle>Invoices</CardTitle>
+                <CardTitle>{invoiceT('invoice')}</CardTitle>
                 <CardDescription>
-                  You have <span>{invoices.length} invoices</span>.
+                  {t('activity.totalInvoices', {
+                    count: expenses.length,
+                  })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className='flex flex-col gap-4 mb-2'>
-                  <div>
-                    <Input />
-                  </div>
                   <div className='space-y-2 overflow-hidden'>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button variant={'outline'} className='space-x-2'>
                           <FunnelIcon className='h-4 w-4' />
-                          <p>Filters</p>
+                          <p>{activitiesT('activity.filter.title')}</p>
                           {Math.abs(6 - invoiceFilters.length) > 0 && (
                             <span className='text-xs text-muted-foreground'>
                               {Math.abs(6 - invoiceFilters.length)}
@@ -433,7 +481,7 @@ export default function ActivityPage({ language }: Props) {
                       <PopoverContent>
                         <div className='flex flex-col gap-2'>
                           <div className='text-sm text-muted-foreground'>
-                            Select the status you want to filter by
+                            {activitiesT('activity.filter.description')}
                           </div>
                           <div className='grid grid-cols-2 gap-2'>
                             {availableStatuses.map((status) => (
@@ -454,7 +502,10 @@ export default function ActivityPage({ language }: Props) {
                                   )
                                 }}
                               >
-                                <ExpenseStatusBadge status={status.value} />
+                                <ExpenseStatusBadge
+                                  language={language}
+                                  status={status.value}
+                                />
                               </Button>
                             ))}
                           </div>
@@ -467,11 +518,21 @@ export default function ActivityPage({ language }: Props) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className='pl-7 w-36'>Title</TableHead>
-                        <TableHead>Created at</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead className='text-right'>Actions</TableHead>
+                        <TableHead className='pl-7 w-36'>
+                          {activitiesT('activity.table.title')}
+                        </TableHead>
+                        <TableHead>
+                          {activitiesT('activity.table.createdAt')}
+                        </TableHead>
+                        <TableHead>
+                          {activitiesT('activity.table.status')}
+                        </TableHead>
+                        <TableHead>
+                          {activitiesT('activity.table.amount')}
+                        </TableHead>
+                        <TableHead className='text-right'>
+                          {activitiesT('activity.table.actions')}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -508,7 +569,10 @@ export default function ActivityPage({ language }: Props) {
                               )}
                             </TableCell>
                             <TableCell>
-                              <ExpenseStatusBadge status={invoice.status} />
+                              <ExpenseStatusBadge
+                                language={language}
+                                status={invoice.status}
+                              />
                             </TableCell>
                             <TableCell>
                               {invoice.amount?.toLocaleString(language, {
@@ -521,12 +585,12 @@ export default function ActivityPage({ language }: Props) {
                                 <Link
                                   href={`/${language}/invoice/${invoice.invoice_id}`}
                                 >
-                                  View
+                                  {activitiesT('activity.table.actions.view')}
                                 </Link>
                               </Button>
                               {invoice.status === 'UNCONFIRMED' && (
                                 <Button variant='destructive' size='sm'>
-                                  Delete
+                                  {activitiesT('activity.table.actions.delete')}
                                 </Button>
                               )}
                             </TableCell>

@@ -2,6 +2,7 @@
 
 import OverviewCards from '@/app/[language]/admin/pages/overview/cards'
 import OverviewKanban from '@/app/[language]/admin/pages/overview/kanban'
+import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/ui/loading'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -20,6 +21,7 @@ const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())
 
 export default function OverviewPage({ language }: Props) {
+  const { t } = useTranslation(language, 'admin/overview')
   const {
     data: invoices,
     isLoading: invoicesLoading,
@@ -64,11 +66,8 @@ export default function OverviewPage({ language }: Props) {
   return (
     <section className='grow h-fit mb-8 2xl:mb-0 pr-10'>
       <div className='w-full mb-4 px-4 pt-4'>
-        <h2 className='text-lg font-bold'>Overview</h2>
-        <p className='text-sm text-muted-foreground'>
-          This is the overview page for the admin panel. Here you can see an
-          overview of the application and its users.
-        </p>
+        <h2 className='text-lg font-bold'>{t('title')}</h2>
+        <p className='text-sm text-muted-foreground'>{t('description')}</p>
         <Separator className='bg-yellow-400 mt-4' />
       </div>
 
@@ -89,7 +88,7 @@ export default function OverviewPage({ language }: Props) {
             onClick={() => updateLocalStorage('cards')}
           >
             <TableCellsIcon className='w-4 h-4 mr-2' />
-            Cards
+            {t('view.cards')}
           </TabsTrigger>
           <TabsTrigger
             value='kanban'
@@ -97,7 +96,7 @@ export default function OverviewPage({ language }: Props) {
             onClick={() => updateLocalStorage('kanban')}
           >
             <ViewColumnsIcon className='w-4 h-4 mr-2' />
-            Kanban
+            {t('view.kanban')}
           </TabsTrigger>
         </TabsList>
 

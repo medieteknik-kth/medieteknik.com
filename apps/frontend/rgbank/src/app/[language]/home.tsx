@@ -1,5 +1,6 @@
 import { getAllCommittees } from '@/api/committee'
 import UploadForm from '@/app/[language]/upload/form'
+import { useTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import type { LanguageCode } from '@/models/Language'
 
@@ -13,11 +14,13 @@ interface Props {
 
 export default async function Home(props: Props) {
   const { language } = await props.params
+  const { t } = await useTranslation(language, 'home')
+  const { t: errors } = await useTranslation(language, 'errors')
   const { data: committees, error } = await getAllCommittees('en')
   if (error) {
     return (
       <div>
-        Error loading committees <br />
+        {errors('committees.notFound')} <br />
         <span>{error.name}</span> <br />
         <span>{error.message}</span>
       </div>
@@ -32,16 +35,14 @@ export default async function Home(props: Props) {
       </div>
       <div className='bg-white border-t-2 border-black py-8 dark:bg-neutral-800 dark:border-neutral-700'>
         <div className='container'>
-          <h1 className='text-3xl font-bold'>Information</h1>
+          <h1 className='text-3xl font-bold'>{t('information')}</h1>
           <br />
           {/* TODO: Better description */}
           <p>
-            Hello! This is an accounting system, where you can upload your
-            invoices and expenses.
+            {t('information.description_1')}
             <br />
             <br />
-            This is a work in progress, so please be patient with us. If you
-            have any questions or feedback, please let us know.
+            {t('information.description_2')}
             <br />
             <br />
           </p>

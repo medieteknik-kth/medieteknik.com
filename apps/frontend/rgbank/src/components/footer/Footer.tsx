@@ -47,9 +47,9 @@ export default async function Footer({
         </Link>
         <div className='w-full h-fit relative xs:px-20 md:px-0 md:w-1/3 xl:w-3/4 xxs:h-full flex items-center justify-around lg:justify-center'>
           <ul className='w-full h-fit xl:mt-2 flex flex-col items-center xl:items-start xl:flex-row space-between xl:justify-around'>
-            <AboutSection />
+            <AboutSection language={language} />
             <ContactSection language={language} />
-            <IssueSection />
+            <IssueSection language={language} />
           </ul>
         </div>
       </div>

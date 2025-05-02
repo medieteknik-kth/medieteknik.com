@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { ExpenseBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -21,6 +22,8 @@ interface Props {
 }
 
 export default function DetailsSection({ language, invoice, expense }: Props) {
+  const { t } = useTranslation(language, 'processing')
+
   if (!invoice && !expense) {
     return null
   }
@@ -39,15 +42,19 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
     <section className='flex flex-col gap-4 mt-2'>
       <div className='grid grid-cols-2 gap-4'>
         <div>
-          <h3 className='text-sm font-medium text-muted-foreground'>Type</h3>
+          <h3 className='text-sm font-medium text-muted-foreground'>
+            {t('details.type')}
+          </h3>
           {expense ? (
-            <ExpenseBadge type='expense' className='mt-1' />
+            <ExpenseBadge language={language} type='expense' className='mt-1' />
           ) : (
-            <ExpenseBadge type='invoice' className='mt-1' />
+            <ExpenseBadge language={language} type='invoice' className='mt-1' />
           )}
         </div>
         <div>
-          <h3 className='text-sm font-medium text-muted-foreground'>Amount</h3>
+          <h3 className='text-sm font-medium text-muted-foreground'>
+            {t('details.amount')}
+          </h3>
           <p className='mt-1 text-lg font-semibold'>
             <span className='text-base text-muted-foreground select-none'>
               SEK
@@ -62,7 +69,7 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
           <>
             <div>
               <h3 className='text-sm font-medium text-muted-foreground'>
-                Date Issued
+                {t('details.invoice.date')}
               </h3>
               <p className='mt-1'>
                 {new Date(invoice.date_issued).toLocaleDateString(language, {
@@ -74,7 +81,7 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
             </div>
             <div>
               <h3 className='text-sm font-medium text-muted-foreground'>
-                Due Date
+                {t('details.invoice.dueDate')}
               </h3>
               <p className='mt-1'>
                 {new Date(invoice.due_date).toLocaleDateString(language, {
@@ -89,7 +96,7 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
           expense && (
             <div>
               <h3 className='text-sm font-medium text-muted-foreground'>
-                Date
+                {t('details.expense.date')}
               </h3>
               <p className='mt-1'>
                 {new Date(expense.date).toLocaleDateString(language, {
@@ -105,22 +112,24 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
       <Separator />
       <div>
         <h3 className='text-sm font-medium text-muted-foreground'>
-          Description
+          {t('details.description.label')}
         </h3>
         <p className='mt-1'>{item.description}</p>
       </div>
       <Separator />
       <div>
         <h3 className='text-sm font-medium text-muted-foreground'>
-          Categories
+          {t('details.categories')}
         </h3>
         <div className='mt-1'>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Author</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className='text-right'>Amount</TableHead>
+                <TableHead>{t('details.categories.domain')}</TableHead>
+                <TableHead>{t('details.categories.category')}</TableHead>
+                <TableHead className='text-right'>
+                  {t('details.categories.amount')}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

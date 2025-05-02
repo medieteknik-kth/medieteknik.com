@@ -1,8 +1,10 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import FileDisplay from '@/components/ui/file-display'
 import { toast } from '@/components/ui/use-toast'
+import type { LanguageCode } from '@/models/Language'
 import { useFiles, useGeneralForm } from '@/providers/FormProvider'
 import { ArrowUpOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Dropzone from 'react-dropzone'
@@ -17,6 +19,7 @@ const acceptedImages = {
 }
 
 interface Props {
+  language: LanguageCode
   fileUploadStep: number
   uncompleteStep: (step: number) => void
   completeStep: (step: number) => void
@@ -24,6 +27,7 @@ interface Props {
 }
 
 export default function UploadFiles({
+  language,
   fileUploadStep,
   uncompleteStep,
   completeStep,
@@ -31,6 +35,7 @@ export default function UploadFiles({
 }: Props) {
   const { files, removeFile, addFile } = useFiles()
   const { error, setError } = useGeneralForm()
+  const { t } = useTranslation(language, 'upload/file')
 
   return (
     <>
@@ -42,7 +47,9 @@ export default function UploadFiles({
           for (const file of files) {
             if (file.size > MAX_FILE_SIZE) {
               setError(
-                `File too large. Max size is ${MAX_FILE_SIZE / 1024 / 1024}MB.`
+                t('error.file.too_large', {
+                  maxSize: MAX_FILE_SIZE / 1024 / 1024,
+                })
               )
               uncompleteStep(fileUploadStep)
               return
@@ -54,13 +61,13 @@ export default function UploadFiles({
               }
             }
             toast({
-              title: 'File uploaded successfully',
+              title: t('success'),
               style: {
                 backgroundColor: 'green',
                 color: 'white',
                 borderRadius: '0.5rem',
               },
-              description: `File ${file.name} uploaded successfully`,
+              description: t('success'),
               duration: 2000,
             })
             addFile(file)
@@ -71,10 +78,16 @@ export default function UploadFiles({
         onDropRejected={(files) => {
           for (const file of files) {
             if (file.errors[0].code === 'file-invalid-type') {
-              setError('Invalid file type. Please upload a valid image.')
+              setError(
+                t('error.file.invalid_format', {
+                  validFormats: 'jpeg, jpg, png, avif, webp, pdf',
+                })
+              )
             } else if (file.errors[0].code === 'file-too-large') {
               setError(
-                `File too large. Max size is ${MAX_FILE_SIZE / 1024 / 1024}MB.`
+                t('error.file.too_large', {
+                  maxSize: MAX_FILE_SIZE / 1024 / 1024,
+                })
               )
             }
 
@@ -85,13 +98,13 @@ export default function UploadFiles({
             }
 
             toast({
-              title: 'File upload failed',
+              title: t('error.file.upload_failed'),
               style: {
                 backgroundColor: 'red',
                 color: 'white',
                 borderRadius: '0.5rem',
               },
-              description: `File ${file.file.name} upload failed`,
+              description: t('error.file.upload_failed'),
               duration: 2000,
             })
           }
@@ -104,7 +117,7 @@ export default function UploadFiles({
             <div className='h-96 flex flex-col items-center justify-center gap-2 hover:bg-neutral-200! dark:hover:bg-neutral-800! rounded-md transition-colors cursor-pointer border-2 border-dashed border-neutral-300 dark:border-neutral-700'>
               <ArrowUpOnSquareIcon className='w-8 h-8' />
               <p className='text-sm text-center text-muted-foreground px-2'>
-                Drag and drop your file here, or click to select a file.
+                {t('label.upload')}
               </p>
             </div>
           </div>
@@ -133,8 +146,8 @@ export default function UploadFiles({
                     }
                   }
                   toast({
-                    title: 'File removed',
-                    description: `File ${file.name} removed successfully`,
+                    title: t('file.removed'),
+                    description: t('file.removed'),
                     duration: 2000,
                   })
                 }}

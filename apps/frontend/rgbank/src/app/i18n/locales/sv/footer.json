@@ -1,0 +1,8 @@
+{
+    "about.title": "Om",
+    "about.description": "Detta är en bokförings-app för att skicka in dina fakturor och utgifter till sektionen.",
+    "contact.title": "Kontakt",
+    "issues.title": "Problem?",
+    "issues.description": "Om du har några problem med appen, vänligen ",
+    "issues.description.github": "skapa ett 'issue' på GitHub."
+}

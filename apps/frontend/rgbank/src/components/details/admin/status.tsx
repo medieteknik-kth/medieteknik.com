@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -46,7 +47,9 @@ export default function AdminStatusSection({
   const { addMessage } = useGeneralDetail()
   const [selectedStatus, setSelectedStatus] = useState('')
   const [comment, setComment] = useState('')
-
+  const { t } = useTranslation(language, 'processing')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
   const isInvoice = 'invoice_id' in item
 
   const handleStatusChange = async (status: ExpenseStatus) => {
@@ -95,21 +98,22 @@ export default function AdminStatusSection({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Update Status</CardTitle>
+        <CardTitle>{t('admin.status.title')}</CardTitle>
         <CardDescription>
-          Change the status of this {isInvoice ? 'invoice' : 'expense'} to a new
-          status and notify the submitter.
+          {t('admin.status.description', {
+            type: isInvoice ? invoiceT('invoice') : expenseT('expense'),
+          })}
+
           <br />
           <span className='text-xs text-muted-foreground'>
-            Note: You can only change the status to a higher value. For example,
-            you cannot change the status from 'CONFIRMED' back to 'UNCONFIRMED'.
+            {t('admin.status.note')}
           </span>
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div className='flex gap-2'>
-          Current Status:
-          <ExpenseStatusBadge status={item.status} />
+          {t('admin.status.current')}
+          <ExpenseStatusBadge language={language} status={item.status} />
         </div>
         <form
           id='status-form'
@@ -119,10 +123,10 @@ export default function AdminStatusSection({
           }}
         >
           <div className='space-y-2'>
-            <Label htmlFor='status'>New Status</Label>
+            <Label htmlFor='status'>{t('admin.status.new.label')}</Label>
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
               <SelectTrigger id='status'>
-                <SelectValue placeholder='Select new status' />
+                <SelectValue placeholder={t('admin.status.new.placeholder')} />
               </SelectTrigger>
               <SelectContent>
                 {availableStatuses.map((status) => (
@@ -139,7 +143,10 @@ export default function AdminStatusSection({
                     }
                   >
                     <div className='flex items-center gap-2'>
-                      <ExpenseStatusBadge status={status.value} />
+                      <ExpenseStatusBadge
+                        language={language}
+                        status={status.value}
+                      />
                     </div>
                   </SelectItem>
                 ))}
@@ -149,28 +156,28 @@ export default function AdminStatusSection({
 
           {selectedStatus && (
             <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-              <ExpenseStatusBadge status={item.status} />
+              <ExpenseStatusBadge language={language} status={item.status} />
               <ArrowRightIcon className='h-4 w-4' />
-              <ExpenseStatusBadge status={selectedStatus} />
+              <ExpenseStatusBadge language={language} status={selectedStatus} />
             </div>
           )}
 
           <div className='space-y-2'>
             <Label htmlFor='comment'>
-              Comment{' '}
+              {t('admin.status.comment')}
               {(selectedStatus === 'REJECTED' ||
                 selectedStatus === 'CLARIFICATION') && (
-                <span className='text-destructive'>*</span>
+                <span className='text-destructive'> *</span>
               )}
             </Label>
             <Textarea
               id='comment'
               placeholder={
                 selectedStatus === 'REJECTED'
-                  ? 'Please provide a reason for rejection (required)'
+                  ? t('admin.status.rejected.comment')
                   : selectedStatus === 'CLARIFICATION'
-                    ? 'Please provide a reason for clarification (required)'
-                    : 'Add an optional comment about this status change'
+                    ? t('admin.status.clarification.comment')
+                    : t('admin.status.optional.comment')
               }
               value={comment}
               onChange={(e) => setComment(e.target.value)}
@@ -178,14 +185,12 @@ export default function AdminStatusSection({
             />
             {selectedStatus === 'REJECTED' && (
               <p className='text-xs text-muted-foreground'>
-                A comment is required when rejecting an expense to explain the
-                reason.
+                {t('admin.status.rejected.comment.note')}
               </p>
             )}
             {selectedStatus === 'CLARIFICATION' && (
               <p className='text-xs text-muted-foreground'>
-                A comment is required when requesting clarification to explain
-                the reason.
+                {t('admin.status.clarification.comment.note')}
               </p>
             )}
           </div>
@@ -198,7 +203,7 @@ export default function AdminStatusSection({
           onClick={(e) => {
             e.preventDefault()
             if (selectedStatus === 'REJECTED' && comment.length === 0) {
-              alert('Please provide a reason for rejection.')
+              alert(t('admin.status.rejected.comment'))
               return
             }
             handleStatusChange(selectedStatus)
@@ -210,8 +215,8 @@ export default function AdminStatusSection({
           }
         >
           {selectedStatus === 'REJECTED' || selectedStatus === 'BOOKED'
-            ? 'Close Expense'
-            : 'Update Expense'}
+            ? t('admin.status.close')
+            : t('admin.status.update')}
         </Button>
       </CardFooter>
     </Card>

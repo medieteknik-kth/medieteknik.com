@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import AlternativeLogin from '@/components/login/alternative'
 import LoginForm from '@/components/login/loginForm'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -15,6 +16,7 @@ interface Props {
 
 export default function LoginWrapper({ language, onSuccess, onError }: Props) {
   const [remember, setRemember] = useState(false)
+  const { t } = useTranslation(language, 'login')
 
   useEffect(() => {
     if (!window) return
@@ -26,7 +28,7 @@ export default function LoginWrapper({ language, onSuccess, onError }: Props) {
     <>
       <div className='w-11/12 h-fit xs:mx-20 xs:px-10 mt-8 text-lg'>
         <h1 className='text-3xl md:text-5xl uppercase font-bold tracking-wider text-[#111] dark:text-white text-center mb-8'>
-          Login
+          {t('title')}
         </h1>
         <AlternativeLogin language={language} />
         <div className='flex justify-center items-center gap-2'>
@@ -41,7 +43,7 @@ export default function LoginWrapper({ language, onSuccess, onError }: Props) {
             }}
           />
           <Label htmlFor='remember_me' className='flex items-center'>
-            Remember me
+            {t('rememberMe')}
           </Label>
         </div>
       </div>

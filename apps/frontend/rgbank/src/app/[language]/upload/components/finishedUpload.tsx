@@ -1,7 +1,16 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
+import type { LanguageCode } from '@/models/Language'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 
-export default function FinishedUpload() {
+interface Props {
+  language: LanguageCode
+}
+
+export default function FinishedUpload({ language }: Props) {
+  const { t } = useTranslation(language, 'upload/finalize/complete')
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -19,10 +28,8 @@ export default function FinishedUpload() {
       >
         <CheckCircleIcon className='w-16 h-16 text-green-500' />
       </motion.div>
-      <h1 className='text-2xl font-bold'>Upload Complete</h1>
-      <p className='text-muted-foreground'>
-        Your files have been successfully uploaded.
-      </p>
+      <h1 className='text-2xl font-bold'>{t('title')}</h1>
+      <p className='text-muted-foreground'>{t('description')}</p>
     </motion.div>
   )
 }

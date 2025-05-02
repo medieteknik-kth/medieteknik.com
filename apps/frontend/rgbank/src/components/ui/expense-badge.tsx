@@ -1,5 +1,9 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import { cn } from '@/lib/utils'
 import type { ExpenseStatus, ExpenseType } from '@/models/General'
+import type { LanguageCode } from '@/models/Language'
 import {
   CheckIcon,
   ClipboardDocumentCheckIcon,
@@ -11,18 +15,57 @@ import {
 } from '@heroicons/react/24/outline'
 
 interface ExpenseBadgeProps {
+  /**
+   * The language code for translation.
+   */
+  language: LanguageCode
+
+  /**
+   * The type of the expense.
+   */
   type: ExpenseType
+
+  /**
+   * Whether to show a short version of the badge.
+   */
   short?: boolean
+
+  /**
+   * Additional class names for styling.
+   */
   className?: string
 }
 
 interface ExpenseStatusBadgeProps {
+  /**
+   * The language code for translation.
+   */
+  language: LanguageCode
+
+  /**
+   * The status of the expense.
+   */
   status: ExpenseStatus
+
+  /**
+   * Whether to show a short version of the badge.
+   */
   short?: boolean
+
+  /**
+   * Additional class names for styling.
+   */
   className?: string
 }
 
-export function ExpenseBadge({ type, short, className }: ExpenseBadgeProps) {
+export function ExpenseBadge({
+  language,
+  type,
+  short,
+  className,
+}: ExpenseBadgeProps) {
+  const { t: invoiceT } = useTranslation(language, 'invoice')
+  const { t: expenseT } = useTranslation(language, 'expense')
   switch (type) {
     case 'invoice':
       return (
@@ -34,7 +77,7 @@ export function ExpenseBadge({ type, short, className }: ExpenseBadgeProps) {
           title='Invoice'
         >
           <DocumentTextIcon className='h-4 w-4' />
-          {!short && <span>Invoice</span>}
+          {!short && <span>{invoiceT('invoice')}</span>}
         </div>
       )
     case 'expense':
@@ -47,7 +90,7 @@ export function ExpenseBadge({ type, short, className }: ExpenseBadgeProps) {
           title='Expense'
         >
           <CreditCardIcon className='h-4 w-4' />
-          {!short && <span>Expense</span>}
+          {!short && <span>{expenseT('expense')}</span>}
         </div>
       )
     default:
@@ -58,10 +101,12 @@ export function ExpenseBadge({ type, short, className }: ExpenseBadgeProps) {
 }
 
 export function ExpenseStatusBadge({
+  language,
   status,
   short,
   className,
 }: ExpenseStatusBadgeProps) {
+  const { t } = useTranslation(language, 'status')
   switch (status) {
     case 'BOOKED':
       return (
@@ -73,7 +118,7 @@ export function ExpenseStatusBadge({
           title='Booked'
         >
           <ClipboardDocumentCheckIcon className='h-4 w-4' />
-          {!short && <span>Booked</span>}
+          {!short && <span>{t('booked')}</span>}
         </div>
       )
 
@@ -87,7 +132,7 @@ export function ExpenseStatusBadge({
           title='Rejected'
         >
           <XMarkIcon className='h-4 w-4' />
-          {!short && <span>Rejected</span>}
+          {!short && <span>{t('rejected')}</span>}
         </div>
       )
 
@@ -101,7 +146,7 @@ export function ExpenseStatusBadge({
           title='Paid'
         >
           <CreditCardIcon className='h-4 w-4' />
-          {!short && <span>Paid</span>}
+          {!short && <span>{t('paid')}</span>}
         </div>
       )
 
@@ -115,7 +160,7 @@ export function ExpenseStatusBadge({
           title='Confirmed'
         >
           <CheckIcon className='h-4 w-4' />
-          {!short && <span>Confirmed</span>}
+          {!short && <span>{t('confirmed')}</span>}
         </div>
       )
 
@@ -129,7 +174,7 @@ export function ExpenseStatusBadge({
           title='Clarification'
         >
           <ExclamationTriangleIcon className='h-4 w-4' />
-          {!short && <span>Clarification</span>}
+          {!short && <span>{t('clarification')}</span>}
         </div>
       )
     case 'UNCONFIRMED':
@@ -142,13 +187,15 @@ export function ExpenseStatusBadge({
           title='Unconfirmed'
         >
           <ClockIcon className='h-4 w-4' />
-          {!short && <span>Unconfirmed</span>}
+          {!short && <span>{t('unconfirmed')}</span>}
         </div>
       )
 
     default:
       return (
-        <div className='flex items-center gap-2 text-gray-500'>Unknown</div>
+        <div className='flex items-center gap-2 text-gray-500'>
+          {t('unknown')}
+        </div>
       )
   }
 }

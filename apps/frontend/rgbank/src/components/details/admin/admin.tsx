@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import AdminCategoriesSection from '@/components/details/admin/categories'
 import AdminStatusSection from '@/components/details/admin/status'
 import type { ExpenseResponse } from '@/models/Expense'
@@ -18,6 +21,8 @@ export default function AdminSection({
   expense,
   updateStatus,
 }: Props) {
+  const { t } = useTranslation(language, 'processing')
+
   if (!invoice && !expense) {
     return null
   }
@@ -34,7 +39,7 @@ export default function AdminSection({
 
   return (
     <section className='flex flex-col gap-4 mt-2'>
-      <h3 className='text-lg font-medium'>Admin</h3>
+      <h3 className='text-lg font-medium'>{t('admin.title')}</h3>
       <div className='space-y-4'>
         <AdminStatusSection
           language={language}

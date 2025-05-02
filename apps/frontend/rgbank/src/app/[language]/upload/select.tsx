@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import { Button } from '@/components/ui/button'
 import type { LanguageCode } from '@/models/Language'
@@ -18,14 +19,19 @@ interface Props {
 
 export default function SelectTemplate({ language, onClickCallback }: Props) {
   const [selectedTemplate, setSelectedTemplate] = useState('')
+  const { t } = useTranslation(language, 'upload/base')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
 
   return (
     <>
       <div>
         <p className='text-center text-sm text-muted-foreground'>
-          Choose a template to get started with your invoice or expense.
+          {t('select_template.description')}
         </p>
-        <h1 className='text-3xl font-bold text-center'>Choose a template</h1>
+        <h1 className='text-3xl font-bold text-center'>
+          {t('select_template.title')}
+        </h1>
       </div>
       <div className='pb-20'>
         <ul className='w-full h-96 grid grid-cols-2 p-10 gap-8'>
@@ -47,7 +53,7 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
                   />
                 </div>
                 <CreditCardIcon className='w-20 h-20' />
-                <p className='font-bold text-xl'>Expense</p>
+                <p className='font-bold text-xl'>{expenseT('expense')}</p>
               </button>
             </PopIn>
           </li>
@@ -69,7 +75,7 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
                   />
                 </div>
                 <DocumentTextIcon className='w-20 h-20' />
-                <p className='font-bold text-xl'>Invoice</p>
+                <p className='font-bold text-xl'>{invoiceT('invoice')}</p>
               </button>
             </PopIn>
           </li>
@@ -83,7 +89,7 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
           }}
           disabled={selectedTemplate === ''}
         >
-          Next
+          {t('select_template.button')}
           <ArrowRightIcon className='w-4 h-4 ml-2' />
         </Button>
       </div>

@@ -2,6 +2,7 @@
 
 import ExpenseCard from '@/app/[language]/admin/pages/overview/components/expenseCard'
 import InvoiceCard from '@/app/[language]/admin/pages/overview/components/invoiceCard'
+import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -35,6 +36,7 @@ export default function OverviewKanban({
     'expense',
   ])
   const [shortCards, setShortCards] = useState(false)
+  const { t } = useTranslation(language, 'activities')
 
   const combined: CombinedEntry[] = [
     ...invoices.map((i) => ({ ...i, type: 'invoice' as const })),
@@ -50,7 +52,7 @@ export default function OverviewKanban({
           variant={'outline'}
           onClick={() => setShortCards((prev) => !prev)}
         >
-          {shortCards ? 'Show Full Cards' : 'Show Short Cards'}
+          {shortCards ? t('activity.view.full') : t('activity.view.short')}
         </Button>
 
         <Button
@@ -69,7 +71,7 @@ export default function OverviewKanban({
           ) : (
             <XMarkIcon className='h-5 w-5 text-red-400' />
           )}
-          <ExpenseBadge type={'expense'} />
+          <ExpenseBadge language={language} type={'expense'} />
         </Button>
 
         <Button
@@ -88,14 +90,16 @@ export default function OverviewKanban({
           ) : (
             <XMarkIcon className='h-5 w-5 text-red-400' />
           )}
-          <ExpenseBadge type={'invoice'} />
+          <ExpenseBadge language={language} type={'invoice'} />
         </Button>
       </div>
       <ScrollArea className='w-[calc(100vw-2rem)] md:w-[calc(100vw-20rem)] pb-10'>
         <div className='flex w-max gap-5'>
           <div className='flex flex-col gap-4 min-w-80 w-full pl-4 pb-4'>
             <div className='flex items-center gap-2'>
-              <h3 className='text-lg tracking-wide font-semibold'>New</h3>
+              <h3 className='text-lg tracking-wide font-semibold'>
+                {t('activity.table.status.new')}
+              </h3>
               <Badge variant={'outline'}>
                 {
                   sortedCombined.filter(
@@ -139,7 +143,9 @@ export default function OverviewKanban({
 
           <div className='flex flex-col gap-4 min-w-80 w-full pb-4'>
             <div className='flex items-center gap-2'>
-              <h3 className='text-lg tracking-wide font-semibold'>Pending</h3>
+              <h3 className='text-lg tracking-wide font-semibold'>
+                {t('activity.table.status.pending')}
+              </h3>
               <Badge variant={'outline'}>
                 {
                   sortedCombined.filter(
@@ -150,6 +156,7 @@ export default function OverviewKanban({
                 }
               </Badge>
             </div>
+
             <div className='flex flex-col gap-4'>
               {sortedCombined
                 .filter(
@@ -189,7 +196,9 @@ export default function OverviewKanban({
 
           <div className='flex flex-col gap-4 min-w-80 w-full pr-36 pb-4'>
             <div className='flex items-center gap-2'>
-              <h3 className='text-lg tracking-wide font-semibold'>Completed</h3>
+              <h3 className='text-lg tracking-wide font-semibold'>
+                {t('activity.table.status.completed')}
+              </h3>
               <Badge variant={'outline'}>
                 {
                   sortedCombined.filter((entry) => entry.status === 'BOOKED')
