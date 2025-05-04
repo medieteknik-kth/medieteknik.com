@@ -1,13 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import type { LanguageCode } from '@/models/Language'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import type { JSX } from 'react'
 
 interface Props {
-  language: LanguageCode
   return_url?: string | null
   remember?: boolean
 }
@@ -22,7 +20,6 @@ interface Props {
  * @returns {JSX.Element} The alternative login methods
  */
 export default function AlternativeLogin({
-  language,
   return_url,
   remember,
 }: Props): JSX.Element {

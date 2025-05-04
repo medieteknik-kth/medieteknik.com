@@ -1,9 +1,3 @@
-type ChronologicalItem = {
-  created_at: string | Date
-  // biome-ignore lint/suspicious/noExplicitAny: Justification: This is a generic type and we don't know the exact structure of the items.
-  [key: string]: any
-}
-
 /**
  * @name sortByCreatedAt
  * @description Sorts an array of items by their created_at property.
@@ -12,7 +6,7 @@ type ChronologicalItem = {
  * @param {boolean} descending - If true, sorts in descending order. If false, sorts in ascending order. Defaults to true.
  * @returns {T[]} - The sorted array of items.
  */
-export function sortByCreatedAt<T extends ChronologicalItem>(
+export function sortByCreatedAt<T extends { created_at: string | Date }>(
   items: T[],
   descending = true,
   ignoreErrors = false

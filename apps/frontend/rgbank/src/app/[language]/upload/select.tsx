@@ -34,11 +34,11 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
         </h1>
       </div>
       <div className='pb-20'>
-        <ul className='w-full h-96 grid grid-cols-2 p-10 gap-8'>
-          <li className='h-full place-self-end'>
-            <PopIn className='h-full'>
+        <ul className='w-full h-fit md:h-96 grid md:grid-cols-2 py-10 md:px-10 gap-8'>
+          <li className='h-full place-self-center md:place-self-end'>
+            <PopIn className='h-48 md:h-full'>
               <button
-                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
+                className='w-full h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
                 type='button'
                 onClick={() => setSelectedTemplate('expense')}
                 disabled={selectedTemplate === 'expense'}
@@ -52,16 +52,16 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
                     } transition-all duration-300`}
                   />
                 </div>
-                <CreditCardIcon className='w-20 h-20' />
+                <CreditCardIcon className='w-10 h-10 md:w-20 md:h-20' />
                 <p className='font-bold text-xl'>{expenseT('expense')}</p>
               </button>
             </PopIn>
           </li>
-          <li className='h-full place-self-start'>
-            <PopIn className='h-full'>
+          <li className='h-full place-self-center md:place-self-start'>
+            <PopIn className='h-48 md:h-full'>
               <button
                 type='button'
-                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
+                className='w-full h-full  aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
                 onClick={() => setSelectedTemplate('invoice')}
                 disabled={selectedTemplate === 'invoice'}
               >
@@ -74,7 +74,7 @@ export default function SelectTemplate({ language, onClickCallback }: Props) {
                     } transition-all duration-300`}
                   />
                 </div>
-                <DocumentTextIcon className='w-20 h-20' />
+                <DocumentTextIcon className='w-10 h-10 md:w-20 md:h-20' />
                 <p className='font-bold text-xl'>{invoiceT('invoice')}</p>
               </button>
             </PopIn>

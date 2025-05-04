@@ -169,7 +169,6 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
               <Comment
                 key={message.message_id}
                 date={message.created_at}
-                committeePosition={null}
                 notSameUser={message.sender.student_id !== student.student_id}
                 student={message.sender}
                 message={{

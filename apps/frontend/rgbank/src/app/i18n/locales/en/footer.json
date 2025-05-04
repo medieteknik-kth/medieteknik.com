@@ -4,5 +4,7 @@
     "contact.title": "Contact",
     "issues.title": "Problems?",
     "issues.description": "If you have any issues with the app, please ",
-    "issues.description.github": "create an issue on GitHub."
+    "issues.description.github": "create an issue on GitHub.",
+    "privacy_policy.title": "Privacy Policy",
+    "copyright.content": "© 2025 The Chapter of Media Technology. This website is built by students at the Media Technology program at KTH Royal Institute of Technology in Stockholm, Sweden."
 }

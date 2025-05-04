@@ -75,7 +75,7 @@ export function AuthenticationProvider({
           return true
         }
         return result
-      } catch (error) {
+      } catch {
         dispatch({ type: 'SET_ERROR', payload: 'Invalid credentials' })
         return false
       } finally {
@@ -90,7 +90,7 @@ export function AuthenticationProvider({
     try {
       await authService.logout()
       dispatch({ type: 'LOGOUT' })
-    } catch (error) {
+    } catch {
       dispatch({ type: 'SET_ERROR', payload: 'Failed to logout' })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })

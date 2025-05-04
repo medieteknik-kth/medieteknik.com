@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { changeLanguage } from '@/components/server/changeLanguage'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,7 +24,7 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
   const path = usePathname()
   const [isClient, setIsClient] = useState(false)
   const { theme, setTheme } = useTheme()
-
+  const { t } = useTranslation(language, 'profile')
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -49,7 +50,7 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
   return (
     <>
       <DropdownMenuGroup>
-        <DropdownMenuLabel>Language</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('preferences.language.title')}</DropdownMenuLabel>
         {SUPPORTED_LANGUAGES.map((lang) => (
           <DropdownMenuItem className='p-0' key={lang}>
             <Button
@@ -73,19 +74,19 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuLabel>Theme</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('preferences.theme.title')}</DropdownMenuLabel>
         <DropdownMenuItem className='p-0'>
           <Button
             variant='ghost'
             className='w-full flex items-center justify-between gap-2 p-0 pl-2'
             disabled={theme === 'light'}
             onClick={() => switchTheme('light')}
-            title='Light theme'
-            aria-label='Light theme'
+            title={t('preferences.theme.light')}
+            aria-label={t('preferences.theme.light')}
           >
             <div className='w-full h-full flex items-center gap-2'>
               <SunIcon className='w-5 h-5' />
-              <span>Light Theme</span>
+              <span>{t('preferences.theme.light')}</span>
             </div>
           </Button>
         </DropdownMenuItem>
@@ -95,12 +96,12 @@ export default function PreferencesMenu({ language }: Props): JSX.Element {
             className='w-full flex items-center justify-between gap-2 p-0 pl-2'
             disabled={theme === 'dark'}
             onClick={() => switchTheme('dark')}
-            title='Dark theme'
-            aria-label='Dark theme'
+            title={t('preferences.theme.dark')}
+            aria-label={t('preferences.theme.dark')}
           >
             <div className='w-full h-full flex items-center gap-2'>
               <MoonIcon className='w-5 h-5' />
-              <span>Dark Theme</span>
+              <span>{t('preferences.theme.dark')}</span>
             </div>
           </Button>
         </DropdownMenuItem>

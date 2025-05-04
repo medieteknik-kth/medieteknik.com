@@ -26,7 +26,6 @@ import {
   CalendarIcon,
 } from '@heroicons/react/24/outline'
 import { getYear } from 'date-fns'
-import { useTheme } from 'next-themes'
 import { redirect } from 'next/navigation'
 import { useCallback, useState } from 'react'
 
@@ -46,8 +45,7 @@ export default function Statistics({
   yearCommitteesStatistics,
 }: Props) {
   const [yearFilter] = useState(providedYear || getYear(new Date()).toString())
-  const [leaderboardView, setLeaderboardView] = useState('yearly')
-  const { theme } = useTheme()
+  const [leaderboardView] = useState('yearly')
   const { t } = useTranslation(language, 'statistics')
 
   const changeYear = useCallback(
@@ -61,14 +59,6 @@ export default function Statistics({
     [language]
   )
 
-  const committeeData = yearCommitteesStatistics.map((statistic) => {
-    if (!statistic.committee) return null
-    return {
-      name: statistic.committee.translations[0].title,
-      value: statistic.value,
-    }
-  })
-
   const totalExpenses = yearCommitteesStatistics.reduce((acc, statistic) => {
     if (!statistic.committee) return acc
     return acc + statistic.value
@@ -80,7 +70,7 @@ export default function Statistics({
     <main className='relative overflow-y-hidden overflow-x-visible'>
       <HeaderGap />
 
-      <div className='container mx-auto py-8 flex flex-col gap-8'>
+      <div className='px-2 xs:px-0 xs:container mx-auto py-8 flex flex-col gap-8'>
         {/* Headers */}
         <div className='space-y-1 z-10'>
           <div className='flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4'>
@@ -119,7 +109,7 @@ export default function Statistics({
 
         {/* Overview Cards */}
         <div className='grid gap-6 xl:grid-cols-3 z-10'>
-          <PopIn className='col-span-2'>
+          <PopIn className='xl:col-span-2'>
             <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-red-600/10'>
               <CardHeader className='pb-2'>
                 <CardDescription className='text-sm font-medium text-muted-foreground'>

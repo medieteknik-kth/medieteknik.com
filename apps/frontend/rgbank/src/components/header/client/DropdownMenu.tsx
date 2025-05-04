@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
+import AppSwitcher from '@/components/header/components/AppSwitcher'
 import DefaultProfile from '@/components/header/components/DefaultProfile'
 import { ProfileButton } from '@/components/header/components/ProfileButton'
 import { Button } from '@/components/ui/button'
@@ -27,6 +29,7 @@ export function WideScreenProfileButton({
 }: ProfileButtonProps): JSX.Element {
   const { logout, isAuthenticated } = useAuthentication()
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation(language, 'profile')
 
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
@@ -37,6 +40,7 @@ export function WideScreenProfileButton({
         <DropdownMenuContent className='w-72 lg:w-96 h-fit mr-5 dark:bg-[#111]'>
           <DefaultProfile language={language} />
           <DropdownMenuSeparator />
+          <AppSwitcher language={language} />
           <DropdownMenuGroup>
             {isAuthenticated ? (
               <DropdownMenuItem>
@@ -46,18 +50,18 @@ export function WideScreenProfileButton({
                   className='w-full'
                 >
                   <ArrowRightStartOnRectangleIcon className='w-4 h-4 mr-2' />
-                  Log out
+                  {t('logout')}
                 </Button>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem>
                 <Button className='w-full' asChild>
-                  <Link href={`/${language}`}>Log in</Link>
+                  <Link href={`/${language}`}>{t('login')}</Link>
                 </Button>
               </DropdownMenuItem>
             )}
             <p className='w-full text-center text-muted-foreground text-xs py-2 select-none'>
-              RGBank v{SITE_VERSION}
+              {t('rgbank')} v{SITE_VERSION}
               <span className='text-red-400 font-bold'>
                 {IS_DEVELOPMENT ? ' DEV' : ''}
               </span>

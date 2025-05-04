@@ -1,6 +1,6 @@
 import { getAllCommittees } from '@/api/committee'
 import UploadForm from '@/app/[language]/upload/form'
-import { useTranslation } from '@/app/i18n'
+import { getTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import type { LanguageCode } from '@/models/Language'
 
@@ -14,9 +14,10 @@ interface Props {
 
 export default async function Home(props: Props) {
   const { language } = await props.params
-  const { t } = await useTranslation(language, 'home')
-  const { t: errors } = await useTranslation(language, 'errors')
+  const { t } = await getTranslation(language, 'home')
+  const { t: errors } = await getTranslation(language, 'errors')
   const { data: committees, error } = await getAllCommittees('en')
+
   if (error) {
     return (
       <div>
@@ -30,7 +31,7 @@ export default async function Home(props: Props) {
   return (
     <main className='bg-neutral-100 dark:bg-neutral-900'>
       <HeaderGap />
-      <div className='container my-4'>
+      <div className='px-2 xs:px-0 xs:container py-4'>
         <UploadForm language={language} committees={committees} />
       </div>
       <div className='bg-white border-t-2 border-black py-8 dark:bg-neutral-800 dark:border-neutral-700'>

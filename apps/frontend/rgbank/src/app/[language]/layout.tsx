@@ -52,6 +52,11 @@ export async function generateMetadata(props: {
       default: `${capitalizedValue} - Medieteknik`,
       template: `%s | ${capitalizedValue} - Medieteknik`,
     },
+    // This app shouldn't be indexed by search engines
+    robots: {
+      index: false,
+      follow: false,
+    },
     alternates: {
       canonical: `https://www.medieteknik.com/${params.language}`,
       languages: {

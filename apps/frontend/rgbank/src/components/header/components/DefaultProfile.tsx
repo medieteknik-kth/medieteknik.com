@@ -1,23 +1,17 @@
 'use client'
 
-import PreferencesMenu from '@/components/header/components/PreferencesMenu'
+import { useTranslation } from '@/app/i18n/client'
+import Preferences from '@/components/header/client/Preferences'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
-import {
-  AdjustmentsHorizontalIcon,
-  Cog6ToothIcon,
-} from '@heroicons/react/24/outline'
+import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
 
@@ -38,7 +32,7 @@ interface Props {
  */
 export default function DefaultProfile({ language }: Props): JSX.Element {
   const { student } = useStudent()
-
+  const { t } = useTranslation(language, 'profile')
   const username = student
     ? `${student.first_name} ${student.last_name || ''}`
     : 'Gäst'
@@ -70,33 +64,16 @@ export default function DefaultProfile({ language }: Props): JSX.Element {
       </div>
       <DropdownMenuSeparator />
       <DropdownMenuGroup className='flex flex-col gap-0.5'>
-        <DropdownMenuGroup>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger className='p-0 pr-2'>
-              <Button
-                className='w-full flex items-center justify-start gap-2 p-0 pl-2'
-                variant={'ghost'}
-              >
-                <AdjustmentsHorizontalIcon className='w-4 h-4' />
-                <span>Preferences</span>
-              </Button>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent className='w-[200px] mr-2 dark:bg-[#111]'>
-                <PreferencesMenu language={language} />
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-        </DropdownMenuGroup>
+        <Preferences language={language} />
         <DropdownMenuItem className='p-0'>
           <Button
             className='w-full flex items-center justify-start gap-2 p-0 pl-2'
             variant={'ghost'}
             asChild
           >
-            <Link href={`/${language}/account`} title='Account settings'>
+            <Link href={`/${language}/account`} title={t('accountSettings')}>
               <Cog6ToothIcon className='w-4 h-4' />
-              <span>Account Settings</span>
+              <span>{t('accountSettings')}</span>
             </Link>
           </Button>
         </DropdownMenuItem>
@@ -108,11 +85,12 @@ export default function DefaultProfile({ language }: Props): JSX.Element {
         <DropdownMenuLabel className='w-full text-lg flex flex-col ml-2 max-w-[300px]'>
           <p className='truncate'>{username}</p>
           <span className='font-normal text-sm text-muted-foreground leading-3'>
-            Välkommen
+            {t('welcome')}
           </span>
         </DropdownMenuLabel>
       </div>
       <DropdownMenuSeparator />
+      <Preferences language={language} />
     </>
   )
 }

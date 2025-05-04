@@ -84,7 +84,7 @@ export default function Categorize({
         amount: '0',
       },
     ])
-  }, [categoryIndex, categories[0].author])
+  }, [categoryIndex, categories])
 
   const validateCategories = useCallback(() => {
     const isValid = categories.every(

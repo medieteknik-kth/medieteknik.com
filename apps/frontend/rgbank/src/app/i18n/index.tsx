@@ -40,7 +40,7 @@ const initI18n = async (
  * @param {object} options - Additional options
  * @returns {Promise<{ t: TFunction, i18n: I18n }>} Translation function and i18next instance
  */
-export async function useTranslation(
+export async function getTranslation(
   language: LanguageCode,
   namespace: string,
   options: { keyPrefix?: string | undefined } = {}

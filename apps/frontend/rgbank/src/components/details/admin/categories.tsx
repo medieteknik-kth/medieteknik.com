@@ -70,7 +70,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
         amount: '0',
       },
     ])
-  }, [categoryIndex, categories[0].author])
+  }, [categoryIndex, categories])
 
   const isInvoice = 'invoice_id' in item
 

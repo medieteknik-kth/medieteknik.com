@@ -5,5 +5,12 @@
     "confirmed": "Attesterad",
     "clarification": "Förtydligande",
     "unconfirmed": "Obekräftad",
-    "unknown": "Okänd"
+    "unknown": "Okänd",
+    "status_changed_booked": "Status ändrad till bokförd",
+    "status_changed_rejected": "Status ändrad till avvisad",
+    "status_changed_paid": "Status ändrad till utbetald",
+    "status_changed_confirmed": "Status ändrad till attesterad",
+    "status_changed_clarification": "Status ändrad till förtydligande",
+    "status_changed_unconfirmed": "Status ändrad till obekräftad",
+    "status_changed_unknown": "Status ändrad till okänd"
 }

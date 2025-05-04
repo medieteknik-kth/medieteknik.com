@@ -27,24 +27,6 @@ interface Props {
   includeBanner?: boolean
 }
 
-function getMainDomain(): string {
-  let hostname = window.location.hostname
-
-  if (hostname.includes('localhost')) {
-    hostname = 'localhost.com'
-  }
-
-  // Split the hostname by dots and get the last two parts
-  const parts = hostname.split('.')
-
-  if (parts.length >= 2) {
-    // Take the last two parts to get the main domain
-    return parts.slice(-2).join('.')
-  }
-
-  return hostname // Fallback to the full hostname
-}
-
 export default function AccountPage({ language, includeBanner = true }: Props) {
   const { student, bank_account } = useStudent()
   const { setStale } = useAuthentication()

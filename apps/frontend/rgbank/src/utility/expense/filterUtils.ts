@@ -3,20 +3,14 @@ import type { ExpenseStatus } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type Student from '@/models/Student'
 
-type FilterableItem = {
-  title: string
-  description: string
-  student?: Student
-  status: ExpenseStatus
-  // biome-ignore lint/suspicious/noExplicitAny: Justification: This is a generic type and we don't know the exact structure of the items.
-  [key: string]: any
-}
-
-export function filterItems<T extends FilterableItem>(
-  items: T[],
-  search: string,
-  activeStatus: ExpenseStatus[]
-): T[] {
+export function filterItems<
+  T extends {
+    title: string
+    description: string
+    student?: Student
+    status: ExpenseStatus
+  },
+>(items: T[], search: string, activeStatus: ExpenseStatus[]): T[] {
   if (!search && activeStatus.length === 0) {
     return items
   }

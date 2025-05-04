@@ -1,6 +1,5 @@
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
-import type { CommitteePosition } from '@/models/Committee'
 import type { ExpenseStatus } from '@/models/General'
 import type { LanguageCode } from '@/models/Language'
 import type Student from '@/models/Student'
@@ -12,7 +11,6 @@ type CommentType = 'update' | 'comment'
 
 interface CommentProps {
   student: Student | null // Null for system messages
-  committeePosition: CommitteePosition | null // Null for system messages
   notSameUser?: boolean // Left or right aligned
   message: {
     type: CommentType
@@ -32,7 +30,6 @@ interface StatusUpdateProps {
 
 export default function Comment({
   student,
-  committeePosition,
   notSameUser,
   date,
   message,
@@ -44,9 +41,11 @@ export default function Comment({
     >
       <div>
         {student?.profile_picture_url ? (
-          <img
+          <Image
             src={student.profile_picture_url}
             alt={student.first_name}
+            width={32}
+            height={32}
             className='h-8 w-8 rounded-full'
           />
         ) : (

@@ -19,6 +19,7 @@ const BLACKLISTED_URLS_REGEX = new RegExp(
     '/static.*',
     '/manifest\\.webmanifest',
     '/icon.*',
+    '/robots\\.txt',
     '/service-worker\\.js',
     '/web-app-manifest-192x192\\.png',
     '/web-app-manifest-192x192-maskable\\.png',
@@ -61,7 +62,7 @@ export function handleLanguage(
    */
   function getPathLanguage(): LanguageCode | undefined {
     const path = request.nextUrl.pathname
-    const [_, language] = path.split('/')
+    const [, language] = path.split('/')
     if (SUPPORTED_LANGUAGES.includes(language as LanguageCode)) {
       return language as LanguageCode
     }

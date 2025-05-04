@@ -67,7 +67,12 @@ export default function InvoiceCard({ language, invoice, short }: Props) {
               <CardDescription>{invoice.description}</CardDescription>
             </VisuallyHidden>
           ) : (
-            <CardDescription>{invoice.description}</CardDescription>
+            <CardDescription
+              className='text-sm text-muted-foreground max-w-96 break-words'
+              title={invoice.description}
+            >
+              {invoice.description}
+            </CardDescription>
           )}
         </CardHeader>
         {!short && (

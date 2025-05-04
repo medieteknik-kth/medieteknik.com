@@ -1,6 +1,6 @@
 import { getAllCommittees } from '@/api/committee'
 import UploadForm from '@/app/[language]/upload/form'
-import { useTranslation } from '@/app/i18n'
+import { getTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import type { LanguageCode } from '@/models/Language'
 
@@ -15,7 +15,7 @@ interface Props {
 export default async function Upload(props: Props) {
   const { language } = await props.params
   const { data: committees, error } = await getAllCommittees(language)
-  const { t: errors } = await useTranslation(language, 'errors')
+  const { t: errors } = await getTranslation(language, 'errors')
   if (error) {
     return (
       <div>

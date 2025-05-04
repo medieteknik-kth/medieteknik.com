@@ -67,7 +67,12 @@ export default function ExpenseCard({ language, expense, short }: Props) {
               <CardDescription>{expense.description}</CardDescription>
             </VisuallyHidden>
           ) : (
-            <CardDescription>{expense.description}</CardDescription>
+            <CardDescription
+              className='text-sm text-muted-foreground max-w-96 break-words'
+              title={expense.description}
+            >
+              {expense.description}
+            </CardDescription>
           )}
         </CardHeader>
         {!short && (
