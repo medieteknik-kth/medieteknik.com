@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:8ef208fae7f9ace5d257123b559c75251c72cfb7b2a9c08c4a8fd23288d084e8 AS build
+FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:1c0baf18db60cf0103013cc43806847ab4727c3c7cca1055dfd96c44743964e7 AS build
 
 ENV PATH=/opt/venv/bin:$PATH
 
@@ -28,8 +28,8 @@ RUN uv pip install python-minifier
 # Copy the rest of the application code
 COPY . .
 
-# Minify the Python files in the app directory
-RUN find . -name "*.py" -exec sh -c 'pyminify --remove-literal-statements "$1" > "$1.tmp" && mv "$1.tmp" "$1"' _ {} \;
+# Minify the Python files in the app directory, can also use "--remove-literal-statements" to remove string literals
+RUN find . -name "*.py" -exec sh -c 'pyminify "$1" > "$1.tmp" && mv "$1.tmp" "$1"' _ {} \;
 
 # Remove unnecessary files
 RUN rm -rf .gitignore requirements.txt package.json init.sql .vscode .turbo .mypy_cache .docker __pycache__

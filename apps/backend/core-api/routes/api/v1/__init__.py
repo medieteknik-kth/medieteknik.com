@@ -43,6 +43,7 @@ from utility.constants import (
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
 from utility.database import db
+from utility.logger import log_error
 from utility.translation import retrieve_languages
 from utility.authorization import jwt
 

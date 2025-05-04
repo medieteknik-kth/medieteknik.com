@@ -22,6 +22,7 @@ from services.apps.rgbank import (
     has_full_authority,
     add_message,
 )
+from services.utility.mail import send_expense_message
 from utility import db, upload_file, rgbank_bucket
 
 invoice_bp = Blueprint("invoice", __name__)
@@ -136,6 +137,11 @@ def create_invoice() -> Response:
 
     db.session.add(invoice)
     db.session.commit()
+
+    send_expense_message(
+        expense_item=invoice,
+        subject="Ny faktura har skapats",
+    )
 
     return jsonify({"message": "Invoice created successfully"}), HTTPStatus.CREATED
 
@@ -417,21 +423,17 @@ def delete_invoice(invoice_id: str) -> Response:
     """
     invoice = Invoice.query.filter_by(invoice_id=invoice_id).first_or_404()
 
-    if (
-        invoice.status != PaymentStatus.UNCONFIRMED
-        and invoice.status != PaymentStatus.REJECTED
-    ):
-        return jsonify(
-            {
-                "error": "You cannot delete an invoice that is already confirmed or rejected"
-            }
-        ), HTTPStatus.BAD_REQUEST
-
     student_id = get_jwt_identity()
-    if invoice.student_id != student_id:
+
+    if str(invoice.student_id) != str(student_id):
         return jsonify(
             {"error": "You are not authorized to delete this invoice"}
         ), HTTPStatus.UNAUTHORIZED
+
+    if invoice.status != PaymentStatus.UNCONFIRMED:
+        return jsonify(
+            {"error": "You can only delete unconfirmed invoices"}
+        ), HTTPStatus.BAD_REQUEST
 
     db.session.delete(invoice)
     db.session.commit()

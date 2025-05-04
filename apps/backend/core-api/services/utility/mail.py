@@ -13,11 +13,7 @@ def send_expense_message(
     if not api_key:
         raise ValueError("MAILGUN_API_KEY is not set in the environment variables.")
 
-    id = (
-        expense_item.expense_id
-        if isinstance(expense_item, Expense)
-        else expense_item.invoice_id
-    )
+    name = expense_item.title
     item_type = "utgift" if isinstance(expense_item, Expense) else "faktura"
     expense_author_name = (
         (expense_item.student.to_dict())["first_name"]
@@ -38,7 +34,7 @@ def send_expense_message(
             "t:variables": json.dumps(
                 {
                     "expense_type": item_type,
-                    "expense_id": str(id),
+                    "expense_name": str(name),
                     "expense_author": expense_author_name,
                     "expense_author_email": expense_author_email,
                     "expense_total": expense_item.amount,

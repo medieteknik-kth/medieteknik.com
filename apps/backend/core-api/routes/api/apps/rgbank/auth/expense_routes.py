@@ -22,6 +22,7 @@ from services.apps.rgbank import (
     has_full_authority,
     add_message,
 )
+from services.utility.mail import send_expense_message
 from utility import db, upload_file, rgbank_bucket
 
 expense_bp = Blueprint("expense", __name__)
@@ -139,6 +140,11 @@ def create_expense() -> Response:
 
     db.session.add(new_thread)
     db.session.commit()
+
+    send_expense_message(
+        expense_item=new_expense,
+        subject="Ny utgift har skapats",
+    )
 
     return jsonify({"message": "Expense created successfully"}), HTTPStatus.CREATED
 
@@ -426,22 +432,17 @@ def delete_expense(expense_id: str) -> Response:
 
     expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
 
-    if (
-        expense.status != PaymentStatus.UNCONFIRMED
-        and expense.status != PaymentStatus.REJECTED
-    ):
-        return jsonify(
-            {
-                "error": "You cannot delete an expense that is already confirmed or rejected"
-            }
-        ), HTTPStatus.BAD_REQUEST
-
     student_id = get_jwt_identity()
 
-    if expense.student_id != student_id:
+    if str(expense.student_id) != str(student_id):
         return jsonify(
             {"error": "You are not authorized to delete this expense"}
         ), HTTPStatus.UNAUTHORIZED
+
+    if expense.status != PaymentStatus.UNCONFIRMED:
+        return jsonify(
+            {"error": "You can only delete unconfirmed expenses."}
+        ), HTTPStatus.BAD_REQUEST
 
     db.session.delete(expense)
     db.session.commit()
