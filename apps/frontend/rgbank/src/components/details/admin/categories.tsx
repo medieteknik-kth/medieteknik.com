@@ -24,7 +24,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { toast } from '@/components/ui/use-toast'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
@@ -104,14 +103,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
         throw new Error('Failed to update categories')
       }
 
-      toast({
-        title: 'Success',
-        description: 'Categories updated successfully',
-      })
-
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000)
+      window.location.reload()
     } catch (error) {
       console.error('Error updating categories:', error)
     }
@@ -168,7 +160,9 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                   {index + 1}
                 </div>
                 <div className='w-full flex flex-col gap-2 col-span-4'>
-                  <Label>{t('admin.categories.domain')}</Label>
+                  <Label id={`domain-${index}`}>
+                    {t('admin.categories.domain')}
+                  </Label>
                   <Popover
                     open={dropdownOpen === index}
                     onOpenChange={() => {
@@ -178,8 +172,10 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     <PopoverTrigger asChild>
                       <Button
                         variant={'outline'}
-                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         disabled={index !== 0}
+                        title={`${t('admin.categories.domain')} ${index + 1}`}
+                        aria-labelledby={`domain-${index}`}
+                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         role='combobox'
                         className='w-full items-center justify-between'
                       >
@@ -194,6 +190,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     <PopoverContent className='w-96! p-0'>
                       <Command>
                         <CommandInput
+                          title={`${t('admin.categories.search')}`}
                           placeholder={t('admin.categories.search')}
                         />
                         <CommandList>
@@ -233,7 +230,9 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                 </div>
 
                 <div className='grow flex flex-col gap-2 col-span-4'>
-                  <Label>{t('admin.categories.category')}</Label>
+                  <Label id={`category-${index}`}>
+                    {t('admin.categories.category')}
+                  </Label>
                   <Popover
                     open={partDropdownOpen === index}
                     onOpenChange={() => {
@@ -245,6 +244,8 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     <PopoverTrigger asChild>
                       <Button
                         variant={'outline'}
+                        title={`${t('admin.categories.category')} ${index + 1}`}
+                        aria-labelledby={`category-${index}`}
                         // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                         role='combobox'
                         className='grow items-center justify-between'
@@ -261,6 +262,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     <PopoverContent className='w-96! p-0'>
                       <Command>
                         <CommandInput
+                          title={`${t('admin.categories.search')}`}
                           placeholder={t('admin.categories.search')}
                         />
                         <CommandList>
@@ -301,6 +303,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     type='text'
                     placeholder='Amount'
                     pattern='[0-9]*([.,][0-9]*)?'
+                    title={`${t('admin.categories.amount')} ${index + 1}`}
                     inputMode='numeric'
                     value={category.amount}
                     onChange={(e) => {
@@ -324,7 +327,9 @@ export default function AdminCategoriesSection({ language, item }: Props) {
               </li>
             ))}
           </ul>
-          <Button type='submit'>{t('admin.categories.submit')}</Button>
+          <Button title={`${t('admin.categories.submit')}`} type='submit'>
+            {t('admin.categories.submit')}
+          </Button>
         </form>
       </CardContent>
     </Card>

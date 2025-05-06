@@ -139,7 +139,7 @@ export default function LoginForm({
       </h2>
       <Accordion type='multiple'>
         <AccordionItem value='email'>
-          <AccordionTrigger className='text-base'>
+          <AccordionTrigger className='accordion-login text-base'>
             {t('accountLogin')}
           </AccordionTrigger>
           <AccordionContent>
@@ -201,7 +201,9 @@ export default function LoginForm({
                   )}
                 />
                 <Button
+                  id='login-button'
                   type='submit'
+                  title={t('login')}
                   className='w-full mt-4'
                   onClick={() => {
                     loginForm.setValue('csrf_token', data.token)

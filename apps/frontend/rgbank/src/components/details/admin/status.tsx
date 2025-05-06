@@ -125,7 +125,11 @@ export default function AdminStatusSection({
           <div className='space-y-2'>
             <Label htmlFor='status'>{t('admin.status.new.label')}</Label>
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger id='status'>
+              <SelectTrigger
+                id='status'
+                className='cursor-pointer'
+                title={t('admin.status.new.label')}
+              >
                 <SelectValue placeholder={t('admin.status.new.placeholder')} />
               </SelectTrigger>
               <SelectContent>
@@ -167,11 +171,12 @@ export default function AdminStatusSection({
               {t('admin.status.comment')}
               {(selectedStatus === 'REJECTED' ||
                 selectedStatus === 'CLARIFICATION') && (
-                <span className='text-destructive'> *</span>
+                <span className='text-destructive'>*</span>
               )}
             </Label>
             <Textarea
               id='comment'
+              name='comment'
               placeholder={
                 selectedStatus === 'REJECTED'
                   ? t('admin.status.rejected.comment')
@@ -200,6 +205,11 @@ export default function AdminStatusSection({
         <Button
           type='submit'
           form='status-form'
+          title={
+            selectedStatus === 'REJECTED' || selectedStatus === 'BOOKED'
+              ? t('admin.status.close')
+              : t('admin.status.update')
+          }
           onClick={(e) => {
             e.preventDefault()
             if (selectedStatus === 'REJECTED' && comment.length === 0) {

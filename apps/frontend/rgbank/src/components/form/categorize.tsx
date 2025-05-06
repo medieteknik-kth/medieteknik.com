@@ -124,7 +124,7 @@ export default function Categorize({
           >
             <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
-                <Label>
+                <Label id='domains' htmlFor='domains'>
                   {t('domain')} <span className='text-red-500'>*</span>
                 </Label>
               )}
@@ -136,12 +136,20 @@ export default function Categorize({
               >
                 <PopoverTrigger asChild>
                   <Button
+                    id={`domain-${index}`}
+                    name={`domain-${index}`}
+                    title={`${t('domain')} ${index + 1}`}
                     variant={'outline'}
                     // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                     disabled={index !== 0}
                     role='combobox'
                     className='w-full items-center justify-between'
+                    aria-expanded={dropdownOpen === index}
+                    aria-labelledby='domains'
                   >
+                    <span className='sr-only'>
+                      {`${t('domain')} ${index + 1}`}
+                    </span>
                     <div className='flex items-center gap-2'>
                       <div className='bg-white p-1 rounded-lg'>
                         <Image
@@ -167,6 +175,7 @@ export default function Categorize({
                   <Command>
                     <CommandInput
                       placeholder={t('domain.search.placeholder')}
+                      title={t('domain.search.placeholder')}
                     />
                     <CommandList>
                       <CommandEmpty>{t('domain.noneFound')}</CommandEmpty>
@@ -217,7 +226,7 @@ export default function Categorize({
 
             <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
-                <Label>
+                <Label id='categories' htmlFor='categories'>
                   {t('category')} <span className='text-red-500'>*</span>
                 </Label>
               )}
@@ -229,11 +238,19 @@ export default function Categorize({
               >
                 <PopoverTrigger asChild>
                   <Button
+                    id={`category-${index}`}
+                    name={`category-${index}`}
+                    title={`${t('category')} ${index + 1}`}
                     variant={'outline'}
                     // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                     role='combobox'
                     className='grow items-center justify-between'
+                    aria-expanded={partDropdownOpen === index}
+                    aria-labelledby='categories'
                   >
+                    <span className='sr-only'>
+                      {`${t('category')} ${index + 1}`}
+                    </span>
                     <div className='flex items-center gap-2 max-w-64 2xl:max-w-max'>
                       <div className='bg-white p-1 rounded-lg'>
                         <Image
@@ -259,6 +276,7 @@ export default function Categorize({
                   <Command>
                     <CommandInput
                       placeholder={t('category.search.placeholder')}
+                      title={t('category.search.placeholder')}
                     />
                     <CommandList>
                       <CommandEmpty>{t('category.noneFound')}</CommandEmpty>
@@ -291,11 +309,16 @@ export default function Categorize({
 
             <div className='w-full flex flex-col gap-2 col-span-3'>
               {index === 0 && (
-                <Label>
+                <Label id='amounts' htmlFor='amounts'>
                   {t('amount')} <span className='text-red-500'>*</span>
                 </Label>
               )}
+              <span className='sr-only'>{`${t('amount')} ${index + 1}`}</span>
               <Input
+                id={`amount-${index}`}
+                name={`amount-${index}`}
+                title={`${t('amount')} ${index + 1}`}
+                aria-labelledby='amounts'
                 type='text'
                 placeholder='Amount'
                 pattern='[0-9]*([.,][0-9]*)?'
@@ -340,6 +363,9 @@ export default function Categorize({
       <Button
         className='mt-4'
         variant={'outline'}
+        aria-label={t('addCategory')}
+        id='add-category'
+        name='add-category'
         size={'sm'}
         onClick={addCategory}
         disabled={categories[0].author === ''}

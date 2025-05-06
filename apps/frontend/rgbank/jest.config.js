@@ -5,13 +5,12 @@
 
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
-  testEnvironment: "node",
+  testEnvironment: 'node',
   transform: {
-    "^.+.tsx?$": ["ts-jest", {}],
+    '^.+.tsx?$': ['ts-jest', {}],
   },
-  testMatch: ['**/tests/*.test.ts']
-};
-
+  testMatch: ['**/tests/unit/*.test.ts'],
+}
 
 //const config: Config = {
 // All imported modules in your tests should be mocked automatically

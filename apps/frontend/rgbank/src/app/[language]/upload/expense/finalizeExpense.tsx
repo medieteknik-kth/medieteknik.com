@@ -134,6 +134,7 @@ export default function FinalizeExpense({ language, onBack }: Props) {
       </div>
 
       <Button
+        title={t('submit')}
         className='w-full h-16 mt-8'
         onClick={() => {
           expenseForm.handleSubmit((data) => {

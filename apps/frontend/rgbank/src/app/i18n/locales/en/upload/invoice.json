@@ -2,6 +2,7 @@
     "title": "Upload your invoice",
     "description": "Please upload your invoice and fill in the required details.",
     "back": "Back to upload",
+    "error.title.max_length": "Maximum length exceeded ({{maxLength}} characters)",
     "step_1.title": "Payment status",
     "step_1.description": "Please select the payment status of the invoice.",
     "step_1.option_1": "No, the chapter should pay.",

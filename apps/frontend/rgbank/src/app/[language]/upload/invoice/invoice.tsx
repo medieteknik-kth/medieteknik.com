@@ -16,7 +16,7 @@ import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
 import type { PaidStatus } from '@/models/Invoice'
 import type { LanguageCode } from '@/models/Language'
-import { useFiles, useInvoice } from '@/providers/FormProvider'
+import { useFiles, useGeneralForm, useInvoice } from '@/providers/FormProvider'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { addDays, startOfDay } from 'date-fns'
 import { useCallback, useState } from 'react'
@@ -39,6 +39,7 @@ export default function Invoice({
   onFinalize,
 }: Props) {
   const { invoiceData, setInvoiceData } = useInvoice()
+  const { error, setError } = useGeneralForm()
   const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
     invoiceData.paidStatus !== undefined,
@@ -125,11 +126,15 @@ export default function Invoice({
           description={t('step_1.description')}
           stepNumber={1}
           isCompleted={completedSteps[0]}
+          labelledby='step_1_title'
+          describedby='step_1_description'
           isActive
           required
         >
           <RadioGroup
             defaultValue={paidStatus}
+            aria-labelledby='step_1_title'
+            aria-describedby='step_1_description'
             onValueChange={(value) => {
               setPaidStatus(value)
               if (value === 'no_chapter' || value === 'yes_chapter') {
@@ -186,6 +191,7 @@ export default function Invoice({
                 removeAllFiles()
                 toExpense()
               }}
+              title={t('step_1.failed.next')}
             >
               {t('step_1.failed.next')}
             </Button>
@@ -197,14 +203,34 @@ export default function Invoice({
               description={t('step_2.description')}
               stepNumber={2}
               isCompleted={completedSteps[1]}
+              labelledby='step_2_title'
+              describedby='step_2_description'
               isActive
               required
             >
               <Input
+                id='title'
+                role='textbox'
+                name='title'
+                title={t('step_2.title')}
                 placeholder={t('step_2.placeholder')}
                 defaultValue={invoiceData.title}
-                maxLength={150}
+                aria-labelledby='step_2_title'
+                aria-describedby='step_2_description'
+                maxLength={151}
                 onChange={(e) => {
+                  if (e.target.value.length > 150) {
+                    setError(
+                      t('error.title.max_length', {
+                        maxLength: 150,
+                      })
+                    )
+                    e.target.value = e.target.value.slice(0, 150)
+
+                    setTimeout(() => {
+                      setError('')
+                    }, 5000)
+                  }
                   setInvoiceData({
                     ...invoiceData,
                     title: e.target.value,
@@ -222,12 +248,16 @@ export default function Invoice({
               description={t('step_3.description')}
               stepNumber={3}
               isCompleted={completedSteps[2]}
+              labelledby='step_3_title'
+              describedby='step_3_description'
               isActive
               required
             >
               <UploadFiles
                 language={language}
                 fileUploadStep={2}
+                ariaDescribedby='step_3_description'
+                ariaLabelledby='step_3_title'
                 completeStep={completeStep}
                 uncompleteStep={uncompleteStep}
               />
@@ -247,6 +277,8 @@ export default function Invoice({
                 </Label>
                 <Textarea
                   placeholder={t('step_4.placeholder')}
+                  id='description'
+                  name='description'
                   defaultValue={invoiceData.description}
                   onChange={(e) => {
                     setDescription(e.target.value)
@@ -271,6 +303,7 @@ export default function Invoice({
                 <div className='flex items-center gap-2'>
                   <Checkbox
                     className='w-6! h-6'
+                    name='original'
                     id='original'
                     defaultChecked={invoiceData.isOriginalInvoice}
                     onCheckedChange={(checked) => {
@@ -313,11 +346,13 @@ export default function Invoice({
             >
               <div className='flex items-center gap-2 flex-wrap'>
                 <div>
-                  <Label>
+                  <Label htmlFor='date'>
                     {t('step_6.label_1')}
                     <span className='text-red-500'>*</span>
                   </Label>
                   <Input
+                    id='date'
+                    name='date'
                     type='date'
                     className='w-42'
                     defaultValue={
@@ -334,11 +369,13 @@ export default function Invoice({
                   />
                 </div>
                 <div>
-                  <Label>
+                  <Label htmlFor='due_date'>
                     {t('step_6.label_2')}
                     <span className='text-red-500'>*</span>{' '}
                   </Label>
                   <Input
+                    id='due_date'
+                    name='due_date'
                     type='date'
                     className='w-42'
                     defaultValue={
@@ -380,7 +417,10 @@ export default function Invoice({
             </FormStep>
 
             <Button
+              id='submit'
+              type='submit'
               className='w-full h-16 mt-4'
+              title={t('finalize')}
               disabled={completedSteps.includes(false)}
               onClick={() => {
                 setInvoiceData({
@@ -400,6 +440,14 @@ export default function Invoice({
           </>
         )}
       </FormSteps>
+
+      {error && (
+        <div className='fixed bottom-4 left-0 right-0 z-50 flex justify-center items-center p-4'>
+          <div className='bg-red-500 dark:bg-neutral-900 p-4 rounded-lg shadow-md'>
+            <h2 className='text-white font-bold text-xl'>{error}</h2>
+          </div>
+        </div>
+      )}
     </>
   )
 }

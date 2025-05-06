@@ -21,19 +21,28 @@ export default function AuthenticatedNavigation({ language }: Props) {
   return (
     <>
       <Button variant={'ghost'} asChild className='uppercase h-full bg-inherit'>
-        <Link href={`/${language}/upload?template=expense`}>
+        <Link
+          href={`/${language}/upload?template=expense`}
+          title={t('nav.expense')}
+        >
           {t('nav.expense')}
         </Link>
       </Button>
 
       <Button variant={'ghost'} asChild className='uppercase h-full bg-inherit'>
-        <Link href={`/${language}/upload?template=invoice`}>
+        <Link
+          href={`/${language}/upload?template=invoice`}
+          title={t('nav.invoice')}
+        >
           {t('nav.invoice')}
         </Link>
       </Button>
 
       <Button variant='ghost' asChild className='uppercase h-full bg-inherit'>
-        <Link href={`/${language}/account?category=activity`}>
+        <Link
+          href={`/${language}/account?category=activity`}
+          title={t('nav.uploads')}
+        >
           {t('nav.uploads')}
         </Link>
       </Button>

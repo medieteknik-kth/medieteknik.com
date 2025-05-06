@@ -21,7 +21,9 @@ export default function AdminButton({ language }: Props) {
 
   return (
     <Button variant={'ghost'} asChild className='uppercase h-full bg-inherit'>
-      <Link href={`/${language}/admin`}>{t('nav.admin')}</Link>
+      <Link href={`/${language}/admin`} title={t('nav.admin')}>
+        {t('nav.admin')}
+      </Link>
     </Button>
   )
 }

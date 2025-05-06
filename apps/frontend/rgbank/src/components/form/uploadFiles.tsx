@@ -7,6 +7,7 @@ import { toast } from '@/components/ui/use-toast'
 import type { LanguageCode } from '@/models/Language'
 import { useFiles, useGeneralForm } from '@/providers/FormProvider'
 import { ArrowUpOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 import Dropzone from 'react-dropzone'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -24,6 +25,8 @@ interface Props {
   uncompleteStep: (step: number) => void
   completeStep: (step: number) => void
   setIsDigitalReceiptRequired?: (isRequired: boolean) => void
+  ariaLabelledby?: string
+  ariaDescribedby?: string
 }
 
 export default function UploadFiles({
@@ -32,9 +35,12 @@ export default function UploadFiles({
   uncompleteStep,
   completeStep,
   setIsDigitalReceiptRequired,
+  ariaLabelledby,
+  ariaDescribedby,
 }: Props) {
   const { files, removeFile, addFile } = useFiles()
-  const { error, setError } = useGeneralForm()
+  const { setError: setFormError } = useGeneralForm()
+  const [error, setError] = useState('')
   const { t } = useTranslation(language, 'upload/file')
 
   return (
@@ -83,8 +89,19 @@ export default function UploadFiles({
                   validFormats: 'jpeg, jpg, png, avif, webp, pdf',
                 })
               )
+
+              setFormError(
+                t('error.file.invalid_format', {
+                  validFormats: 'jpeg, jpg, png, avif, webp, pdf',
+                })
+              )
             } else if (file.errors[0].code === 'file-too-large') {
               setError(
+                t('error.file.too_large', {
+                  maxSize: MAX_FILE_SIZE / 1024 / 1024,
+                })
+              )
+              setFormError(
                 t('error.file.too_large', {
                   maxSize: MAX_FILE_SIZE / 1024 / 1024,
                 })
@@ -113,7 +130,14 @@ export default function UploadFiles({
         {({ getRootProps, getInputProps }) => (
           <div {...getRootProps()}>
             {error && <p className='text-red-500'>{error}</p>}
-            <input {...getInputProps()} />
+            <input
+              {...getInputProps()}
+              name='files'
+              role='textbox'
+              aria-labelledby={ariaLabelledby}
+              aria-describedby={ariaDescribedby}
+              title='Upload files'
+            />
             <div className='h-96 flex flex-col items-center justify-center gap-2 hover:bg-neutral-200! dark:hover:bg-neutral-800! rounded-md transition-colors cursor-pointer border-2 border-dashed border-neutral-300 dark:border-neutral-700'>
               <ArrowUpOnSquareIcon className='w-8 h-8' />
               <p className='text-sm text-center text-muted-foreground px-2'>

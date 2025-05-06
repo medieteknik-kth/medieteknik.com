@@ -156,6 +156,7 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
         )}
 
         <Button
+          title={t('submit')}
           className='w-full h-16 mt-8'
           onClick={() => {
             console.log(invoiceForm.getValues())

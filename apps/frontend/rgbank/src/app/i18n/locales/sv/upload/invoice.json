@@ -2,6 +2,7 @@
     "title": "Ladda upp din faktura",
     "description": "Vänligen ladda upp din faktura och fyll i de nödvändiga detaljerna.",
     "back": "Tillbaka till uppladdning",
+    "error.title.max_length": "Maximal längd överskriden ({{maxLength}} tecken)",
     "step_1.title": "Betalningsstatus",
     "step_1.description": "Vänligen välj betalningsstatus för fakturan.",
     "step_1.option_1": "Nej, sektionen ska betala.",

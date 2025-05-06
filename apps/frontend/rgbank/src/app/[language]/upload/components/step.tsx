@@ -13,6 +13,18 @@ interface FormStepProps {
    */
   title: string
 
+  // Optional aria-labels for accessibility
+
+  /**
+   * Optional aria-label for the form step title
+   */
+  labelledby?: string
+
+  /**
+   * Optional aria-label for the form step description
+   */
+  describedby?: string
+
   /**
    * Optional description of the form step
    */
@@ -53,6 +65,8 @@ export function FormStep({
   title,
   description,
   stepNumber,
+  labelledby,
+  describedby,
   isCompleted = false,
   isActive = false,
   required = false,
@@ -88,16 +102,19 @@ export function FormStep({
 
         <div className='flex-1 space-y-4'>
           <div>
-            <h3 className='text-lg font-semibold leading-tight'>
+            <h3 className='text-lg font-semibold leading-tight' id={labelledby}>
               {title}
               {required && (
                 <sup className='text-red-500 dark:text-red-300 text-sm font-normal'>
-                  *
+                  *<span className='sr-only'>required field</span>
                 </sup>
               )}
             </h3>
             {description && (
-              <p className='text-sm text-muted-foreground mt-1'>
+              <p
+                className='text-sm text-muted-foreground mt-1'
+                id={describedby}
+              >
                 {description}
               </p>
             )}

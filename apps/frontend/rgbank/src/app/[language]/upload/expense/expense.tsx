@@ -32,7 +32,7 @@ export default function Expense({
   onBack,
   onFinalize,
 }: Props) {
-  const { setError } = useGeneralForm()
+  const { error, setError } = useGeneralForm()
   const { expenseData, setExpenseData } = useExpense()
   const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
@@ -90,14 +90,33 @@ export default function Expense({
           description={t('step_1.description')}
           stepNumber={1}
           isCompleted={completedSteps[0]}
+          labelledby='step_1_title'
+          describedby='step_1_description'
           isActive
           required
         >
           <Input
+            id='title'
+            name='title'
+            role='textbox'
+            title={t('step_1.title')}
+            aria-labelledby='step_1_title'
+            aria-describedby='step_1_description'
             placeholder={t('step_1.placeholder')}
             defaultValue={expenseData.title}
-            maxLength={150}
+            maxLength={151}
             onChange={(e) => {
+              if (e.target.value.length > 150) {
+                setError(
+                  t('error.title.max_length', {
+                    maxLength: 150,
+                  })
+                )
+                e.target.value = e.target.value.slice(0, 150)
+                setTimeout(() => {
+                  setError('')
+                }, 5000)
+              }
               setExpenseData({
                 ...expenseData,
                 title: e.target.value,
@@ -116,12 +135,16 @@ export default function Expense({
           description={t('step_2.description')}
           stepNumber={2}
           isCompleted={completedSteps[1]}
+          labelledby='step_2_title'
+          describedby='step_2_description'
           isActive
           required
         >
           <UploadFiles
             language={language}
             fileUploadStep={1}
+            ariaDescribedby='step_2_description'
+            ariaLabelledby='step_2_title'
             completeStep={completeStep}
             uncompleteStep={uncompleteStep}
             setIsDigitalReceiptRequired={setIsDigitalReceiptRequired}
@@ -133,10 +156,18 @@ export default function Expense({
           description={t('step_3.description')}
           stepNumber={3}
           isCompleted={completedSteps[2]}
+          labelledby='step_3_title'
+          describedby='step_3_description'
           isActive
           required
         >
           <Textarea
+            id='description'
+            name='description'
+            role='textbox'
+            title={t('step_3.title')}
+            aria-labelledby='step_3_title'
+            aria-describedby='step_3_description'
             className='resize-none'
             placeholder={t('step_3.placeholder')}
             defaultValue={expenseData.description}
@@ -162,9 +193,12 @@ export default function Expense({
           isActive
           required
         >
-          <Label>{t('step_4.label')}</Label>
+          <Label htmlFor='date'>{t('step_4.label')}</Label>
           <Input
             type='date'
+            id='date'
+            role='textbox'
+            name='date'
             defaultValue={
               subDays(expenseData.date, 1).toISOString().split('T')[0]
             }
@@ -195,6 +229,8 @@ export default function Expense({
           <div className='flex items-center gap-2'>
             <Checkbox
               id='digital'
+              name='digital'
+              role='checkbox'
               className='w-6! h-6'
               checked={expenseData.isDigital}
               onCheckedChange={(checked) => {
@@ -239,6 +275,9 @@ export default function Expense({
         </FormStep>
 
         <Button
+          id='submit'
+          type='submit'
+          title={t('finalize')}
           className='w-full h-16 mt-8'
           disabled={completedSteps.some(
             (step, index) =>
@@ -258,6 +297,14 @@ export default function Expense({
           {t('finalize')}
         </Button>
       </FormSteps>
+
+      {error && (
+        <div className='fixed bottom-4 left-0 right-0 z-50 flex justify-center items-center p-4'>
+          <div className='bg-red-500 dark:bg-neutral-900 p-4 rounded-lg shadow-md'>
+            <h2 className='text-white font-bold text-xl'>{error}</h2>
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -71,6 +71,7 @@ export function ExpenseBadge({
       return (
         <div
           className={cn(
+            'badge invoice',
             'w-fit flex items-center gap-2 text-purple-500 bg-purple-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -84,6 +85,7 @@ export function ExpenseBadge({
       return (
         <div
           className={cn(
+            'badge expense',
             'w-fit flex items-center gap-2 text-red-500 bg-red-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -112,6 +114,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
+            'badge booked',
             'w-fit flex items-center gap-2 text-emerald-500 bg-emerald-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -126,6 +129,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
+            'badge rejected',
             'w-fit flex items-center gap-2 text-red-500 bg-red-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -140,6 +144,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
+            'badge paid',
             'w-fit flex items-center gap-2 text-blue-500 bg-blue-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -154,6 +159,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
+            'badge confirmed',
             'w-fit flex items-center gap-2 text-sky-500 bg-sky-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -168,6 +174,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
+            'badge clarification',
             'w-fit flex items-center gap-2 text-orange-500 bg-orange-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}
@@ -181,6 +188,7 @@ export function ExpenseStatusBadge({
       return (
         <div
           className={cn(
+            'badge unconfirmed',
             'w-fit flex items-center gap-2 text-yellow-500 bg-yellow-500/20 px-2 py-1 rounded-2xl text-xs font-semibold',
             className
           )}

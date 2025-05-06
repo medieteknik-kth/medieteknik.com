@@ -2,6 +2,7 @@
     "title": "Ladda upp din utgift",
     "description": "Vänligen ladda upp utgiften och fyll i de nödvändiga detaljerna.",
     "back": "Tillbaka till uppladdning",
+    "error.title.max_length": "Maximal längd överskriden ({{maxLength}} tecken)",
     "step_1.title": "Namnge din utgift",
     "step_1.description": "Ange ett namn för din utgift.",
     "step_1.placeholder": "Ange ett namn för din utgift.",

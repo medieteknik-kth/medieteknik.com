@@ -2,6 +2,7 @@
     "title": "Upload your expense",
     "description": "Please upload your expense receipt and fill in the required details.",
     "back": "Back to upload",
+    "error.title.max_length": "Maximum length exceeded ({{maxLength}} characters)",
     "step_1.title": "Name your expense",
     "step_1.description": "Enter a name for your expense.",
     "step_1.placeholder": "Enter a name for your expense.",
