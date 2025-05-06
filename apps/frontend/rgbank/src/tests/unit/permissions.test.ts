@@ -1,6 +1,6 @@
 import type Committee from '@/models/Committee'
 import type { RGBankPermissions } from '@/models/Permission'
-import { canChangeExpense, canViewExpenses } from '../utility/expense/admin'
+import { canChangeExpense, canViewExpenses } from '../../utility/expense/admin'
 
 describe('canViewExpense', () => {
   interface TestCase {

@@ -1,4 +1,4 @@
-import { sortByCreatedAt } from '../utility/sortUtils'
+import { sortByCreatedAt } from '../../utility/sortUtils'
 
 describe('sortByCreatedAt', () => {
   interface TestCase {

@@ -1,6 +1,6 @@
 import type { ExpenseStatus } from '@/models/General'
 import type Student from '@/models/Student'
-import { filterItems } from '../utility/expense/filterUtils'
+import { filterItems } from '../../utility/expense/filterUtils'
 
 describe('filterByStatusAndSearch', () => {
   interface TestCase {
