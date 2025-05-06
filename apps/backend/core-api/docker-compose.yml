@@ -1,6 +1,7 @@
 services:
   web:
     container_name: web
+    tty: true
     build: .
     ports:
       - "80:80"

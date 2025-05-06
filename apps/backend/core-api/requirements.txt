@@ -16,3 +16,4 @@ google-cloud-pubsub
 google-cloud-tasks
 cryptography
 pywebpush
+rich

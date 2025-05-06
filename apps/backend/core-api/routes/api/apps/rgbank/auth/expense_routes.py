@@ -146,7 +146,7 @@ def create_expense() -> Response:
         subject="Ny utgift har skapats",
     )
 
-    return jsonify({"message": "Expense created successfully"}), HTTPStatus.CREATED
+    return jsonify({"id": str(new_expense.expense_id)}), HTTPStatus.CREATED
 
 
 @expense_bp.route("/all", methods=["GET"])
@@ -411,12 +411,16 @@ def update_expense_categories(expense_id: str) -> Response:
     if not data:
         return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
 
-    new_categories = data.get("categories")
+    new_categories = data.get("updatedCategories")
     if not new_categories:
         return jsonify({"message": "Categories are required"}), HTTPStatus.BAD_REQUEST
 
     expense.categories = new_categories
     db.session.commit()
+
+    return jsonify(
+        {"message": "Expense categories updated successfully"}
+    ), HTTPStatus.OK
 
 
 @expense_bp.route("/<string:expense_id>", methods=["DELETE"])

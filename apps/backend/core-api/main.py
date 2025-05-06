@@ -5,7 +5,9 @@ The main application.
 import logging
 import os
 import secrets
-import sys
+import flask
+import sqlalchemy
+import werkzeug
 from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -13,12 +15,30 @@ from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
 from utility import db, jwt, oauth, csrf
 from routes import register_v1_routes
+from rich.logging import RichHandler
+
 
 # Logging config
+rich_handler = RichHandler(
+    rich_tracebacks=True,
+    tracebacks_width=100,
+    tracebacks_code_width=None,
+    tracebacks_extra_lines=3,
+    tracebacks_show_locals=True,
+    # Disable suppression temporarily to test
+    tracebacks_suppress=[sqlalchemy, flask, werkzeug],
+    show_time=False,
+    show_level=False,
+    show_path=False,
+    markup=True,
+)
+
 logging.basicConfig(
-    level=logging.INFO,  # Change to DEBUG if needed
-    format="[%(asctime)s] [%(levelname)s] %(caller_module)s#%(caller_function)s@%(caller_lineno)d: %(message)s",
+    level=logging.INFO,
+    format="[{asctime}] [bold red]{levelname}[/] {message}",
+    style="{",
     datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[rich_handler],
 )
 
 app = Flask(__name__)
@@ -81,11 +101,14 @@ oauth.register(
 # Register routes (blueprints)
 register_v1_routes(app)
 
-app.logger.setLevel(logging.INFO)
 werkzeug_logger = logging.getLogger("werkzeug")
+werkzeug_logger.handlers.clear()
+werkzeug_logger.addHandler(rich_handler)
 werkzeug_logger.setLevel(logging.INFO)
-handler = logging.StreamHandler(sys.stdout)
-werkzeug_logger.addHandler(handler)
+
+app.logger.handlers.clear()
+app.logger.addHandler(rich_handler)
+app.logger.setLevel(logging.INFO)
 
 
 # Reverse proxy

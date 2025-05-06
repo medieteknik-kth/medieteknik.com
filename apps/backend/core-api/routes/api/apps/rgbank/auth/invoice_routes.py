@@ -143,7 +143,7 @@ def create_invoice() -> Response:
         subject="Ny faktura har skapats",
     )
 
-    return jsonify({"message": "Invoice created successfully"}), HTTPStatus.CREATED
+    return jsonify({"id": str(invoice.invoice_id)}), HTTPStatus.CREATED
 
 
 @invoice_bp.route("/all", methods=["GET"])
@@ -403,12 +403,16 @@ def update_expense_categories(invoice_id: str) -> Response:
     if not data:
         return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
 
-    new_categories = data.get("categories")
+    new_categories = data.get("updatedCategories")
     if not new_categories:
         return jsonify({"message": "Categories are required"}), HTTPStatus.BAD_REQUEST
 
     invoice.categories = json.loads(new_categories)
     db.session.commit()
+
+    return jsonify(
+        {"message": "Invoice categories updated successfully"}
+    ), HTTPStatus.OK
 
 
 @invoice_bp.route("/<string:invoice_id>", methods=["DELETE"])
