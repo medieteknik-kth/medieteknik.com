@@ -30,7 +30,10 @@ const BLACKLISTED_URLS_REGEX = new RegExp(
     '/installHook\\.js\\.map',
     '/ads\\.txt',
     '/__nextjs_original-stack-frame.*',
+    '/__nextjs_source-map',
+    '/?',
     '/discord',
+    '/_next',
   ].join('|')
 )
 
