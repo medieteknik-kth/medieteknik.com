@@ -1,9 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { ChartPieIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { Link } from 'next-view-transitions'
 
 interface Props {

@@ -2,7 +2,7 @@ import {
   COOKIE_SETTINGS,
   COOKIE_VERSION_NAME,
   COOKIE_VERSION_VALUE,
-} from '@/utility/Constants'
+} from '@medieteknik/constants'
 import type { NextRequest, NextResponse } from 'next/server'
 
 /**

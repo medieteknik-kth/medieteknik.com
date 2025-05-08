@@ -5,7 +5,7 @@ import AlternativeLogin from '@/components/login/alternative'
 import LoginForm from '@/components/login/loginForm'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useEffect, useState } from 'react'
 
 interface Props {

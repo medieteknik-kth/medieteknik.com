@@ -3,13 +3,13 @@
 import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import { Button } from '@/components/ui/button'
-import type { LanguageCode } from '@/models/Language'
 import {
   ArrowRightIcon,
   CheckIcon,
   CreditCardIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
 
 interface Props {

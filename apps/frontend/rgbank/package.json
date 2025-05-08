@@ -9,6 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@medieteknik/css-globals": "workspace:*",
+    "@medieteknik/typescript-config": "workspace:*",
+    "@medieteknik/models": "workspace:*",
+    "@medieteknik/middleware": "workspace:*",
+    "@medieteknik/authentication": "workspace:*",
     "@heroicons/react": "^2.2.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",

@@ -10,10 +10,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/use-toast'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useGeneralDetail } from '@/providers/DetailProvider'
 import { sortByCreatedAt } from '@/utility/sortUtils'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
 
 interface Props {

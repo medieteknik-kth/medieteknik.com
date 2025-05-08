@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Props {
   language: LanguageCode

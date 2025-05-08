@@ -1,5 +1,5 @@
-import type { LanguageCode } from '@/models/Language'
 import type { AuthenticationResponse } from '@/models/response/AuthenticationResponse'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 const CACHE_REVALIDATION_PERIOD_SECONDS = 60
 
@@ -35,10 +35,6 @@ export const authService = {
       credentials: 'include',
       body: JSON.stringify(json_data),
     })
-
-    if (!response.ok) {
-      throw new Error('Invalid credentials')
-    }
 
     return response
   },

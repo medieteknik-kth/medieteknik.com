@@ -4,8 +4,8 @@ import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import type { LanguageCode } from '@/models/Language'
 import { useGeneralDetail } from '@/providers/DetailProvider'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Props {
   language: LanguageCode

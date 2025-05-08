@@ -17,11 +17,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import type Committee from '@/models/Committee'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
-import type { LanguageCode } from '@/models/Language'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import type { Committee } from '@medieteknik/models'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 import { useCallback, useEffect, useState } from 'react'

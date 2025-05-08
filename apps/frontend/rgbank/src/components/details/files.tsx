@@ -4,8 +4,8 @@ import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
 import { ArrowDownTrayIcon, DocumentIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Props {
   language: LanguageCode

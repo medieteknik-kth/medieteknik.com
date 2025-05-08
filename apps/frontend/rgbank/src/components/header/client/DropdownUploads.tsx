@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { LanguageCode } from '@/models/Language'
 import {
   useAuthentication,
   usePermissions,
@@ -19,6 +18,7 @@ import {
   InboxIcon,
   ShieldExclamationIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { Link } from 'next-view-transitions'
 
 interface Props {

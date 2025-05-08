@@ -9,9 +9,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useTheme } from 'next-themes'
 import { usePathname } from 'next/navigation'
 import { type JSX, useCallback, useEffect, useState } from 'react'

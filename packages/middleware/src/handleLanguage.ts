@@ -1,41 +1,12 @@
-import type { LanguageCode } from '@/models/Language'
 import {
   COOKIE_SETTINGS,
   FALLBACK_LANGUAGE,
   LANGUAGE_COOKIE_NAME,
   SUPPORTED_LANGUAGES,
-} from '@/utility/Constants'
-import { mergeResponses } from '@/utility/middleware/util'
+} from '@medieteknik/constants'
+import type { LanguageCode } from '@medieteknik/models'
 import { NextURL } from 'next/dist/server/web/next-url'
 import { type NextRequest, NextResponse } from 'next/server'
-
-const isDevelopment = process.env.NODE_ENV === 'development'
-
-const BLACKLISTED_URLS_REGEX = new RegExp(
-  [
-    '/vercel.*',
-    '/_vercel.*',
-    '/\\.well-known.*',
-    '/static.*',
-    '/manifest\\.webmanifest',
-    '/icon.*',
-    '/robots\\.txt',
-    '/service-worker\\.js',
-    '/web-app-manifest-192x192\\.png',
-    '/web-app-manifest-192x192-maskable\\.png',
-    '/web-app-manifest-512x512\\.png',
-    '/screenshots.*',
-    '/apple-icon\\.png',
-    '/react_devtools_backend_compact\\.js\\.map',
-    '/installHook\\.js\\.map',
-    '/ads\\.txt',
-    '/__nextjs_original-stack-frame.*',
-    '/__nextjs_source-map',
-    '/?',
-    '/discord',
-    '/_next',
-  ].join('|')
-)
 
 /**
  * @name handleLanguage
@@ -46,8 +17,15 @@ const BLACKLISTED_URLS_REGEX = new RegExp(
  */
 export function handleLanguage(
   request: NextRequest,
-  response: NextResponse
+  response: NextResponse,
+  BLACKLISTED_URLS_REGEX: RegExp,
+  mergeResponses: (
+    response: NextResponse,
+    newResponse: NextResponse
+  ) => NextResponse
 ): NextResponse {
+  const isDevelopment = process.env.NODE_ENV === 'development'
+
   // Blacklisted URLs, which should not be redirected
   const isBlacklisted = BLACKLISTED_URLS_REGEX.test(request.nextUrl.pathname)
 
@@ -156,7 +134,7 @@ export function handleLanguage(
     return response
   }
 
-  if (isLanguageCookiePresent) {
+  if (language && isLanguageCookiePresent) {
     // If the cookie is already set, and the path is not the same as the detected language, replace the cookie.
     const options = COOKIE_SETTINGS[LANGUAGE_COOKIE_NAME] ?? {}
     response.cookies.set(LANGUAGE_COOKIE_NAME, language, options)

@@ -1,5 +1,5 @@
 import type { ExpenseStatus } from '@/models/General'
-import type Student from '@/models/Student'
+import type { Student } from '@medieteknik/models'
 
 export type MessageType = 'STUDENT' | 'SYSTEM'
 

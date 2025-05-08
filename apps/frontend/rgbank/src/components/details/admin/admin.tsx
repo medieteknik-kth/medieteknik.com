@@ -6,7 +6,7 @@ import AdminStatusSection from '@/components/details/admin/status'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { ExpenseStatus } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Props {
   language: LanguageCode

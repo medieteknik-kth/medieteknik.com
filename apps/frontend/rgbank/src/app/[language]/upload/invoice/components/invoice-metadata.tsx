@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
 import type { InvoiceData } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
 import {
   AdjustmentsHorizontalIcon,
   CalendarIcon,
@@ -15,6 +14,7 @@ import {
   CreditCardIcon,
   H1Icon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Props {
   language: LanguageCode

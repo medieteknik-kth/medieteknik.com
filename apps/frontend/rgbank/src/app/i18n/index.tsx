@@ -1,4 +1,4 @@
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { createInstance } from 'i18next'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import type { I18n, TFunction } from 'next-i18next'

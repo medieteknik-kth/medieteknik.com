@@ -3,11 +3,15 @@
     "tasks": {
       "build": {
         "dependsOn": ["^build"],
-        "outputs": [".next/**", "!.next/cache/**"],
+        "outputs": [".next/**", "!.next/cache/**", "dist/**"],
         "env": ["API_URL"]
       },
       "check-types": {
         "dependsOn": ["^check-types"]
+      },
+      "test":{
+        "dependsOn": ["^test"],
+        "outputs": ["coverage/**", "test-results/**"]
       },
       "dev": {
         "persistent": true,

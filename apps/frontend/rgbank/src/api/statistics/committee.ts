@@ -1,6 +1,6 @@
 import { fetchData } from '@/api/api'
-import type { LanguageCode } from '@/models/Language'
 import type Statistic from '@/models/Statistic'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 export const getAllYears = async (
   revalidate: number | false = 604_800 // 7 days

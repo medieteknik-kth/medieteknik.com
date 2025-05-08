@@ -1,7 +1,7 @@
 'use client'
 
-import type { LanguageCode } from '@/models/Language'
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import resourcesToBackend from 'i18next-resources-to-backend'

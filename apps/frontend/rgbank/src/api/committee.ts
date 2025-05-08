@@ -1,6 +1,6 @@
 import { type ApiResponse, fetchData } from '@/api/api'
-import type Committee from '@/models/Committee'
-import type { LanguageCode } from '@/models/Language'
+import type { Committee } from '@medieteknik/models'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 /**
  * @name getAllCommittees

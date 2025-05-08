@@ -3,7 +3,6 @@
 import { useTranslation } from '@/app/i18n/client'
 import { cn } from '@/lib/utils'
 import type { ExpenseStatus, ExpenseType } from '@/models/General'
-import type { LanguageCode } from '@/models/Language'
 import {
   CheckIcon,
   ClipboardDocumentCheckIcon,
@@ -13,6 +12,7 @@ import {
   ExclamationTriangleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface ExpenseBadgeProps {
   /**

@@ -24,7 +24,7 @@ import {
 import { toast } from '@/components/ui/use-toast'
 import { EXPENSE_STATUS_LIST, type ExpenseStatus } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
 

@@ -1,5 +1,5 @@
 import { fontFigtree } from '@/app/fonts'
-import '@shared/styles/globals.css'
+import '@medieteknik/css-globals/globals.css'
 import type { Metadata } from 'next'
 import { ViewTransitions } from 'next-view-transitions'
 

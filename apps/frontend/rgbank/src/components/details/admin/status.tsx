@@ -27,9 +27,9 @@ import {
   availableStatuses,
 } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
 import { useGeneralDetail } from '@/providers/DetailProvider'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
 import { mutate } from 'swr'
 

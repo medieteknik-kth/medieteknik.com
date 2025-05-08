@@ -1,4 +1,4 @@
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { redirect } from 'next/navigation'
 
 interface Params {

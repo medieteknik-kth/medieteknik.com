@@ -1,10 +1,10 @@
 import { getTranslation } from '@/app/i18n'
-import type { LanguageCode } from '@/models/Language'
 import {
   ArrowTopRightOnSquareIcon,
   BuildingOffice2Icon,
   EnvelopeIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import Link from 'next/link'
 
 interface Props {

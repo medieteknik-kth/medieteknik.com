@@ -4,8 +4,8 @@ import {
   getCommitteesYear,
 } from '@/api/statistics/committee'
 import Statistics from '@/app/[language]/statistics/statistics'
-import type { LanguageCode } from '@/models/Language'
 import type Statistic from '@/models/Statistic'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { getYear } from 'date-fns'
 
 interface Params {

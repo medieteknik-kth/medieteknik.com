@@ -2,8 +2,8 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { cn } from '@/lib/utils'
-import type { LanguageCode } from '@/models/Language'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { CheckIcon } from 'lucide-react'
 import type React from 'react'
 

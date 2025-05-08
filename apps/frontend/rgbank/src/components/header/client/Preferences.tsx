@@ -20,13 +20,13 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
-import type { LanguageCode } from '@/models/Language'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import {
   AdjustmentsHorizontalIcon,
   MoonIcon,
   SunIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useTheme } from 'next-themes'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'

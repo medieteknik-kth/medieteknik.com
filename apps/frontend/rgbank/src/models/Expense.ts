@@ -1,9 +1,8 @@
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
-import type Committee from '@/models/Committee'
 import type { Category } from '@/models/Form'
 import type { ExpenseStatus } from '@/models/General'
-import type Student from '@/models/Student'
 import type { Thread } from '@/models/Thread'
+import type { Committee, Student } from '@medieteknik/models'
 
 export interface ExpenseData {
   files: File[]

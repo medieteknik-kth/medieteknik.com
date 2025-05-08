@@ -9,8 +9,8 @@ import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { ExpenseStatus } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type Student from '@/models/Student'
 import type { Message, Thread } from '@/models/Thread'
+import type { Student } from '@medieteknik/models'
 import { createContext, useCallback, useMemo, useReducer } from 'react'
 
 interface Props {

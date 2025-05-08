@@ -1,8 +1,8 @@
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { handleAuth } from '@/utility/middleware/authorization'
-import { handleCookieUpdates } from '@/utility/middleware/cookie'
 import { setResponseHeaders } from '@/utility/middleware/headers'
-import { handleLanguage } from '@/utility/middleware/language'
+import { mergeResponses } from '@/utility/middleware/util'
+import { handleCookieUpdates, handleLanguage } from '@medieteknik/middleware'
 import acceptLanguage from 'accept-language'
 import type { NextRequest, NextResponse } from 'next/server'
 
@@ -42,9 +42,39 @@ export const config = {
   ],
 }
 
+const BLACKLISTED_URLS_REGEX = new RegExp(
+  [
+    '/vercel.*',
+    '/_vercel.*',
+    '/\\.well-known.*',
+    '/static.*',
+    '/manifest\\.webmanifest',
+    '/icon.*',
+    '/robots\\.txt',
+    '/service-worker\\.js',
+    '/web-app-manifest-192x192\\.png',
+    '/web-app-manifest-192x192-maskable\\.png',
+    '/web-app-manifest-512x512\\.png',
+    '/screenshots.*',
+    '/apple-icon\\.png',
+    '/react_devtools_backend_compact\\.js\\.map',
+    '/installHook\\.js\\.map',
+    '/ads\\.txt',
+    '/__nextjs_original-stack-frame.*',
+    '/__nextjs_source-map',
+    '/discord',
+    '/_next',
+  ].join('|')
+)
+
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   let response = await handleAuth(request)
-  response = handleLanguage(request, response)
+  response = handleLanguage(
+    request,
+    response,
+    BLACKLISTED_URLS_REGEX,
+    mergeResponses
+  )
   response = setResponseHeaders(response)
   response = handleCookieUpdates(request, response)
 

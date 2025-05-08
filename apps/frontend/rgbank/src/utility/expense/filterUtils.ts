@@ -1,7 +1,7 @@
 import type { ExpenseResponse } from '@/models/Expense'
 import type { ExpenseStatus } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type Student from '@/models/Student'
+import type { Student } from '@medieteknik/models'
 
 export function filterItems<
   T extends {

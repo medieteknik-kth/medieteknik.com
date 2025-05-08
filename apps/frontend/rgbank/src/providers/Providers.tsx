@@ -1,8 +1,17 @@
 'use client'
 
-import { AuthenticationProvider } from '@/context/AuthenticationContext'
-import type { LanguageCode } from '@/models/Language'
+import { authService } from '@/api/services/authenticationService'
+import { AuthenticationContext } from '@/context/AuthenticationContext'
+import {
+  type AuthenticationState,
+  type RGBankAuthenticationAction,
+  authenticationReducer,
+  initialState
+} from '@/context/authReducer'
+import type { SuccessfulRGBankAuthenticationResponse } from '@/models/response/AuthenticationResponse'
 import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
+import { AuthenticationProvider } from '@medieteknik/authentication/src'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { ThemeProvider } from 'next-themes'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -35,7 +44,17 @@ export default function Providers({ language, children }: Props) {
 
   return (
     <>
-      <AuthenticationProvider language={language}>
+      <AuthenticationProvider<
+        SuccessfulRGBankAuthenticationResponse,
+        AuthenticationState,
+        RGBankAuthenticationAction
+      >
+        authService={authService}
+        authenticationReducer={authenticationReducer}
+        initialState={initialState}
+        context={AuthenticationContext}
+        language={language}
+      >
         <ThemeProvider
           attribute='class'
           defaultTheme={standardTheme}

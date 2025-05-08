@@ -7,11 +7,11 @@ import HeaderGap from '@/components/header/components/HeaderGap'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { LanguageCode } from '@/models/Language'
 import {
   useAuthentication,
   useStudent,
 } from '@/providers/AuthenticationProvider'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { use, useCallback, useEffect, useState } from 'react'
 

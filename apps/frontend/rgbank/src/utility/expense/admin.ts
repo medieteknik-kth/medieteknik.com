@@ -1,5 +1,5 @@
-import type Committee from '@/models/Committee'
 import type { RGBankPermissions } from '@/models/Permission'
+import type { Committee } from '@medieteknik/models'
 
 /**
  * @name canViewExpenses

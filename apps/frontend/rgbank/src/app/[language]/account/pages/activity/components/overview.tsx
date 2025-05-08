@@ -9,12 +9,12 @@ import {
 import { NumberTicker } from '@/components/ui/number-ticker'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
 import {
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   ArrowsUpDownIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { isSameMonth, subMonths } from 'date-fns'
 
 interface Props {

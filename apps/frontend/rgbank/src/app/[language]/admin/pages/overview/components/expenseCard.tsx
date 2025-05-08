@@ -13,7 +13,7 @@ import {
 import { ExpenseBadge, ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Separator } from '@/components/ui/separator'
 import type { ExpenseResponse } from '@/models/Expense'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'

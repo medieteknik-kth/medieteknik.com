@@ -12,7 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { Category } from '@/models/Form'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Props {
   language: LanguageCode

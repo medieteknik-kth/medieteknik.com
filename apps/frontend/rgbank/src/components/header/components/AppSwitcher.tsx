@@ -19,8 +19,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { LanguageCode } from '@/models/Language'
 import { Squares2X2Icon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 

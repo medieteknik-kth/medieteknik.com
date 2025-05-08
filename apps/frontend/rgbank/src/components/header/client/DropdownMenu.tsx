@@ -13,10 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { LanguageCode } from '@/models/Language'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { IS_DEVELOPMENT, SITE_VERSION } from '@/utility/Constants'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import Link from 'next/link'
 import { type JSX, useState } from 'react'
 

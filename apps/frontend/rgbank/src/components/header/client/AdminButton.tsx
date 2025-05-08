@@ -2,9 +2,9 @@
 
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
-import type { LanguageCode } from '@/models/Language'
 import { usePermissions } from '@/providers/AuthenticationProvider'
 import { canViewExpenses } from '@/utility/expense/admin'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { Link } from 'next-view-transitions'
 
 interface Props {

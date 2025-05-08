@@ -23,7 +23,7 @@ test('👤 Login flow (email & password)', async ({ page }) => {
 
   await page.waitForLoadState('domcontentloaded')
   let cookieFound = false
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 40; i++) {
     const cookies = await page.context().cookies()
     if (cookies.some((cookie) => cookie.name === 'access_token_cookie')) {
       cookieFound = true

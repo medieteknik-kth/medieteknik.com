@@ -1,32 +1,20 @@
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
-import type Committee from '@/models/Committee'
-import type { CommitteePosition } from '@/models/Committee'
-import type { AuthorResource } from '@/models/Items'
-import type { Permission } from '@/models/Permission'
-import type Student from '@/models/Student'
+import type {
+  FailedAuthenticationResponse,
+  SuccessfulAuthenticationResponse,
+} from '@medieteknik/models/src/responses'
 
 /**
- * The response object from the server when a user logs in.
- * @interface AuthenticationResponse
- * @property {Student} student - The student object of the authenticated user.
- * @property {Role} role - The role of the student, will be 'OTHER' as a default.
- * @property {Object} permissions - The permissions of the student based on their role, some students will not have permissions.
- * @property {AuthorResource[]} permissions.author - Authorial permissions for the student, e.g. create news articles.
- * @property {Permission[]} permissions.student - Advanced permissions for the student, e.g. edit permissions of other students.
- * @property {Committee[]} committees - The committees the student is a member of if any.
- * @property {CommitteePosition[]} positions - The positions the student holds in committees or independent, if any.
- * @property {number} expiration - The expiration date of the authentication token in milliseconds since epoch.
+ * Successful authentication response from the RGBank API.
+ * @interface SuccessfulRGBankAuthenticationResponse
+ * @extends SuccessfulAuthenticationResponse
+ * @property {object} rgbank_permissions - Permissions for the RGBank API.
+ * @property {number} rgbank_permissions.access_level - Access level for the RGBank API.
+ * @property {number} rgbank_permissions.view_permission_level - View permission level for the RGBank API.
+ * @property {object} rgbank_bank_account - Bank account information for the RGBank API.
  */
-export interface SuccessfulAuthenticationResponse {
-  student: Student
-  role: 'OTHER'
-  permissions: {
-    author: AuthorResource[]
-    student: Permission[]
-  }
-  committees: Committee[]
-  committee_positions: CommitteePosition[]
-  expiration: number
+export interface SuccessfulRGBankAuthenticationResponse
+  extends SuccessfulAuthenticationResponse {
   rgbank_permissions?: {
     access_level: number
     view_permission_level: number
@@ -34,10 +22,13 @@ export interface SuccessfulAuthenticationResponse {
   rgbank_bank_account?: AccountBankInformation
 }
 
-interface FailedAuthenticationResponse {
-  error: string
-}
-
+/**
+ * Type representing the authentication response from the RGBank API.
+ * @@name AuthenticationResponse
+ * @description This type is used to represent the authentication response from the RGBank API.
+ * @property {SuccessfulRGBankAuthenticationResponse} SuccessfulRGBankAuthenticationResponse - Successful authentication response from the RGBank API.
+ * @property {FailedAuthenticationResponse} FailedAuthenticationResponse - Failed authentication response from the RGBank API.
+ */
 export type AuthenticationResponse =
-  | SuccessfulAuthenticationResponse
+  | SuccessfulRGBankAuthenticationResponse
   | FailedAuthenticationResponse

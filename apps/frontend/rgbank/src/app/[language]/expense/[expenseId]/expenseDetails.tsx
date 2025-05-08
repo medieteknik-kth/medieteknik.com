@@ -20,11 +20,11 @@ import {
 } from '@/components/ui/card'
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { LanguageCode } from '@/models/Language'
 import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import { useExpenseDetail, useGeneralDetail } from '@/providers/DetailProvider'
 import { canChangeExpense } from '@/utility/expense/admin'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
 
 interface Props {

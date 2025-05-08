@@ -1,5 +1,4 @@
-import type Committee from '@/models/Committee'
-import type Student from '@/models/Student'
+import type { Committee, Student } from '@medieteknik/models'
 
 export default interface Statistic {
   statistic_id: string

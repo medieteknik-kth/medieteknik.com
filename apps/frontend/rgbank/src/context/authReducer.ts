@@ -1,11 +1,16 @@
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
-import type Committee from '@/models/Committee'
-import type { CommitteePosition } from '@/models/Committee'
-import type { AuthorResource } from '@/models/Items'
-import type { Permission, Role } from '@/models/Permission'
-import type Student from '@/models/Student'
+import type { SuccessfulRGBankAuthenticationResponse } from '@/models/response/AuthenticationResponse'
+import type { AuthenticationAction } from '@medieteknik/authentication/src'
+import type {
+  AuthorResource,
+  Committee,
+  CommitteePosition,
+  Permission,
+  Role,
+  Student,
+} from '@medieteknik/models'
 
-interface AuthenticationState {
+export interface AuthenticationState {
   /**
    * The student object of the authenticated user.
    */
@@ -77,34 +82,12 @@ export interface AuthenticationContextType extends AuthenticationState {
     csrf_token: string,
     remember?: boolean
   ) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
   setStale: (stale: boolean) => void
 }
 
-type AuthenticationAction =
-  | { type: 'LOGIN' }
-  | { type: 'LOGOUT' }
-  | {
-      type: 'SET_STUDENT_DATA'
-      payload: {
-        student: Student
-        committees: Committee[]
-        committee_positions: CommitteePosition[]
-        role: Role
-        permissions: {
-          author: AuthorResource[]
-          student: Permission[]
-        }
-        rgbank_permissions?: {
-          access_level: number
-          view_permission_level: number
-        }
-        rgbank_bank_account?: AccountBankInformation
-      }
-    }
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string }
-  | { type: 'SET_STALE'; payload: boolean }
+export type RGBankAuthenticationAction =
+  AuthenticationAction<SuccessfulRGBankAuthenticationResponse>
 
 export const initialState: AuthenticationState = {
   student: null,
@@ -135,7 +118,7 @@ export const initialState: AuthenticationState = {
  */
 export function authenticationReducer(
   state: AuthenticationState,
-  action: AuthenticationAction
+  action: RGBankAuthenticationAction
 ): AuthenticationState {
   switch (action.type) {
     case 'LOGIN':

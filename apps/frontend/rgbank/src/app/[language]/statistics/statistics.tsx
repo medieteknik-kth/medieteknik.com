@@ -18,13 +18,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import type { LanguageCode } from '@/models/Language'
 import type Statistic from '@/models/Statistic'
 import {
   AdjustmentsHorizontalIcon,
   BanknotesIcon,
   CalendarIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { getYear } from 'date-fns'
 import { redirect } from 'next/navigation'
 import { useCallback, useState } from 'react'

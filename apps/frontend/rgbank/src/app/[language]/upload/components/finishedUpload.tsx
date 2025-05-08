@@ -1,8 +1,8 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import type { LanguageCode } from '@/models/Language'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { motion } from 'framer-motion'
 
 interface Props {

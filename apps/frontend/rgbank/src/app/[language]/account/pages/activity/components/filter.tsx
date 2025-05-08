@@ -9,8 +9,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { availableStatuses } from '@/models/General'
-import type { LanguageCode } from '@/models/Language'
 import { FunnelIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import type { SetStateAction } from 'react'
 
 interface Props {

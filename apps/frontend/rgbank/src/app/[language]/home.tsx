@@ -2,7 +2,7 @@ import { getAllCommittees } from '@/api/committee'
 import UploadForm from '@/app/[language]/upload/form'
 import { getTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Params {
   language: LanguageCode

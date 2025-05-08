@@ -4,7 +4,7 @@ import { useInView, useMotionValue, useSpring } from 'motion/react'
 import { type ComponentPropsWithoutRef, useEffect, useRef } from 'react'
 
 import { cn } from '@/lib/utils'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface NumberTickerProps extends ComponentPropsWithoutRef<'span'> {
   value: number

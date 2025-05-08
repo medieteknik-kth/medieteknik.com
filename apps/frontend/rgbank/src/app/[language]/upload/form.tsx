@@ -12,13 +12,13 @@ import LoginWrapper from '@/components/login/loginWrapper'
 import Loading from '@/components/ui/loading'
 import { Tabs } from '@/components/ui/tabs'
 import FormProvider from '@/context/FormContext'
-import type Committee from '@/models/Committee'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
-import type { LanguageCode } from '@/models/Language'
 import {
   useAuthentication,
   useStudent,
 } from '@/providers/AuthenticationProvider'
+import type { Committee } from '@medieteknik/models/src/committee'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import useSWR from 'swr'

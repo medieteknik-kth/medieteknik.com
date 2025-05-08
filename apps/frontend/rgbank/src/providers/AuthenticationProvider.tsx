@@ -2,11 +2,17 @@
 
 import { AuthenticationContext } from '@/context/AuthenticationContext'
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
-import type Committee from '@/models/Committee'
-import type { CommitteePosition } from '@/models/Committee'
-import type { AuthorResource } from '@/models/Items'
-import type { Permission, RGBankPermissions, Role } from '@/models/Permission'
-import type Student from '@/models/Student'
+import type { RGBankPermissions } from '@/models/Permission'
+import type {
+  Committee,
+  CommitteePosition,
+} from '@medieteknik/models/src/committee'
+import type { AuthorResource } from '@medieteknik/models/src/student/AuthorResource'
+import type {
+  Permission,
+  Role,
+} from '@medieteknik/models/src/student/Permission'
+import type { Student } from '@medieteknik/models/src/student/Student'
 import { useContext } from 'react'
 
 /**

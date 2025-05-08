@@ -8,8 +8,8 @@ import Loading from '@/components/ui/loading'
 import { Separator } from '@/components/ui/separator'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
-import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import useSWR from 'swr'
 
 interface Props {

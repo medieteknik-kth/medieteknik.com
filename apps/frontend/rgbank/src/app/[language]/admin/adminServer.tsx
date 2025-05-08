@@ -1,6 +1,6 @@
 import { getAllCommittees } from '@/api/committee'
 import Admin from '@/app/[language]/admin/admin'
-import type { LanguageCode } from '@/models/Language'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 interface Params {
   language: LanguageCode

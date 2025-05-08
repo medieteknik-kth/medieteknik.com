@@ -12,13 +12,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { toast } from '@/components/ui/use-toast'
-import type { LanguageCode } from '@/models/Language'
 import {
   useAuthentication,
   useStudent,
 } from '@/providers/AuthenticationProvider'
 import { bankSchema } from '@/schemas/bank'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 

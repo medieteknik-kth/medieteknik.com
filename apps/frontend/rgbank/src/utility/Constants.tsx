@@ -1,4 +1,7 @@
-import type { Language, LanguageCode } from '@/models/Language'
+import type {
+  Language,
+  LanguageCode,
+} from '@medieteknik/models/src/util/Language'
 import { GB, SE } from 'country-flag-icons/react/3x2'
 import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
