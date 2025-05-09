@@ -8,6 +8,6 @@
     },
     "eslint.run": "onSave",
     "python.analysis.typeCheckingMode": "basic",
-    "tailwindCSS.experimental.configFile": "apps/shared/styles/globals.css",
+    "tailwindCSS.experimental.configFile": "packages/tailwindcss-config",
     "typescript.tsdk": "./node_modules/typescript/lib"
 }

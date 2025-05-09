@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { cn } from '@/lib/utils'
 import type Statistic from '@/models/Statistic'
 import {
   AdjustmentsHorizontalIcon,
@@ -25,6 +24,7 @@ import {
   CalendarIcon,
 } from '@heroicons/react/24/outline'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { cn } from '@medieteknik/ui'
 import { getYear } from 'date-fns'
 import { redirect } from 'next/navigation'
 import { useCallback, useState } from 'react'
@@ -156,6 +156,7 @@ export default function Statistics({
                           {year}
                         </SelectItem>
                       ))}
+                      <SelectItem value={yearFilter}>{yearFilter}</SelectItem>
                     </SelectContent>
                   </Select>
                 </CardTitle>

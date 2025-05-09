@@ -4,15 +4,15 @@ import { useTranslation } from '@/app/i18n/client'
 import AppSwitcher from '@/components/header/components/AppSwitcher'
 import DefaultProfile from '@/components/header/components/DefaultProfile'
 import { ProfileButton } from '@/components/header/components/ProfileButton'
-import { Button } from '@/components/ui/button'
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { IS_DEVELOPMENT, SITE_VERSION } from '@/utility/Constants'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'

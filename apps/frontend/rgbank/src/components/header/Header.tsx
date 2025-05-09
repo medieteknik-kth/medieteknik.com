@@ -34,7 +34,7 @@ export default async function Header({
   return (
     <header
       id='header'
-      className='left-2 right-2 bottom-2 md:left-5 md:right-5 md:top-5 rounded-md h-16 lg:h-24 bg-white dark:bg-[#111] fixed grid md:flex lg:grid grid-rows-1 grid-cols-5 md:grid-cols-3 2xl:grid-cols-2 justify-between place-items-center z-50 transition-all border dark:border-yellow-400 shadow-md'
+      className='left-2 right-2 bottom-2 md:left-5 md:right-5 md:top-5 rounded-md h-16 lg:h-24 bg-card fixed grid md:flex lg:grid grid-rows-1 grid-cols-5 md:grid-cols-3 2xl:grid-cols-2 justify-between place-items-center z-50 transition-all border dark:border-yellow-400 shadow-md'
     >
       <nav className='hidden md:flex h-full place-self-start md:col-span-2 2xl:col-span-1'>
         <Button

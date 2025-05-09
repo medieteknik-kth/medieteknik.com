@@ -3,7 +3,7 @@
 import OverviewCards from '@/app/[language]/admin/pages/overview/cards'
 import OverviewKanban from '@/app/[language]/admin/pages/overview/kanban'
 import { useTranslation } from '@/app/i18n/client'
-import Loading from '@/components/ui/loading'
+import { Loading } from '@/components/ui'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { ExpenseResponse } from '@/models/Expense'
@@ -84,7 +84,7 @@ export default function OverviewPage({ language }: Props) {
         <TabsList className='bg-transparent flex gap-4 justify-start'>
           <TabsTrigger
             value='cards'
-            className='w-fit border-b-2 border-transparent data-[state=active]:border-yellow-400'
+            className='w-fit border-b-2 border-transparent data-[state=active]:border-yellow-400 cursor-pointer'
             onClick={() => updateLocalStorage('cards')}
           >
             <TableCellsIcon className='w-4 h-4 mr-2' />
@@ -92,7 +92,7 @@ export default function OverviewPage({ language }: Props) {
           </TabsTrigger>
           <TabsTrigger
             value='kanban'
-            className='w-fit border-b-2 border-transparent data-[state=active]:border-yellow-400'
+            className='w-fit border-b-2 border-transparent data-[state=active]:border-yellow-400 cursor-pointer'
             onClick={() => updateLocalStorage('kanban')}
           >
             <ViewColumnsIcon className='w-4 h-4 mr-2' />

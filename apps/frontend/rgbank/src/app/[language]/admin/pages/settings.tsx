@@ -17,13 +17,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import { toast } from '@/components/ui/use-toast'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import type { Committee } from '@medieteknik/models/src/committee'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import Image from 'next/image'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import useSWR from 'swr'
 
 interface Props {
@@ -114,8 +114,7 @@ export default function SettingsPage({ language, committees }: Props) {
         throw new Error(response.statusText)
       }
 
-      toast({
-        title: t('domains.parts.success.title'),
+      toast.success(t('domains.parts.success.title'), {
         description: t('domains.parts.success.description'),
       })
     } catch (error) {

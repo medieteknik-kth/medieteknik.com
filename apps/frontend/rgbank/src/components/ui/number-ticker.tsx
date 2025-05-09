@@ -3,25 +3,25 @@
 import { useInView, useMotionValue, useSpring } from 'motion/react'
 import { type ComponentPropsWithoutRef, useEffect, useRef } from 'react'
 
-import { cn } from '@/lib/utils'
-import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import type { LanguageCode } from '@medieteknik/models'
+import { cn } from '@medieteknik/ui'
 
 interface NumberTickerProps extends ComponentPropsWithoutRef<'span'> {
   value: number
-  language: LanguageCode
   startValue?: number
   direction?: 'up' | 'down'
   delay?: number
+  language: LanguageCode
   decimalPlaces?: number
 }
 
 export function NumberTicker({
   value,
-  language,
   startValue = 0,
   direction = 'up',
   delay = 0,
   className,
+  language,
   decimalPlaces = 0,
   ...props
 }: NumberTickerProps) {
@@ -59,7 +59,7 @@ export function NumberTicker({
     <span
       ref={ref}
       className={cn(
-        'inline-block tabular-nums tracking-normal text-black dark:text-white',
+        'inline-block tabular-nums tracking-wider text-black dark:text-white',
         className
       )}
       {...props}

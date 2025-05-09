@@ -4,11 +4,17 @@ import OverviewPage from '@/app/[language]/admin/pages/overview/overview'
 import SettingsPage from '@/app/[language]/admin/pages/settings'
 import { useTranslation } from '@/app/i18n/client'
 import HeaderGap from '@/components/header/components/HeaderGap'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Button,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import type { Committee } from '@medieteknik/models/src/committee'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 

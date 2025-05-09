@@ -4,7 +4,7 @@ import ActivityOverview from '@/app/[language]/account/pages/activity/components
 import ActivityExpenses from '@/app/[language]/account/pages/activity/expenses'
 import ActivityInvoices from '@/app/[language]/account/pages/activity/invoices'
 import { useTranslation } from '@/app/i18n/client'
-import Loading from '@/components/ui/loading'
+import { Loading } from '@/components/ui'
 import { Separator } from '@/components/ui/separator'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
@@ -77,7 +77,7 @@ export default function ActivityPage({ language }: Props) {
 
   return (
     <section className='w-full h-fit max-w-[1100px] mb-8 2xl:mb-0 flex flex-col gap-4'>
-      <div className='w-full px-4 pt-4'>
+      <div className='w-full px-4'>
         <h2 className='text-lg font-bold'>{t('activity.title')}</h2>
         <p className='text-sm text-muted-foreground'>
           {t('activity.description')}

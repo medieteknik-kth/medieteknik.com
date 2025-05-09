@@ -145,7 +145,10 @@ export default function Expense({
             fileUploadStep={1}
             ariaDescribedby='step_2_description'
             ariaLabelledby='step_2_title'
-            completeStep={completeStep}
+            completeStep={(step) => {
+              setError('')
+              completeStep(step)
+            }}
             uncompleteStep={uncompleteStep}
             setIsDigitalReceiptRequired={setIsDigitalReceiptRequired}
           />

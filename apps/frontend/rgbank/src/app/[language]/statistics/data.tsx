@@ -61,6 +61,7 @@ export default async function StatisticData(props: Props) {
       allYears={allYears as number[]}
       allTimeCommitteesStatistics={committeeAllTime as Statistic[]}
       yearCommitteesStatistics={committeeYear as Statistic[]}
+      providedYear={currentYear.toString()}
     />
   )
 }

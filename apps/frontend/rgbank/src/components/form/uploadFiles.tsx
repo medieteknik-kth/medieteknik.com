@@ -3,12 +3,12 @@
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import FileDisplay from '@/components/ui/file-display'
-import { toast } from '@/components/ui/use-toast'
 import { useFiles, useGeneralForm } from '@/providers/FormProvider'
 import { ArrowUpOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
 import Dropzone from 'react-dropzone'
+import { toast } from 'sonner'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const acceptedImages = {
@@ -66,20 +66,11 @@ export default function UploadFiles({
                 setIsDigitalReceiptRequired(true)
               }
             }
-            toast({
-              title: t('success'),
-              style: {
-                backgroundColor: 'green',
-                color: 'white',
-                borderRadius: '0.5rem',
-              },
-              description: t('success'),
-              duration: 2000,
-            })
+            toast.success(t('success'))
             addFile(file)
             completeStep(fileUploadStep)
-            setError('')
           }
+          setError('')
         }}
         onDropRejected={(files) => {
           for (const file of files) {
@@ -114,16 +105,7 @@ export default function UploadFiles({
               uncompleteStep(fileUploadStep)
             }
 
-            toast({
-              title: t('error.file.upload_failed'),
-              style: {
-                backgroundColor: 'red',
-                color: 'white',
-                borderRadius: '0.5rem',
-              },
-              description: t('error.file.upload_failed'),
-              duration: 2000,
-            })
+            toast.error(t('error.file.upload_failed'))
           }
         }}
       >
@@ -169,11 +151,8 @@ export default function UploadFiles({
                       }
                     }
                   }
-                  toast({
-                    title: t('file.removed'),
-                    description: t('file.removed'),
-                    duration: 2000,
-                  })
+
+                  toast(t('file.removed'))
                 }}
                 disabled={!file}
               >

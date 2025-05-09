@@ -1,4 +1,4 @@
-import { type ApiResponse, fetchData } from '@/api/api'
+import { type ApiResponse, fetchData } from '@medieteknik/api'
 import type { Committee } from '@medieteknik/models'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 

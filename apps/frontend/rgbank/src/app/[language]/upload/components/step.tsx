@@ -1,9 +1,9 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { cn } from '@/lib/utils'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { cn } from '@medieteknik/ui'
 import { CheckIcon } from 'lucide-react'
 import type React from 'react'
 

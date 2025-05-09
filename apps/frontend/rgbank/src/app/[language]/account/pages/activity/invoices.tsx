@@ -21,12 +21,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { toast } from '@/components/ui/use-toast'
 import { EXPENSE_STATUS_LIST, type ExpenseStatus } from '@/models/General'
 import type { InvoiceResponse } from '@/models/Invoice'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface Props {
   language: LanguageCode
@@ -58,30 +58,33 @@ export default function ActivityInvoices({
         throw new Error(error.message)
       }
 
-      toast({
-        title: t('activity.delete.success', {
+      toast.success(
+        t('activity.delete.success', {
           type: invoiceT('invoice').toLowerCase(),
         }),
-        description: t('activity.delete.successDescription', {
-          type: invoiceT('invoice').toLowerCase(),
-        }),
-      })
+        {
+          description: t('activity.delete.successDescription', {
+            type: invoiceT('invoice').toLowerCase(),
+          }),
+        }
+      )
 
       setTimeout(() => {
         window.location.reload()
       }, 1000)
     } catch (error) {
       console.error('Error deleting expense:', error)
-      toast({
-        title: t('activity.delete.error', {
+      toast.error(
+        t('activity.delete.error', {
           type: invoiceT('invoice').toLowerCase(),
         }),
-        description: t('activity.delete.errorDescription', {
-          type: invoiceT('invoice').toLowerCase(),
-          error: (error as Error).message,
-        }),
-        variant: 'destructive',
-      })
+        {
+          description: t('activity.delete.errorDescription', {
+            type: invoiceT('invoice').toLowerCase(),
+            error: (error as Error).message,
+          }),
+        }
+      )
     }
   }
 

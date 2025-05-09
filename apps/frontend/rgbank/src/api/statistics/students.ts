@@ -1,6 +1,6 @@
-import { fetchData } from '@/api/api'
 import type Statistic from '@/models/Statistic'
 import type { MonthlyStatistic, TopStatistic } from '@/models/Statistic'
+import { fetchData } from '@medieteknik/api'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 export const getTopStudentsAllTime = async (

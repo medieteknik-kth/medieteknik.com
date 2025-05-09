@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import { Loading } from '@/components/ui'
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +17,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import Loading from '@/components/ui/loading'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import { zodResolver } from '@hookform/resolvers/zod'

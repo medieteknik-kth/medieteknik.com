@@ -1,7 +1,7 @@
 import ClientWrapper from '@/components/client/ClientWrapper'
 import Footer from '@/components/footer/Footer'
 import Header from '@/components/header/Header'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/components/ui'
 import Providers from '@/providers/Providers'
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'

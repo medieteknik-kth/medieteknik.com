@@ -34,14 +34,6 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-
-  webpack: (config) => {
-    config.resolve.alias['@shared'] = require('node:path').resolve(
-      __dirname,
-      '../../shared'
-    )
-    return config
-  },
 }
 
 export default nextConfig

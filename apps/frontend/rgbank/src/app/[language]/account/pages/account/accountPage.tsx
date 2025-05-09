@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { toast } from '@/components/ui/use-toast'
 import {
   useAuthentication,
   useStudent,
@@ -20,6 +19,7 @@ import { bankSchema } from '@/schemas/bank'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import type { z } from 'zod'
 
 interface Props {
@@ -42,10 +42,8 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
 
   const onSubmit = async (data: z.infer<typeof bankSchema>) => {
     if (!student) {
-      toast({
-        title: t('bank_account.error.title'),
+      toast.error(t('bank_account.error.title'), {
         description: t('bank_account.notLoggedIn.description'),
-        variant: 'destructive',
       })
       return
     }
@@ -68,23 +66,17 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
       }
 
       setStale(true)
-      toast({
-        title: t('bank_account.success.title'),
+      toast.success(t('bank_account.success.title'), {
         description: t('bank_account.success.description'),
-        variant: 'default',
       })
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: t('bank_account.error.title'),
+        toast.error(t('bank_account.error.title'), {
           description: error.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: t('bank_account.error.title'),
+        toast.error(t('bank_account.error.title'), {
           description: t('bank_account.error.description'),
-          variant: 'destructive',
         })
       }
     }
@@ -93,7 +85,7 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
   return (
     <section className='w-full max-w-[1100px] flex flex-col mb-8 2xl:mb-0'>
       {includeBanner && (
-        <div className='w-full mb-4 px-4 pt-4'>
+        <div className='w-full mb-4 px-4'>
           <h2 className='text-lg font-bold'>{t('bank_account.title')}</h2>
           <p className='text-sm text-muted-foreground'>
             {t('bank_account.description')}

@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { cn } from '@/lib/utils'
 import type { ExpenseStatus, ExpenseType } from '@/models/General'
 import {
   CheckIcon,
@@ -13,6 +12,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { cn } from '@medieteknik/ui'
 
 interface ExpenseBadgeProps {
   /**

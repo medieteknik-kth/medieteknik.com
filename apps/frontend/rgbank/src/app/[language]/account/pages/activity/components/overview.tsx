@@ -1,4 +1,5 @@
 import { useTranslation } from '@/app/i18n/client'
+import { Badge } from '@/components/ui'
 import {
   Card,
   CardContent,
@@ -96,10 +97,10 @@ export default function ActivityOverview({
 
   return (
     <div className='grid gap-4 lg:grid-cols-2 mx-4'>
-      <Card>
-        <CardHeader className='pb-2'>
-          <CardDescription>{t('activity.total_expenditure')}</CardDescription>
-          <CardTitle className='text-4xl flex items-center'>
+      <Card className='gap-2'>
+        <CardHeader>
+          <CardTitle>{t('activity.total_expenditure')}</CardTitle>
+          <CardDescription className='text-4xl font-semibold'>
             <span className='text-2xl mr-2 text-muted-foreground select-none'>
               SEK
             </span>
@@ -108,11 +109,10 @@ export default function ActivityOverview({
               decimalPlaces={2}
               language={language}
             />
-          </CardTitle>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className='text-sm text-muted-foreground'>
-            {/* TODO: Add flavor text? */}
             {specialNumbers.includes(totalExpenditure) ? (
               <span className='text-yellow-500'>
                 {t(`activity.total_expenditure.quip.${totalExpenditure}.1`)}
@@ -129,10 +129,10 @@ export default function ActivityOverview({
           </div>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader className='pb-2'>
-          <CardDescription>{t('activity.current_month')}</CardDescription>
-          <CardTitle className='text-4xl flex items-center'>
+      <Card className='gap-2'>
+        <CardHeader>
+          <CardTitle className=''>{t('activity.current_month')}</CardTitle>
+          <CardDescription className='text-4xl font-semibold'>
             <span className='text-2xl mr-2 text-muted-foreground select-none'>
               SEK
             </span>
@@ -141,10 +141,13 @@ export default function ActivityOverview({
               decimalPlaces={2}
               language={language}
             />
-          </CardTitle>
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='flex items-center text-sm gap-2'>
+          <Badge
+            className={`flex items-center text-sm gap-2 ${isPositiveChange ? 'bg-green-500/10' : 'bg-red-500/10'}`}
+            variant={'outline'}
+          >
             {noChange ? (
               <ArrowsUpDownIcon className='h-4 w-4 text-yellow-500' />
             ) : isPositiveChange ? (
@@ -164,7 +167,7 @@ export default function ActivityOverview({
               <span>{percentageChangeFormatted} % </span>
               {t('activity.current_month.difference')}
             </span>
-          </div>
+          </Badge>
         </CardContent>
       </Card>
     </div>

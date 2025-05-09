@@ -125,7 +125,8 @@ export default function Categorize({
             <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label id='domains' htmlFor='domains'>
-                  {t('domain')} <span className='text-red-500'>*</span>
+                  {t('domain')}
+                  <span className='text-red-500 dark:text-red-300'>*</span>
                 </Label>
               )}
               <Popover
@@ -227,7 +228,8 @@ export default function Categorize({
             <div className='grow flex flex-col gap-2 col-span-4'>
               {index === 0 && (
                 <Label id='categories' htmlFor='categories'>
-                  {t('category')} <span className='text-red-500'>*</span>
+                  {t('category')}
+                  <span className='text-red-500 dark:text-red-300'>*</span>
                 </Label>
               )}
               <Popover
@@ -310,7 +312,8 @@ export default function Categorize({
             <div className='w-full flex flex-col gap-2 col-span-3'>
               {index === 0 && (
                 <Label id='amounts' htmlFor='amounts'>
-                  {t('amount')} <span className='text-red-500'>*</span>
+                  {t('amount')}
+                  <span className='text-red-500 dark:text-red-300'>*</span>
                 </Label>
               )}
               <span className='sr-only'>{`${t('amount')} ${index + 1}`}</span>

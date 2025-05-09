@@ -1,5 +1,5 @@
-import { fetchData } from '@/api/api'
 import type Statistic from '@/models/Statistic'
+import { fetchData } from '@medieteknik/api'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 export const getAllYears = async (

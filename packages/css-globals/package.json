@@ -1,8 +1,0 @@
-{
-    "name": "@medieteknik/css-globals",
-    "private": true,
-    "version": "0.0.1",
-    "devDependencies": {
-        "tailwindcss": "^4.0.0"
-    }
-}
