@@ -46,7 +46,7 @@ export default function UploadForm({ language, committees }: Props) {
   const pathname = usePathname()
   const router = useRouter()
   const { t: errors } = useTranslation(language, 'errors')
-  const { t: account } = useTranslation(language, 'errors')
+  const { t: account } = useTranslation(language, 'account')
 
   const handleTabChange = useCallback(
     (value: string) => {

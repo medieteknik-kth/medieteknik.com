@@ -1,8 +1,9 @@
-import { z } from 'zod'
+import { z } from '@zod/mini'
 
 export const invoiceSchema = z
   .object({
-    hasChapterPaid: z.boolean().optional(),
+    hasChapterPaid: z.optional(z.boolean()),
+
     files: z.array(z.file()).check(
       z.refine((files) => files.length > 0, {
         error: 'At least one file is required',
@@ -20,14 +21,14 @@ export const invoiceSchema = z
         error: 'Description must be less than 500 characters',
       })
     ),
-    isOriginal: z.boolean().optional(),
-    isBooked: z.boolean().optional(),
+    isOriginal: z.optional(z.boolean()),
+    isBooked: z.optional(z.boolean()),
     date: z.coerce.date(),
     dueDate: z.coerce.date(),
     categories: z
       .array(
         z.object({
-          id: z.number().optional().or(z.literal('')),
+          id: z.optional(z.number()),
           author: z
             .string()
             .check(z.minLength(1, { error: 'Author is required' })),

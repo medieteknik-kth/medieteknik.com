@@ -11,9 +11,9 @@ import { useExpense, useFiles } from '@/providers/FormProvider'
 import { expenseSchema } from '@/schemas/expense'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { z } from '@zod/mini'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { z } from 'zod'
 
 interface Props {
   language: LanguageCode

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@zod/mini'
 
 export const expenseSchema = z.object({
   files: z.array(z.file()).check(
@@ -26,7 +26,7 @@ export const expenseSchema = z.object({
   categories: z
     .array(
       z.object({
-        id: z.number().optional().or(z.literal('')),
+        id: z.optional(z.number()),
         author: z
           .string()
           .check(z.minLength(1, { error: 'Author is required' })),

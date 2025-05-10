@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@zod/mini'
 
 export const bankSchema = z.object({
   bank_name: z

@@ -13,10 +13,10 @@ import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { AccordionItem } from '@radix-ui/react-accordion'
+import { z } from '@zod/mini'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { type JSX, useState } from 'react'
 import useSWR from 'swr'
-import { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())

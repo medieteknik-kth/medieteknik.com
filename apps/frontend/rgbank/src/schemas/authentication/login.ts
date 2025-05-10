@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@zod/mini'
 /**
  * @name loginSchema
  * @description A schema for validating login data, Used in the following forms:
@@ -23,7 +23,7 @@ export const loginSchema = z.object({
       z.minLength(4, { error: 'Password must be at least 8 characters' }),
       z.maxLength(100, { error: 'Password must be at most 100 characters' })
     ),
-  remember: z.boolean().optional(),
+  remember: z.optional(z.boolean()),
 
-  csrf_token: z.string().optional().or(z.literal('')),
+  csrf_token: z.optional(z.string()),
 })

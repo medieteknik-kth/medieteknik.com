@@ -4,7 +4,7 @@
       "build": {
         "dependsOn": ["^build"],
         "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-        "env": ["API_URL"]
+        "env": ["API_URL", "AUTHORIZATION_TOKEN"]
       },
       "check-types": {
         "dependsOn": ["^check-types"]

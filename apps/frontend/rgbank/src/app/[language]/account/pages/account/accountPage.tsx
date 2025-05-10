@@ -11,9 +11,9 @@ import {
 } from '@/providers/AuthenticationProvider'
 import { bankSchema } from '@/schemas/bank'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { z } from '@zod/mini'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
 interface Props {
   language: LanguageCode
