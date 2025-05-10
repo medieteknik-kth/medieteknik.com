@@ -6,15 +6,14 @@ import FinishedUpload from '@/app/[language]/upload/components/finishedUpload'
 import { InvoiceMetadata } from '@/app/[language]/upload/invoice/components/invoice-metadata'
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
+import type { InvoiceData } from '@/models/Invoice'
 import { useFiles, useInvoice } from '@/providers/FormProvider'
 import { invoiceSchema } from '@/schemas/invoice'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod'
 
 interface Props {
   language: LanguageCode
@@ -24,12 +23,29 @@ interface Props {
 export default function FinalizeInvoice({ language, onBack }: Props) {
   const [success, setSuccess] = useState(false)
   const router = useRouter()
-  const invoiceForm = useForm<z.infer<typeof invoiceSchema>>({
-    resolver: zodResolver(invoiceSchema),
-  })
   const { invoiceData } = useInvoice()
   const { removeAllFiles } = useFiles()
   const { t } = useTranslation(language, 'upload/finalize/invoice')
+  const [form, setForm] = useState<InvoiceData>({
+    title: '',
+    files: [],
+    invoiceDate: new Date(),
+    invoiceDueDate: new Date(),
+    description: '',
+    isInvoiceBooked: false,
+    isOriginalInvoice: false,
+    paidStatus: 'no_chapter',
+    categories: [],
+  })
+  const [formErrors, setFormErrors] = useState({
+    title: '',
+    files: '',
+    date: '',
+    description: '',
+    isOriginal: '',
+    isBooked: '',
+    categories: '',
+  })
 
   const totalAmount = invoiceData.categories.reduce((acc, category) => {
     const amount = Number.parseFloat(category.amount.replace(/,/g, '.'))
@@ -37,6 +53,22 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
   }, 0)
 
   const postInvoice = async (data: z.infer<typeof invoiceSchema>) => {
+    const errors = invoiceSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        title: fieldErrors.properties?.title?.errors[0] || '',
+        files: fieldErrors.properties?.files?.errors[0] || '',
+        date: fieldErrors.properties?.date?.errors[0] || '',
+        description: fieldErrors.properties?.description?.errors[0] || '',
+        isOriginal: fieldErrors.properties?.isOriginal?.errors[0] || '',
+        isBooked: fieldErrors.properties?.isBooked?.errors[0] || '',
+        categories: fieldErrors.properties?.categories?.errors[0] || '',
+      })
+      return
+    }
+
     const formData = new FormData()
 
     for (const file of data.files) {
@@ -67,16 +99,18 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
       window.scrollTo(0, 0)
 
       setTimeout(() => {
-        invoiceForm.reset()
-        invoiceData.categories = []
-        invoiceData.files = []
+        setForm({
+          title: '',
+          files: [],
+          invoiceDate: new Date(),
+          invoiceDueDate: new Date(),
+          description: '',
+          isInvoiceBooked: false,
+          isOriginalInvoice: false,
+          paidStatus: 'no_chapter',
+          categories: [],
+        })
         removeAllFiles()
-        invoiceData.description = ''
-        invoiceData.invoiceDate = new Date()
-        invoiceData.invoiceDueDate = new Date()
-        invoiceData.isOriginalInvoice = false
-        invoiceData.isInvoiceBooked = false
-        invoiceData.paidStatus = undefined
         router.replace(`/${language}`)
       }, 2500)
     } catch (error) {
@@ -85,30 +119,18 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
   }
 
   useEffect(() => {
-    invoiceForm.setValue(
-      'hasChapterPaid',
-      invoiceData.paidStatus === 'yes_chapter' || false
-    )
-    invoiceForm.setValue('title', invoiceData.title)
-    invoiceForm.setValue('files', invoiceData.files)
-    invoiceForm.setValue('description', invoiceData.description)
-    invoiceForm.setValue('isOriginal', invoiceData.isOriginalInvoice)
-    invoiceForm.setValue('isBooked', invoiceData.isInvoiceBooked)
-    invoiceForm.setValue('date', invoiceData.invoiceDate)
-    invoiceForm.setValue('dueDate', invoiceData.invoiceDueDate)
-    invoiceForm.setValue('categories', invoiceData.categories)
-  }, [
-    invoiceData.title,
-    invoiceData.paidStatus,
-    invoiceData.files,
-    invoiceData.description,
-    invoiceData.isOriginalInvoice,
-    invoiceData.isInvoiceBooked,
-    invoiceData.invoiceDate,
-    invoiceData.invoiceDueDate,
-    invoiceData.categories,
-    invoiceForm,
-  ])
+    setForm({
+      title: invoiceData.title,
+      files: invoiceData.files,
+      invoiceDate: invoiceData.invoiceDate,
+      invoiceDueDate: invoiceData.invoiceDueDate,
+      description: invoiceData.description,
+      isInvoiceBooked: invoiceData.isInvoiceBooked,
+      isOriginalInvoice: invoiceData.isOriginalInvoice,
+      paidStatus: invoiceData.paidStatus,
+      categories: invoiceData.categories,
+    })
+  }, [invoiceData])
 
   return success ? (
     <div className='grid place-items-center h-[40.5rem]'>
@@ -147,11 +169,29 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
           categories={invoiceData.categories}
         />
 
-        {invoiceForm.formState.errors && (
-          <div className='text-red-500 text-sm'>
-            {Object.values(invoiceForm.formState.errors).map((error) => (
-              <p key={error.message}>{error.message}</p>
-            ))}
+        {formErrors && (
+          <div className='flex flex-col gap-2 mt-4'>
+            {formErrors.title && (
+              <p className='text-red-500 text-xs'>{formErrors.title}</p>
+            )}
+            {formErrors.description && (
+              <p className='text-red-500 text-xs'>{formErrors.description}</p>
+            )}
+            {formErrors.date && (
+              <p className='text-red-500 text-xs'>{formErrors.date}</p>
+            )}
+            {formErrors.isOriginal && (
+              <p className='text-red-500 text-xs'>{formErrors.isOriginal}</p>
+            )}
+            {formErrors.isBooked && (
+              <p className='text-red-500 text-xs'>{formErrors.isBooked}</p>
+            )}
+            {formErrors.files && (
+              <p className='text-red-500 text-xs'>{formErrors.files}</p>
+            )}
+            {formErrors.categories && (
+              <p className='text-red-500 text-xs'>{formErrors.categories}</p>
+            )}
           </div>
         )}
 
@@ -159,10 +199,18 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
           title={t('submit')}
           className='w-full h-16 mt-8'
           onClick={() => {
-            console.log(invoiceForm.getValues())
-            invoiceForm.handleSubmit((data) => {
-              postInvoice(data)
-            })()
+            const data = {
+              ...form,
+              files: form.files,
+              date: form.invoiceDate,
+              dueDate: form.invoiceDueDate,
+              description: form.description,
+              isOriginal: form.isOriginalInvoice,
+              isBooked: form.isInvoiceBooked,
+              hasChapterPaid: form.paidStatus === 'yes_chapter',
+            }
+
+            postInvoice(data)
           }}
         >
           {t('submit')}

@@ -4,11 +4,16 @@ export const domainSchema = z
   .object({
     title: z
       .string()
-      .min(1, { message: 'Domain title is required' })
+      .check(
+        z.minLength(1, { message: 'Domain title is required' }),
+        z.maxLength(100, {
+          message: 'Domain title must be under 100 characters',
+        })
+      )
       .optional()
       .or(z.literal('')),
     parts: z
-      .array(z.string().min(1, { message: 'Domain part is required' }))
+      .array(z.string().check(z.minLength(1, { message: 'Part is required' })))
       .optional()
       .or(z.literal('')),
   })

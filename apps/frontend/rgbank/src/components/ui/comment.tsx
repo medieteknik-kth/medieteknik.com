@@ -1,9 +1,9 @@
 import { ExpenseStatusBadge } from '@/components/ui/expense-badge'
+import { Separator } from '@/components/ui/separator'
 import type { ExpenseStatus } from '@/models/General'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import type { Student } from '@medieteknik/models'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
-import { Separator } from '@medieteknik/ui'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 

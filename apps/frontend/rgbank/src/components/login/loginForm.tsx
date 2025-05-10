@@ -1,32 +1,22 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
-import { Loading } from '@/components/ui'
+import { Label, Loading } from '@/components/ui'
 import {
   Accordion,
   AccordionContent,
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useAuthentication } from '@/providers/AuthenticationProvider'
 import { loginSchema } from '@/schemas/authentication/login'
-import { zodResolver } from '@hookform/resolvers/zod'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { AccordionItem } from '@radix-ui/react-accordion'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { type JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import type { z } from 'zod'
+import { z } from 'zod'
 
 const fetcher = (url: string) =>
   fetch(url, { credentials: 'include' }).then((res) => res.json())
@@ -60,15 +50,15 @@ export default function LoginForm({
   const searchParams = useSearchParams()
   const returnUrl = searchParams.get('return_url')
   const { t } = useTranslation(language, 'login')
-
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      csrf_token: '',
-      remember: false,
-    },
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    remember: false,
+    csrf_token: '',
+  })
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    password: '',
   })
 
   if (error) {
@@ -83,6 +73,23 @@ export default function LoginForm({
   }
 
   const submit = async (formData: z.infer<typeof loginSchema>) => {
+    if (!data) {
+      setErrorMessage('No CSRF token found')
+      return
+    }
+
+    const errors = loginSchema.safeParse(formData)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        email: fieldErrors.properties?.email?.errors[0] || '',
+        password: fieldErrors.properties?.password?.errors[0] || '',
+      })
+      setErrorMessage('Invalid form data')
+      return
+    }
+
     const success = await login(
       formData.email,
       formData.password,
@@ -143,76 +150,66 @@ export default function LoginForm({
             {t('accountLogin')}
           </AccordionTrigger>
           <AccordionContent>
-            <Form {...loginForm}>
-              <form onSubmit={loginForm.handleSubmit(submit)}>
-                <FormField
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                submit(form as z.infer<typeof loginSchema>)
+              }}
+            >
+              <div>
+                <Label htmlFor='email' className='text-sm font-semibold'>
+                  {t('email')}
+                </Label>
+                {formErrors.email && (
+                  <p className='text-red-500 text-xs'>{formErrors.email}</p>
+                )}
+                <Input
+                  id='email'
                   name='email'
-                  render={({ field }) => (
-                    <FormItem className='w-full mb-4'>
-                      <FormLabel
-                        style={{
-                          fontSize: 'inherit',
-                        }}
-                      >
-                        {t('email')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={'test@kth.se'}
-                          autoComplete='email'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  name='password'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel
-                        style={{
-                          fontSize: 'inherit',
-                        }}
-                      >
-                        {t('password')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type='password'
-                          placeholder={'Password'}
-                          autoComplete='current-password'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  name='csrf_token'
-                  render={({ field }) => (
-                    <FormItem>
-                      <input type='hidden' {...field} />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  id='login-button'
-                  type='submit'
-                  title={t('login')}
-                  className='w-full mt-4'
-                  onClick={() => {
-                    loginForm.setValue('csrf_token', data.token)
+                  placeholder={'test@kth.se'}
+                  autoComplete='email'
+                  onChange={(e) => {
+                    setForm({ ...form, email: e.target.value })
                   }}
-                >
-                  {t('login')}
-                </Button>
-              </form>
-            </Form>
+                />
+              </div>
+
+              <div>
+                <Label htmlFor='password' className='text-sm font-semibold'>
+                  {t('password')}
+                </Label>
+                {formErrors.password && (
+                  <p className='text-red-500 text-xs'>{formErrors.password}</p>
+                )}
+                <Input
+                  id='password'
+                  name='password'
+                  type='password'
+                  placeholder={'Password'}
+                  autoComplete='current-password'
+                  onChange={(e) => {
+                    setForm({ ...form, password: e.target.value })
+                  }}
+                />
+              </div>
+
+              <input id='csrf_token' name='csrf_token' type='hidden' />
+              <Button
+                id='login-button'
+                type='submit'
+                title={t('login')}
+                className='w-full mt-4'
+                onClick={() => {
+                  setForm({
+                    ...form,
+                    remember: remember ? remember : false,
+                    csrf_token: data.token,
+                  })
+                }}
+              >
+                {t('login')}
+              </Button>
+            </form>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

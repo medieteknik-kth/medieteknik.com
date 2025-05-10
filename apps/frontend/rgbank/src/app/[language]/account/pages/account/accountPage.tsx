@@ -1,14 +1,8 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import { Label } from '@/components/ui'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -16,11 +10,10 @@ import {
   useStudent,
 } from '@/providers/AuthenticationProvider'
 import { bankSchema } from '@/schemas/bank'
-import { zodResolver } from '@hookform/resolvers/zod'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
-import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 import { toast } from 'sonner'
-import type { z } from 'zod'
+import { z } from 'zod'
 
 interface Props {
   language: LanguageCode
@@ -31,19 +24,37 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
   const { student, bank_account } = useStudent()
   const { setStale } = useAuthentication()
   const { t } = useTranslation(language, 'account')
-  const bankInformationForm = useForm<z.infer<typeof bankSchema>>({
-    resolver: zodResolver(bankSchema),
-    defaultValues: {
-      bank_name: bank_account?.bank_name || '',
-      clearing_number: bank_account?.clearing_number || '',
-      account_number: bank_account?.account_number || '',
-    },
+  const [form, setForm] = useState({
+    bank_name: bank_account?.bank_name || '',
+    clearing_number: bank_account?.clearing_number || '',
+    account_number: bank_account?.account_number || '',
+  })
+  const [formErrors, setFormErrors] = useState({
+    bank_name: '',
+    clearing_number: '',
+    account_number: '',
   })
 
   const onSubmit = async (data: z.infer<typeof bankSchema>) => {
     if (!student) {
       toast.error(t('bank_account.error.title'), {
         description: t('bank_account.notLoggedIn.description'),
+      })
+      return
+    }
+
+    const errors = bankSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        bank_name: fieldErrors.properties?.bank_name?.errors[0] || '',
+        clearing_number:
+          fieldErrors.properties?.clearing_number?.errors[0] || '',
+        account_number: fieldErrors.properties?.account_number?.errors[0] || '',
+      })
+      toast.error(t('bank_account.error.title'), {
+        description: t('bank_account.error.description'),
       })
       return
     }
@@ -94,92 +105,76 @@ export default function AccountPage({ language, includeBanner = true }: Props) {
         </div>
       )}
       <form
-        onSubmit={bankInformationForm.handleSubmit(onSubmit)}
-        className='w-full flex flex-col gap-4 max-h-[725px] overflow-y-auto'
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSubmit(form as z.infer<typeof bankSchema>)
+        }}
+        className='w-full flex flex-col gap-4 max-h-[725px] overflow-y-auto mx-4'
       >
-        <Form {...bankInformationForm}>
-          <FormField
+        <div>
+          <Label htmlFor='bank_name' className='text-sm font-semibold'>
+            {t('bank_account.name.title')}
+          </Label>
+          <p className='text-xs text-muted-foreground'>
+            {t('bank_account.name.description')}
+          </p>
+          {formErrors.bank_name && (
+            <p className='text-red-500 text-xs'>{formErrors.bank_name}</p>
+          )}
+          <Input
+            id='bank_name'
             name='bank_name'
-            render={({ field }) => (
-              <div className='px-4'>
-                <FormLabel
-                  htmlFor='bank_name'
-                  className='text-sm font-semibold'
-                >
-                  {t('bank_account.name.title')}
-                </FormLabel>
-                <FormMessage />
-
-                <p className='text-xs text-muted-foreground'>
-                  {t('bank_account.name.description')}
-                </p>
-                <FormControl>
-                  <Input
-                    id='bank_name'
-                    {...field}
-                    placeholder={t('bank_account.name.placeholder')}
-                  />
-                </FormControl>
-              </div>
-            )}
+            placeholder={t('bank_account.name.placeholder')}
+            value={form.bank_name}
+            onChange={(e) => {
+              setForm({ ...form, bank_name: e.target.value })
+            }}
           />
+        </div>
 
-          <FormField
+        <div>
+          <Label htmlFor='clearing_number' className='text-sm font-semibold'>
+            {t('bank_account.clearing_number.title')}
+          </Label>
+          <p className='text-xs text-muted-foreground'>
+            {t('bank_account.clearing_number.description')}
+          </p>
+          {formErrors.clearing_number && (
+            <p className='text-red-500 text-xs'>{formErrors.clearing_number}</p>
+          )}
+          <Input
+            id='clearing_number'
             name='clearing_number'
-            render={({ field }) => (
-              <div className='px-4'>
-                <FormLabel
-                  htmlFor='clearing_number'
-                  className='text-sm font-semibold'
-                >
-                  {t('bank_account.clearing_number.title')}
-                </FormLabel>
-                <FormMessage />
-
-                <p className='text-xs text-muted-foreground'>
-                  {t('bank_account.clearing_number.description')}
-                </p>
-                <FormControl>
-                  <Input
-                    id='clearing_number'
-                    {...field}
-                    placeholder={t('bank_account.clearing_number.placeholder')}
-                  />
-                </FormControl>
-              </div>
-            )}
+            placeholder={t('bank_account.clearing_number.placeholder')}
+            value={form.clearing_number}
+            onChange={(e) => {
+              setForm({ ...form, clearing_number: e.target.value })
+            }}
           />
+        </div>
 
-          <FormField
+        <div>
+          <Label htmlFor='account_number' className='text-sm font-semibold'>
+            {t('bank_account.account_number.title')}
+          </Label>
+          <p className='text-xs text-muted-foreground'>
+            {t('bank_account.account_number.description')}
+          </p>
+          {formErrors.account_number && (
+            <p className='text-red-500 text-xs'>{formErrors.account_number}</p>
+          )}
+          <Input
+            id='account_number'
             name='account_number'
-            render={({ field }) => (
-              <div className='px-4'>
-                <FormLabel
-                  htmlFor='account_number'
-                  className='text-sm font-semibold'
-                >
-                  {t('bank_account.account_number.title')}
-                </FormLabel>
-                <FormMessage />
-
-                <p className='text-xs text-muted-foreground'>
-                  {t('bank_account.account_number.description')}
-                </p>
-                <FormControl>
-                  <Input
-                    id='account_number'
-                    {...field}
-                    placeholder={t('bank_account.account_number.placeholder')}
-                  />
-                </FormControl>
-              </div>
-            )}
+            placeholder={t('bank_account.account_number.placeholder')}
+            value={form.account_number}
+            onChange={(e) => {
+              setForm({ ...form, account_number: e.target.value })
+            }}
           />
+        </div>
 
-          <Button type='submit' className='mx-4'>
-            Save Changes
-          </Button>
-        </Form>
+        <Button type='submit'>Save Changes</Button>
       </form>
     </section>
   )

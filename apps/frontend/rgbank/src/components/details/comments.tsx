@@ -7,7 +7,6 @@ import Comment, { StatusUpdate } from '@/components/ui/comment'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { toast } from '@/components/ui/use-toast'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
 import { useStudent } from '@/providers/AuthenticationProvider'
@@ -15,6 +14,7 @@ import { useGeneralDetail } from '@/providers/DetailProvider'
 import { sortByCreatedAt } from '@/utility/sortUtils'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface Props {
   language: LanguageCode
@@ -68,10 +68,9 @@ export default function CommentsSection({ language, invoice, expense }: Props) {
 
       if (!response.ok) {
         const errorData = await response.json()
-        toast({
-          title: 'Error',
+
+        toast.error('Error', {
           description: errorData.error || 'An error occurred',
-          variant: 'destructive',
         })
         throw new Error(errorData.error || 'An error occurred')
       }
