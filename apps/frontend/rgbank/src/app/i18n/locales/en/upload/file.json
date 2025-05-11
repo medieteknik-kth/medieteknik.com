@@ -1,0 +1,8 @@
+{
+    "error.file.too_large": "The file is too large. The maximum size is {{maxSize}} MB.",
+    "error.file.invalid_format": "The file format is invalid. Please upload a file in {{validFormats}} format.",
+    "error.file.upload_failed": "File upload failed. Please try again.",
+    "success": "File uploaded successfully.",
+    "label.upload": "Drag and drop your file here, or click to select a file.",
+    "file.removed": "File removed successfully."
+}

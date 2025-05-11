@@ -1,27 +1,52 @@
 'use client'
 
+import AccountPage from '@/app/[language]/account/pages/account/accountPage'
 import Expense from '@/app/[language]/upload/expense/expense'
 import FinalizeExpense from '@/app/[language]/upload/expense/finalizeExpense'
 import FinalizeInvoice from '@/app/[language]/upload/invoice/finalizeInvoice'
 import Invoice from '@/app/[language]/upload/invoice/invoice'
 import SelectTemplate from '@/app/[language]/upload/select'
-import FormProvider from '@/components/context/FormContext'
+import { useTranslation } from '@/app/i18n/client'
 import { AnimatedTabsContent } from '@/components/animation/animated-tabs'
+import LoginWrapper from '@/components/login/loginWrapper'
+import { Loading } from '@/components/ui'
 import { Tabs } from '@/components/ui/tabs'
-import type Committee from '@/models/Committee'
+import FormProvider from '@/context/FormContext'
+import type { ExpenseDomain } from '@/models/ExpenseDomain'
+import {
+  useAuthentication,
+  useStudent,
+} from '@/providers/AuthenticationProvider'
+import type { Committee } from '@medieteknik/models/src/committee'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
+import useSWR from 'swr'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
 }
 
-export default function UploadForm({ committees }: Props) {
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+export default function UploadForm({ language, committees }: Props) {
+  const { data: expenseDomains, error } = useSWR<ExpenseDomain[]>(
+    '/api/public/rgbank/expense-domains',
+    fetcher,
+    {
+      fallbackData: [],
+    }
+  )
+  const { isAuthenticated, isLoading } = useAuthentication()
+  const { bank_account } = useStudent()
   const searchParams = useSearchParams()
   const template = searchParams.get('template') || 'select'
   const [page, setPage] = useState(template)
   const pathname = usePathname()
   const router = useRouter()
+  const { t: errors } = useTranslation(language, 'errors')
+  const { t: account } = useTranslation(language, 'account')
 
   const handleTabChange = useCallback(
     (value: string) => {
@@ -51,6 +76,54 @@ export default function UploadForm({ committees }: Props) {
     setPage(template)
   }, [template])
 
+  if (isLoading) {
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
+        <Loading language={language} />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col gap-8'>
+        <LoginWrapper language={language} onSuccess={() => {}} />
+      </div>
+    )
+  }
+
+  if (!expenseDomains || error) {
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col items-center gap-y-20 sm:p-4 md:p-8'>
+        <div>
+          <p className='text-center text-sm text-muted-foreground'>
+            {errors('domains.notFound')}
+          </p>
+          <h1 className='text-3xl font-bold text-center'>
+            {errors('generic')}
+          </h1>
+        </div>
+        <AccountPage language={language} includeBanner={false} />
+      </div>
+    )
+  }
+
+  if (!bank_account) {
+    return (
+      <div className='min-h-[40.5rem] h-full flex flex-col items-center gap-y-20 sm:p-4 md:p-8'>
+        <div>
+          <p className='text-center text-sm text-muted-foreground'>
+            {account('bank_account.missing.description')}
+          </p>
+          <h1 className='text-3xl font-bold text-center'>
+            {account('bank_account.missing.title')}
+          </h1>
+        </div>
+        <AccountPage language={language} includeBanner={false} />
+      </div>
+    )
+  }
+
   return (
     <FormProvider>
       <div className='flex flex-col items-center justify-between'>
@@ -62,6 +135,7 @@ export default function UploadForm({ committees }: Props) {
             className='h-full w-full flex flex-col sm:p-4 md:p-8'
           >
             <SelectTemplate
+              language={language}
               onClickCallback={(template) => {
                 handleTabChange(template)
                 setPage(template)
@@ -75,7 +149,9 @@ export default function UploadForm({ committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <Invoice
+              language={language}
               committees={committees}
+              expenseDomains={expenseDomains}
               toExpense={() => {
                 handleTabChange('expense')
                 setPage('expense')
@@ -99,7 +175,7 @@ export default function UploadForm({ committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <FinalizeInvoice
-              committees={committees}
+              language={language}
               onBack={() => {
                 setPage('invoice')
               }}
@@ -112,7 +188,9 @@ export default function UploadForm({ committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <Expense
+              language={language}
               committees={committees}
+              expenseDomains={expenseDomains}
               onBack={() => {
                 removeSearchParams()
                 setPage('select')
@@ -132,7 +210,7 @@ export default function UploadForm({ committees }: Props) {
             className='bg-neutral-100 h-full w-full flex flex-col sm:p-4 md:p-8 dark:bg-neutral-900'
           >
             <FinalizeExpense
-              committees={committees}
+              language={language}
               onBack={() => {
                 setPage('expense')
               }}

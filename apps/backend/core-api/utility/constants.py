@@ -12,6 +12,9 @@ API_VERSION = "v1"
 PUBLIC_PATH = f"/api/{API_VERSION}/public"
 PROTECTED_PATH = f"/api/{API_VERSION}"
 
+DEFAULT_FILTER = "app"
+POSSIBLE_FILTERS = [DEFAULT_FILTER, "rgbank"]
+
 
 class ROUTES(enum.Enum):
     """

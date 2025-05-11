@@ -1,0 +1,14 @@
+{
+    "extends": "@medieteknik/typescript-config/tsconfig.base.json",
+    "include": [
+        "src/**/*"
+    ],
+    "compilerOptions": {
+        "outDir": "./dist",
+        "declaration": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

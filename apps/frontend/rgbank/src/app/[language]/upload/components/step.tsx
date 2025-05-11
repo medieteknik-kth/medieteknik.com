@@ -1,7 +1,9 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { useTranslation } from '@/app/i18n/client'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { cn } from '@medieteknik/ui'
 import { CheckIcon } from 'lucide-react'
 import type React from 'react'
 
@@ -10,6 +12,18 @@ interface FormStepProps {
    * The title of the form step
    */
   title: string
+
+  // Optional aria-labels for accessibility
+
+  /**
+   * Optional aria-label for the form step title
+   */
+  labelledby?: string
+
+  /**
+   * Optional aria-label for the form step description
+   */
+  describedby?: string
 
   /**
    * Optional description of the form step
@@ -32,6 +46,11 @@ interface FormStepProps {
   isActive?: boolean
 
   /**
+   * Whether the step is required
+   */
+  required?: boolean
+
+  /**
    * Optional CSS class names
    */
   className?: string
@@ -46,8 +65,11 @@ export function FormStep({
   title,
   description,
   stepNumber,
+  labelledby,
+  describedby,
   isCompleted = false,
   isActive = false,
+  required = false,
   className,
   children,
 }: FormStepProps) {
@@ -76,15 +98,23 @@ export function FormStep({
               <span className='text-sm font-medium'>{stepNumber}</span>
             )}
           </div>
-
-          {/* Vertical line connecting steps */}
         </div>
 
         <div className='flex-1 space-y-4'>
           <div>
-            <h3 className='text-lg font-semibold leading-tight'>{title}</h3>
+            <h3 className='text-lg font-semibold leading-tight' id={labelledby}>
+              {title}
+              {required && (
+                <sup className='text-red-500 dark:text-red-300 text-sm font-normal'>
+                  *<span className='sr-only'>required field</span>
+                </sup>
+              )}
+            </h3>
             {description && (
-              <p className='text-sm text-muted-foreground mt-1'>
+              <p
+                className='text-sm text-muted-foreground mt-1'
+                id={describedby}
+              >
                 {description}
               </p>
             )}
@@ -114,6 +144,11 @@ export function FormStep({
 }
 
 interface FormStepsProps {
+  /**
+   * The language code for translations
+   */
+  language: LanguageCode
+
   /**
    * Optional title for the form steps
    */
@@ -153,6 +188,7 @@ interface FormStepsProps {
 }
 
 export function FormSteps({
+  language,
   title,
   description,
   className,
@@ -161,6 +197,7 @@ export function FormSteps({
   backButtonLabel = 'Back',
   children,
 }: FormStepsProps) {
+  const { t } = useTranslation(language, 'upload/base')
   return (
     <div className={cn('space-y-8', className)}>
       <div className='flex items-center justify-between flex-wrap gap-4'>
@@ -169,6 +206,9 @@ export function FormSteps({
           {description && (
             <p className='text-muted-foreground'>{description}</p>
           )}
+          <p className='text-red-500 dark:text-red-300 text-xs select-none'>
+            {t('*')}
+          </p>
         </div>
 
         {showBackButton && onBackClick && (

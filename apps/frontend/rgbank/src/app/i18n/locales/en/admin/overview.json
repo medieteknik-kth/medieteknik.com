@@ -1,0 +1,6 @@
+{
+    "title": "Overview",
+    "description": "This is the overview page for the admin panel. Here you can see an overview of the application and its users.",
+    "view.cards": "Cards",
+    "view.kanban": "Kanban"
+}

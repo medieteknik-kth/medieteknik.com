@@ -1,6 +1,7 @@
 'use client'
 
 import { FormStep, FormSteps } from '@/app/[language]/upload/components/step'
+import { useTranslation } from '@/app/i18n/client'
 import Categorize from '@/components/form/categorize'
 import UploadFiles from '@/components/form/uploadFiles'
 import { Button } from '@/components/ui/button'
@@ -9,32 +10,41 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
-import type Committee from '@/models/Committee'
+import { Textarea } from '@/components/ui/textarea'
+import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
 import type { PaidStatus } from '@/models/Invoice'
-import { useFiles, useInvoice } from '@/providers/FormProvider'
+import { useFiles, useGeneralForm, useInvoice } from '@/providers/FormProvider'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import type { Committee } from '@medieteknik/models/src/committee'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { addDays, startOfDay } from 'date-fns'
 import { useCallback, useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   committees: Committee[]
+  expenseDomains: ExpenseDomain[]
   toExpense: () => void
   onBack: () => void
   onFinalize: () => void
 }
 
 export default function Invoice({
+  language,
   committees,
+  expenseDomains,
   toExpense,
   onBack,
   onFinalize,
 }: Props) {
   const { invoiceData, setInvoiceData } = useInvoice()
+  const { error, setError } = useGeneralForm()
   const { files, removeAllFiles } = useFiles()
   const [completedSteps, setCompletedSteps] = useState([
     invoiceData.paidStatus !== undefined,
-    invoiceData.files.length > 0,
+    invoiceData.title.length > 0,
+    files.length > 0,
     invoiceData.description !== '',
     true,
     invoiceData.invoiceDate <= new Date() &&
@@ -45,6 +55,7 @@ export default function Invoice({
   const [categories, setCategories] = useState<Category[]>([])
   const [paidStatus, setPaidStatus] = useState(invoiceData.paidStatus || '')
   const [description, setDescription] = useState('')
+  const { t } = useTranslation(language, 'upload/invoice')
 
   const completeStep = useCallback((step: number) => {
     setCompletedSteps((prev) => {
@@ -70,15 +81,13 @@ export default function Invoice({
       const invoiceDate = inputInvoiceDate || invoiceData.invoiceDate
       const dueDate = inputDueDate || invoiceData.invoiceDueDate
 
-      const minimumDate = startOfDay(addDays(new Date(), 2))
       const today = new Date()
-      const isValid =
-        invoiceDate < today && dueDate > invoiceDate && dueDate > minimumDate
+      const isValid = invoiceDate < today && dueDate > invoiceDate
 
       if (isValid) {
-        completeStep(4)
+        completeStep(5)
       } else {
-        uncompleteStep(4)
+        uncompleteStep(5)
       }
     },
     [
@@ -92,9 +101,10 @@ export default function Invoice({
   return (
     <>
       <FormSteps
-        title='Upload Invoice'
-        description='Please fill in the following information to upload your invoice.'
-        backButtonLabel='Back to upload'
+        language={language}
+        title={t('title')}
+        description={t('description')}
+        backButtonLabel={t('back')}
         onBackClick={() => {
           removeAllFiles()
           setInvoiceData({
@@ -112,14 +122,19 @@ export default function Invoice({
         showBackButton
       >
         <FormStep
-          title='Payment status'
-          description='Please select the payment status of the invoice.'
+          title={t('step_1.title')}
+          description={t('step_1.description')}
           stepNumber={1}
           isCompleted={completedSteps[0]}
-          isActive={true}
+          labelledby='step_1_title'
+          describedby='step_1_description'
+          isActive
+          required
         >
           <RadioGroup
             defaultValue={paidStatus}
+            aria-labelledby='step_1_title'
+            aria-describedby='step_1_description'
             onValueChange={(value) => {
               setPaidStatus(value)
               if (value === 'no_chapter' || value === 'yes_chapter') {
@@ -133,19 +148,19 @@ export default function Invoice({
           >
             <div className='flex items-center space-x-2'>
               <RadioGroupItem value='no_chapter' id='no_chapter' />
-              <Label htmlFor='no_chapter'>No, the chapter should pay.</Label>
+              <Label htmlFor='no_chapter'>{t('step_1.option_1')}</Label>
             </div>
             <div className='flex items-center space-x-2'>
               <RadioGroupItem value='no_personal' id='no_personal' />
-              <Label htmlFor='no_personal'>No, I am going to pay.</Label>
+              <Label htmlFor='no_personal'>{t('step_1.option_2')}</Label>
             </div>
             <div className='flex items-center space-x-2'>
               <RadioGroupItem value='yes_chapter' id='yes_chapter' />
-              <Label htmlFor='yes_chapter'>Yes, the chapter has paid.</Label>
+              <Label htmlFor='yes_chapter'>{t('step_1.option_3')}</Label>
             </div>
             <div className='flex items-center space-x-2'>
               <RadioGroupItem value='yes_personal' id='yes_personal' />
-              <Label htmlFor='yes_personal'>Yes, I have paid</Label>
+              <Label htmlFor='yes_personal'>{t('step_1.option_4')}</Label>
             </div>
           </RadioGroup>
         </FormStep>
@@ -159,14 +174,13 @@ export default function Invoice({
               <ExclamationTriangleIcon className='w-8 h-8 text-orange-500' />
               {paidStatus === 'no_personal' ? (
                 <p>
-                  Then it counts as an expense. <br />
+                  {t('step_1.failed.option_2.title')} <br />
                   <span className='text-sm text-muted-foreground'>
-                    Note: It will need to be paid before registering it as an
-                    expense.
+                    {t('step_1.failed.option_2.description')}
                   </span>
                 </p>
               ) : (
-                <p>Then it counts as an expense. Please register it as such.</p>
+                <p>{t('step_1.failed.option_4.title')}</p>
               )}
             </div>
 
@@ -177,48 +191,101 @@ export default function Invoice({
                 removeAllFiles()
                 toExpense()
               }}
+              title={t('step_1.failed.next')}
             >
-              Register as expense
+              {t('step_1.failed.next')}
             </Button>
           </div>
         ) : (
           <>
             <FormStep
-              title='Upload the invoice'
-              description='Please upload the invoice image.'
+              title={t('step_2.title')}
+              description={t('step_2.description')}
               stepNumber={2}
               isCompleted={completedSteps[1]}
-              isActive={true}
+              labelledby='step_2_title'
+              describedby='step_2_description'
+              isActive
+              required
+            >
+              <Input
+                id='title'
+                role='textbox'
+                name='title'
+                title={t('step_2.title')}
+                placeholder={t('step_2.placeholder')}
+                defaultValue={invoiceData.title}
+                aria-labelledby='step_2_title'
+                aria-describedby='step_2_description'
+                maxLength={151}
+                onChange={(e) => {
+                  if (e.target.value.length > 150) {
+                    setError(
+                      t('error.title.max_length', {
+                        maxLength: 150,
+                      })
+                    )
+                    e.target.value = e.target.value.slice(0, 150)
+
+                    setTimeout(() => {
+                      setError('')
+                    }, 5000)
+                  }
+                  setInvoiceData({
+                    ...invoiceData,
+                    title: e.target.value,
+                  })
+                  if (e.target.value.length > 0) {
+                    completeStep(1)
+                  } else {
+                    uncompleteStep(1)
+                  }
+                }}
+              />
+            </FormStep>
+            <FormStep
+              title={t('step_3.title')}
+              description={t('step_3.description')}
+              stepNumber={3}
+              isCompleted={completedSteps[2]}
+              labelledby='step_3_title'
+              describedby='step_3_description'
+              isActive
+              required
             >
               <UploadFiles
-                fileUploadStep={1}
+                language={language}
+                fileUploadStep={2}
+                ariaDescribedby='step_3_description'
+                ariaLabelledby='step_3_title'
                 completeStep={completeStep}
                 uncompleteStep={uncompleteStep}
               />
             </FormStep>
 
             <FormStep
-              title='Describe the contents'
-              description='Please describe the contents of the invoice.'
-              stepNumber={3}
-              isCompleted={completedSteps[2]}
-              isActive={true}
+              title={t('step_4.title')}
+              description={t('step_4.description')}
+              stepNumber={4}
+              isCompleted={completedSteps[3]}
+              isActive
+              required
             >
               <div>
                 <Label htmlFor='description' className='text-sm font-medium'>
-                  Description
-                  <span className='text-red-500'>*</span>
+                  {t('step_4.label')}
                 </Label>
-                <Input
-                  type='text'
-                  placeholder='Invoice description'
+                <Textarea
+                  placeholder={t('step_4.placeholder')}
+                  id='description'
+                  name='description'
                   defaultValue={invoiceData.description}
                   onChange={(e) => {
                     setDescription(e.target.value)
                     if (e.target.value.length > 0) {
-                      completeStep(2)
+                      completeStep(3)
                     } else {
-                      uncompleteStep(2)
+                      uncompleteStep(3)
                     }
                   }}
                 />
@@ -226,16 +293,17 @@ export default function Invoice({
             </FormStep>
 
             <FormStep
-              title='Invoice details'
-              description='Please select the invoice details.'
-              stepNumber={4}
-              isCompleted={completedSteps[3]}
-              isActive={true}
+              title={t('step_5.title')}
+              description={t('step_5.description')}
+              stepNumber={5}
+              isCompleted={completedSteps[4]}
+              isActive
             >
               <div className='space-y-2'>
                 <div className='flex items-center gap-2'>
                   <Checkbox
                     className='w-6! h-6'
+                    name='original'
                     id='original'
                     defaultChecked={invoiceData.isOriginalInvoice}
                     onCheckedChange={(checked) => {
@@ -246,9 +314,7 @@ export default function Invoice({
                       })
                     }}
                   />
-                  <Label htmlFor='original'>
-                    The file I have uploaded is the original invoice.
-                  </Label>
+                  <Label htmlFor='original'>{t('step_5.option_1')}</Label>
                 </div>
                 {paidStatus === 'yes_chapter' && (
                   <div className='flex items-center gap-2'>
@@ -264,28 +330,29 @@ export default function Invoice({
                         })
                       }}
                     />
-                    <Label htmlFor='booked'>
-                      The invoice is booked in the chapter's accounting system.
-                    </Label>
+                    <Label htmlFor='booked'>{t('step_5.option_2')}</Label>
                   </div>
                 )}
               </div>
             </FormStep>
 
             <FormStep
-              title='Invoice dates'
-              description='Please select the invoice dates.'
-              stepNumber={5}
-              isCompleted={completedSteps[4]}
-              isActive={true}
+              title={t('step_6.title')}
+              description={t('step_6.description')}
+              stepNumber={6}
+              isCompleted={completedSteps[5]}
+              isActive
+              required
             >
               <div className='flex items-center gap-2 flex-wrap'>
                 <div>
-                  <Label>
-                    Invoice date
+                  <Label htmlFor='date'>
+                    {t('step_6.label_1')}
                     <span className='text-red-500'>*</span>
                   </Label>
                   <Input
+                    id='date'
+                    name='date'
                     type='date'
                     className='w-42'
                     defaultValue={
@@ -302,16 +369,13 @@ export default function Invoice({
                   />
                 </div>
                 <div>
-                  <Label>
-                    Invoice due date
+                  <Label htmlFor='due_date'>
+                    {t('step_6.label_2')}
                     <span className='text-red-500'>*</span>{' '}
-                    <span>
-                      <span className='text-sm text-muted-foreground'>
-                        (Minimum: {addDays(new Date(), 2).toLocaleDateString()})
-                      </span>
-                    </span>
                   </Label>
                   <Input
+                    id='due_date'
+                    name='due_date'
                     type='date'
                     className='w-42'
                     defaultValue={
@@ -332,18 +396,20 @@ export default function Invoice({
             </FormStep>
 
             <FormStep
-              title='Categorize the invoice'
-              description='Please categorize the invoice.'
-              stepNumber={6}
-              isCompleted={completedSteps[5]}
-              isActive={true}
+              title={t('step_7.title')}
+              description={t('step_7.description')}
+              stepNumber={7}
+              isCompleted={completedSteps[6]}
+              isActive
             >
               <Categorize
+                language={language}
                 defaultValue={invoiceData.categories}
+                expenseDomains={expenseDomains}
                 setFormCategories={(categories) => {
                   setCategories(categories)
                 }}
-                categoryStep={5}
+                categoryStep={6}
                 completeStep={completeStep}
                 uncompleteStep={uncompleteStep}
                 committees={committees}
@@ -351,7 +417,11 @@ export default function Invoice({
             </FormStep>
 
             <Button
+              id='submit'
+              type='submit'
               className='w-full h-16 mt-4'
+              title={t('finalize')}
+              disabled={completedSteps.includes(false)}
               onClick={() => {
                 setInvoiceData({
                   ...invoiceData,
@@ -365,11 +435,19 @@ export default function Invoice({
                 onFinalize()
               }}
             >
-              Finalize Invoice
+              {t('finalize')}
             </Button>
           </>
         )}
       </FormSteps>
+
+      {error && (
+        <div className='fixed bottom-4 left-0 right-0 z-50 flex justify-center items-center p-4'>
+          <div className='bg-red-500 dark:bg-neutral-900 p-4 rounded-lg shadow-md'>
+            <h2 className='text-white font-bold text-xl'>{error}</h2>
+          </div>
+        </div>
+      )}
     </>
   )
 }

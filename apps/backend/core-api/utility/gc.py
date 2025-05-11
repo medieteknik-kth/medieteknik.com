@@ -8,6 +8,7 @@ from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
 from urllib.parse import unquote, urlparse
 from google.cloud import pubsub_v1, tasks_v2
+from google.cloud.storage.bucket import Bucket
 
 json_key_path = (
     "/mnt/env/service-account-file.json"
@@ -28,8 +29,11 @@ parent = tasks.queue_path(
 # Storage client
 client = storage.Client.from_service_account_json(json_credentials_path=json_key_path)
 
-bucket_name = "medieteknik-static"
-bucket = client.get_bucket(bucket_or_name=bucket_name)
+medieteknik_bucket_name = "medieteknik-static"
+medieteknik_bucket: Bucket = client.get_bucket(bucket_or_name=medieteknik_bucket_name)
+
+rgbank_bucket_name = "rgbank"
+rgbank_bucket: Bucket = client.get_bucket(bucket_or_name=rgbank_bucket_name)
 
 
 def upload_file(
@@ -40,6 +44,7 @@ def upload_file(
     content_disposition: str | None = None,
     content_type: str | None = None,
     cache_control: str | None = None,
+    bucket: Bucket | None = medieteknik_bucket,
     timedelta: timedelta | None = timedelta(days=365),
 ) -> str | None:
     """
@@ -58,6 +63,8 @@ def upload_file(
     :type content_disposition: str, optional
     :param content_type: The MIME type of the file (e.g., 'application/pdf'). Default is None.
     :type content_type: str, optional
+    :param bucket: The Google Cloud Storage bucket to upload the file to. Defaults to Medieteknik bucket.
+    :type bucket: Bucket, optional
     :param timedelta: The duration the signed URL should be valid. If None, makes the URL public.
                       Defaults to 365 days.
     :type timedelta: timedelta, optional
@@ -90,12 +97,14 @@ def upload_file(
         return None
 
 
-def delete_file(url: str) -> bool:
+def delete_file(url: str, bucket: Bucket | None = medieteknik_bucket) -> bool:
     """
     Deletes a file from the bucket based on its URL.
 
     :param url: The public or signed URL of the file to delete.
     :type url: str
+    :param bucket: The Google Cloud Storage bucket to delete the file from. Defaults to Medieteknik bucket.
+    :type bucket: Bucket, optional
     :return: True if the file was successfully deleted, otherwise False.
     :rtype: bool
     :raises GoogleCloudError: If an error occurs during the file deletion process.

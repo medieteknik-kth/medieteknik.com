@@ -1,0 +1,17 @@
+{
+    "preferences": "Inställningar",
+    "preferences.description": "Byt dina inställningar för att anpassa din upplevelse.",
+    "preferences.language.title": "Språk",
+    "preferences.theme.title": "Tema",
+    "preferences.theme.light": "Ljust tema",
+    "preferences.theme.dark": "Mörkt tema",
+    "accountSettings": "Kontoinställningar",
+    "appSwitcher": "Byt app",
+    "apps": "Appar",
+    "appSwitcher.description": "Byt mellan olika appar.",
+    "medieteknik": "Medieteknik",
+    "rgbank": "RGBank",
+    "logout": "Logga ut",
+    "login": "Logga in",
+    "welcome": "Välkommen!"
+}

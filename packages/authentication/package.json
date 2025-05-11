@@ -1,0 +1,15 @@
+{
+    "name": "@medieteknik/authentication",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "next": "^15.0.0",
+        "react": "^19.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "@medieteknik/typescript-config": "workspace:*",
+        "@medieteknik/models": "workspace:*",
+        "@medieteknik/api": "workspace:*"
+    }
+}

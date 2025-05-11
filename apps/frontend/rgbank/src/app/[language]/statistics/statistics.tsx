@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import HeaderGap from '@/components/header/components/HeaderGap'
 import {
@@ -16,160 +17,153 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import type Statistic from '@/models/Statistic'
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+  AdjustmentsHorizontalIcon,
+  BanknotesIcon,
+  CalendarIcon,
+} from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import { cn } from '@medieteknik/ui'
+import { getYear } from 'date-fns'
+import { redirect } from 'next/navigation'
+import { useCallback, useState } from 'react'
 
-const monthlyData = [
-  { name: 'Jan', amount: 1200 },
-  { name: 'Feb', amount: 1900 },
-  { name: 'Mar', amount: 1500 },
-  { name: 'Apr', amount: 2100 },
-  { name: 'May', amount: 1800 },
-  { name: 'Jun', amount: 2400 },
-  { name: 'Jul', amount: 2000 },
-  { name: 'Aug', amount: 2200 },
-  { name: 'Sep', amount: 1700 },
-  { name: 'Oct', amount: 1900 },
-  { name: 'Nov', amount: 2300 },
-  { name: 'Dec', amount: 2800 },
-]
+interface Props {
+  language: LanguageCode
+  allYears: number[]
+  providedYear?: string
+  allTimeCommitteesStatistics: Statistic[]
+  yearCommitteesStatistics: Statistic[]
+}
 
-const committeeData = [
-  { name: 'Mottagningen', value: 8500 },
-  { name: 'Styrelsen', value: 12000 },
-  { name: 'Valberedningen', value: 6500 },
-  { name: 'Kommunikationsnämnden', value: 4000 },
-  { name: 'Medias Klubbmästeri', value: 3000 },
-]
+export default function Statistics({
+  language,
+  allYears,
+  providedYear,
+  allTimeCommitteesStatistics,
+  yearCommitteesStatistics,
+}: Props) {
+  const [yearFilter] = useState(providedYear || getYear(new Date()).toString())
+  const [leaderboardView] = useState('yearly')
+  const { t } = useTranslation(language, 'statistics')
 
-const individualLeaderboardData = [
-  { name: 'Alex Johnson', amount: 4500, committee: 'Mottagningen' },
-  { name: 'Jamie Smith', amount: 4200, committee: 'Styrelsen' },
-  { name: 'Taylor Brown', amount: 3800, committee: 'Valberedningen' },
-  { name: 'Casey Wilson', amount: 3500, committee: 'Kommunikationsnämnden' },
-  { name: 'Morgan Lee', amount: 3200, committee: 'Medias Klubbmästeri' },
-]
+  const changeYear = useCallback(
+    (year: string) => {
+      if (year === getYear(new Date()).toString()) {
+        redirect(`/${language}/statistics`)
+      }
 
-const committeeLeaderboardData = [
-  { name: 'Mottagningen', amount: 12000, members: 8 },
-  { name: 'Styrelsen', amount: 8500, members: 6 },
-  { name: 'Valberedningen', amount: 6500, members: 5 },
-  { name: 'Kommunikationsnämnden', amount: 4000, members: 4 },
-  { name: 'Medias Klubbmästeri', amount: 3000, members: 3 },
-]
+      redirect(`/${language}/statistics/year/${year}`)
+    },
+    [language]
+  )
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
+  const totalExpenses = yearCommitteesStatistics.reduce((acc, statistic) => {
+    if (!statistic.committee) return acc
+    return acc + statistic.value
+  }, 0)
 
-export default function Statistics() {
-  const [yearFilter, setYearFilter] = useState('2024')
-  const [leaderboardView, setLeaderboardView] = useState('yearly')
-
-  // Calculate total expenses
-  const totalExpenses = 34000
-
-  // Calculate month-over-month change
-  const currentMonth = monthlyData[monthlyData.length - 1].amount
-  const previousMonth = monthlyData[monthlyData.length - 2].amount
-  const monthlyChange = ((currentMonth - previousMonth) / previousMonth) * 100
-  const isMonthlyIncrease = monthlyChange > 0
+  const isCurrentYear = Number.parseInt(yearFilter) === getYear(new Date())
 
   return (
-    <main>
+    <main className='relative overflow-y-hidden overflow-x-visible'>
       <HeaderGap />
 
-      <div className='container mx-auto py-8 flex flex-col gap-8'>
-        <div className='space-y-1'>
-          <h1 className='text-2xl font-bold'>Statistics</h1>
-          <p className='text-muted-foreground'>
-            Overview of expenses and trends over time. Updates every week.
-          </p>
+      <div className='px-2 xs:px-0 xs:container mx-auto py-8 flex flex-col gap-8'>
+        {/* Headers */}
+        <div className='space-y-1 z-10'>
+          <div className='flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4'>
+            <h1
+              className={cn(
+                'text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r/oklch',
+                Number.parseInt(yearFilter) % 10 === 0
+                  ? 'from-[#FF5733] to-[#FFC300]' // Neon Orange to Neon Yellow
+                  : Number.parseInt(yearFilter) % 10 === 1
+                    ? 'from-[#DAF7A6] to-[#FF33FF]' // Neon LightGreen to Neon Magenta
+                    : Number.parseInt(yearFilter) % 10 === 2
+                      ? 'from-[#33FF57] to-[#33FFF3]' // Neon Green to Neon Aqua
+                      : Number.parseInt(yearFilter) % 10 === 3
+                        ? 'from-[#FF3333] to-[#FF5733]' // Neon Red to Neon Orange
+                        : Number.parseInt(yearFilter) % 10 === 4
+                          ? 'from-[#33FFBD] to-[#FF33A6]' // Neon Teal to Neon Pink
+                          : Number.parseInt(yearFilter) % 10 === 5
+                            ? 'from-[#5733FF] to-[#33A6FF]' // Neon Purple to Neon Blue
+                            : Number.parseInt(yearFilter) % 10 === 6
+                              ? 'from-[#FFC300] to-[#DAF7A6]' // Neon Yellow to Neon LightGreen
+                              : Number.parseInt(yearFilter) % 10 === 7
+                                ? 'from-[#FF33A6] to-[#33FFBD]' // Neon Pink to Neon Teal
+                                : Number.parseInt(yearFilter) % 10 === 8
+                                  ? 'from-[#33FFF3] to-[#33FF57]' // Neon Aqua to Neon Green
+                                  : 'from-[#FF5733] to-[#FF3333]' // Neon Orange to Neon Red
+              )}
+            >
+              {t('title')}
+            </h1>
+            <span className='text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-300'>
+              {yearFilter}
+            </span>
+          </div>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
 
         {/* Overview Cards */}
-        <div className='grid gap-6 md:grid-cols-3'>
-          <PopIn>
-            <Card>
+        <div className='grid gap-6 xl:grid-cols-3 z-10'>
+          <PopIn className='xl:col-span-2'>
+            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-red-600/10'>
               <CardHeader className='pb-2'>
-                <CardDescription>Total Expenses</CardDescription>
-                <CardTitle className='text-4xl flex items-center'>
-                  <span className='text-2xl mr-2 text-muted-foreground select-none'>
-                    SEK
-                  </span>
-                  {totalExpenses.toLocaleString()}
+                <CardDescription className='text-sm font-medium text-muted-foreground'>
+                  {t('totalExpenses')}
+                </CardDescription>
+                <CardTitle className='text-4xl font-bold flex items-center'>
+                  <div className='flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mr-4'>
+                    <BanknotesIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
+                  </div>
+                  {totalExpenses.toLocaleString(language, {
+                    currency: 'SEK',
+                    style: 'currency',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='text-sm text-muted-foreground'>
-                  Year to date
+                <div className='text-sm text-muted-foreground flex items-center'>
+                  <CalendarIcon className='h-5 w-5 mr-1 text-muted-foreground' />
+                  {isCurrentYear ? t('yearToDate') : t('forTheYear')}
                 </div>
               </CardContent>
             </Card>
           </PopIn>
 
           <PopIn>
-            <Card>
+            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-blue-600/10'>
               <CardHeader className='pb-2'>
-                <CardDescription>Current Month</CardDescription>
-                <CardTitle className='text-3xl flex items-center'>
-                  <span className='text-2xl mr-2 text-muted-foreground select-none'>
-                    SEK
-                  </span>
-                  {currentMonth.toLocaleString()}
+                <CardDescription className='text-sm font-medium text-muted-foreground'>
+                  {t('yearFilter.label')}
+                </CardDescription>
+                <CardTitle className='text-2xl font-bold flex items-center gap-4'>
+                  <div className='flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30'>
+                    <AdjustmentsHorizontalIcon className='h-6 w-6 text-blue-600 dark:text-blue-400' />
+                  </div>
+                  <Select value={yearFilter} onValueChange={changeYear}>
+                    <SelectTrigger className='max-w-[200px] border-none shadow-sm bg-gray-50 dark:bg-gray-900'>
+                      <SelectValue placeholder='Select Year' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allYears.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value={yearFilter}>{yearFilter}</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='flex items-center text-sm'>
-                  {isMonthlyIncrease ? (
-                    <ArrowUpIcon className='h-4 w-4 mr-1 text-red-500' />
-                  ) : (
-                    <ArrowDownIcon className='h-4 w-4 mr-1 text-green-500' />
-                  )}
-                  <span
-                    className={
-                      isMonthlyIncrease ? 'text-red-500' : 'text-green-500'
-                    }
-                  >
-                    {Math.abs(monthlyChange).toFixed(1)}% from last month
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </PopIn>
-
-          <PopIn>
-            <Card>
-              <CardHeader className='pb-2'>
-                <CardDescription>Year Filter</CardDescription>
-                <Select value={yearFilter} onValueChange={setYearFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select Year' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='2020'>2020</SelectItem>
-                    <SelectItem value='2021'>2021</SelectItem>
-                    <SelectItem value='2022'>2022</SelectItem>
-                    <SelectItem value='2023'>2023</SelectItem>
-                    <SelectItem value='2024'>2024</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardHeader>
-              <CardContent>
                 <div className='text-sm text-muted-foreground'>
-                  Filter all charts and data
+                  {t('yearFilter.description')}
                 </div>
               </CardContent>
             </Card>
@@ -177,191 +171,97 @@ export default function Statistics() {
         </div>
 
         {/* Leaderboards Section */}
-        <div>
-          <Tabs defaultValue='individuals' className='w-full'>
-            <div className='flex justify-between items-center mb-4'>
-              <TabsList>
-                <TabsTrigger value='individuals'>
-                  Individual Leaderboard
-                </TabsTrigger>
-                <TabsTrigger value='committees'>
-                  Committee Leaderboard
-                </TabsTrigger>
-              </TabsList>
-
-              <div className='flex items-center gap-2'>
-                <span className='text-sm text-muted-foreground'>View:</span>
-                <Tabs
-                  value={leaderboardView}
-                  onValueChange={setLeaderboardView}
-                  className='w-[200px]'
-                >
-                  <TabsList className='grid w-full grid-cols-2'>
-                    <TabsTrigger value='yearly'>Yearly</TabsTrigger>
-                    <TabsTrigger value='total'>Total</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-            </div>
-
-            <TabsContent value='individuals'>
-              <PopIn>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Top Spenders - Individuals</CardTitle>
-                    <CardDescription>
-                      {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'}{' '}
-                      highest expense contributors
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className='rounded-md border'>
-                      <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
-                        <div className='col-span-1'>#</div>
-                        <div className='col-span-5'>Name</div>
-                        <div className='col-span-3'>Committee</div>
-                        <div className='col-span-3 text-right'>Amount</div>
-                      </div>
-                      {individualLeaderboardData.map((person, index) => (
-                        <div
-                          key={person.name}
-                          className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                        >
-                          <div className='col-span-1 font-medium'>
-                            {index + 1}
-                          </div>
-                          <div className='col-span-5'>{person.name}</div>
-                          <div className='col-span-3'>{person.committee}</div>
-                          <div className='col-span-3 text-right font-medium'>
-                            <span className='mr-2 text-muted-foreground select-none'>
-                              SEK
-                            </span>
-                            {person.amount.toLocaleString()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </PopIn>
-            </TabsContent>
-
-            <TabsContent value='committees'>
-              <PopIn>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Top Spenders - Committees</CardTitle>
-                    <CardDescription>
-                      {leaderboardView === 'yearly' ? 'Yearly' : 'All-time'}{' '}
-                      highest expense departments
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className='rounded-md border'>
-                      <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
-                        <div className='col-span-1'>#</div>
-                        <div className='col-span-5'>Committee</div>
-                        <div className='col-span-3'>Members</div>
-                        <div className='col-span-3 text-right'>Amount</div>
-                      </div>
-                      {committeeLeaderboardData.map((committee, index) => (
-                        <div
-                          key={committee.name}
-                          className='grid grid-cols-12 p-4 text-sm items-center border-t'
-                        >
-                          <div className='col-span-1 font-medium'>
-                            {index + 1}
-                          </div>
-                          <div className='col-span-5'>{committee.name}</div>
-                          <div className='col-span-3'>{committee.members}</div>
-                          <div className='col-span-3 text-right font-medium'>
-                            ${committee.amount.toLocaleString()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </PopIn>
-            </TabsContent>
-          </Tabs>
-        </div>
-
-        {/* Chart Section */}
-        <div className='grid gap-6 md:grid-cols-2'>
+        <div className='z-10'>
           <PopIn>
-            <Card>
+            <Card className='border-none shadow-lg hover:shadow-xl transition-shadow duration-300 shadow-green-600/10'>
               <CardHeader>
-                <CardTitle>Monthly Expenses</CardTitle>
+                <CardTitle>{t('committeeLeaderboard.title')}</CardTitle>
                 <CardDescription>
-                  Expense trends throughout the year
+                  {t('committeeLeaderboard.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className='h-80'>
-                <ResponsiveContainer
-                  width='100%'
-                  height='100%'
-                  className='text-sm'
-                >
-                  <AreaChart
-                    data={monthlyData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray='3 3' />
-                    <XAxis dataKey='name' />
-                    <YAxis />
-                    <Tooltip formatter={(value) => `$${value}`} />
-                    <Area
-                      type='monotone'
-                      dataKey='amount'
-                      name='amount'
-                      stroke='hsl(var(--primary))'
-                      fillOpacity={0.2}
-                      fill='hsl(var(--primary))'
-                      dot={{ stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
-                      activeDot={{ r: 8 }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </PopIn>
+              <CardContent>
+                <div className='rounded-md border'>
+                  <div className='grid grid-cols-12 bg-muted p-4 text-sm font-medium'>
+                    <div className='col-span-1 pl-2'>#</div>
+                    <div className='col-span-5'>
+                      {t('committeeLeaderboard.committee')}
+                    </div>
+                    <div className='col-span-3 text-right'>
+                      {t('committeeLeaderboard.amount')}
+                    </div>
+                  </div>
+                  {leaderboardView === 'yearly' ? (
+                    yearCommitteesStatistics.length === 0 ? (
+                      <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
+                        <div className='col-span-12 text-center text-muted-foreground'>
+                          {t('committeeLeaderboard.none')}
+                        </div>
+                      </div>
+                    ) : (
+                      yearCommitteesStatistics.map((statistic, index) => {
+                        if (!statistic.committee) return null
 
-          <PopIn>
-            <Card>
-              <CardHeader>
-                <CardTitle>Expenses by Committee</CardTitle>
-                <CardDescription>
-                  Distribution across departments
-                </CardDescription>
-              </CardHeader>
+                        return (
+                          <div
+                            key={statistic.committee.translations[0].title}
+                            className='grid grid-cols-12 p-4 text-sm items-center border-t'
+                          >
+                            <div
+                              className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
+                            >
+                              {index + 1}
+                            </div>
+                            <div className='col-span-5'>
+                              {statistic.committee.translations[0].title}
+                            </div>
+                            <div className='col-span-3 text-right font-medium'>
+                              <span className='mr-2 text-muted-foreground select-none'>
+                                SEK
+                              </span>
+                              {statistic.value.toLocaleString()}
+                            </div>
+                          </div>
+                        )
+                      })
+                    )
+                  ) : (
+                    leaderboardView === 'total' &&
+                    (allTimeCommitteesStatistics.length === 0 ? (
+                      <div className='grid grid-cols-12 p-4 text-sm items-center border-t'>
+                        <div className='col-span-12 text-center text-muted-foreground'>
+                          {t('committeeLeaderboard.none')}
+                        </div>
+                      </div>
+                    ) : (
+                      allTimeCommitteesStatistics.map((statistic, index) => {
+                        if (!statistic.committee) return null
 
-              <CardContent className='h-80'>
-                <ResponsiveContainer width='100%' height='100%'>
-                  <PieChart>
-                    <Pie
-                      data={committeeData}
-                      cx='50%'
-                      cy='50%'
-                      labelLine={false}
-                      outerRadius={80}
-                      fill='#8884d8'
-                      dataKey='value'
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
-                    >
-                      {committeeData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${entry.name}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => `$${value}`} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
+                        return (
+                          <div
+                            key={statistic.committee.translations[0].title}
+                            className='grid grid-cols-12 p-4 text-sm items-center border-t'
+                          >
+                            <div
+                              className={`w-6 h-6 text-xs font-bold grid place-items-center rounded-full ${index === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-500' : index === 1 ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' : index === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-500' : 'bg-gray-50 text-gray-600 dark:bg-gray-900 dark:text-gray-500'}`}
+                            >
+                              {index + 1}
+                            </div>
+                            <div className='col-span-5'>
+                              {statistic.committee.translations[0].title}
+                            </div>
+                            <div className='col-span-3 text-right font-medium'>
+                              <span className='mr-2 text-muted-foreground select-none'>
+                                SEK
+                              </span>
+                              {statistic.value.toLocaleString()}
+                            </div>
+                          </div>
+                        )
+                      })
+                    ))
+                  )}
+                </div>
               </CardContent>
             </Card>
           </PopIn>

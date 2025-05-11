@@ -1,0 +1,17 @@
+{
+    "preferences": "Preferences",
+    "preferences.description": "Change your settings to customize your experience.",
+    "preferences.language.title": "Language",
+    "preferences.theme.title": "Theme",
+    "preferences.theme.light": "Light theme",
+    "preferences.theme.dark": "Dark theme",
+    "accountSettings": "Account Settings",
+    "appSwitcher": "Change App",
+    "apps": "Apps",
+    "appSwitcher.description": "Switch between different apps.",
+    "medieteknik": "Media Technology",
+    "rgbank": "RGBank",
+    "logout": "Log out",
+    "login": "Log in",
+    "welcome": "Welcome!"
+}

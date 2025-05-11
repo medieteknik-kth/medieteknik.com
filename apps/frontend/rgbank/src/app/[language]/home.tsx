@@ -1,13 +1,27 @@
 import { getAllCommittees } from '@/api/committee'
 import UploadForm from '@/app/[language]/upload/form'
+import { getTranslation } from '@/app/i18n'
 import HeaderGap from '@/components/header/components/HeaderGap'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
-export default async function Home() {
+interface Params {
+  language: LanguageCode
+}
+
+interface Props {
+  params: Promise<Params>
+}
+
+export default async function Home(props: Props) {
+  const { language } = await props.params
+  const { t } = await getTranslation(language, 'home')
+  const { t: errors } = await getTranslation(language, 'errors')
   const { data: committees, error } = await getAllCommittees('en')
+
   if (error) {
     return (
       <div>
-        Error loading committees <br />
+        {errors('committees.notFound')} <br />
         <span>{error.name}</span> <br />
         <span>{error.message}</span>
       </div>
@@ -17,21 +31,21 @@ export default async function Home() {
   return (
     <main className='bg-neutral-100 dark:bg-neutral-900'>
       <HeaderGap />
-      <div className='container my-4'>
-        <UploadForm committees={committees} />
+      <div className='px-2 xs:px-0 xs:container py-4'>
+        <UploadForm language={language} committees={committees} />
       </div>
       <div className='bg-white border-t-2 border-black py-8 dark:bg-neutral-800 dark:border-neutral-700'>
         <div className='container'>
-          <h1 className='text-3xl font-bold'>Information</h1>
+          <h1 className='text-3xl font-bold'>{t('information')}</h1>
           <br />
           {/* TODO: Better description */}
           <p>
-            Hello! This is a simple invoice upload form. You can upload your
-            invoice here, and it will be processed. The invoice will be sent
-            financial board for review. Once the invoice is approved, it will be
-            sent to the chapter for payment. You will be notified via email once
-            the invoice is approved or rejected. If you have any questions,
-            please contact the financial board.
+            {t('information.description_1')}
+            <br />
+            <br />
+            {t('information.description_2')}
+            <br />
+            <br />
           </p>
         </div>
       </div>

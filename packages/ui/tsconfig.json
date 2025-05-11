@@ -1,0 +1,11 @@
+{
+    "extends": "@medieteknik/typescript-config/tsconfig.base.json",
+    "include": [
+        "src/**/*",
+    ],
+    "main": "./src/index.ts",
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

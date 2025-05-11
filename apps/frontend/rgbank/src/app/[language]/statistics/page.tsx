@@ -1,3 +1,3 @@
-import Statistics from '@/app/[language]/statistics/statistics'
+import StatisticData from '@/app/[language]/statistics/data'
 
-export default Statistics
+export default StatisticData

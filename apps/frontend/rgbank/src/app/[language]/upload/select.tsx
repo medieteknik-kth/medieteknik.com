@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/app/i18n/client'
 import { PopIn } from '@/components/animation/pop-in'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,29 +9,36 @@ import {
   CreditCardIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import { useState } from 'react'
 
 interface Props {
+  language: LanguageCode
   onClickCallback: (template: string) => void
 }
 
-export default function SelectTemplate({ onClickCallback }: Props) {
+export default function SelectTemplate({ language, onClickCallback }: Props) {
   const [selectedTemplate, setSelectedTemplate] = useState('')
+  const { t } = useTranslation(language, 'upload/base')
+  const { t: expenseT } = useTranslation(language, 'expense')
+  const { t: invoiceT } = useTranslation(language, 'invoice')
 
   return (
     <>
       <div>
         <p className='text-center text-sm text-muted-foreground'>
-          Choose a template to get started with your invoice or expense.
+          {t('select_template.description')}
         </p>
-        <h1 className='text-3xl font-bold text-center'>Choose a template</h1>
+        <h1 className='text-3xl font-bold text-center'>
+          {t('select_template.title')}
+        </h1>
       </div>
       <div className='pb-20'>
-        <ul className='w-full h-96 grid grid-cols-2 p-10 gap-8'>
-          <li className='h-full place-self-end'>
-            <PopIn className='h-full'>
+        <ul className='w-full h-fit md:h-96 grid md:grid-cols-2 py-10 md:px-10 gap-8'>
+          <li className='h-full place-self-center md:place-self-end'>
+            <PopIn className='h-48 md:h-full'>
               <button
-                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
+                className='w-full h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
                 type='button'
                 onClick={() => setSelectedTemplate('expense')}
                 disabled={selectedTemplate === 'expense'}
@@ -44,16 +52,16 @@ export default function SelectTemplate({ onClickCallback }: Props) {
                     } transition-all duration-300`}
                   />
                 </div>
-                <CreditCardIcon className='w-20 h-20' />
-                <p className='font-bold text-xl'>Expense</p>
+                <CreditCardIcon className='w-10 h-10 md:w-20 md:h-20' />
+                <p className='font-bold text-xl'>{expenseT('expense')}</p>
               </button>
             </PopIn>
           </li>
-          <li className='h-full place-self-start'>
-            <PopIn className='h-full'>
+          <li className='h-full place-self-center md:place-self-start'>
+            <PopIn className='h-48 md:h-full'>
               <button
                 type='button'
-                className='h-full aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer'
+                className='w-full h-full  aspect-square border rounded-xl flex flex-col justify-center items-center gap-10 px-4 py-6 relative bg-white cursor-pointer dark:bg-muted'
                 onClick={() => setSelectedTemplate('invoice')}
                 disabled={selectedTemplate === 'invoice'}
               >
@@ -66,8 +74,8 @@ export default function SelectTemplate({ onClickCallback }: Props) {
                     } transition-all duration-300`}
                   />
                 </div>
-                <DocumentTextIcon className='w-20 h-20' />
-                <p className='font-bold text-xl'>Invoice</p>
+                <DocumentTextIcon className='w-10 h-10 md:w-20 md:h-20' />
+                <p className='font-bold text-xl'>{invoiceT('invoice')}</p>
               </button>
             </PopIn>
           </li>
@@ -81,7 +89,7 @@ export default function SelectTemplate({ onClickCallback }: Props) {
           }}
           disabled={selectedTemplate === ''}
         >
-          Next
+          {t('select_template.button')}
           <ArrowRightIcon className='w-4 h-4 ml-2' />
         </Button>
       </div>

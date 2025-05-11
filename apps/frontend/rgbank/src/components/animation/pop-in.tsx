@@ -1,8 +1,12 @@
-import { cn } from '@/lib/utils'
+'use client'
+
+import { cn } from '@medieteknik/ui'
 import { motion } from 'framer-motion'
 import type { JSX } from 'react'
 
 interface Props {
+  duration?: number
+  delay?: number
   className?: string
   children: React.ReactNode
 }
@@ -19,12 +23,19 @@ interface Props {
  *  <p>Hello, World!</p>
  * </PopIn>
  */
-export function PopIn({ className, children }: Props): JSX.Element {
+export function PopIn({
+  duration,
+  delay,
+  className,
+  children,
+}: Props): JSX.Element {
+  duration = duration || 0.5
+  delay = delay || 0
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: duration, delay: delay }}
       className={cn(className)}
     >
       {children}

@@ -1,0 +1,6 @@
+{
+    "select_template.title": "Choose a template",
+    "select_template.description": "Choose a template to get started with your invoice or expense.",
+    "select_template.button": "Next",
+    "*": "* singifies a required field"
+}

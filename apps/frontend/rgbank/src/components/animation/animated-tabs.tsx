@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@medieteknik/ui'
 import { motion } from 'framer-motion'
 import type { HTMLAttributes, JSX } from 'react'
 

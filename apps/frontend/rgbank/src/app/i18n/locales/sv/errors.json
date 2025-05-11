@@ -1,0 +1,8 @@
+{
+    "generic": "Ett fel inträffade. Försök igen senare.",
+    "committees.notFound": "Inga nämnder hittades.",
+    "domains.notFound": "Vi har för närvarande problem med våra resultatställen.\nFörsök igen senare.",
+    "invoiceOrExpense.notFound": "Vi har för närvarande problem med att ladda dina fakturor eller utgifter.\nFörsök igen senare.",
+    "settings.failed.title": "Inställningar misslyckades att ladda",
+    "settings.failed.description": "Ett fel inträffade när inställningarna skulle laddas. Försök igen senare." 
+}

@@ -579,7 +579,6 @@ export default function NotificationPage({ language }: Props) {
                       })
                   } else {
                     setAllEvents(false)
-                    console.log(notificationForm.getValues().committees)
                     const index = notificationForm
                       .getValues()
                       .committees?.findIndex(
