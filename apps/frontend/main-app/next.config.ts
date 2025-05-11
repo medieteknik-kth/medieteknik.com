@@ -111,6 +111,11 @@ const nextConfig: NextConfig = {
       level: 'error',
     }
 
+    config.resolve.alias['@shared'] = require('node:path').resolve(
+      __dirname,
+      '../../shared'
+    )
+
     interface FileLoaderRule {
       test?: RegExp
       // biome-ignore lint/suspicious/noExplicitAny: This is a Next.js type

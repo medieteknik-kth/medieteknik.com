@@ -4,7 +4,7 @@
     "workspaces": [
         "apps/backend/*",
         "apps/frontend/*",
-        "apps/shared/*"
+        "packages/*"
     ],
     "packageManager": "bun@1.2.5",
     "devDependencies": {

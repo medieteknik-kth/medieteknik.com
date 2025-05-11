@@ -1,0 +1,6 @@
+{
+    "title": "Översikt",
+    "description": "Detta är översiktssidan för adminpanelen. Här kan du se en översikt över applikationen och dess användare.",
+    "view.cards": "Kort",
+    "view.kanban": "Kanban"
+}

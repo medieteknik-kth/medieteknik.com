@@ -1,15 +1,23 @@
 services:
   web:
-    container_name: medieteknik_web
+    container_name: web
+    tty: true
     build: .
     ports:
       - "80:80"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80/api/v1/health" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: on-failure
     depends_on:
       - database
   database:
-    container_name: medieteknik_db
+    container_name: database
     image: postgres:16
     ports:
       - "5432:5432"
@@ -22,4 +30,5 @@ services:
 
 volumes:
   postgres-data:
+
 

@@ -33,11 +33,14 @@ export const getStudentPublic = async (
     student: Student
     profile?: Profile
     memberships: IndividualCommitteePosition[]
-  }>(`/students/${studentId}?language=${language_code}&detailed=${detailed}`, {
-    next: {
-      revalidate: revalidate,
-    },
-  })
+  }>(
+    `/public/students/${studentId}?language=${language_code}&detailed=${detailed}`,
+    {
+      next: {
+        revalidate: revalidate,
+      },
+    }
+  )
 
   if (error) {
     return { data, error }
@@ -64,7 +67,7 @@ export const getOfficials = async (
 ): Promise<ApiResponse<StudentCommitteePosition[]>> => {
   // TODO: Change the API endpoint to something like this '/public/officials/'?
   const { data, error } = await fetchData<StudentCommitteePosition[]>(
-    `/students/committee_members?language=${language_code}&year=${year}&semester=${semester}`,
+    `/public/students/committee_members?language=${language_code}&year=${year}&semester=${semester}`,
     {
       next: {
         revalidate: revalidate,

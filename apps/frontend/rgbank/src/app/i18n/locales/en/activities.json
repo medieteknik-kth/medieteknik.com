@@ -1,0 +1,20 @@
+{
+    "activity.filter.title": "Filters",
+    "activity.filter.description": "Select the status you want to filter by.",
+    "activity.filter.search.label": "Search",
+    "activity.filter.search.placeholder": "Search (by user, title, or status)",
+    "activity.view.full": "Show Full Cards",
+    "activity.view.short": "Show Short Cards",
+    "activity.table.title": "Title",
+    "activity.table.createdAt": "Created at",
+    "activity.table.dueDate": "Due date",
+    "activity.table.status": "Status",
+    "activity.table.status.new": "New",
+    "activity.table.status.pending": "Pending",
+    "activity.table.status.completed": "Completed",
+    "activity.table.amount": "Amount",
+    "activity.table.user": "User",
+    "activity.table.actions": "Actions",
+    "activity.table.actions.view": "View",
+    "activity.table.actions.delete": "Delete"
+}

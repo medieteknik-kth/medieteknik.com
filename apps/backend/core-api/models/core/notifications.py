@@ -188,6 +188,12 @@ class Notifications(db.Model):
         lazy="joined",
         cascade="all, delete-orphan",
     )
+    sent_notifications = db.relationship(
+        "SentNotifications",
+        back_populates="notification",
+        lazy="joined",
+        cascade="all, delete-orphan",
+    )
 
     def to_dict(
         self, provided_languages: List[str] = AVAILABLE_LANGUAGES
@@ -269,3 +275,28 @@ class NotificationsTranslation(db.Model):
             "body": self.body,
             "url": self.url,
         }
+
+
+class SentNotifications(db.Model):
+    __tablename__ = "sent_notifications"
+
+    sent_notification_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
+
+    notification_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("notifications.notification_id"),
+        nullable=False,
+        unique=False,
+    )
+
+    # Relationships
+    notification = db.relationship(
+        "Notifications",
+        back_populates="sent_notifications",
+        lazy="joined",
+    )

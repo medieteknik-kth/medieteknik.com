@@ -14,3 +14,14 @@ export const addMember = z.object({
     )
     .min(1),
 })
+
+export const removeMember = z.object({
+  students: z
+    .array(
+      z.object({
+        student_email: z.string().email(),
+      })
+    )
+    .min(1),
+  committee_position_id: z.string().uuid(),
+})

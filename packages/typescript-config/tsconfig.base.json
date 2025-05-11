@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": "../../",
+        "paths": {
+            "@medieteknik/*": [
+                "./packages/*"
+            ],
+            "@medieteknik/ui/*": [
+                "./packages/ui/src/*"
+            ],
+        }
+    }
+}

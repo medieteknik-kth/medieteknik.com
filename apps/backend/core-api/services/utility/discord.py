@@ -98,14 +98,15 @@ def send_discord_event(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, st
     """
 
     def format_date(date_str: str) -> str:
-        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
-            try:
-                dt = datetime.strptime(date_str, fmt)
-                return f"{dt.strftime('%B')} {dt.strftime('%d')} {dt.strftime('%H:%M')}"
-            except ValueError:
-                continue
-        log_error(f"Failed to format date: {date_str}")
-        return date_str
+        """Formats the date string to a Discord timestamp.
+
+        :param date_str: The date string.
+        :type date_str: str
+        :return: The formatted date string.
+        :rtype: str
+        """
+        date = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        return f"<t:{int(date.timestamp())}:F>"
 
     formatted_start_date = format_date(str(data["start_date"]))
     formatted_end_date = format_date(str(data["end_date"]))
@@ -119,17 +120,17 @@ def send_discord_event(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, st
                 "color": 16436245,
                 "fields": [
                     {
-                        "name": "Location",
+                        "name": "Plats",
                         "value": data["location"],
                         "inline": True,
                     },
                     {
-                        "name": "Start date",
+                        "name": "Start Datum",
                         "value": str(formatted_start_date),
                         "inline": True,
                     },
                     {
-                        "name": "End date",
+                        "name": "Avslutnings Datum",
                         "value": str(formatted_end_date),
                         "inline": True,
                     },

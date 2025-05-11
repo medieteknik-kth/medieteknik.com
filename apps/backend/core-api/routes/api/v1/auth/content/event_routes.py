@@ -18,7 +18,7 @@ from services.content import (
     delete_item,
 )
 from services.content.public import get_main_calendar
-from services.utility import TopicType, send_discord_topic, send_notification_topic
+from services.core.notifications import add_notification
 from utility.database import db
 from utility.logger import log_error
 
@@ -206,46 +206,32 @@ def create_event() -> Response:
         location = event.location
         start_date = event.start_date
         end_date = event.end_date
-        author_name: str = author.get("translations")[0].get("title")
-        author_url = f"https://medieteknik.com/chapter/committees/{author_name.lower()}"
 
         try:
-            # If this fails, the event will still be created
-            send_discord_topic(
-                type=TopicType.EVENT,
-                topic_data={
-                    "title": title,
-                    "description": description,
-                    "location": location,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "author_name": author_name,
-                    "author_url": author_url,
-                    "event_id": id,
-                },
+            success, message = add_notification(
+                message_data={
+                    "message_data": {
+                        "notification_type": "EVENT",
+                        "translations": [
+                            {
+                                "language_code": "en",
+                                "title": title,
+                                "body": description,
+                                "url": "https://www.medieteknik.com/bulletin",
+                            }
+                        ],
+                        "notification_metadata": {
+                            "event_location": location,
+                            "event_start_date": str(start_date),
+                        },
+                        "committee_id": author.get("committee_id"),
+                        "event_id": id,
+                    }
+                }
             )
-
-            send_notification_topic(
-                type=TopicType.EVENT,
-                topic_data={
-                    "notification_type": "EVENT",
-                    "translations": [
-                        {
-                            "language_code": "en",
-                            "title": title,
-                            "body": description,
-                            "url": "https://www.medieteknik.com/sv/bulletin",
-                        }
-                    ],
-                    "notification_metadata": {
-                        "event_location": location,
-                        "event_start_date": start_date,
-                    },
-                    "committee_id": author.get("committee_id"),
-                    "event_id": id,
-                },
-            )
+            if not success:
+                log_error(f"Failed to add notification: {message}")
         except Exception as e:
-            log_error(f"Failed to send topic message for event {id}: {str(e)}")
+            log_error(f"Error adding notification: {str(e)}")
 
     return {"id": id}, HTTPStatus.CREATED

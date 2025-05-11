@@ -1,0 +1,8 @@
+{
+    "generic": "An error occurred. Please try again later.",
+    "committees.notFound": "No committees found.",
+    "domains.notFound": "We are currently experiencing issues with our expense domains.\nPlease try again later.",
+    "invoiceOrExpense.notFound": "We are currently experiencing issues loading your invoices or expenses.\nPlease try again later.",
+    "settings.failed.title": "Settings failed to load",
+    "settings.failed.description": "An error occurred while loading the settings. Please try again later." 
+}

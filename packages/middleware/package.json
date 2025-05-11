@@ -1,0 +1,20 @@
+{
+    "name": "@medieteknik/middleware",
+    "version": "0.0.1",
+    "private": true,
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "scripts": {
+        "test": "bun run jest"
+    },
+    "dependencies": {
+        "next": "^15.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "@medieteknik/typescript-config": "workspace:*",
+        "@medieteknik/models": "workspace:*",
+        "@medieteknik/constants": "workspace:*",
+        "jest": "^29.7.0"
+    }
+}

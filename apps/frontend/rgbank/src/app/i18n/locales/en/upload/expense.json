@@ -1,0 +1,23 @@
+{
+    "title": "Upload your expense",
+    "description": "Please upload your expense receipt and fill in the required details.",
+    "back": "Back to upload",
+    "error.title.max_length": "Maximum length exceeded ({{maxLength}} characters)",
+    "step_1.title": "Name your expense",
+    "step_1.description": "Enter a name for your expense.",
+    "step_1.placeholder": "Enter a name for your expense.",
+    "step_2.title": "Upload your receipt image",
+    "step_2.description": "Upload your receipt image in PDF, PNG, JPG, JPEG, or AVIF format.",
+    "step_3.title": "Enter a description for the expense",
+    "step_3.description": "Enter a description for the expense.",
+    "step_3.placeholder": "Enter a description for the expense.",
+    "step_4.title": "Enter the date of the expense",
+    "step_4.description": "Enter the date of the expense. The date must be in the past.",
+    "step_4.label": "Date of the expense",
+    "step_5.title": "Is it a digital expense?",
+    "step_5.description": "Select if the expense is digital or not.",
+    "step_5.label": "This is a digital expense",
+    "step_6.title": "Categorize the expense",
+    "step_6.description": "Select the categories and enter the amount for each one.",
+    "finalize": "Finalize Expense"
+}

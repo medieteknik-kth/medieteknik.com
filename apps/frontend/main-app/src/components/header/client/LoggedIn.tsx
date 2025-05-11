@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
@@ -252,137 +253,144 @@ export function NarrowScreenProfileButton({
               </>
             )}
           </SheetHeader>
-          <div className='px-2 pt-3 mb-2 h-full max-h-[calc(100dvh-15rem)] overflow-y-auto'>
-            <div className='px-2 mb-2'>
-              <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
-                {t('navigation')}
-              </p>
-            </div>
-            <nav className='w-full h-fit z-10 justify-between'>
-              <ul className='space-y-2'>
-                <li>
-                  <Link
-                    href={`/${language}`}
-                    className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
-                  >
-                    {t('home')}
-                  </Link>
-                </li>
-                {headerElements.map((element, index) => (
-                  <li key={element.title}>
-                    {element.subNavs ? (
-                      <Collapsible>
-                        <CollapsibleTrigger
-                          onClick={() => {
-                            setCollapsibleOpen((prev) => {
-                              const newCollapsibleOpen = [...prev]
-                              newCollapsibleOpen[index] =
-                                !newCollapsibleOpen[index]
-                              return newCollapsibleOpen
-                            })
-                          }}
-                          className='flex w-full items-center justify-between h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-all'
+          <ScrollArea
+            style={{
+              height: 'calc(100dvh - 20rem)',
+            }}
+          >
+            <div className='px-2 pt-3 mb-2 h-full'>
+              <div className='px-2 mb-2'>
+                <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
+                  {t('navigation')}
+                </p>
+              </div>
+              <nav className='w-full h-fit z-10 justify-between'>
+                <ul className='space-y-2'>
+                  <li>
+                    <Link
+                      href={`/${language}`}
+                      className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
+                    >
+                      {t('home')}
+                    </Link>
+                  </li>
+                  {headerElements.map((element, index) => (
+                    <li key={element.title}>
+                      {element.subNavs ? (
+                        <Collapsible>
+                          <CollapsibleTrigger
+                            onClick={() => {
+                              setCollapsibleOpen((prev) => {
+                                const newCollapsibleOpen = [...prev]
+                                newCollapsibleOpen[index] =
+                                  !newCollapsibleOpen[index]
+                                return newCollapsibleOpen
+                              })
+                            }}
+                            className='flex w-full items-center justify-between h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-all'
+                          >
+                            {element.title}
+                            <ChevronDownIcon
+                              className={`w-4 h-4 transform transition-transform ${
+                                collasibleOpen[index] ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className='collapsible-content w-full'>
+                            <ul className='ml-4 mt-2 space-y-2 h-[90%] text-muted-foreground'>
+                              {element.subNavs.map((subNav) => (
+                                <li key={subNav.title}>
+                                  <Link
+                                    href={`/${language}${subNav.link}`}
+                                    className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
+                                    onClick={() => setSheetOpen(false)}
+                                  >
+                                    {subNav.title}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      ) : (
+                        <Link
+                          href={`/${language}${element.link}`}
+                          className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
+                          onClick={() => setSheetOpen(false)}
                         >
                           {element.title}
-                          <ChevronDownIcon
-                            className={`w-4 h-4 transform transition-transform ${
-                              collasibleOpen[index] ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className='collapsible-content w-full'>
-                          <ul className='ml-4 mt-2 space-y-2 h-[90%] text-muted-foreground'>
-                            {element.subNavs.map((subNav) => (
-                              <li key={subNav.title}>
-                                <Link
-                                  href={`/${language}${subNav.link}`}
-                                  className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
-                                  onClick={() => setSheetOpen(false)}
-                                >
-                                  {subNav.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    ) : (
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              {student && (
+                <div className='py-2'>
+                  <div className='px-2 mb-2'>
+                    <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
+                      {t('account')}
+                    </p>
+                  </div>
+                  <div className='space-y-1.5 overflow-y-auto'>
+                    <Button
+                      variant={'ghost'}
+                      asChild
+                      className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-2 justify-start'
+                    >
                       <Link
-                        href={`/${language}${element.link}`}
-                        className='flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform'
+                        href={`/${language}/account`}
+                        className=''
                         onClick={() => setSheetOpen(false)}
                       >
-                        {element.title}
+                        <Cog6ToothIcon className='w-6 h-6' />
+                        {t('account_settings')}
                       </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            {student && (
-              <div className='py-2'>
-                <div className='px-2 mb-2'>
-                  <p className='text-xs font-semibold text-muted-foreground tracking-wider uppercase'>
-                    {t('account')}
-                  </p>
-                </div>
-                <div className='space-y-1.5 overflow-y-auto'>
-                  <Button
-                    variant={'ghost'}
-                    asChild
-                    className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-2 justify-start'
-                  >
-                    <Link
-                      href={`/${language}/account`}
-                      className=''
-                      onClick={() => setSheetOpen(false)}
-                    >
-                      <Cog6ToothIcon className='w-6 h-6' />
-                      {t('account_settings')}
-                    </Link>
-                  </Button>
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button
-                        variant={'ghost'}
-                        className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3 justify-between'
-                        onClick={addAllRead}
-                      >
-                        <div className='flex items-center gap-2'>
-                          <BellIcon className='w-6 h-6' />
-                          {t('notifications')}
-                        </div>
-                        <Badge
-                          className={`ml-auto ${isAllRead() ? 'hidden' : ''}`}
+                    </Button>
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button
+                          variant={'ghost'}
+                          className='w-full flex items-center h-10 px-3 rounded-md hover:bg-muted active:scale-[0.98] transition-transform gap-3 justify-between'
+                          onClick={addAllRead}
                         >
-                          NEW
-                        </Badge>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent
-                      side={'bottom'}
-                      className='min-h-[75vh] overflow-y-auto px-1 sm:px-6'
-                    >
-                      <SheetHeader>
-                        <SheetTitle>
-                          {t('notifications')}
-                          <sup>
-                            <span className='text-xs text-red-500 font-semibold ml-1 tracking-wide select-none'>
-                              Beta
-                            </span>
-                          </sup>
-                        </SheetTitle>
-                        <SheetDescription className='text-muted-foreground'>
-                          {t('notifications_description')}
-                        </SheetDescription>
-                      </SheetHeader>
-                      {notifications.length === 0 ? (
-                        <div className='w-full min-h-20 h-full grid place-items-center z-10 tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800 rounded-md'>
-                          {commonT('no_notifications')}
-                        </div>
-                      ) : (
-                        (Array.isArray(notifications) ? notifications : []).map(
-                          (notification) =>
+                          <div className='flex items-center gap-2'>
+                            <BellIcon className='w-6 h-6' />
+                            {t('notifications')}
+                          </div>
+                          <Badge
+                            className={`ml-auto ${isAllRead() ? 'hidden' : ''}`}
+                          >
+                            NEW
+                          </Badge>
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent
+                        side={'bottom'}
+                        className='min-h-[75vh] overflow-y-auto px-1 sm:px-6'
+                      >
+                        <SheetHeader>
+                          <SheetTitle>
+                            {t('notifications')}
+                            <sup>
+                              <span className='text-xs text-red-500 font-semibold ml-1 tracking-wide select-none'>
+                                Beta
+                              </span>
+                            </sup>
+                          </SheetTitle>
+                          <SheetDescription className='text-muted-foreground'>
+                            {t('notifications_description')}
+                          </SheetDescription>
+                        </SheetHeader>
+                        {notifications.length === 0 ? (
+                          <div className='w-full min-h-20 h-full grid place-items-center z-10 tracking-wider text-neutral-800 dark:text-neutral-300 select-none bg-neutral-100 dark:bg-neutral-800 rounded-md'>
+                            {commonT('no_notifications')}
+                          </div>
+                        ) : (
+                          (Array.isArray(notifications)
+                            ? notifications
+                            : []
+                          ).map((notification) =>
                             notification.translations[0].url ? (
                               <div
                                 key={notification.notification_id}
@@ -419,14 +427,15 @@ export function NarrowScreenProfileButton({
                                 </div>
                               </div>
                             )
-                        )
-                      )}
-                    </SheetContent>
-                  </Sheet>
+                          )
+                        )}
+                      </SheetContent>
+                    </Sheet>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </ScrollArea>
 
           <SheetFooter className='flex flex-col! gap-4 bottom-0 absolute left-0 right-0 bg-white pb-2 px-4'>
             <div className='grid grid-cols-1 xs:grid-cols-2 gap-1 xs:gap-4'>

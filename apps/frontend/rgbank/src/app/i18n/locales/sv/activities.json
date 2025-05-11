@@ -1,0 +1,20 @@
+{
+    "activity.filter.title": "Filter",
+    "activity.filter.description": "Välj den status du vill filtrera efter.",
+    "activity.filter.search.label": "Sök",
+    "activity.filter.search.placeholder": "Sök (efter användare, titel eller status)",
+    "activity.view.full": "Visa hela kort",
+    "activity.view.short": "Visa kort",
+    "activity.table.title": "Titel",
+    "activity.table.createdAt": "Skapad den",
+    "activity.table.dueDate": "Förfallodatum",
+    "activity.table.status": "Status",
+    "activity.table.status.new": "Ny",
+    "activity.table.status.pending": "Väntande",
+    "activity.table.status.completed": "Avslutad",
+    "activity.table.amount": "Belopp",
+    "activity.table.user": "Användare",
+    "activity.table.actions": "Åtgärder",
+    "activity.table.actions.view": "Visa",
+    "activity.table.actions.delete": "Ta bort"
+}

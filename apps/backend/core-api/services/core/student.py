@@ -12,18 +12,22 @@ from flask_jwt_extended import (
 )
 from typing import Any, Dict, List
 from models.core import Student
+from services.apps.rgbank.auth_service import get_bank_account
+from services.apps.rgbank.permission_service import attach_permissions
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
-from utility.constants import AVAILABLE_LANGUAGES
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_FILTER
 from utility.database import db
 from utility.gc import delete_file, upload_file
 import re
 
 
 def login(
-    data: Dict[str, Any], provided_languages: List[str] = AVAILABLE_LANGUAGES
+    data: Dict[str, Any],
+    provided_languages: List[str] = AVAILABLE_LANGUAGES,
+    filter=DEFAULT_FILTER,
 ) -> Response:
     """
     Login function that validates the user's credentials and generates an access token.
@@ -92,16 +96,26 @@ def login(
     )
     expiration = timedelta(hours=1) if not remember else timedelta(days=14)
     exp_unix = int((datetime.now() + expiration).timestamp())
-    response = make_response(
-        {
-            "student": student.to_dict(is_public_route=False),
-            "committees": committees,
-            "committee_positions": committee_positions,
-            "permissions": permissions,
-            "role": role,
-            "expiration": exp_unix,
-        }
-    )
+
+    response_dict = {
+        "student": student.to_dict(is_public_route=False),
+        "committees": committees,
+        "committee_positions": committee_positions,
+        "permissions": permissions,
+        "role": role,
+        "expiration": exp_unix,
+    }
+
+    if filter == "rgbank":
+        attach_permissions(
+            committee_positions=committee_positions,
+            response_dict=response_dict,
+        )
+        response_dict["rgbank_bank_account"] = get_bank_account(
+            student_id=student.student_id
+        )
+
+    response = make_response(response_dict)
     session["remember"] = remember
     response.status_code = HTTPStatus.OK
     set_access_cookies(
@@ -110,6 +124,7 @@ def login(
             identity=student,
             fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
             expires_delta=expiration,
+            additional_claims=response_dict["rgbank_permissions"],
         ),
         max_age=expiration.total_seconds(),
     )
@@ -182,10 +197,13 @@ def update(request: Request, student: Student) -> Response:
 
         profile_picture.seek(0)
 
+        current_timestamp_ms = datetime.now().timestamp() * 1000
+
         result = upload_file(
             file=profile_picture,
-            file_name=f"{student.student_id}.{file_extension}",
+            file_name=f"{student.student_id}.{file_extension}-{current_timestamp_ms}",
             content_type=f"image/{file_extension if file_extension != 'jpg' else 'jpeg'}",
+            cache_control="public, max-age=31536000",
             timedelta=None,
             path="profile",
         )

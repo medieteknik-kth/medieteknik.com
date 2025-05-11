@@ -24,17 +24,28 @@ from sqlalchemy import text
 from decorators.csrf_protection import csrf_protected
 from models.core.student import Student
 from models.utility.auth import RevokedTokens
+from services.apps.rgbank.auth_service import get_bank_account
+from services.apps.rgbank.permission_service import attach_permissions
 from services.core.student import login
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
 from sqlalchemy.exc import SQLAlchemyError
-from utility.constants import API_VERSION, PROTECTED_PATH, PUBLIC_PATH, ROUTES
+from utility.constants import (
+    API_VERSION,
+    DEFAULT_FILTER,
+    POSSIBLE_FILTERS,
+    PROTECTED_PATH,
+    PUBLIC_PATH,
+    ROUTES,
+)
 from flask_wtf.csrf import generate_csrf
 from utility.authorization import oauth
 from utility.database import db
+from utility.logger import log_error
 from utility.translation import retrieve_languages
+from utility.authorization import jwt
 
 
 def register_v1_routes(app: Flask):
@@ -74,66 +85,123 @@ def register_v1_routes(app: Flask):
         tasks_bp,
     )
 
+    from ..apps.rgbank import (
+        account_bp,
+        expense_domain_bp,
+        public_expense_domain_bp,
+        expense_bp,
+        invoice_bp,
+        rgbank_permissions_bp,
+        statistics_bp,
+        public_statistics_bp,
+    )
+
     # Public Routes
-    app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
-    app.register_blueprint(
-        public_committee_category_bp,
-        url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}",
-    )
-    app.register_blueprint(public_calendar_bp, url_prefix=f"{PUBLIC_PATH}/calendar")
-    app.register_blueprint(
-        public_committee_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}"
-    )
-    app.register_blueprint(
-        public_committee_position_bp,
-        url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
-    )
-    app.register_blueprint(
-        public_student_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.STUDENTS.value}"
-    )
-    app.register_blueprint(
-        public_news_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.NEWS.value}"
-    )
-    app.register_blueprint(
-        public_documents_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}"
-    )
-    app.register_blueprint(
-        public_media_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.MEDIA.value}"
-    )
-    app.register_blueprint(
-        public_album_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.ALBUMS.value}"
-    )
+    def register_public_routes():
+        """Register all public routes."""
+        app.register_blueprint(public_bp, url_prefix=f"{PUBLIC_PATH}")
+        app.register_blueprint(
+            public_committee_category_bp,
+            url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_CATEGORIES.value}",
+        )
+        app.register_blueprint(public_calendar_bp, url_prefix=f"{PUBLIC_PATH}/calendar")
+        app.register_blueprint(
+            public_committee_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEES.value}"
+        )
+        app.register_blueprint(
+            public_committee_position_bp,
+            url_prefix=f"{PUBLIC_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
+        )
+        app.register_blueprint(
+            public_student_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.STUDENTS.value}"
+        )
+        app.register_blueprint(
+            public_news_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.NEWS.value}"
+        )
+        app.register_blueprint(
+            public_documents_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.DOCUMENTS.value}"
+        )
+        app.register_blueprint(
+            public_media_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.MEDIA.value}"
+        )
+        app.register_blueprint(
+            public_album_bp, url_prefix=f"{PUBLIC_PATH}/{ROUTES.ALBUMS.value}"
+        )
 
     # Protected Routes
-    app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
-    app.register_blueprint(
-        committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
-    )
-    app.register_blueprint(
-        committee_position_bp,
-        url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
-    )
-    app.register_blueprint(news_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.NEWS.value}")
-    app.register_blueprint(
-        events_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.EVENTS.value}"
-    )
-    app.register_blueprint(
-        documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
-    )
-    app.register_blueprint(
-        media_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.MEDIA.value}"
-    )
-    app.register_blueprint(
-        album_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
-    )
-    app.register_blueprint(
-        student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
-    )
-    app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
+    def register_protected_routes():
+        """Register all routes with the protected prefix, requiring authentication."""
+        app.register_blueprint(calendar_bp, url_prefix=f"{PROTECTED_PATH}/calendar")
+        app.register_blueprint(
+            committee_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEES.value}"
+        )
+        app.register_blueprint(
+            committee_position_bp,
+            url_prefix=f"{PROTECTED_PATH}/{ROUTES.COMMITTEE_POSITIONS.value}",
+        )
+        app.register_blueprint(
+            news_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.NEWS.value}"
+        )
+        app.register_blueprint(
+            events_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.EVENTS.value}"
+        )
+        app.register_blueprint(
+            documents_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.DOCUMENTS.value}"
+        )
+        app.register_blueprint(
+            media_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.MEDIA.value}"
+        )
+        app.register_blueprint(
+            album_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.ALBUMS.value}"
+        )
+        app.register_blueprint(
+            student_bp, url_prefix=f"{PROTECTED_PATH}/{ROUTES.STUDENTS.value}"
+        )
+        app.register_blueprint(scheduler_bp, url_prefix=f"{PROTECTED_PATH}/scheduler")
 
-    app.register_blueprint(message_bp, url_prefix=f"{PROTECTED_PATH}/messages")
+        app.register_blueprint(message_bp, url_prefix=f"{PROTECTED_PATH}/messages")
 
-    app.register_blueprint(tasks_bp, url_prefix=f"{PROTECTED_PATH}/tasks")
+        app.register_blueprint(tasks_bp, url_prefix=f"{PROTECTED_PATH}/tasks")
+
+    # RGBank Routes
+    def register_rgbank_routes():
+        """ "Register all routes for the RGBank app."""
+        app.register_blueprint(
+            account_bp, url_prefix=f"{PROTECTED_PATH}/rgbank/account"
+        )
+        app.register_blueprint(
+            expense_domain_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/expense-domains",
+        )
+        app.register_blueprint(
+            public_expense_domain_bp,
+            url_prefix=f"{PUBLIC_PATH}/rgbank/expense-domains",
+        )
+        app.register_blueprint(
+            expense_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/expenses",
+        )
+        app.register_blueprint(
+            invoice_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/invoices",
+        )
+        app.register_blueprint(
+            rgbank_permissions_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/permissions",
+        )
+        app.register_blueprint(
+            statistics_bp,
+            url_prefix=f"{PROTECTED_PATH}/rgbank/statistics",
+        )
+        app.register_blueprint(
+            public_statistics_bp,
+            url_prefix=f"{PUBLIC_PATH}/rgbank/statistics",
+        )
+
+    # Register all routes
+    register_public_routes()
+    register_protected_routes()
+    register_rgbank_routes()
 
     @app.after_request
     def add_headers(response: Response):
@@ -177,6 +245,7 @@ def register_v1_routes(app: Flask):
             # If the token is about to expire, refresh it
             if target_timestamp > exp_timestamp:
                 student_id = get_jwt_identity()
+                filter = session.get("filter", DEFAULT_FILTER)
 
                 student: Student | None = Student.query.filter_by(
                     student_id=student_id
@@ -192,20 +261,31 @@ def register_v1_routes(app: Flask):
                 expiration = timedelta(hours=1) if not remember else timedelta(days=14)
                 exp_unix = int((datetime.now() + expiration).timestamp())
 
-                response = jsonify(
-                    {
-                        "student": student.to_dict(is_public_route=False),
-                        "permissions": permissions,
-                        "role": role,
-                        "committees": committees,
-                        "committee_positions": committee_positions,
-                        "expiration": exp_unix,
-                    }
-                )
+                response_dict = {
+                    "student": student.to_dict(is_public_route=False),
+                    "permissions": permissions,
+                    "role": role,
+                    "committees": committees,
+                    "committee_positions": committee_positions,
+                    "expiration": exp_unix,
+                }
+
+                if filter == "rgbank":
+                    attach_permissions(
+                        committee_positions=committee_positions,
+                        response_dict=response_dict,
+                    )
+                    response_dict["rgbank_bank_account"] = get_bank_account(
+                        student_id=student.student_id
+                    )
+
+                response = jsonify(response_dict)
+
                 access_token = create_access_token(
                     identity=student,
                     fresh=False,
                     expires_delta=expiration,
+                    additional_claims=response_dict["rgbank_permissions"],
                 )
                 set_access_cookies(
                     response, access_token, max_age=expiration.total_seconds()
@@ -214,6 +294,17 @@ def register_v1_routes(app: Flask):
         except (RuntimeError, KeyError):
             # Case where there is not a valid JWT. Just return the original respone
             pass
+
+        return response
+
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error: str) -> Response:
+        """
+        Callback for invalid token.
+        """
+        response = make_response({"error": f"Invalid token: {error}"})
+        unset_jwt_cookies(response)
+        response.status_code = HTTPStatus.UNAUTHORIZED
 
         return response
 
@@ -275,6 +366,12 @@ def register_v1_routes(app: Flask):
         Logs in a student
             :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
         """
+        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
+
+        if filter not in POSSIBLE_FILTERS:
+            return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
+
+        session["filter"] = filter
 
         data = request.get_json()
 
@@ -285,7 +382,7 @@ def register_v1_routes(app: Flask):
 
         data: dict[str, Any] = json.loads(json.dumps(data))
 
-        return login(data=data, provided_languages=provided_languages)
+        return login(data=data, provided_languages=provided_languages, filter=filter)
 
     @app.route("/api/v1/logout", methods=["DELETE"])
     @jwt_required()
@@ -322,10 +419,15 @@ def register_v1_routes(app: Flask):
         OAuth route for KTH login. First step in the OAuth flow. See the /oidc route for the second step.
         """
         nonce = secrets.token_urlsafe(32)
+        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
+
+        if filter not in POSSIBLE_FILTERS:
+            return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
 
         return_url = request.args.get("return_url", type=str, default="/")
         remember = request.args.get("remember", type=bool, default=False)
         return_url = urllib.parse.quote(return_url)
+        session["filter"] = filter
         session["return_url"] = return_url
         session["remember"] = remember
         session["oauth_nonce"] = nonce
@@ -367,6 +469,7 @@ def register_v1_routes(app: Flask):
         student_email = student_data.get("username") + "@kth.se"
 
         student = Student.query.filter_by(email=student_email).one_or_none()
+        filter = session.get("filter", DEFAULT_FILTER)
 
         if not student:
             student = Student(
@@ -386,16 +489,22 @@ def register_v1_routes(app: Flask):
             )
 
             exp_unix = int((datetime.now() + expiration).timestamp())
-            response = make_response(
-                {
-                    "student": student.to_dict(is_public_route=False),
-                    "permissions": permissions,
-                    "role": role,
-                    "committees": committees,
-                    "committee_positions": committee_positions,
-                    "expiration": exp_unix,
-                }
-            )
+            response_dict = {
+                "student": student.to_dict(is_public_route=False),
+                "permissions": permissions,
+                "role": role,
+                "committees": committees,
+                "committee_positions": committee_positions,
+                "expiration": exp_unix,
+            }
+
+            if filter == "rgbank":
+                attach_permissions(
+                    committee_positions=committee_positions,
+                    response_dict=response_dict,
+                )
+
+            response = make_response(response_dict)
         except Exception as e:
             app.logger.error(f"Error retrieving extra claims: {str(e)}")
 
@@ -405,6 +514,7 @@ def register_v1_routes(app: Flask):
             encoded_access_token=create_access_token(
                 identity=student,
                 fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
+                additional_claims=response_dict["rgbank_permissions"],
                 expires_delta=timedelta(hours=1)
                 if not remember
                 else timedelta(days=14),
@@ -416,4 +526,5 @@ def register_v1_routes(app: Flask):
             response.headers.add("Location", f"https://www.medieteknik.com{return_url}")
         else:
             response.headers.add("Location", "https://www.medieteknik.com")
+
         return response

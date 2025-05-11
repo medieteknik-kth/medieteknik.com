@@ -7,8 +7,20 @@ This script is used to create all tables in the database. It is used to initiali
 import argparse
 from main import app
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.schema import CreateSchema
 from utility import db
 from models.utility import RevokedTokens  # noqa: F401
+from models.apps.rgbank import (
+    AccountBankInformation,  # noqa: F401
+    ExpenseDomain,  # noqa: F401
+    Expense,  # noqa: F401
+    Invoice,  # noqa: F401
+    RGBankPermissions,  # noqa: F401
+    Statistics,  # noqa: F401
+    ExpenseCount,  # noqa: F401
+    Thread,  # noqa: F401
+    Message,  # noqa: F401
+)
 from models.committees import (
     CommitteeCategory,  # noqa: F401
     CommitteeCategoryTranslation,  # noqa: F401
@@ -43,6 +55,7 @@ from models.core import (
     NotificationPreferences,  # noqa: F401
     Notifications,  # noqa: F401
     NotificationsTranslation,  # noqa: F401
+    SentNotifications,  # noqa: F401
     Permissions,  # noqa: F401
     Role,  # noqa: F401
     StudentPermission,  # noqa: F401
@@ -61,6 +74,10 @@ def init_db():
 
     print("Initializing database...")
     with app.app_context():
+        rgbank_schema = CreateSchema("rgbank", if_not_exists=True)
+        with db.engine.connect() as conn:
+            conn.execute(rgbank_schema)
+            conn.commit()
         print("Creating tables...")
         try:
             db.create_all()

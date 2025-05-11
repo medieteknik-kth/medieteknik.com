@@ -1,0 +1,12 @@
+{
+    "domain": "Domain",
+    "domain.search.placeholder": "Search for a domain",
+    "domain.select": "Select Domain",
+    "domain.noneFound": "No domains found",
+    "category": "Category",
+    "category.search.placeholder": "Search for a category",
+    "category.select": "Select Category",
+    "category.noneFound": "No categories found",
+    "amount": "Amount (SEK)",
+    "addCategory": "Add Category"
+}

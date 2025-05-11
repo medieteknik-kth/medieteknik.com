@@ -1,0 +1,20 @@
+{
+    "title": "Finalize Invoice",
+    "description": "Review your invoice details before finalizing.",
+    "back": "Back",
+    "error": "Failed to create invoice",
+    "metadata.title": "Invoice Metadata",
+    "metadata.paidStatus": "Paid Status",
+    "metadata.paidStatus.paid": "Yes, the chapter has paid",
+    "metadata.paidStatus.unpaid": "No, the chapter should pay",
+    "metadata.text.title": "Title",
+    "metadata.text.description": "Description",
+    "metadata.status.title": "Invoice Status",
+    "metadata.status.original": "Original Invoice",
+    "metadata.status.booked": "Booked",
+    "metadata.amount": "Amount",
+    "metadata.dates.title": "Important Dates",
+    "metadata.dates.invoice": "Date of the invoice",
+    "metadata.dates.payment": "Due date of the invoice",
+    "submit": "Submit Invoice"
+}

@@ -4,7 +4,7 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, request, session
 from flask_jwt_extended import (
     get_jwt,
     get_jwt_identity,
@@ -14,12 +14,15 @@ from http import HTTPStatus
 from typing import Any, Dict
 from decorators import csrf_protected
 from models.core import Profile, Student
+from services.apps.rgbank.auth_service import get_bank_account
+from services.apps.rgbank.permission_service import attach_permissions
 from services.core import update, retrieve_notifications, subscribe_to_notifications
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
 from utility import delete_file, upload_file, retrieve_languages, db
+from utility.constants import DEFAULT_FILTER, POSSIBLE_FILTERS
 from utility.translation import convert_iso_639_1_to_bcp_47
 
 student_bp = Blueprint("student", __name__)
@@ -184,6 +187,12 @@ def get_student_callback() -> Response:
     Retrieves the student information
         :return: Response - The response object, 404 if the student doesn't exist, 200 if successful
     """
+    filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
+
+    if filter not in POSSIBLE_FILTERS:
+        return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
+
+    session["filter"] = filter
 
     provided_languages = retrieve_languages(request.args)
 
@@ -191,11 +200,7 @@ def get_student_callback() -> Response:
     jwt = get_jwt()
 
     if not student_id or not jwt:
-        return jsonify(
-            {
-                "error": "Unauthorized",
-            }
-        ), HTTPStatus.OK
+        return jsonify({"message": "Unauthorized"}), HTTPStatus.UNAUTHORIZED
 
     expiration = jwt["exp"]
 
@@ -209,15 +214,26 @@ def get_student_callback() -> Response:
 
     student_dict = student.to_dict(is_public_route=False)
 
+    response_dict = {
+        "student": student_dict,
+        "committees": committees,
+        "committee_positions": committee_positions,
+        "permissions": permissions,
+        "role": role,
+        "expiration": expiration,
+    }
+
+    if filter == "rgbank":
+        attach_permissions(
+            committee_positions=committee_positions,
+            response_dict=response_dict,
+        )
+        response_dict["rgbank_bank_account"] = get_bank_account(
+            student_id=student.student_id
+        )
+
     json_response = jsonify(
-        {
-            "student": student_dict,
-            "committees": committees,
-            "committee_positions": committee_positions,
-            "permissions": permissions,
-            "role": role,
-            "expiration": expiration,
-        },
+        response_dict,
     )
 
     return json_response, HTTPStatus.OK

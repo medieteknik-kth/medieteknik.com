@@ -71,6 +71,9 @@ class CommitteePosition(db.Model):
     recruitment = db.relationship(
         "CommitteePositionRecruitment", back_populates="committee_position"
     )
+    rgbank_permissions = db.relationship(
+        "RGBankPermissions", back_populates="committee_position"
+    )
 
     def __repr__(self):
         return "<CommitteePosition %r>" % self.committee_position_id
