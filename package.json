@@ -8,6 +8,6 @@
     ],
     "packageManager": "bun@1.2.5",
     "devDependencies": {
-        "turbo": "2.4.4"
+        "turbo": "^2.5.3"
     }
 }
