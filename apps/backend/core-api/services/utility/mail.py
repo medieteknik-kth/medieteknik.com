@@ -9,9 +9,13 @@ def send_expense_message(
     subject: str = "Expense",
 ):
     api_key = os.getenv("MAILGUN_API_KEY")
+    email = os.getenv("MAILGUN_EMAIL")
 
     if not api_key:
         raise ValueError("MAILGUN_API_KEY is not set in the environment variables.")
+
+    if not email:
+        raise ValueError("MAILGUN_EMAIL is not set in the environment variables.")
 
     name = expense_item.title
     item_type = "utgift" if isinstance(expense_item, Expense) else "faktura"
@@ -28,7 +32,7 @@ def send_expense_message(
         auth=("api", api_key),
         data={
             "from": "Medieteknik <noreply@mail.medieteknik.com>",
-            "to": "webmaster@medieteknik.com",
+            "to": email,
             "subject": subject,
             "template": "invoice",
             "t:variables": json.dumps(
