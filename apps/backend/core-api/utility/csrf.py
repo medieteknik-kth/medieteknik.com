@@ -3,14 +3,17 @@ Utility functions for CSRF protection.
 """
 
 from http import HTTPStatus
-from flask import Response, jsonify, make_response, request, session
-from flask_wtf.csrf import CSRFProtect
 
-# The CSRF protection object, should be initialized in the application factory and used in the application context.
-csrf = CSRFProtect()
+from fastapi import Header, HTTPException, Request
+
+from utility.session import CookieSession
 
 
-def validate_csrf(csrf_token: str) -> Response | bool:
+def validate_csrf(
+    request: Request,
+    csrf_token: str,
+    header_csrf_token=Header(..., alias="X-CSRF-Token"),
+) -> bool:
     """
     Validates CSRF tokens via the X-CSRF-Token header, the session CSRF token, and the given CSRF token.
 
@@ -19,44 +22,30 @@ def validate_csrf(csrf_token: str) -> Response | bool:
     :return: True if the CSRF token is valid, otherwise a response with an error message
     :rtype: Response | bool
     """
-
-    header_csrf_token = request.headers.get("X-CSRF-Token")
+    session = CookieSession(request)
     session_csrf_token = session.get("csrf_token")
 
     if not session_csrf_token:
-        response = make_response(jsonify({"message": "No Session CSRF Token"}))
-        response.status_code = HTTPStatus.BAD_REQUEST
-        return response
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST, detail="No Session CSRF Token"
+        )
 
     if not csrf_token or not header_csrf_token:
-        response = make_response(jsonify({"message": "No Provided CSRF Token"}))
-        response.status_code = HTTPStatus.BAD_REQUEST
-        return response
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="No Provided CSRF Token",
+        )
 
     if csrf_token != header_csrf_token:
-        response = make_response(
-            jsonify(
-                {
-                    "message": "Invalid Header CSRF Token",
-                    "csrf_token": csrf_token,
-                    "header_csrf_token": header_csrf_token,
-                }
-            )
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN,
+            detail="Invalid Header CSRF Token",
         )
-        response.status_code = HTTPStatus.FORBIDDEN
-        return response
 
     if csrf_token != session_csrf_token:
-        response = make_response(
-            jsonify(
-                {
-                    "message": "Invalid Session CSRF Token",
-                    "csrf_token": csrf_token,
-                    "session_csrf_token": session_csrf_token,
-                }
-            )
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN,
+            detail="Invalid Session CSRF Token",
         )
-        response.status_code = HTTPStatus.FORBIDDEN
-        return response
 
     return True

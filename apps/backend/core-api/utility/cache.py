@@ -1,5 +1,5 @@
-import sqlite3
 import os
+import sqlite3
 
 os.makedirs("cache", exist_ok=True)
 

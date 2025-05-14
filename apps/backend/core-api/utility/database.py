@@ -2,7 +2,8 @@
 This module contains the SQLAlchemy database object.
 """
 
-from flask_sqlalchemy import SQLAlchemy
+from sqlmodel import create_engine
 
-# The SQLAlchemy database object, should be initialized in the application factory and used in the application context. It should not be reinstantiated.
-db: SQLAlchemy = SQLAlchemy()
+from config import Settings
+
+engine = create_engine(str(Settings.SQLALCHEMY_DATABASE_URI))

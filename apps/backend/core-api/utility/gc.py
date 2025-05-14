@@ -4,15 +4,15 @@ Google Cloud Utility Module
 
 import os
 from datetime import timedelta
-from google.cloud import storage
-from google.cloud.exceptions import GoogleCloudError
 from urllib.parse import unquote, urlparse
-from google.cloud import pubsub_v1, tasks_v2
+
+from google.cloud import pubsub_v1, storage, tasks_v2
+from google.cloud.exceptions import GoogleCloudError
 from google.cloud.storage.bucket import Bucket
 
 json_key_path = (
     "/mnt/env/service-account-file.json"
-    if os.getenv("FLASK_ENV") == "production"
+    if os.getenv("ENV") == "production"
     else "/app/service-account-file.json"
 )
 
@@ -48,29 +48,22 @@ def upload_file(
     timedelta: timedelta | None = timedelta(days=365),
 ) -> str | None:
     """
-    Uploads a file to the bucket path, with optional language, disposition,
-    and content type settings, and returns a URL to the uploaded file.
-
-    :param file: The file object to upload.
-    :type file: file-like object
-    :param file_name: The name for the uploaded file in the bucket.
-    :type file_name: str
-    :param path: The path within the bucket to store the file.
-    :type path: str
-    :param language_code: The language code (e.g., 'en') for the file content. Default is None.
-    :type language_code: str, optional
-    :param content_disposition: The disposition header (e.g., 'attachment') for the file content. Default is None.
-    :type content_disposition: str, optional
-    :param content_type: The MIME type of the file (e.g., 'application/pdf'). Default is None.
-    :type content_type: str, optional
-    :param bucket: The Google Cloud Storage bucket to upload the file to. Defaults to Medieteknik bucket.
-    :type bucket: Bucket, optional
-    :param timedelta: The duration the signed URL should be valid. If None, makes the URL public.
-                      Defaults to 365 days.
-    :type timedelta: timedelta, optional
-    :return: The URL to the uploaded file if successful, otherwise None.
-    :rtype: str | None
-    :raises GoogleCloudError: If an error occurs during the file upload process.
+    Upload a file to a Google Cloud Storage bucket.
+    Args:
+        file: File object to upload.
+        file_name (str): Name of the file to store in the bucket.
+        path (str): Path within the bucket where the file should be stored.
+        language_code (str | None, optional): Content language code. Defaults to None.
+        content_disposition (str | None, optional): Content disposition header value. Defaults to None.
+        content_type (str | None, optional): MIME type of the file. Defaults to None.
+        cache_control (str | None, optional): Cache control header value. Defaults to None.
+        bucket (Bucket | None, optional): GCS bucket to upload to. Defaults to medieteknik_bucket.
+        timedelta (timedelta | None, optional): Time until the signed URL expires.
+            Defaults to 365 days. If None, the file will be made public instead.
+    Returns:
+        str | None: The public URL or signed URL to the uploaded file if successful, None otherwise.
+    Raises:
+        GoogleCloudError: If there's an error during the upload process (caught internally).
     """
     try:
         blob = bucket.blob(os.path.join(path, file_name))
@@ -99,15 +92,22 @@ def upload_file(
 
 def delete_file(url: str, bucket: Bucket | None = medieteknik_bucket) -> bool:
     """
-    Deletes a file from the bucket based on its URL.
+    Delete a file from Google Cloud Storage using its public URL.
 
-    :param url: The public or signed URL of the file to delete.
-    :type url: str
-    :param bucket: The Google Cloud Storage bucket to delete the file from. Defaults to Medieteknik bucket.
-    :type bucket: Bucket, optional
-    :return: True if the file was successfully deleted, otherwise False.
-    :rtype: bool
-    :raises GoogleCloudError: If an error occurs during the file deletion process.
+    This function parses a given URL, extracts the blob path, and deletes the
+    corresponding file from the specified Google Cloud Storage bucket.
+
+    Args:
+        url (str): The public URL of the file to delete.
+        bucket (Bucket | None, optional): The Google Cloud Storage bucket
+            where the file is stored. Defaults to medieteknik_bucket.
+
+    Returns:
+        bool: True if the file was successfully deleted, False otherwise.
+
+    Raises:
+        GoogleCloudError: Caught internally and returns False if an error occurs
+            during deletion.
     """
     try:
         parsed_url = urlparse(url)

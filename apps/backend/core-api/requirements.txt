@@ -1,11 +1,8 @@
 python-dotenv
 python-dateutil
-Flask
-Flask-SQLAlchemy
-Flask-CORS
-Flask-Limiter
-Flask-WTF
-Flask-JWT-Extended
+cryptography
+python-jose[cryptography]
+sqlalchemy
 fastapi 
 uvicorn 
 pydantic
@@ -15,10 +12,10 @@ authlib
 unidecode
 gunicorn
 psycopg2
+itsdangerous
 google-cloud-storage
 google-cloud-scheduler
 google-cloud-pubsub
 google-cloud-tasks
-cryptography
 pywebpush
 rich
