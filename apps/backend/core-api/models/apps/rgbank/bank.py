@@ -1,7 +1,5 @@
 import uuid
-from os import environ
 
-from cryptography.fernet import Fernet
 from sqlmodel import Field, Relationship, SQLModel
 
 from models.core import Student
@@ -33,12 +31,3 @@ class AccountBankInformation(SQLModel, table=True):
 
     def __repr__(self):
         return f"<AccountBankInformation {self.bank_id}>"
-
-    def to_dict(self):
-        cipher = Fernet(environ.get("FERNET_KEY"))
-
-        return {
-            "bank_name": cipher.decrypt(self.bank_name.encode()).decode(),
-            "clearing_number": cipher.decrypt(self.clearing_number.encode()).decode(),
-            "account_number": cipher.decrypt(self.account_number.encode()).decode(),
-        }

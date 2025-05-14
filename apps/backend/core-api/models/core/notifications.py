@@ -1,14 +1,13 @@
 import enum
 import uuid
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict
 
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import CheckConstraint, Field, Relationship, SQLModel
 
 from models.core.language import Language
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
-from utility.database import db
+from utility.constants import DEFAULT_LANGUAGE_CODE
 
 if TYPE_CHECKING:
     from models.committees import Committee
@@ -72,7 +71,7 @@ class NotificationSubscription(SQLModel, table=True):
         )
 
     __table_args__ = (
-        db.CheckConstraint(
+        CheckConstraint(
             "(endpoint IS NULL AND p256dh IS NULL AND auth IS NULL) OR "
             "(endpoint IS NOT NULL AND p256dh IS NOT NULL AND auth IS NOT NULL)",
             name="push_notification_fields_constraint",
@@ -81,15 +80,6 @@ class NotificationSubscription(SQLModel, table=True):
 
     def __repr__(self):
         return f"<Notification {self.notification_id}>"
-
-    def to_dict(self):
-        return {
-            "notification_id": self.notification_id,
-            "endpoint": self.endpoint,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-            "student_id": self.student_id,
-        }
 
 
 class NotificationPreferences(SQLModel, table=True):
@@ -123,12 +113,6 @@ class NotificationPreferences(SQLModel, table=True):
 
     def __repr__(self):
         return f"<NotificationPreferences {self.notification_preferences_id}>"
-
-    def to_dict(self):
-        return {
-            "notification_preferences_id": self.notification_preferences_id,
-            "student_id": self.student_id,
-        }
 
 
 class Notifications(SQLModel, table=True):
@@ -185,43 +169,6 @@ class Notifications(SQLModel, table=True):
         cascade_delete=True,
     )
 
-    def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES
-    ) -> Dict[str, Any]:
-        data = {}
-
-        data["notification_id"] = self.notification_id
-        data["created_at"] = self.created_at
-        data["notification_type"] = self.notification_type.value
-
-        translation_lookup = {
-            translation.language_code: translation for translation in self.translations
-        }
-        translations = []
-
-        for language_code in provided_languages:
-            translation: NotificationsTranslation | None = translation_lookup.get(
-                language_code
-            )
-
-            if not translation or not isinstance(translation, NotificationsTranslation):
-                translation: NotificationsTranslation | None = translation_lookup.get(
-                    DEFAULT_LANGUAGE_CODE
-                ) or next(iter(translation_lookup.values()), None)
-
-            if translation and isinstance(translation, NotificationsTranslation):
-                translations.append(translation.to_dict())
-
-        data["translations"] = translations
-        committee = self.committee
-        if committee:
-            data["committee"] = committee.to_dict()
-
-        if self.notification_metadata:
-            data["metadata"] = self.notification_metadata
-
-        return data
-
 
 class NotificationsTranslation(SQLModel, table=True):
     """
@@ -253,13 +200,6 @@ class NotificationsTranslation(SQLModel, table=True):
     # Relationships
     notifications: list["Notifications"] = Relationship(back_populates="translations")
     language: "Language" = Relationship(back_populates="notifications_translation")
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "title": self.title,
-            "body": self.body,
-            "url": self.url,
-        }
 
 
 class SentNotifications(SQLModel, table=True):

@@ -8,7 +8,6 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from models.utility.auth import RevokedTokens
 from utility.authorization import jwt
-from utility.reception_mode import RECEPTION_MODE
 
 if TYPE_CHECKING:
     from models.apps.rgbank import (
@@ -171,27 +170,6 @@ class Profile(SQLModel, table=True):
 
     def __repr__(self):
         return "<Profile %r>" % self.profile_id
-        if RECEPTION_MODE and is_public_route:
-            return None
-
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-
-        data = {}
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            data[column] = value
-
-        del data["profile_id"]
-        del data["student_id"]
-
-        return data
 
 
 class StudentMembership(SQLModel, table=True):

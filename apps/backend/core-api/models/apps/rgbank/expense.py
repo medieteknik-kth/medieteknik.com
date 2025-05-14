@@ -76,14 +76,6 @@ class ExpenseDomain(SQLModel, table=True):
     def __repr__(self):
         return f"<ExpenseDomain {self.expense_part_id}>"
 
-    def to_dict(self):
-        return {
-            "expense_part_id": str(self.expense_part_id),
-            "title": self.title,
-            "parts": self.parts,
-            "committee_id": str(self.committee_id) if self.committee_id else None,
-        }
-
 
 class Expense(SQLModel, table=True):
     __tablename__ = "expense"
@@ -158,40 +150,6 @@ class Expense(SQLModel, table=True):
 
     def __repr__(self):
         return f"<Expense {self.expense_id}>"
-
-    def to_dict(self, short: bool = False, is_public_route: bool = True):
-        if short:
-            base_dict = {
-                "expense_id": str(self.expense_id),
-                "title": self.title,
-                "description": self.description,
-                "date": self.date.isoformat() if self.date else None,
-                "status": self.status.name,
-                "created_at": self.created_at.isoformat() if self.created_at else None,
-                "committee": self.committee.to_dict() if self.committee else None,
-                "amount": self.amount,
-            }
-        else:
-            base_dict = {
-                "expense_id": str(self.expense_id),
-                "file_urls": self.file_urls,
-                "title": self.title,
-                "description": self.description,
-                "date": self.date.isoformat() if self.date else None,
-                "is_digital": self.is_digital,
-                "categories": self.categories,
-                "status": self.status.name,
-                "created_at": self.created_at.isoformat() if self.created_at else None,
-                "committee": self.committee.to_dict() if self.committee else None,
-                "amount": self.amount,
-            }
-
-        if not is_public_route:
-            base_dict["student"] = (
-                self.student.to_dict(is_public_route=False) if self.student else None
-            )
-
-        return base_dict
 
 
 class Invoice(SQLModel, table=True):
@@ -268,46 +226,3 @@ class Invoice(SQLModel, table=True):
 
     def __repr__(self):
         return f"<Invoice {self.invoice_id}>"
-
-    def to_dict(self, short: bool = False, is_public_route: bool = True):
-        if short:
-            base_dict = {
-                "invoice_id": str(self.invoice_id),
-                "title": self.title,
-                "description": self.description,
-                "date_issued": self.date_issued.isoformat()
-                if self.date_issued
-                else None,
-                "due_date": self.due_date.isoformat() if self.due_date else None,
-                "status": self.status.name,
-                "created_at": self.created_at.isoformat() if self.created_at else None,
-                "committee": self.committee.to_dict() if self.committee else None,
-                "amount": self.amount,
-            }
-
-        else:
-            base_dict = {
-                "invoice_id": str(self.invoice_id),
-                "already_paid": self.already_paid,
-                "file_urls": self.file_urls,
-                "title": self.title,
-                "description": self.description,
-                "is_original": self.is_original,
-                "is_booked": self.is_booked,
-                "date_issued": self.date_issued.isoformat()
-                if self.date_issued
-                else None,
-                "due_date": self.due_date.isoformat() if self.due_date else None,
-                "categories": self.categories,
-                "status": self.status.name,
-                "created_at": self.created_at.isoformat() if self.created_at else None,
-                "committee": self.committee.to_dict() if self.committee else None,
-                "amount": self.amount,
-            }
-
-        if not is_public_route:
-            base_dict["student"] = (
-                self.student.to_dict(is_public_route=False) if self.student else None
-            )
-
-        return base_dict

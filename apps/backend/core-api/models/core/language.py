@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import inspect
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -75,16 +74,3 @@ class Language(SQLModel, table=True):
 
     def __repr__(self):
         return "<Language %r>" % self.language_code
-
-    def to_dict(self):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        return data

@@ -1,10 +1,7 @@
 import uuid
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
-
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.translation import get_translation
 
 if TYPE_CHECKING:
     from models.committees.committee import Committee
@@ -33,39 +30,6 @@ class CommitteeCategory(SQLModel, table=True):
 
     def __repr__(self):
         return "<CommitteeCategory %r>" % self.committee_category_id
-
-    def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        if not data:
-            return {}
-
-        translations = []
-
-        for language_code in provided_languages:
-            translation = get_translation(
-                CommitteeCategoryTranslation,
-                ["committee_category_id"],
-                {"committee_category_id": self.committee_category_id},
-                language_code,
-            )
-            translations.append(translation)
-
-        del data["committee_category_id"]
-
-        data["translations"] = [
-            translation.to_dict() for translation in set(translations)
-        ]
-
-        return data
 
 
 class CommitteeCategoryTranslation(SQLModel, table=True):
@@ -98,19 +62,3 @@ class CommitteeCategoryTranslation(SQLModel, table=True):
         return (
             "<CommitteeCategoryTranslation %r>" % self.committee_category_translation_id
         )
-
-    def to_dict(self):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        del data["committee_category_translation_id"]
-        del data["committee_category_id"]
-
-        return data

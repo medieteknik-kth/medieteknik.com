@@ -1,6 +1,6 @@
 import enum
 import uuid
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, SQLModel
 
@@ -69,32 +69,8 @@ class StudentPermission(SQLModel, table=True):
         nullable=False,
         unique=True,
     )
+
     # Relationships
     student: "Student" = db.relationship(
         back_populates="permissions",
     )
-
-    def to_dict(self) -> Dict[str, Any] | None:
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            elif isinstance(value, List):
-                value = [v.value if isinstance(v, enum.Enum) else v for v in value]
-
-            data[column] = value
-
-        if not data:
-            return {}
-
-        del data["permission_id"]
-
-        return data

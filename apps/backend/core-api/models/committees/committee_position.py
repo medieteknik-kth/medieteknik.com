@@ -1,14 +1,12 @@
 import enum
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
-from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
-from utility.translation import get_translation
 
 if TYPE_CHECKING:
     from models.apps.rgbank.permissions import RGBankPermissions
@@ -80,65 +78,8 @@ class CommitteePosition(SQLModel, table=True):
     def __repr__(self):
         return "<CommitteePosition %r>" % self.committee_position_id
 
-    def to_dict(
-        self,
-        provided_languages: List[str] = AVAILABLE_LANGUAGES,
-        is_public_route=True,
-        include_parent=False,
-    ) -> Dict[str, Any] | None:
-        columns = inspect(self)
 
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            data[column] = value
-
-        if not data:
-            return {}
-
-        translations = []
-
-        for language_code in provided_languages:
-            translation = get_translation(
-                CommitteePositionTranslation,
-                ["committee_position_id"],
-                {"committee_position_id": self.committee_position_id},
-                language_code,
-            )
-            translations.append(translation)
-
-        data["translations"] = [
-            translation.to_dict()
-            for translation in set(translations)
-            if translation is not None
-        ]
-
-        if is_public_route:
-            del data["role"]
-
-        if include_parent and self.committee_id:
-            del data["committee_id"]
-            parent_committee = Committee.query.filter_by(
-                committee_id=self.committee_id
-            ).first()
-
-            if not parent_committee or not isinstance(parent_committee, Committee):
-                return data
-
-            data["committee"] = parent_committee.to_dict(
-                provided_languages=provided_languages,
-            )
-
-        return data
-
-
-class CommitteePositionTranslation(db.Model):
+class CommitteePositionTranslation(SQLModel, table=True):
     __tablename__ = "committee_position_translation"
 
     committee_position_translation_id: uuid.UUID = Field(
@@ -170,24 +111,8 @@ class CommitteePositionTranslation(db.Model):
             "<CommitteePositionTranslation %r>" % self.committee_position_translation_id
         )
 
-    def to_dict(self):
-        columns = inspect(self)
 
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        del data["committee_position_translation_id"]
-        del data["committee_position_id"]
-
-        return data
-
-
-class CommitteePositionRecruitment(db.Model):
+class CommitteePositionRecruitment(SQLModel, table=True):
     __tablename__ = "committee_position_recruitment"
 
     committee_position_recruitment_id: uuid.UUID = Field(
@@ -217,54 +142,8 @@ class CommitteePositionRecruitment(db.Model):
             "<CommitteePositionRecruitment %r>" % self.committee_position_recruitment_id
         )
 
-    def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
-        columns = inspect(self)
 
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        translations: List[CommitteePositionRecruitmentTranslation] = []
-
-        for language_code in provided_languages:
-            translation = get_translation(
-                CommitteePositionRecruitmentTranslation,
-                ["committee_position_recruitment_id"],
-                {
-                    "committee_position_recruitment_id": self.committee_position_recruitment_id
-                },
-                language_code,
-            )
-            translations.append(translation)
-
-        data["translations"] = [
-            translation_dict
-            for translation in set(translations)
-            if (translation_dict := translation.to_dict()) is not None
-        ]
-        del data["committee_position_recruitment_id"]
-
-        committee_position = CommitteePosition.query.get(data["committee_position_id"])
-        del data["committee_position_id"]
-
-        if not committee_position or not isinstance(
-            committee_position, CommitteePosition
-        ):
-            return None
-
-        data["committee_position"] = committee_position.to_dict(
-            provided_languages=provided_languages,
-            include_parent=True,
-        )
-
-        return data
-
-
-class CommitteePositionRecruitmentTranslation(db.Model):
+class CommitteePositionRecruitmentTranslation(SQLModel, table=True):
     __tablename__ = "committee_position_recruitment_translation"
 
     committee_position_recruitment_translation_id: uuid.UUID = Field(
@@ -290,20 +169,3 @@ class CommitteePositionRecruitmentTranslation(db.Model):
     language: "Language" = Relationship(
         back_populates="committee_position_recruitment_translations",
     )
-
-    def to_dict(self):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        del data["committee_position_recruitment_id"]
-        del data["committee_position_recruitment_translation_id"]
-        del data["language_code"]
-
-        return data

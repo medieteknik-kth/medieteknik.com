@@ -5,13 +5,11 @@ from typing import TYPE_CHECKING, List
 
 from sqlalchemy import (
     func,
-    inspect,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlmodel import Field, Relationship, SQLModel
 
 from models.content.base import Item
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 if TYPE_CHECKING:
     from models.core.calendar import Calendar
@@ -100,64 +98,6 @@ class Event(Item):
     def end_date(cls):
         return cls.start_date + func.make_interval(mins=cls.duration)
 
-    def to_dict(
-        self,
-        provided_languages: List[str] = AVAILABLE_LANGUAGES,
-        is_public_route=True,
-        custom_start_date: str = None,
-    ):
-        data = super().to_dict(
-            provided_languages=provided_languages, is_public_route=is_public_route
-        )
-
-        if data is None:
-            return None
-
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            data[column] = value
-
-        if not data:
-            return None
-
-        translation_lookup = {
-            translation.language_code: translation for translation in self.translations
-        }
-        translations = []
-
-        for language_code in provided_languages:
-            translation: EventTranslation | None = translation_lookup.get(language_code)
-
-            if not translation or not isinstance(translation, EventTranslation):
-                translation: EventTranslation | None = translation_lookup.get(
-                    DEFAULT_LANGUAGE_CODE
-                ) or next(iter(translation_lookup.values()), None)
-
-            if translation and isinstance(translation, EventTranslation):
-                translations.append(translation.to_dict())
-
-        data["translations"] = translations
-
-        if not isinstance(translation, EventTranslation):
-            return None
-
-        del data["calendar_id"]
-        del data["parent_event_id"]
-        del data["type"]
-        del data["published_status"]
-        if custom_start_date:
-            data["start_date"] = custom_start_date
-
-        return data
-
 
 class EventTranslation(SQLModel, table=True):
     __tablename__ = "event_translation"
@@ -187,22 +127,6 @@ class EventTranslation(SQLModel, table=True):
     language = Relationship(
         back_populates="event_translations",
     )
-
-    def to_dict(self):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        del data["event_translation_id"]
-        del data["event_id"]
-
-        return data
 
 
 class RepeatableEvent(SQLModel, table=True):

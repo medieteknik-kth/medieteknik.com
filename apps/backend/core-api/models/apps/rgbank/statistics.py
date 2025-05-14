@@ -1,10 +1,8 @@
 import uuid
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING
 
 from sqlmodel import CheckConstraint, Field, Relationship, SQLModel
-
-from utility import AVAILABLE_LANGUAGES
 
 if TYPE_CHECKING:
     from models.committees.committee import Committee
@@ -66,23 +64,6 @@ class Statistics(SQLModel, table=True):
     def __repr__(self):
         return "<Statistics %r>" % self.statistics_id
 
-    def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES
-    ) -> Dict[str, Any]:
-        return {
-            "statistics_id": str(self.statistics_id),
-            "year": self.year,
-            "month": self.month,
-            "is_all_time": self.is_all_time,
-            "value": self.value,
-            "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at),
-            "student": self.student.to_dict() if self.student else None,
-            "committee": self.committee.to_dict(provided_languages=provided_languages)
-            if self.committee
-            else None,
-        }
-
 
 class ExpenseCount(SQLModel, table=True):
     __tablename__ = "expense_count"
@@ -127,12 +108,3 @@ class ExpenseCount(SQLModel, table=True):
 
     def __repr__(self):
         return "<ExpenseCount %r>" % self.expense_count_id
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "expense_count_id": str(self.expense_count_id),
-            "expense_count": self.expense_count,
-            "invoice_count": self.invoice_count,
-            "student": self.student.to_dict() if self.student else None,
-            "committee": self.committee.to_dict() if self.committee else None,
-        }

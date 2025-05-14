@@ -1,11 +1,9 @@
 import uuid
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
-from sqlalchemy import inspect
 from sqlmodel import Field, Relationship, SQLModel
 
 from models.content.base import Item
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 if TYPE_CHECKING:
     from models.core.language import Language
@@ -51,39 +49,6 @@ class News(Item):
 
     __mapper_args__ = {"polymorphic_identity": "news"}
 
-    def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
-    ):
-        base_data = super().to_dict(
-            provided_languages=provided_languages, is_public_route=is_public_route
-        )
-
-        if not base_data:
-            return None
-
-        translation_lookup = {
-            translation.language_code: translation for translation in self.translations
-        }
-        translations = []
-
-        for language_code in provided_languages:
-            translation: NewsTranslation | None = translation_lookup.get(language_code)
-
-            if not translation or not isinstance(translation, NewsTranslation):
-                translation: NewsTranslation | None = translation_lookup.get(
-                    DEFAULT_LANGUAGE_CODE
-                ) or next(iter(translation_lookup.values()), None)
-
-            if translation and isinstance(translation, NewsTranslation):
-                translations.append(translation.to_dict())
-
-        if is_public_route:
-            del base_data["news_id"]
-
-        base_data["translations"] = translations
-
-        return base_data
-
 
 class NewsTranslation(SQLModel, table=True):
     __tablename__ = "news_translation"
@@ -112,20 +77,3 @@ class NewsTranslation(SQLModel, table=True):
     # Relationships
     news: "News" = Relationship(back_populates="translations")
     language: "Language" = Relationship(back_populates="news_translations")
-
-    def to_dict(self):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        del data["news_translation_id"]
-        del data["news_id"]
-
-        return data

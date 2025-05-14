@@ -1,11 +1,9 @@
 import enum
 import uuid
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING
 
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlmodel import CheckConstraint, Field, Relationship, SQLModel
-
-from utility.constants import AVAILABLE_LANGUAGES
+from sqlmodel import CheckConstraint, Field, Relationship, SQLModel, case
 
 if TYPE_CHECKING:
     from models.committees import Committee, CommitteePosition
@@ -144,34 +142,3 @@ class Author(SQLModel, table=True):
             ),
             else_=None,
         )
-
-    def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
-    ) -> Dict[str, Any] | None:
-        """
-        Returns a dictionary representation of the model.
-
-        Returns:
-            Dict[str, Any] | None: A dictionary containing the model's attributes.
-        """
-
-        author_data = {}
-        if self.author_type == AuthorType.STUDENT and self.student:
-            author_data = self.student.to_dict(is_public_route=is_public_route)
-        elif self.author_type == AuthorType.COMMITTEE and self.committee:
-            author_data = self.committee.to_dict(provided_languages=provided_languages)
-        elif (
-            self.author_type == AuthorType.COMMITTEE_POSITION
-            and self.committee_position
-        ):
-            author_data = self.committee_position.to_dict(
-                provided_languages=provided_languages,
-                is_public_route=is_public_route,
-                include_parent=True,
-            )
-
-        author_data["author_type"] = (
-            self.author_type.value if self.author_type else None
-        )
-
-        return author_data

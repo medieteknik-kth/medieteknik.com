@@ -1,11 +1,9 @@
 import enum
 import uuid
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
-
-from utility.constants import AVAILABLE_LANGUAGES
 
 if TYPE_CHECKING:
     from models.content.document import Document
@@ -89,43 +87,3 @@ class Item(SQLModel, table=True):
 
     def __repr__(self) -> str:
         return f"<Item {self.item_id}, {self.type}>"
-
-    def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES, is_public_route=True
-    ) -> Dict[str, Any] | None:
-        if not self.is_public is not None and self.is_public and is_public_route:
-            return None
-
-        if is_public_route:
-            if (
-                self.published_status is not None
-                and self.published_status is PublishedStatus.DRAFT
-            ):
-                return None
-
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-
-        data = {}
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            data[column] = value
-
-        data["author"] = (
-            self.author.to_dict(
-                provided_languages=provided_languages, is_public_route=is_public_route
-            )
-            if self.author
-            else {}
-        )
-
-        del data["item_id"]
-        del data["author_id"]
-
-        return data

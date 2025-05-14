@@ -1,9 +1,7 @@
 import uuid
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
-
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 if TYPE_CHECKING:
     from models.apps.rgbank.expense import ExpenseDomain
@@ -76,47 +74,6 @@ class Committee(SQLModel, table=True):
     def __repr__(self):
         return "<Committee %r>" % self.committee_id
 
-    def to_dict(
-        self, provided_languages: List[str] = AVAILABLE_LANGUAGES
-    ) -> Dict[str, Any] | None:
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        if not data:
-            return None
-
-        translation_lookup = {
-            translation.language_code: translation for translation in self.translations
-        }
-        translations = []
-
-        for language_code in provided_languages:
-            translation: CommitteeTranslation | None = translation_lookup.get(
-                language_code
-            )
-
-            if not translation or not isinstance(translation, CommitteeTranslation):
-                translation: CommitteeTranslation | None = translation_lookup.get(
-                    DEFAULT_LANGUAGE_CODE
-                ) or next(iter(translation_lookup.values()), None)
-
-            if translation and isinstance(translation, CommitteeTranslation):
-                translations.append(translation.to_dict())
-
-        del data["committee_category_id"]
-
-        data["translations"] = translations
-
-        return data
-
 
 class CommitteeTranslation(SQLModel, table=True):
     __tablename__ = "committee_translation"
@@ -147,19 +104,3 @@ class CommitteeTranslation(SQLModel, table=True):
 
     def __repr__(self):
         return "<CommitteeTranslation %r>" % self.committee_translation_id
-
-    def to_dict(self):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        del data["committee_translation_id"]
-        del data["committee_id"]
-
-        return data

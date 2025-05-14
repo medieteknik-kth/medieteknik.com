@@ -122,12 +122,3 @@ class Calendar(SQLModel, table=True):
                 "Calendar can't be associated with both a student and a committee"
             )
         return value
-
-    def to_dict(self):
-        """
-        Returns a dictionary representation of the `Calendar` object.
-
-        Returns:
-            dict: A dictionary containing the `name` and `is_root` attributes of the `Calendar` object.
-        """
-        return {"name": self.name, "is_root": self.is_root()}
