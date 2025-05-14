@@ -1,11 +1,15 @@
 import enum
 import uuid
-from typing import List
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from sqlalchemy import Column, ForeignKey, String, inspect, Enum
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
-from utility.database import db
+from typing import TYPE_CHECKING, List
+
+from sqlalchemy import inspect
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.content.base import Item
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+
+if TYPE_CHECKING:
+    from models.core.language import Language
 
 
 class DocumentType(enum.Enum):
@@ -29,22 +33,19 @@ class Document(Item):
         document_id: Primary key
     """
 
-    document_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-    document_type = Column(
-        Enum(DocumentType), default=DocumentType.DOCUMENT, nullable=False
+    document_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
+
+    document_type: DocumentType = DocumentType.DOCUMENT
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id", ondelete="CASCADE"))
+    item_id: uuid.UUID = Field(foreign_key="item.item_id")
 
     # Relationships
-    item = db.relationship("Item", back_populates="document", passive_deletes=True)
-    translations = db.relationship(
-        "DocumentTranslation",
-        back_populates="document",
-        lazy="joined"
-    )
+    item: "Item" = Relationship(back_populates="document")
+    translations: "DocumentTranslation" = Relationship(back_populates="document")
 
     __mapper_args__ = {"polymorphic_identity": "document"}
 
@@ -76,7 +77,9 @@ class Document(Item):
         translations = []
 
         for language_code in provided_languages:
-            translation: DocumentTranslation | None = translation_lookup.get(language_code)
+            translation: DocumentTranslation | None = translation_lookup.get(
+                language_code
+            )
 
             if not translation or not isinstance(translation, DocumentTranslation):
                 translation: DocumentTranslation | None = translation_lookup.get(
@@ -91,26 +94,29 @@ class Document(Item):
         return base_data
 
 
-class DocumentTranslation(db.Model):
+class DocumentTranslation(SQLModel, table=True):
     __tablename__ = "document_translation"
 
-    document_translation_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    document_translation_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
-    categories = Column(ARRAY(String))
-    url = Column(String(2096))
+    title: str
+    categories: list[str]
+    url: str
 
     # Foreign keys
-    document_id = Column(
-        UUID(as_uuid=True), ForeignKey("document.document_id", ondelete="CASCADE")
+    document_id = Field(
+        foreign_key="document.document_id",
     )
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationships
-    document = db.relationship("Document", back_populates="translations")
-    language = db.relationship("Language", back_populates="document_translations")
+    document: "Document" = Relationship(back_populates="translations")
+    language: "Language" = Relationship(back_populates="document_translations")
 
     def to_dict(self):
         columns = inspect(self)

@@ -1,10 +1,10 @@
 import uuid
-from utility.database import db
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, String, DateTime, func
+from datetime import datetime
+
+from sqlmodel import Field, SQLModel, func
 
 
-class RevokedTokens(db.Model):
+class RevokedTokens(SQLModel, table=True):
     """
     This table is used to store revoked JWT tokens. In combination with a CRON job, this table is used to revoke tokens and automatically prune the table.
 
@@ -17,28 +17,20 @@ class RevokedTokens(db.Model):
 
     __tablename__ = "revoked_tokens"
 
-    id = Column(
-        UUID(as_uuid=True),
+    id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
+        default_factory=uuid.uuid4,
     )
 
-    jti = Column(
-        String,
-        nullable=False,
+    jti: uuid.UUID = Field(
         unique=True,
     )
 
-    revoked_at = Column(
-        DateTime,
-        default=func.now(),
-        nullable=False,
+    revoked_at: datetime = Field(
+        default_factory=func.now,
     )
 
-    originally_valid_until = Column(
-        DateTime,
-        nullable=False,
-    )
+    originally_valid_until: datetime
 
     def __repr__(self):
         return f"<RevokedTokens {self.jti}>"

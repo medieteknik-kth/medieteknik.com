@@ -1,18 +1,16 @@
 import enum
-from typing import Any, Dict, List
 import uuid
-from sqlalchemy import (
-    case,
-    CheckConstraint,
-    Column,
-    ForeignKey,
-    Enum,
-    text,
-)
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from typing import TYPE_CHECKING, Any, Dict, List
+
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlmodel import CheckConstraint, Field, Relationship, SQLModel
+
 from utility.constants import AVAILABLE_LANGUAGES
-from utility.database import db
+
+if TYPE_CHECKING:
+    from models.committees import Committee, CommitteePosition
+    from models.content.base import Item
+    from models.core.student import Student
 
 
 class AuthorType(enum.Enum):
@@ -47,7 +45,7 @@ class AuthorResource(enum.Enum):
     ALBUM = "ALBUM"
 
 
-class Author(db.Model):
+class Author(SQLModel, table=True):
     """
     Author model.
 
@@ -73,33 +71,31 @@ class Author(db.Model):
 
     __tablename__ = "author"
 
-    author_id = Column(
-        UUID(as_uuid=True),
+    author_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    resources = Column(
-        ARRAY(Enum(AuthorResource, create_constraint=False, native_enum=False))
-    )
+    resources: list[AuthorResource]
 
     # Foreign keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id"),
+    student_id: uuid.UUID | None = Field(
+        foreign_key="student.student_id",
+        default=None,
         nullable=True,
         unique=True,
     )
-    committee_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee.committee_id"),
+
+    committee_id: uuid.UUID | None = Field(
+        foreign_key="committee.committee_id",
+        default=None,
         nullable=True,
         unique=True,
     )
-    committee_position_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee_position.committee_position_id"),
+
+    committee_position_id: uuid.UUID | None = Field(
+        foreign_key="committee_position.committee_position_id",
+        default=None,
         nullable=True,
         unique=True,
     )
@@ -112,10 +108,20 @@ class Author(db.Model):
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="author")
-    committee = db.relationship("Committee", back_populates="author")
-    committee_position = db.relationship("CommitteePosition", back_populates="author")
-    items = db.relationship("Item", back_populates="author")
+    student: "Student" = Relationship(
+        back_populates="author",
+    )
+    committee: "Committee" = Relationship(
+        back_populates="author",
+    )
+
+    committee_position: "CommitteePosition" = Relationship(
+        back_populates="author",
+    )
+
+    items: list["Item"] = Relationship(
+        back_populates="author",
+    )
 
     @hybrid_property
     def author_type(self) -> AuthorType | None:

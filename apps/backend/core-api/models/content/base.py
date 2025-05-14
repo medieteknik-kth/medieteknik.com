@@ -1,20 +1,18 @@
 import enum
 import uuid
-from typing import Any, Dict, List
-from sqlalchemy import (
-    Column,
-    DateTime,
-    String,
-    Enum,
-    ForeignKey,
-    Boolean,
-    func,
-)
-from sqlalchemy.inspection import inspect
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.database import db
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from sqlmodel import Field, Relationship, SQLModel
+
+from utility.constants import AVAILABLE_LANGUAGES
+
+if TYPE_CHECKING:
+    from models.content.document import Document
+    from models.content.event import Event
+    from models.content.media import Media
+    from models.content.news import News
+    from models.core.author import Author
 
 
 class PublishedStatus(enum.Enum):
@@ -30,7 +28,7 @@ class PublishedStatus(enum.Enum):
     PUBLISHED = "PUBLISHED"
 
 
-class Item(db.Model):
+class Item(SQLModel, table=True):
     """
     Represents a generic item, meant for user-generated content e.g. news.
 
@@ -50,33 +48,43 @@ class Item(db.Model):
 
     __tablename__ = "item"
 
-    item_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
+    )
 
-    created_at = Column(DateTime, default=func.now(), server_default=func.now())
-    last_updated = Column(
-        DateTime,
-        default=func.now(),
-        onupdate=datetime.now(timezone.utc),
-    )
-    categories = Column(ARRAY(String), default=[])
-    is_pinned = Column(Boolean, default=False, nullable=False)
-    is_public = Column(Boolean, default=False, nullable=False)
-    published_status = Column(
-        Enum(PublishedStatus), default=PublishedStatus.DRAFT, nullable=False
-    )
+    created_at: datetime = Field(default_factory=datetime.now(tz=timezone.utc))
+    last_updated: datetime
+
+    categories: list[str] = []
+    is_pinned: bool = False
+    is_public: bool = False
+    published_status: PublishedStatus = PublishedStatus.DRAFT
 
     # Foreign keys
-    author_id = Column(UUID(as_uuid=True), ForeignKey("author.author_id"))
+    author_id: uuid.UUID = Field(
+        foreign_key="author.author_id",
+    )
 
     # Relationships
-    author = db.relationship("Author", back_populates="items")
-    news = db.relationship("News", back_populates="item", passive_deletes=True)
-    event = db.relationship("Event", back_populates="item", passive_deletes=True)
-    document = db.relationship("Document", back_populates="item", passive_deletes=True)
-    media = db.relationship("Media", back_populates="item", passive_deletes=True)
+    author: "Author" = Relationship(
+        back_populates="items",
+    )
+    news: "News" = Relationship(
+        back_populates="item",
+    )
+    event: "Event" = Relationship(
+        back_populates="item",
+    )
+    document: "Document" = Relationship(
+        back_populates="item",
+    )
+    media: "Media" = Relationship(
+        back_populates="item",
+    )
 
     # Polymorphism
-    type = Column(String(50))
+    type: str
     __mapper_args__ = {"polymorphic_identity": "item", "polymorphic_on": type}
 
     def __repr__(self) -> str:

@@ -1,8 +1,28 @@
-from sqlalchemy import Column, String, inspect
-from utility.database import db
+from typing import TYPE_CHECKING
+
+from sqlalchemy import inspect
+from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from models.committees import (
+        CommitteeCategoryTranslation,
+        CommitteePositionRecruitmentTranslation,
+        CommitteePositionTranslation,
+        CommitteeTranslation,
+    )
+    from models.content.album import AlbumTranslation
+    from models.content.document import DocumentTranslation
+    from models.content.event import EventTranslation
+    from models.content.media import MediaTranslation
+    from models.content.news import NewsTranslation
+    from models.content.tags import TagTranslation
+    from models.core.notifications import (
+        NotificationsTranslation,
+        NotificationSubscription,
+    )
 
 
-class Language(db.Model):
+class Language(SQLModel, table=True):
     """
     Language model
 
@@ -13,38 +33,44 @@ class Language(db.Model):
 
     __tablename__ = "language"
 
-    language_code = Column(String(20), primary_key=True, autoincrement=False)
+    language_code: str = Field(primary_key=True, index=True)
 
-    language_name = Column(String(255), nullable=False)
+    language_name: str
 
     # Relationships
-    committee_category_translations = db.relationship(
-        "CommitteeCategoryTranslation", back_populates="language"
+    committee_category_translations: list["CommitteeCategoryTranslation"] = (
+        Relationship(back_populates="language")
     )
-    committee_translations = db.relationship(
-        "CommitteeTranslation", back_populates="language"
+    committee_translations: list["CommitteeTranslation"] = Relationship(
+        back_populates="language"
     )
-    committee_position_translations = db.relationship(
-        "CommitteePositionTranslation", back_populates="language"
+    committee_position_translations: list["CommitteePositionTranslation"] = (
+        Relationship(back_populates="language")
     )
-    committee_position_recruitment_translations = db.relationship(
-        "CommitteePositionRecruitmentTranslation", back_populates="language"
-    )
+    committee_position_recruitment_translations: list[
+        "CommitteePositionRecruitmentTranslation"
+    ] = Relationship(back_populates="language")
 
-    media_translations = db.relationship("MediaTranslation", back_populates="language")
-    album_translations = db.relationship("AlbumTranslation", back_populates="language")
-    document_translations = db.relationship(
-        "DocumentTranslation", back_populates="language"
+    media_translations: list["MediaTranslation"] = Relationship(
+        back_populates="language"
     )
-    event_translations = db.relationship("EventTranslation", back_populates="language")
-    news_translations = db.relationship("NewsTranslation", back_populates="language")
-    tag_translations = db.relationship("TagTranslation", back_populates="language")
+    album_translations: list["AlbumTranslation"] = Relationship(
+        back_populates="language"
+    )
+    document_translations: list["DocumentTranslation"] = Relationship(
+        back_populates="language"
+    )
+    event_translations: list["EventTranslation"] = Relationship(
+        back_populates="language"
+    )
+    news_translations: list["NewsTranslation"] = Relationship(back_populates="language")
+    tag_translations: list["TagTranslation"] = Relationship(back_populates="language")
 
-    notification_subscriptions = db.relationship(
-        "NotificationSubscription", back_populates="language"
+    notification_subscriptions: list["NotificationSubscription"] = Relationship(
+        back_populates="language"
     )
-    notifications_translation = db.relationship(
-        "NotificationsTranslation", back_populates="language"
+    notifications_translation: list["NotificationsTranslation"] = Relationship(
+        back_populates="language"
     )
 
     def __repr__(self):

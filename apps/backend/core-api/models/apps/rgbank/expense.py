@@ -1,24 +1,18 @@
 import enum
 import uuid
-from sqlalchemy import (
-    TIMESTAMP,
-    UUID,
-    Boolean,
-    Column,
-    DateTime,
-    Enum,
-    ForeignKey,
-    MetaData,
-    String,
-    text,
-    func,
-)
-from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Any, Dict
+
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlmodel import Field, MetaData, Relationship, SQLModel, func
+
 from models.committees import Committee
 from models.core import Student
-from utility import db
 from utility.uuid_util import is_valid_uuid
+
+if TYPE_CHECKING:
+    from models.apps.rgbank.thread import Thread
+    from models.committees.committee import Committee
 
 
 class PaymentStatus(enum.IntEnum):
@@ -56,29 +50,28 @@ class PaymentStatus(enum.IntEnum):
     BOOKED = 41  # Invoice booked in the system
 
 
-class ExpenseDomain(db.Model):
+class ExpenseDomain(SQLModel, table=True):
     __tablename__ = "expense_domain"
     __table_args__ = {"schema": "rgbank"}
 
-    expense_part_id = Column(
-        UUID(as_uuid=True),
+    expense_part_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String, nullable=True)
-    parts = Column(ARRAY(String), nullable=False, default=[])
+    title: str | None
+    parts: list[str] = []
 
     # Foreign Keys
-    committee_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey(Committee.committee_id),
-        nullable=True,
+    committee_id: uuid.UUID | None = Field(
+        foreign_key="committee.committee_id",
+        index=True,
     )
 
     # Relationships
-    committee = db.relationship("Committee", back_populates="rgbank_expense_domain")
+    committee: "Committee" = Relationship(
+        back_populates="rgbank_expense_domain",
+    )
 
     def __repr__(self):
         return f"<ExpenseDomain {self.expense_part_id}>"
@@ -92,42 +85,42 @@ class ExpenseDomain(db.Model):
         }
 
 
-class Expense(db.Model):
+class Expense(SQLModel, table=True):
     __tablename__ = "expense"
     __table_args__ = {"schema": "rgbank"}
 
-    expense_id = Column(
-        UUID(as_uuid=True),
+    expense_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    file_urls = Column(ARRAY(String), nullable=False)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    date = Column(DateTime, nullable=False)
-    is_digital = Column(Boolean, default=False, nullable=False)
-    categories = Column(JSONB, nullable=False)
-    status = Column(
-        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")),
-        nullable=False,
+    file_urls: list[str]
+    title: str
+    description: str
+    date: datetime
+    is_digital: bool = False
+    categories: list[Dict[str, Any]]
+    status: PaymentStatus = Field(
         default=PaymentStatus.UNCONFIRMED,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
 
-    # Meta information
-    created_at = Column(DateTime, default=func.now(), server_default=text("now()"))
+    created_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
+    )
 
     # Foreign Keys
-    student_id = Column(
-        UUID(as_uuid=True), ForeignKey(Student.student_id), nullable=False
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
+        index=True,
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="rgbank_expenses")
-
-    thread = db.relationship(
-        "Thread", back_populates="expense", cascade="all, delete-orphan"
+    student: "Student" = Relationship(
+        back_populates="rgbank_expenses",
+    )
+    thread: "Thread" = Relationship(
+        back_populates="expense",
     )
 
     @hybrid_property
@@ -201,45 +194,44 @@ class Expense(db.Model):
         return base_dict
 
 
-class Invoice(db.Model):
+class Invoice(SQLModel, table=True):
     __tablename__ = "invoice"
     __table_args__ = {"schema": "rgbank"}
 
-    invoice_id = Column(
-        UUID(as_uuid=True),
+    invoice_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    already_paid = Column(Boolean, default=False, nullable=False)
-    file_urls = Column(ARRAY(String), nullable=False)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    is_original = Column(Boolean, default=False, nullable=False)
-    is_booked = Column(Boolean, default=False, nullable=False)
-    date_issued = Column(DateTime, nullable=False)
-    due_date = Column(DateTime, nullable=False)
-    categories = Column(JSONB, nullable=False)
-    status = Column(
-        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")),
-        nullable=False,
+    already_paid: bool = False
+    file_urls: list[str]
+    title: str
+    description: str
+    is_original: bool = False
+    is_booked: bool = False
+    date_issued: datetime
+    due_date: datetime
+    categories: list[Dict[str, Any]]
+    status: PaymentStatus = Field(
         default=PaymentStatus.UNCONFIRMED,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
 
-    # Meta information
-    created_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
+    created_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
+    )
 
     # Foreign Keys
-    student_id = Column(
-        UUID(as_uuid=True), ForeignKey(Student.student_id), nullable=False
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="rgbank_invoices")
-
-    thread = db.relationship(
-        "Thread", back_populates="invoice", cascade="all, delete-orphan"
+    student: "Student" = Relationship(
+        back_populates="rgbank_invoices",
+    )
+    thread: "Thread" = Relationship(
+        back_populates="invoice",
     )
 
     @hybrid_property

@@ -1,56 +1,76 @@
 import uuid
-from typing import Any, Dict, List
-from sqlalchemy import Boolean, String, Integer, Column, ForeignKey, inspect, text
-from sqlalchemy.dialects.postgresql import UUID
-from utility.database import db
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from sqlmodel import Field, Relationship, SQLModel
+
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
+if TYPE_CHECKING:
+    from models.apps.rgbank.expense import ExpenseDomain
+    from models.apps.rgbank.statistics import ExpenseCount, Statistics
+    from models.committees.committee_category import CommitteeCategory
+    from models.committees.committee_position import CommitteePosition
+    from models.core.author import Author
+    from models.core.calendar import Calendar
+    from models.core.language import Language
+    from models.core.notifications import Notifications
 
-class Committee(db.Model):
+
+class Committee(SQLModel, table=True):
     __tablename__ = "committee"
-    committee_id = Column(
-        UUID(as_uuid=True),
+
+    committee_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    email = Column(String(255), unique=True)
-    group_photo_url = Column(String(length=2096))
-    logo_url = Column(String(2096), nullable=False)
-    total_news = Column(Integer, nullable=False, default=0)
-    total_events = Column(Integer, nullable=False, default=0)
-    total_documents = Column(Integer, nullable=False, default=0)
-    total_media = Column(Integer, nullable=False, default=0)
-    hidden = Column(Boolean, nullable=False, default=False)
+    email: str = Field(unique=True)
+    group_photo_url: str | None
+    logo_url: str
+
+    total_news: int = 0
+    total_events: int = 0
+    total_documents: int = 0
+    total_media: int = 0
+    hidden: bool = False
 
     # Foreign key
-    committee_category_id = Column(
-        UUID(as_uuid=True), ForeignKey("committee_category.committee_category_id")
+    committee_category_id: uuid.UUID = Field(
+        foreign_key="committee_category.committee_category_id",
     )
 
     # Relationship
-    author = db.relationship("Author", back_populates="committee")
-    committee_category = db.relationship(
-        "CommitteeCategory", back_populates="committees"
+    author: "Author" = Relationship(
+        back_populates="committee",
     )
-    translations = db.relationship(
-        "CommitteeTranslation", back_populates="committee", lazy="joined"
+    committee_category: "CommitteeCategory" = Relationship(
+        back_populates="committees",
     )
-    committee_positions = db.relationship(
-        "CommitteePosition", back_populates="committee"
+    translations: list["CommitteeTranslation"] = Relationship(
+        back_populates="committee",
+        cascade_delete=True,
     )
-    calendar = db.relationship("Calendar", back_populates="committee", uselist=False)
-    notifications = db.relationship("Notifications", back_populates="committee")
+    committee_positions: list["CommitteePosition"] = Relationship(
+        back_populates="committee",
+        cascade_delete=True,
+    )
+    calendar: "Calendar" = Relationship(
+        back_populates="committee",
+    )
+    notifications: list["Notifications"] = Relationship(
+        back_populates="committee",
+        cascade_delete=True,
+    )
 
-    rgbank_expense_domain = db.relationship(
-        "ExpenseDomain", back_populates="committee", uselist=False
+    rgbank_expense_domain: "ExpenseDomain" = Relationship(
+        back_populates="committee",
     )
-    rgbank_statistics = db.relationship(
-        "Statistics", back_populates="committee", lazy="dynamic"
+    rgbank_statistics: list["Statistics"] = Relationship(
+        back_populates="committee",
+        cascade_delete=True,
     )
-    rgbank_expense_count = db.relationship(
-        "ExpenseCount", back_populates="committee", uselist=False
+    rgbank_expense_count: "ExpenseCount" = Relationship(
+        back_populates="committee",
     )
 
     def __repr__(self):
@@ -98,26 +118,32 @@ class Committee(db.Model):
         return data
 
 
-class CommitteeTranslation(db.Model):
+class CommitteeTranslation(SQLModel, table=True):
     __tablename__ = "committee_translation"
 
-    committee_translation_id = Column(
-        UUID(as_uuid=True),
+    committee_translation_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(125))
-    description = Column(String(512))
+    title: str = Field(max_length=125)
+    description: str = Field(max_length=512)
 
     # Foreign keys
-    committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    committee_id: uuid.UUID = Field(
+        foreign_key="committee.committee_id",
+    )
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationship
-    committee = db.relationship("Committee", back_populates="translations")
-    language = db.relationship("Language", back_populates="committee_translations")
+    committee: "Committee" = Relationship(
+        back_populates="translations",
+    )
+    language: "Language" = Relationship(
+        back_populates="committee_translations",
+    )
 
     def __repr__(self):
         return "<CommitteeTranslation %r>" % self.committee_translation_id

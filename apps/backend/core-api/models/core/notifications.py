@@ -1,20 +1,21 @@
 import enum
 import uuid
-from typing import Any, Dict, List
-from sqlalchemy import (
-    TIMESTAMP,
-    Boolean,
-    Column,
-    Enum,
-    ForeignKey,
-    String,
-    func,
-    text,
-)
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlmodel import Field, Relationship, SQLModel
+
+from models.core.language import Language
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 from utility.database import db
-from sqlalchemy.ext.hybrid import hybrid_property
+
+if TYPE_CHECKING:
+    from models.committees import Committee
+    from models.content.event import Event
+    from models.content.news import News
+    from models.core.language import Language
+    from models.core.student import Student
 
 
 class NotificationType(enum.Enum):
@@ -24,43 +25,39 @@ class NotificationType(enum.Enum):
     EVENT = "event"
 
 
-class NotificationSubscription(db.Model):
+class NotificationSubscription(SQLModel, table=True):
     """Model notification subscriptions in the database."""
 
     __tablename__ = "notification_subscription"
 
-    notification_id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
-    )
-    endpoint = Column(String(), unique=True)
-    p256dh = Column(String())
-    auth = Column(String())
+    notification_id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
+
+    endpoint: str = Field(unique=True)
+    p256dh: str
+    auth: str
 
     # email = Column(Boolean, default=False) #TODO: Implement email notifications later, note that email is not device specific
 
     # Timestamps
-    created_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
+    created_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
+    )
 
     # Foreign keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id"),
-        nullable=False,
-        unique=False,
-    )
-    language_code = Column(
-        String(20),
-        ForeignKey("language.language_code"),
-        nullable=False,
+    student_id: uuid.UUID = Field(foreign_key="student.student_id", unique=False)
+    language_code: str = Field(
+        default=DEFAULT_LANGUAGE_CODE,
+        foreign_key="language.language_code",
         unique=False,
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="notification_subscriptions")
-    language = db.relationship("Language", back_populates="notification_subscriptions")
+    student: "Student" = Relationship(
+        back_populates="notification_subscriptions",
+    )
+    language: "Language" = Relationship(
+        back_populates="notification_subscriptions",
+    )
 
     @hybrid_property
     def push_enabled(self):
@@ -95,36 +92,34 @@ class NotificationSubscription(db.Model):
         }
 
 
-class NotificationPreferences(db.Model):
+class NotificationPreferences(SQLModel, table=True):
     """
     Model for student notification preferences in the database. Will affect all new notifications for the student.
     """
 
     __tablename__ = "notification_preferences"
 
-    notification_preferences_id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+    notification_preferences_id: uuid.UUID = Field(
+        primary_key=True, default_factory=uuid.uuid4
     )
 
-    iana_timezone = Column(String(255), nullable=True)
-    site_updates = Column(Boolean, default=True)
-    committees = Column(
-        JSONB, nullable=True
-    )  # [ { "committee_id": "uuid", types: { "news": true, "events", false } } ]
+    iana_timezone: str | None
+    site_updates: bool = True
+    committees: list[Dict[str, Any]] | None = (
+        None  # [ { "committee_id": "uuid", types: { "news": true, "events", false } } ]
+    )
 
     # Foreign keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id"),
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
         nullable=False,
         unique=True,
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="notification_preferences")
+    student: "Student" = Relationship(
+        back_populates="notification_preferences",
+    )
 
     def __repr__(self):
         return f"<NotificationPreferences {self.notification_preferences_id}>"
@@ -136,63 +131,58 @@ class NotificationPreferences(db.Model):
         }
 
 
-class Notifications(db.Model):
+class Notifications(SQLModel, table=True):
     """
     Model for storing actual notifications in the database.
     """
 
     __tablename__ = "notifications"
 
-    notification_id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+    notification_id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
+
+    created_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
     )
 
-    created_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
-    notification_type = Column(Enum(NotificationType), nullable=False)
-    notification_metadata = Column(
-        JSONB, nullable=True
-    )  # Events start time, news source, etc.
+    notification_type: NotificationType
+    notification_metadata: Dict[str, Any] | None
 
     # Foreign keys
-    committee_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee.committee_id"),
-        nullable=True,  # Should be system notification if null
+    committee_id: uuid.UUID | None = Field(
+        foreign_key="committee.committee_id",
+        default=True,  # Should be system notification if null
         unique=False,
     )
 
-    event_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("event.event_id"),
-        nullable=True,
+    event_id: uuid.UUID | None = Field(
+        foreign_key="event.event_id",
+        default=None,
         unique=False,
     )
 
-    news_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("news.news_id"),
-        nullable=True,
+    news_id: uuid.UUID | None = Field(
+        foreign_key="news.news_id",
+        default=None,
         unique=False,
     )
 
     # Relationships
-    committee = db.relationship("Committee", back_populates="notifications")
-    event = db.relationship("Event", back_populates="notifications")
-    news = db.relationship("News", back_populates="notifications")
-    translations = db.relationship(
-        "NotificationsTranslation",
+    committee: "Committee" = Relationship(
         back_populates="notifications",
-        lazy="joined",
-        cascade="all, delete-orphan",
     )
-    sent_notifications = db.relationship(
-        "SentNotifications",
+    event: "Event" = Relationship(
+        back_populates="notifications",
+    )
+    news: "News" = Relationship(
+        back_populates="notifications",
+    )
+    translations: list["NotificationsTranslation"] = Relationship(
+        back_populates="notifications",
+        cascade_delete=True,
+    )
+    sent_notifications: list["SentNotifications"] = Relationship(
         back_populates="notification",
-        lazy="joined",
-        cascade="all, delete-orphan",
+        cascade_delete=True,
     )
 
     def to_dict(
@@ -233,41 +223,36 @@ class Notifications(db.Model):
         return data
 
 
-class NotificationsTranslation(db.Model):
+class NotificationsTranslation(SQLModel, table=True):
     """
     Model for storing translations of notifications in the database.
     """
 
     __tablename__ = "notifications_translation"
 
-    notification_translation_id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+    notification_translation_id: uuid.UUID = Field(
+        primary_key=True, default_factory=uuid.uuid4
     )
 
-    title = Column(String(100), nullable=False)
-    body = Column(String(255), nullable=False)
-    url = Column(String(255))
+    title: str
+    body: str
+    url: str | None = None
 
     # Foreign keys
-    notification_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("notifications.notification_id"),
-        nullable=False,
+    notification_id: uuid.UUID = Field(
+        foreign_key="notifications.notification_id",
         unique=False,
     )
-    language_code = Column(
-        String(20),
-        ForeignKey("language.language_code"),
-        nullable=False,
+
+    language_code: str = Field(
+        default=DEFAULT_LANGUAGE_CODE,
+        foreign_key="language.language_code",
         unique=False,
     )
 
     # Relationships
-    notifications = db.relationship("Notifications", back_populates="translations")
-    language = db.relationship("Language", back_populates="notifications_translation")
+    notifications: list["Notifications"] = Relationship(back_populates="translations")
+    language: "Language" = Relationship(back_populates="notifications_translation")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -277,26 +262,20 @@ class NotificationsTranslation(db.Model):
         }
 
 
-class SentNotifications(db.Model):
+class SentNotifications(SQLModel, table=True):
     __tablename__ = "sent_notifications"
 
-    sent_notification_id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+    sent_notification_id: uuid.UUID = Field(
+        primary_key=True, default_factory=uuid.uuid4
     )
 
-    notification_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("notifications.notification_id"),
-        nullable=False,
+    # Foreign keys
+    notification_id: uuid.UUID = Field(
+        foreign_key="notification_subscription.notification_id",
         unique=False,
     )
 
     # Relationships
-    notification = db.relationship(
-        "Notifications",
+    notification: "Notifications" = Relationship(
         back_populates="sent_notifications",
-        lazy="joined",
     )

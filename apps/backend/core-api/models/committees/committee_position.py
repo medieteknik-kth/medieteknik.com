@@ -1,22 +1,21 @@
 import enum
 import uuid
-from typing import Any, Dict, List
-from sqlalchemy import (
-    DateTime,
-    String,
-    Integer,
-    Column,
-    ForeignKey,
-    Enum,
-    Boolean,
-    inspect,
-    text,
-)
-from sqlalchemy.dialects.postgresql import UUID
-from models.committees.committee import Committee
-from utility.database import db
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from pydantic import EmailStr
+from sqlmodel import Field, Relationship, SQLModel
+
 from utility.constants import AVAILABLE_LANGUAGES
+from utility.database import db
 from utility.translation import get_translation
+
+if TYPE_CHECKING:
+    from models.apps.rgbank.permissions import RGBankPermissions
+    from models.committees.committee import Committee
+    from models.core.author import Author
+    from models.core.language import Language
+    from models.core.student import StudentMembership
 
 
 class CommitteePositionsRole(enum.Enum):
@@ -35,44 +34,47 @@ class CommitteePositionCategory(enum.Enum):
     FANBORGEN = "FANBORGEN"
 
 
-class CommitteePosition(db.Model):
+class CommitteePosition(SQLModel, table=True):
     __tablename__ = "committee_position"
 
-    committee_position_id = Column(
-        UUID(as_uuid=True),
+    committee_position_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    email = Column(String(255))
-    weight = Column(Integer, default=1_000)
-    role = Column(
-        Enum(CommitteePositionsRole),
-        default=CommitteePositionsRole.COMMITTEE,
-        nullable=False,
-    )
-    active = Column(Boolean, default=True)
-    category = Column(Enum(CommitteePositionCategory), nullable=True)
-    base = Column(Boolean, default=False)
+    email: EmailStr | None
+    weight: int = 1_000
+    role: CommitteePositionsRole = CommitteePositionsRole.COMMITTEE
+    active: bool = True
+    category: CommitteePositionCategory | None
+    base: bool = False
 
     # Foreign key
-    committee_id = Column(UUID(as_uuid=True), ForeignKey("committee.committee_id"))
+    committee_id: uuid.UUID = Field(
+        foreign_key="committee.committee_id",
+    )
 
     # Relationship
-    author = db.relationship("Author", back_populates="committee_position")
-    committee = db.relationship("Committee", back_populates="committee_positions")
-    student_positions = db.relationship(
-        "StudentMembership", back_populates="committee_position"
+    author: "Author" = Relationship(
+        back_populates="committee_position",
     )
-    translations = db.relationship(
-        "CommitteePositionTranslation", back_populates="committee_position"
+    committee: "Committee" = Relationship(
+        back_populates="committee_positions",
     )
-    recruitment = db.relationship(
-        "CommitteePositionRecruitment", back_populates="committee_position"
+    student_positions: list["StudentMembership"] = Relationship(
+        back_populates="committee_position",
     )
-    rgbank_permissions = db.relationship(
-        "RGBankPermissions", back_populates="committee_position"
+    translations: list["CommitteePositionTranslation"] = Relationship(
+        back_populates="committee_position",
+        cascade_delete=True,
+    )
+    recruitment: list["CommitteePositionRecruitment"] = Relationship(
+        back_populates="committee_position",
+        cascade_delete=True,
+    )
+    rgbank_permissions: "RGBankPermissions" = Relationship(
+        back_populates="committee_position",
+        cascade_delete=True,
     )
 
     def __repr__(self):
@@ -139,27 +141,27 @@ class CommitteePosition(db.Model):
 class CommitteePositionTranslation(db.Model):
     __tablename__ = "committee_position_translation"
 
-    committee_position_translation_id = Column(
-        UUID(as_uuid=True),
+    committee_position_translation_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
-    description = Column(String(500))
+    title: str
+    description: str | None
 
     # Foreign keys
-    committee_position_id = Column(
-        UUID(as_uuid=True), ForeignKey("committee_position.committee_position_id")
+    committee_position_id: uuid.UUID = Field(
+        foreign_key="committee_position.committee_position_id",
     )
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationship
-    committee_position = db.relationship(
+    committee_position: "CommitteePosition" = db.relationship(
         "CommitteePosition", back_populates="translations"
     )
-    language = db.relationship(
+    language: "Language" = db.relationship(
         "Language", back_populates="committee_position_translations"
     )
 
@@ -188,28 +190,26 @@ class CommitteePositionTranslation(db.Model):
 class CommitteePositionRecruitment(db.Model):
     __tablename__ = "committee_position_recruitment"
 
-    committee_position_recruitment_id = Column(
-        UUID(as_uuid=True),
+    committee_position_recruitment_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    start_date = Column(DateTime)
-    end_date = Column(DateTime)
+    start_date: datetime
+    end_date: datetime
 
     # Foreign keys
-    committee_position_id = Column(
-        UUID(as_uuid=True), ForeignKey("committee_position.committee_position_id")
+    committee_position_id: uuid.UUID = Field(
+        foreign_key="committee_position.committee_position_id",
     )
 
     # Relationship
-    committee_position = db.relationship(
-        "CommitteePosition", back_populates="recruitment"
+    committee_position: "CommitteePosition" = Relationship(
+        back_populates="recruitment",
     )
-    translations = db.relationship(
-        "CommitteePositionRecruitmentTranslation",
+    translations: list["CommitteePositionRecruitmentTranslation"] = Relationship(
         back_populates="committee_position_recruitment",
+        cascade_delete=True,
     )
 
     def __repr__(self):
@@ -267,32 +267,28 @@ class CommitteePositionRecruitment(db.Model):
 class CommitteePositionRecruitmentTranslation(db.Model):
     __tablename__ = "committee_position_recruitment_translation"
 
-    committee_position_recruitment_translation_id = Column(
-        UUID(as_uuid=True),
+    committee_position_recruitment_translation_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    description = Column(String(length=255))
-    link_url = Column(String(512))
+    description: str
+    link_url: str
 
     # Foreign keys
-    committee_position_recruitment_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey(
-            "committee_position_recruitment.committee_position_recruitment_id",
-            ondelete="CASCADE",
-        ),
+    committee_position_recruitment_id: uuid.UUID = Field(
+        foreign_key="committee_position_recruitment.committee_position_recruitment_id",
     )
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationship
-    committee_position_recruitment = db.relationship(
-        "CommitteePositionRecruitment", back_populates="translations"
+    committee_position_recruitment: "CommitteePositionRecruitment" = Relationship(
+        back_populates="translations",
     )
-    language = db.relationship(
-        "Language", back_populates="committee_position_recruitment_translations"
+    language: "Language" = Relationship(
+        back_populates="committee_position_recruitment_translations",
     )
 
     def to_dict(self):

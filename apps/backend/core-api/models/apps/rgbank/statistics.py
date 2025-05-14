@@ -1,20 +1,17 @@
 import uuid
-from typing import Any, Dict, List
-from sqlalchemy import (
-    UUID,
-    Boolean,
-    CheckConstraint,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    text,
-)
-from utility import db, AVAILABLE_LANGUAGES
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from sqlmodel import CheckConstraint, Field, Relationship, SQLModel
+
+from utility import AVAILABLE_LANGUAGES
+
+if TYPE_CHECKING:
+    from models.committees.committee import Committee
+    from models.core.student import Student
 
 
-class Statistics(db.Model):
+class Statistics(SQLModel, table=True):
     __tablename__ = "statistics"
     __table_args__ = (
         CheckConstraint(
@@ -30,43 +27,41 @@ class Statistics(db.Model):
         },
     )
 
-    statistics_id = Column(
-        UUID(as_uuid=True),
+    statistics_id: uuid.UUID = Field(
         primary_key=True,
-        nullable=False,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    year = Column(Integer, nullable=True)  # NULL for all-time statistics
-    month = Column(Integer, nullable=True)  # NULL for all-time/yearly statistics
-    is_all_time = Column(Boolean, nullable=False, default=False)
+    year: int | None  # NULL for all-time/yearly statistics
+    month: int | None  # NULL for all-time/yearly statistics
+    is_all_time: bool = False
 
-    value = Column(Float, nullable=False, default=0.0)
+    value: float = 0.0
 
-    # Metadata
-    created_at = Column(
-        DateTime(timezone=True), server_default=text("now()"), nullable=False
+    created_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
     )
-    updated_at = Column(
-        DateTime(timezone=True), server_default=text("now()"), nullable=False
+    updated_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
     )
 
     # Foreign Keys
-    student_id = Column(
-        UUID(as_uuid=True), ForeignKey("student.student_id"), nullable=True, index=True
+    student_id: uuid.UUID | None = Field(
+        foreign_key="student.student_id",
+        index=True,
     )
-
-    committee_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee.committee_id"),
-        nullable=True,
+    committee_id: uuid.UUID | None = Field(
+        foreign_key="committee.committee_id",
         index=True,
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="rgbank_statistics")
-    committee = db.relationship("Committee", back_populates="rgbank_statistics")
+    student: "Student" | None = Relationship(
+        back_populates="rgbank_statistics",
+    )
+    committee: "Committee" | None = Relationship(
+        back_populates="rgbank_statistics",
+    )
 
     def __repr__(self):
         return "<Statistics %r>" % self.statistics_id
@@ -89,7 +84,7 @@ class Statistics(db.Model):
         }
 
 
-class ExpenseCount(db.Model):
+class ExpenseCount(SQLModel, table=True):
     __tablename__ = "expense_count"
     __table_args__ = (
         CheckConstraint(
@@ -101,37 +96,34 @@ class ExpenseCount(db.Model):
         },
     )
 
-    expense_count_id = Column(
-        UUID(as_uuid=True),
+    expense_count_id: uuid.UUID = Field(
         primary_key=True,
-        nullable=False,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    expense_count = Column(Integer, nullable=False, default=0)
-    invoice_count = Column(Integer, nullable=False, default=0)
+    expense_count: int = 0
+    invoice_count: int = 0
 
     # Foreign Keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id"),
-        nullable=True,
+    student_id: uuid.UUID | None = Field(
+        foreign_key="student.student_id",
         index=True,
         unique=True,
     )
 
-    committee_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee.committee_id"),
-        nullable=True,
+    committee_id: uuid.UUID | None = Field(
+        foreign_key="committee.committee_id",
         index=True,
         unique=True,
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="rgbank_expense_count")
-    committee = db.relationship("Committee", back_populates="rgbank_expense_count")
+    student: "Student" | None = Relationship(
+        back_populates="rgbank_expense_count",
+    )
+    committee: "Committee" | None = Relationship(
+        back_populates="rgbank_expense_count",
+    )
 
     def __repr__(self):
         return "<ExpenseCount %r>" % self.expense_count_id

@@ -1,20 +1,11 @@
 import enum
-from typing import List
 import uuid
-from sqlalchemy import (
-    TIMESTAMP,
-    UUID,
-    Column,
-    Enum,
-    ForeignKey,
-    Index,
-    MetaData,
-    String,
-    text,
-)
+from datetime import datetime, timezone
+
+from sqlmodel import Field, Index, MetaData, Relationship, SQLModel, text
+
 from models.apps.rgbank import Expense, Invoice, PaymentStatus
 from models.core import Student
-from utility import db
 from utility.logger import log_error
 
 
@@ -23,36 +14,32 @@ class MessageType(enum.Enum):
     SYSTEM = "SYSTEM"  # System, status update, etc.
 
 
-class Thread(db.Model):
+class Thread(SQLModel, table=True):
     __tablename__ = "thread"
     __table_args__ = {"schema": "rgbank"}
 
-    thread_id = Column(
-        UUID(as_uuid=True),
+    thread_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
     # Foreign Keys
-    expense_id = Column(
-        UUID(as_uuid=True), ForeignKey(Expense.expense_id), nullable=True
+    expense_id: uuid.UUID | None = Field(
+        foreign_key="expense.expense_id",
     )
-
-    invoice_id = Column(
-        UUID(as_uuid=True), ForeignKey(Invoice.invoice_id), nullable=True
+    invoice_id: uuid.UUID | None = Field(
+        foreign_key="invoice.invoice_id",
     )
 
     # Relationships
-    expense = db.relationship("Expense", back_populates="thread")
-    invoice = db.relationship("Invoice", back_populates="thread")
-    messages = db.relationship(
-        "Message",
+    expense: "Expense" | None = Relationship(
         back_populates="thread",
-        cascade="all, delete-orphan",
-        lazy="joined",
-        uselist=True,
-        join_depth=1,
+    )
+    invoice: "Invoice" | None = Relationship(
+        back_populates="thread",
+    )
+    messages: list["Message"] = Relationship(
+        back_populates="thread",
     )
 
     def __repr__(self):
@@ -86,47 +73,52 @@ class Thread(db.Model):
         }
 
 
-class Message(db.Model):
+class Message(SQLModel, table=True):
     __tablename__ = "message"
     __table_args__ = {"schema": "rgbank"}
 
-    message_id = Column(
-        UUID(as_uuid=True),
+    message_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    content = Column(String, nullable=False)
-    created_at = Column(TIMESTAMP, default=db.func.now(), server_default=text("now()"))
+    content: str
+    created_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
+    )
 
-    # Will only be for when the sender/student is not the same as the receiver
-    read_at = Column(TIMESTAMP, default=None, server_default=None, nullable=True)
-    message_type = Column(
-        Enum(MessageType, metadata=MetaData(schema="rgbank")),
-        nullable=False,
+    read_at: datetime | None
+    message_type: MessageType = Field(
         default=MessageType.STUDENT,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
 
-    previous_status = Column(
-        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")), nullable=True
+    previous_status: PaymentStatus | None = Field(
+        default=None,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
-    new_status = Column(
-        Enum(PaymentStatus, metadata=MetaData(schema="rgbank")), nullable=True
+
+    new_status: PaymentStatus | None = Field(
+        default=None,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
 
     # Foreign Keys
-    thread_id = Column(UUID(as_uuid=True), ForeignKey(Thread.thread_id), nullable=False)
-    sender_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey(Student.student_id),
-        nullable=True,
+    thread_id: uuid.UUID = Field(
+        foreign_key="thread.thread_id",
+    )
+    sender_id: uuid.UUID | None = Field(
+        foreign_key="student.student_id",
         index=True,
     )
 
     # Relationships
-    thread = db.relationship("Thread", back_populates="messages")
-    sender = db.relationship("Student", back_populates="rgbank_messages", lazy="joined")
+    thread: "Thread" = Relationship(
+        back_populates="messages",
+    )
+    sender: "Student" | None = Relationship(
+        back_populates="rgbank_messages",
+    )
 
     __table_args__ = (
         Index(

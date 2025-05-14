@@ -6,6 +6,11 @@ Flask-CORS
 Flask-Limiter
 Flask-WTF
 Flask-JWT-Extended
+fastapi 
+uvicorn 
+pydantic
+pydantic-settings
+sqlmodel
 authlib
 unidecode
 gunicorn

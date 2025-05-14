@@ -1,36 +1,34 @@
 import uuid
 from os import environ
+
 from cryptography.fernet import Fernet
-from sqlalchemy import UUID, Column, ForeignKey, String, text
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.core import Student
-from utility import db
 
 
-class AccountBankInformation(db.Model):
+class AccountBankInformation(SQLModel, table=True):
     __tablename__ = "account_bank_information"
     __table_args__ = {"schema": "rgbank"}
 
-    bank_id = Column(
-        UUID(as_uuid=True),
+    bank_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
-    bank_name = Column(String, nullable=False)
-    clearing_number = Column(String, nullable=False)
-    account_number = Column(String, nullable=False)
+
+    bank_name: str
+    clearing_number: str
+    account_number: str
 
     # Foreign Keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey(Student.student_id),
-        nullable=False,
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
         index=True,
     )
 
     # Relationships
-    student = db.relationship(
-        "Student", back_populates="rgbank_account_bank_information"
+    student: "Student" = Relationship(
+        back_populates="rgbank_account_bank_information",
     )
 
     def __repr__(self):

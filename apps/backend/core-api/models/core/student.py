@@ -1,22 +1,32 @@
 import enum
 import uuid
-from typing import Any, Dict
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import (
-    String,
-    Column,
-    ForeignKey,
-    DateTime,
-    Enum,
-    func,
-    inspect,
-    or_,
-    text,
-)
+from datetime import datetime
+from typing import TYPE_CHECKING
+
+from pydantic import EmailStr
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.utility.auth import RevokedTokens
-from utility.database import db
-from utility.reception_mode import RECEPTION_MODE
 from utility.authorization import jwt
+from utility.reception_mode import RECEPTION_MODE
+
+if TYPE_CHECKING:
+    from models.apps.rgbank import (
+        AccountBankInformation,
+        Expense,
+        ExpenseCount,
+        Invoice,
+        Message,
+        Statistics,
+    )
+    from models.committees import CommitteePosition
+    from models.core.author import Author
+    from models.core.calendar import Calendar
+    from models.core.notifications import (
+        NotificationPreferences,
+        NotificationSubscription,
+    )
+    from models.core.permissions import StudentPermission
 
 
 class StudentType(enum.Enum):
@@ -38,7 +48,7 @@ class StudentType(enum.Enum):
     OTHER = "OTHER"
 
 
-class Student(db.Model):
+class Student(SQLModel, table=True):
     """
     Model for students in the database.
 
@@ -55,101 +65,73 @@ class Student(db.Model):
 
     __tablename__ = "student"
 
-    student_id = Column(
-        UUID(as_uuid=True),
+    student_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    email = Column(String(255), unique=True, nullable=False, index=True)
-    first_name = Column(String(255), nullable=False)
-    last_name = Column(String(255))
-    reception_name = Column(String(255))
-    profile_picture_url = Column(String(length=2096))
-    reception_profile_picture_url = Column(String(length=2096))
-    student_type = Column(
-        Enum(StudentType), nullable=False, default=StudentType.MEDIETEKNIK
+    email: EmailStr = Field(
+        unique=True,
+        index=True,
     )
-    password_hash = Column(String(length=1000), nullable=True)
+
+    first_name: str
+    last_name: str | None
+    reception_name: str | None
+    profile_picture_url: str | None
+    reception_profile_picture_url: str | None
+    student_type: StudentType = Field(
+        default=StudentType.OTHER,
+    )
+    password_hash: str | None
 
     # Relationships
-    profile = db.relationship("Profile", back_populates="student", uselist=False)
-    student_positions = db.relationship("StudentMembership", back_populates="student")
-    author = db.relationship("Author", back_populates="student", uselist=False)
-    calendar = db.relationship("Calendar", back_populates="student", uselist=False)
-    permissions = db.relationship(
-        "StudentPermission", back_populates="student", uselist=False
+    profile: "Profile" = Relationship(
+        back_populates="student",
     )
-    notification_subscriptions = db.relationship(
-        "NotificationSubscription", back_populates="student", uselist=False
+    student_positions: list["StudentMembership"] = Relationship(
+        back_populates="student",
     )
-    notification_preferences = db.relationship(
-        "NotificationPreferences", back_populates="student", uselist=False
+    author: "Author" = Relationship(
+        back_populates="student",
+    )
+    calendar: "Calendar" = Relationship(
+        back_populates="student",
+    )
+    permissions: "StudentPermission" = Relationship(
+        back_populates="student",
+    )
+    notification_subscriptions: list["NotificationSubscription"] = Relationship(
+        back_populates="student",
+    )
+    notification_preferences: "NotificationPreferences" = Relationship(
+        back_populates="student",
     )
 
-    rgbank_account_bank_information = db.relationship(
-        "AccountBankInformation",
+    rgbank_account_bank_information: "AccountBankInformation" = Relationship(
         back_populates="student",
-        uselist=False,
-        cascade="all, delete-orphan",
     )
-    rgbank_expenses = db.relationship("Expense", back_populates="student")
-    rgbank_invoices = db.relationship("Invoice", back_populates="student")
-    rgbank_messages = db.relationship("Message", back_populates="sender")
-    rgbank_statistics = db.relationship("Statistics", back_populates="student")
-    rgbank_expense_count = db.relationship(
-        "ExpenseCount",
+    rgbank_expenses: list["Expense"] = Relationship(
         back_populates="student",
-        uselist=False,
-        cascade="all, delete-orphan",
+    )
+    rgbank_invoices: list["Invoice"] = Relationship(
+        back_populates="student",
+    )
+    rgbank_messages: list["Message"] = Relationship(
+        back_populates="sender",
+    )
+    rgbank_statistics: "Statistics" = Relationship(
+        back_populates="student",
+    )
+    rgbank_expense_count: "ExpenseCount" = Relationship(
+        back_populates="student",
     )
 
     def __repr__(self):
         return "<Student %r>" % self.student_id
 
-    def to_dict(self, is_public_route=True) -> Dict[str, Any] | None:
-        columns = inspect(self)
 
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-
-        data = {}
-        for column in columns:
-            value = getattr(self, column)
-            if isinstance(value, enum.Enum):
-                value = value.value
-            data[column] = value
-
-        del data["password_hash"]
-
-        if is_public_route:
-            if RECEPTION_MODE:
-                del data["email"]
-            del data["reception_name"]
-            del data["reception_profile_picture_url"]
-            data["first_name"] = (
-                self.reception_name
-                if RECEPTION_MODE and self.reception_name is not None
-                else self.first_name
-            )
-            data["last_name"] = (
-                ""
-                if RECEPTION_MODE and self.reception_name is not None
-                else self.last_name
-            )
-            data["profile_picture_url"] = (
-                self.reception_profile_picture_url
-                if RECEPTION_MODE and self.reception_profile_picture_url is not None
-                else self.profile_picture_url
-            )
-
-        return data
-
-
-class Profile(db.Model):
+class Profile(SQLModel, table=True):
     """
     Model for student profiles in the database.
 
@@ -166,32 +148,29 @@ class Profile(db.Model):
 
     __tablename__ = "profile"
 
-    profile_id = Column(
-        UUID(as_uuid=True),
+    profile_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    facebook_url = Column(String(255))
-    linkedin_url = Column(String(255))
-    instagram_url = Column(String(255))
+    facebook_url: str | None
+    linkedin_url: str | None
+    instagram_url: str | None
 
     # Foreign keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id"),
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
         nullable=False,
         unique=True,
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="profile")
+    student: "Student" = Relationship(
+        back_populates="profile",
+    )
 
     def __repr__(self):
         return "<Profile %r>" % self.profile_id
-
-    def to_dict(self, is_public_route=True):
         if RECEPTION_MODE and is_public_route:
             return None
 
@@ -215,7 +194,7 @@ class Profile(db.Model):
         return data
 
 
-class StudentMembership(db.Model):
+class StudentMembership(SQLModel, table=True):
     """
     Model for student positions in the database. Used for both history and current positions.
     Either a student is part of a committe but doesn't have a position or vice versa.
@@ -231,72 +210,30 @@ class StudentMembership(db.Model):
 
     __tablename__ = "student_membership"
 
-    student_membership_id = Column(
-        UUID(as_uuid=True),
+    student_membership_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    initiation_date = Column(DateTime, nullable=False)
-    termination_date = Column(DateTime)
+    initiation_date: datetime
+    termination_date: datetime | None
 
     # Foreign keys
-    student_id = Column(
-        UUID(as_uuid=True), ForeignKey("student.student_id"), nullable=False
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
     )
-    committee_position_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee_position.committee_position_id"),
+
+    committee_position_id: uuid.UUID = Field(
+        foreign_key="committee_position.committee_position_id",
     )
 
     # Relationships
-    student = db.relationship("Student", back_populates="student_positions")
-    committee_position = db.relationship(
-        "CommitteePosition", back_populates="student_positions"
+    student: "Student" = Relationship(
+        back_populates="student_positions",
     )
-
-    def to_dict(self, is_public_route=True):
-        columns = inspect(self)
-
-        if not columns:
-            return None
-
-        columns = columns.mapper.column_attrs.keys()
-        data = {}
-        for column in columns:
-            data[column] = getattr(self, column)
-
-        if is_public_route:
-            del data["student_positions_id"]
-            del data["committee_position_id"]
-
-        del data["student_id"]
-        student: Student | None = Student.query.get(self.student_id)
-
-        if not student:
-            return None
-
-        data["student"] = student.to_dict(is_public_route=is_public_route)
-
-        return data
-
-    def is_active(self) -> bool:
-        current_date = func.now()
-        if self.initiation_date is None:
-            return False
-
-        StudentMembership.query.filter(
-            StudentMembership.student_id == self.student_id,
-            StudentMembership.initiation_date >= current_date,
-            StudentMembership.committee_position_id == self.committee_position_id,
-            or_(
-                StudentMembership.termination_date <= current_date,
-                StudentMembership.termination_date == None,  # noqa: E711
-            ),
-        ).first()
-
-        return True
+    committee_position: "CommitteePosition" = Relationship(
+        back_populates="student_positions",
+    )
 
 
 @jwt.user_identity_loader

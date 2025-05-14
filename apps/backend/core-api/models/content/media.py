@@ -1,11 +1,17 @@
 import enum
-from typing import List
 import uuid
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, Enum, ForeignKey, String, inspect
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
-from utility.database import db
+from typing import TYPE_CHECKING, List
+
+from sqlalchemy import inspect
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.content.base import Item
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+
+if TYPE_CHECKING:
+    from models.content.album import Album
+    from models.content.base import Item
+    from models.core.language import Language
 
 
 class MediaType(enum.Enum):
@@ -22,20 +28,29 @@ class Media(Item):
         media_urls: List of media URLs (images, videos, etc.)
     """
 
-    media_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    media_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
+    )
 
-    media_url = Column(String(512), nullable=False)
-    media_type = Column(Enum(MediaType), default=MediaType.IMAGE, nullable=False)
+    media_url: str
+    media_type: MediaType = MediaType.IMAGE
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id"))
-    album_id = Column(UUID(as_uuid=True), ForeignKey("album.album_id"), nullable=True)
+    item_id: uuid.UUID = Field(foreign_key="item.item_id")
+    album_id: uuid.UUID | None = Field(
+        foreign_key="album.album_id",
+    )
 
     # Relationships
-    item = db.relationship("Item", back_populates="media")
-    album = db.relationship("Album", back_populates="media")
-    translations = db.relationship(
-        "MediaTranslation", back_populates="media", lazy="joined"
+    item: "Item" = Relationship(
+        back_populates="media",
+    )
+    album: "Album" | None = Relationship(
+        back_populates="media",
+    )
+    translations: list["MediaTranslation"] = Relationship(
+        back_populates="media",
     )
 
     __mapper_args__ = {"polymorphic_identity": "media"}
@@ -90,23 +105,32 @@ class Media(Item):
         return data
 
 
-class MediaTranslation(db.Model):
+class MediaTranslation(SQLModel, table=True):
     __tablename__ = "media_translation"
 
-    media_translation_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    media_translation_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255), nullable=False)
-    description = Column(String(255))
+    title: str
+    description: str | None = None
 
     # Foreign keys
-    media_id = Column(UUID(as_uuid=True), ForeignKey("media.media_id"))
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    media_id: uuid.UUID = Field(
+        foreign_key="media.media_id",
+    )
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationships
-    media = db.relationship("Media", back_populates="translations")
-    language = db.relationship("Language", back_populates="media_translations")
+    media: "Media" = Relationship(
+        back_populates="translations",
+    )
+    language: "Language" = Relationship(
+        back_populates="media_translations",
+    )
 
     def to_dict(self):
         columns = inspect(self)

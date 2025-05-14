@@ -1,22 +1,22 @@
 import enum
 import uuid
-from datetime import timedelta
-from typing import List
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import (
-    Boolean,
-    Column,
-    Enum,
-    ForeignKey,
-    Integer,
-    String,
     func,
     inspect,
 )
-from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
-from utility.database import db
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.content.base import Item
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+
+if TYPE_CHECKING:
+    from models.core.calendar import Calendar
+    from models.core.notifications import Notifications
+    from models.utility.discord import DiscordMessages
 
 
 class Frequency(enum.Enum):
@@ -38,53 +38,54 @@ class Event(Item):
         location: The location of the event
     """
 
-    event_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    event_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
+    )
 
-    start_date = Column(TIMESTAMP, nullable=False)
-    duration = Column(Integer, nullable=False)  # Duration in minutes
-    location = Column(String(255))
-    is_inherited = Column(Boolean, default=False, nullable=False)
-    background_color = Column(String(7))
+    start_date: datetime
+    duration: int
+    location: str
+    is_inherited: bool = False
+    background_color: str = Field(default="#EEC912", max_length=7)
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id", ondelete="CASCADE"))
-    calendar_id = Column(
-        UUID(as_uuid=True), ForeignKey("calendar.calendar_id", ondelete="CASCADE")
+    item_id: uuid.UUID = Field(foreign_key="item.item_id")
+    calendar_id: uuid.UUID = Field(
+        foreign_key="calendar.calendar_id",
     )
-    parent_event_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("event.event_id", ondelete="CASCADE", onupdate="CASCADE"),
+    parent_event_id: uuid.UUID | None = Field(
+        foreign_key="event.event_id",
     )
 
     # Relationships
-    parent_event = db.relationship(
-        "Event",
-        remote_side=[event_id],
+    parent_event: "Event" | None = Relationship(
         back_populates="child_events",
-        foreign_keys=[parent_event_id],
+        sa_relationship_kwargs={"remote_side": "Event.event_id"},
     )
-    child_events = db.relationship(
-        "Event",
+    child_events: List["Event"] = Relationship(
         back_populates="parent_event",
-        foreign_keys=[parent_event_id],
-        overlaps="parent_event",
+        sa_relationship_kwargs={"overlaps": "parent_event"},
     )
-    item = db.relationship("Item", back_populates="event", passive_deletes=True)
-    calendar = db.relationship("Calendar", back_populates="events")
-    repeatable_event = db.relationship(
-        "RepeatableEvent", back_populates="event", uselist=False
+    repeatable_event: "RepeatableEvent" | None = Relationship(
+        back_populates="event",
     )
 
-    translations = db.relationship(
-        "EventTranslation", back_populates="event", lazy="joined"
+    item: "Item" = Relationship(
+        back_populates="event",
+    )
+    calendar: "Calendar" = Relationship(
+        back_populates="events",
     )
 
-    notifications = db.relationship(
-        "Notifications", back_populates="event", cascade="all, delete-orphan"
+    translations: List["EventTranslation"] = Relationship(
+        back_populates="event",
     )
-
-    discord_messages = db.relationship(
-        "DiscordMessages", back_populates="events", cascade="all, delete-orphan"
+    notifications: "Notifications" = Relationship(
+        back_populates="event",
+    )
+    discord_messages: "DiscordMessages" = Relationship(
+        back_populates="events",
     )
 
     __mapper_args__ = {"polymorphic_identity": "event"}
@@ -158,27 +159,34 @@ class Event(Item):
         return data
 
 
-class EventTranslation(db.Model):
+class EventTranslation(SQLModel, table=True):
     __tablename__ = "event_translation"
 
-    event_translation_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    event_translation_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
-    description = Column(String(1024))
-    main_image_url = Column(String(length=2096))
-    sub_image_urls = Column(ARRAY(String))
+    title: str
+    description: str
+    main_image_url: str | None
+    sub_image_urls: list[str] | None = []
 
     # Foreign keys
-    event_id = Column(
-        UUID(as_uuid=True), ForeignKey("event.event_id", ondelete="CASCADE")
+    event_id: uuid.UUID = Field(
+        foreign_key="event.event_id",
     )
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationships
-    event = db.relationship("Event", back_populates="translations")
-    language = db.relationship("Language", back_populates="event_translations")
+    event = Relationship(
+        back_populates="translations",
+    )
+    language = Relationship(
+        back_populates="event_translations",
+    )
 
     def to_dict(self):
         columns = inspect(self)
@@ -197,24 +205,27 @@ class EventTranslation(db.Model):
         return data
 
 
-class RepeatableEvent(db.Model):
+class RepeatableEvent(SQLModel, table=True):
     __tablename__ = "repeatable_event"
 
-    repeatable_event_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    repeatable_event_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
 
-    # Metadata
-    frequency = Column(
-        Enum(Frequency), default=Frequency.WEEKLY, nullable=False
-    )  # Daily, Weekly, Monthly, Yearly
-    interval = Column(Integer, default=1)  # Every x days, weeks, months, years
-    end_date = Column(TIMESTAMP)  # End of the repeatable
-    max_occurrences = Column(Integer)  # Number of times to repeat
-    repeat_forever = Column(Boolean, default=False)  # Repeat forever
+    frequency: Frequency = Frequency.WEEKLY  # Frequency of the repeatable event
+    interval: int = 1  # Every x days, weeks, months, years
+    end_date: datetime | None = None  # End of the repeatable
+    max_occurrences: int | None = None  # Number of times to repeat
+    repeat_forever: bool = False  # Repeat forever
 
     # Foreign keys
-    event_id = Column(UUID(as_uuid=True), ForeignKey("event.event_id"), unique=True)
+    event_id: uuid.UUID = Field(
+        foreign_key="event.event_id",
+        unique=True,
+    )
 
     # Relationships
-    event = db.relationship("Event", back_populates="repeatable_event")
+    event: "Event" = Relationship(
+        back_populates="repeatable_event",
+    )

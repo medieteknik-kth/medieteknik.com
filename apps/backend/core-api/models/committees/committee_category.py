@@ -1,28 +1,35 @@
 import uuid
-from typing import List
-from sqlalchemy import String, Column, ForeignKey, inspect, text
-from sqlalchemy.dialects.postgresql import UUID
-from utility.database import db
+from typing import TYPE_CHECKING, List
+
+from sqlmodel import Field, Relationship, SQLModel
+
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
 
+if TYPE_CHECKING:
+    from models.committees.committee import Committee
+    from models.core.language import Language
 
-class CommitteeCategory(db.Model):
+
+class CommitteeCategory(SQLModel, table=True):
     __tablename__ = "committee_category"
-    committee_category_id = Column(
-        UUID(as_uuid=True),
+
+    committee_category_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    email = Column(String(255), unique=True, nullable=True)
+    email: str | None = Field(
+        unique=True,
+    )
 
     # Relationships
-    translations = db.relationship(
-        "CommitteeCategoryTranslation", back_populates="committee_category"
+    translations: list["CommitteeCategoryTranslation"] = Relationship(
+        back_populates="committee_category",
     )
-    committees = db.relationship("Committee", back_populates="committee_category")
+    committees: list["Committee"] = Relationship(
+        back_populates="committee_category",
+    )
 
     def __repr__(self):
         return "<CommitteeCategory %r>" % self.committee_category_id
@@ -61,29 +68,30 @@ class CommitteeCategory(db.Model):
         return data
 
 
-class CommitteeCategoryTranslation(db.Model):
+class CommitteeCategoryTranslation(SQLModel, table=True):
     __tablename__ = "committee_category_translation"
-    committee_category_translation_id = Column(
-        UUID(as_uuid=True),
+
+    committee_category_translation_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
+    title: str
 
     # Foreign key
-    committee_category_id = Column(
-        UUID(as_uuid=True), ForeignKey("committee_category.committee_category_id")
+    committee_category_id: uuid.UUID = Field(
+        foreign_key="committee_category.committee_category_id",
     )
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationship
-    committee_category = db.relationship(
-        "CommitteeCategory", back_populates="translations"
+    committee_category: "CommitteeCategory" = Relationship(
+        back_populates="translations",
     )
-    language = db.relationship(
-        "Language", back_populates="committee_category_translations"
+    language: "Language" = Relationship(
+        back_populates="committee_category_translations",
     )
 
     def __repr__(self):

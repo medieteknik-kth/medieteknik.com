@@ -1,10 +1,14 @@
 import enum
 import uuid
-from sqlalchemy import UUID, Column, Enum, ForeignKey, MetaData, text
+from typing import TYPE_CHECKING
+
 from sqlalchemy.ext.hybrid import hybrid_property
-from models.committees import CommitteePosition
+from sqlmodel import Field, MetaData, Relationship, SQLModel
+
 from models.committees.committee import Committee
-from utility import db
+
+if TYPE_CHECKING:
+    from models.committees.committee_position import CommitteePosition
 
 
 class RGBankViewPermissions(enum.IntEnum):
@@ -23,39 +27,33 @@ class RGBankAccessLevels(enum.IntEnum):
     EDIT = 2
 
 
-class RGBankPermissions(db.Model):
+class RGBankPermissions(SQLModel, table=True):
     __tablename__ = "rgbank_permissions"
     __table_args__ = {"schema": "rgbank"}
 
-    permission_id = Column(
-        UUID(as_uuid=True),
+    permission_id: uuid.UUID = Field(
         primary_key=True,
-        server_default=text("gen_random_uuid()"),
-        default=uuid.uuid4,
+        default_factory=uuid.uuid4,
     )
 
-    view_permission_level = Column(
-        Enum(RGBankViewPermissions, metadata=MetaData(schema="rgbank")),
-        nullable=False,
+    view_permission_level: RGBankViewPermissions = Field(
         default=RGBankViewPermissions.NONE,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
-    access_level = Column(
-        Enum(RGBankAccessLevels, metadata=MetaData(schema="rgbank")),
-        nullable=False,
+    access_level: RGBankAccessLevels = Field(
         default=RGBankAccessLevels.NONE,
+        sa_column_kwargs={"metadata": MetaData(schema="rgbank")},
     )
 
     # Foreign keys
-    committee_position_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey(CommitteePosition.committee_position_id),
-        nullable=False,
+    committee_position_id: uuid.UUID = Field(
+        foreign_key="committee_position.committee_position_id",
+        index=True,
         unique=True,
     )
 
     # Relationships
-    committee_position = db.relationship(
-        "CommitteePosition",
+    committee_position: "CommitteePosition" = Relationship(
         back_populates="rgbank_permissions",
     )
 

@@ -1,9 +1,13 @@
 import enum
-from typing import Any, Dict, List
+import uuid
+from typing import TYPE_CHECKING, Any, Dict, List
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, inspect
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from sqlmodel import Field, SQLModel
+
 from utility.database import db
+
+if TYPE_CHECKING:
+    from models.core.student import Student
 
 
 class Role(enum.Enum):
@@ -48,27 +52,27 @@ class Permissions(enum.Enum):
     CALENDAR_EDIT = "CALENDAR_EDIT"
 
 
-class StudentPermission(db.Model):
+class StudentPermission(SQLModel, table=True):
     __tablename__ = "student_permission"
 
-    permission_id = Column(Integer, primary_key=True, autoincrement=True)
-
-    role = Column(Enum(Role), nullable=False)
-    permissions = Column(
-        ARRAY(Enum(Permissions, create_constraint=False, native_enum=False)),
-        nullable=False,
+    permission_id: int | None = Field(
+        primary_key=True,
+        default=None,
     )
 
+    role: Role
+    permissions = list[Permissions] = []
+
     # Foreign keys
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id"),
+    student_id: uuid.UUID = Field(
+        foreign_key="student.student_id",
         nullable=False,
         unique=True,
     )
-
     # Relationships
-    student = db.relationship("Student", back_populates="permissions")
+    student: "Student" = db.relationship(
+        back_populates="permissions",
+    )
 
     def to_dict(self) -> Dict[str, Any] | None:
         columns = inspect(self)

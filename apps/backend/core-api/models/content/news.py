@@ -1,11 +1,16 @@
 import uuid
-from typing import List
-from sqlalchemy import Column, ForeignKey, String
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import inspect
-from utility.database import db
-from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.content.base import Item
+from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+
+if TYPE_CHECKING:
+    from models.core.language import Language
+    from models.core.notifications import Notifications
+    from models.utility.discord import DiscordMessages
 
 
 class News(Item):
@@ -16,24 +21,32 @@ class News(Item):
         news_id: Primary key
     """
 
-    news_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    url = Column(String(length=512), nullable=True, index=True)
+    news_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
+    )
+
+    url: str | None = Field(
+        default=None,
+        max_length=512,
+        index=True,
+    )
 
     # Foreign keys
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.item_id", ondelete="CASCADE"))
+    item_id: uuid.UUID = Field(
+        foreign_key="item.item_id",
+    )
 
     # Relationships
-    item = db.relationship("Item", back_populates="news", passive_deletes=True)
-    translations = db.relationship(
-        "NewsTranslation", back_populates="news", lazy="joined"
+    item: "Item" = Relationship(back_populates="news")
+    translations: list["NewsTranslation"] = Relationship(back_populates="news")
+
+    notifications: "Notifications" = Relationship(
+        back_populates="news",
     )
 
-    notifications = db.relationship(
-        "Notifications", back_populates="news", cascade="all, delete-orphan"
-    )
-
-    discord_messages = db.relationship(
-        "DiscordMessages", back_populates="news", cascade="all, delete-orphan"
+    discord_messages: "DiscordMessages" = Relationship(
+        back_populates="news",
     )
 
     __mapper_args__ = {"polymorphic_identity": "news"}
@@ -72,26 +85,33 @@ class News(Item):
         return base_data
 
 
-class NewsTranslation(db.Model):
+class NewsTranslation(SQLModel, table=True):
     __tablename__ = "news_translation"
 
-    news_translation_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    news_translation_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
-    body = Column(String(100_000))
-    short_description = Column(String(255))
-    main_image_url = Column(String(2096))
-    sub_image_urls = Column(ARRAY(String))
+    title: str
+    body: str
+    short_description: str = Field(
+        max_length=255,
+    )
+    main_image_url: str | None
+    sub_image_urls: list[str] | None
 
     # Foreign keys
-    news_id = Column(UUID(as_uuid=True), ForeignKey("news.news_id", ondelete="CASCADE"))
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    news_id: uuid.UUID = Field(
+        foreign_key="news.news_id",
+    )
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationships
-    news = db.relationship("News", back_populates="translations")
-    language = db.relationship("Language", back_populates="news_translations")
+    news: "News" = Relationship(back_populates="translations")
+    language: "Language" = Relationship(back_populates="news_translations")
 
     def to_dict(self):
         columns = inspect(self)

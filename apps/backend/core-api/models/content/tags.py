@@ -1,11 +1,12 @@
 import enum
-from typing import List
 import uuid
-from sqlalchemy import Column, Enum, ForeignKey, String, inspect, text
-from sqlalchemy.dialects.postgresql import UUID
+from typing import List
+
+from sqlalchemy import inspect
+from sqlmodel import Field, Relationship, SQLModel
+
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.translation import get_translation
-from utility.database import db
 
 
 class TagCategory(enum.Enum):
@@ -14,21 +15,25 @@ class TagCategory(enum.Enum):
     DOCUMENTS = "DOCUMENTS"
 
 
-class Tag(db.Model):
+class Tag(SQLModel, table=True):
     __tablename__ = "tag"
 
-    tag_id = Column(
-        UUID(as_uuid=True),
+    tag_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    color = Column(String(7))
-    category = Column(Enum(TagCategory), nullable=False, default=TagCategory.NEWS)
+    color: str = Field(
+        max_length=7,
+        default="#EEC912",
+    )
+    category: TagCategory = TagCategory.NEWS
 
     # Relationships
-    translations = db.relationship("TagTranslation", back_populates="tag")
+    translations: List["TagTranslation"] = Relationship(
+        back_populates="tag",
+        cascade_delete=True,
+    )
 
     def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
         columns = inspect(self)
@@ -62,25 +67,31 @@ class Tag(db.Model):
         return data
 
 
-class TagTranslation(db.Model):
+class TagTranslation(SQLModel, table=True):
     __tablename__ = "tag_translation"
 
-    tag_translation_id = Column(
-        UUID(as_uuid=True),
+    tag_translation_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
+    title: str = Field(max_length=255)
 
     # Foreign keys
-    tag_id = Column(UUID(as_uuid=True), ForeignKey("tag.tag_id"))
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    tag_id: uuid.UUID = Field(
+        foreign_key="tag.tag_id",
+    )
+    language_code: str = Field(
+        foreign_key="language.language_code",
+    )
 
     # Relationships
-    tag = db.relationship("Tag", back_populates="translations")
-    language = db.relationship("Language", back_populates="tag_translations")
+    tag = Relationship(
+        back_populates="translations",
+    )
+    language = Relationship(
+        back_populates="tag_translations",
+    )
 
     def to_dict(self):
         columns = inspect(self)

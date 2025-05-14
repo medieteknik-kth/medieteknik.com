@@ -1,62 +1,69 @@
 import uuid
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import (
-    CheckConstraint,
-    Column,
-    DateTime,
-    ForeignKey,
-    String,
-    func,
-)
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING
+
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
+from sqlmodel import CheckConstraint, Field, Relationship, SQLModel, func
+
 from utility.database import db
 
+if TYPE_CHECKING:
+    from models.committees import Committee
+    from models.content.event import Event
+    from models.core.student import Student
 
-class Calendar(db.Model):
+
+class Calendar(SQLModel, table=True):
     __tablename__ = "calendar"
 
-    calendar_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    calendar_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
+    )
 
-    name = Column(String(100), nullable=False)
-    created_at = Column(DateTime, default=func.now(), server_default=func.now())
-    updated_at = Column(
-        DateTime,
-        default=func.now(),
-        server_default=func.now(),
-        onupdate=func.now(),
+    name: str
+    created_at: datetime = Field(default_factory=datetime.now(tz=timezone.utc))
+    updated_at: datetime = Field(
+        default_factory=datetime.now(tz=timezone.utc),
+        sa_column_kwargs={"onupdate": func.now()},
     )
 
     # Foreign keys
-    parent_calendar_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("calendar.calendar_id", ondelete="CASCADE", onupdate="CASCADE"),
+    parent_calendar_id: uuid.UUID | None = Field(
+        foreign_key="calendar.calendar_id",
     )
-    student_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("student.student_id", ondelete="CASCADE"),
+
+    student_id: uuid.UUID | None = Field(
+        foreign_key="student.student_id",
         unique=True,
     )
-    committee_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("committee.committee_id", ondelete="CASCADE"),
+
+    committee_id: uuid.UUID | None = Field(
+        foreign_key="committee.committee_id",
         unique=True,
     )
 
     # Relationships
-    parent_calendar = db.relationship(
-        "Calendar",
-        remote_side=[calendar_id],
+    parent_calendar: "Calendar" = Relationship(
         back_populates="child_calendars",
-        foreign_keys=[parent_calendar_id],
+        cascade_delete=True,
+        sa_relationship_kwargs={"remote_side": "Calendar.calendar_id"},
     )
-    child_calendars = db.relationship(
-        "Calendar",
+
+    child_calendars: list["Calendar"] = Relationship(
         back_populates="parent_calendar",
-        foreign_keys=[parent_calendar_id],
-        overlaps="parent_calendar",
-        cascade="all, delete-orphan",
+        sa_relationship_kwargs={
+            "primaryjoin": "Calendar.parent_calendar_id == Calendar.calendar_id"
+        },
     )
+    events: list["Event"] = Relationship(
+        back_populates="calendar",
+    )
+    student: "Student" = Relationship(back_populates="calendar")
+
+    committee: "Committee" = Relationship(back_populates="calendar")
+
     events = db.relationship("Event", back_populates="calendar")
     student = db.relationship("Student", back_populates="calendar")
     committee = db.relationship("Committee", back_populates="calendar")

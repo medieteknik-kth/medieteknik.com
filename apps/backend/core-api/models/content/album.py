@@ -1,40 +1,40 @@
-from typing import List
 import uuid
-from sqlalchemy.dialects.postgresql import TIMESTAMP
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import (
-    UUID,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    func,
     inspect,
-    text,
 )
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.content.media import Media
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
-from utility.database import db
+
+if TYPE_CHECKING:
+    from models.core.language import Language
 
 
-class Album(db.Model):
+class Album(SQLModel, table=True):
     __tablename__ = "album"
 
-    album_id = Column(
-        UUID(as_uuid=True),
+    album_id: uuid.UUID = Field(
         primary_key=True,
-        default=uuid.uuid4,
-        server_default=text("gen_random_uuid()"),
+        default_factory=uuid.uuid4,
     )
-    total_images = Column(Integer, default=0)
-    total_videos = Column(Integer, default=0)
-    preview_media_id = Column(UUID(as_uuid=True))
-    updated_at = Column(TIMESTAMP, default=func.now(), server_default=text("now()"))
+
+    total_images: int = 0
+    total_videos: int = 0
+    preview_media_id: uuid.UUID
+    updated_at: datetime = Field(default_factory=datetime.now(tz=timezone.utc))
 
     # Relationships
-    translations = db.relationship(
-        "AlbumTranslation", back_populates="album", lazy="joined"
+    translations: list["AlbumTranslation"] = Relationship(
+        back_populates="album",
+        cascade_delete=True,
     )
-    media = db.relationship("Media", back_populates="album", passive_deletes=True)
+    media: list["Media"] = Relationship(
+        back_populates="album",
+    )
 
     def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
         data = {}
@@ -75,23 +75,33 @@ class Album(db.Model):
         return data
 
 
-class AlbumTranslation(db.Model):
+class AlbumTranslation(SQLModel, table=True):
     __tablename__ = "album_translation"
 
-    album_translation_id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    album_translation_id: uuid.UUID = Field(
+        primary_key=True,
+        default_factory=uuid.uuid4,
     )
 
-    title = Column(String(255))
-    description = Column(String(512))
+    title: str
+    description: str
 
     # Foreign keys
-    album_id = Column(UUID(as_uuid=True), ForeignKey("album.album_id"))
-    language_code = Column(String(20), ForeignKey("language.language_code"))
+    album_id: uuid.UUID = Field(
+        foreign_key="album.album_id",
+    )
+    language_code: str = Field(
+        foreign_key="language.language_code",
+        default=DEFAULT_LANGUAGE_CODE,
+    )
 
     # Relationships
-    album = db.relationship("Album", back_populates="translations")
-    language = db.relationship("Language", back_populates="album_translations")
+    album: "Album" = Relationship(
+        back_populates="translations",
+    )
+    language: "Language" = Relationship(
+        back_populates="album_translations",
+    )
 
     def to_dict(self):
         columns = inspect(self)
