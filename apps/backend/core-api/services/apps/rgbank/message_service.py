@@ -1,8 +1,10 @@
-from models.apps.rgbank import PaymentStatus, Message, MessageType, Thread
-from utility import db
+from sqlmodel import Session, select
+
+from models.apps.rgbank import Message, MessageType, PaymentStatus, Thread
 
 
-def add_message(
+async def add_message(
+    session: Session,
     thread_id: str | None,
     sender_id: str | None,
     message_text: str,
@@ -36,21 +38,21 @@ def add_message(
     if not expense_id and not invoice_id:
         raise ValueError("Either expense_id or invoice_id must be provided.")
 
-    thread = Thread.query.filter_by(thread_id=thread_id).first()
+    thread = session.exec(select(Thread).where(Thread.thread_id == thread_id)).first()
     current_thread_id = thread_id
 
-    if create_thread_if_not_exists:
-        # Check if the thread exists, if not create it
-        if not thread:
+    if not thread:
+        if create_thread_if_not_exists:
+            # Check if the thread exists, if not create it
             thread = Thread(
                 thread_id=thread_id, invoice_id=invoice_id, expense_id=expense_id
             )
-            db.session.add(thread)
-            db.session.commit()
+            session.add(thread)
+            session.commit()
+            session.refresh(thread)
 
-        current_thread_id = thread.thread_id
-    else:
-        if not thread:
+            current_thread_id = thread.thread_id
+        else:
             raise ValueError(f"Thread with ID {thread_id} does not exist.")
 
     new_message = Message(
@@ -62,6 +64,7 @@ def add_message(
         new_status=new_status,
     )
 
-    db.session.add(new_message)
-    db.session.commit()
+    session.add(new_message)
+    session.commit()
+    session.refresh(new_message)
     return new_message

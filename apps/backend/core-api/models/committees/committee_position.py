@@ -65,6 +65,7 @@ class CommitteePosition(SQLModel, table=True):
     translations: list["CommitteePositionTranslation"] = Relationship(
         back_populates="committee_position",
         cascade_delete=True,
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
     recruitment: list["CommitteePositionRecruitment"] = Relationship(
         back_populates="committee_position",
@@ -135,6 +136,7 @@ class CommitteePositionRecruitment(SQLModel, table=True):
     translations: list["CommitteePositionRecruitmentTranslation"] = Relationship(
         back_populates="committee_position_recruitment",
         cascade_delete=True,
+        sa_relationship_kwargs={"lazy": "joined"},
     )
 
     def __repr__(self):

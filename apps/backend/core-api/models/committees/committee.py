@@ -47,6 +47,7 @@ class Committee(SQLModel, table=True):
     translations: list["CommitteeTranslation"] = Relationship(
         back_populates="committee",
         cascade_delete=True,
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
     committee_positions: list["CommitteePosition"] = Relationship(
         back_populates="committee",

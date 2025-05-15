@@ -2,30 +2,30 @@
 Next.js authentication decorators, used for specific routes
 """
 
-from functools import wraps
-from os import environ
-from flask import request, jsonify
 from http import HTTPStatus
+from os import environ
+
+from fastapi import Header, HTTPException
 
 
-def nextjs_auth_required(f):
+def nextjs_auth_required(authorization: str = Header(..., alias="Authorization")):
     """Decorator to check if the request is authenticated by the Next.js server."""
 
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        token = request.headers.get("Authorization")
-        if not token:
-            return jsonify(
-                {"error": "Authorization header is missing"}
-            ), HTTPStatus.UNAUTHORIZED
+    if not authorization:
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="Authorization header is missing",
+        )
 
-        key = token.split(" ")[1] if " " in token else token
-        if not key:
-            return jsonify({"error": "Token is missing"}), HTTPStatus.UNAUTHORIZED
+    key = authorization.split(" ")[1] if " " in authorization else authorization
 
-        if key != environ.get("NEXTJS_AUTHORIZATION_KEY"):
-            return jsonify({"error": "Invalid token"}), HTTPStatus.UNAUTHORIZED
-
-        return f(*args, **kwargs)
-
-    return decorated_function
+    if not key:
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="Token is missing",
+        )
+    if key != environ.get("NEXTJS_AUTHORIZATION_KEY"):
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="Invalid token",
+        )

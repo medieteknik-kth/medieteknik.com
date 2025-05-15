@@ -12,6 +12,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from rich.logging import RichHandler
+from starlette.middleware.sessions import SessionMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from config import Settings
@@ -75,6 +76,7 @@ app.add_middleware(
     minimum_size=1024,  # Compress responses larger than 1KB
     compresslevel=6,  # Compression level (1-9)
 )
+app.add_middleware(SessionMiddleware, secret_key=Settings.SECRET_KEY)
 
 if Settings.ENV != "development":
     app.add_middleware(

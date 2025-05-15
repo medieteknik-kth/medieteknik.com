@@ -43,7 +43,9 @@ class Document(Item):
 
     # Relationships
     item: "Item" = Relationship(back_populates="document")
-    translations: "DocumentTranslation" = Relationship(back_populates="document")
+    translations: "DocumentTranslation" = Relationship(
+        back_populates="document", sa_relationship_kwargs={"lazy": "selectin"}
+    )
 
     __mapper_args__ = {"polymorphic_identity": "document"}
 

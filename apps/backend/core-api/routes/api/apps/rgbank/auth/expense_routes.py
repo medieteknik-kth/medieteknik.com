@@ -1,98 +1,110 @@
 import json
 import uuid
-from typing import List
 from datetime import timedelta
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
+from typing import Annotated, Any, Dict, List
+
+from fastapi import APIRouter, Depends, Form, HTTPException, Path, Response
+from google.cloud.exceptions import GoogleCloudError
+from sqlmodel import select
+
+from config import Settings
+from decorators.jwt import get_jwt_identity, jwt_required
+from dto.apps.rgbank.expense import (
+    CreateExpenseForm,
+    ExpenseDTO,
+    ExpenseResponseDTO,
+    UpdateItemForm,
+)
+from dto.apps.rgbank.thread import AddMessageDTO
 from models.apps.rgbank import (
     AccountBankInformation,
     Expense,
-    PaymentStatus,
     MessageType,
+    PaymentStatus,
     Thread,
 )
 from models.core import Student, StudentMembership
+from routes.api.deps import SessionDep
 from services.apps.rgbank import (
     add_committee_statistic,
     add_expense_count,
+    add_message,
     add_student_statistic,
-    retrieve_accessible_cost_items,
     has_access,
     has_full_authority,
-    add_message,
+    retrieve_accessible_cost_items,
 )
 from services.utility.mail import send_expense_message
-from utility import db, upload_file, rgbank_bucket
+from utility import rgbank_bucket, upload_file
 
-expense_bp = Blueprint("expense", __name__)
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/rgbank/expenses",
+    tags=["RGBank", "Expenses"],
+)
 
 
-@expense_bp.route("", methods=["POST"])
-@jwt_required()
-def create_expense() -> Response:
+@router.post(
+    "/",
+    status_code=HTTPStatus.CREATED,
+    responses={
+        HTTPStatus.CREATED: {"description": "Expense created successfully"},
+        HTTPStatus.BAD_REQUEST: {"description": "Invalid request data"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+        HTTPStatus.NOT_FOUND: {"description": "Committee not found"},
+        HTTPStatus.INTERNAL_SERVER_ERROR: {"description": "Unable to upload file"},
+    },
+)
+async def create_expense(
+    session: SessionDep,
+    data: Annotated[CreateExpenseForm, Form()],
+    jwt: Dict[str, Any] = Depends(jwt_required),
+):
     """
     Creates a new expense
         :return: Response - The response object, 400 if no data is provided, 404 if the committee is not found, 201 if successful
     """
-    if request.is_json:
-        return jsonify({"message": "Invalid request format"}), HTTPStatus.BAD_REQUEST
 
-    student_id = get_jwt_identity()
-
-    form_data = request.form
-    files = request.files.getlist("files")
-    if not form_data and not files:
-        return jsonify(
-            {"message": f"No data provided, {form_data}, {files}"}
-        ), HTTPStatus.BAD_REQUEST
-
-    date = form_data.get("date")
-    title = form_data.get("title")
-    description = form_data.get("description")
-    is_digital = form_data.get("is_digital", "false").lower() == "true"
-    categories = form_data.get("categories")
-
-    if not date or not categories or not files or not description:
-        return jsonify(
-            {
-                "message": f"Missing required fields, {date}, {description}, {categories}, {files}"
-            }
-        ), HTTPStatus.BAD_REQUEST
+    student_id = get_jwt_identity(jwt)
 
     new_expense_id = uuid.uuid4()
 
-    id_exists = Expense.query.filter_by(expense_id=new_expense_id).first()
+    id_exists = session.exec(
+        select(Expense).where(Expense.expense_id == new_expense_id)
+    ).first()
     while id_exists:
         new_expense_id = uuid.uuid4()
-        id_exists = Expense.query.filter_by(expense_id=new_expense_id).first()
+        id_exists = session.exec(
+            select(Expense).where(Expense.expense_id == new_expense_id)
+        ).first()
 
     file_urls = []
 
-    try:
-        for file in files:
-            # Ensure the file is a valid file type, either pdf or image
-            if not file or not file.filename:
-                continue
+    for file in data.files:
+        # Ensure the file is a valid file type, either pdf or image
+        if not file or not file.filename:
+            continue
 
-            file_extension = file.filename.split(".")[-1].lower()
+        file_extension = file.filename.split(".")[-1].lower()
 
-            if file_extension not in [
-                "pdf",
-                "jpg",
-                "jpeg",
-                "png",
-                "avif",
-                "webp",
-                "jfif",
-                "pjpeg",
-                "pjp",
-            ]:
-                return jsonify(
-                    {"message": f"Invalid file type: {file_extension}"}
-                ), HTTPStatus.BAD_REQUEST
+        if file_extension not in [
+            "pdf",
+            "jpg",
+            "jpeg",
+            "png",
+            "avif",
+            "webp",
+            "jfif",
+            "pjpeg",
+            "pjp",
+        ]:
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail="Invalid file type. Only PDF and image files are allowed.",
+            )
 
-            if file and file.filename:
+        if file and file.filename:
+            try:
                 upload_result = upload_file(
                     file=file,
                     file_name=f"{new_expense_id}/{file.filename}",
@@ -104,90 +116,108 @@ def create_expense() -> Response:
                     bucket=rgbank_bucket,
                     timedelta=timedelta(days=90),
                 )
-
                 if not upload_result:
-                    return jsonify(
-                        {"message": "File upload failed"}
-                    ), HTTPStatus.INTERNAL_SERVER_ERROR
+                    raise HTTPException(
+                        status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                        detail="Error uploading file",
+                    )
+            except GoogleCloudError as e:
+                raise HTTPException(
+                    status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                    detail=f"Error uploading file: {str(e)}",
+                )
 
-                file_urls.append(upload_result)
-    except Exception as e:
-        return jsonify(
-            {"message": f"Error uploading files: {str(e)}"}
-        ), HTTPStatus.INTERNAL_SERVER_ERROR
+            file_urls.append(upload_result)
 
     if not file_urls:
-        return jsonify({"message": "No files uploaded"}), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="No files provided",
+        )
 
     new_expense = Expense(
         expense_id=new_expense_id,
         file_urls=file_urls,
-        title=title,
-        description=description,
-        date=date,
-        is_digital=is_digital,
-        categories=json.loads(categories),
+        title=data.title,
+        description=data.description,
+        date=data.date,
+        is_digital=data.is_digital,
+        categories=json.loads(data.categories),
         status="UNCONFIRMED",
         student_id=student_id,
     )
 
-    db.session.add(new_expense)
-    db.session.commit()
+    session.add(new_expense)
+    session.commit()
+    session.refresh(new_expense)
 
-    new_thread = Thread(
-        expense_id=new_expense.expense_id,
-    )
+    new_thread = session.exec(
+        select(Thread).where(Thread.expense_id == new_expense_id)
+    ).first()
 
-    db.session.add(new_thread)
-    db.session.commit()
+    session.add(new_thread)
+    session.commit()
+    session.refresh(new_thread)
 
     send_expense_message(
         expense_item=new_expense,
         subject="Ny utgift har skapats",
     )
 
-    return jsonify({"id": str(new_expense.expense_id)}), HTTPStatus.CREATED
+    return Response(status_code=HTTPStatus.CREATED)
 
 
-@expense_bp.route("/all", methods=["GET"])
-@jwt_required()
-def all_expenses():
+@router.get(
+    "/all",
+    response_model=list[ExpenseDTO],
+    responses={
+        HTTPStatus.OK: {"description": "Expenses retrieved successfully"},
+        HTTPStatus.NOT_FOUND: {"description": "No expenses found"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+    },
+)
+async def all_expenses(
+    session: SessionDep,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+):
     """Gets all invoices
 
     :return: The response object, 200 if successful
     :rtype: Response
     """
-    student_id = get_jwt_identity()
-    memberships: List[StudentMembership] = StudentMembership.query.filter(
+    student_id = get_jwt_identity(jwt)
+
+    stmt = select(StudentMembership).where(
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
-    ).all()
+    )
 
-    page = request.args.get("page", 1, type=int)
+    memberships = session.exec(stmt).all()
 
     expenses: List[Expense] | None = retrieve_accessible_cost_items(
+        session=session,
         cost_item=Expense,
         memberships=memberships,
-        page=page,
     )
 
     if not expenses:
-        return jsonify([]), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="No expenses found",
+        )
 
-    return jsonify(
-        [
-            expense.to_dict(
-                short=True,
-                is_public_route=False,
-            )
-            for expense in expenses
-        ]
-    ), HTTPStatus.OK
+    return [expense for expense in expenses]
 
 
-@expense_bp.route("/<string:expense_id>", methods=["GET"])
-@jwt_required()
-def get_expense(expense_id: str) -> Response:
+@router.get(
+    "/{expense_id}",
+    response_model=ExpenseResponseDTO,
+)
+async def get_expense(
+    session: SessionDep,
+    expense_id: Annotated[str, Path(title="The ID of the expense")],
+    jwt: Dict[str, Any] = Depends(jwt_required),
+) -> Response:
     """Gets an expense by ID
 
     :param expense_id: The ID of the expense to get
@@ -195,78 +225,116 @@ def get_expense(expense_id: str) -> Response:
     :return: The response object, 404 if the expense is not found, 200 if successful
     :rtype: Response
     """
-    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+    expense = session.exec(select(Expense).where(Expense.expense_id == expense_id))
 
-    student_id = get_jwt_identity()
-    memberships: List[StudentMembership] = StudentMembership.query.filter(
+    student_id = get_jwt_identity(jwt)
+
+    stmt = select(StudentMembership).where(
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
-    ).all()
+    )
+    memberships = session.exec(stmt).all()
 
     is_authorized, message = has_access(
+        session=session,
         cost_item=expense,
         student_id=student_id,
         memberships=memberships,
     )
 
     if not is_authorized:
-        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail=message,
+        )
 
-    student: Student = Student.query.filter_by(student_id=student_id).first()
-    if not student or not isinstance(student, Student):
-        return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
-
-    bank_information: AccountBankInformation = AccountBankInformation.query.filter_by(
-        student_id=student.student_id
-    ).first_or_404()
-
-    thread: Thread | None = Thread.query.filter_by(
-        expense_id=expense_id,
+    student = session.exec(
+        select(Student).where(Student.student_id == student_id)
     ).first()
 
+    if not student:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Student not found",
+        )
+
+    bank_information = session.exec(
+        select(AccountBankInformation).where(
+            AccountBankInformation.student_id == student_id
+        )
+    ).first()
+
+    thread = session.exec(select(Thread).where(Thread.expense_id == expense_id)).first()
+
     base_dict = {
-        "expense": expense.to_dict(),
-        "student": student.to_dict(is_public_route=False),
-        "bank_information": bank_information.to_dict(),
+        "expense": expense,
+        "student": student,
+        "bank_information": bank_information,
     }
 
-    if thread and isinstance(thread, Thread):
-        base_dict["thread"] = thread.to_dict()
+    if thread:
+        base_dict["thread"] = thread
 
-    return jsonify(base_dict), HTTPStatus.OK
+    return base_dict
 
 
-@expense_bp.route("/student/<string:student_id>", methods=["GET"])
-@jwt_required()
-def get_expenses_by_student(student_id: str) -> Response:
-    """Gets all expenses by student ID
+@router.get(
+    "/student/{student_id}",
+    response_model=list[ExpenseDTO],
+    responses={
+        HTTPStatus.OK: {"description": "Expenses retrieved successfully"},
+        HTTPStatus.NOT_FOUND: {"description": "No expenses found"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+    },
+)
+async def get_expenses_by_student(
+    session: SessionDep,
+    student_id: Annotated[str, Path(title="The ID of the student")],
+    jwt: Dict[str, Any] = Depends(jwt_required),
+) -> Response:
+    request_student_id = get_jwt_identity(jwt)
 
-    :param student_id: The ID of the student to get expenses for
-    :type student_id: str
-    :return: The response object, 404 if the student is not found, 200 if successful
-    :rtype: Response
-    """
-    request_student_id = get_jwt_identity()
     if student_id != request_student_id:
-        return jsonify(
-            {"error": "You are not authorized to view this student's expenses"}
-        ), HTTPStatus.UNAUTHORIZED
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="You are not authorized to view this student's expenses",
+        )
 
-    expenses: List[Expense] = (
-        Expense.query.filter_by(student_id=student_id)
+    stmt = (
+        select(Expense)
+        .where(
+            Expense.student_id == student_id,
+        )
         .order_by(Expense.created_at.desc())
-        .all()
     )
 
+    expenses = session.exec(stmt).all()
+
     if not expenses:
-        return jsonify([]), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="No expenses found for this student",
+        )
 
-    return jsonify([expense.to_dict() for expense in expenses]), HTTPStatus.OK
+    return [expense for expense in expenses]
 
 
-@expense_bp.route("/<string:expense_id>", methods=["PUT"])
-@jwt_required()
-def update_expense(expense_id: str) -> Response:
+@router.patch(
+    "/{expense_id}/status",
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.OK: {"description": "Expense status updated successfully"},
+        HTTPStatus.NOT_FOUND: {"description": "Expense not found"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+        HTTPStatus.BAD_REQUEST: {"description": "Bad request"},
+    },
+)
+async def update_expense_status(
+    session: SessionDep,
+    expense_id: Annotated[str, Path(title="The ID of the expense")],
+    data: UpdateItemForm,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+) -> Response:
     """Updates an expense by ID, updates everything except the file urls
 
     :param expense_id: The ID of the expense to update
@@ -275,81 +343,54 @@ def update_expense(expense_id: str) -> Response:
     :rtype: Response
     """
 
-    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+    expense = session.exec(
+        select(Expense).where(Expense.expense_id == expense_id)
+    ).first()
 
-    student_id = get_jwt_identity()
+    if not expense:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Expense not found",
+        )
 
-    if expense.student_id != student_id:
-        return jsonify(
-            {"error": "You are not authorized to update this expense"}
-        ), HTTPStatus.UNAUTHORIZED
+    student_id = get_jwt_identity(jwt)
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-    for key, value in data.items():
-        if key == "files":
-            continue
-        if key == "status":
-            continue
-        setattr(expense, key, value)
-
-    db.session.commit()
-
-    return jsonify({"message": "Expense updated successfully"}), HTTPStatus.OK
-
-
-@expense_bp.route("/<string:expense_id>/status", methods=["PATCH"])
-@jwt_required()
-def update_expense_status(expense_id: str) -> Response:
-    """Updates an expense by ID, updates everything except the file urls
-
-    :param expense_id: The ID of the expense to update
-    :type expense_id: str
-    :return: The response object, 400 if no data is provided, 404 if the expense is not found, 200 if successful
-    :rtype: Response
-    """
-
-    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
-
-    student_id = get_jwt_identity()
-
-    memberships: List[StudentMembership] = StudentMembership.query.filter(
+    stmt = select(StudentMembership).where(
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
-    ).all()
+    )
+
+    memberships = session.exec(stmt).all()
 
     has_authority, message = has_full_authority(
+        session=session,
         memberships=memberships,
     )
 
     if not has_authority:
-        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail=message,
+        )
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-    status = data.get("status")
+    status = data.status
     if not status:
-        return jsonify({"message": "Status is required"}), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="Status is required",
+        )
 
     expense_status = PaymentStatus[expense.status.name]
     new_status = PaymentStatus[status.upper()]
 
     if new_status < expense_status:
-        return jsonify(
-            {
-                "error": f"You cannot change the status to a lower status, {expense_status.value} -> {new_status.value}"
-            }
-        ), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="You cannot change the status to a lower status",
+        )
 
-    comment = data.get("comment")
     previous_status = expense.status
-    thread = Thread.query.filter_by(
-        expense_id=expense_id,
-    ).first()
+    thread = session.exec(select(Thread).where(Thread.expense_id == expense_id)).first()
 
     thread_id = thread.thread_id if thread else None
 
@@ -357,7 +398,9 @@ def update_expense_status(expense_id: str) -> Response:
         add_message(
             thread_id=thread_id,
             sender_id=None,
-            message_text=f"status_changed_{status.lower()}" if not comment else comment,
+            message_text=f"status_changed_{status.lower()}"
+            if not data.comment
+            else data.comment,
             type=MessageType.SYSTEM,
             create_thread_if_not_exists=True,
             expense_id=expense_id,
@@ -365,7 +408,10 @@ def update_expense_status(expense_id: str) -> Response:
             new_status=new_status,
         )
     except ValueError as e:
-        return jsonify({"message": str(e)}), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=str(e),
+        )
 
     if new_status == PaymentStatus.BOOKED:
         add_student_statistic(student_id=expense.student_id, value=expense.amount)
@@ -383,49 +429,96 @@ def update_expense_status(expense_id: str) -> Response:
         )
 
     expense.status = status
-    db.session.commit()
+    session.commit()
 
-    return jsonify({"message": "Expense status updated successfully"}), HTTPStatus.OK
+    return Response(
+        status_code=HTTPStatus.OK,
+        content={
+            "message": "Expense status updated successfully",
+            "status": status,
+        },
+    )
 
 
-@expense_bp.route("/<string:expense_id>/categories", methods=["PATCH"])
-@jwt_required()
-def update_expense_categories(expense_id: str) -> Response:
-    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+@router.patch(
+    "/{expense_id}/categories",
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.OK: {"description": "Expense categories updated successfully"},
+        HTTPStatus.NOT_FOUND: {"description": "Expense not found"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+        HTTPStatus.BAD_REQUEST: {"description": "Bad request"},
+    },
+)
+async def update_expense_categories(
+    session: SessionDep,
+    expense_id: Annotated[str, Path(title="The ID of the expense")],
+    data: UpdateItemForm,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+) -> Response:
+    expense = session.exec(
+        select(Expense).where(Expense.expense_id == expense_id)
+    ).first()
 
-    student_id = get_jwt_identity()
+    if not expense:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Expense not found",
+        )
 
-    memberships: List[StudentMembership] = StudentMembership.query.filter(
+    student_id = get_jwt_identity(jwt)
+
+    stmt = select(StudentMembership).where(
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
-    ).all()
+    )
+    memberships = session.exec(stmt).all()
 
     has_authority, message = has_full_authority(
+        session=session,
         memberships=memberships,
     )
 
     if not has_authority:
-        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail=message,
+        )
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-    new_categories = data.get("updatedCategories")
+    new_categories = data.updatedCategories
     if not new_categories:
-        return jsonify({"message": "Categories are required"}), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="Categories are required",
+        )
 
     expense.categories = new_categories
-    db.session.commit()
+    session.commit()
 
-    return jsonify(
-        {"message": "Expense categories updated successfully"}
-    ), HTTPStatus.OK
+    return Response(
+        status_code=HTTPStatus.OK,
+        content={
+            "message": "Expense categories updated successfully",
+            "categories": new_categories,
+        },
+    )
 
 
-@expense_bp.route("/<string:expense_id>", methods=["DELETE"])
-@jwt_required()
-def delete_expense(expense_id: str) -> Response:
+@router.delete(
+    "/{expense_id}",
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.OK: {"description": "Expense deleted successfully"},
+        HTTPStatus.NOT_FOUND: {"description": "Expense not found"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+        HTTPStatus.BAD_REQUEST: {"description": "Bad request"},
+    },
+)
+async def delete_expense(
+    session: SessionDep,
+    expense_id: Annotated[str, Path(title="The ID of the expense")],
+    jwt: Dict[str, Any] = Depends(jwt_required),
+) -> Response:
     """Deletes an expense by ID
 
     :param expense_id: The ID of the expense to delete
@@ -434,37 +527,66 @@ def delete_expense(expense_id: str) -> Response:
     :rtype: Response
     """
 
-    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+    expense = session.exec(
+        select(Expense).where(Expense.expense_id == expense_id)
+    ).first()
 
-    student_id = get_jwt_identity()
+    if not expense:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Expense not found",
+        )
+
+    student_id = get_jwt_identity(jwt)
 
     if str(expense.student_id) != str(student_id):
-        return jsonify(
-            {"error": "You are not authorized to delete this expense"}
-        ), HTTPStatus.UNAUTHORIZED
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail="You are not authorized to delete this expense",
+        )
 
     if expense.status != PaymentStatus.UNCONFIRMED:
-        return jsonify(
-            {"error": "You can only delete unconfirmed expenses."}
-        ), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="You cannot delete an expense that is not unconfirmed",
+        )
 
-    db.session.delete(expense)
-    db.session.commit()
+    session.delete(expense)
+    session.commit()
 
-    return jsonify({"message": "Expense deleted successfully"}), HTTPStatus.OK
+    return Response(
+        status_code=HTTPStatus.OK,
+        content={
+            "message": "Expense deleted successfully",
+        },
+    )
 
 
-@expense_bp.route("/<string:expense_id>/messages", methods=["POST"])
-@jwt_required()
-def add_expense_message(expense_id: str) -> Response:
-    """Sends a message to the committee for an expense by ID
+@router.post(
+    "/{expense_id}/messages",
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.OK: {"description": "Message sent successfully"},
+        HTTPStatus.NOT_FOUND: {"description": "Expense not found"},
+        HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
+        HTTPStatus.BAD_REQUEST: {"description": "Bad request"},
+    },
+)
+async def add_expense_message(
+    session: SessionDep,
+    expense_id: Annotated[str, Path(title="The ID of the expense")],
+    data: AddMessageDTO,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+):
+    expense = session.exec(
+        select(Expense).where(Expense.expense_id == expense_id)
+    ).first()
 
-    :param expense_id: The ID of the expense to send a message for
-    :type expense_id: str
-    :return: The response object, 404 if the expense is not found, 200 if successful
-    :rtype: Response
-    """
-    expense: Expense = Expense.query.filter_by(expense_id=expense_id).first_or_404()
+    if not expense:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Expense not found",
+        )
 
     if (
         expense.status == PaymentStatus.CONFIRMED
@@ -472,49 +594,52 @@ def add_expense_message(expense_id: str) -> Response:
         or expense.status == PaymentStatus.PAID
         or expense.status == PaymentStatus.BOOKED
     ):
-        return jsonify(
-            {
-                "error": "You cannot send a message for an expense that is not unconfirmed or requires clarification"
-            }
-        ), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="You cannot send a message for an expense that is not unconfirmed",
+        )
 
-    student_id = get_jwt_identity()
-    memberships: List[StudentMembership] = StudentMembership.query.filter(
+    student_id = get_jwt_identity(jwt)
+
+    stmt = select(StudentMembership).where(
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
-    ).all()
+    )
+    memberships = session.exec(stmt).all()
 
     is_authorized, message = has_access(
+        session=session,
         cost_item=expense,
         student_id=student_id,
         memberships=memberships,
     )
 
     if not is_authorized:
-        return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
+        raise HTTPException(
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail=message,
+        )
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-    message_text = data.get("message")
-    if not message_text:
-        return jsonify({"message": "Content is required"}), HTTPStatus.BAD_REQUEST
-
-    thread = Thread.query.filter_by(
-        expense_id=expense_id,
-    ).first()
+    thread = session.exec(select(Thread).where(Thread.expense_id == expense_id)).first()
     thread_id = thread.thread_id if thread else None
 
     try:
         add_message(
             thread_id=thread_id,
             sender_id=str(student_id),
-            message_text=str(message_text),
+            message_text=str(data.message),
             create_thread_if_not_exists=True,
             expense_id=expense_id,
         )
     except ValueError as e:
-        return jsonify({"message": str(e)}), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=str(e),
+        )
 
-    return jsonify({"message": "Message sent successfully"}), HTTPStatus.CREATED
+    return Response(
+        status_code=HTTPStatus.OK,
+        content={
+            "message": "Message sent successfully",
+        },
+    )

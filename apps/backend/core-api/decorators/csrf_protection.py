@@ -4,57 +4,60 @@ CSRF Protection
 Decorator for CSRF protection.
 """
 
-from flask import Response, jsonify, request
-from functools import wraps
 from http import HTTPStatus
-from types import FunctionType
+from typing import Any, Dict
+
+from fastapi import Header, HTTPException, Request
+
 from utility.csrf import validate_csrf
 
 
-def csrf_protected(f: FunctionType) -> FunctionType:
+async def csrf_protected(
+    request: Request,
+    header: str = Header(..., alias="content-type"),
+    csrf_header: str = Header(..., alias="X-CSRF-Token"),
+):
     """
-    Decorator for CSRF protection. Validates the CSRF token in the request from either a JSON or Form.
+    Wrapper function for the CSRF protection decorator.
 
-    :param f: The function to wrap.
-    :type f: FunctionType
-    :return: The wrapped function.
-    :rtype: FunctionType
+    :param *args: The arguments passed to the function.
+    :type *args: tuple
+    :param **kwargs: The keyword arguments passed to the function.
+    :type **kwargs: dict
+    :return: The response from the wrapped function, or a boolean depending on the CSRF validation.
+    :rtype: Response | bool
     """
 
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        """
-        Wrapper function for the CSRF protection decorator.
+    if request.method == "OPTIONS":
+        return None
 
-        :param *args: The arguments passed to the function.
-        :type *args: tuple
-        :param **kwargs: The keyword arguments passed to the function.
-        :type **kwargs: dict
-        :return: The response from the wrapped function, or a boolean depending on the CSRF validation.
-        :rtype: Response | bool
-        """
+    csrf_token: str = ""
 
-        if not request:
-            raise ValueError(
-                "Request object is missing! Make sure you're using the decorator in a endpoint."
-            )
+    if header == "application/json":
+        json_data: Dict[str, Any] = await request.json()
+        csrf_token = json_data.get("csrf_token")
+    else:
+        try:
+            form_data = await request.form()
 
-        if request.method == "OPTIONS":
-            return f(*args, **kwargs)
+            csrf_token = form_data.get("csrf_token")
+        except Exception as e:
+            raise HTTPException(
+                status_code=HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+                detail="CSRF Token verification failed! Unsupported media type.",
+            ) from e
 
-        csrf_token: str = ""
-        # Check if the request is JSON or a Form
-        if not request.is_json:
-            csrf_token = request.form.get("csrf_token")
-        else:
-            csrf_token = request.get_json().get("csrf_token")
+    if not csrf_token:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="CSRF token is missing! Please provide a CSRF token.",
+        )
+    result = validate_csrf(
+        request=request, csrf_token=csrf_token, header_csrf_token=csrf_header
+    )
 
-        if not csrf_token:
-            return jsonify({"error": "CSRF token is missing"}), HTTPStatus.BAD_REQUEST
-        result: Response | bool = validate_csrf(csrf_token)
-
-        if isinstance(result, bool) and result is True:
-            return f(*args, **kwargs)
-        return result
-
-    return wrap
+    if result is not True:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN,
+            detail="CSRF token verification failed! Invalid CSRF token.",
+        )

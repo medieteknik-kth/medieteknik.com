@@ -1,4 +1,7 @@
 from typing import Any, Dict, List
+
+from sqlmodel import Session, select
+
 from models.apps.rgbank import (
     RGBankAccessLevels,
     RGBankPermissions,
@@ -7,17 +10,21 @@ from models.apps.rgbank import (
 from models.committees import CommitteePosition
 
 
-def attach_permissions(
-    committee_positions: List[CommitteePosition], response_dict: Dict[str, Any]
+async def attach_permissions(
+    session: Session,
+    committee_positions: List[CommitteePosition],
+    response_dict: Dict[str, Any],
 ) -> None:
-    rgbank_permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
+    stmt = select(RGBankPermissions).where(
         RGBankPermissions.committee_position_id.in_(
             [
-                committee_position.get("committee_position_id")
+                committee_position.committee_position_id
                 for committee_position in committee_positions
             ]
         )
-    ).all()
+    )
+
+    rgbank_permissions = session.exec(stmt).all()
 
     highest_view_permission = RGBankViewPermissions.NONE
     highest_access_level = RGBankAccessLevels.NONE

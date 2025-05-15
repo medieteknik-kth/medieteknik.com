@@ -77,7 +77,7 @@ class Event(Item):
     )
 
     translations: List["EventTranslation"] = Relationship(
-        back_populates="event",
+        back_populates="event", sa_relationship_kwargs={"lazy": "selectin"}
     )
     notifications: "Notifications" = Relationship(
         back_populates="event",

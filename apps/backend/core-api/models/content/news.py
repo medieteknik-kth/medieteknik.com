@@ -37,7 +37,9 @@ class News(Item):
 
     # Relationships
     item: "Item" = Relationship(back_populates="news")
-    translations: list["NewsTranslation"] = Relationship(back_populates="news")
+    translations: list["NewsTranslation"] = Relationship(
+        back_populates="news", sa_relationship_kwargs={"lazy": "selectin"}
+    )
 
     notifications: "Notifications" = Relationship(
         back_populates="news",

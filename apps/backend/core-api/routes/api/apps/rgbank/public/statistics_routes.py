@@ -1,148 +1,224 @@
 from http import HTTPStatus
-from typing import List
-from flask import Blueprint, Response, jsonify, request
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Response
+from sqlmodel import select
+
+from config import Settings
 from decorators import nextjs_auth_required
+from dto.apps.rgbank.statistics import StatisticsDTO
 from models.apps.rgbank import Statistics
+from routes.api.deps import SessionDep
 from services.apps.rgbank import (
     get_committee_statistic,
 )
 from utility import DEFAULT_LANGUAGE_CODE
+from utility.translation import convert_iso_639_1_to_bcp_47
 
-public_statistics_bp = Blueprint("public_statistics", __name__)
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "public/rgbank/statistics",
+    tags=["RGBank", "Public", "Statistics"],
+)
 
 
 # --- GENERAL STATISTICS --- #
 
 
-@public_statistics_bp.route("/years", methods=["GET"])
-@nextjs_auth_required
-def get_years():
+@router.get("/years", response_model=list[int])
+async def get_years(session: SessionDep, _=Depends(nextjs_auth_required)):
     """Get all years with statistics."""
-    all_possible_years = (
-        Statistics.query.with_entities(Statistics.year)
-        .filter(
-            Statistics.year.isnot(None),
-        )
-        .distinct()
-        .all()
-    )
-    all_possible_years = [year[0] for year in all_possible_years]
-    return jsonify(all_possible_years), HTTPStatus.OK
+    stmt = select(Statistics.year).distinct()
+    all_possible_years = session.exec(stmt).all()
+
+    if not all_possible_years:
+        return []
+
+    all_possible_years: list[int] = [
+        year[0] for year in all_possible_years if year is not None
+    ]
+    return all_possible_years
 
 
 # --- COMMITTEE STATISTICS --- #
 
 
-@public_statistics_bp.route(
-    "/committee/<string:committee_id>/year/<int:year>", methods=["GET"]
+@router.get(
+    "/committee/{committee_id}/year/{year}",
+    response_model=StatisticsDTO,
+    responses={HTTPStatus.NOT_FOUND: {"description": "Statistics were not found"}},
+    status_code=HTTPStatus.OK,
 )
-@nextjs_auth_required
-def get_committee_statistics_year(committee_id: str, year: int):
+async def get_committee_statistics_year(
+    session: SessionDep,
+    committee_id: Annotated[str, Path(title="Committee ID")],
+    year: Annotated[int, Path(title="Year")],
+    language: Annotated[str | None, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(nextjs_auth_required),
+):
     """Get statistics for a committee."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
+    statistics = get_committee_statistic(session, committee_id=committee_id, year=year)
+    language = convert_iso_639_1_to_bcp_47(language)
+
+    if statistics is None:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Statistics not found",
+        )
+
+    return StatisticsDTO.from_orm_with_language(statistics, language_code=language)
+
+
+@router.get(
+    "/committee/{committee_id}/year/{year}/month/{month}",
+    response_model=StatisticsDTO,
+    responses={HTTPStatus.NOT_FOUND: {"description": "Statistics not found"}},
+    status_code=HTTPStatus.OK,
+)
+def get_committee_statistics_month(
+    session: SessionDep,
+    committee_id: Annotated[str, Path(title="Committee ID")],
+    year: Annotated[int, Path(title="Year")],
+    month: Annotated[int, Path(title="Month")],
+    language: Annotated[str | None, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(nextjs_auth_required),
+):
+    """Get statistics for a committee."""
+    language = convert_iso_639_1_to_bcp_47(language)
 
     statistics = get_committee_statistic(
-        committee_id=committee_id, year=year, provided_languages=[language]
+        session=session,
+        committee_id=committee_id,
+        year=year,
+        month=month,
     )
 
     if statistics is None:
-        return jsonify({"message": "Statistics not found"}), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Statistics not found",
+        )
 
-    return statistics
+    return StatisticsDTO.from_orm_with_language(statistics, language_code=language)
 
 
-@public_statistics_bp.route(
-    "/committee/<string:committee_id>/year/<int:year>/month/<int:month>",
-    methods=["GET"],
+@router.get(
+    "/committee/{committee_id}/all_time",
+    response_model=StatisticsDTO,
+    responses={HTTPStatus.NOT_FOUND: {"description": "Statistics not found"}},
+    status_code=HTTPStatus.OK,
 )
-@nextjs_auth_required
-def get_committee_statistics_month(committee_id: str, year: int, month: int):
-    """Get statistics for a committee."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
-
-    statistics = get_committee_statistic(
-        committee_id=committee_id, year=year, month=month, provided_languages=[language]
-    )
-
-    if statistics is None:
-        return jsonify({"message": "Statistics not found"}), HTTPStatus.NOT_FOUND
-
-    return statistics
-
-
-@public_statistics_bp.route(
-    "/committee/<string:committee_id>/all_time", methods=["GET"]
-)
-@nextjs_auth_required
-def get_committee_statistics_all_time(committee_id: str):
+async def get_committee_statistics_all_time(
+    session: SessionDep,
+    committee_id: Annotated[str, Path(title="Committee ID")],
+    language: Annotated[str | None, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(nextjs_auth_required),
+):
     """Get all-time statistics for a committee."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
+    language = convert_iso_639_1_to_bcp_47(language)
 
     statistics = get_committee_statistic(
-        committee_id=committee_id, provided_languages=[language]
+        session=session,
+        committee_id=committee_id,
     )
 
     if statistics is None:
-        return jsonify({"message": "Statistics not found"}), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Statistics not found",
+        )
 
-    return statistics
+    return StatisticsDTO.from_orm_with_language(statistics, language_code=language)
 
 
-@public_statistics_bp.route("/commitees/year/<int:year>", methods=["GET"])
-@nextjs_auth_required
-def get_all_committees_year(year: int):
+@router.get(
+    "/committees/year/{year}",
+    response_model=list[StatisticsDTO],
+    responses={HTTPStatus.NO_CONTENT: {"description": "No statistics found"}},
+    status_code=HTTPStatus.OK,
+)
+async def get_all_committees_year(
+    session: SessionDep,
+    year: Annotated[int, Path(title="Year")],
+    language: Annotated[str | None, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(nextjs_auth_required),
+):
     """Get statistics for all committees."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
+    language = convert_iso_639_1_to_bcp_47(language)
 
-    statistics: List[Statistics] = Statistics.query.filter(
-        Statistics.committee_id.isnot(None),
+    stmt = select(Statistics).where(
+        Statistics.committee_id.is_not(None),
         Statistics.year == year,
-        Statistics.month.is_(None),
-    ).all()
+        Statistics.month is None,
+    )
+    statistics = session.exec(stmt).all()
 
     if not statistics:
-        return Response(status=HTTPStatus.NO_CONTENT)
+        return Response(status_code=HTTPStatus.NO_CONTENT)
 
-    return jsonify(
-        [stat.to_dict(provided_languages=[language]) for stat in statistics]
-    ), HTTPStatus.OK
+    return [
+        StatisticsDTO.from_orm_with_language(stat, language_code=language)
+        for stat in statistics
+    ]
 
 
-@public_statistics_bp.route(
-    "/commitees/year/<int:year>/month/<int:month>", methods=["GET"]
+@router.get(
+    "/committees/year/{year}/month/{month}",
+    response_model=list[StatisticsDTO],
+    responses={HTTPStatus.NO_CONTENT: {"description": "No statistics found"}},
+    status_code=HTTPStatus.OK,
 )
-@nextjs_auth_required
-def get_all_committees_month(year: int, month: int):
+async def get_all_committees_month(
+    session: SessionDep,
+    year: Annotated[int, Path(title="Year")],
+    month: Annotated[int, Path(title="Month")],
+    language: Annotated[str | None, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(nextjs_auth_required),
+):
     """Get statistics for all committees."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
+    language = convert_iso_639_1_to_bcp_47(language)
 
-    statistics: List[Statistics] = Statistics.query.filter(
-        Statistics.committee_id.isnot(None),
+    stmt = select(Statistics).where(
+        Statistics.committee_id.is_not(None),
         Statistics.year == year,
         Statistics.month == month,
-    ).all()
+    )
+
+    statistics = session.exec(stmt).all()
 
     if not statistics:
-        return Response(status=HTTPStatus.NO_CONTENT)
+        return Response(status_code=HTTPStatus.NO_CONTENT)
 
-    return jsonify(
-        [stat.to_dict(provided_languages=[language]) for stat in statistics]
-    ), HTTPStatus.OK
+    return [
+        StatisticsDTO.from_orm_with_language(stat, language_code=language)
+        for stat in statistics
+    ]
 
 
-@public_statistics_bp.route("/commitees/all_time", methods=["GET"])
-@nextjs_auth_required
-def get_all_committees_all_time():
+@router.get(
+    "/committees/all_time",
+    response_model=list[StatisticsDTO],
+    responses={HTTPStatus.NO_CONTENT: {"description": "No statistics found"}},
+    status_code=HTTPStatus.OK,
+)
+def get_all_committees_all_time(
+    session: SessionDep,
+    language: Annotated[str | None, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(nextjs_auth_required),
+):
     """Get all-time statistics for all committees."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
+    language = convert_iso_639_1_to_bcp_47(language)
 
-    statistics: List[Statistics] = Statistics.query.filter(
-        Statistics.committee_id.isnot(None), Statistics.is_all_time.is_(True)
-    ).all()
+    stmt = select(Statistics).where(
+        Statistics.committee_id.is_not(None),
+        Statistics.is_all_time.is_(True),
+    )
+
+    statistics = session.exec(stmt).all()
 
     if not statistics:
-        return Response(status=HTTPStatus.NO_CONTENT)
+        return Response(status_code=HTTPStatus.NO_CONTENT)
 
-    return jsonify(
-        [stat.to_dict(provided_languages=[language]) for stat in statistics]
-    ), HTTPStatus.OK
+    return [
+        StatisticsDTO.from_orm_with_language(stat, language_code=language)
+        for stat in statistics
+    ]

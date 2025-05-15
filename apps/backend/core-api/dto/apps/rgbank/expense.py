@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from pydantic import BaseModel
 
-from dto.committees.committee import CommitteeDTO
+from dto.apps.rgbank.thread import ThreadDTO
 from dto.core.student import StudentDTO
 from models.apps.rgbank.expense import PaymentStatus
 
@@ -12,6 +12,11 @@ class ExpenseDomainDTO(BaseModel):
     title: str
     parts: list[str]
     committee_id: str
+
+
+class UpdateExpenseDomainDTO(BaseModel):
+    title: str | None = None
+    parts: list[str] | None = None
 
 
 class ExpenseDTO(BaseModel):
@@ -24,9 +29,23 @@ class ExpenseDTO(BaseModel):
     categories: list[Dict[str, Any]]
     status: PaymentStatus
     created_at: str
-    committee: CommitteeDTO | None = None
     amount: float
     student: StudentDTO | None = None
+
+
+class UpdateItemForm(BaseModel):
+    status: str | None = None
+    updatedCategories: list[Dict[str, Any]] | None = None
+    comment: str | None = None
+
+
+class CreateExpenseForm(BaseModel):
+    files: list[bytes]
+    date: str
+    title: str
+    description: str
+    is_digital: str
+    categories: list[Dict[str, Any]]
 
 
 class InvoiceDTO(BaseModel):
@@ -42,6 +61,31 @@ class InvoiceDTO(BaseModel):
     categories: list[Dict[str, Any]]
     status: PaymentStatus
     created_at: str
-    committee: CommitteeDTO | None = None
     amount: float
     student: StudentDTO | None = None
+
+
+class CreateInvoiceForm(BaseModel):
+    files: list[bytes]
+    already_paid: str
+    title: str
+    description: str
+    is_original: str
+    is_booked: str
+    date_issued: str
+    due_date: str
+    categories: list[Dict[str, Any]]
+
+
+class BaseItemResponseDTO(BaseModel):
+    student: StudentDTO
+    bank_information: str
+    thread: ThreadDTO
+
+
+class ExpenseResponseDTO(BaseItemResponseDTO):
+    expense: ExpenseDTO
+
+
+class InvoiceResponseDTO(BaseItemResponseDTO):
+    invoice: InvoiceDTO

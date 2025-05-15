@@ -29,6 +29,7 @@ class Tag(SQLModel, table=True):
     translations: List["TagTranslation"] = Relationship(
         back_populates="tag",
         cascade_delete=True,
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
 
 

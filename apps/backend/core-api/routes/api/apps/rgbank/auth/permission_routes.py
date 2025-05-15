@@ -1,11 +1,13 @@
 from http import HTTPStatus
-from flask import Blueprint, Response, request
-from flask_jwt_extended import get_jwt, verify_jwt_in_request
+
+from fastapi import APIRouter, Cookie, Response
+
+from config import Settings
 from decorators import nextjs_auth_required
+from dto.apps.rgbank.permissions import VerifyPermissionDTO
 from models.apps.rgbank import RGBankViewPermissions
-
-
-rgbank_permissions_bp = Blueprint("rgbank_permissions", __name__)
+from routes.api.deps import SessionDep
+from utility.jwt import decode_jwt
 
 routes_mapping = [
     {
@@ -17,19 +19,25 @@ routes_mapping = [
     },
 ]
 
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/rgbank/permissions",
+    tags=["RGBank", "Permissions"],
+    dependencies=[nextjs_auth_required],
+)
 
-@rgbank_permissions_bp.route("", methods=["POST"])
-@nextjs_auth_required
-def get_all_rgbank_permissions() -> Response:
-    data = request.get_json()
 
-    token_exists = verify_jwt_in_request(optional=True)
-    if not token_exists:
+@router.post("/")
+def get_all_rgbank_permissions(
+    session: SessionDep,
+    data: VerifyPermissionDTO,
+    jwt_cookie: str | None = Cookie(..., alias=Settings.JWT_COOKIE_NAME),
+):
+    if not jwt_cookie:
         return {"message": "No permissions found"}, HTTPStatus.FORBIDDEN
 
     path: str = data.get("path")
     method: str = data.get("method")
-    jwt_token = get_jwt()
+    jwt_token = decode_jwt(jwt_cookie, session)
 
     if not path or not method:
         return {"message": "Path and method are required"}, HTTPStatus.BAD_REQUEST

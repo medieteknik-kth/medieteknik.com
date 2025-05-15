@@ -6,6 +6,7 @@ from fastapi import HTTPException
 from jose import JWTError, jwt
 from sqlmodel import Session, select
 
+from errors.InvalidJWTToken import InvalidJWTTokenException
 from models.utility.auth import RevokedTokens
 
 
@@ -32,8 +33,8 @@ def decode_jwt(token: str, session: Session):
             )
         return payload
 
-    except JWTError as e:
-        raise HTTPException(status_code=401, detail="Invalid token") from e
+    except JWTError:
+        raise InvalidJWTTokenException()
 
 
 def revoke_jwt(token: str, session: Session):

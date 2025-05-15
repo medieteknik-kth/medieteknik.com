@@ -13,6 +13,8 @@ class MessageDTO(BaseModel):
     sender: StudentDTO | None = None
     message_type: str | None = None
 
+class AddMessageDTO(BaseModel):
+    message: str
 
 class ThreadDTO(BaseModel):
     thread_id: str

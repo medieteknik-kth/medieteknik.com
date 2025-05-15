@@ -52,5 +52,8 @@ class Settings(BaseSettings):
     KTH_API_BASE_URL = "https://app.kth.se/api/v.1.1"
     KTH_DISCOVERY_URL = "https://login.ug.kth.se/adfs/.well-known/openid-configuration"
 
+    # Fernet
+    FERNET_KEY = os.environ.get("FERNET_KEY")
+
 
 settings = Settings()

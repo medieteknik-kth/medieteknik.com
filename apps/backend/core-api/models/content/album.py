@@ -28,6 +28,7 @@ class Album(SQLModel, table=True):
     translations: list["AlbumTranslation"] = Relationship(
         back_populates="album",
         cascade_delete=True,
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
     media: list["Media"] = Relationship(
         back_populates="album",

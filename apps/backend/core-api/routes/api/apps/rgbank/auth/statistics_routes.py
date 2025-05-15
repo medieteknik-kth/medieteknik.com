@@ -1,63 +1,120 @@
 from http import HTTPStatus
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from typing import Annotated, Any, Dict
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
+
+from config import Settings
+from decorators.jwt import get_jwt_identity, jwt_required
+from dto.apps.rgbank.statistics import StatisticsDTO
+from routes.api.deps import SessionDep
 from services.apps.rgbank import (
     get_student_statistic,
 )
 from utility import DEFAULT_LANGUAGE_CODE
 
-statistics_bp = Blueprint("statistics", __name__)
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/rgbank/statistics",
+    tags=["RGBank", "Statistics"],
+)
 
 
-@statistics_bp.route("/year/<int:year>", methods=["GET"])
-@jwt_required()
-def get_student_statistics_year(year: int):
+@router.get(
+    "/year/{year}",
+    response_model=StatisticsDTO,
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.NOT_FOUND: {
+            "description": "Statistics not found",
+        },
+    },
+)
+async def get_student_statistics_year(
+    session: SessionDep,
+    year: Annotated[int, Path(title="Year", ge=2000, le=2100)],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+):
     """Get statistics for a student."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
 
-    student_id = get_jwt_identity()
+    student_id = get_jwt_identity(jwt)
 
     statistics = get_student_statistic(
-        student_id=student_id, year=year, provided_languages=[language]
+        session=session, student_id=student_id, year=year, month=None
     )
 
     if statistics is None:
-        return jsonify({"message": "Statistics not found"}), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Statistics not found",
+        )
 
-    return statistics
+    return StatisticsDTO.from_orm_with_language(statistics, language_code=language)
 
 
-@statistics_bp.route("/year/<int:year>/month/<int:month>", methods=["GET"])
-@jwt_required()
-def get_student_statistics_month(year: int, month: int):
+@router.get(
+    "/year/{year}/month/{month}",
+    response_model=StatisticsDTO,
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.NOT_FOUND: {
+            "description": "Statistics not found",
+        },
+    },
+)
+async def get_student_statistics_month(
+    session: SessionDep,
+    year: Annotated[int, Path(title="Year", ge=2000, le=2100)],
+    month: Annotated[int, Path(title="Month", ge=1, le=12)],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+):
     """Get statistics for a student."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
 
-    student_id = get_jwt_identity()
+    student_id = get_jwt_identity(jwt)
 
     statistics = get_student_statistic(
-        student_id=student_id, year=year, month=month, provided_languages=[language]
+        session=session, student_id=student_id, year=year, month=month
     )
 
     if statistics is None:
-        return jsonify({"message": "Statistics not found"}), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Statistics not found",
+        )
 
-    return statistics
+    return StatisticsDTO.from_orm_with_language(statistics, language_code=language)
 
 
-@statistics_bp.route("/all_time", methods=["GET"])
-@jwt_required()
-def get_student_statistics_all_time():
+@router.get(
+    "/all_time",
+    response_model=StatisticsDTO,
+    status_code=HTTPStatus.OK,
+    responses={
+        HTTPStatus.NOT_FOUND: {
+            "description": "Statistics not found",
+        },
+    },
+)
+async def get_student_statistics_all_time(
+    session: SessionDep,
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    jwt: Dict[str, Any] = Depends(jwt_required),
+):
     """Get all-time statistics for a student."""
-    language = request.args.get("language", type=str, default=DEFAULT_LANGUAGE_CODE)
 
-    student_id = get_jwt_identity()
+    student_id = get_jwt_identity(jwt)
 
     statistics = get_student_statistic(
-        student_id=student_id, provided_languages=[language]
+        session=session,
+        student_id=student_id,
+        year=None,
+        month=None,
     )
 
     if statistics is None:
-        return {"message": "Statistics not found"}, 404
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Statistics not found",
+        )
 
-    return statistics
+    return StatisticsDTO.from_orm_with_language(statistics, language_code=language)

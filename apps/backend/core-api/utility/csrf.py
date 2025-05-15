@@ -6,13 +6,11 @@ from http import HTTPStatus
 
 from fastapi import Header, HTTPException, Request
 
-from utility.session import CookieSession
-
 
 def validate_csrf(
     request: Request,
     csrf_token: str,
-    header_csrf_token=Header(..., alias="X-CSRF-Token"),
+    header_csrf_token: str = Header(..., alias="X-CSRF-Token"),
 ) -> bool:
     """
     Validates CSRF tokens via the X-CSRF-Token header, the session CSRF token, and the given CSRF token.
@@ -22,8 +20,7 @@ def validate_csrf(
     :return: True if the CSRF token is valid, otherwise a response with an error message
     :rtype: Response | bool
     """
-    session = CookieSession(request)
-    session_csrf_token = session.get("csrf_token")
+    session_csrf_token = request.session.get("csrf_token")
 
     if not session_csrf_token:
         raise HTTPException(

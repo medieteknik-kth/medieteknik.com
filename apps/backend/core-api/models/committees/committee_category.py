@@ -22,7 +22,7 @@ class CommitteeCategory(SQLModel, table=True):
 
     # Relationships
     translations: list["CommitteeCategoryTranslation"] = Relationship(
-        back_populates="committee_category",
+        back_populates="committee_category", sa_relationship_kwargs={"lazy": "selectin"}
     )
     committees: list["Committee"] = Relationship(
         back_populates="committee_category",

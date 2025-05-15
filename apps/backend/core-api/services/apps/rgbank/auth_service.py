@@ -1,17 +1,22 @@
-from typing import Any, Dict, List, Tuple, Type, Union
+from typing import List, Tuple, Type, Union
+
+from sqlmodel import Session, select
+
 from models.apps.rgbank import (
+    AccountBankInformation,
     Expense,
     Invoice,
     RGBankPermissions,
     RGBankViewPermissions,
 )
-from models.apps.rgbank import AccountBankInformation
 from models.core import StudentMembership
-from utility import log_error
 
 
 def has_access(
-    cost_item: Expense | Invoice, student_id: str, memberships: List[StudentMembership]
+    session: Session,
+    cost_item: Expense | Invoice,
+    student_id: str,
+    memberships: List[StudentMembership],
 ) -> Tuple[bool, str]:
     """
     Check if the student can view the expense based on their memberships.
@@ -35,11 +40,12 @@ def has_access(
     if not memberships:
         return (False, "You are not a member of any committee.")
 
-    permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
+    permissions_stmt = select(RGBankPermissions).where(
         RGBankPermissions.committee_position_id.in_(
             [membership.committee_position_id for membership in memberships]
         )
-    ).all()
+    )
+    permissions: List[RGBankPermissions] = session.exec(permissions_stmt).all()
 
     if not permissions:
         return (False, "You do not have any permissions.")
@@ -73,7 +79,45 @@ def has_access(
     return (False, "You do not have permission to view this expense.")
 
 
-def has_full_authority(memberships: List[StudentMembership]) -> Tuple[bool, str]:
+def has_full_access(
+    session: Session, memberships: List[StudentMembership]
+) -> Tuple[bool, str]:
+    """
+    Check if the student has full access to the expense.
+
+    :param student_id: The ID of the student.
+    :type student_id: str
+    :param memberships: List of StudentMembership objects for the student.
+    :type memberships: List[StudentMembership]
+    :return: True if the student has full access, False otherwise.
+    :rtype: bool
+    """
+    if not memberships:
+        return (False, "You are not a member of any committee.")
+
+    permissions_stmt = select(RGBankPermissions).where(
+        RGBankPermissions.committee_position_id.in_(
+            [membership.committee_position_id for membership in memberships]
+        )
+    )
+
+    permissions: List[RGBankPermissions] = session.exec(permissions_stmt).all()
+
+    if not permissions:
+        return (False, "You do not have any permissions.")
+
+    return (
+        any(
+            permission.view_permission_level == RGBankViewPermissions.ALL_COMMITTEES
+            for permission in permissions
+        ),
+        "You have permission to view all committees.",
+    )
+
+
+def has_full_authority(
+    session: Session, memberships: List[StudentMembership]
+) -> Tuple[bool, str]:
     """Check if the student has full authority over the expense.
 
     :param student_id: The ID of the student.
@@ -86,11 +130,13 @@ def has_full_authority(memberships: List[StudentMembership]) -> Tuple[bool, str]
     if not memberships:
         return (False, "You are not a member of any committee.")
 
-    permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
+    permissions_stmt = select(RGBankPermissions).where(
         RGBankPermissions.committee_position_id.in_(
             [membership.committee_position_id for membership in memberships]
         )
-    ).all()
+    )
+
+    permissions: List[RGBankPermissions] = session.exec(permissions_stmt).all()
 
     if not permissions:
         return (False, "You do not have any permissions.")
@@ -105,24 +151,25 @@ def has_full_authority(memberships: List[StudentMembership]) -> Tuple[bool, str]
 
 
 def retrieve_accessible_cost_items(
+    session: Session,
     cost_item: Type[Union[Expense, Invoice]],
     memberships: List[StudentMembership],
-    page: int = 1,
 ) -> List[Expense | Invoice] | None:
     # Gets all costs items the student has access to
 
     if cost_item is not Expense and cost_item is not Invoice:
-        log_error(f"Invalid cost item type. type: {type(cost_item)}")
         return None
 
     if not memberships:
         return None
 
-    permissions: List[RGBankPermissions] = RGBankPermissions.query.filter(
+    permissions_stmt = select(RGBankPermissions).where(
         RGBankPermissions.committee_position_id.in_(
             [membership.committee_position_id for membership in memberships]
         )
-    ).all()
+    )
+
+    permissions: List[RGBankPermissions] = session.exec(permissions_stmt).all()
 
     if not permissions:
         return None
@@ -139,20 +186,17 @@ def retrieve_accessible_cost_items(
         if permission.view_permission_level == RGBankViewPermissions.OWN_COMMITTEE:
             committee = permission.committee
 
+    stmt = select(cost_item).order_by(cost_item.created_at.desc())
+
     if all_access:
-        cost_items = cost_item.query.order_by(cost_item.created_at.desc()).all()
+        cost_items = session.exec(stmt).all()
 
     if committee:
         if not cost_item.committee:
             return None
 
-        cost_items = (
-            cost_item.query.filter_by(
-                cost_item.committee.committee_id == committee.committee_id,
-            )
-            .order_by(cost_item.created_at.desc())
-            .all()
-        )
+        stmt = stmt.where(cost_item.committee.committee_id == committee.committee_id)
+        cost_items = session.exec(stmt).all()
 
     if not cost_items:
         return None
@@ -160,7 +204,9 @@ def retrieve_accessible_cost_items(
     return cost_items
 
 
-def get_bank_account(student_id: str) -> Dict[str, Any] | None:
+def get_bank_account(
+    session: Session, student_id: str
+) -> AccountBankInformation | None:
     """
     Get the bank account of the student.
 
@@ -169,11 +215,12 @@ def get_bank_account(student_id: str) -> Dict[str, Any] | None:
     :return: The bank account of the student.
     :rtype: str
     """
-    bank: AccountBankInformation | None = AccountBankInformation.query.filter_by(
-        student_id=student_id
-    ).first()
+    bank_stmt = select(AccountBankInformation).where(
+        AccountBankInformation.student_id == student_id
+    )
+    bank = session.exec(bank_stmt).first()
 
-    if not bank or not isinstance(bank, AccountBankInformation):
+    if not bank:
         return None
 
-    return bank.to_dict()
+    return bank

@@ -1,12 +1,14 @@
 import datetime
-from typing import Any, Dict, List
-from models.apps.rgbank import Statistics, ExpenseCount
-from utility import db, AVAILABLE_LANGUAGES
+
+from sqlmodel import Session, select
+
+from models.apps.rgbank import ExpenseCount, Statistics
 
 # --- STUDENT STATISTICS --- #
 
 
 def add_student_statistic(
+    session: Session,
     student_id: str,
     value: float,
     date: datetime = None,
@@ -32,25 +34,30 @@ def add_student_statistic(
     year = date.year
 
     # Get the student statistics for the current month and year
-    month_statistic: Statistics | None = Statistics.query.filter(
+
+    month_stmt = select(Statistics).where(
         Statistics.student_id == student_id,
         Statistics.year == year,
         Statistics.month == month,
         Statistics.is_all_time.is_(False),
-    ).first()
+    )
+    month_statistic = session.exec(month_stmt).first()
 
-    year_statistic: Statistics | None = Statistics.query.filter(
+    year_stmt = select(Statistics).where(
         Statistics.student_id == student_id,
         Statistics.year == year,
         Statistics.month == None,  # noqa: E711
         Statistics.is_all_time.is_(False),
-    ).first()
+    )
 
-    all_time_statistic: Statistics | None = Statistics.query.filter(
+    year_statistic = session.exec(year_stmt).first()
+
+    all_time_stmt = select(Statistics).where(
         Statistics.student_id == student_id, Statistics.is_all_time.is_(True)
-    ).first()
+    )
+    all_time_statistic = session.exec(all_time_stmt).first()
 
-    if not month_statistic or not isinstance(month_statistic, Statistics):
+    if not month_statistic:
         month_statistic = Statistics(
             student_id=student_id,
             year=year,
@@ -58,11 +65,12 @@ def add_student_statistic(
             is_all_time=False,
             value=value,
         )
-        db.session.add(month_statistic)
+        session.add(month_statistic)
+
     else:
         month_statistic.value += value
 
-    if not year_statistic or not isinstance(year_statistic, Statistics):
+    if not year_statistic:
         year_statistic = Statistics(
             student_id=student_id,
             year=year,
@@ -70,11 +78,11 @@ def add_student_statistic(
             is_all_time=False,
             value=value,
         )
-        db.session.add(year_statistic)
+        session.add(year_statistic)
     else:
         year_statistic.value += value
 
-    if not all_time_statistic or not isinstance(all_time_statistic, Statistics):
+    if not all_time_statistic:
         all_time_statistic = Statistics(
             student_id=student_id,
             year=None,
@@ -82,19 +90,23 @@ def add_student_statistic(
             is_all_time=True,
             value=value,
         )
-        db.session.add(all_time_statistic)
+        session.add(all_time_statistic)
+
     else:
         all_time_statistic.value += value
 
-    db.session.commit()
+    session.commit()
+    session.refresh(month_statistic)
+    session.refresh(year_statistic)
+    session.refresh(all_time_statistic)
 
 
 def get_student_statistic(
+    session: Session,
     student_id: str,
     year: int = None,
     month: int = None,
-    provided_languages: List[str] = AVAILABLE_LANGUAGES,
-) -> Dict[str, Any] | None:
+) -> Statistics | None:
     """Gets statistics for a student. If you don't provide a year or month, it will return the all-time statistics.
 
     :param student_id: The ID of the student.
@@ -110,37 +122,38 @@ def get_student_statistic(
 
     if year:
         if month:
-            statistic: Statistics | None = Statistics.query.filter(
+            month_stmt = select(Statistics).where(
                 Statistics.student_id == student_id,
-                Statistics.year == year,  # noqa: E711
+                Statistics.year == year,
                 Statistics.month == month,
                 Statistics.is_all_time.is_(False),
-            ).first()
+            )
+            statistic = session.exec(month_stmt).first()
         else:
-            statistic: Statistics | None = Statistics.query.filter(
+            year_stmt = select(Statistics).where(
                 Statistics.student_id == student_id,
                 Statistics.year == year,
                 Statistics.month == None,  # noqa: E711
                 Statistics.is_all_time.is_(False),
-            ).first()
+            )
+            statistic = session.exec(year_stmt).first()
     else:
-        statistic: Statistics | None = Statistics.query.filter(
-            Statistics.student_id == student_id,
-            Statistics.year == None,  # noqa: E711
-            Statistics.month == None,  # noqa: E711
-            Statistics.is_all_time.is_(True),
-        ).first()
+        all_time_stmt = select(Statistics).where(
+            Statistics.student_id == student_id, Statistics.is_all_time.is_(True)
+        )
+        statistic = session.exec(all_time_stmt).first()
 
-    if statistic is None or not isinstance(statistic, Statistics):
+    if statistic is None:
         return None
 
-    return statistic.to_dict(provided_languages=provided_languages)
+    return statistic
 
 
 # --- COMMITTEE STATISTICS --- #
 
 
 def add_committee_statistic(
+    session: Session,
     committee_id: str,
     value: float,
     date: datetime = None,
@@ -166,25 +179,28 @@ def add_committee_statistic(
     year = date.year
 
     # Get the committee statistics for the current month and year
-    month_statistic: Statistics | None = Statistics.query.filter(
+    month_stmt = select(Statistics).where(
         Statistics.committee_id == committee_id,
-        Statistics.year == year,  # noqa: E711
+        Statistics.year == year,
         Statistics.month == month,
         Statistics.is_all_time.is_(False),
-    ).first()
+    )
+    month_statistic = session.exec(month_stmt).first()
 
-    year_statistic: Statistics | None = Statistics.query.filter(
+    year_stmt = select(Statistics).where(
         Statistics.committee_id == committee_id,
         Statistics.year == year,
         Statistics.month == None,  # noqa: E711
         Statistics.is_all_time.is_(False),
-    ).first()
+    )
+    year_statistic = session.exec(year_stmt).first()
 
-    all_time_statistic: Statistics | None = Statistics.query.filter(
+    all_time_stmt = select(Statistics).where(
         Statistics.committee_id == committee_id, Statistics.is_all_time.is_(True)
-    ).first()
+    )
+    all_time_statistic = session.exec(all_time_stmt).first()
 
-    if not month_statistic or not isinstance(month_statistic, Statistics):
+    if not month_statistic:
         month_statistic = Statistics(
             committee_id=committee_id,
             year=year,
@@ -192,11 +208,11 @@ def add_committee_statistic(
             is_all_time=False,
             value=value,
         )
-        db.session.add(month_statistic)
+        session.add(month_statistic)
     else:
         month_statistic.value += value
 
-    if not year_statistic or not isinstance(year_statistic, Statistics):
+    if not year_statistic:
         year_statistic = Statistics(
             committee_id=committee_id,
             year=year,
@@ -204,11 +220,11 @@ def add_committee_statistic(
             is_all_time=False,
             value=value,
         )
-        db.session.add(year_statistic)
+        session.add(year_statistic)
     else:
         year_statistic.value += value
 
-    if not all_time_statistic or not isinstance(all_time_statistic, Statistics):
+    if not all_time_statistic:
         all_time_statistic = Statistics(
             committee_id=committee_id,
             year=None,
@@ -216,19 +232,22 @@ def add_committee_statistic(
             is_all_time=True,
             value=value,
         )
-        db.session.add(all_time_statistic)
+        session.add(all_time_statistic)
     else:
         all_time_statistic.value += value
 
-    db.session.commit()
+    session.commit()
+    session.refresh(month_statistic)
+    session.refresh(year_statistic)
+    session.refresh(all_time_statistic)
 
 
 def get_committee_statistic(
+    session: Session,
     committee_id: str,
-    year: int = None,
-    month: int = None,
-    provided_languages: List[str] = AVAILABLE_LANGUAGES,
-) -> Dict[str, Any] | None:
+    year: int | None = None,
+    month: int | None = None,
+) -> Statistics | None:
     """Gets statistics for a committee. If you don't provide a year or month, it will return the all-time statistics.
 
     :param committee_id: The ID of the committee.
@@ -237,42 +256,35 @@ def get_committee_statistic(
     :type year: int, optional
     :param month: The month of the statistics. Defaults to None.
     :type month: int, optional
-    :param provided_languages: The languages provided. Defaults to AVAILABLE_LANGUAGES.
-    :type provided_languages: List[str], optional
     :return: The statistics for the committee.
     :rtype: Dict[str, Any] | None"""
 
     if year:
-        if month:
-            statistic: Statistics | None = Statistics.query.filter(
-                Statistics.committee_id == committee_id,
-                Statistics.year == None,  # noqa: E711
-                Statistics.month == month,
-                Statistics.is_all_time.is_(False),
-            ).first()
-        else:
-            statistic: Statistics | None = Statistics.query.filter(
-                Statistics.committee_id == committee_id,
-                Statistics.year == year,
-                Statistics.month == month,
-                Statistics.is_all_time.is_(False),
-            ).first()
+        stmt = select(Statistics).where(
+            Statistics.committee_id == committee_id,
+            Statistics.year == year,
+            Statistics.month == month,
+            Statistics.is_all_time.is_(False),
+        )
+        statistic = session.exec(stmt).first()
 
     else:
-        statistic: Statistics | None = Statistics.query.filter(
+        stmt = select(Statistics).where(
             Statistics.committee_id == committee_id,
             Statistics.year == None,  # noqa: E711
             Statistics.month == None,  # noqa: E711
             Statistics.is_all_time.is_(True),
-        ).first()
+        )
+        statistic = session.exec(stmt).first()
 
-    if statistic is None or not isinstance(statistic, Statistics):
+    if statistic is None:
         return None
 
-    return statistic.to_dict(provided_languages=provided_languages)
+    return statistic
 
 
 def add_expense_count(
+    session: Session,
     student_id: str = None,
     committee_id: str = None,
     expense_count: int = 0,
@@ -293,25 +305,27 @@ def add_expense_count(
         raise ValueError("Either student_id or committee_id must be provided.")
 
     if student_id:
-        expense_count_obj: ExpenseCount | None = ExpenseCount.query.filter_by(
-            student_id=student_id
-        ).first()
+        expense_count_stmt = select(ExpenseCount).where(
+            ExpenseCount.student_id == student_id
+        )
+        expense_count_obj = session.exec(expense_count_stmt).first()
 
-        if not expense_count_obj or not isinstance(expense_count_obj, ExpenseCount):
+        if not expense_count_obj:
             expense_count_obj = ExpenseCount(
                 student_id=student_id,
                 expense_count=expense_count,
                 invoice_count=invoice_count,
             )
-            db.session.add(expense_count_obj)
+            session.add(expense_count_obj)
         else:
             expense_count_obj.expense_count += expense_count
             expense_count_obj.invoice_count += invoice_count
 
     if committee_id:
-        expense_count_obj: ExpenseCount | None = ExpenseCount.query.filter(
+        expense_count_stmt = select(ExpenseCount).where(
             ExpenseCount.committee_id == committee_id
-        ).first()
+        )
+        expense_count_obj = session.exec(expense_count_stmt).first()
 
         if not expense_count_obj or not isinstance(expense_count_obj, ExpenseCount):
             expense_count_obj = ExpenseCount(
@@ -319,9 +333,9 @@ def add_expense_count(
                 expense_count=expense_count,
                 invoice_count=invoice_count,
             )
-            db.session.add(expense_count_obj)
+            session.add(expense_count_obj)
         else:
             expense_count_obj.expense_count += expense_count
             expense_count_obj.invoice_count += invoice_count
 
-    db.session.commit()
+    session.commit()

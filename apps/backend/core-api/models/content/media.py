@@ -48,7 +48,7 @@ class Media(Item):
         back_populates="media",
     )
     translations: list["MediaTranslation"] = Relationship(
-        back_populates="media",
+        back_populates="media", sa_relationship_kwargs={"lazy": "selectin"}
     )
 
     __mapper_args__ = {"polymorphic_identity": "media"}
