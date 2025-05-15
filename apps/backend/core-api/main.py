@@ -6,7 +6,9 @@ import logging
 import os
 import secrets
 
+import msgspec
 from fastapi import FastAPI
+from fastapi.encoders import encoders_by_class_tuples
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
@@ -76,7 +78,11 @@ app.add_middleware(
     minimum_size=1024,  # Compress responses larger than 1KB
     compresslevel=6,  # Compression level (1-9)
 )
+
 app.add_middleware(SessionMiddleware, secret_key=Settings.SECRET_KEY)
+
+# Encoder
+encoders_by_class_tuples.append((msgspec.Struct, lambda obj: msgspec.to_builtins(obj)))
 
 if Settings.ENV != "development":
     app.add_middleware(

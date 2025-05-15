@@ -1,11 +1,11 @@
 import uuid
 
-from pydantic import BaseModel
+import msgspec
 
 from dto.content.item import ItemDTO
 
 
-class EventTranslationDTO(BaseModel):
+class EventTranslationDTO(msgspec.Struct):
     title: str
     description: str
     main_image_url: str | None = None

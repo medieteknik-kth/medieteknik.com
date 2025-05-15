@@ -1,25 +1,25 @@
 from typing import Any, Dict
 
-from pydantic import BaseModel
+import msgspec
 
 from dto.apps.rgbank.thread import ThreadDTO
 from dto.core.student import StudentDTO
 from models.apps.rgbank.expense import PaymentStatus
 
 
-class ExpenseDomainDTO(BaseModel):
+class ExpenseDomainDTO(msgspec.Struct):
     expense_part_id: str
     title: str
     parts: list[str]
     committee_id: str
 
 
-class UpdateExpenseDomainDTO(BaseModel):
+class UpdateExpenseDomainDTO(msgspec.Struct):
     title: str | None = None
     parts: list[str] | None = None
 
 
-class ExpenseDTO(BaseModel):
+class ExpenseDTO(msgspec.Struct):
     expense_id: str
     file_urls: list[str]
     title: str
@@ -33,13 +33,13 @@ class ExpenseDTO(BaseModel):
     student: StudentDTO | None = None
 
 
-class UpdateItemForm(BaseModel):
+class UpdateItemForm(msgspec.Struct):
     status: str | None = None
     updatedCategories: list[Dict[str, Any]] | None = None
     comment: str | None = None
 
 
-class CreateExpenseForm(BaseModel):
+class CreateExpenseForm(msgspec.Struct):
     files: list[bytes]
     date: str
     title: str
@@ -48,7 +48,7 @@ class CreateExpenseForm(BaseModel):
     categories: list[Dict[str, Any]]
 
 
-class InvoiceDTO(BaseModel):
+class InvoiceDTO(msgspec.Struct):
     invoice_id: str
     already_paid: bool
     file_urls: list[str]
@@ -65,7 +65,7 @@ class InvoiceDTO(BaseModel):
     student: StudentDTO | None = None
 
 
-class CreateInvoiceForm(BaseModel):
+class CreateInvoiceForm(msgspec.Struct):
     files: list[bytes]
     already_paid: str
     title: str
@@ -77,7 +77,7 @@ class CreateInvoiceForm(BaseModel):
     categories: list[Dict[str, Any]]
 
 
-class BaseItemResponseDTO(BaseModel):
+class BaseItemResponseDTO(msgspec.Struct):
     student: StudentDTO
     bank_information: str
     thread: ThreadDTO

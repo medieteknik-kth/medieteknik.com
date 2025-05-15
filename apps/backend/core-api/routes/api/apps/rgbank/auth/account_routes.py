@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from cryptography.fernet import Fernet
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Request, Response
 from sqlmodel import select
 
 from config import Settings
@@ -9,6 +9,7 @@ from decorators.jwt import get_jwt_identity, jwt_required
 from dto.apps.rgbank.bank import AccountBankInformationDTO
 from models.apps.rgbank import AccountBankInformation
 from routes.api.deps import SessionDep
+from utility.parser import parse_body
 
 router = APIRouter(
     prefix=Settings.API_ROUTE_PREFIX + "/rgbank/account",
@@ -19,13 +20,12 @@ router = APIRouter(
 @router.post("/", status_code=HTTPStatus.CREATED)
 async def create_account(
     session: SessionDep,
-    account: AccountBankInformationDTO,
+    request: Request,
     jwt=Depends(jwt_required),
 ):
-    """
-    Creates a new bank account
-        :return: Response - The response object, 400 if no data is provided, 404 if the committee is not found, 201 if successful
-    """
+    validated_data = await parse_body(
+        request=request, model_type=AccountBankInformationDTO
+    )
     student_id = get_jwt_identity(jwt)
 
     existing_bank_account = session.exec(
@@ -36,9 +36,9 @@ async def create_account(
 
     cipher = Fernet(Settings.FERNET_KEY)
 
-    bank_name = cipher.encrypt(account.bank_name.encode()).decode()
-    clearing_number = cipher.encrypt(account.clearing_number.encode()).decode()
-    account_number = cipher.encrypt(account.account_number.encode()).decode()
+    bank_name = cipher.encrypt(validated_data.bank_name.encode()).decode()
+    clearing_number = cipher.encrypt(validated_data.clearing_number.encode()).decode()
+    account_number = cipher.encrypt(validated_data.account_number.encode()).decode()
 
     if existing_bank_account:
         existing_bank_account.bank_name = bank_name

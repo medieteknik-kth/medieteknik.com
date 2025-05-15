@@ -4,7 +4,8 @@ cryptography
 python-jose[cryptography]
 sqlalchemy
 fastapi 
-uvicorn 
+uvicorn
+msgspec
 pydantic
 pydantic-settings
 sqlmodel

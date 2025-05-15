@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.core.author import AuthorDTO
 
 
-class ItemDTO(BaseModel):
+class ItemDTO(msgspec.Struct):
     item_id: str
     created_at: str
     last_updated: str

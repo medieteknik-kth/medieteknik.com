@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.content.item import ItemDTO
 from models.content.media import MediaType
 
 
-class MediaTranslationDTO(BaseModel):
+class MediaTranslationDTO(msgspec.Struct):
     title: str
     description: str | None = None
     language_code: str

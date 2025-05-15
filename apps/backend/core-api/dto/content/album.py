@@ -1,15 +1,15 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.content.media import MediaDTO
 
 
-class AlbumTranslationDTO(BaseModel):
+class AlbumTranslationDTO(msgspec.Struct):
     title: str
     description: str
     language_code: str
 
 
-class AlbumDTO(BaseModel):
+class AlbumDTO(msgspec.Struct):
     album_id: str
     total_images: int
     total_videos: int

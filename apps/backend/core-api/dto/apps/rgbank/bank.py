@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+import msgspec
 
 
-class AccountBankInformationDTO(BaseModel):
+class AccountBankInformationDTO(msgspec.Struct):
     bank_name: str
     clearing_number: str
     account_number: str

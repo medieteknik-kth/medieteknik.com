@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.committees.committee import CommitteeDTO
 from dto.committees.committee_position import PublicCommitteePositionDTO
@@ -6,7 +6,7 @@ from dto.core.permissions import StudentPermissionDTO
 from dto.core.student import PrivateStudentDTO
 
 
-class AuthResponseDTO(BaseModel):
+class AuthResponseDTO(msgspec.Struct):
     student: PrivateStudentDTO
     permissions: StudentPermissionDTO
     role: str

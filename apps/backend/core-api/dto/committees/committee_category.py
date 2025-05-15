@@ -1,14 +1,14 @@
-from pydantic import BaseModel
+import msgspec
 
 
-class CommitteeCategoryTranslationDTO(BaseModel):
+class CommitteeCategoryTranslationDTO(msgspec.Struct):
     """DTO for committee category translation"""
 
     title: str
     language_code: str
 
 
-class CommitteeCategoryDTO(BaseModel):
+class CommitteeCategoryDTO(msgspec.Struct):
     """DTO for committee category"""
 
     email: str

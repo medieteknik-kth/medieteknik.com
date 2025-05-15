@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.core.student import StudentDTO
 
 
-class MessageDTO(BaseModel):
+class MessageDTO(msgspec.Struct):
     message_id: str
     content: str
     created_at: str | None = None
@@ -13,10 +13,12 @@ class MessageDTO(BaseModel):
     sender: StudentDTO | None = None
     message_type: str | None = None
 
-class AddMessageDTO(BaseModel):
+
+class AddMessageDTO(msgspec.Struct):
     message: str
 
-class ThreadDTO(BaseModel):
+
+class ThreadDTO(msgspec.Struct):
     thread_id: str
     messages: list[MessageDTO] | None = []
     unread_messages: list[MessageDTO] | None = []

@@ -1,19 +1,19 @@
 import uuid
 from typing import Any
 
-from pydantic import BaseModel
+import msgspec
 
 from dto.committees.committee import CommitteeDTO
 
 
-class NotificationsTranslationDTO(BaseModel):
+class NotificationsTranslationDTO(msgspec.Struct):
     title: str
     body: str
     url: str | None = None
     language_code: str
 
 
-class NotificationsDTO(BaseModel):
+class NotificationsDTO(msgspec.Struct):
     notification_id: uuid.UUID
     created_at: str
     notification_type: str

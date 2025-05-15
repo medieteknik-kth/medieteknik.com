@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+import msgspec
 
 
-class VerifyPermissionDTO(BaseModel):
+class VerifyPermissionDTO(msgspec.Struct):
     path: str
     method: str

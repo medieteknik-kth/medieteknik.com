@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Cookie, Response
+from fastapi import APIRouter, Cookie, Request, Response
 
 from config import Settings
 from decorators import nextjs_auth_required
@@ -8,6 +8,7 @@ from dto.apps.rgbank.permissions import VerifyPermissionDTO
 from models.apps.rgbank import RGBankViewPermissions
 from routes.api.deps import SessionDep
 from utility.jwt import decode_jwt
+from utility.parser import parse_body
 
 routes_mapping = [
     {
@@ -27,17 +28,19 @@ router = APIRouter(
 
 
 @router.post("/")
-def get_all_rgbank_permissions(
+async def get_all_rgbank_permissions(
     session: SessionDep,
-    data: VerifyPermissionDTO,
+    request: Request,
     jwt_cookie: str | None = Cookie(..., alias=Settings.JWT_COOKIE_NAME),
 ):
     if not jwt_cookie:
         return {"message": "No permissions found"}, HTTPStatus.FORBIDDEN
 
-    path: str = data.get("path")
-    method: str = data.get("method")
-    jwt_token = decode_jwt(jwt_cookie, session)
+    validated_data = await parse_body(request=request, model_type=VerifyPermissionDTO)
+
+    path: str = validated_data.path
+    method: str = validated_data.method
+    jwt_token = decode_jwt(token=jwt_cookie, session=session)
 
     if not path or not method:
         return {"message": "Path and method are required"}, HTTPStatus.BAD_REQUEST

@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.committees.committee import CommitteeDTO
 from dto.core.student import StudentDTO
 
 
-class StatisticsDTO(BaseModel):
+class StatisticsDTO(msgspec.Struct):
     statistics_id: str
     year: int
     month: int
@@ -40,7 +40,7 @@ class StatisticsDTO(BaseModel):
         )
 
 
-class ExpenseCountDTO(BaseModel):
+class ExpenseCountDTO(msgspec.Struct):
     expense_count_id: str
     expense_count: int
     invoice_count: int

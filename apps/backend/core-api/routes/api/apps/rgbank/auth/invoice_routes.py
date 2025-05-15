@@ -4,7 +4,7 @@ from datetime import timedelta
 from http import HTTPStatus
 from typing import Annotated, Any, Dict, List
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Path, Response
+from fastapi import APIRouter, Depends, Form, HTTPException, Path, Request, Response
 from google.cloud.exceptions import GoogleCloudError
 from sqlmodel import select
 
@@ -37,6 +37,7 @@ from services.apps.rgbank import (
 )
 from services.utility.mail import send_expense_message
 from utility import rgbank_bucket, upload_file
+from utility.parser import parse_body, validate_form_to_msgspec
 
 router = APIRouter(
     prefix=Settings.API_ROUTE_PREFIX + "/rgbank/invoices",
@@ -63,7 +64,15 @@ router = APIRouter(
 )
 async def create_invoice(
     session: SessionDep,
-    data: Annotated[CreateInvoiceForm, Form()],
+    files: Annotated[list[bytes], Form()],
+    already_paid: Annotated[bool, Form()],
+    title: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    is_original: Annotated[bool, Form()],
+    is_booked: Annotated[bool, Form()],
+    date_issued: Annotated[str, Form()],
+    due_date: Annotated[str, Form()],
+    categories: Annotated[list[Dict[str, Any]], Form()],
     jwt: Dict[str, Any] = Depends(jwt_required),
 ):
     """Creates a new invoice
@@ -71,6 +80,23 @@ async def create_invoice(
     :return: The response object, 400 if no data is provided, 404 if the committee is not found, 201 if successful
     :rtype: Response
     """
+    form_data = {
+        "files": files,
+        "already_paid": already_paid,
+        "title": title,
+        "description": description,
+        "is_original": is_original,
+        "is_booked": is_booked,
+        "date_issued": date_issued,
+        "due_date": due_date,
+        "categories": categories,
+    }
+
+    validated_data = validate_form_to_msgspec(
+        form_data=form_data,
+        model_type=CreateInvoiceForm,
+    )
+
     student_id = get_jwt_identity(jwt)
 
     new_invoice_id = uuid.uuid4()
@@ -86,7 +112,7 @@ async def create_invoice(
 
     file_urls = []
 
-    for file in data.files:
+    for file in validated_data.files:
         # Ensure the file is a valid file type, either pdf or image
         if not file or not file.filename:
             continue
@@ -142,15 +168,15 @@ async def create_invoice(
 
     invoice = Invoice(
         invoice_id=new_invoice_id,
-        already_paid=data.already_paid,
+        already_paid=validated_data.already_paid,
         file_urls=file_urls,
-        title=data.title,
-        description=data.description,
-        is_original=data.is_original,
-        is_booked=data.is_booked,
-        date_issued=data.date_issued,
-        due_date=data.due_date,
-        categories=json.loads(data.categories),
+        title=validated_data.title,
+        description=validated_data.description,
+        is_original=validated_data.is_original,
+        is_booked=validated_data.is_booked,
+        date_issued=validated_data.date_issued,
+        due_date=validated_data.due_date,
+        categories=json.loads(validated_data.categories),
         status=PaymentStatus.UNCONFIRMED,
         student_id=student_id,
     )
@@ -325,10 +351,15 @@ async def get_invoices_by_student(
 )
 async def update_invoice_status(
     session: SessionDep,
+    request: Request,
     invoice_id: Annotated[str, Path(title="The ID of the invoice to update")],
-    data: UpdateItemForm,
     jwt: Dict[str, Any] = Depends(jwt_required),
 ) -> Response:
+    validated_data = await parse_body(
+        request=request,
+        model_type=UpdateItemForm,
+    )
+
     invoice = session.exec(
         select(Invoice).where(Invoice.invoice_id == invoice_id)
     ).first()
@@ -354,7 +385,7 @@ async def update_invoice_status(
             detail="You do not have permission to update this invoice",
         )
 
-    status: str = data.status
+    status: str = validated_data.status
     if not status:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
@@ -382,8 +413,8 @@ async def update_invoice_status(
             thread_id=thread_id,
             sender_id=None,
             message_text=f"status_changed_{status.lower()}"
-            if not data.comment
-            else data.comment,
+            if not validated_data.comment
+            else validated_data.comment,
             type=MessageType.SYSTEM,
             create_thread_if_not_exists=True,
             invoice_id=invoice_id,
@@ -438,10 +469,15 @@ async def update_invoice_status(
 )
 async def update_expense_categories(
     session: SessionDep,
+    request: Request,
     invoice_id: Annotated[str, Path(title="The ID of the invoice to update")],
-    data: UpdateItemForm,
     jwt: Dict[str, Any] = Depends(jwt_required),
 ):
+    validated_data = await parse_body(
+        request=request,
+        model_type=UpdateItemForm,
+    )
+
     invoice = session.exec(
         select(Invoice).where(Invoice.invoice_id == invoice_id)
     ).first()
@@ -471,7 +507,7 @@ async def update_expense_categories(
             detail=message,
         )
 
-    new_categories = data.updatedCategories
+    new_categories = validated_data.updatedCategories
     if not new_categories:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
@@ -558,10 +594,15 @@ async def delete_invoice(
 )
 async def add_invoice_message(
     session: SessionDep,
+    request: Request,
     invoice_id: Annotated[str, Path(title="The ID of the invoice")],
-    data: AddMessageDTO,
     jwt: Dict[str, Any] = Depends(jwt_required),
-) -> Response:
+):
+    validated_data = await parse_body(
+        request=request,
+        model_type=AddMessageDTO,
+    )
+
     invoice = session.exec(
         select(Invoice).where(Invoice.invoice_id == invoice_id)
     ).first()
@@ -613,7 +654,7 @@ async def add_invoice_message(
         add_message(
             thread_id=thread_id,
             sender_id=str(student_id),
-            message_text=str(data.message),
+            message_text=str(validated_data.message),
             create_thread_if_not_exists=True,
             invoice_id=invoice_id,
         )

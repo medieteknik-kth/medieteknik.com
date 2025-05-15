@@ -1,12 +1,12 @@
 import uuid
 
-from pydantic import BaseModel
+import msgspec
 
 from dto.content.item import ItemDTO
 from models.content.document import DocumentType
 
 
-class DocumentTranslationDTO(BaseModel):
+class DocumentTranslationDTO(msgspec.Struct):
     title: str
     categories: list[str] | None = []
     url: str

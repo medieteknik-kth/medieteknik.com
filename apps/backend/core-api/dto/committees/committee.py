@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+import msgspec
 
 
-class CommitteeTranslationDTO(BaseModel):
+class CommitteeTranslationDTO(msgspec.Struct):
     title: str
     description: str
     language_code: str
 
 
-class CommitteeDTO(BaseModel):
+class CommitteeDTO(msgspec.Struct):
     email: str
     group_photo_url: str | None = None
     logo_url: str

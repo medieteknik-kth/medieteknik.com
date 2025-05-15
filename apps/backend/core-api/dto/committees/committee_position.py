@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel
+import msgspec
 
 from dto.committees.committee import CommitteeDTO
 from models.committees.committee_position import (
@@ -9,13 +9,13 @@ from models.committees.committee_position import (
 )
 
 
-class CommitteePositionTranslationDTO(BaseModel):
+class CommitteePositionTranslationDTO(msgspec.Struct):
     title: str
     description: str
     language_code: str
 
 
-class PublicCommitteePositionDTO(BaseModel):
+class PublicCommitteePositionDTO(msgspec.Struct):
     email: str | None
     translations: list[CommitteePositionTranslationDTO]
     committee_id: uuid.UUID
@@ -62,13 +62,13 @@ class ProtectedCommitteePositionDTOWithCommitteeDTO(
     committee: CommitteeDTO
 
 
-class CommitteePositionRecruitmentTranslationDTO(BaseModel):
+class CommitteePositionRecruitmentTranslationDTO(msgspec.Struct):
     description: str
     link_url: str
     language_code: str
 
 
-class CommitteePositionRecruitmentDTO(BaseModel):
+class CommitteePositionRecruitmentDTO(msgspec.Struct):
     start_date: str
     end_date: str
     committee_position: PublicCommitteePositionDTO

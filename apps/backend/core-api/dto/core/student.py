@@ -2,15 +2,15 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel
+import msgspec
 
 
-class LoginDTO(BaseModel):
+class LoginDTO(msgspec.Struct):
     email: str
     password: str
 
 
-class BaseStudentDTO(BaseModel):
+class BaseStudentDTO(msgspec.Struct):
     email: str | None = None
     student_id: uuid.UUID
     first_name: str
@@ -23,13 +23,13 @@ class PrivateStudentDTO(BaseStudentDTO):
     reception_profile_picture_url: str | None = None
 
 
-class ProfileDTO(BaseModel):
+class ProfileDTO(msgspec.Struct):
     facebook_url: str | None
     linkedin_url: str | None
     instagram_url: str | None
 
 
-class StudentMembershipDTO(BaseModel):
+class StudentMembershipDTO(msgspec.Struct):
     initiation_date: datetime
     termination_date: datetime | None
     committee_position: Any

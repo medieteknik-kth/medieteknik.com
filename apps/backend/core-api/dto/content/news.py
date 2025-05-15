@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+import msgspec
 
 from dto.content.item import ItemDTO
 
 
-class NewsTranslationDTO(BaseModel):
+class NewsTranslationDTO(msgspec.Struct):
     title: str
     body: str
     short_description: str

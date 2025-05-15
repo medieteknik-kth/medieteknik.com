@@ -1,14 +1,14 @@
-from pydantic import BaseModel
+import msgspec
 
 from models.content.tags import TagCategory
 
 
-class TagTranslationDTO(BaseModel):
+class TagTranslationDTO(msgspec.Struct):
     title: str
     language_code: str
 
 
-class TagDTO(BaseModel):
+class TagDTO(msgspec.Struct):
     tag_id: str
     color: str
     category: TagCategory

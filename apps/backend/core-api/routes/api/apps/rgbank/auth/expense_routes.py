@@ -4,7 +4,7 @@ from datetime import timedelta
 from http import HTTPStatus
 from typing import Annotated, Any, Dict, List
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Path, Response
+from fastapi import APIRouter, Depends, Form, HTTPException, Path, Request, Response
 from google.cloud.exceptions import GoogleCloudError
 from sqlmodel import select
 
@@ -37,6 +37,7 @@ from services.apps.rgbank import (
 )
 from services.utility.mail import send_expense_message
 from utility import rgbank_bucket, upload_file
+from utility.parser import parse_body, validate_form_to_msgspec
 
 router = APIRouter(
     prefix=Settings.API_ROUTE_PREFIX + "/rgbank/expenses",
@@ -53,17 +54,38 @@ router = APIRouter(
         HTTPStatus.UNAUTHORIZED: {"description": "Unauthorized"},
         HTTPStatus.NOT_FOUND: {"description": "Committee not found"},
         HTTPStatus.INTERNAL_SERVER_ERROR: {"description": "Unable to upload file"},
+        HTTPStatus.UNPROCESSABLE_ENTITY: {
+            "description": "Invalid request data",
+        },
     },
 )
 async def create_expense(
     session: SessionDep,
-    data: Annotated[CreateExpenseForm, Form()],
+    files: Annotated[list[bytes], Form()],
+    date: Annotated[str, Form()],
+    title: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    is_digital: Annotated[str, Form()],
+    categories: Annotated[list[Dict[str, Any]], Form()],
     jwt: Dict[str, Any] = Depends(jwt_required),
 ):
     """
     Creates a new expense
         :return: Response - The response object, 400 if no data is provided, 404 if the committee is not found, 201 if successful
     """
+    form_data = {
+        "files": files,
+        "date": date,
+        "title": title,
+        "description": description,
+        "is_digital": is_digital,
+        "categories": categories,
+    }
+
+    validated_data = validate_form_to_msgspec(
+        form_data=form_data,
+        model_type=CreateExpenseForm,
+    )
 
     student_id = get_jwt_identity(jwt)
 
@@ -80,7 +102,7 @@ async def create_expense(
 
     file_urls = []
 
-    for file in data.files:
+    for file in validated_data.files:
         # Ensure the file is a valid file type, either pdf or image
         if not file or not file.filename:
             continue
@@ -138,11 +160,11 @@ async def create_expense(
     new_expense = Expense(
         expense_id=new_expense_id,
         file_urls=file_urls,
-        title=data.title,
-        description=data.description,
-        date=data.date,
-        is_digital=data.is_digital,
-        categories=json.loads(data.categories),
+        title=validated_data.title,
+        description=validated_data.description,
+        date=validated_data.date,
+        is_digital=validated_data.is_digital,
+        categories=json.loads(validated_data.categories),
         status="UNCONFIRMED",
         student_id=student_id,
     )
@@ -331,17 +353,14 @@ async def get_expenses_by_student(
 )
 async def update_expense_status(
     session: SessionDep,
+    request: Request,
     expense_id: Annotated[str, Path(title="The ID of the expense")],
-    data: UpdateItemForm,
     jwt: Dict[str, Any] = Depends(jwt_required),
-) -> Response:
-    """Updates an expense by ID, updates everything except the file urls
-
-    :param expense_id: The ID of the expense to update
-    :type expense_id: str
-    :return: The response object, 400 if no data is provided, 404 if the expense is not found, 200 if successful
-    :rtype: Response
-    """
+):
+    validated_data = await parse_body(
+        request=request,
+        model_type=UpdateItemForm,
+    )
 
     expense = session.exec(
         select(Expense).where(Expense.expense_id == expense_id)
@@ -373,7 +392,7 @@ async def update_expense_status(
             detail=message,
         )
 
-    status = data.status
+    status = validated_data.status
     if not status:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
@@ -399,8 +418,8 @@ async def update_expense_status(
             thread_id=thread_id,
             sender_id=None,
             message_text=f"status_changed_{status.lower()}"
-            if not data.comment
-            else data.comment,
+            if not validated_data.comment
+            else validated_data.comment,
             type=MessageType.SYSTEM,
             create_thread_if_not_exists=True,
             expense_id=expense_id,
@@ -452,10 +471,15 @@ async def update_expense_status(
 )
 async def update_expense_categories(
     session: SessionDep,
+    request: Request,
     expense_id: Annotated[str, Path(title="The ID of the expense")],
-    data: UpdateItemForm,
     jwt: Dict[str, Any] = Depends(jwt_required),
-) -> Response:
+):
+    validated_data = await parse_body(
+        request=request,
+        model_type=UpdateItemForm,
+    )
+
     expense = session.exec(
         select(Expense).where(Expense.expense_id == expense_id)
     ).first()
@@ -485,7 +509,7 @@ async def update_expense_categories(
             detail=message,
         )
 
-    new_categories = data.updatedCategories
+    new_categories = validated_data.updatedCategories
     if not new_categories:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
@@ -574,10 +598,15 @@ async def delete_expense(
 )
 async def add_expense_message(
     session: SessionDep,
+    request: Request,
     expense_id: Annotated[str, Path(title="The ID of the expense")],
-    data: AddMessageDTO,
     jwt: Dict[str, Any] = Depends(jwt_required),
 ):
+    validated_data = parse_body(
+        request=request,
+        model_type=AddMessageDTO,
+    )
+
     expense = session.exec(
         select(Expense).where(Expense.expense_id == expense_id)
     ).first()
@@ -627,7 +656,7 @@ async def add_expense_message(
         add_message(
             thread_id=thread_id,
             sender_id=str(student_id),
-            message_text=str(data.message),
+            message_text=str(validated_data.message),
             create_thread_if_not_exists=True,
             expense_id=expense_id,
         )

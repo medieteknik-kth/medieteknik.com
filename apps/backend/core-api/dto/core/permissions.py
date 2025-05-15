@@ -1,12 +1,12 @@
 import uuid
 from typing import List
 
-from pydantic import BaseModel
+import msgspec
 
 from models.core.permissions import Permissions, Role
 
 
-class StudentPermissionDTO(BaseModel):
+class StudentPermissionDTO(msgspec.Struct):
     """DTO for student permissions"""
 
     student_id: uuid.UUID

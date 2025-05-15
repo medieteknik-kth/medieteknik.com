@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Response
+from fastapi import APIRouter, Depends, HTTPException, Path, Request, Response
 from sqlmodel import select
 
 from config import Settings
@@ -11,6 +11,7 @@ from models.apps.rgbank import ExpenseDomain
 from models.core import StudentMembership
 from routes.api.deps import SessionDep
 from services.apps.rgbank.auth_service import has_full_access
+from utility.parser import parse_body
 
 router = APIRouter(
     prefix=Settings.API_ROUTE_PREFIX + "/rgbank/expense-domains",
@@ -28,13 +29,10 @@ router = APIRouter(
 )
 async def create_expense_domain(
     session: SessionDep,
-    expense_domain: ExpenseDomainDTO,
+    request: Request,
     jwt=Depends(jwt_required),
 ):
-    """
-    Creates a new expense domain
-        :return: Response - The response object, 201 if successful
-    """
+    validated_data = await parse_body(request=request, model_type=ExpenseDomainDTO)
 
     student_id = get_jwt_identity(jwt)
     positions_stmt = select(StudentMembership).where(
@@ -50,9 +48,9 @@ async def create_expense_domain(
         raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail=msg)
 
     new_domain = ExpenseDomain(
-        title=expense_domain.title,
-        parts=expense_domain.parts,
-        committee_id=expense_domain.committee_id,
+        title=validated_data.title,
+        parts=validated_data.parts,
+        committee_id=validated_data.committee_id,
     )
 
     session.add(new_domain)
@@ -72,14 +70,13 @@ async def create_expense_domain(
 )
 async def update_expense_domain(
     session: SessionDep,
+    request: Request,
     expense_domain_id: Annotated[str, Path(title="Expense Domain ID")],
-    new_domain_data: UpdateExpenseDomainDTO,
     jwt=Depends(jwt_required),
 ) -> Response:
-    """
-    Updates an expense domain
-        :return: Response - The response object, 200 if successful
-    """
+    validated_data = await parse_body(
+        request=request, model_type=UpdateExpenseDomainDTO
+    )
 
     student_id = get_jwt_identity(jwt)
     positions_stmt = select(StudentMembership).where(
@@ -103,11 +100,11 @@ async def update_expense_domain(
             detail="Expense domain not found",
         )
 
-    if new_domain_data.title:
-        expense_domain.title = new_domain_data.title
+    if validated_data.title:
+        expense_domain.title = validated_data.title
 
-    if new_domain_data.parts:
-        expense_domain.parts = new_domain_data.parts
+    if validated_data.parts:
+        expense_domain.parts = validated_data.parts
 
     session.commit()
 
