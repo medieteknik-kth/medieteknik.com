@@ -4,26 +4,37 @@ API Endpoint: '/api/v1/tasks'
 """
 
 from http import HTTPStatus
-from flask import Blueprint, make_response, request
-from decorators.google_oidc import verify_google_oidc_token
+
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, logger
+
+from config import Settings
+from decorators.google_oidc import verify_google_audience_token
+from routes.api.deps import SessionDep
 from services.utility.discord import send_discord_message
-from utility.logger import log_error
+
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/tasks",
+    tags=["Committees"],
+)
 
 
-tasks_bp = Blueprint("tasks", __name__)
-
-
-@tasks_bp.route("/schedule-news", methods=["POST"])
-@verify_google_oidc_token("https://api.medieteknik.com")
-def schedule_messages():
+@router.post("/schedule-news")
+def schedule_messages(
+    session: SessionDep,
+    request: Request,
+    _=Depends(verify_google_audience_token(audience="https://api.medieteknik.com")),
+):
     data = request.get_json()
-    success, message = send_discord_message(data)
+    success, message = send_discord_message(session=session, message_data=data)
 
     if not success:
-        log_error(f"Failed to send Discord message: {message}, data: {data}")
-        return {"error": message}, HTTPStatus.INTERNAL_SERVER_ERROR
+        logger.logger.exception("Failed to send message to Discord: %s", message)
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail="Failed to send message to Discord",
+        )
 
-    response = make_response({"message": message})
-    response.status_code = HTTPStatus.OK
-
-    return response
+    return Response(
+        content="Message scheduled successfully",
+        status_code=HTTPStatus.OK,
+    )

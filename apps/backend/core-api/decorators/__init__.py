@@ -11,13 +11,13 @@ Decorators:
 """
 
 from .csrf_protection import csrf_protected
-from .google_oidc import verify_google_oidc_token
+from .google_oidc import verify_google_audience_token
 from .jwt import get_jwt_identity, get_student, jwt_required
 from .nextjs_auth import nextjs_auth_required
 
 __all__ = [
     "csrf_protected",
-    "verify_google_oidc_token",
+    "verify_google_audience_token",
     "jwt_required",
     "get_student",
     "get_jwt_identity",

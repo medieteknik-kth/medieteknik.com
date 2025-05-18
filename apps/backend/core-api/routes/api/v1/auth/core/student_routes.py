@@ -4,24 +4,19 @@ API Endpoint: '/api/v1/students'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request, session
-from flask_jwt_extended import (
-    get_jwt,
-    get_jwt_identity,
-    jwt_required,
-)
 from http import HTTPStatus
 from typing import Any, Dict
+
 from decorators import csrf_protected
 from models.core import Profile, Student
 from services.apps.rgbank.auth_service import get_bank_account
 from services.apps.rgbank.permission_service import attach_permissions
-from services.core import update, retrieve_notifications, subscribe_to_notifications
+from services.core import retrieve_notifications, subscribe_to_notifications, update
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
-from utility import delete_file, upload_file, retrieve_languages, db
+from utility import db, delete_file, retrieve_languages, upload_file
 from utility.constants import DEFAULT_FILTER, POSSIBLE_FILTERS
 from utility.translation import convert_iso_639_1_to_bcp_47
 

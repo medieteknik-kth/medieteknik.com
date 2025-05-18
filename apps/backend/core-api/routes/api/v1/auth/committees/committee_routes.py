@@ -4,207 +4,253 @@ API Endpoint: '/api/v1/committees'
 """
 
 from http import HTTPStatus
-from typing import List
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import jwt_required
-from models.committees import Committee
-from models.core import Author
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Form, HTTPException, Path, Query, Response
+from sqlmodel import select
+
+from config import Settings
+from decorators.jwt import jwt_required
+from dto.committees.committee import CommitteeDataDTO, UpdateCommitteeDTO
+from dto.committees.committee_position import PublicCommitteePositionDTO
+from dto.content.document import DocumentDTO
+from dto.content.event import EventDTO
+from dto.content.news import NewsDTO
 from models.content import Document, Event, News
-from services.committees.committee import update_committee
+from models.core import Author
+from routes.api.deps import SessionDep
 from services.committees.public import (
     get_committee_by_title,
     get_committee_data_by_title,
     get_committee_positions_by_committee_title,
 )
-from utility import retrieve_languages
+from utility.constants import DEFAULT_LANGUAGE_CODE
+from utility.parser import validate_form_to_msgspec
+from utility.translation import convert_iso_639_1_to_bcp_47
 
-committee_bp = Blueprint("committee", __name__)
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/committees",
+    tags=["Committees"],
+)
 
 
-@committee_bp.route("/<string:committee_title>/data", methods=["GET"])
-@jwt_required()
-def get_committees_data_by_title(committee_title: str) -> Response:
-    """
-    Retrieves the committee data by title
-        :param committee_title: str - The title of the committee
-        :return: Response - The response object, 404 if the committee is not found, 200 if successful
-    """
-
-    provided_languages = retrieve_languages(request.args)
+@router.get("/{committee_title}/data", response_model=CommitteeDataDTO)
+def get_committees_data_by_title(
+    session: SessionDep,
+    committee_title: Annotated[str, Path(title="Committee Title")],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(jwt_required),
+):
     result = get_committee_data_by_title(
+        session=session,
         title=committee_title,
-        provided_languages=provided_languages,
-        is_public_route=False,
     )
+
     if result is None:
-        return jsonify({}), HTTPStatus.NOT_FOUND
-    return jsonify(result), HTTPStatus.OK
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"Committee with title '{committee_title}' not found",
+        )
+
+    return CommitteeDataDTO.from_orm_with_language(
+        obj=result,
+        language_code=convert_iso_639_1_to_bcp_47(language),
+    )
 
 
-@committee_bp.route("/<string:committee_title>/news", methods=["GET"])
-@jwt_required()
-def get_committee_news_by_title(committee_title: str) -> Response:
+@router.get(
+    "/{committee_title}/news",
+)
+def get_committee_news_by_title(
+    session: SessionDep,
+    committee_title: Annotated[str, Path(title="Committee Title")],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(jwt_required),
+):
     """
     Retrieves the paginated news items for a committee by title
         :param committee_title: str - The title of the committee
         :return: Response - The response object, 200 if successful
     """
 
-    provided_languages = retrieve_languages(request.args)
-    committee: Committee | None = get_committee_by_title(title=committee_title)
+    committee = get_committee_by_title(
+        session=session,
+        title=committee_title,
+    )
 
     if not committee:
-        return jsonify([])
+        raise None
 
-    news = (
-        News.query.join(Author, News.author_id == Author.author_id)
-        .filter_by(committee_id=committee.committee_id)
+    news = session.exec(
+        select(News)
+        .join(Author, News.author_id == Author.author_id)
+        .where(Author.committee_id == committee.committee_id)
         .order_by(News.created_at.desc())
-        .paginate()
-    )
+    ).all()
 
-    items: List[News] = news.items
-    items_dict = [
-        item_dict
-        for item in items
-        if (
-            item_dict := item.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
+    return [
+        NewsDTO.from_orm_with_language(
+            obj=news_item,
+            language_code=convert_iso_639_1_to_bcp_47(language),
         )
-        is not None
+        for news_item in news
     ]
 
-    return jsonify(
-        {
-            "items": items_dict,
-            "page": news.page,
-            "per_page": news.per_page,
-            "total_pages": news.pages,
-            "total_items": news.total,
-        }
-    ), HTTPStatus.OK
 
-
-@committee_bp.route("/<string:committee_title>/events", methods=["GET"])
-@jwt_required()
-def get_committee_events_by_title(committee_title: str) -> Response:
-    """
-    Retrieves the paginated event items for a committee by title
-        :param committee_title: str - The title of the committee
-        :return: Response - The response object, 200 if successful
-    """
-
-    provided_languages = retrieve_languages(request.args)
-    committee: Committee | None = get_committee_by_title(title=committee_title)
+@router.get(
+    "/{committee_title}/events",
+)
+def get_committee_events_by_title(
+    session: SessionDep,
+    committee_title: Annotated[str, Path(title="Committee Title")],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(jwt_required),
+):
+    committee = get_committee_by_title(session=session, title=committee_title)
 
     if not committee:
-        return jsonify([])
+        return None
 
-    events = (
-        Event.query.join(Author, Event.author_id == Author.author_id)
-        .filter_by(committee_id=committee.committee_id)
+    events = session.exec(
+        select(Event)
+        .join(Author, Event.author_id == Author.author_id)
+        .where(Author.committee_id == committee.committee_id)
         .order_by(Event.created_at.desc())
-        .paginate()
-    )
+    ).all()
 
-    items = events.items
-    items_dict = [
-        item_dict
-        for item in items
-        if (
-            item_dict := item.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
+    return [
+        EventDTO.from_orm_with_language(
+            obj=event,
+            language_code=convert_iso_639_1_to_bcp_47(language),
         )
-        is not None
+        for event in events
     ]
 
-    return jsonify(
-        {
-            "items": items_dict,
-            "page": events.page,
-            "per_page": events.per_page,
-            "total_pages": events.pages,
-            "total_items": events.total,
-        }
-    ), HTTPStatus.OK
 
-
-@committee_bp.route("/<string:committee_title>/documents", methods=["GET"])
-@jwt_required()
-def get_committee_documents_by_title(committee_title: str) -> Response:
+@router.get(
+    "/{committee_title}/documents",
+)
+def get_committee_documents_by_title(
+    session: SessionDep,
+    committee_title: Annotated[str, Path(title="Committee Title")],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(jwt_required),
+):
     """
     Retrieves the paginated document items for a committee by title
         :param committee_title: str - The title of the committee
         :return: Response - The response object, 200 if successful
     """
 
-    provided_languages = retrieve_languages(request.args)
-    committee: Committee | None = get_committee_by_title(title=committee_title)
+    committee = get_committee_by_title(title=committee_title)
 
     if not committee:
-        return jsonify([])
+        return None
 
-    documents = (
-        Document.query.join(Author, Document.author_id == Author.author_id)
-        .filter_by(committee_id=committee.committee_id)
+    documents = session.exec(
+        select(Document)
+        .join(Author, Document.author_id == Author.author_id)
+        .where(Author.committee_id == committee.committee_id)
         .order_by(Document.created_at.desc())
-        .paginate()
-    )
+    ).all()
 
-    items = documents.items
-    items_dict = [
-        item_dict
-        for item in items
-        if (
-            item_dict := item.to_dict(
-                provided_languages=provided_languages, is_public_route=False
-            )
+    return [
+        DocumentDTO.from_orm_with_language(
+            obj=document,
+            language_code=convert_iso_639_1_to_bcp_47(language),
         )
-        is not None
+        for document in documents
     ]
 
-    return jsonify(
-        {
-            "items": items_dict,
-            "page": documents.page,
-            "per_page": documents.per_page,
-            "total_pages": documents.pages,
-            "total_items": documents.total,
-        }
-    ), HTTPStatus.OK
 
-
-@committee_bp.route("/<string:committee_title>/positions", methods=["GET"])
-@jwt_required()
-def get_committee_positions_by_title(committee_title: str) -> Response:
+@router.get(
+    "/{committee_title}/positions",
+)
+def get_committee_positions_by_title(
+    session: SessionDep,
+    committee_title: Annotated[str, Path(title="Committee Title")],
+    language: Annotated[str, Query(title="Language")] = DEFAULT_LANGUAGE_CODE,
+    _=Depends(jwt_required),
+):
     """
     Retrieves the committee positions by title
         :param committee_title: str - The title of the committee
         :return: Response - The response object, 404 if the committee is not found, 200 if successful
     """
 
-    result = get_committee_positions_by_committee_title(committee_title)
+    result = get_committee_positions_by_committee_title(
+        session=session, committee_title=committee_title
+    )
+
     if not result:
-        return jsonify({}), HTTPStatus.NOT_FOUND
-    return jsonify(result), HTTPStatus.OK
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"Committee with title '{committee_title}' not found",
+        )
+
+    return PublicCommitteePositionDTO.from_orm_with_language(
+        obj=result,
+        language_code=convert_iso_639_1_to_bcp_47(language),
+    )
 
 
-@committee_bp.route("/<string:committee_title>", methods=["PUT"])
-@jwt_required()
-def update_committee_by_title(committee_title: str) -> Response:
+@router.put(
+    "/{committee_title}",
+)
+def update_committee_by_title(
+    session: SessionDep,
+    committee_title: Annotated[str, Path(title="Committee Title")],
+    translations: Annotated[list[str], Form()],
+    logo_url: Annotated[str, Form()],
+    group_photo_url: Annotated[str, Form()],
+    _=Depends(jwt_required),
+):
     """
     Updates the committee by title
         :param committee_title: str - The title of the committee
         :return: Response - The response object, 200 if successful
     """
+    form_data = {
+        "translations": translations,
+        "logo_url": logo_url,
+        "group_photo_url": group_photo_url,
+    }
 
-    languages = retrieve_languages(request.args)
-    return jsonify(
-        update_committee(
-            request=request,
-            committee_title=committee_title,
-            provided_languages=languages,
+    validated_data = validate_form_to_msgspec(
+        form_data=form_data,
+        model_type=UpdateCommitteeDTO,
+    )
+
+    committee = get_committee_by_title(
+        session=session,
+        title=committee_title,
+    )
+
+    if not committee:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"Committee with title '{committee_title}' not found",
         )
-    ), HTTPStatus.OK
+
+    committee.logo_url = validated_data.logo_url
+    committee.group_photo_url = validated_data.group_photo_url
+
+    for translation in validated_data.translations:
+        existing_translation = next(
+            (
+                t
+                for t in committee.translations
+                if t.language_code == translation.language_code
+            ),
+            None,
+        )
+        if existing_translation:
+            existing_translation.title = translation.title
+            existing_translation.description = translation.description
+        else:
+            committee.translations.append(translation)
+    session.add(committee)
+    session.commit()
+    session.refresh(committee)
+
+    return Response(status_code=HTTPStatus.OK)

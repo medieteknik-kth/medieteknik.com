@@ -5,14 +5,12 @@ API Endpoint: '/api/v1/events'
 
 import json
 import uuid
-from flask import Blueprint, Response, request, jsonify
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import Any, Dict, List
-from sqlalchemy.exc import SQLAlchemyError
+
 from models.committees import Committee, CommitteePosition
 from models.content import Event, RepeatableEvent
-from models.core import Student, StudentMembership, Author
+from models.core import Author, Student, StudentMembership
 from services.content import (
     create_item,
     delete_item,
@@ -21,7 +19,6 @@ from services.content.public import get_main_calendar
 from services.core.notifications import add_notification
 from utility.database import db
 from utility.logger import log_error
-
 
 events_bp = Blueprint("events", __name__)
 

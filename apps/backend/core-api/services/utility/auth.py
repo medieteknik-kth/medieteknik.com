@@ -1,11 +1,13 @@
 from typing import Any, Dict, List, Tuple
+
+from sqlmodel import select
+
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.author import Author, AuthorResource
 from models.core.permissions import Permissions, Role, StudentPermission
 from models.core.student import Student, StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
-from sqlalchemy import select
 from utility.database import db
 
 

@@ -4,22 +4,21 @@ API Endpoint: '/api/v1/documents'
 """
 
 from datetime import date
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import List
+
+
 from models.committees import Committee, CommitteePosition
 from models.content import Document, DocumentTranslation
-from models.core import Student, StudentMembership, Author
+from models.core import Author, Student, StudentMembership
 from services.content import create_item
 from utility import (
     AVAILABLE_LANGUAGES,
-    upload_file,
-    delete_file,
     convert_iso_639_1_to_bcp_47,
     db,
+    delete_file,
+    upload_file,
 )
-
 
 documents_bp = Blueprint("documents", __name__)
 

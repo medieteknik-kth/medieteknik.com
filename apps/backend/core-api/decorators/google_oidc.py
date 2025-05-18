@@ -1,51 +1,51 @@
 from http import HTTPStatus
 from os import environ
-from flask import request, jsonify
-from google.oauth2 import id_token
+
+from fastapi import HTTPException, Request
 from google.auth.transport import requests
-from functools import wraps
-from utility.logger import log_error
+from google.oauth2 import id_token
 
 
-def verify_google_oidc_token(audience):
-    """
-    Decorator to verify the Google OIDC token.
-    :param audience: str - The audience of the token, the service account email.
-    :return: function - The decorated function.
-    """
+def verify_google_audience_token(audience: str):
+    def verify_google_oidc_token(request: Request):
+        """
+        Verify Google OIDC token for authentication.
 
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            auth_header = request.headers.get("Authorization")
+        Args:
+            request (Request): The FastAPI request object.
+            audience (str): The audience for the token.
+        Raises:
+            HTTPException: If the token is invalid or missing.
 
-            if not auth_header or not auth_header.startswith("Bearer "):
-                return jsonify(
-                    {"error": "Unauthorized, missing token"}
-                ), HTTPStatus.UNAUTHORIZED
+        """
 
-            token = auth_header.split(" ")[1]
+        auth_header = request.headers.get("Authorization")
 
-            try:
-                # Verify the token
-                request_adapter = requests.Request()
-                decoded_token = id_token.verify_token(
-                    id_token=token, request=request_adapter, audience=audience
+        if not auth_header or not auth_header.startswith("Bearer "):
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail="Unauthorized, missing token",
+            )
+
+        token = auth_header.split(" ")[1]
+
+        try:
+            # Verify the token
+            request_adapter = requests.Request()
+            decoded_token = id_token.verify_token(
+                id_token=token, request=request_adapter, audience=audience
+            )
+
+            if decoded_token.get("email") != environ.get("GOOGLE_SERVICE_ACCOUNT"):
+                raise HTTPException(
+                    status_code=HTTPStatus.FORBIDDEN,
+                    detail="Invalid service account!",
                 )
 
-                if decoded_token.get("email") != environ.get("GOOGLE_SERVICE_ACCOUNT"):
-                    return jsonify(
-                        {"error": "Invalid service account!"}
-                    ), HTTPStatus.FORBIDDEN
+        except Exception:
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail="Unauthorized, invalid token",
+            )
 
-            except Exception as e:
-                log_error(f"Error verifying token: {e}")
-                return jsonify(
-                    {"error": "Unauthorized, invalid token"}
-                ), HTTPStatus.UNAUTHORIZED
-
-            return f(*args, **kwargs)
-
-        return decorated_function
-
-    return decorator
+    return verify_google_oidc_token

@@ -2,11 +2,11 @@
 A Utility module for handling translations and everything language related
 """
 
-import unicodedata
-from typing import Any, Type, Optional, List, Dict
-from flask_sqlalchemy import SQLAlchemy
+from typing import Any, Dict, List, Optional, Type
+
 from sqlalchemy.orm import Query
 from werkzeug.datastructures import MultiDict
+
 from utility import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
 
 
@@ -119,50 +119,3 @@ def get_translation(
         translation = query.first()
 
     return translation
-
-
-def update_translation_or_create(
-    db: SQLAlchemy,
-    translation_table: Type[object],
-    entries: Dict[str, str],
-) -> None:
-    """
-    Updates a translation entry or creates a new one if it does not exist
-
-    :param db: The SQLAlchemy database object
-    :type db: SQLAlchemy
-    :param translation_table: The translation table to query
-    :type translation_table: Type[object]
-    :param entries: The entries to update or create
-    :type entries: Dict[str, str]
-    """
-
-    language_code = entries.get("language_code")
-    translation_entry = (
-        db.session.query(translation_table)
-        .filter_by(language_code=language_code)
-        .first()
-    )
-
-    if translation_entry:
-        for column, value in entries.items():
-            setattr(translation_entry, column, value)
-    else:
-        translation_entry = translation_table(**entries)
-        db.session.add(translation_entry)
-
-    db.session.commit()
-
-
-def normalize_to_ascii(text: str) -> str:
-    """
-    Normalizes a text to ASCII characters, removing diacritics and accents (e.g., é -> e)
-
-    :param text: The text to normalize
-    :type text: str
-    :return: The normalized text
-    :rtype: str
-    """
-
-    normalized = unicodedata.normalize("NFKD", text)
-    return "".join(c for c in normalized if not unicodedata.combining(c))

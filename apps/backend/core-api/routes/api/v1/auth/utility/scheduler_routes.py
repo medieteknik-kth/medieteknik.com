@@ -279,7 +279,7 @@ def dev_check_upcoming_events():
     """
     Development endpoint for checking upcoming events.
     """
-    if not os.environ.get("FLASK_ENV") == "development":
+    if not os.environ.get("ENV") == "development":
         return {
             "error": "This endpoint is only available in development mode."
         }, HTTPStatus.FORBIDDEN

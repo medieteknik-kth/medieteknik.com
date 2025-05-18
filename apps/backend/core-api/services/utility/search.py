@@ -6,8 +6,11 @@ import json
 from datetime import datetime
 from typing import List
 from uuid import UUID
+
+from fastapi import logger
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
+
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.content.album import Album
@@ -16,7 +19,6 @@ from models.content.document import Document
 from models.content.media import Media
 from models.content.news import News
 from utility.cache import set_cache
-from utility.logger import log_error
 
 
 def update_search_cache(language: str) -> str | None:
@@ -33,7 +35,11 @@ def update_search_cache(language: str) -> str | None:
             ),
         )
     except Exception:
-        log_error("Failed to update search cache", language=language)
+        logger.logger.exception(
+            "Failed to update search cache for language %s: %s",
+            language,
+            data,
+        )
         return None
 
     return data

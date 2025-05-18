@@ -5,22 +5,36 @@ API Endpoint: '/api/v1/public/calendar'
 
 import datetime
 from http import HTTPStatus
-from flask import Blueprint, jsonify, make_response, request
+
+from fastapi import APIRouter
+from flask import Blueprint, jsonify, make_response
+
+from config import Settings
 from services.content.public import get_events_monthly
 from utility import retrieve_languages
 
 public_calendar_bp = Blueprint("public_calendar", __name__)
 
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/public/calendar",
+    tags=["Public", "Calendar"],
+    responses={404: {"description": "Not found"}},
+)
 
-@public_calendar_bp.route("/events", methods=["GET"])
-def get_events():
+
+@router.get(
+    "/events",
+)
+def get_events(
+    date: str | None = None,
+    language: str | None = None,
+):
     """
     Retrieves all events
         :return: Response - The response object, 200 if successful
     """
 
-    date = request.args.get("date")
-    provided_languages = retrieve_languages(request.args)
+    provided_languages = retrieve_languages(language)
 
     if not date:
         date = datetime.datetime.now().strftime("%Y-%m")

@@ -1,6 +1,8 @@
-import os
-import requests
 import json
+
+import requests
+
+from config import Settings
 from models.apps.rgbank import Expense, Invoice
 
 
@@ -8,8 +10,8 @@ def send_expense_message(
     expense_item: Expense | Invoice,
     subject: str = "Expense",
 ):
-    api_key = os.getenv("MAILGUN_API_KEY")
-    email = os.getenv("MAILGUN_EMAIL")
+    api_key = Settings.MAILGUN_API_KEY
+    email = Settings.MAILGUN_EMAIL
 
     if not api_key:
         raise ValueError("MAILGUN_API_KEY is not set in the environment variables.")

@@ -2,25 +2,32 @@
 Discord Service
 """
 
-import requests
 from datetime import datetime
 from http import HTTPStatus
-from os import environ
 from typing import Any, Dict, Tuple
+
+import requests
+from sqlmodel import Session
+
+from config import Settings
 from models.utility.discord import DiscordMessages
 from services.utility.messages import TopicType
-from utility import db, log_error
+from utility import log_error
 
 
-def send_discord_message(message_data: Dict[str, Any]) -> Tuple[bool, str]:
-    """Handles the Discord message data and sends the message to the Discord webhook.
-
-    :param message_data: The message data.
-    :type message_data: Dict[str, Any]
-    :return: The success status and the message.
-    :rtype: Tuple[bool, str]
+def send_discord_message(
+    session: Session, message_data: Dict[str, Any]
+) -> Tuple[bool, str]:
     """
-    webhook_url = environ.get("DISCORD_WEBHOOK_URL")
+    Sends a Discord message based on the message data.
+
+    Args:
+        message_data (Dict[str, Any]): The message data containing the message type and data.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
+    """
+    webhook_url = Settings.DISCORD_WEBHOOK_URL
 
     if not webhook_url:
         return False, "No Discord webhook URL found!"
@@ -33,13 +40,17 @@ def send_discord_message(message_data: Dict[str, Any]) -> Tuple[bool, str]:
 
     match message_type:
         case TopicType.NEWS.name:
-            return send_discord_news(webhook_url, data)
+            return send_discord_news(
+                session=session, webhook_url=webhook_url, data=data
+            )
 
         case TopicType.EVENT.name:
-            return send_discord_event(webhook_url, data)
+            return send_discord_event(
+                session=session, webhook_url=webhook_url, data=data
+            )
 
         case TopicType.UPDATE.name:
-            return send_discord_update(webhook_url, data)
+            return send_discord_update(webhook_url=webhook_url, data=data)
 
         case _:
             return False, "Invalid message type!"
@@ -47,15 +58,18 @@ def send_discord_message(message_data: Dict[str, Any]) -> Tuple[bool, str]:
     return False, "Unknown error!"
 
 
-def send_discord_news(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, str]:
-    """Sends a Discord message for a news article.
+def send_discord_news(
+    session: Session, webhook_url: str, data: Dict[str, Any]
+) -> Tuple[bool, str]:
+    """
+    Sends a Discord message for news.
 
-    :param webhook_url: The Discord webhook URL.
-    :type webhook_url: str
-    :param data: The data.
-    :type data: Dict[str, Any]
-    :return: The success status and the message.
-    :rtype: Tuple[bool, str]
+    Args:
+        webhook_url (str): The Discord webhook URL.
+        data (Dict[str, Any]): The data containing the news information.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
     message = {
         "content": f"<@&1348359211846733876> {data.get('url')}",
@@ -76,35 +90,31 @@ def send_discord_news(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, str
         if not message_id:
             return False, "Failed to get message ID!"
 
-        db.session.add(
+        session.add(
             DiscordMessages(message_id=str(message_id), news_id=data["news_id"])
         )
-        db.session.commit()
+        session.commit()
     except Exception as e:
         return False, f"Error: {e}"
 
     return True, "Discord message sent!"
 
 
-def send_discord_event(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, str]:
-    """Sends a Discord message for an event.
+def send_discord_event(
+    session: Session, webhook_url: str, data: Dict[str, Any]
+) -> Tuple[bool, str]:
+    """
+    Sends a Discord message for an event.
 
-    :param webhook_url: The Discord webhook URL.
-    :type webhook_url: str
-    :param data: The data.
-    :type data: Dict[str, Any]
-    :return: The success status and the message.
-    :rtype: Tuple[bool, str]
+    Args:
+        webhook_url (str): The Discord webhook URL.
+        data (Dict[str, Any]): The data containing the event information.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
 
     def format_date(date_str: str) -> str:
-        """Formats the date string to a Discord timestamp.
-
-        :param date_str: The date string.
-        :type date_str: str
-        :return: The formatted date string.
-        :rtype: str
-        """
         date = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
         return f"<t:{int(date.timestamp())}:F>"
 
@@ -160,10 +170,10 @@ def send_discord_event(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, st
         if not message_id:
             return False, "Failed to get message ID!"
 
-        db.session.add(
+        session.add(
             DiscordMessages(message_id=str(message_id), event_id=data["event_id"])
         )
-        db.session.commit()
+        session.commit()
 
     except Exception as e:
         return False, f"Error: {e}"
@@ -172,14 +182,15 @@ def send_discord_event(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, st
 
 
 def send_discord_update(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, str]:
-    """Sends a Discord message for an update, will rarely be used, to send updates you should do it manually.
+    """
+    Sends a Discord message for an update, will rarely be used.
 
-    :param webhook_url: The Discord webhook URL.
-    :type webhook_url: str
-    :param data: The data.
-    :type data: Dict[str, Any]
-    :return: The success status and the message.
-    :rtype: Tuple[bool, str]
+    Args:
+        webhook_url (str): The Discord webhook URL.
+        data (Dict[str, Any]): The data containing the update information.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
     message = {
         "content": f"**[Medieteknik](https://www.medieteknik.com/)** | v{data['title']}",
@@ -220,14 +231,16 @@ def send_discord_update(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, s
 
 
 def delete_discord_message(message_id: str) -> Tuple[bool, str]:
-    """Deletes a Discord message.
-
-    :param message_id: The message ID.
-    :type message_id: str
-    :return: The success status and the message.
-    :rtype: Tuple[bool, str]
     """
-    webhook_url = environ.get("DISCORD_WEBHOOK_URL")
+    Deletes a Discord message.
+
+    Args:
+        message_id (str): The ID of the message to delete.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
+    """
+    webhook_url = Settings.DISCORD_WEBHOOK_URL
     try:
         response = requests.delete(f"{webhook_url}/messages/{message_id}")
 

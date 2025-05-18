@@ -4,13 +4,12 @@ API Endpoint: '/api/v1/news'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, make_response, request
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
 from typing import Any, Dict, List
+
 from models.committees import Committee, CommitteePosition
 from models.content import News, NewsTranslation
-from models.core import Student, Author, AuthorType
+from models.core import Author, AuthorType, Student
 from models.core.student import StudentMembership
 from services.content import (
     create_item,
@@ -21,18 +20,15 @@ from services.content import (
     update_item,
 )
 from services.core import get_author_from_email
-from services.utility import send_notification_topic, TopicType
+from services.utility import TopicType, send_notification_topic
 from services.utility.tasks import schedule_news
 from utility import (
     AVAILABLE_LANGUAGES,
-    upload_file,
     retrieve_languages,
+    upload_file,
 )
 from utility.database import db
-from sqlalchemy.sql import exists, select
-
 from utility.logger import log_error
-
 
 news_bp = Blueprint("news", __name__)
 

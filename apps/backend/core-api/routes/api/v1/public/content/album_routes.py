@@ -4,42 +4,60 @@ API Endpoint: '/api/v1/public/albums'
 """
 
 from http import HTTPStatus
-from flask import Blueprint, Response, jsonify, request
+from typing import Annotated
+
+from fastapi import APIRouter, Query
+from flask import Response, jsonify, request
+from sqlmodel import or_, select
+
+from config import Settings
 from models.content import Album, AlbumTranslation
+from routes.api.deps import SessionDep
 from utility import retrieve_languages
 
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "public/albums",
+    tags=["Public", "Album"],
+    responses={404: {"description": "Not found"}},
+)
 
-public_album_bp = Blueprint("public_album", __name__)
 
-
-@public_album_bp.route("", methods=["GET"])
-def get_albums() -> Response:
+@router.get("/")
+async def get_albums(
+    session: SessionDep,
+    language: str | None = None,
+    query: str | None = None,
+    page: Annotated[int, Query(ge=1)] = 1,
+    limit: Annotated[int, Query(le=100)] = 100,
+) -> Response:
     """
     Retrieves all albums
         :return: Response - The response object, 200 if successful
     """
 
-    provided_languages = retrieve_languages(args=request.args)
-    search_query = request.args.get("q", type=str, default=None)
+    provided_languages = retrieve_languages(language)
 
-    paginated_albums = None
+    paginated_albums_stmt = select(Album)
+    total_albums_stmt = select(Album)
+    paginated_albums = session.exec(total_albums_stmt).all()
 
-    if search_query:
-        album_translations = AlbumTranslation.query.filter(
-            AlbumTranslation.title.ilike(f"%{search_query}%")
-            | AlbumTranslation.description.ilike(f"%{search_query}%")
-        ).paginate(max_per_page=10)
-        paginated_albums = Album.query.filter(
-            Album.album_id.in_(
-                [
-                    album_translation.album_id
-                    for album_translation in album_translations.items
-                ]
+    if query:
+        paginated_albums_stmt = paginated_albums_stmt.where(
+            or_(
+                Album.album_id == query,
+                Album.album_translations.any(
+                    AlbumTranslation.title.ilike(f"%{query}%")
+                ),
             )
-        ).paginate(max_per_page=10)
-    else:
-        paginated_albums = Album.query.paginate(max_per_page=10)
-    albums = paginated_albums.items
+        )
+
+    paginated_albums_stmt = (
+        paginated_albums_stmt.order_by(Album.created_at.desc())
+        .offset(page * limit)
+        .limit(limit)
+    )
+
+    albums = session.exec(paginated_albums_stmt).all()
 
     album_dicts = [
         album_dict
@@ -51,7 +69,7 @@ def get_albums() -> Response:
     return jsonify(
         {
             "items": album_dicts,
-            "page": paginated_albums.page,
+            "page": page,
             "per_page": paginated_albums.per_page,
             "total_pages": paginated_albums.pages,
             "total_items": paginated_albums.total,

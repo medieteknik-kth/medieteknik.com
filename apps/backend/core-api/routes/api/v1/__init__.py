@@ -4,51 +4,47 @@ v1 API Routes.
 All routes are registered here via the `register_routes` function.
 """
 
-import json
 import os
 import secrets
-from typing import Any
 import urllib
-from http import HTTPStatus
 from datetime import datetime, timedelta, timezone
-from flask import Flask, Response, jsonify, make_response, request, session, url_for
-from flask_jwt_extended import (
-    create_access_token,
-    get_jwt,
-    get_jwt_identity,
-    jwt_required,
-    set_access_cookies,
-    unset_jwt_cookies,
-)
-from sqlalchemy import text
+from http import HTTPStatus
+from typing import Annotated, Any, Dict
+
+import msgspec
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response, logger
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from sqlmodel import select, text
+
+from config import Settings
 from decorators.csrf_protection import csrf_protected
+from decorators.jwt import get_jwt_identity, jwt_required
+from dto.core.student import LoginDTO
+from errors.InvalidJWTToken import InvalidJWTTokenException
 from models.core.student import Student
 from models.utility.auth import RevokedTokens
-from services.apps.rgbank.auth_service import get_bank_account
+from routes.api.deps import SessionDep
 from services.apps.rgbank.permission_service import attach_permissions
 from services.core.student import login
 from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
-from sqlalchemy.exc import SQLAlchemyError
+from utility.authorization import oauth
 from utility.constants import (
-    API_VERSION,
     DEFAULT_FILTER,
+    DEFAULT_LANGUAGE_CODE,
     POSSIBLE_FILTERS,
     PROTECTED_PATH,
     PUBLIC_PATH,
     ROUTES,
 )
-from flask_wtf.csrf import generate_csrf
-from utility.authorization import oauth
-from utility.database import db
-from utility.logger import log_error
-from utility.translation import retrieve_languages
-from utility.authorization import jwt
+from utility.jwt import create_jwt, decode_jwt, revoke_jwt
 
 
-def register_v1_routes(app: Flask):
+def register_v1_routes(app: FastAPI):
     """
     Register all routes for the backend.
 
@@ -56,44 +52,33 @@ def register_v1_routes(app: Flask):
         app (Flask): The Flask app.
     """
     # Public Routes
-    from .public import (
-        public_committee_bp,
-        public_committee_category_bp,
-        public_committee_position_bp,
-        public_calendar_bp,
-        public_bp,
-        public_album_bp,
-        public_news_bp,
-        public_media_bp,
-        public_documents_bp,
-        public_student_bp,
-    )
 
     # Protected Routes
     from .auth import (
-        committee_bp,
-        committee_position_bp,
-        news_bp,
-        events_bp,
-        documents_bp,
-        media_bp,
         album_bp,
         calendar_bp,
-        student_bp,
-        scheduler_bp,
+        committee_bp,
+        committee_position_bp,
+        documents_bp,
+        events_bp,
+        media_bp,
         message_bp,
+        news_bp,
+        scheduler_bp,
+        student_bp,
         tasks_bp,
     )
-
-    from ..apps.rgbank import (
-        account_bp,
-        expense_domain_bp,
-        public_expense_domain_bp,
-        expense_bp,
-        invoice_bp,
-        rgbank_permissions_bp,
-        statistics_bp,
-        public_statistics_bp,
+    from .public import (
+        public_album_bp,
+        public_bp,
+        public_calendar_bp,
+        public_committee_bp,
+        public_committee_category_bp,
+        public_committee_position_bp,
+        public_documents_bp,
+        public_media_bp,
+        public_news_bp,
+        public_student_bp,
     )
 
     # Public Routes
@@ -165,37 +150,41 @@ def register_v1_routes(app: Flask):
 
     # RGBank Routes
     def register_rgbank_routes():
-        """ "Register all routes for the RGBank app."""
-        app.register_blueprint(
-            account_bp, url_prefix=f"{PROTECTED_PATH}/rgbank/account"
+        """Register all routes with the rgbank prefix"""
+        from ..apps.rgbank import (
+            account_router,
+            expense_domain_router,
+            expense_router,
+            invoice_router,
+            public_expense_domain_router,
+            public_statistics_router,
+            rgbank_permissions_router,
+            statistics_router,
         )
-        app.register_blueprint(
-            expense_domain_bp,
-            url_prefix=f"{PROTECTED_PATH}/rgbank/expense-domains",
+
+        app.include_router(
+            router=account_router,
         )
-        app.register_blueprint(
-            public_expense_domain_bp,
-            url_prefix=f"{PUBLIC_PATH}/rgbank/expense-domains",
+        app.include_router(
+            router=expense_domain_router,
         )
-        app.register_blueprint(
-            expense_bp,
-            url_prefix=f"{PROTECTED_PATH}/rgbank/expenses",
+        app.include_router(
+            router=expense_router,
         )
-        app.register_blueprint(
-            invoice_bp,
-            url_prefix=f"{PROTECTED_PATH}/rgbank/invoices",
+        app.include_router(
+            router=invoice_router,
         )
-        app.register_blueprint(
-            rgbank_permissions_bp,
-            url_prefix=f"{PROTECTED_PATH}/rgbank/permissions",
+        app.include_router(
+            router=rgbank_permissions_router,
         )
-        app.register_blueprint(
-            statistics_bp,
-            url_prefix=f"{PROTECTED_PATH}/rgbank/statistics",
+        app.include_router(
+            router=public_expense_domain_router,
         )
-        app.register_blueprint(
-            public_statistics_bp,
-            url_prefix=f"{PUBLIC_PATH}/rgbank/statistics",
+        app.include_router(
+            router=public_statistics_router,
+        )
+        app.include_router(
+            router=statistics_router,
         )
 
     # Register all routes
@@ -203,8 +192,9 @@ def register_v1_routes(app: Flask):
     register_protected_routes()
     register_rgbank_routes()
 
-    @app.after_request
-    def add_headers(response: Response):
+    @app.middleware("http")
+    async def add_headers(request: Request):
+        response: Response = Response()
         response.headers["Content-Security-Policy"] = (
             "default-src none; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'none';"
         )
@@ -224,18 +214,28 @@ def register_v1_routes(app: Flask):
                 "private, no-store, no-cache, must-revalidate"
             )
 
-        if os.environ.get("FLASK_ENV") != "development":
+        if os.environ.get("ENV") != "development":
             response.headers["Strict-Transport-Security"] = (
                 "max-age=3600; includeSubDomains;"
             )
         return response
 
-    @app.after_request
-    def refresh_jwt(response: Response):
+    @app.middleware("http")
+    async def refresh_jwt(session: SessionDep, request: Request, call_next):
+        response: Response = await call_next(request)
+        jwt_token = request.cookies.get(Settings.JWT_COOKIE_NAME)
+
+        if not jwt_token:
+            return response
+
         try:
-            exp_timestamp = get_jwt()["exp"]
+            jwt = decode_jwt(
+                token=jwt_token,
+                session=session,
+            )
+            exp_timestamp = jwt["exp"]
             now = datetime.now(timezone.utc)
-            remember = session.get("remember", False)
+            remember = request.session.get("remember", False)
 
             target_timestamp = (
                 datetime.timestamp(now + timedelta(minutes=30))
@@ -244,51 +244,47 @@ def register_v1_routes(app: Flask):
             )
             # If the token is about to expire, refresh it
             if target_timestamp > exp_timestamp:
-                student_id = get_jwt_identity()
-                filter = session.get("filter", DEFAULT_FILTER)
+                student_id = get_jwt_identity(jwt)
+                filter = request.session.get("filter", DEFAULT_FILTER)
 
-                student: Student | None = Student.query.filter_by(
-                    student_id=student_id
+                student = session.exec(
+                    select(Student).where(Student.student_id == student_id)
                 ).one_or_none()
 
-                if not student or not isinstance(student, Student):
-                    return jsonify({"error": "Invalid credentials"}), 401
-
-                permissions, role = get_student_authorization(student)
-                committees, committee_positions = get_student_committee_details(
-                    student=student
-                )
+                if not student:
+                    raise HTTPException(
+                        status_code=HTTPStatus.UNAUTHORIZED,
+                        detail="Invalid student",
+                    )
                 expiration = timedelta(hours=1) if not remember else timedelta(days=14)
-                exp_unix = int((datetime.now() + expiration).timestamp())
+                _, committee_positions = get_student_committee_details(student=student)
 
-                response_dict = {
-                    "student": student.to_dict(is_public_route=False),
-                    "permissions": permissions,
-                    "role": role,
-                    "committees": committees,
-                    "committee_positions": committee_positions,
-                    "expiration": exp_unix,
-                }
+                response_dict = {}
 
                 if filter == "rgbank":
                     attach_permissions(
                         committee_positions=committee_positions,
                         response_dict=response_dict,
                     )
-                    response_dict["rgbank_bank_account"] = get_bank_account(
-                        student_id=student.student_id
-                    )
 
-                response = jsonify(response_dict)
-
-                access_token = create_access_token(
-                    identity=student,
-                    fresh=False,
+                jwt_token = create_jwt(
+                    subject=student.student_id,
                     expires_delta=expiration,
-                    additional_claims=response_dict["rgbank_permissions"],
+                    additional_claims=response_dict["rgbank_permissions"]
+                    if filter == "rgbank"
+                    else None,
                 )
-                set_access_cookies(
-                    response, access_token, max_age=expiration.total_seconds()
+
+                response.set_cookie(
+                    key=Settings.JWT_COOKIE_NAME,
+                    domain=Settings.JWT_COOKIE_DOMAIN,
+                    httponly=True,
+                    secure=Settings.JWT_COOKIE_SECURE,
+                    expires=timedelta(hours=1) if not remember else timedelta(days=14),
+                    samesite="strict",
+                    path="/",
+                    value=jwt_token,
+                    max_age=expiration.total_seconds(),
                 )
 
         except (RuntimeError, KeyError):
@@ -297,179 +293,243 @@ def register_v1_routes(app: Flask):
 
         return response
 
-    @jwt.invalid_token_loader
-    def invalid_token_callback(error: str) -> Response:
+    @app.exception_handler(InvalidJWTTokenException)
+    async def invalid_token_callback(
+        request: Request, exc: InvalidJWTTokenException
+    ) -> Response:
         """
         Callback for invalid token.
         """
-        response = make_response({"error": f"Invalid token: {error}"})
-        unset_jwt_cookies(response)
+        response = JSONResponse(
+            content={"message": f"{exc.message}"},
+        )
+        response.delete_cookie(
+            key=Settings.JWT_COOKIE_NAME,
+            domain=Settings.JWT_COOKIE_DOMAIN,
+            httponly=True,
+            secure=Settings.JWT_COOKIE_SECURE,
+            samesite="strict",
+            path="/",
+        )
         response.status_code = HTTPStatus.UNAUTHORIZED
 
         return response
 
-    # Non-Specific Routes / Auth
-    @app.route("/api/v1")
-    def index():
-        """
-        Index route.
-        """
-        title = f"Medieteknik.com API {API_VERSION}, see documentation at /docs"
-        avaliable_routes = [
-            f"""
-                            <span style='text-transform: lowercase;'>
-                                api/{API_VERSION}/{route.value}
-                            </span> <br />"""
-            for route in (ROUTES)
-        ]
-        return f"<h1>{title}</h1><p>Avaliable routes:</p>{''.join(avaliable_routes)}"
+    @app.exception_handler(msgspec.ValidationError)
+    async def validation_exception_handler(request, exc):
+        return JSONResponse(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY, content={"detail": str(exc)}
+        )
 
-    @app.route("/api/v1/uptime")
+    # Non-Specific Routes / Auth
+
+    @app.get(
+        "/api/v1/uptime",
+        status_code=HTTPStatus.OK,
+    )
     def uptime():
         """
         Uptime route.
         """
-        return jsonify({"message": "OK"}), HTTPStatus.OK
+        return JSONResponse(
+            status_code=HTTPStatus.OK,
+            content={"status": "ok"},
+        )
 
-    @app.route("/api/v1/health")
-    def health():
+    @app.get(
+        "/api/v1/health",
+        responses={
+            HTTPStatus.OK: {"description": "Healthy"},
+            HTTPStatus.INTERNAL_SERVER_ERROR: {"description": "Unhealthy"},
+        },
+    )
+    async def health(session: SessionDep):
         """
         Health route.
         """
         health_status = {"status": "healthy"}
 
         try:
-            db.session.execute(text("SELECT 1"))
+            session.exec(text("SELECT 1"))
             health_status["database"] = "healthy"
-        except SQLAlchemyError as e:
+        except Exception as e:
             health_status["status"] = "unhealthy"
             health_status["database"] = "unavailable"
             health_status["error"] = str(e)
 
-        return jsonify(health_status), HTTPStatus.OK if health_status[
-            "database"
-        ] == "healthy" else HTTPStatus.SERVICE_UNAVAILABLE
+        return JSONResponse(
+            content=health_status,
+            status_code=HTTPStatus.OK
+            if health_status["status"] == "healthy"
+            else HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
-    @app.route("/api/v1/csrf-token")
-    def get_csrf_token() -> Response:
-        token = session.get("csrf_token")
+    @app.get(
+        "/api/v1/csrf-token",
+        response_model=BaseModel({"token": str}),
+    )
+    async def get_csrf_token(request: Request):
+        token = request.session.get("csrf_token")
         if not token:
-            new_token = generate_csrf()
-            session["csrf_token"] = new_token
-            return jsonify({"token": new_token})
-        return jsonify({"token": token})
+            new_token = secrets.token_urlsafe(32)
+            request.session["csrf_token"] = new_token
+            return new_token
+        return token
 
-    @app.route("/api/v1/login", methods=["POST"])
-    @csrf_protected
-    def login_credentials() -> Response:
+    @app.post(
+        "/api/v1/login",
+        responses={
+            HTTPStatus.UNAUTHORIZED: {"description": "Invalid credentials"},
+            HTTPStatus.BAD_REQUEST: {"description": "No data provided"},
+            HTTPStatus.OK: {"description": "Logged in"},
+        },
+    )
+    async def login_credentials(
+        request: Request,
+        data: LoginDTO,
+        filter: Annotated[str, Query(title="App Filter")] = "app",
+        language: Annotated[
+            str | None, Query(title="Language")
+        ] = DEFAULT_LANGUAGE_CODE,
+        _=Depends(csrf_protected),
+    ):
         """
         Logs in a student
             :return: Response - The response object, 401 if the credentials are invalid, 400 if no data is provided, 200 if successful
         """
-        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
 
         if filter not in POSSIBLE_FILTERS:
-            return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail="Invalid filter. Possible filters: rgbank, app",
+            )
 
-        session["filter"] = filter
+        request.session["filter"] = filter
 
-        data = request.get_json()
+        return login(data=data, provided_languages=[language], filter=filter)
 
-        if not data:
-            return jsonify({"error": "No data provided"}), HTTPStatus.BAD_REQUEST
-
-        provided_languages = retrieve_languages(request.args)
-
-        data: dict[str, Any] = json.loads(json.dumps(data))
-
-        return login(data=data, provided_languages=provided_languages, filter=filter)
-
-    @app.route("/api/v1/logout", methods=["DELETE"])
-    @jwt_required()
-    def logout() -> Response:
+    @app.delete(
+        "/api/v1/logout",
+        responses={
+            HTTPStatus.OK: {"description": "No token to revoke"},
+            HTTPStatus.NO_CONTENT: {"description": "Token revoked"},
+        },
+    )
+    async def logout(
+        session: SessionDep,
+        jwt: Dict[str, Any] = Depends(jwt_required),
+        _=Depends(csrf_protected),
+    ):
         """
         Logs out a student
             :return: Response - The response object, 200 if successful
         """
 
-        token = get_jwt()
-        jti = token["jti"]
+        jti = jwt["jti"]
 
         if not jti:
-            return jsonify({"success": "No session to log out"}), HTTPStatus.OK
+            return Response(
+                status_code=HTTPStatus.OK,
+                content="No token to revoke",
+            )
 
         revoked_token = RevokedTokens(
             jti=jti,
-            originally_valid_until=datetime.fromtimestamp(token["exp"]),
-        )
-        response = make_response(
-            jsonify({"success": "Successfully logged out", "jti": jti})
+            originally_valid_until=datetime.fromtimestamp(jwt["exp"]),
         )
 
-        unset_jwt_cookies(response)
+        revoke_jwt(token=jwt, session=session)
 
-        db.session.add(revoked_token)
-        db.session.commit()
+        session.add(revoked_token)
+        session.commit()
 
-        return response
+        return Response(
+            status_code=HTTPStatus.NO_CONTENT,
+        )
 
-    @app.route("/auth")
-    def auth():
+    @app.get(
+        "/auth",
+        responses={
+            HTTPStatus.BAD_REQUEST: {"description": "No data provided"},
+            HTTPStatus.OK: {"description": "Logged in"},
+        },
+    )
+    def auth(
+        request: Request,
+        filter: Annotated[str, Query(title="App Filter")] = "app",
+        remember: Annotated[bool, Query(title="Remember Me")] = False,
+        return_url: Annotated[str, Query(title="Return URL")] = "/",
+    ):
         """
         OAuth route for KTH login. First step in the OAuth flow. See the /oidc route for the second step.
         """
         nonce = secrets.token_urlsafe(32)
-        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
 
         if filter not in POSSIBLE_FILTERS:
-            return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail="Invalid filter. Possible filters: rgbank, app",
+            )
 
-        return_url = request.args.get("return_url", type=str, default="/")
-        remember = request.args.get("remember", type=bool, default=False)
         return_url = urllib.parse.quote(return_url)
-        session["filter"] = filter
-        session["return_url"] = return_url
-        session["remember"] = remember
-        session["oauth_nonce"] = nonce
+        request.session["filter"] = filter
+        request.session["return_url"] = return_url
+        request.session["remember"] = remember
+        request.session["oauth_nonce"] = nonce
 
-        redirect_uri = url_for(endpoint="oidc_auth", _external=True)
+        redirect_uri = request.url_for(
+            "oidc",
+            _external=True,
+        )
         return oauth.kth.authorize_redirect(redirect_uri, nonce=nonce)
 
-    @app.route("/oidc")
-    def oidc_auth() -> Response:
+    @app.get("/oidc")
+    def oidc(
+        session: SessionDep,
+        request: Request,
+    ) -> Response:
         """
         OIDC route for KTH login. Second step in the OAuth flow, after the /auth route.
         """
         try:
             token = oauth.kth.authorize_access_token()
         except Exception as e:
-            app.logger.error(f"OIDC authorization error: {str(e)}")
-            return jsonify(
-                {
-                    "error": "An internal server error has occurred. Contact an administrator."
-                }
-            ), HTTPStatus.INTERNAL_SERVER_ERROR
+            logger.logger.error(f"OIDC authorization error: {str(e)}")
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail="Authorization failed",
+            )
 
         if not token:
-            return jsonify({"error": "Invalid credentials"}), 401
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail="Invalid credentials",
+            )
 
-        remember = session.get("remember", False)
-        nonce = session.pop("oauth_nonce", None)
+        remember = request.session.get("remember", False)
+        nonce = request.session.pop("oauth_nonce", None)
 
         student_data = oauth.kth.parse_id_token(token, nonce=nonce)
 
         if not student_data:
-            return jsonify({"error": "Invalid credentials"}), 401
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail="Invalid credentials",
+            )
 
-        session["student"] = student_data
+        request.session["student"] = student_data
 
         if not student_data.get("username"):
-            return jsonify({"error": "Invalid response"}), 401
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail="Invalid credentials",
+            )
 
         student_email = student_data.get("username") + "@kth.se"
 
-        student = Student.query.filter_by(email=student_email).one_or_none()
-        filter = session.get("filter", DEFAULT_FILTER)
+        student = session.exec(
+            select(Student).where(Student.email == student_email)
+        ).one_or_none()
 
         if not student:
             student = Student(
@@ -477,10 +537,13 @@ def register_v1_routes(app: Flask):
                 first_name=student_email,
             )
 
-            db.session.add(student)
-            db.session.commit()
+            session.add(student)
+            session.commit()
+            session.refresh(student)
 
-        response = make_response({"student": student.to_dict(is_public_route=False)})
+        filter = request.session.get("filter", DEFAULT_FILTER)
+
+        response = JSONResponse()
         expiration = timedelta(hours=1) if not remember else timedelta(days=14)
         try:
             permissions, role = get_student_authorization(student)
@@ -490,7 +553,7 @@ def register_v1_routes(app: Flask):
 
             exp_unix = int((datetime.now() + expiration).timestamp())
             response_dict = {
-                "student": student.to_dict(is_public_route=False),
+                "student": student,
                 "permissions": permissions,
                 "role": role,
                 "committees": committees,
@@ -503,28 +566,38 @@ def register_v1_routes(app: Flask):
                     committee_positions=committee_positions,
                     response_dict=response_dict,
                 )
-
-            response = make_response(response_dict)
         except Exception as e:
             app.logger.error(f"Error retrieving extra claims: {str(e)}")
 
-        response.status_code = 302
-        set_access_cookies(
-            response=response,
-            encoded_access_token=create_access_token(
-                identity=student,
-                fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
-                additional_claims=response_dict["rgbank_permissions"],
-                expires_delta=timedelta(hours=1)
-                if not remember
-                else timedelta(days=14),
-            ),
+        response.status_code = HTTPStatus.FOUND
+        response.body = jsonable_encoder(response_dict)
+        response.headers["Content-Type"] = "application/json"
+        jwt_token = create_jwt(
+            subject=student.student_id,
+            expires_delta=expiration,
+            additional_claims=response_dict["rgbank_permissions"]
+            if filter == "rgbank"
+            else None,
+        )
+
+        response.set_cookie(
+            key=Settings.JWT_COOKIE_NAME,
+            domain=Settings.JWT_COOKIE_DOMAIN,
+            httponly=True,
+            secure=Settings.JWT_COOKIE_SECURE,
+            expires=timedelta(hours=1) if not remember else timedelta(days=14),
+            samesite="strict",
+            path="/",
+            value=jwt_token,
             max_age=expiration.total_seconds(),
         )
+
         return_url = session.pop("return_url", default=None)
         if return_url:
-            response.headers.add("Location", f"https://www.medieteknik.com{return_url}")
+            response.headers.append(
+                "Location", f"https://www.medieteknik.com{return_url}"
+            )
         else:
-            response.headers.add("Location", "https://www.medieteknik.com")
+            response.headers.append("Location", "https://www.medieteknik.com")
 
         return response

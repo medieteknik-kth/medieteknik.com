@@ -126,7 +126,7 @@ def send_discord_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
         "utf-8"
     )
 
-    if environ.get("FLASK_ENV") == "production":
+    if environ.get("ENV") == "production":
         try:
             publisher.publish(topic=topic_path, data=message_data)
         except Exception as e:
@@ -191,7 +191,7 @@ def send_notification_topic(type: TopicType, topic_data: Dict[str, Any]) -> None
         "utf-8"
     )
 
-    if environ.get("FLASK_ENV") == "production":
+    if environ.get("ENV") == "production":
         try:
             publisher.publish(topic=topic_path, data=message_data)
         except Exception as e:

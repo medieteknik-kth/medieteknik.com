@@ -1,17 +1,19 @@
 from datetime import datetime
 from typing import Any, Dict, List
-from flask import Request
-from models.committees import Committee, CommitteeTranslation
+
+from sqlmodel import Session
+
+from models.committees import CommitteeTranslation
 from services.committees.public.committee import get_committee_by_title
+from utility.database import db
 from utility.gc import upload_file
 from utility.translation import get_translation
-from utility.database import db
 
 
 def update_committee(
-    request: Request, committee_title: str, provided_languages: List[str]
+    session: Session, committee_title: str, provided_languages: List[str]
 ) -> Dict[str, Any]:
-    committee: Committee | None = get_committee_by_title(committee_title)
+    committee = get_committee_by_title(session=session, title=committee_title)
 
     if not committee:
         return {

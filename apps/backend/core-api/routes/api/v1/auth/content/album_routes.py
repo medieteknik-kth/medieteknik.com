@@ -4,13 +4,11 @@ API Endpoint: '/api/v1/albums'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import jwt_required
 from http import HTTPStatus
 from typing import Any, Dict, List
-from models.content import Album, AlbumTranslation
-from utility import db, convert_iso_639_1_to_bcp_47
 
+from models.content import Album, AlbumTranslation
+from utility import convert_iso_639_1_to_bcp_47, db
 
 album_bp = Blueprint("album", __name__)
 

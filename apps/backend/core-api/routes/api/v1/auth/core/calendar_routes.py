@@ -3,39 +3,51 @@ Calendar Routes (Protected)
 API Endpoint: '/api/v1/calendar'
 """
 
+import uuid
 from calendar import monthrange
 from datetime import datetime, timedelta
-from flask import Blueprint, Response, jsonify, request
 from http import HTTPStatus
-from sqlalchemy import or_
+
+from fastapi import APIRouter, HTTPException, Response
+from sqlmodel import or_, select
+
+from config import Settings
 from models.content import Event
 from models.core import Student
+from routes.api.deps import SessionDep
 from services.content import generate_ics
 from services.content.public import get_main_calendar
 from utility import retrieve_languages
 
+router = APIRouter(
+    prefix=Settings.API_ROUTE_PREFIX + "/calendar",
+    tags=["Calendar"],
+    responses={404: {"description": "Not found"}},
+)
 
-calendar_bp = Blueprint("calendar", __name__)
 
-
-@calendar_bp.route("/ics")
-def get_calendar_ics() -> Response:
+@router.get(
+    "/ics",
+)
+async def get_calendar_ics(
+    session: SessionDep, student: uuid.UUID, language: str | None
+):
     """
     Retrieves the calendar in iCalendar format
         :return: Response - The response object,  404 if the student is not found, 400 if the student is not provided, 200 if successful
     """
 
-    student = request.args.get("u", type=str)
-
-    if not student:
-        return jsonify({}), HTTPStatus.BAD_REQUEST
-
-    student_exist = Student.query.get(student)
+    student_exist_stmt = select(Student).where(
+        Student.student_id == student,
+    )
+    student_exist = session.exec(student_exist_stmt).first()
 
     if not student_exist:
-        return jsonify({}), HTTPStatus.NOT_FOUND
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="Student not found"
+        )
 
-    provided_langauges = retrieve_languages(request.args)
+    provided_langauges = retrieve_languages(language)
 
     main_calendar = get_main_calendar()
 
@@ -57,21 +69,25 @@ def get_calendar_ics() -> Response:
     )  # Make end_date inclusive
 
     # Adjusted filter conditions for overlapping events and inclusivity
-    events = Event.query.filter(
+    events_stmt = select(Event).where(
         Event.calendar_id == main_calendar.calendar_id,
         or_(
             Event.start_date <= end_date,  # Starts before or on the end date
             Event.start_date >= start_date,  # Starts after or on the start date
         ),
-    ).all()
+    )
+    events = session.exec(events_stmt).all()
 
     return Response(
-        response=generate_ics(
+        content=generate_ics(
             calendar=main_calendar,
             events=events,
             language=provided_langauges[0],
         ),
-        status=HTTPStatus.OK,
-        headers={"Content-Type": "text/calendar"},
-        mimetype="text/calendar",
+        status_code=HTTPStatus.OK,
+        media_type="text/calendar",
+        headers={
+            "Content-Disposition": 'attachment; filename="calendar.ics"',
+            "Content-Type": "text/calendar",
+        },
     )

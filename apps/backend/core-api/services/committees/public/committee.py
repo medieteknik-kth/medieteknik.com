@@ -2,119 +2,71 @@
 Public Committee service
 """
 
-from typing import Any, Dict, List
-from dataclasses import dataclass
-from sqlalchemy import func, or_
+from datetime import datetime
+from typing import Any, Dict, Sequence
+
+from sqlmodel import Session, func, or_, select
+
 from models.committees import (
     Committee,
     CommitteePosition,
     CommitteeTranslation,
 )
 from models.core import StudentMembership
-from utility.constants import AVAILABLE_LANGUAGES
-from .committee_position import get_committee_positions_by_committee_title
-from datetime import datetime
 
 
-@dataclass
-class CommitteeSettings:
-    """
-    Settings for the committee service.
-
-    Attributes:
-        include_positions (bool): Whether to include all committee positions in the response.
-    """
-
-    include_positions: bool = False
-
-
-def get_all_committees(provided_languages: List[str]) -> List[Dict[str, Any]]:
-    """
-    Retrieves all committees from the database.
-
-    Args:
-        provided_languages (List[str]): The languages to include in the response.
-
-    Returns:
-        List[Dict[str, Any]]: A list of committee dictionaries.
-    """
-    committees: List[Committee] = Committee.query.filter_by(hidden=False).all()
-
-    return [
-        committee_dict
-        for committee in committees
-        if (committee_dict := committee.to_dict(provided_languages)) is not None
-    ]
+def get_all_committees(session: Session) -> Sequence[Committee]:
+    return session.exec(select(Committee).where(Committee.hidden.is_(False))).all()
 
 
 def get_committee_by_title(
+    session: Session,
     title: str,
-    committee_settings: CommitteeSettings | None = None,
 ) -> Committee | None:
-    """
-    Retrieves a committee from the database by its name.
-
-    Args:
-        title (str): The title of the committee.
-        committee_settings (CommitteeSettings | None, optional): Additional settings. Defaults to None.
-
-    Returns:
-        Dict[str, Any] | None: A committee dictionary.
-    """
-    committee_settings = committee_settings or CommitteeSettings()
-
-    translation: CommitteeTranslation | None = CommitteeTranslation.query.filter(
-        func.lower(CommitteeTranslation.title) == func.lower(title)
+    translation = session.exec(
+        select(CommitteeTranslation).where(
+            func.lower(CommitteeTranslation.title) == title.lower()
+        )
     ).first()
 
     if not translation:
         return None
 
-    committee: Committee | None = Committee.query.get(translation.committee_id)
+    committee = session.exec(
+        select(Committee).where(
+            Committee.committee_id == translation.committee_id,
+            Committee.hidden.is_(False),
+        )
+    ).first()
 
     return committee
 
 
 def get_committee_data_by_title(
+    session: Session,
     title: str,
-    provided_languages: List[str] = AVAILABLE_LANGUAGES,
-    is_public_route: bool = True,
 ) -> Dict[str, Any] | None:
-    """
-    Retrieves a committee from the database by its name.
+    translation = session.exec(
+        select(CommitteeTranslation).where(
+            func.lower(CommitteeTranslation.title) == title.lower()
+        )
+    ).first()
 
-    Args:
-        title (str): The title of the committee.
-
-    Returns:
-        Dict[str, Any] | None: A committee dictionary.
-    """
-    committee_translation: CommitteeTranslation | None = (
-        CommitteeTranslation.query.filter(
-            func.lower(CommitteeTranslation.title) == func.lower(title)
-        ).first()
-    )
-
-    if not committee_translation or not isinstance(
-        committee_translation, CommitteeTranslation
-    ):
+    if not translation:
         return None
 
-    committee: Committee | None = Committee.query.get(
-        committee_translation.committee_id
-    )
+    committee = session.exec(
+        select(Committee).where(
+            Committee.committee_id == translation.committee_id,
+            Committee.hidden.is_(False),
+        )
+    ).first()
 
     if not committee:
         return None
 
     data = {
-        "members": {
-            "items": [],
-            "page": 1,
-            "per_page": 10,
-            "total_items": 0,
-            "total_pages": 1,
-        },
+        "members": [],
         "positions": [],
         "total_news": committee.total_news,
         "total_events": committee.total_events,
@@ -123,33 +75,25 @@ def get_committee_data_by_title(
     }
 
     # Members
-    positions: List[CommitteePosition] | None = (
-        get_committee_positions_by_committee_title(committee_title=title)
-    )
+    positions = session.exec(
+        select(CommitteePosition).where(
+            CommitteePosition.committee_id == committee.committee_id,
+        )
+    ).all()
+
     if positions:
-        data["positions"] = [
-            position.to_dict(
-                provided_languages=provided_languages, is_public_route=False
+        data["positions"] = [position for position in positions]
+        members = session.exec(
+            select(StudentMembership).where(
+                StudentMembership.committee_position_id.in_(
+                    position.committee_position_id for position in positions
+                ),
+                or_(
+                    StudentMembership.termination_date == None,  # noqa
+                    StudentMembership.termination_date > datetime.now(),
+                ),
             )
-            for position in positions
-        ]
-        members = StudentMembership.query.filter(
-            StudentMembership.committee_position_id.in_(
-                position.committee_position_id for position in positions
-            ),
-            or_(
-                StudentMembership.termination_date == None,  # noqa
-                StudentMembership.termination_date > datetime.now(),
-            ),
-        ).paginate(per_page=10, max_per_page=25)
-        data["members"] = {
-            "items": [
-                member.to_dict(is_public_route=is_public_route)
-                for member in members.items
-            ],
-            "page": members.page,
-            "per_page": members.per_page,
-            "total_pages": members.pages,
-            "total_items": members.total,
-        }
+        ).all()
+        data["members"] = [member for member in members]
+
     return data

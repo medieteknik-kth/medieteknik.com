@@ -7,12 +7,12 @@ import base64
 import json
 from http import HTTPStatus
 from typing import Any, Dict, Tuple
+
 from flask import Blueprint, request
+
 from decorators.google_oidc import verify_google_oidc_token
 from services.core.notifications import add_notification
 from services.utility.discord import send_discord_message
-from utility.logger import log_error
-
 
 message_bp = Blueprint("message", __name__)
 

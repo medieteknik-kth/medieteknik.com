@@ -4,24 +4,23 @@ API Endpoint: '/api/v1/committee_positions'
 """
 
 import json
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from http import HTTPStatus
-from sqlalchemy import func
 from typing import Any, Dict, List
+
+
+
 from models.committees import (
     CommitteePosition,
     CommitteePositionRecruitment,
     CommitteePositionRecruitmentTranslation,
-    CommitteePositionTranslation,
     CommitteePositionsRole,
+    CommitteePositionTranslation,
 )
 from models.core import Student, StudentMembership
 from services.committees.public import get_committee_by_title
-from utility.database import db
 from utility.constants import AVAILABLE_LANGUAGES
+from utility.database import db
 from utility.translation import convert_iso_639_1_to_bcp_47
-
 
 committee_position_bp = Blueprint("committee_position", __name__)
 

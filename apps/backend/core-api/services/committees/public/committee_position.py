@@ -1,16 +1,17 @@
 from datetime import datetime
-from sqlalchemy import and_, func, or_
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Sequence
+
+from sqlmodel import Session, func, select
+
 from models.committees import (
     Committee,
-    CommitteeTranslation,
     CommitteePosition,
     CommitteePositionTranslation,
+    CommitteeTranslation,
 )
 from models.core import Student, StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
 from utility.database import db
-from sqlalchemy.orm import joinedload
 
 
 def get_committee_position_by_title(
@@ -51,8 +52,9 @@ def get_committee_position_by_title(
 
 
 def get_committee_positions_by_committee_title(
+    session: Session,
     committee_title: str,
-) -> List[CommitteePosition] | None:
+) -> Sequence[CommitteePosition] | None:
     """
     Retrieves all committee positions from the database by its committee title.
 
@@ -64,32 +66,30 @@ def get_committee_positions_by_committee_title(
         List[Dict[str, Any]]: A list of committee position dictionaries.
     """
 
-    committee_translation: CommitteeTranslation | None = (
-        CommitteeTranslation.query.filter(
-            func.lower(CommitteeTranslation.title) == func.lower(committee_title)
-        ).first()
-    )
+    translation = session.exec(
+        select(CommitteeTranslation).where(
+            func.lower(CommitteeTranslation.title) == committee_title.lower()
+        )
+    ).first()
 
-    if not committee_translation:
+    if not translation:
         return None
 
-    committee: Committee | None = Committee.query.get(
-        committee_translation.committee_id
-    )
+    committee = session.exec(
+        select(Committee).where(Committee.committee_id == translation.committee_id)
+    ).first()
 
     if not committee:
         return None
 
-    committee_positions: List[CommitteePosition] = CommitteePosition.query.filter_by(
-        committee_id=committee.committee_id,
-        active=True,
+    committee_positions = session.exec(
+        select(CommitteePosition).where(
+            CommitteePosition.committee_id == committee.committee_id,
+            CommitteePosition.active.is_(True),
+        )
     ).all()
 
-    if (
-        not committee_positions
-        or len(committee_positions) == 0
-        or not isinstance(committee_positions, list)
-    ):
+    if not committee_positions:
         return None
 
     return committee_positions

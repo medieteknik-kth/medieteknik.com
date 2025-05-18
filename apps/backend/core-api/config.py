@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     SESSION_COOKIE_SECURE = True if ENV == "production" else False
     RECEPTION_MODE = os.environ.get("RECEPTION_MODE") == "True"
 
+    # Social
+    DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", None)
+    MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", None)
+    MAILGUN_EMAIL = os.environ.get("MAILGUN_EMAIL", None)
+
     # Database
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SQLALCHEMY_ECHO = os.environ.get("SQLALCHEMY_ECHO") == "True"
