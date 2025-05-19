@@ -1,3 +1,7 @@
+"""
+RGBank Auth Service
+"""
+
 from typing import List, Tuple, Type, Union
 
 from sqlmodel import Session, select
@@ -19,16 +23,16 @@ def has_access(
     memberships: List[StudentMembership],
 ) -> Tuple[bool, str]:
     """
-    Check if the student can view the expense based on their memberships.
+    Check if the student has access to the cost item.
 
-    :param cost_item: The cost item (Expense or Invoice) to check access for.
-    :type cost_item: Expense | Invoice
-    :param student_id: The ID of the student.
-    :type student_id: str
-    :param memberships: List of StudentMembership objects for the student.
-    :type memberships: List[StudentMembership]
-    :return: True if the student can view the expense, False otherwise.
-    :rtype: bool
+    Args:
+        session (Session): The database session.
+        cost_item (Expense | Invoice): The cost item to check access for.
+        student_id (str): The ID of the student.
+        memberships (List[StudentMembership]): List of StudentMembership objects for the student.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
 
     if not isinstance(cost_item, (Expense, Invoice)):
@@ -83,14 +87,14 @@ def has_full_access(
     session: Session, memberships: List[StudentMembership]
 ) -> Tuple[bool, str]:
     """
-    Check if the student has full access to the expense.
+    Check if the student has full access to all committees.
 
-    :param student_id: The ID of the student.
-    :type student_id: str
-    :param memberships: List of StudentMembership objects for the student.
-    :type memberships: List[StudentMembership]
-    :return: True if the student has full access, False otherwise.
-    :rtype: bool
+    Args:
+        session (Session): The database session.
+        memberships (List[StudentMembership]): List of StudentMembership objects for the student.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
     if not memberships:
         return (False, "You are not a member of any committee.")
@@ -118,14 +122,15 @@ def has_full_access(
 def has_full_authority(
     session: Session, memberships: List[StudentMembership]
 ) -> Tuple[bool, str]:
-    """Check if the student has full authority over the expense.
+    """
+    Check if the student has full authority to view all committees.
 
-    :param student_id: The ID of the student.
-    :type student_id: str
-    :param memberships: List of StudentMembership objects for the student.
-    :type memberships: List[StudentMembership]
-    :return: True if the student has full authority, False otherwise.
-    :rtype: bool
+    Args:
+        session (Session): The database session.
+        memberships (List[StudentMembership]): List of StudentMembership objects for the student.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
     if not memberships:
         return (False, "You are not a member of any committee.")
@@ -208,12 +213,14 @@ def get_bank_account(
     session: Session, student_id: str
 ) -> AccountBankInformation | None:
     """
-    Get the bank account of the student.
+    Retrieves the bank account information for a student.
 
-    :param student_id: The ID of the student.
-    :type student_id: str
-    :return: The bank account of the student.
-    :rtype: str
+    Args:
+        session (Session): The database session.
+        student_id (str): The ID of the student.
+
+    Returns:
+        AccountBankInformation | None: The bank account information or None if not found.
     """
     bank_stmt = select(AccountBankInformation).where(
         AccountBankInformation.student_id == student_id

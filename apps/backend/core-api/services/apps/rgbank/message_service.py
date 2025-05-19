@@ -1,3 +1,7 @@
+"""
+RGBank Message Service
+"""
+
 from sqlmodel import Session, select
 
 from models.apps.rgbank import Message, MessageType, PaymentStatus, Thread

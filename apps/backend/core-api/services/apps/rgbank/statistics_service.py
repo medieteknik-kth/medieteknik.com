@@ -1,3 +1,7 @@
+"""
+RGBank Statistics Service
+"""
+
 import datetime
 
 from sqlmodel import Session, select
@@ -12,19 +16,16 @@ def add_student_statistic(
     student_id: str,
     value: float,
     date: datetime = None,
-) -> None:
-    """Adds a student statistic for the current month, year, and all time.
+):
+    """
+    Adds a student statistic for the current month, year, and all time.
 
-    :param student_id: The ID of the student.
-    :type student_id: str
-    :param value: The value to add to the statistic.
-    :type value: float
-    :param date: The date for the statistic. Defaults to None.
-    :type date: datetime, optional
-    :param expense_count: The count of expenses. Defaults to 0.
-    :type expense_count: int, optional
-    :param invoice_count: The count of invoices. Defaults to 0.
-    :type invoice_count: int, optional"""
+    Args:
+        session (Session): The database session.
+        student_id (str): The ID of the student.
+        value (float): The value to add to the statistic.
+        date (datetime, optional): The date for the statistic. Defaults to None.
+    """
 
     if date is None:
         date = datetime.datetime.now()
@@ -107,18 +108,18 @@ def get_student_statistic(
     year: int = None,
     month: int = None,
 ) -> Statistics | None:
-    """Gets statistics for a student. If you don't provide a year or month, it will return the all-time statistics.
+    """
+    Gets statistics for a student. If you don't provide a year or month, it will return the all-time statistics.
 
-    :param student_id: The ID of the student.
-    :type student_id: str
-    :param year: The year of the statistics. Defaults to None.
-    :type year: int, optional
-    :param month: The month of the statistics. Defaults to None.
-    :type month: int, optional
-    :param provided_languages: The languages provided. Defaults to AVAILABLE_LANGUAGES.
-    :type provided_languages: List[str], optional
-    :return: The statistics for the student.
-    :rtype: Dict[str, Any] | None"""
+    Args:
+        session (Session): The database session.
+        student_id (str): The ID of the student.
+        year (int, optional): The year of the statistics. Defaults to None.
+        month (int, optional): The month of the statistics. Defaults to None.
+
+    Returns:
+        Statistics | None: The statistics for the student.
+    """
 
     if year:
         if month:
@@ -157,19 +158,17 @@ def add_committee_statistic(
     committee_id: str,
     value: float,
     date: datetime = None,
-) -> None:
-    """Adds a committee statistic for the current month, year, and all time.
+):
+    """
+    Adds a committee statistic for the current month, year, and all time.
 
-    :param committee_id: The ID of the committee.
-    :type committee_id: str
-    :param value: The value to add to the statistic.
-    :type value: float
-    :param date: The date for the statistic. Defaults to None.
-    :type date: datetime, optional
-    :param expense_count: The count of expenses. Defaults to 0.
-    :type expense_count: int, optional
-    :param invoice_count: The count of invoices. Defaults to 0.
-    :type invoice_count: int, optional"""
+    Args:
+        session (Session): The database session.
+        committee_id (str): The ID of the committee.
+        value (float): The value to add to the statistic.
+        date (datetime, optional): The date for the statistic. Defaults to None.
+
+    """
 
     if date is None:
         date = datetime.datetime.now()
@@ -248,16 +247,18 @@ def get_committee_statistic(
     year: int | None = None,
     month: int | None = None,
 ) -> Statistics | None:
-    """Gets statistics for a committee. If you don't provide a year or month, it will return the all-time statistics.
+    """
+    Gets statistics for a committee. If you don't provide a year or month, it will return the all-time statistics.
 
-    :param committee_id: The ID of the committee.
-    :type committee_id: str
-    :param year: The year of the statistics. Defaults to None.
-    :type year: int, optional
-    :param month: The month of the statistics. Defaults to None.
-    :type month: int, optional
-    :return: The statistics for the committee.
-    :rtype: Dict[str, Any] | None"""
+    Args:
+        session (Session): The database session.
+        committee_id (str): The ID of the committee.
+        year (int, optional): The year of the statistics. Defaults to None.
+        month (int, optional): The month of the statistics. Defaults to None.
+
+    Returns:
+        Statistics | None: The statistics for the committee.
+    """
 
     if year:
         stmt = select(Statistics).where(
@@ -289,17 +290,20 @@ def add_expense_count(
     committee_id: str = None,
     expense_count: int = 0,
     invoice_count: int = 0,
-) -> None:
-    """Adds an expense count for a student or committee.
+):
+    """
+    Adds or updates the expense count for a student or committee.
 
-    :param student_id: The ID of the student. Defaults to None.
-    :type student_id: str, optional
-    :param committee_id: The ID of the committee. Defaults to None.
-    :type committee_id: str, optional
-    :param expense_count: The count of expenses. Defaults to 0.
-    :type expense_count: int, optional
-    :param invoice_count: The count of invoices. Defaults to 0.
-    :type invoice_count: int, optional"""
+    Args:
+        session (Session): The database session.
+        student_id (str, optional): The ID of the student. Defaults to None.
+        committee_id (str, optional): The ID of the committee. Defaults to None.
+        expense_count (int, optional): The expense count to add. Defaults to 0.
+        invoice_count (int, optional): The invoice count to add. Defaults to 0.
+
+    Raises:
+        ValueError: If neither student_id nor committee_id is provided.
+    """
 
     if not student_id and not committee_id:
         raise ValueError("Either student_id or committee_id must be provided.")
