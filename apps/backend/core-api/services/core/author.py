@@ -4,14 +4,17 @@ Author Service
 
 from typing import Type
 
-from sqlalchemy import or_
-from models.core.student import Student
+from sqlmodel import Session, or_, select
+
 from models.committees import Committee, CommitteePosition
-from models.core import AuthorType, Author
+from models.core import Author, AuthorType
+from models.core.student import Student
 
 
 def get_author_from_email(
-    entity_table: Type[Student | Committee | CommitteePosition], email: str
+    session: Session,
+    entity_table: Type[Student | Committee | CommitteePosition],
+    email: str,
 ) -> Author | None:
     """
     Retrieves an author from an email
@@ -23,7 +26,7 @@ def get_author_from_email(
     Returns:
         Author | None: The author or None if not found
     """
-    entity = entity_table.query.filter_by(email=email).first()
+    entity = session.exec(select(entity_table).filter_by(email=email)).first()
 
     if not entity:
         return None
@@ -41,11 +44,13 @@ def get_author_from_email(
         entity_id = entity.committee_position_id
         entity_type = AuthorType.COMMITTEE_POSITION
 
-    return Author.query.filter(
+    stmt = select(Author).where(
         Author.author_type == entity_type.value,
         or_(
             Author.student_id == entity_id,
             Author.committee_id == entity_id,
             Author.committee_position_id == entity_id,
         ),
-    ).first()
+    )
+
+    return session.exec(stmt).first()

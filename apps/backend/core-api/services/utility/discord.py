@@ -1,5 +1,5 @@
 """
-Discord Service
+Discord Service, used to send messages to Discord channels via webhooks.
 """
 
 from datetime import datetime
@@ -7,12 +7,12 @@ from http import HTTPStatus
 from typing import Any, Dict, Tuple
 
 import requests
+from fastapi import logger
 from sqlmodel import Session
 
 from config import Settings
 from models.utility.discord import DiscordMessages
 from services.utility.messages import TopicType
-from utility import log_error
 
 
 def send_discord_message(
@@ -164,7 +164,7 @@ def send_discord_event(
             return False, f"Failed to send Discord message: {response.text}"
 
         response_json = response.json()
-        log_error(response_json)
+        logger.logger.error(response_json)
         message_id = response_json.get("id")
 
         if not message_id:
@@ -222,7 +222,7 @@ def send_discord_update(webhook_url: str, data: Dict[str, Any]) -> Tuple[bool, s
     try:
         response = requests.post(webhook_url, json=message)
 
-        if response.status_code != 204:
+        if response.status_code != HTTPStatus.NO_CONTENT:
             return False, f"Failed to send Discord message: {response.text}"
     except Exception as e:
         return False, f"Error: {e}"

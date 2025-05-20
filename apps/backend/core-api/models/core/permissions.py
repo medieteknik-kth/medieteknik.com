@@ -61,7 +61,7 @@ class StudentPermission(SQLModel, table=True):
     )
 
     role: Role
-    permissions = list[Permissions] = []
+    permissions: list[Permissions]
 
     # Foreign keys
     student_id: uuid.UUID = Field(

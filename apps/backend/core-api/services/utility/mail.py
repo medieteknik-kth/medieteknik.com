@@ -1,3 +1,7 @@
+"""
+Mail service for sending emails using Mailgun API.
+"""
+
 import json
 
 import requests
@@ -10,6 +14,13 @@ def send_expense_message(
     expense_item: Expense | Invoice,
     subject: str = "Expense",
 ):
+    """
+    Send an email with the expense item details using Mailgun API.
+
+    Args:
+        expense_item (Expense | Invoice): The expense item to send.
+        subject (str): The subject of the email. Defaults to "Expense".
+    """
     api_key = Settings.MAILGUN_API_KEY
     email = Settings.MAILGUN_EMAIL
 

@@ -2,15 +2,18 @@
 Student service that handles the student's login, permissions, and role.
 """
 
+import re
 from datetime import datetime, timedelta
 from http import HTTPStatus
+from typing import Any, Dict, List
+
 from flask import Request, Response, jsonify, make_response, session
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
 )
-from typing import Any, Dict, List
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from models.core import Student
 from services.apps.rgbank.auth_service import get_bank_account
 from services.apps.rgbank.permission_service import attach_permissions
@@ -21,7 +24,6 @@ from services.utility.auth import (
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_FILTER
 from utility.database import db
 from utility.gc import delete_file, upload_file
-import re
 
 
 def login(

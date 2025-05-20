@@ -1,23 +1,27 @@
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
-from sqlmodel import select
+from sqlmodel import Session, select
 
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
-from models.core.author import Author, AuthorResource
-from models.core.permissions import Permissions, Role, StudentPermission
+from models.core.author import Author
+from models.core.permissions import Role, StudentPermission
 from models.core.student import Student, StudentMembership
-from utility.constants import AVAILABLE_LANGUAGES
-from utility.database import db
 
 
 def get_student_authorization(
+    session: Session,
     student: Student,
-) -> Tuple[List[Dict[str, Any]], str]:
+) -> Tuple[Dict[str, List[str]], str]:
     """
-    Gets the student's permissions and role.
-        :param student: Student - The student object.
-        :return: Tuple[List[Dict[str, Any]], str] - The permissions and role.
+    Retrieves the student's permissions and role.
+
+    Args:
+        session (Session): The database session.
+        student (Student): The student object.
+
+    Returns:
+        Tuple[Dict[str, List[str]], str]: A tuple containing the permissions and role.
     """
     permissions = {
         "author": [],
@@ -27,22 +31,27 @@ def get_student_authorization(
 
     stmt = (
         select(
-            Student.student_id,
-            Author.resources,
-            StudentPermission.role,
-            StudentPermission.permissions,
+            Student,
+            Author,
+            StudentPermission,
         )
         .join(Author, Student.student_id == Author.student_id)
         .join(StudentPermission, Student.student_id == StudentPermission.student_id)
         .where(Student.student_id == student.student_id)
     )
 
-    result = db.session.execute(stmt).first()
-    role_result: Role = result.role if result else Role.OTHER
-    permissions_result: List[Permissions] = result.permissions if result else []
-    resources_result: List[AuthorResource] = result.resources if result else []
+    result = session.exec(stmt).first()
 
     if not result:
+        return permissions, role
+
+    _, author, student_permission = result
+
+    role_result: Role = student_permission.role if student_permission else Role.OTHER
+    permissions_result = student_permission.permissions if student_permission else None
+    resources_result = author.resources if author else None
+
+    if not resources_result or not permissions_result:
         return permissions, role
 
     role = role_result.value
@@ -53,13 +62,18 @@ def get_student_authorization(
 
 
 def get_student_committee_details(
-    provided_languages: List[str] = AVAILABLE_LANGUAGES, student: Student | None = None
-) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    session: Session,
+    student: Student | None = None,
+) -> Tuple[list, list] | None:
     """
-    Retrieves the student's permissions, role, committees, and committee positions, if they exist.
-        :param provided_languages: List[str] - The list of languages that the user can view.
-        :param student: Student - The student object.
-        :return: Tuple[List[Dict[str, Any]], List[Dict[str, Any]]] - The committees and committee positions.
+    Retrieves the student's committees and committee positions.
+
+    Args:
+        session (Session): The database session.
+        student (Student | None): The student object. If None, the function returns None.
+
+    Returns:
+        Tuple[list, list] | None: A tuple containing the committees and committee positions.
     """
     if student is None:
         return None
@@ -69,7 +83,7 @@ def get_student_committee_details(
 
     stmt = (
         select(
-            Student.student_id,
+            Student,
             CommitteePosition,
             Committee,
         )
@@ -81,28 +95,23 @@ def get_student_committee_details(
         )
         .join(Committee, CommitteePosition.committee_id == Committee.committee_id)
         .where(Student.student_id == student.student_id)
+        .distinct()
     )
 
-    result = db.session.execute(stmt).unique().all()
+    result = session.exec(stmt).all()
 
     if len(result) == 0 or result is None:
         return committees, committee_positions
 
-    for index, _ in enumerate(result):
-        committee_position: CommitteePosition = result[index][1]
-        committee: Committee = result[index][2]
+    for data in result:
+        committee_position = data[1]
+        committee = data[2]
 
-        position_dict = committee_position.to_dict(
-            provided_languages=provided_languages, is_public_route=False
-        )
+        committee_positions.append(committee_position)
 
-        committee_positions.append(position_dict)
-
-        committee_dict = committee.to_dict(provided_languages=provided_languages)
-
-        if committee_dict in committees:
+        if committee in committees:
             continue
 
-        committees.append(committee_dict)
+        committees.append(committee)
 
     return committees, committee_positions

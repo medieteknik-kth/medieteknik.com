@@ -1,28 +1,45 @@
+"""
+Notifications service module.
+This module provides functions to manage notifications, including adding,
+sending, and retrieving notifications.
+"""
+
 import json
 import time
 from http import HTTPStatus
 from os import environ
 from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse
-from flask import Response, jsonify
-from sqlalchemy import and_, or_
+
+from cryptography.fernet import Fernet
+from fastapi import HTTPException, logger
+from pywebpush import WebPushException, webpush
+from sqlmodel import Session, and_, or_, select
+
+from config import Settings
 from models.core.notifications import (
     NotificationPreferences,
-    NotificationSubscription,
-    NotificationType,
     Notifications,
     NotificationsTranslation,
+    NotificationSubscription,
+    NotificationType,
 )
-from cryptography.fernet import Fernet
-from pywebpush import webpush, WebPushException
-from utility import log_error, convert_iso_639_1_to_bcp_47, db
+from utility import convert_iso_639_1_to_bcp_47
 
 
-def add_notification(message_data: Dict[str, Any]) -> Tuple[bool, str]:
+# TODO: Add a DTO for the notification data
+def add_notification(
+    session: Session, message_data: Dict[str, Any]
+) -> Tuple[bool, str]:
     """
     Adds a notification to the database.
-        :param message_data: Dict[str, Any] - The data containing the notification
-        :return: Response - The response object, 400 if no data is provided, 201 if successful
+
+    Args:
+        session (Session): The database session.
+        message_data (Dict[str, Any]): The message data containing the notification type and translations.
+
+    Returns:
+        Tuple[bool, str]: A tuple containing the success status and the message.
     """
 
     data: Dict[str, Any] = message_data.get("message_data")
@@ -48,8 +65,9 @@ def add_notification(message_data: Dict[str, Any]) -> Tuple[bool, str]:
         event_id=event_id,
     )
 
-    db.session.add(notification)
-    db.session.commit()
+    session.add(notification)
+    session.commit()
+    session.refresh(notification)
 
     for translation_data in translation:
         title: str | None = translation_data.get("title")
@@ -58,8 +76,8 @@ def add_notification(message_data: Dict[str, Any]) -> Tuple[bool, str]:
         language_code: str | None = translation_data.get("language_code")
 
         if not title or not body or not url or not language_code:
-            db.session.delete(notification)
-            db.session.commit()
+            session.delete(notification)
+            session.commit()
             return False, "Invalid translation data"
 
         notification_translation = NotificationsTranslation(
@@ -70,14 +88,14 @@ def add_notification(message_data: Dict[str, Any]) -> Tuple[bool, str]:
             language_code=convert_iso_639_1_to_bcp_47(language_code),
         )
 
-        db.session.add(notification_translation)
-    db.session.commit()
+        session.add(notification_translation)
+    session.commit()
 
     return True, "Notification added"
 
 
 def send_notification(
-    data: Dict[str, Any], subscription: NotificationSubscription
+    session: Session, data: Dict[str, Any], subscription: NotificationSubscription
 ) -> Tuple[bool, str]:
     cipher = Fernet(environ.get("FERNET_KEY"))
 
@@ -125,20 +143,21 @@ def send_notification(
 
         if result.status_code == 410 or result.status_code == 404:
             print("Subscription is no longer valid, deleting...")
-            db.session.delete(subscription)
-            db.session.commit()
+            session.delete(subscription)
+            session.commit()
+            session.refresh(subscription)
 
     except WebPushException as e:
-        log_error(f"Error sending notification: {e}")
+        logger.logger.error(f"Error sending notification: {e}")
         return False, f"Error: {e}"
     except Exception as e:
-        log_error(f"Error sending notification: {e}")
+        logger.logger.error(f"Error sending notification: {e}")
         return False, f"Error: {e}"
 
     return True, "Notification sent"
 
 
-def retrieve_notifications(student_id: Any, language_code: str) -> Response:
+def retrieve_notifications(session: Session, student_id: Any, language_code: str):
     # cached_data = get_cache(f"notifications_{student_id}")
 
     # if cached_data:
@@ -148,8 +167,8 @@ def retrieve_notifications(student_id: Any, language_code: str) -> Response:
     #    ):
     #        return jsonify(json.loads(cached_data)["data"]), HTTPStatus.OK
 
-    notification_preferences: NotificationPreferences | None = (
-        NotificationPreferences.query.filter(
+    notification_preferences = session.exec(
+        select(NotificationPreferences).where(
             NotificationPreferences.student_id == student_id
         )
     ).first()
@@ -161,19 +180,17 @@ def retrieve_notifications(student_id: Any, language_code: str) -> Response:
 
     committees = {}
 
-    if notification_preferences and isinstance(
-        notification_preferences, NotificationPreferences
-    ):
-        if getattr(notification_preferences, "site_updates"):
+    if notification_preferences:
+        if notification_preferences.site_updates:
             all_filters.append(
                 Notifications.notification_type == NotificationType.UPDATE
             )
 
-        for committee in getattr(notification_preferences, "committees"):
+        for committee in notification_preferences.committees:
             types = {k: committee[k] for k in ("news", "event") if k in committee}
             committees[committee["committee_id"]] = types
 
-    notifications = Notifications.query
+    notifications = select(Notifications)
 
     if committees:
         committee_filters = []
@@ -198,8 +215,8 @@ def retrieve_notifications(student_id: Any, language_code: str) -> Response:
     if all_filters:
         notifications = notifications.filter(or_(*all_filters))
 
-    notification_result: List[Notifications] = notifications.order_by(
-        Notifications.created_at.desc()
+    notification_result = session.exec(
+        notifications.order_by(Notifications.created_at.desc())
     ).all()
 
     data = [
@@ -222,17 +239,18 @@ def retrieve_notifications(student_id: Any, language_code: str) -> Response:
     #    ),
     # )
 
-    return jsonify(data), HTTPStatus.OK
+    return data
 
 
 def subscribe_to_notifications(
-    data_dict: Dict[str, Any], student_id: int, language: str
-) -> Response:
-    secret_key = environ.get("FERNET_KEY")
+    session: Session, data_dict: Dict[str, Any], student_id: int, language: str
+):
+    secret_key = Settings.FERNET_KEY
     if not secret_key:
-        return jsonify(
-            {"error": "FERNET_KEY environment variable not set"}
-        ), HTTPStatus.INTERNAL_SERVER_ERROR
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail="FERNET_KEY environment variable is not set",
+        )
     cipher = Fernet(secret_key.encode())
 
     # Where to send the notifications
@@ -241,7 +259,10 @@ def subscribe_to_notifications(
     # Push notifications
     subscription: Dict[str, Any] | None = data_dict.get("subscription")
     if push and not subscription:
-        return jsonify({"error": "Invalid subscription"}), HTTPStatus.BAD_REQUEST
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail="Missing subscription data",
+        )
 
     preferences: Dict[str, Any] | None = data_dict.get("preferences")
 
@@ -250,7 +271,7 @@ def subscribe_to_notifications(
     )
 
     if not notification_preferences and preferences:
-        db.session.add(
+        session.add(
             NotificationPreferences(
                 student_id=student_id,
                 iana_timezone=preferences.get("iana"),
@@ -267,7 +288,10 @@ def subscribe_to_notifications(
         endpoint: str | None = subscription.get("endpoint")
 
         if not endpoint:
-            return jsonify({"error": "Invalid subscription"}), HTTPStatus.BAD_REQUEST
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail="Missing endpoint in subscription data",
+            )
 
         p256dh_encrypted: str | None = cipher.encrypt(
             subscription.get("keys").get("p256dh").encode()
@@ -276,13 +300,16 @@ def subscribe_to_notifications(
             subscription.get("keys").get("auth").encode()
         ).decode()
 
-        notification: NotificationSubscription | None = (
-            NotificationSubscription.query.filter_by(
-                student_id=student_id, endpoint=endpoint
-            ).first()
-        )
+        notification = session.exec(
+            select(NotificationSubscription).where(
+                and_(
+                    NotificationSubscription.student_id == student_id,
+                    NotificationSubscription.endpoint == endpoint,
+                )
+            )
+        ).first()
 
-        if not notification or not isinstance(notification, NotificationSubscription):
+        if not notification:
             notification = NotificationSubscription(
                 student_id=student_id,
                 endpoint=endpoint,
@@ -290,11 +317,8 @@ def subscribe_to_notifications(
                 auth=auth_encrypted,
                 language_code=language,
             )
-            db.session.add(notification)
+            session.add(notification)
         else:
-            notification.site_updates = preferences.get("site_updates")
             notification.language_code = language
 
-    db.session.commit()
-
-    return jsonify({"message": "Successfully updated"}), HTTPStatus.OK
+    session.commit()

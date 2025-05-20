@@ -8,8 +8,10 @@ from datetime import datetime
 from os import environ
 from typing import Any, Dict, List
 from uuid import UUID
+
+from fastapi import logger
+
 from utility.gc import publisher, topic_path
-from utility.logger import log_error
 
 
 class UuidDatetimeJSONEncoder(json.JSONEncoder):
@@ -23,7 +25,14 @@ class UuidDatetimeJSONEncoder(json.JSONEncoder):
 
 
 class TopicType(enum.Enum):
-    """Enum class for the topic types."""
+    """
+    Enum class for the topic types.
+
+    Attributes:
+        NEWS (0): Represents a news topic.
+        EVENT (1): Represents an event topic.
+        UPDATE (2): Represents an update topic.
+    """
 
     NEWS = 0
     EVENT = 1
@@ -31,12 +40,12 @@ class TopicType(enum.Enum):
 
 
 def send_discord_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
-    """Send a Pub/Sub message to handle discord messages. See handle_discord_topic on how to handle the message.
+    """
+    Send a Pub/Sub message to handle discord messages. See handle_discord_topic on how to handle the message.
 
-    :param type: The topic type.
-    :type type: TopicType
-    :param topic_data: The topic data.
-    :type topic_data: Dict[str, Any]
+    Args:
+        type (TopicType): The topic type.
+        topic_data (Dict[str, Any]): The topic data.
     """
     from services.utility.discord import send_discord_message
 
@@ -56,7 +65,9 @@ def send_discord_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
                 or "author_name" not in topic_data
                 or "news_id" not in topic_data
             ):
-                log_error("Missing data (url, author_name or author_icon)")
+                logger.logger.error(
+                    "Missing data (url, author_name or news_id)",
+                )
                 return
 
             discord_task_data["message_data"] = {
@@ -78,7 +89,7 @@ def send_discord_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
                 or "author_url" not in topic_data
                 or "event_id" not in topic_data
             ):
-                log_error(
+                logger.logger.error(
                     "Missing data (title, description, location, start_date, end_date, author_name, author_url or author_icon)",
                 )
                 return
@@ -103,7 +114,7 @@ def send_discord_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
                 or "se_description" not in topic_data
                 or "en_description" not in topic_data
             ):
-                log_error(
+                logger.logger.error(
                     "Missing data (title, timestamp, se_description or en_description)",
                 )
                 return
@@ -135,16 +146,16 @@ def send_discord_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
         success, message = send_discord_message(discord_task_data)
 
         if not success:
-            log_error(f"Failed to send Discord message: {message}")
+            logger.logger.error(f"Failed to send Discord message: {message}")
 
 
 def send_notification_topic(type: TopicType, topic_data: Dict[str, Any]) -> None:
-    """Send a Pub/Sub message to handle notifications. See handle_notification_topic on how to handle the message.
+    """
+    Send a Pub/Sub message to handle notifications. See handle_notification_topic on how to handle the message.
 
-    :param type: The topic type.
-    :type type: TopicType
-    :param topic_data: The topic data.
-    :type topic_data: Dict[str, Any]
+    Args:
+        type (TopicType): The topic type.
+        topic_data (Dict[str, Any]): The topic data.
     """
     from services.core.notifications import add_notification
 
@@ -158,7 +169,7 @@ def send_notification_topic(type: TopicType, topic_data: Dict[str, Any]) -> None
     }
 
     if "notification_type" not in topic_data or "translations" not in topic_data:
-        log_error("Missing data (notification_type or notification_metadata)")
+        logger.logger.error("Missing data (notification_type or notification_metadata)")
         return
 
     notification_type = topic_data["notification_type"]
@@ -175,7 +186,7 @@ def send_notification_topic(type: TopicType, topic_data: Dict[str, Any]) -> None
             or "title" not in translation
             or "url" not in translation
         ):
-            log_error("Missing data (language_code, title or message)")
+            logger.logger.error("Missing data (language_code, title or message)")
             return
 
     notification_data["message_data"] = {
@@ -200,4 +211,4 @@ def send_notification_topic(type: TopicType, topic_data: Dict[str, Any]) -> None
         success, message = add_notification(notification_data)
 
         if not success:
-            log_error(f"Failed to add notification: {message}")
+            logger.logger.error(f"Failed to add notification: {message}")
