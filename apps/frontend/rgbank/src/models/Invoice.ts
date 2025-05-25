@@ -1,6 +1,6 @@
 import type { AccountBankInformation } from '@/models/AccountBankInformation'
 import type { Category } from '@/models/Form'
-import type { ExpenseStatus } from '@/models/General'
+import type { BookedItemData, ExpenseStatus } from '@/models/General'
 import type { Thread } from '@/models/Thread'
 import type { Committee, Student } from '@medieteknik/models'
 
@@ -34,6 +34,7 @@ export interface InvoiceResponse {
   committee?: Committee
   amount?: number
   student?: Student
+  booked_item?: BookedItemData
 }
 
 export interface InvoiceResponseDetailed {

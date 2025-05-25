@@ -16,5 +16,6 @@
     "activity.table.user": "User",
     "activity.table.actions": "Actions",
     "activity.table.actions.view": "View",
-    "activity.table.actions.delete": "Delete"
+    "activity.table.actions.delete": "Delete",
+    "details.verification.label": "Booking Details"
 }

@@ -55,6 +55,8 @@
     "admin.categories.category.select": "Select a category",
     "admin.categories.amount": "Amount (SEK)",
     "admin.categories.submit": "Save Changes",
+    "admin.status.verification_number.label": "Verification Number",
+    "admin.status.verification_number.placeholder": "Enter verification number (N14, A117, etc.)",
     "processing.title": "Processing Information",
     "processing.status": "Current Status",
     "processing.submitted": "Submitted On",
@@ -63,5 +65,6 @@
     "user.email": "Email",
     "user.bank_name": "Bank Name",
     "user.clearing_number": "Clearing Number",
-    "user.account_number": "Account Number"
+    "user.account_number": "Account Number",
+    "details.verification.label": "Booking Details"
 }

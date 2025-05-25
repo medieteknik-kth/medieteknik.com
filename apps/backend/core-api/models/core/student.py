@@ -1,22 +1,24 @@
 import enum
 import uuid
 from typing import Any, Dict
-from sqlalchemy.dialects.postgresql import UUID
+
 from sqlalchemy import (
-    String,
     Column,
-    ForeignKey,
     DateTime,
     Enum,
+    ForeignKey,
+    String,
     func,
     inspect,
     or_,
     text,
 )
+from sqlalchemy.dialects.postgresql import UUID
+
 from models.utility.auth import RevokedTokens
+from utility.authorization import jwt
 from utility.database import db
 from utility.reception_mode import RECEPTION_MODE
-from utility.authorization import jwt
 
 
 class StudentType(enum.Enum):
@@ -101,6 +103,12 @@ class Student(db.Model):
     rgbank_expense_count = db.relationship(
         "ExpenseCount",
         back_populates="student",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    rgbank_booked_items = db.relationship(
+        "BookedItem",
+        back_populates="booked_by",
         uselist=False,
         cascade="all, delete-orphan",
     )

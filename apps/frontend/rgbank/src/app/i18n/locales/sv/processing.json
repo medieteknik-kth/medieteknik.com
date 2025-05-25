@@ -55,6 +55,8 @@
     "admin.categories.category.select": "Välj en budgetpost",
     "admin.categories.amount": "Belopp (SEK)",
     "admin.categories.submit": "Spara Ändringar",
+    "admin.status.verification_number.label": "Verifieringsnummer",
+    "admin.status.verification_number.placeholder": "Ange verifieringsnummer (N14, A117, etc.)",
     "processing.title": "Bearbetningsinformation",
     "processing.status": "Nuvarande Status",
     "processing.submitted": "Inskickad Den",
@@ -63,5 +65,6 @@
     "user.email": "E-post",
     "user.bank_name": "Banknamn",
     "user.clearing_number": "Clearingnummer",
-    "user.account_number": "Kontonummer"
+    "user.account_number": "Kontonummer",
+    "details.verification.label": "Bokfördsdetaljer"
 }

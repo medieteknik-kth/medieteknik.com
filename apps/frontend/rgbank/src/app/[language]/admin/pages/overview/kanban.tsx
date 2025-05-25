@@ -95,7 +95,7 @@ export default function OverviewKanban({
       </div>
       <ScrollArea className='w-[calc(100vw-2rem)] md:w-[calc(100vw-20rem)] pb-10'>
         <div className='flex w-max gap-5'>
-          <div className='flex flex-col gap-4 min-w-80 w-full pl-4 pb-4'>
+          <div className='min-w-md flex flex-col gap-4 pl-4 pb-4'>
             <div className='flex items-center gap-2'>
               <h3 className='text-lg tracking-wide font-semibold'>
                 {t('activity.table.status.new')}
@@ -116,7 +116,7 @@ export default function OverviewKanban({
                   if (entry.type === 'expense') {
                     if (!typeFilter.includes('expense')) return null
                     return (
-                      <PopIn key={entry.expense_id}>
+                      <PopIn key={entry.expense_id} className='w-md'>
                         <ExpenseCard
                           language={language}
                           expense={entry}
@@ -127,7 +127,7 @@ export default function OverviewKanban({
                   }
                   if (!typeFilter.includes('invoice')) return null
                   return (
-                    <PopIn key={entry.invoice_id}>
+                    <PopIn key={entry.invoice_id} className='w-md'>
                       <InvoiceCard
                         language={language}
                         invoice={entry}
@@ -141,7 +141,7 @@ export default function OverviewKanban({
 
           <Separator orientation='vertical' className='h-[calc(100vh-4rem)]' />
 
-          <div className='flex flex-col gap-4 min-w-80 w-full pb-4'>
+          <div className='min-w-md flex flex-col gap-4 pb-4'>
             <div className='flex items-center gap-2'>
               <h3 className='text-lg tracking-wide font-semibold'>
                 {t('activity.table.status.pending')}
@@ -169,7 +169,7 @@ export default function OverviewKanban({
                   if (entry.type === 'expense') {
                     if (!typeFilter.includes('expense')) return null
                     return (
-                      <PopIn key={entry.expense_id}>
+                      <PopIn key={entry.expense_id} className='w-md'>
                         <ExpenseCard
                           language={language}
                           expense={entry}
@@ -180,7 +180,7 @@ export default function OverviewKanban({
                   }
                   if (!typeFilter.includes('invoice')) return null
                   return (
-                    <PopIn key={entry.invoice_id}>
+                    <PopIn key={entry.invoice_id} className='w-md'>
                       <InvoiceCard
                         language={language}
                         invoice={entry}
@@ -194,7 +194,7 @@ export default function OverviewKanban({
 
           <Separator orientation='vertical' className='h-[calc(100vh-4rem)]' />
 
-          <div className='flex flex-col gap-4 min-w-80 w-full pr-36 pb-4'>
+          <div className='min-w-md flex flex-col gap-4 pr-36 pb-4'>
             <div className='flex items-center gap-2'>
               <h3 className='text-lg tracking-wide font-semibold'>
                 {t('activity.table.status.completed')}
@@ -216,7 +216,7 @@ export default function OverviewKanban({
                   if (entry.type === 'expense') {
                     if (!typeFilter.includes('expense')) return null
                     return (
-                      <PopIn key={entry.expense_id}>
+                      <PopIn key={entry.expense_id} className='w-md'>
                         <ExpenseCard
                           language={language}
                           expense={entry}
@@ -227,7 +227,7 @@ export default function OverviewKanban({
                   }
                   if (!typeFilter.includes('invoice')) return null
                   return (
-                    <PopIn key={entry.invoice_id}>
+                    <PopIn key={entry.invoice_id} className='w-md'>
                       <InvoiceCard
                         language={language}
                         invoice={entry}

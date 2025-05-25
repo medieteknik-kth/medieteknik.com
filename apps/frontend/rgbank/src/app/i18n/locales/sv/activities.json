@@ -16,5 +16,6 @@
     "activity.table.user": "Användare",
     "activity.table.actions": "Åtgärder",
     "activity.table.actions.view": "Visa",
-    "activity.table.actions.delete": "Ta bort"
+    "activity.table.actions.delete": "Ta bort",
+    "details.verification.label": "Bokfördsdetaljer"
 }

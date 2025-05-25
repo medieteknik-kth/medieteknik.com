@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import { Input } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -47,6 +48,7 @@ export default function AdminStatusSection({
   const { addMessage } = useGeneralDetail()
   const [selectedStatus, setSelectedStatus] = useState('')
   const [comment, setComment] = useState('')
+  const [verificationNumber, setVerificationNumber] = useState('')
   const { t } = useTranslation(language, 'processing')
   const { t: expenseT } = useTranslation(language, 'expense')
   const { t: invoiceT } = useTranslation(language, 'invoice')
@@ -66,6 +68,8 @@ export default function AdminStatusSection({
         body: JSON.stringify({
           status,
           comment,
+          verification_number:
+            status === 'BOOKED' ? verificationNumber : undefined,
         }),
       })
       if (!response.ok) {
@@ -166,6 +170,21 @@ export default function AdminStatusSection({
             </div>
           )}
 
+          {selectedStatus === 'BOOKED' && (
+            <>
+              <Label htmlFor='verification_number'>
+                {t('admin.status.verification_number.label')}
+              </Label>
+              <Input
+                id='verification_number'
+                name='verification_number'
+                placeholder={t('admin.status.verification_number.placeholder')}
+                value={verificationNumber}
+                onChange={(e) => setVerificationNumber(e.target.value)}
+              />
+            </>
+          )}
+
           <div className='space-y-2'>
             <Label htmlFor='comment'>
               {t('admin.status.comment')}
@@ -221,6 +240,7 @@ export default function AdminStatusSection({
           disabled={
             (selectedStatus === 'REJECTED' && comment.length === 0) ||
             (selectedStatus === 'CLARIFICATION' && comment.length === 0) ||
+            (selectedStatus === 'BOOKED' && verificationNumber.length === 0) ||
             !selectedStatus
           }
         >

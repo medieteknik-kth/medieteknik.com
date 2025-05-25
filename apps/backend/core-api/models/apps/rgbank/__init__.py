@@ -19,6 +19,7 @@ from .expense import ExpenseDomain
 from .expense import Expense
 from .expense import Invoice
 from .expense import PaymentStatus
+from .expense import BookedItem
 
 from .permissions import RGBankAccessLevels
 from .permissions import RGBankPermissions
@@ -37,6 +38,7 @@ __all__ = [
     "Expense",
     "Invoice",
     "PaymentStatus",
+    "BookedItem",
     "RGBankAccessLevels",
     "RGBankPermissions",
     "RGBankViewPermissions",
