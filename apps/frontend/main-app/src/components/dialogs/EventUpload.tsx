@@ -377,7 +377,7 @@ export default function EventUpload({
                 id='background_color'
                 type='text'
                 placeholder='#FFFFFF'
-                onChangeCapture={(e) => {
+                onChange={(e) => {
                   handleColorChange(e.currentTarget.value)
                 }}
                 className='mt-2 w-full'

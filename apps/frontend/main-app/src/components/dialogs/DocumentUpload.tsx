@@ -80,8 +80,6 @@ function TranslatedInputs({
   const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
   return (
     <>
-      <Input id='language' type='hidden' value={language} />
-
       <div>
         <Label className='text-sm font-bold'>
           Title{' '}
@@ -311,12 +309,13 @@ export default function DocumentUpload({
           ))}
         </TabsList>
         <form
+          className='flex flex-col gap-2'
           onSubmit={(e) => {
             e.preventDefault()
             submit(form)
           }}
         >
-          <div>
+          <div className='flex flex-col gap-2 mt-2'>
             <Label className='text-sm font-bold'>Type</Label>
             <Popover
               modal={popoverOpen}
@@ -373,7 +372,11 @@ export default function DocumentUpload({
           </div>
 
           {SUPPORTED_LANGUAGES.map((language, index) => (
-            <TabsContent key={language} value={language}>
+            <TabsContent
+              key={language}
+              value={language}
+              className='flex flex-col gap-2 mt-0'
+            >
               <TranslatedInputs
                 index={index}
                 language={LANGUAGES[language].name}
@@ -392,7 +395,7 @@ export default function DocumentUpload({
             </TabsContent>
           ))}
 
-          <Button type='submit' className='w-full my-2'>
+          <Button type='submit' className='w-full'>
             Upload
           </Button>
         </form>

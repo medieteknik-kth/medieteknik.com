@@ -3,10 +3,19 @@
  */
 'use client'
 
-import { AuthenticationProvider } from '@/context/AuthenticationContext'
+import { authService } from '@/api/services/authenticationService'
+import { AuthenticationContext } from '@/context/AuthContext'
 import { NotificationProvider } from '@/context/NotificationContext'
+import {
+  type AppAuthenticationAction,
+  type AuthenticationState,
+  authenticationReducer,
+  initialState,
+} from '@/context/authReducer'
 import type { LanguageCode } from '@/models/Language'
 import { LOCAL_STORAGE_THEME } from '@/utility/LocalStorage'
+import { AuthenticationProvider } from '@medieteknik/authentication/src'
+import type { SuccessfulAuthenticationResponse } from '@medieteknik/models'
 import { ThemeProvider } from 'next-themes'
 import { type JSX, useCallback, useEffect, useState } from 'react'
 
@@ -47,7 +56,17 @@ export default function ClientProviders({
   }
 
   return (
-    <AuthenticationProvider language={language}>
+    <AuthenticationProvider<
+      SuccessfulAuthenticationResponse,
+      AuthenticationState,
+      AppAuthenticationAction
+    >
+      authService={authService}
+      authenticationReducer={authenticationReducer}
+      initialState={initialState}
+      context={AuthenticationContext}
+      language={language}
+    >
       <NotificationProvider>
         <ThemeProvider
           attribute='class'

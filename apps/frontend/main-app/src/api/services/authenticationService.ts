@@ -1,5 +1,5 @@
-import type { LanguageCode } from '@/models/Language'
 import type { AuthenticationResponse } from '@/models/response/AuthenticationResponse'
+import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 
 const CACHE_REVALIDATION_PERIOD_SECONDS = 60
 
@@ -19,7 +19,7 @@ export const authService = {
     password: string,
     csrf_token: string,
     remember?: boolean
-  ): Promise<boolean> => {
+  ): Promise<Response> => {
     const json_data = {
       email: email.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
       password: password.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
@@ -36,11 +36,7 @@ export const authService = {
       body: JSON.stringify(json_data),
     })
 
-    if (!response.ok) {
-      throw new Error('Invalid credentials')
-    }
-
-    return true
+    return response
   },
 
   /**

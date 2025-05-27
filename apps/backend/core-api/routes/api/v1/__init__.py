@@ -7,10 +7,11 @@ All routes are registered here via the `register_routes` function.
 import json
 import os
 import secrets
-from typing import Any
 import urllib
-from http import HTTPStatus
 from datetime import datetime, timedelta, timezone
+from http import HTTPStatus
+from typing import Any
+
 from flask import Flask, Response, jsonify, make_response, request, session, url_for
 from flask_jwt_extended import (
     create_access_token,
@@ -20,7 +21,10 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_jwt_cookies,
 )
+from flask_wtf.csrf import generate_csrf
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
 from decorators.csrf_protection import csrf_protected
 from models.core.student import Student
 from models.utility.auth import RevokedTokens
@@ -31,7 +35,7 @@ from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
-from sqlalchemy.exc import SQLAlchemyError
+from utility.authorization import jwt, oauth
 from utility.constants import (
     API_VERSION,
     DEFAULT_FILTER,
@@ -40,12 +44,9 @@ from utility.constants import (
     PUBLIC_PATH,
     ROUTES,
 )
-from flask_wtf.csrf import generate_csrf
-from utility.authorization import oauth
 from utility.database import db
 from utility.logger import log_error
 from utility.translation import retrieve_languages
-from utility.authorization import jwt
 
 
 def register_v1_routes(app: Flask):
@@ -56,44 +57,43 @@ def register_v1_routes(app: Flask):
         app (Flask): The Flask app.
     """
     # Public Routes
-    from .public import (
-        public_committee_bp,
-        public_committee_category_bp,
-        public_committee_position_bp,
-        public_calendar_bp,
-        public_bp,
-        public_album_bp,
-        public_news_bp,
-        public_media_bp,
-        public_documents_bp,
-        public_student_bp,
+    from ..apps.rgbank import (
+        account_bp,
+        expense_bp,
+        expense_domain_bp,
+        invoice_bp,
+        public_expense_domain_bp,
+        public_statistics_bp,
+        rgbank_permissions_bp,
+        statistics_bp,
     )
 
     # Protected Routes
     from .auth import (
-        committee_bp,
-        committee_position_bp,
-        news_bp,
-        events_bp,
-        documents_bp,
-        media_bp,
         album_bp,
         calendar_bp,
-        student_bp,
-        scheduler_bp,
+        committee_bp,
+        committee_position_bp,
+        documents_bp,
+        events_bp,
+        media_bp,
         message_bp,
+        news_bp,
+        scheduler_bp,
+        student_bp,
         tasks_bp,
     )
-
-    from ..apps.rgbank import (
-        account_bp,
-        expense_domain_bp,
-        public_expense_domain_bp,
-        expense_bp,
-        invoice_bp,
-        rgbank_permissions_bp,
-        statistics_bp,
-        public_statistics_bp,
+    from .public import (
+        public_album_bp,
+        public_bp,
+        public_calendar_bp,
+        public_committee_bp,
+        public_committee_category_bp,
+        public_committee_position_bp,
+        public_documents_bp,
+        public_media_bp,
+        public_news_bp,
+        public_student_bp,
     )
 
     # Public Routes
@@ -285,7 +285,9 @@ def register_v1_routes(app: Flask):
                     identity=student,
                     fresh=False,
                     expires_delta=expiration,
-                    additional_claims=response_dict["rgbank_permissions"],
+                    additional_claims=response_dict["rgbank_permissions"]
+                    if filter == "rgbank"
+                    else None,
                 )
                 set_access_cookies(
                     response, access_token, max_age=expiration.total_seconds()
@@ -514,7 +516,9 @@ def register_v1_routes(app: Flask):
             encoded_access_token=create_access_token(
                 identity=student,
                 fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
-                additional_claims=response_dict["rgbank_permissions"],
+                additional_claims=response_dict["rgbank_permissions"]
+                if filter == "rgbank"
+                else None,
                 expires_delta=timedelta(hours=1)
                 if not remember
                 else timedelta(days=14),
