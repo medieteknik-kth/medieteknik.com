@@ -10,14 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -29,10 +21,8 @@ import { usePermissions, useStudent } from '@/providers/AuthenticationProvider'
 import { editCommitteeSchema } from '@/schemas/committee/edit'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 interface Props {
   language: LanguageCode
@@ -42,6 +32,10 @@ interface Props {
 interface TranslatedProps {
   index: number
   language: string
+  form: z.infer<typeof editCommitteeSchema>
+  setForm: React.Dispatch<
+    React.SetStateAction<z.infer<typeof editCommitteeSchema>>
+  >
 }
 
 /**
@@ -54,33 +48,37 @@ interface TranslatedProps {
  *
  * @returns {JSX.Element} The rendered component
  */
-function TranslatedInputs({ index, language }: TranslatedProps): JSX.Element {
+function TranslatedInputs({
+  index,
+  language,
+  form,
+  setForm,
+}: TranslatedProps): JSX.Element {
   return (
     <>
-      <FormField
-        name={`translations.${index}.language_code`}
-        render={({ field }) => (
-          <FormItem>
-            <Input id='language' type='hidden' {...field} />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Input id={`${language}_${index}`} type='hidden' value={language} />
+      </div>
 
-      <FormField
-        name={`translations.${index}.description`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Description{' '}
-              <span className='uppercase text-xs tracking-wide select-none'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <Textarea id='description' placeholder='Description' {...field} />
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Label className='text-sm font-semibold'>
+          Description{' '}
+          <span className='uppercase text-xs tracking-wide select-none'>
+            [{language}]
+          </span>
+        </Label>
+
+        <Textarea
+          id={`description_${index}`}
+          placeholder='Description'
+          value={form.translations[index].description}
+          onChange={(e) => {
+            const newTranslations = [...form.translations]
+            newTranslations[index].description = e.target.value
+            setForm({ ...form, translations: newTranslations })
+          }}
+        />
+      </div>
     </>
   )
 }
@@ -104,19 +102,23 @@ export default function EditCommittee({
   const { positions } = useStudent()
   const { permissions } = usePermissions()
   const { t } = useTranslation(language, 'committee_management')
-
-  const form = useForm<z.infer<typeof editCommitteeSchema>>({
-    resolver: zodResolver(editCommitteeSchema),
-    defaultValues: {
-      title: committee.translations[0].title,
-      translations: SUPPORTED_LANGUAGES.map((lang) => ({
-        language_code: lang,
-        description:
-          committee.translations.find(
-            (t) => t.language_code.split('-')[0] === lang
-          )?.description || '',
-      })),
-    },
+  const [form, setForm] = useState<z.infer<typeof editCommitteeSchema>>({
+    title: committee.translations[0].title,
+    translations: SUPPORTED_LANGUAGES.map((lang) => ({
+      language_code: lang,
+      description:
+        committee.translations.find(
+          (translation) => translation.language_code === lang
+        )?.description || '',
+    })),
+    logo: undefined,
+    group_photo: undefined,
+  })
+  const [formErrors, setFormErrors] = useState({
+    title: '',
+    translations: SUPPORTED_LANGUAGES.map(() => ({ description: '' })),
+    logo: '',
+    group_photo: '',
   })
 
   if (
@@ -133,7 +135,25 @@ export default function EditCommittee({
   const MAX_LOGO_FILE_SIZE = 1 * 1024 * 1024 // 1 MB
   const MAX_GROUP_PHOTO_FILE_SIZE = 15 * 1024 * 1024 // 15 MB
 
-  const postForm = async (data: z.infer<typeof editCommitteeSchema>) => {
+  const submit = async (data: z.infer<typeof editCommitteeSchema>) => {
+    const errors = editCommitteeSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        title: fieldErrors.properties?.title?.errors[0] || '',
+        translations: SUPPORTED_LANGUAGES.map((lang, index) => ({
+          description:
+            fieldErrors.properties?.translations?.items?.[index]?.properties
+              ?.description?.errors[0] || '',
+        })),
+        logo: fieldErrors.properties?.logo?.errors[0] || '',
+        group_photo: fieldErrors.properties?.group_photo?.errors[0] || '',
+      })
+      setErrorMessage('Invalid form data')
+      return
+    }
+
     const formData = new FormData()
 
     // Add top-level fields
@@ -212,7 +232,9 @@ export default function EditCommittee({
           </TabsList>
           {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
           <div>
-            <Label>{t('edit_public_details.form.email')}</Label>
+            <Label className='text-sm font-semibold'>
+              {t('edit_public_details.form.email')}
+            </Label>
             <Input
               value={committee.email}
               disabled
@@ -220,113 +242,112 @@ export default function EditCommittee({
               title='Contact an administrator to change the email.'
             />
           </div>
-          <form onSubmit={form.handleSubmit(postForm)}>
-            <Form {...form}>
-              <FormField
-                control={form.control}
-                name='title'
-                render={({ field }) => (
-                  <FormItem className='mb-4'>
-                    <FormLabel>{t('edit_public_details.form.title')}</FormLabel>
-                    <Input id='title' placeholder='Title' {...field} />
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              submit(form)
+            }}
+          >
+            <div>
+              <Label className='text-sm font-semibold'>
+                {t('edit_public_details.form.title')}
+              </Label>
+              <Input
+                id='title'
+                placeholder='Title'
+                onChange={(e) => {
+                  setForm({
+                    ...form,
+                    title: e.target.value,
+                  })
+                }}
               />
+              {formErrors.title && (
+                <p className='text-red-500 text-xs'>{formErrors.title}</p>
+              )}
+            </div>
 
-              {SUPPORTED_LANGUAGES.map((language, index) => (
-                <TabsContent key={language} value={language}>
-                  <TranslatedInputs
-                    index={index}
-                    language={LANGUAGES[language].name}
-                  />
-                </TabsContent>
-              ))}
+            {SUPPORTED_LANGUAGES.map((language, index) => (
+              <TabsContent key={language} value={language}>
+                <TranslatedInputs
+                  index={index}
+                  language={LANGUAGES[language].name}
+                  form={form}
+                  setForm={setForm}
+                />
+              </TabsContent>
+            ))}
 
-              <FormField
-                control={form.control}
-                name='logo'
-                render={({ field }) => (
-                  <FormItem className='mb-4'>
-                    <FormLabel>{t('edit_public_details.form.logo')}</FormLabel>
-                    <Input
-                      id='logo'
-                      accept='image/svg+xml'
-                      type='file'
-                      onChange={(event) => {
-                        const file = event.target.files
-                          ? event.target.files[0]
-                          : null
+            <div>
+              <Label className='text-sm font-semibold'>
+                {t('edit_public_details.form.logo')}
+              </Label>
+              <p className='text-xs text-gray-500'>
+                {t('edit_public_details.form.logo.requirements')}
+              </p>
+              <Input
+                id='logo'
+                accept='image/svg+xml'
+                type='file'
+                onChange={(event) => {
+                  const file = event.target.files ? event.target.files[0] : null
 
-                        if (!file) return
+                  if (!file) return
 
-                        if (file.size > MAX_LOGO_FILE_SIZE) {
-                          alert('File is too large')
-                          event.target.value = ''
-                          return
-                        }
+                  if (file.size > MAX_LOGO_FILE_SIZE) {
+                    alert('File is too large')
+                    event.target.value = ''
+                    return
+                  }
 
-                        field.onChange({
-                          target: {
-                            name: field.name,
-                            value: file,
-                          },
-                        })
-                      }}
-                    />
-                    <FormDescription>
-                      {t('edit_public_details.form.logo.requirements')}
-                    </FormDescription>
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
+                  setForm({
+                    ...form,
+                    logo: file,
+                  })
+                }}
               />
+              {formErrors.logo && (
+                <p className='text-red-500 text-xs'>{formErrors.logo}</p>
+              )}
+            </div>
 
-              <FormField
-                control={form.control}
-                name='group_photo'
-                render={({ field }) => (
-                  <FormItem className='mb-4'>
-                    <FormLabel>
-                      {t('edit_public_details.form.group_photo')}
-                    </FormLabel>
-                    <Input
-                      id='logo'
-                      accept='image/*'
-                      type='file'
-                      onChange={(event) => {
-                        const file = event.target.files
-                          ? event.target.files[0]
-                          : null
+            <div>
+              <Label className='text-sm font-semibold'>
+                {t('edit_public_details.form.group_photo')}
+              </Label>
+              <p className='text-xs text-gray-500'>
+                {t('edit_public_details.form.group_photo.requirements')}
+              </p>
 
-                        if (!file) return
+              <Input
+                id='logo'
+                accept='image/*'
+                type='file'
+                onChange={(event) => {
+                  const file = event.target.files ? event.target.files[0] : null
 
-                        if (file.size > MAX_GROUP_PHOTO_FILE_SIZE) {
-                          alert('File is too large')
-                          event.target.value = ''
-                          return
-                        }
+                  if (!file) return
 
-                        field.onChange({
-                          target: {
-                            name: field.name,
-                            value: file,
-                          },
-                        })
-                      }}
-                    />
-                    <FormDescription>
-                      {t('edit_public_details.form.group_photo.requirements')}
-                    </FormDescription>
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
+                  if (file.size > MAX_GROUP_PHOTO_FILE_SIZE) {
+                    alert('File is too large')
+                    event.target.value = ''
+                    return
+                  }
+
+                  setForm({
+                    ...form,
+                    group_photo: file,
+                  })
+                }}
               />
+              {formErrors.group_photo && (
+                <p className='text-red-500 text-xs'>{formErrors.group_photo}</p>
+              )}
+            </div>
 
-              <Button type='submit' className='w-full'>
-                Save
-              </Button>
-            </Form>
+            <Button type='submit' className='w-full'>
+              Save
+            </Button>
           </form>
         </Tabs>
       </DialogContent>

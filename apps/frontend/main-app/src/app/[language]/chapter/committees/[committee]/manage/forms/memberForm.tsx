@@ -17,14 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
@@ -35,16 +28,14 @@ import { Role } from '@/models/Permission'
 import type Student from '@/models/Student'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
-import { removeMember } from '@/schemas/committee/member'
+import { addMember, removeMember } from '@/schemas/committee/member'
 import {
   ChevronUpDownIcon,
   MinusIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 interface Props {
   language: LanguageCode
@@ -55,15 +46,27 @@ export function RemoveMemberForm({ language }: Props) {
   const { student } = useStudent()
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([])
   const { t } = useTranslation(language, 'committee_management/forms/member')
-  const form = useForm<z.infer<typeof removeMember>>({
-    resolver: zodResolver(removeMember),
-    defaultValues: {
-      students: [],
-      committee_position_id: '',
-    },
+  const [form, setForm] = useState<z.infer<typeof removeMember>>({
+    committee_position_id: '',
+    students: [],
+  })
+  const [formErrors, setFormErrors] = useState({
+    committee_position_id: '',
+    students: '',
   })
 
-  const publish = async (data: z.infer<typeof removeMember>) => {
+  const submit = async (data: z.infer<typeof removeMember>) => {
+    const errors = removeMember.safeParse(data)
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        committee_position_id:
+          fieldErrors.properties?.committee_position_id?.errors[0] || '',
+        students: fieldErrors.properties?.students?.errors[0] || '',
+      })
+      return
+    }
+
     const { committee_position_id, students } = data
     try {
       const response = await fetch(
@@ -108,67 +111,77 @@ export function RemoveMemberForm({ language }: Props) {
         <DialogTitle>{t('remove_member_title')}</DialogTitle>
         <DialogDescription>{t('remove_member_description')}</DialogDescription>
       </DialogHeader>
-      <SearchStudent
-        language={language}
-        studentsOrMetadata={{
-          metadata: members.items.map((member) => {
-            return {
-              student: member.student,
-              metadataKey:
-                findPosition(member.committee_position_id)?.translations[0]
-                  .title || member.committee_position_id,
+      <div>
+        <SearchStudent
+          language={language}
+          studentsOrMetadata={{
+            metadata: members.items.map((member) => {
+              return {
+                student: member.student,
+                metadataKey:
+                  findPosition(member.committee_position_id)?.translations[0]
+                    .title || member.committee_position_id,
+              }
+            }),
+          }}
+          onClickCallback={(student) => {
+            if (selectedStudents.includes(student)) {
+              setSelectedStudents(
+                selectedStudents.filter((s) => s.email !== student.email)
+              )
+            } else {
+              setSelectedStudents([...selectedStudents, student])
             }
-          }),
-        }}
-        onClickCallback={(student) => {
-          if (selectedStudents.includes(student)) {
-            setSelectedStudents(
-              selectedStudents.filter((s) => s.email !== student.email)
-            )
-          } else {
-            setSelectedStudents([...selectedStudents, student])
-          }
-        }}
-      />
+          }}
+        />
+        {formErrors.students && (
+          <p className='text-sm text-red-500'>{formErrors.students}</p>
+        )}
+      </div>
+
       <form
         className='flex flex-col gap-2'
-        onSubmit={form.handleSubmit(publish)}
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit(form as z.infer<typeof removeMember>)
+        }}
       >
-        <Form {...form}>
-          {selectedStudents
-            .map((student) => student.email)
-            .includes(student.email) && (
-            <p className='text-sm text-red-500'>{t('remove_self_error')}</p>
-          )}
+        {selectedStudents
+          .map((student) => student.email)
+          .includes(student.email) && (
+          <p className='text-sm text-red-500'>{t('remove_self_error')}</p>
+        )}
 
-          <Button
-            type='submit'
-            variant={'destructive'}
-            disabled={
-              selectedStudents.length === 0 ||
-              selectedStudents
-                .map((student) => student.email)
-                .includes(student.email)
-            }
-            onClick={() => {
-              form.setValue(
-                'committee_position_id',
+        {formErrors.committee_position_id && (
+          <p className='text-sm text-red-500'>
+            {formErrors.committee_position_id}
+          </p>
+        )}
+
+        <Button
+          type='submit'
+          variant={'destructive'}
+          disabled={
+            selectedStudents.length === 0 ||
+            selectedStudents
+              .map((student) => student.email)
+              .includes(student.email)
+          }
+          onClick={() => {
+            setForm({
+              committee_position_id:
                 members.items.find(
                   (member) => member.student.email === student.email
-                )?.committee_position_id ?? ''
-              )
-              form.setValue(
-                'students',
-                selectedStudents.map((student) => ({
-                  student_email: student.email ?? '',
-                }))
-              )
-            }}
-          >
-            <MinusIcon className='w-5 h-5 mr-2' />
-            {t('remove_button')}
-          </Button>
-        </Form>
+                )?.committee_position_id ?? '',
+              students: selectedStudents.map((student) => ({
+                student_email: student.email ?? '',
+              })),
+            })
+          }}
+        >
+          <MinusIcon className='w-5 h-5 mr-2' />
+          {t('remove_button')}
+        </Button>
       </form>
     </DialogContent>
   )
@@ -186,6 +199,14 @@ export function AddMemberForm({
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
   const { t } = useTranslation(language, 'committee_management/forms/member')
+  const [form, setForm] = useState<z.infer<typeof addMember>>({
+    committee_position_id: '',
+    students: [],
+  })
+  const [formErrors, setFormErrors] = useState({
+    committee_position_id: '',
+    students: '',
+  })
 
   const findPosition = (id: string) => {
     return positions.find((position) => position.committee_position_id === id)
@@ -222,30 +243,22 @@ export function AddMemberForm({
       value: position.committee_position_id,
     }))
 
-  const Schema = z.object({
-    students: z
-      .array(
-        z.object({
-          student_email: z.string().email(),
-        })
-      )
-      .min(1),
-    position_id: z.string().uuid().optional().or(z.literal('')),
-  })
+  const submit = async (data: z.infer<typeof addMember>) => {
+    const errors = addMember.safeParse(data)
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        committee_position_id:
+          fieldErrors.properties?.committee_position_id?.errors[0] || '',
+        students: fieldErrors.properties?.students?.errors[0] || '',
+      })
+      return
+    }
 
-  const form = useForm<z.infer<typeof Schema>>({
-    resolver: zodResolver(Schema),
-    defaultValues: {
-      students: [],
-      position_id: '',
-    },
-  })
-
-  const publish = async (data: z.infer<typeof Schema>) => {
     const json_data = JSON.stringify(data)
     try {
       const response = await fetch(
-        `/api/committee_positions/assign/${data.position_id}`,
+        `/api/committee_positions/assign/${data.committee_position_id}`,
         {
           method: 'POST',
           credentials: 'include',
@@ -273,90 +286,94 @@ export function AddMemberForm({
         <DialogTitle>{t('add_member_title')}</DialogTitle>
         <DialogDescription>{t('add_member_description')}</DialogDescription>
       </DialogHeader>
-      <SearchStudent
-        language={language}
-        onClickCallback={(student) => {
-          setSelectedStudents([...selectedStudents, student])
-        }}
-      />
+      <div>
+        <SearchStudent
+          language={language}
+          onClickCallback={(student) => {
+            setSelectedStudents([...selectedStudents, student])
+          }}
+        />
+        {formErrors.students && (
+          <p className='text-sm text-red-500'>{formErrors.students}</p>
+        )}
+      </div>
       <form
         className='flex flex-col gap-2'
-        onSubmit={form.handleSubmit(publish)}
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit(form)
+        }}
       >
-        <Form {...form}>
-          <FormField
-            name='position_id'
-            render={({ field }) => (
-              <FormItem className='flex flex-col gap-0.5'>
-                <FormLabel htmlFor='position_id'>
-                  {t('add_member_position_label')}
-                </FormLabel>
-                <Popover open={open} onOpenChange={setOpen} modal={open}>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={'outline'}
-                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
-                        role='combobox'
-                        aria-expanded={open}
-                        className='w-[300px] justify-between'
+        <div>
+          <Label htmlFor='committee_position_id'>
+            {t('add_member_position_label')}
+          </Label>
+          <Popover open={open} onOpenChange={setOpen} modal={open}>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                role='combobox'
+                aria-expanded={open}
+                className='w-[300px] justify-between'
+              >
+                {form.committee_position_id
+                  ? positionOptions.find((o) => o.value === value)?.label
+                  : t('add_member_position_placeholder')}
+                <ChevronUpDownIcon className='w-5 h-5' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Command>
+                <CommandInput />
+                <CommandList>
+                  <CommandEmpty>
+                    {t('add_member_position_not_found')}
+                  </CommandEmpty>
+                  <CommandGroup>
+                    {positionOptions.map((option) => (
+                      <CommandItem
+                        key={option.value}
+                        value={option.value}
+                        onSelect={(currentValue) => {
+                          setForm({
+                            ...form,
+                            committee_position_id: option.value,
+                          })
+                          setValue(currentValue === value ? '' : currentValue)
+                          setOpen(false)
+                        }}
                       >
-                        {field.value
-                          ? positionOptions.find((o) => o.value === value)
-                              ?.label
-                          : t('add_member_position_placeholder')}
-                        <ChevronUpDownIcon className='w-5 h-5' />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <Command>
-                      <CommandInput />
-                      <CommandList>
-                        <CommandEmpty>
-                          {t('add_member_position_not_found')}
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {positionOptions.map((option) => (
-                            <CommandItem
-                              key={option.value}
-                              value={option.value}
-                              onSelect={(currentValue) => {
-                                form.setValue('position_id', option.value)
-                                setValue(
-                                  currentValue === value ? '' : currentValue
-                                )
-                                setOpen(false)
-                              }}
-                            >
-                              {option.label}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type='submit'
-            disabled={selectedStudents.length === 0}
-            onClick={() => {
-              form.setValue(
-                'students',
-                selectedStudents.map((student) => ({
-                  student_email: student.email ?? '',
-                }))
-              )
-            }}
-          >
-            <PlusIcon className='w-5 h-5 mr-2' />
-            {t('add_member_button')}
-          </Button>
-        </Form>
+                        {option.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          {formErrors.committee_position_id && (
+            <p className='text-sm text-red-500'>
+              {formErrors.committee_position_id}
+            </p>
+          )}
+        </div>
+
+        <Button
+          type='submit'
+          disabled={selectedStudents.length === 0}
+          onClick={() => {
+            setForm({
+              ...form,
+              students: selectedStudents.map((student) => ({
+                student_email: student.email ?? '',
+              })),
+            })
+          }}
+        >
+          <PlusIcon className='w-5 h-5 mr-2' />
+          {t('add_member_button')}
+        </Button>
       </form>
     </DialogContent>
   )

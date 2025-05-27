@@ -1,5 +1,6 @@
 'use client'
-import { z } from 'zod'
+
+import { z } from 'zod/v4-mini'
 
 /**
  * @name createNewsSchema
@@ -7,7 +8,7 @@ import { z } from 'zod'
  * - src/components/dialogs/NewsUpload.tsx
  */
 export const createNewsSchema = z.object({
-  title: z.string().optional().or(z.literal('')),
+  title: z.optional(z.string()),
 })
 
 /**
@@ -17,6 +18,6 @@ export const createNewsSchema = z.object({
  */
 export const uploadNewsSchema = z.object({
   title: z.string(),
-  image: z.instanceof(window.File).optional().or(z.literal(null)),
-  short_description: z.string().max(120, { message: 'Too long' }),
+  image: z.optional(z.file()),
+  short_description: z.string().check(z.maxLength(120, { error: 'Too long' })),
 })

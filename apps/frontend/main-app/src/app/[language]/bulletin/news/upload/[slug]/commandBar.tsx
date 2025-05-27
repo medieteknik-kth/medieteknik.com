@@ -18,16 +18,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import type { LanguageCode } from '@/models/Language'
@@ -38,12 +30,10 @@ import {
   EyeIcon,
   InboxIcon,
 } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { mutate } from 'swr'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 import { AutoSaveResult, useAutoSave } from './autoSave'
 
 interface Props {
@@ -70,6 +60,16 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation(language, 'article')
+  const [form, setForm] = useState<z.infer<typeof uploadNewsSchema>>({
+    title: content.translations[0].title || '',
+    image: undefined,
+    short_description: content.translations[0].short_description || '',
+  })
+  const [formErrors, setFormErrors] = useState({
+    title: '',
+    image: '',
+    short_description: '',
+  })
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
   const ACCEPTED_IMAGE_TYPES = [
@@ -77,16 +77,23 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
     'image/jpg',
     'image/png',
     'image/webp',
-  ]
+  ] as const
 
-  const form = useForm<z.infer<typeof uploadNewsSchema>>({
-    resolver: zodResolver(uploadNewsSchema),
-    defaultValues: {
-      title: content.translations[0].title,
-    },
-  })
+  const submit = async (data: z.infer<typeof uploadNewsSchema>) => {
+    const errors = uploadNewsSchema.safeParse(data)
 
-  const postForm = async (data: z.infer<typeof uploadNewsSchema>) => {
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        title: fieldErrors.properties?.title?.errors[0] || '',
+        image: fieldErrors.properties?.image?.errors[0] || '',
+        short_description:
+          fieldErrors.properties?.short_description?.errors[0] || '',
+      })
+      setLoading(false)
+      return
+    }
+
     await saveCallback(language, true)
 
     const formData = new window.FormData()
@@ -267,86 +274,90 @@ export default function CommandBar({ language, slug }: Props): JSX.Element {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault()
-                    form.handleSubmit(postForm)()
+                    submit(form)
                     setLoading(true)
                     setTimeout(() => {
                       setLoading(false)
                     }, 3000)
                   }}
                 >
-                  <Form {...form}>
-                    <FormField
-                      control={form.control}
-                      name='title'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Title</FormLabel>
-                          <FormControl className='w-full'>
-                            <Input placeholder='Title' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                  <div>
+                    <Label className='text-sm font-semibold'>Title</Label>
+                    <Input
+                      id='title'
+                      placeholder='Title'
+                      value={form.title}
+                      onChange={(e) => {
+                        setForm({
+                          ...form,
+                          title: e.target.value,
+                        })
+                      }}
                     />
-                    <FormField
-                      name='image'
-                      render={({ field }) => (
-                        <FormItem className='mt-4'>
-                          <FormLabel>Image</FormLabel>
-                          <Input
-                            type='file'
-                            accept={ACCEPTED_IMAGE_TYPES.join(', ')}
-                            onChange={(event) => {
-                              const file = event.target.files
-                                ? event.target.files[0]
-                                : null
+                    {formErrors.title && (
+                      <p className='text-xs text-red-500 mt-1'>
+                        {formErrors.title}
+                      </p>
+                    )}
+                  </div>
 
-                              if (!file) return
+                  <div>
+                    <Label className='text-sm font-semibold mt-4'>Image</Label>
+                    <Input
+                      type='file'
+                      accept={ACCEPTED_IMAGE_TYPES.join(', ')}
+                      onChange={(event) => {
+                        const file = event.target.files
+                          ? event.target.files[0]
+                          : null
 
-                              if (file.size > MAX_FILE_SIZE) {
-                                setError('File is too large')
-                                event.target.value = ''
-                                return
-                              }
+                        if (!file) return
 
-                              field.onChange({
-                                target: {
-                                  name: field.name,
-                                  value: file,
-                                },
-                              })
-                            }}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                        if (file.size > MAX_FILE_SIZE) {
+                          setError('File is too large')
+                          event.target.value = ''
+                          return
+                        }
+
+                        setForm({
+                          ...form,
+                          image: file,
+                        })
+                      }}
                     />
-                    <FormField
-                      control={form.control}
-                      name='short_description'
-                      render={({ field }) => (
-                        <FormItem className='mt-4'>
-                          <FormLabel>
-                            {t('publish.short_description')}
-                          </FormLabel>
-                          <FormControl className='w-full'>
-                            <Textarea placeholder='Description' {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            {t('publish.short_description.description')}
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    {formErrors.image && (
+                      <p className='text-xs text-red-500 mt-1'>
+                        {formErrors.image}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className='text-sm font-semibold mt-4'>
+                      {t('publish.short_description')}
+                    </Label>
+                    <p className='text-xs text-muted-foreground'>
+                      {t('publish.short_description.description')}
+                    </p>
+                    <Textarea
+                      placeholder='Description'
+                      value={form.short_description}
+                      onChange={(e) => {
+                        setForm({
+                          ...form,
+                          short_description: e.target.value,
+                        })
+                      }}
                     />
-                    <Button
-                      className='w-full my-4'
-                      type='submit'
-                      disabled={loading}
-                    >
-                      {t('publish')}
-                    </Button>
-                  </Form>
+                  </div>
+
+                  <Button
+                    className='w-full my-4'
+                    type='submit'
+                    disabled={loading}
+                  >
+                    {t('publish')}
+                  </Button>
                 </form>
               </DialogHeader>
             </DialogContent>

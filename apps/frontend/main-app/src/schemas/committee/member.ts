@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 /**
  * @name addMember
@@ -9,19 +9,20 @@ export const addMember = z.object({
   students: z
     .array(
       z.object({
-        student_email: z.string().email(),
+        student_email: z.email(),
       })
     )
-    .min(1),
+    .check(z.minLength(1, { error: 'At least one member must be selected' })),
+  committee_position_id: z.uuid(),
 })
 
 export const removeMember = z.object({
   students: z
     .array(
       z.object({
-        student_email: z.string().email(),
+        student_email: z.email(),
       })
     )
-    .min(1),
-  committee_position_id: z.string().uuid(),
+    .check(z.minLength(1, { error: 'At least one member must be selected' })),
+  committee_position_id: z.uuid(),
 })

@@ -15,15 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -40,10 +31,8 @@ import { useStudent } from '@/providers/AuthenticationProvider'
 import { mediaUploadSchema } from '@/schemas/items/media'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 interface Props {
   language: LanguageCode
@@ -55,57 +44,75 @@ interface Props {
 interface TranslatedInputsProps {
   language: string
   index: number
+  form: z.infer<typeof mediaUploadSchema>
+  setForm: React.Dispatch<
+    React.SetStateAction<z.infer<typeof mediaUploadSchema>>
+  >
+  formErrors: {
+    media_type: string
+    media: string
+    youtube_url: string
+    translations: { title: string; description: string }[]
+  }
 }
 
 function TranslatedInputs({
   language,
   index,
+  form,
+  setForm,
+  formErrors,
 }: TranslatedInputsProps): JSX.Element {
   return (
     <>
-      <FormField
-        name={`translations.${index}.language_code`}
-        render={({ field }) => (
-          <FormItem>
-            <Input id='language' type='hidden' {...field} />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Input id='language' type='hidden' value={language} />
+      </div>
 
-      <FormField
-        name={`translations.${index}.title`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Title{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <Input id='title' placeholder='Title' {...field} />
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Label className='text-sm font-semibold'>
+          Title{' '}
+          <span className='uppercase text-xs tracking-wide'>[{language}]</span>
+        </Label>
 
-      <FormField
-        name={`translations.${index}.description`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='leading-tight'>
-              Description{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <Textarea id='description' placeholder='Description' {...field} />
-            <FormDescription>
-              Max length: 255 characters, optional
-            </FormDescription>
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
+        <Input
+          id='title'
+          placeholder='Title'
+          value={form.translations[index].title}
+          onChange={(e) => {
+            const newTranslations = [...form.translations]
+            newTranslations[index].title = e.target.value
+            setForm({ ...form, translations: newTranslations })
+          }}
+        />
+        {formErrors.translations[index].title && (
+          <p className='text-red-500 text-xs mt-1'>
+            {formErrors.translations[index].title}
+          </p>
         )}
-      />
+      </div>
+
+      <div>
+        <Label className='text-sm font-semibold'>
+          Description{' '}
+          <span className='uppercase text-xs tracking-wide'>[{language}]</span>
+        </Label>
+        <Textarea
+          id='description'
+          placeholder='Description'
+          value={form.translations[index].description}
+          onChange={(e) => {
+            const newTranslations = [...form.translations]
+            newTranslations[index].description = e.target.value
+            setForm({ ...form, translations: newTranslations })
+          }}
+        />
+        {formErrors.translations[index].description && (
+          <p className='text-red-500 text-xs mt-1'>
+            {formErrors.translations[index].description}
+          </p>
+        )}
+      </div>
     </>
   )
 }
@@ -119,23 +126,51 @@ export default function MediaUpload({
   const [value, setValue] = useState('image')
   const [popoverOpen, setPopoverOpen] = useState(false)
   const { student } = useStudent()
-
-  const form = useForm<z.infer<typeof mediaUploadSchema>>({
-    resolver: zodResolver(mediaUploadSchema),
-    defaultValues: {
-      media_type: 'image',
-      media: '',
-      youtube_url: '',
-      translations: SUPPORTED_LANGUAGES.map((language) => ({
-        language_code: language,
-        title: '',
-        description: '',
-      })),
-    },
+  const [form, setForm] = useState<z.infer<typeof mediaUploadSchema>>({
+    media_type: 'image',
+    media: undefined,
+    youtube_url: '',
+    translations: SUPPORTED_LANGUAGES.map((lang) => ({
+      language_code: lang,
+      title: '',
+      description: '',
+    })),
+  })
+  const [formErrors, setFormErrors] = useState({
+    media_type: '',
+    media: '',
+    youtube_url: '',
+    translations: SUPPORTED_LANGUAGES.map(() => ({
+      title: '',
+      description: '',
+    })),
   })
 
-  const postForm = async (data: z.infer<typeof mediaUploadSchema>) => {
+  const submit = async (data: z.infer<typeof mediaUploadSchema>) => {
     if (!student) {
+      return
+    }
+
+    const errors = mediaUploadSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        media_type: fieldErrors.properties?.media_type?.errors[0] || '',
+        media: fieldErrors.properties?.media?.errors[0] || '',
+        youtube_url: fieldErrors.properties?.youtube_url?.errors[0] || '',
+        translations:
+          fieldErrors.properties?.translations?.items?.reduce(
+            (acc, item, index) => {
+              acc[index] = {
+                title: item.properties?.title?.errors[0] || '',
+                description: item.properties?.description?.errors[0] || '',
+              }
+              return acc
+            },
+            [] as { title: string; description: string }[]
+          ) || ([] as { title: string; description: string }[]),
+      })
       return
     }
 
@@ -179,7 +214,16 @@ export default function MediaUpload({
       if (response.ok) {
         alert('Media uploaded successfully')
         callback()
-        form.reset()
+        setForm({
+          media_type: 'image',
+          media: undefined,
+          youtube_url: '',
+          translations: SUPPORTED_LANGUAGES.map((lang) => ({
+            language_code: lang,
+            title: '',
+            description: '',
+          })),
+        })
         window.location.reload()
       } else {
         alert('Failed to upload media')
@@ -228,138 +272,150 @@ export default function MediaUpload({
             </TabsTrigger>
           ))}
         </TabsList>
-        <form onSubmit={form.handleSubmit(postForm)}>
-          <Form {...form}>
-            {SUPPORTED_LANGUAGES.map((language, index) => (
-              <TabsContent key={language} value={language}>
-                <TranslatedInputs
-                  index={index}
-                  language={LANGUAGES[language].name}
-                />
-              </TabsContent>
-            ))}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            submit(form)
+          }}
+        >
+          {SUPPORTED_LANGUAGES.map((language, index) => (
+            <TabsContent key={language} value={language}>
+              <TranslatedInputs
+                index={index}
+                language={LANGUAGES[language].name}
+                form={form}
+                setForm={setForm}
+                formErrors={formErrors}
+              />
+            </TabsContent>
+          ))}
 
-            <FormField
-              control={form.control}
-              name='media_type'
-              render={({ field }) => (
-                <FormItem className='flex flex-col my-2'>
-                  <FormLabel>Media Type</FormLabel>
-                  <Popover
-                    open={popoverOpen}
-                    onOpenChange={setPopoverOpen}
-                    modal={popoverOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          aria-expanded={popoverOpen}
-                          value={value}
-                          className='w-52 justify-between'
+          <div>
+            <Label>Media Type</Label>
+            <Popover
+              open={popoverOpen}
+              onOpenChange={setPopoverOpen}
+              modal={popoverOpen}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  aria-expanded={popoverOpen}
+                  value={value}
+                  className='w-52 justify-between'
+                >
+                  {form.media_type
+                    ? mediaTypes.find((t) => t.value === value)?.label
+                    : 'Document'}
+                  <ChevronDownIcon className='w-4 h-4 ml-2' />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Command>
+                  <CommandInput placeholder='Search media type' />
+                  <CommandEmpty>None found.</CommandEmpty>
+                  <CommandList>
+                    <CommandGroup>
+                      {mediaTypes.map((mediaType) => (
+                        <CommandItem
+                          key={mediaType.value}
+                          value={mediaType.value}
+                          onSelect={() => {
+                            setValue(mediaType.value)
+                            setForm({
+                              ...form,
+                              media_type: mediaType.value as 'image' | 'video',
+                              media: undefined,
+                              youtube_url: '',
+                            })
+                            setPopoverOpen(false)
+                          }}
                         >
-                          {field.value
-                            ? mediaTypes.find((t) => t.value === value)?.label
-                            : 'Document'}
-                          <ChevronDownIcon className='w-4 h-4 ml-2' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <Command>
-                        <CommandInput placeholder='Search media type' />
-                        <CommandEmpty>None found.</CommandEmpty>
-                        <CommandList>
-                          <CommandGroup>
-                            {mediaTypes.map((mediaType) => (
-                              <CommandItem
-                                key={mediaType.value}
-                                value={mediaType.value}
-                                onSelect={() => {
-                                  setValue(mediaType.value)
-                                  form.setValue(
-                                    'media_type',
-                                    mediaType.value as 'image' | 'video'
-                                  )
-                                  setPopoverOpen(false)
-                                  form.setValue('media', '')
-                                  form.setValue('youtube_url', '')
-                                }}
-                              >
-                                {mediaType.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage className='text-xs font-bold' />
-                </FormItem>
+                          {mediaType.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+
+            {formErrors.media_type && (
+              <p className='text-red-500 text-xs mt-1'>
+                {formErrors.media_type}
+              </p>
+            )}
+          </div>
+
+          {form.media_type === 'image' && (
+            <div>
+              <Label>Image</Label>
+              <Input
+                id='media'
+                type='file'
+                accept={ACCEPTED_FILE_TYPES.join(', ')}
+                onChange={(event) => {
+                  const file = event.target.files ? event.target.files[0] : null
+
+                  if (!file) return
+
+                  if (file.size > MAX_FILE_SIZE) {
+                    alert('File is too large')
+                    event.target.value = ''
+                    return
+                  }
+
+                  setForm({
+                    ...form,
+                    media: file,
+                  })
+                }}
+              />
+              <p className='text-xs text-muted-foreground mt-1'>
+                Max file size: {MAX_FILE_SIZE / 1024 / 1024} MB
+              </p>
+              {formErrors.media && (
+                <p className='text-red-500 text-xs mt-1'>{formErrors.media}</p>
               )}
-            />
+            </div>
+          )}
 
-            {form.watch('media_type') === 'image' && (
-              <FormField
-                name='media'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image</FormLabel>
-                    <Input
-                      id='media'
-                      type='file'
-                      accept={ACCEPTED_FILE_TYPES.join(', ')}
-                      onChange={(event) => {
-                        const file = event.target.files
-                          ? event.target.files[0]
-                          : null
+          {form.media_type === 'video' && (
+            <div>
+              <Label>Video</Label>
+              <Input
+                id='media'
+                type='file'
+                accept='video/*'
+                onChange={(event) => {
+                  const file = event.target.files ? event.target.files[0] : null
 
-                        if (!file) return
+                  if (!file) return
 
-                        if (file.size > MAX_FILE_SIZE) {
-                          alert('File is too large')
-                          event.target.value = ''
-                          return
-                        }
+                  if (file.size > MAX_FILE_SIZE) {
+                    alert('File is too large')
+                    event.target.value = ''
+                    return
+                  }
 
-                        field.onChange({
-                          target: {
-                            name: field.name,
-                            value: file,
-                          },
-                        })
-                      }}
-                    />
-                    <FormDescription>
-                      Max file size: {MAX_FILE_SIZE / 1024 / 1024} MB
-                    </FormDescription>
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
+                  setForm({
+                    ...form,
+                    media: file,
+                  })
+                }}
               />
-            )}
+              <p className='text-xs text-muted-foreground mt-1'>
+                Max file size: {MAX_FILE_SIZE / 1024 / 1024} MB
+              </p>
+              {formErrors.media && (
+                <p className='text-red-500 text-xs mt-1'>{formErrors.media}</p>
+              )}
+            </div>
+          )}
 
-            {form.watch('media_type') === 'video' && (
-              <FormField
-                name='youtube_url'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>YouTube URL</FormLabel>
-                    <Input
-                      id='youtube_url'
-                      placeholder='YouTube URL'
-                      {...field}
-                    />
-                    <FormMessage className='text-xs font-bold' />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <Button type='submit' className='w-full my-2'>
-              Upload
-            </Button>
-          </Form>
+          <Button type='submit' className='w-full my-2'>
+            Upload
+          </Button>
         </form>
       </Tabs>
     </DialogContent>

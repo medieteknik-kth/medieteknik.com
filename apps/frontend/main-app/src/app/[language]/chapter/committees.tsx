@@ -13,7 +13,6 @@ import {
 import type { CarouselApi } from '@/components/ui/carousel'
 import type Committee from '@/models/Committee'
 import type { LanguageCode } from '@/models/Language'
-import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
@@ -45,7 +44,7 @@ export default function Committees({
       loop: true,
       align: 'start',
     },
-    [Autoplay({ delay: 6_000, stopOnInteraction: false })]
+    []
   )
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
     containScroll: 'keepSnaps',

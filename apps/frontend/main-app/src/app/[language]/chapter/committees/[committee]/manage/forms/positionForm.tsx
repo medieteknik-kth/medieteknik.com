@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,15 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -32,7 +24,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Textarea } from '@/components/ui/textarea'
 import type Committee from '@/models/Committee'
 import type {
   CommitteePosition,
@@ -44,76 +35,71 @@ import { useStudent } from '@/providers/AuthenticationProvider'
 import { addPositionSchema } from '@/schemas/committee/position'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
+
+interface TranslatedInputsProps {
+  index: number
+  language: LanguageCode
+  form: z.infer<typeof addPositionSchema>
+  setForm: React.Dispatch<
+    React.SetStateAction<z.infer<typeof addPositionSchema>>
+  >
+}
 
 function TranslatedInputs({
   index,
   language,
-}: {
-  index: number
-  language: LanguageCode
-}) {
+  form,
+  setForm,
+}: TranslatedInputsProps) {
   const { t } = useTranslation(language, 'committee_management/forms/position')
 
   return (
     <>
-      <FormField
-        name={`translations.${index}.language_code`}
-        render={({ field }) => (
-          <FormItem>
-            <Input id='language' type='hidden' {...field} />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Input id={`${language}_${index}`} type='hidden' value={language} />
+      </div>
 
-      <FormField
-        name={`translations.${index}.title`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t('title_label')}{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{LANGUAGES[language].name}]
-              </span>
-            </FormLabel>
-            <FormControl>
-              <Input
-                id='title'
-                placeholder={t('title_placeholder')}
-                {...field}
-              />
-            </FormControl>
-            <FormDescription>{t('title_description')}</FormDescription>
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Label className='text-sm font-semibold'>
+          {t('title_label')}{' '}
+          <span className='uppercase text-xs tracking-wide'>
+            [{LANGUAGES[language].name}]
+          </span>
+        </Label>
+        <Input
+          id={`translations.${index}.title`}
+          placeholder={t('title_placeholder')}
+          value={form.translations[index].title}
+          onChange={(e) => {
+            const newTranslations = [...form.translations]
+            newTranslations[index].title = e.target.value
+            setForm({ ...form, translations: newTranslations })
+          }}
+        />
+      </div>
 
-      <FormField
-        name={`translations.${index}.description`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t('description_label')}{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{LANGUAGES[language].name}]
-              </span>
-            </FormLabel>
-            <FormControl>
-              <Textarea
-                id='description'
-                placeholder={t('description_placeholder')}
-                {...field}
-              />
-            </FormControl>
-            <FormDescription>{t('description_description')}</FormDescription>
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Label className='text-sm font-semibold'>
+          {t('description_label')}{' '}
+          <span className='uppercase text-xs tracking-wide'>
+            [{LANGUAGES[language].name}]
+          </span>
+        </Label>
+        <Input
+          id={`translations.${index}.description`}
+          value={form.translations[index].description}
+          onChange={(e) => {
+            const newTranslations = [...form.translations]
+            newTranslations[index].description = e.target.value
+            setForm({ ...form, translations: newTranslations })
+          }}
+        />
+        <p className='text-xs text-muted-foreground mb-2'>
+          {t('description_description')}
+        </p>
+      </div>
     </>
   )
 }
@@ -131,22 +117,53 @@ export default function PositionForm({
   const [value, setValue] = useState('NONE')
   const { role } = useStudent()
   const { t } = useTranslation(language, 'committee_management/forms/position')
-
-  const form = useForm<z.infer<typeof addPositionSchema>>({
-    resolver: zodResolver(addPositionSchema),
-    defaultValues: {
-      email: '',
-      weight: 1000,
-      category: 'NONE',
-      translations: SUPPORTED_LANGUAGES.map((language) => ({
-        language_code: language,
-        title: '',
-        description: '',
-      })),
-    },
+  const [form, setForm] = useState<z.infer<typeof addPositionSchema>>({
+    email: '',
+    weight: 1000,
+    category: 'NONE',
+    translations: SUPPORTED_LANGUAGES.map((lang) => ({
+      language_code: lang,
+      title: '',
+      description: '',
+    })),
+  })
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    translations: SUPPORTED_LANGUAGES.reduce(
+      (acc, lang) => {
+        acc[lang] = { title: '', description: '' }
+        return acc
+      },
+      {} as Record<string, { title: string; description: string }>
+    ),
+    category: '',
+    weight: '',
   })
 
-  const publish = async (data: z.infer<typeof addPositionSchema>) => {
+  const submit = async (data: z.infer<typeof addPositionSchema>) => {
+    const errors = addPositionSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        email: fieldErrors.properties?.email?.errors[0] || '',
+        translations:
+          fieldErrors.properties?.translations?.items?.reduce(
+            (acc, item, index) => {
+              acc[SUPPORTED_LANGUAGES[index]] = {
+                title: item.properties?.title?.errors[0] || '',
+                description: item.properties?.description?.errors[0] || '',
+              }
+              return acc
+            },
+            {} as Record<LanguageCode, { title: string; description: string }>
+          ) || {},
+        category: fieldErrors.properties?.category?.errors[0] || '',
+        weight: fieldErrors.properties?.weight?.errors[0] || '',
+      })
+      return
+    }
+
     const new_data = {
       ...data,
       committee_title: committee.translations[0].title.toLowerCase(),
@@ -249,113 +266,126 @@ export default function PositionForm({
           ))}
         </TabsList>
 
-        <form onSubmit={form.handleSubmit(publish)}>
-          <Form {...form}>
-            <FormField
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('email_label')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      id='email'
-                      type='email'
-                      placeholder={t('email_placeholder')}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            submit(form)
+          }}
+        >
+          <div>
+            <Label className='text-sm font-semibold'>{t('email_label')}</Label>
 
-            {SUPPORTED_LANGUAGES.map((language, index) => (
-              <TabsContent key={language} value={language}>
-                <TranslatedInputs index={index} language={language} />
-              </TabsContent>
-            ))}
-
-            <FormField
-              control={form.control}
-              name='category'
-              render={({ field }) => (
-                <FormItem className='flex flex-col my-2'>
-                  <FormLabel>{t('category_label')}</FormLabel>
-                  <Popover
-                    open={popoverOpen}
-                    onOpenChange={setPopoverOpen}
-                    modal={popoverOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          aria-expanded={popoverOpen}
-                          value={value}
-                          className='w-72 justify-between'
-                        >
-                          {field.value
-                            ? categories.find((c) => c.value === value)?.label
-                            : t('category_placeholder')}
-                          <ChevronDownIcon className='w-4 h-4 ml-2' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <Command>
-                        <CommandInput
-                          placeholder={t('category_search_placeholder')}
-                        />
-                        <CommandEmpty>{t('category_not_found')}</CommandEmpty>
-                        <CommandList>
-                          <CommandGroup>
-                            {categories.map((category) => (
-                              <CommandItem
-                                key={category.value}
-                                value={category.value}
-                                onSelect={() => {
-                                  form.setValue('category', category.value)
-                                  setValue(category.value)
-                                  setPopoverOpen(false)
-                                }}
-                              >
-                                {category.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
+            <Input
+              id='email'
+              type='email'
+              placeholder={t('email_placeholder')}
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
-            {role === Role.ADMIN && (
-              <FormField
-                name='weight'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('weight_label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        id='weight'
-                        type='number'
-                        placeholder={t('weight_placeholder')}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>{t('weight_description')}</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {formErrors.email && (
+              <p className='text-red-500 text-xs mt-1'>{formErrors.email}</p>
             )}
+          </div>
 
-            <Button type='submit' className='w-full mt-4'>
-              {t('submit_button')}
-            </Button>
-          </Form>
+          {SUPPORTED_LANGUAGES.map((language, index) => (
+            <TabsContent key={language} value={language}>
+              <TranslatedInputs
+                index={index}
+                language={language}
+                form={form}
+                setForm={setForm}
+              />
+              {formErrors.translations?.[language] && (
+                <div className='mt-2 text-red-500 text-xs'>
+                  <p>{formErrors.translations[language].title}</p>
+                  <p>{formErrors.translations[language].description}</p>
+                </div>
+              )}
+            </TabsContent>
+          ))}
+
+          <div>
+            <Label className='text-sm font-semibold'>
+              {t('category_label')}
+            </Label>
+            <Popover
+              open={popoverOpen}
+              onOpenChange={setPopoverOpen}
+              modal={popoverOpen}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  aria-expanded={popoverOpen}
+                  value={value}
+                  className='w-72 justify-between'
+                >
+                  {form.category
+                    ? categories.find((c) => c.value === value)?.label
+                    : t('category_placeholder')}
+                  <ChevronDownIcon className='w-4 h-4 ml-2' />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Command>
+                  <CommandInput
+                    placeholder={t('category_search_placeholder')}
+                  />
+                  <CommandEmpty>{t('category_not_found')}</CommandEmpty>
+                  <CommandList>
+                    <CommandGroup>
+                      {categories.map((category) => (
+                        <CommandItem
+                          key={category.value}
+                          value={category.value}
+                          onSelect={() => {
+                            setForm({
+                              ...form,
+                              category: category.value,
+                            })
+                            setValue(category.value)
+                            setPopoverOpen(false)
+                          }}
+                        >
+                          {category.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {formErrors.category && (
+              <p className='text-red-500 text-xs mt-1'>{formErrors.category}</p>
+            )}
+          </div>
+
+          {role === Role.ADMIN && (
+            <div>
+              <Label className='text-sm font-semibold'>
+                {t('weight_label')}
+              </Label>
+              <Input
+                id='weight'
+                type='number'
+                placeholder={t('weight_placeholder')}
+                value={form.weight}
+                onChange={(e) =>
+                  setForm({ ...form, weight: Number(e.target.value) })
+                }
+              />
+              <p className='text-xs text-muted-foreground mb-2'>
+                {t('weight_description')}
+              </p>
+              {formErrors.weight && (
+                <p className='text-red-500 text-xs mt-1'>{formErrors.weight}</p>
+              )}
+            </div>
+          )}
+
+          <Button type='submit' className='w-full mt-4'>
+            {t('submit_button')}
+          </Button>
         </form>
       </Tabs>
     </DialogContent>

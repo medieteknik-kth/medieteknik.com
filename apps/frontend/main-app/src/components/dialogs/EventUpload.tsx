@@ -9,14 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -24,14 +16,12 @@ import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
 import type Event from '@/models/items/Event'
 import { useStudent } from '@/providers/AuthenticationProvider'
-import { eventUploadSchema } from '@/schemas/items/event'
+import type { eventUploadSchema } from '@/schemas/items/event'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { EyeDropperIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import type { z } from 'zod/v4-mini'
 import RepeatingForm from './event/repeating'
 import TranslatedInputs from './event/translations'
 
@@ -90,39 +80,41 @@ export default function EventUpload({
       title: 'Red (#EF4444)',
     },
   ]
-
-  const eventForm = useForm<z.infer<typeof eventUploadSchema>>({
-    resolver: zodResolver(eventUploadSchema),
-    defaultValues: {
-      translations: SUPPORTED_LANGUAGES.map((language) => {
-        return {
-          language_code: language,
-          title: '',
-          description: '',
-        }
-      }),
-      // @ts-expect-error - This is a valid date string
-      event_start_date: new Date(selectedDate.getTime() + 60 * 60 * 1000)
-        .toISOString()
-        .substring(0, 16),
-      // @ts-expect-error - This is a valid date string
-      event_end_date: new Date(selectedDate.getTime() + 2 * 60 * 60 * 1000)
-        .toISOString()
-        .substring(0, 16),
-      repeats: false,
-      location: '',
-      background_color: currentColor,
-    },
+  const [form, setForm] = useState<z.infer<typeof eventUploadSchema>>({
+    translations: SUPPORTED_LANGUAGES.map((language) => ({
+      language_code: language,
+      title: '',
+      description: '',
+    })),
+    event_start_date: new Date(selectedDate.getTime() + 60 * 60 * 1000),
+    event_end_date: new Date(selectedDate.getTime() + 2 * 60 * 60 * 1000),
+    repeats: false,
+    location: '',
+    background_color: currentColor,
+  })
+  const [formErrors, setFormErrors] = useState({
+    event_start_date: '',
+    event_end_date: '',
+    location: '',
+    background_color: '',
+    translations: SUPPORTED_LANGUAGES.reduce(
+      (acc, language) => {
+        acc[language] = { title: '', description: '' }
+        return acc
+      },
+      {} as Record<LanguageCode, { title: string; description: string }>
+    ),
   })
 
-  const { setValue } = eventForm
-
   const handleColorChange = (color: string) => {
-    setValue('background_color', color)
+    setForm({
+      ...form,
+      background_color: color,
+    })
     setCurrentColor(color)
   }
 
-  const publish = async (data: z.infer<typeof eventUploadSchema>) => {
+  const submit = async (data: z.infer<typeof eventUploadSchema>) => {
     if (!student) {
       setErrorMessage('You need to be logged in!')
       return
@@ -149,7 +141,6 @@ export default function EventUpload({
       duration: duration,
       repeats: data.repeats,
       frequency: data.repeats ? data.frequency : null,
-      end_date: data.repeats ? data.end_date : null,
       max_occurrences: data.repeats ? data.max_occurrences : null,
       background_color: data.background_color,
       location: data.location,
@@ -233,192 +224,213 @@ export default function EventUpload({
             </TabsTrigger>
           ))}
         </TabsList>
-        <Form {...eventForm}>
-          <form onSubmit={eventForm.handleSubmit(publish)}>
-            <div className='grid grid-cols-2 gap-2 mt-2 relative mb-2'>
-              <FormField
-                name='event_start_date'
-                render={({ field }) => (
-                  <FormItem className='col-span-1'>
-                    <FormLabel>
-                      {t('event.form.date')}
-                      <span className='text-red-500 px-0.5 select-none'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input id='startdate' type='datetime-local' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name='event_end_date'
-                render={({ field }) => (
-                  <FormItem className='col-span-1'>
-                    <FormLabel>
-                      {t('event.form.end_date')}
-                      <span className='text-red-500 px-0.5 select-none'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input id='enddate' type='datetime-local' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              name='repeats'
-              render={() => (
-                <FormItem className='flex items-center mt-1'>
-                  <FormControl>
-                    <Checkbox
-                      id='repeats'
-                      type='button'
-                      onClick={(e) => {
-                        setIsRepeating(
-                          e.currentTarget.value === 'on' && !isRepeating
-                        )
-                        setValue(
-                          'repeats',
-                          e.currentTarget.value === 'on' && !isRepeating
-                        )
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel className='h-full ml-2 mt-0!'>
-                    {t('event.form.repeats')}
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {isRepeating && (
-              <RepeatingForm
-                language={language}
-                setValue={(value) => {
-                  setValue(
-                    'frequency',
-                    value as 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY'
-                  )
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            submit(form)
+          }}
+        >
+          <div className='grid grid-cols-2 gap-2 mt-2 relative mb-2'>
+            <div>
+              <Label className='text-sm font-semibold'>
+                {t('event.form.date')}
+                <span className='text-red-500 px-0.5 select-none'>*</span>
+              </Label>
+              <Input
+                id='startdate'
+                type='datetime-local'
+                value={new Date(form.event_start_date)
+                  .toISOString()
+                  .slice(0, 16)}
+                onChange={(e) => {
+                  const date = new Date(e.target.value)
+                  setForm({
+                    ...form,
+                    event_start_date: date,
+                    event_end_date: new Date(
+                      date.getTime() + 60 * 60 * 1000 // Default to 1 hour later
+                    ),
+                  })
                 }}
               />
+              {formErrors.event_start_date && (
+                <p className='text-red-500 text-sm mt-1'>
+                  {formErrors.event_start_date}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label className='text-sm font-semibold'>
+                {t('event.form.end_date')}
+                <span className='text-red-500 px-0.5 select-none'>*</span>
+              </Label>
+              <Input
+                id='enddate'
+                type='datetime-local'
+                value={new Date(form.event_end_date).toISOString().slice(0, 16)}
+                onChange={(e) => {
+                  const date = new Date(e.target.value)
+                  setForm({
+                    ...form,
+                    event_end_date: date,
+                  })
+                }}
+              />
+              {formErrors.event_end_date && (
+                <p className='text-red-500 text-sm mt-1'>
+                  {formErrors.event_end_date}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <Checkbox
+              id='repeats'
+              type='button'
+              value={isRepeating ? 'on' : 'off'}
+              className='hidden'
+              onClick={(e) => {
+                setIsRepeating(e.currentTarget.value === 'on' && !isRepeating)
+                setForm({
+                  ...form,
+                  repeats: e.currentTarget.value === 'on' && !isRepeating,
+                })
+              }}
+            />
+
+            <Label className='text-sm font-semibold'>
+              {t('event.form.repeats')}
+            </Label>
+          </div>
+
+          {isRepeating && (
+            <RepeatingForm
+              language={language}
+              form={form}
+              setValue={(value) => {
+                setForm({
+                  ...form,
+                  frequency: value as 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY',
+                })
+              }}
+            />
+          )}
+
+          <div>
+            <Label className='text-sm font-semibold'>
+              {t('event.form.location')}
+              <span className='text-red-500 px-0.5 select-none'>*</span>
+            </Label>
+            <div className='relative'>
+              <Input
+                id='location'
+                type='text'
+                value={form.location}
+                onChange={(e) => {
+                  setForm({
+                    ...form,
+                    location: e.target.value,
+                  })
+                }}
+              />
+              <MapPinIcon className='absolute top-0 bottom-0 my-auto right-2 w-5 h-5 text-neutral-500' />
+            </div>
+            {formErrors.location && (
+              <p className='text-red-500 text-sm mt-1'>{formErrors.location}</p>
             )}
+          </div>
 
-            <FormField
-              name='location'
-              render={({ field }) => (
-                <FormItem className='mt-2'>
-                  <FormLabel>
-                    {t('event.form.location')}
-                    <span className='text-red-500 px-0.5 select-none'>*</span>
-                  </FormLabel>
-                  <div className='relative'>
-                    <FormControl>
-                      <Input id='location' type='text' {...field} />
-                    </FormControl>
-                    <MapPinIcon className='absolute top-0 bottom-0 my-auto right-2 w-5 h-5 text-neutral-500' />
-                  </div>
-
-                  <FormMessage />
-                </FormItem>
+          <div>
+            <Label className='text-sm font-semibold'>
+              {t('event.form.bg_color')}
+              <span className='text-red-500 px-0.5 select-none'>*</span>
+            </Label>
+            <div className='flex items-center'>
+              <div
+                className='h-8 aspect-square mr-2 rounded-lg border cursor-pointer'
+                title='Click to open colour picker'
+                style={{ backgroundColor: currentColor }}
+                onKeyDown={(e) => {
+                  e.stopPropagation()
+                  if (e.key === 'Enter') {
+                    setShowColorPicker(!showColorPicker)
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowColorPicker(!showColorPicker)
+                }}
+              />
+              {showColorPicker && (
+                <div className='absolute -left-52'>
+                  <HexColorPicker
+                    color={currentColor}
+                    onChange={(color) => {
+                      handleColorChange(color)
+                    }}
+                  />
+                </div>
               )}
-            />
+              <Input
+                id='background_color'
+                type='text'
+                placeholder='#FFFFFF'
+                onChangeCapture={(e) => {
+                  handleColorChange(e.currentTarget.value)
+                }}
+                className='mt-2 w-full'
+                value={currentColor}
+              />
+              <EyeDropperIcon className='absolute right-8 w-5 h-5 text-neutral-500' />
+            </div>
+            <div id='preset-colors' className='w-full flex flex-col h-fit mt-2'>
+              <Label className='w-full text-xs'>
+                {t('event.form.preset_colors')}
+              </Label>
+              <div className='w-full h-fit flex gap-4 mt-1'>
+                {presetColors.map((presetColor) => (
+                  <span
+                    key={presetColor.color}
+                    className='w-6 h-6 cursor-pointer rounded-full'
+                    style={{ backgroundColor: presetColor.color }}
+                    title={presetColor.title}
+                    onKeyDown={(e) => {
+                      e.stopPropagation()
+                      if (e.key === 'Enter') {
+                        handleColorChange(presetColor.color)
+                      }
+                    }}
+                    onClick={() => handleColorChange(presetColor.color)}
+                  />
+                ))}
+              </div>
+            </div>
+            {formErrors.background_color && (
+              <p className='text-red-500 text-sm mt-1'>
+                {formErrors.background_color}
+              </p>
+            )}
+          </div>
 
-            <FormField
-              name='background_color'
-              render={({ field }) => (
-                <FormItem className='mt-2'>
-                  <FormLabel>
-                    {t('event.form.bg_color')}
-                    <span className='text-red-500 px-0.5 select-none'>*</span>
-                  </FormLabel>
-                  <div className='flex items-center'>
-                    <div
-                      className='h-8 aspect-square mr-2 rounded-lg border cursor-pointer'
-                      title='Click to open colour picker'
-                      style={{ backgroundColor: currentColor }}
-                      onKeyDown={(e) => {
-                        e.stopPropagation()
-                        if (e.key === 'Enter') {
-                          setShowColorPicker(!showColorPicker)
-                        }
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setShowColorPicker(!showColorPicker)
-                      }}
-                    />
-                    {showColorPicker && (
-                      <div className='absolute -left-52'>
-                        <HexColorPicker
-                          color={currentColor}
-                          onChange={(color) => {
-                            handleColorChange(color)
-                          }}
-                        />
-                      </div>
-                    )}
-                    <FormControl>
-                      <Input
-                        id='background_color'
-                        type='text'
-                        placeholder='#FFFFFF'
-                        onChangeCapture={(e) => {
-                          handleColorChange(e.currentTarget.value)
-                        }}
-                        {...field}
-                      />
-                    </FormControl>
-                    <EyeDropperIcon className='absolute right-8 w-5 h-5 text-neutral-500' />
-                  </div>
-                  <div
-                    id='preset-colors'
-                    className='w-full flex flex-col h-fit mt-2'
-                  >
-                    <Label className='w-full text-xs'>
-                      {t('event.form.preset_colors')}
-                    </Label>
-                    <div className='w-full h-fit flex gap-4 mt-1'>
-                      {presetColors.map((presetColor) => (
-                        <span
-                          key={presetColor.color}
-                          className='w-6 h-6 cursor-pointer rounded-full'
-                          style={{ backgroundColor: presetColor.color }}
-                          title={presetColor.title}
-                          onKeyDown={(e) => {
-                            e.stopPropagation()
-                            if (e.key === 'Enter') {
-                              handleColorChange(presetColor.color)
-                            }
-                          }}
-                          onClick={() => handleColorChange(presetColor.color)}
-                        />
-                      ))}
-                    </div>
-                  </div>
+          {SUPPORTED_LANGUAGES.map((language, index) => (
+            <TabsContent key={language} value={language}>
+              <TranslatedInputs
+                index={index}
+                t={t}
+                language={language}
+                form={form}
+                setForm={setForm}
+                formErrors={formErrors}
+              />
+            </TabsContent>
+          ))}
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {SUPPORTED_LANGUAGES.map((language, index) => (
-              <TabsContent key={language} value={language}>
-                <TranslatedInputs
-                  index={index}
-                  t={t}
-                  language={LANGUAGES[language].name}
-                />
-              </TabsContent>
-            ))}
-
-            <Button type='submit' className='w-full mt-4'>
-              {t('event.form.publish')}
-            </Button>
-          </form>
-        </Form>
+          <Button type='submit' className='w-full mt-4'>
+            {t('event.form.publish')}
+          </Button>
+        </form>
       </Tabs>
       {/* TODO: Implement it, in a better UI 
       <CardFooter className='w-full h-fit mt-3 pt-3 border-t flex flex-col items-start px-0 pb-0'>

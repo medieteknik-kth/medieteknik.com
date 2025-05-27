@@ -1,6 +1,6 @@
 import { fontFigtree } from '@/app/fonts'
 import ServiceWorkerRegister from '@/components/services/ServiceWorkerRegister'
-import '@shared/styles/globals.css'
+import '@medieteknik/tailwindcss-config/globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'

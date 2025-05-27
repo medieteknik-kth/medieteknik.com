@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,15 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -39,14 +31,16 @@ import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { createRecruitmentSchema } from '@/schemas/committee/recruitment'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 interface TranslateProps {
   index: number
   language: LanguageCode
+  form: z.infer<typeof createRecruitmentSchema>
+  setForm: React.Dispatch<
+    React.SetStateAction<z.infer<typeof createRecruitmentSchema>>
+  >
 }
 
 interface Props {
@@ -54,63 +48,73 @@ interface Props {
   onSuccess: () => void
 }
 
-function TranslatedInputs({ index, language }: TranslateProps) {
+function TranslatedInputs({ index, language, form, setForm }: TranslateProps) {
   const { t } = useTranslation(
     language,
     'committee_management/forms/recruitment'
   )
   return (
     <>
-      <FormField
-        name={`translations.${index}.language_code`}
-        render={({ field }) => (
-          <FormItem>
-            <Input {...field} type='hidden' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Input type='hidden' value={language} />
+      </div>
 
-      <FormField
-        name={`translations.${index}.link`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t('link_label')}{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{LANGUAGES[language].name}]
-              </span>
-            </FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                type='url'
-                placeholder={t('link_placeholder')}
-              />
-            </FormControl>
-            <FormDescription>{t('link_description')}</FormDescription>
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Label
+          htmlFor={`translations.${index}.title`}
+          className='text-sm font-semibold'
+        >
+          {t('link_label')}{' '}
+          <span className='uppercase text-xs tracking-wide'>
+            [{LANGUAGES[language].name}]
+          </span>
+        </Label>
+        <Input
+          id={`translations.${index}.link`}
+          name={`translations.${index}.link`}
+          type='url'
+          placeholder={t('link_placeholder')}
+          value={form.translations[index].link}
+          onChange={(e) =>
+            setForm((prev) => {
+              const newTranslations = [...prev.translations]
+              newTranslations[index] = {
+                ...newTranslations[index],
+                link: e.target.value,
+              }
+              return { ...prev, translations: newTranslations }
+            })
+          }
+        />
+      </div>
 
-      <FormField
-        name={`translations.${index}.description`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t('description_label')}{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{LANGUAGES[language].name}]
-              </span>
-            </FormLabel>
-            <FormControl>
-              <Textarea {...field} placeholder={t('description_placeholder')} />
-            </FormControl>
-            <FormDescription>{t('description_description')}</FormDescription>
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
-        )}
-      />
+      <div>
+        <Label
+          htmlFor={`translations.${index}.description`}
+          className='text-sm font-semibold'
+        >
+          {t('description_label')}{' '}
+          <span className='uppercase text-xs tracking-wide'>
+            [{LANGUAGES[language].name}]
+          </span>
+        </Label>
+        <Textarea
+          id={`translations.${index}.description`}
+          name={`translations.${index}.description`}
+          placeholder={t('description_placeholder')}
+          value={form.translations[index].description}
+          onChange={(e) =>
+            setForm((prev) => {
+              const newTranslations = [...prev.translations]
+              newTranslations[index] = {
+                ...newTranslations[index],
+                description: e.target.value,
+              }
+              return { ...prev, translations: newTranslations }
+            })
+          }
+        />
+      </div>
     </>
   )
 }
@@ -125,6 +129,26 @@ export default function RecruitmentForm({ language, onSuccess }: Props) {
     language,
     'committee_management/forms/recruitment'
   )
+  const [form, setForm] = useState<z.infer<typeof createRecruitmentSchema>>({
+    position: positions[0].translations[0].title,
+    end_date: new Date(),
+    translations: SUPPORTED_LANGUAGES.map((lang) => ({
+      language_code: lang,
+      link: '',
+      description: '',
+    })),
+  })
+  const [formErrors, setFormErrors] = useState({
+    position: '',
+    end_date: '',
+    translations: SUPPORTED_LANGUAGES.reduce(
+      (acc, lang) => {
+        acc[lang] = { link: '', description: '' }
+        return acc
+      },
+      {} as Record<LanguageCode, { link: string; description: string }>
+    ),
+  })
 
   const dropdownOptions = positions
     .filter((position) => {
@@ -148,26 +172,42 @@ export default function RecruitmentForm({ language, onSuccess }: Props) {
         .join(' '),
     }))
 
-  const form = useForm<z.infer<typeof createRecruitmentSchema>>({
-    resolver: zodResolver(createRecruitmentSchema),
-    defaultValues: {
-      position: 'MEMBER',
-      end_date: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-      translations: SUPPORTED_LANGUAGES.map((language) => ({
-        language_code: language,
-        link: '',
-        description: '',
-      })),
-    },
-  })
-
-  const publish = async (data: z.infer<typeof createRecruitmentSchema>) => {
+  const submit = async (data: z.infer<typeof createRecruitmentSchema>) => {
     const position = positions.find(
       (p) =>
         p.translations[0].title.toLowerCase() === data.position.toLowerCase()
     )
     if (!position) {
       setErrorMessage(t('error.position_not_found'))
+      return
+    }
+
+    const errors = createRecruitmentSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+
+      setFormErrors({
+        position: fieldErrors.properties?.position?.errors[0] || '',
+        end_date: fieldErrors.properties?.end_date?.errors[0] || '',
+        translations:
+          fieldErrors.properties?.translations?.items?.reduce(
+            (acc, item, index) => {
+              acc[SUPPORTED_LANGUAGES[index]] = {
+                link: item.properties?.link?.errors[0] || '',
+                description: item.properties?.description?.errors[0] || '',
+              }
+              return acc
+            },
+            {} as Record<LanguageCode, { link: string; description: string }>
+          ) ||
+          ({} as Record<LanguageCode, { link: string; description: string }>),
+      })
+
+      setErrorMessage(
+        fieldErrors.properties?.translations?.errors[0] ||
+          t('error.invalid_data')
+      )
       return
     }
 
@@ -223,89 +263,108 @@ export default function RecruitmentForm({ language, onSuccess }: Props) {
             {errorMessage}
           </div>
         )}
-        <form onSubmit={form.handleSubmit(publish)} className='z-10'>
-          <Form {...form}>
-            <FormField
-              control={form.control}
-              name='position'
-              render={({ field }) => (
-                <FormItem className='flex flex-col my-2'>
-                  <FormLabel>{t('position_label')}</FormLabel>
-                  <Popover
-                    open={popoverOpen}
-                    onOpenChange={setPopoverOpen}
-                    modal={popoverOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          aria-expanded={popoverOpen}
-                          value={value}
-                          className='w-72 justify-between'
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            submit(form)
+          }}
+          className='z-10'
+        >
+          <div>
+            <Label className='text-sm font-semibold'>
+              {t('position_label')}
+            </Label>
+            <Popover
+              open={popoverOpen}
+              onOpenChange={setPopoverOpen}
+              modal={popoverOpen}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  aria-expanded={popoverOpen}
+                  value={value}
+                  className='w-72 justify-between'
+                >
+                  {form.position
+                    ? dropdownOptions.find((p) => p.value === value)?.label
+                    : t('position_placeholder')}
+                  <ChevronDownIcon className='w-4 h-4 ml-2' />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Command>
+                  <CommandInput
+                    placeholder={t('position_search_placeholder')}
+                  />
+                  <CommandList>
+                    <CommandEmpty>{t('position_not_found')}</CommandEmpty>
+                    <CommandGroup>
+                      {dropdownOptions.map((option) => (
+                        <CommandItem
+                          key={option.value}
+                          value={option.value}
+                          onSelect={() => {
+                            setForm({
+                              ...form,
+                              position: option.value,
+                            })
+                            setValue(option.value)
+                            setPopoverOpen(false)
+                          }}
                         >
-                          {field.value
-                            ? dropdownOptions.find((p) => p.value === value)
-                                ?.label
-                            : t('position_placeholder')}
-                          <ChevronDownIcon className='w-4 h-4 ml-2' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <Command>
-                        <CommandInput
-                          placeholder={t('position_search_placeholder')}
-                        />
-                        <CommandList>
-                          <CommandEmpty>{t('position_not_found')}</CommandEmpty>
-                          <CommandGroup>
-                            {dropdownOptions.map((option) => (
-                              <CommandItem
-                                key={option.value}
-                                value={option.value}
-                                onSelect={() => {
-                                  form.setValue('position', option.value)
-                                  setValue(option.value)
-                                  setPopoverOpen(false)
-                                }}
-                              >
-                                {option.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage className='text-xs font-bold' />
-                </FormItem>
-              )}
+                          {option.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {formErrors.position && (
+              <div className='text-xs text-red-600'>{formErrors.position}</div>
+            )}
+          </div>
+
+          <div>
+            <Label className='text-sm font-semibold'>
+              {t('end_date_label')}
+            </Label>
+            <Input
+              type='datetime-local'
+              value={form.end_date.toISOString().slice(0, 16)}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  end_date: new Date(e.target.value),
+                })
+              }
             />
+            {formErrors.end_date && (
+              <div className='text-xs text-red-600'>{formErrors.end_date}</div>
+            )}
+          </div>
 
-            <FormField
-              name='end_date'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('end_date_label')}</FormLabel>
-                  <FormControl>
-                    <Input {...field} type='datetime-local' />
-                  </FormControl>
-                  <FormMessage className='text-xs font-bold' />
-                </FormItem>
+          {SUPPORTED_LANGUAGES.map((language, index) => (
+            <TabsContent key={language} value={language}>
+              <TranslatedInputs
+                index={index}
+                language={language}
+                form={form}
+                setForm={setForm}
+              />
+              {formErrors.translations[language] && (
+                <div className='text-xs text-red-600 mt-2'>
+                  <p>{formErrors.translations[language].link}</p>
+                  <p>{formErrors.translations[language].description}</p>
+                </div>
               )}
-            />
+            </TabsContent>
+          ))}
 
-            {SUPPORTED_LANGUAGES.map((language, index) => (
-              <TabsContent key={language} value={language}>
-                <TranslatedInputs index={index} language={language} />
-              </TabsContent>
-            ))}
-
-            <Button type='submit' className='w-full mt-4'>
-              {t('submit_button')}
-            </Button>
-          </Form>
+          <Button type='submit' className='w-full mt-4'>
+            {t('submit_button')}
+          </Button>
         </form>
       </Tabs>
     </DialogContent>

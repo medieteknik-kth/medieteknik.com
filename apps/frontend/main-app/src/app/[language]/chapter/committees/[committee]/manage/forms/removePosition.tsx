@@ -1,4 +1,5 @@
 'use client'
+
 import { useTranslation } from '@/app/i18n/client'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,14 +16,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { FormControl } from '@/components/ui/form'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
@@ -33,10 +28,8 @@ import { useStudent } from '@/providers/AuthenticationProvider'
 import { useCommitteeManagement } from '@/providers/CommitteeManagementProvider'
 import { removePositionSchema } from '@/schemas/committee/position'
 import { ChevronUpDownIcon, MinusIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 export default function RemovePositionForm({
   language,
@@ -50,6 +43,12 @@ export default function RemovePositionForm({
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
   const { t } = useTranslation(language, 'committee_management/forms/remove')
+  const [form, setForm] = useState<z.infer<typeof removePositionSchema>>({
+    committee_position_id: '',
+  })
+  const [formErrors, setFormErrors] = useState({
+    committee_position_id: '',
+  })
 
   const positionOptions = positions
     .filter((position) => {
@@ -68,23 +67,26 @@ export default function RemovePositionForm({
     [studentPositions, value]
   )
 
-  const form = useForm<z.infer<typeof removePositionSchema>>({
-    resolver: zodResolver(removePositionSchema),
-    defaultValues: {
-      position_id: '',
-    },
-  })
-
-  const publish = async (data: z.infer<typeof removePositionSchema>) => {
+  const submit = async (data: z.infer<typeof removePositionSchema>) => {
     if (containsOwnPosition) {
       return
+    }
+
+    const errors = removePositionSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        committee_position_id:
+          fieldErrors.properties?.committee_position_id?.errors[0] || '',
+      })
     }
 
     const json_data = JSON.stringify(data)
 
     try {
       const response = await fetch(
-        `/api/committee_positions/${data.position_id}`,
+        `/api/committee_positions/${data.committee_position_id}`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -111,78 +113,76 @@ export default function RemovePositionForm({
       </DialogHeader>
       <form
         className='flex flex-col gap-2'
-        onSubmit={form.handleSubmit(publish)}
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit(form)
+        }}
       >
-        <Form {...form}>
-          <FormField
-            name='position_id'
-            render={({ field }) => (
-              <FormItem className='flex flex-col gap-0.5'>
-                <FormLabel htmlFor='position_id'>{t('label')}</FormLabel>
-                <Popover open={open} onOpenChange={setOpen} modal={open}>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={'outline'}
-                        // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
-                        role='combobox'
-                        aria-expanded={open}
-                        className='w-[300px] justify-between'
+        <div>
+          <Label className='text-sm font-semibold'>{t('label')}</Label>
+          <Popover open={open} onOpenChange={setOpen} modal={open}>
+            <PopoverTrigger asChild>
+                <Button
+                  variant={'outline'}
+                  // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                  role='combobox'
+                  aria-expanded={open}
+                  className='w-[300px] justify-between'
+                >
+                  {form.committee_position_id
+                    ? positionOptions.find((o) => o.value === value)?.label
+                    : t('placeholder')}
+                  <ChevronUpDownIcon className='w-5 h-5' />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Command>
+                <CommandInput placeholder={t('search_placeholder')} />
+                <CommandList>
+                  <CommandEmpty>{t('not_found')}</CommandEmpty>
+                  <CommandGroup>
+                    {positionOptions.map((option) => (
+                      <CommandItem
+                        key={option.value}
+                        value={option.value}
+                        disabled={
+                          studentPositions.some(
+                            (studentPosition) =>
+                              studentPosition.committee_position_id ===
+                              option.value
+                          ) && option.value !== value
+                        }
+                        onSelect={(currentValue) => {
+                          setForm({
+                            committee_position_id: option.value,
+                          })
+                          setValue(currentValue === value ? '' : currentValue)
+                          setOpen(false)
+                        }}
                       >
-                        {field.value
-                          ? positionOptions.find((o) => o.value === value)
-                              ?.label
-                          : t('placeholder')}
-                        <ChevronUpDownIcon className='w-5 h-5' />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <Command>
-                      <CommandInput placeholder={t('search_placeholder')} />
-                      <CommandList>
-                        <CommandEmpty>{t('not_found')}</CommandEmpty>
-                        <CommandGroup>
-                          {positionOptions.map((option) => (
-                            <CommandItem
-                              key={option.value}
-                              value={option.value}
-                              disabled={
-                                studentPositions.some(
-                                  (studentPosition) =>
-                                    studentPosition.committee_position_id ===
-                                    option.value
-                                ) && option.value !== value
-                              }
-                              onSelect={(currentValue) => {
-                                form.setValue('position_id', option.value)
-                                setValue(
-                                  currentValue === value ? '' : currentValue
-                                )
-                                setOpen(false)
-                              }}
-                            >
-                              {option.label}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type='submit'
-            variant={'destructive'}
-            disabled={value === '' || containsOwnPosition}
-          >
-            <MinusIcon className='w-5 h-5 mr-2' />
-            {t('remove_button')}
-          </Button>
-        </Form>
+                        {option.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          {formErrors.committee_position_id && (
+            <p className='text-red-500 text-xs'>
+              {formErrors.committee_position_id}
+            </p>
+          )}
+        </div>
+
+        <Button
+          type='submit'
+          variant={'destructive'}
+          disabled={value === '' || containsOwnPosition}
+        >
+          <MinusIcon className='w-5 h-5 mr-2' />
+          {t('remove_button')}
+        </Button>
       </form>
     </DialogContent>
   )

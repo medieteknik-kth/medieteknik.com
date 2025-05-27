@@ -1,9 +1,12 @@
 import uuid
 from typing import Any, Dict, List
-from sqlalchemy import Boolean, String, Integer, Column, ForeignKey, inspect, text
+
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, inspect, text
 from sqlalchemy.dialects.postgresql import UUID
-from utility.database import db
+
 from utility.constants import AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_CODE
+from utility.database import db
+from utility.reception_mode import RECEPTION_MODE
 
 
 class Committee(db.Model):
@@ -92,6 +95,8 @@ class Committee(db.Model):
                 translations.append(translation.to_dict())
 
         del data["committee_category_id"]
+
+        data["group_photo_url"] = self.group_photo_url if not RECEPTION_MODE else None
 
         data["translations"] = translations
 
