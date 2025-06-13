@@ -10,13 +10,13 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 'storage.googleapis.com',
         protocol: 'https',
-        pathname: '/medieteknik-static/**',
+        hostname: 'www.medieteknik.com',
       },
       {
-        hostname: 'www.medieteknik.com',
         protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        pathname: '/**',
       },
     ],
   },

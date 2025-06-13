@@ -71,7 +71,7 @@ export const ProfileButton = React.forwardRef<
       <p className='text-base hidden lg:flex max-w-[248px] overflow-hidden'>
         Logga in
       </p>
-      <UserIcon className='w-7 h-7' />
+      <UserIcon className='w-7! h-7!' />
     </Button>
   )
 })

@@ -3,4 +3,5 @@ export interface Category {
   author: string
   category: string
   amount: string
+  fileId?: number
 }

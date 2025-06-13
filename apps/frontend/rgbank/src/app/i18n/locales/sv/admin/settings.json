@@ -17,5 +17,7 @@
     "domains.parts.save": "Spara ändringar",
     "domains.parts.error": "Ett fel uppstod vid ändring av resultatställeposter: {{error}}",
     "domains.parts.success.title": "Sparat",
-    "domains.parts.success.description": "Ändrade resultatställeposter"
+    "domains.parts.success.description": "Ändrade resultatställeposter",
+    "noPermissions.title": "Du har inte behörighet att komma åt denna sida.",
+    "noPermissions.description": "Kontakta din administratör om du tror att detta är ett misstag."
 }

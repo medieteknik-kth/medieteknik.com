@@ -57,6 +57,7 @@
     "admin.categories.submit": "Spara Ändringar",
     "admin.status.verification_number.label": "Verifieringsnummer",
     "admin.status.verification_number.placeholder": "Ange verifieringsnummer (N14, A117, etc.)",
+    "files.fileName": "Filnamn",
     "processing.title": "Bearbetningsinformation",
     "processing.status": "Nuvarande Status",
     "processing.submitted": "Inskickad Den",

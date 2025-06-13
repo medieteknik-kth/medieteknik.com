@@ -98,6 +98,10 @@ test('🧾 Submitting expense form', async ({ page }) => {
 
   await page.getByTitle('Amount (SEK) 1').fill('2000')
 
+  await page.getByTitle('File 1').click()
+  await page.getByTitle('Search for a file').fill('test.png')
+  await page.getByRole('option', { name: 'test.png' }).click()
+
   const finalizeButton = page.getByTitle('Finalize Expense')
 
   await expect(finalizeButton).toBeEnabled()

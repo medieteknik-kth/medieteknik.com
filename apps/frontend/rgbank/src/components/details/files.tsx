@@ -1,11 +1,16 @@
 'use client'
 
 import { useTranslation } from '@/app/i18n/client'
+import { Label } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import type { ExpenseResponse } from '@/models/Expense'
 import type { InvoiceResponse } from '@/models/Invoice'
-import { ArrowDownTrayIcon, DocumentIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowDownTrayIcon,
+  DocumentTextIcon,
+} from '@heroicons/react/24/outline'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
+import Image from 'next/image'
 
 interface Props {
   language: LanguageCode
@@ -35,24 +40,92 @@ export default function FilesSection({ language, expense, invoice }: Props) {
     return null
   }
 
+  const isImage = (url: string) => {
+    return (
+      url.split('?')[0]?.endsWith('.jpg') ||
+      url.split('?')[0]?.endsWith('.jpeg') ||
+      url.split('?')[0]?.endsWith('.png') ||
+      url.split('?')[0]?.endsWith('.gif') ||
+      url.split('?')[0]?.endsWith('.webp')
+    )
+  }
+
   return (
     <div className='flex flex-col gap-4 mt-2'>
-      {item.file_urls?.map((file) => (
+      {item.file_urls?.map((file, fileIndex) => (
         <div
           key={file.split(id)[1].split('?')[0].substring(1)}
-          className='h-52 border border-dashed rounded-md flex flex-col items-center justify-center gap-2'
+          className='h-52 border border-dashed rounded-md flex gap-2 relative'
         >
-          <DocumentIcon className='h-8 w-8 text-muted-foreground' />
-          <div className='flex flex-col items-center'>
-            <h3 className='text-lg font-semibold'>
-              {file.split(id)[1].split('?')[0].substring(1)}
-            </h3>
+          <div className='max-w-1/3 md:max-w-1/2 h-full'>
+            {isImage(file) ? (
+              <Image
+                src={file}
+                alt={file.split(id)[1].split('?')[0].substring(1)}
+                width={256}
+                height={256}
+                className='w-auto h-full object-cover rounded-l-md'
+              />
+            ) : (
+              <div className='h-24 w-24 flex items-center justify-center'>
+                <DocumentTextIcon className='h-12 w-12 text-red-500' />
+              </div>
+            )}
           </div>
-          <div className='flex gap-2'>
-            <Button className='flex items-center gap-2' asChild>
+
+          <div className='flex grow flex-col py-2 justify-between'>
+            <div className='flex flex-col'>
+              <Label className='font-semibold'>{t('files.fileName')}</Label>
+              <h3
+                className='text-lg font-semibold truncate max-w-3xs'
+                title={file.split(id)[1].split('?')[0].substring(1)}
+              >
+                {file.split(id)[1].split('?')[0].substring(1)}
+              </h3>
+            </div>
+            {item.categories?.[fileIndex].fileId === fileIndex && (
+              <div className='text-xs flex flex-col gap-2'>
+                <div>
+                  <Label className='font-semibold'>
+                    {t('details.categories.domain')}
+                  </Label>
+                  <p>
+                    {item.committee
+                      ? item.committee?.translations[0].title
+                      : item.categories?.[fileIndex].author}
+                  </p>
+                </div>
+
+                <div>
+                  <Label className='font-semibold'>
+                    {t('details.categories.category')}
+                  </Label>
+                  <p>{item.categories?.[fileIndex].category}</p>
+                </div>
+
+                <div>
+                  <Label className='font-semibold'>
+                    {t('details.categories.amount')}
+                  </Label>
+                  <p>
+                    SEK{' '}
+                    {Number.parseFloat(
+                      item.categories?.[fileIndex].amount
+                    ).toLocaleString(language, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className='absolute bottom-2 right-2'>
+            <Button className='flex gap-2' asChild>
               <a href={file} target='_blank' rel='noopener noreferrer'>
                 <ArrowDownTrayIcon className='h-4 w-4' />
-                {t('files.download')}
+                <p className='hidden md:inline'>{t('files.download')}</p>
               </a>
             </Button>
           </div>

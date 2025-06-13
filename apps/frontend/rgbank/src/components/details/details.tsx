@@ -47,7 +47,7 @@ export default function DetailsSection({ language, invoice, expense }: Props) {
 
   return (
     <section className='flex flex-col gap-4 mt-2'>
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-2 gap-4'>
         <div>
           <h3 className='text-sm font-medium text-muted-foreground'>
             {t('details.type')}

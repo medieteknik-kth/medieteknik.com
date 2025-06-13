@@ -40,7 +40,7 @@ export default function DropdownUploads({ language }: Props) {
           size='icon'
           className='relative md:hidden flex w-full h-full items-center justify-center'
         >
-          <InboxIcon className='w-7 h-7' />
+          <InboxIcon className='w-6! h-6!' />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -49,10 +49,10 @@ export default function DropdownUploads({ language }: Props) {
         {canViewExpenses(rgbank_permissions) && (
           <DropdownMenuItem asChild>
             <Link
-              href={`/${language}/upload?template=expense`}
+              href={`/${language}/admin`}
               className='w-32 h-24 cursor-pointer flex flex-col gap-2 justify-center'
             >
-              <ShieldExclamationIcon className='w-7 h-7' />
+              <ShieldExclamationIcon className='w-7! h-7!' />
               <p>{t('nav.admin')}</p>
             </Link>
           </DropdownMenuItem>
@@ -63,7 +63,7 @@ export default function DropdownUploads({ language }: Props) {
             href={`/${language}/upload?template=invoice`}
             className='w-32 h-24 cursor-pointer flex flex-col gap-2 justify-center text-center'
           >
-            <FolderOpenIcon className='w-7 h-7' />
+            <FolderOpenIcon className='w-7! h-7!' />
             <p>{t('nav.uploads')}</p>
           </Link>
         </DropdownMenuItem>

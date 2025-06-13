@@ -133,6 +133,10 @@ test('💻 Submitting invoice form', async ({ page }) => {
 
   await page.getByTitle('Amount (SEK) 1').fill('2000')
 
+  await page.getByTitle('File 1').click()
+  await page.getByTitle('Search for a file').fill('test.png')
+  await page.getByRole('option', { name: 'test.png' }).click()
+
   await expect(finalizeButton).toBeEnabled()
 
   await finalizeButton.click()
@@ -140,5 +144,5 @@ test('💻 Submitting invoice form', async ({ page }) => {
   await expect(submitButton).toBeVisible()
   await submitButton.click()
 
-  await page.waitForURL('**/en', { waitUntil: 'networkidle' })
+  await page.waitForURL('**/en', { waitUntil: 'domcontentloaded' })
 })

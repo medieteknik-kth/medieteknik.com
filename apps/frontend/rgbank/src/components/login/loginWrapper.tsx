@@ -30,7 +30,7 @@ export default function LoginWrapper({ language, onSuccess, onError }: Props) {
         <h1 className='text-3xl md:text-5xl uppercase font-bold tracking-wider text-[#111] dark:text-white text-center mb-8'>
           {t('title')}
         </h1>
-        <AlternativeLogin />
+        <AlternativeLogin remember={remember} />
         <div className='flex justify-center items-center gap-2'>
           <Checkbox
             id='remember_me'

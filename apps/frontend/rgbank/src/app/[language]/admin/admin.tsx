@@ -72,7 +72,7 @@ export default function Admin({ language, committees }: Props) {
   return (
     <main>
       <HeaderGap />
-      <div className='h-fit p-8 pt-0'>
+      <div className='h-fit py-8 px-4 md:p-8 pt-0'>
         <div className='border-b pb-4 border-yellow-400'>
           <h1 className='text-3xl font-bold mt-4 tracking-tight'>
             {t('title')}

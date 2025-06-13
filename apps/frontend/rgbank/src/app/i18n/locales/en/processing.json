@@ -57,6 +57,7 @@
     "admin.categories.submit": "Save Changes",
     "admin.status.verification_number.label": "Verification Number",
     "admin.status.verification_number.placeholder": "Enter verification number (N14, A117, etc.)",
+    "files.fileName": "File Name",
     "processing.title": "Processing Information",
     "processing.status": "Current Status",
     "processing.submitted": "Submitted On",

@@ -17,7 +17,7 @@ test.beforeEach(async ({ page, browser }) => {
   await page.getByLabel('Password').fill(password)
   await page.getByTitle('Login', { exact: true }).click()
 
-  await page.waitForURL('**/en', { waitUntil: 'networkidle' })
+  await page.waitForURL('**/en', { waitUntil: 'domcontentloaded' })
   await expect(page.getByTitle('New Expense')).toBeVisible()
   await expect(page.getByTitle('New Invoice')).toBeVisible()
   await expect(page.getByTitle('Your Uploads')).toBeVisible()

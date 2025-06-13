@@ -21,7 +21,7 @@ export default function StatisticsButton({ language }: Props) {
       className={`relative md:hidden flex w-full h-full items-center justify-center ${!isAuthenticated ? 'col-start-3' : ''}`}
     >
       <Link href={`/${language}/statistics`}>
-        <ChartPieIcon className='w-7 h-7' />
+        <ChartPieIcon className='w-6! h-6!' />
       </Link>
     </Button>
   )
