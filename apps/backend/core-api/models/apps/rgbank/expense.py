@@ -163,11 +163,11 @@ class Expense(db.Model):
 
     @hybrid_property
     def committee_id(self):
-        return self.categories[0].get("author") if self.categories else None
+        return self.categories[0].get("committee_id") if self.categories else None
 
     @committee_id.expression
     def committee_id(cls):
-        return func.jsonb_extract_path_text(cls.categories, "author")
+        return func.jsonb_extract_path_text(cls.categories, "committee_id")
 
     @property
     def committee(self) -> Committee | None:
@@ -294,11 +294,11 @@ class Invoice(db.Model):
 
     @hybrid_property
     def committee_id(self):
-        return self.categories[0].get("author") if self.categories else None
+        return self.categories[0].get("committee_id") if self.categories else None
 
     @committee_id.expression
     def committee_id(cls):
-        return func.jsonb_extract_path_text(cls.categories, "author")
+        return func.jsonb_extract_path_text(cls.categories, "committee_id")
 
     @property
     def committee(self) -> Committee | None:

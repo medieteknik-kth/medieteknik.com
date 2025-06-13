@@ -1,11 +1,13 @@
 from typing import Any, Dict, List, Tuple, Type, Union
+
 from models.apps.rgbank import (
+    AccountBankInformation,
     Expense,
     Invoice,
     RGBankPermissions,
     RGBankViewPermissions,
 )
-from models.apps.rgbank import AccountBankInformation
+from models.committees.committee import Committee
 from models.core import StudentMembership
 from utility import log_error
 
@@ -29,7 +31,7 @@ def has_access(
     if not isinstance(cost_item, (Expense, Invoice)):
         return (False, f"Invalid cost item type. type: {type(cost_item)}")
 
-    if cost_item.student_id == student_id:
+    if str(cost_item.student_id) == student_id:
         return (True, "You are the owner of this expense.")
 
     if not memberships:
@@ -142,7 +144,7 @@ def retrieve_accessible_cost_items(
     if all_access:
         cost_items = cost_item.query.order_by(cost_item.created_at.desc()).all()
 
-    if committee:
+    if committee and isinstance(committee, Committee):
         if not cost_item.committee:
             return None
 

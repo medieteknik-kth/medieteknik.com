@@ -14,7 +14,7 @@ from models.apps.rgbank import (
     PaymentStatus,
     Thread,
 )
-from models.apps.rgbank.expense import BookedItem
+from models.apps.rgbank.expense import BookedItem, ExpenseDomain
 from models.core import Student, StudentMembership
 from services.apps.rgbank import (
     add_committee_statistic,
@@ -123,6 +123,25 @@ def create_expense() -> Response:
     if not file_urls:
         return jsonify({"message": "No files uploaded"}), HTTPStatus.BAD_REQUEST
 
+    new_categories = []
+    for category in json.loads(categories):
+        domain = ExpenseDomain.query.filter(
+            ExpenseDomain.title == category.get("author", "")
+        ).first()
+
+        new_categories.append(
+            {
+                "id": category.get("id", ""),
+                "amount": category.get("amount", 0),
+                "author": category.get("author", ""),
+                "committee_id": str(domain.committee_id)
+                if domain.committee_id
+                else None,
+                "category": category.get("category", ""),
+                "fileId": category.get("fileId", ""),
+            }
+        )
+
     new_expense = Expense(
         expense_id=new_expense_id,
         file_urls=file_urls,
@@ -130,7 +149,7 @@ def create_expense() -> Response:
         description=description,
         date=date,
         is_digital=is_digital,
-        categories=json.loads(categories),
+        categories=new_categories,
         status="UNCONFIRMED",
         student_id=student_id,
     )
@@ -219,7 +238,7 @@ def get_expense(expense_id: str) -> Response:
     if not is_authorized:
         return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
 
-    student: Student = Student.query.filter_by(student_id=student_id).first()
+    student: Student = Student.query.filter_by(student_id=expense.student_id).first()
     if not student or not isinstance(student, Student):
         return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
 

@@ -148,11 +148,14 @@ class Student(db.Model):
                 if RECEPTION_MODE and self.reception_name is not None
                 else self.last_name
             )
-            data["profile_picture_url"] = (
-                self.reception_profile_picture_url
-                if RECEPTION_MODE and self.reception_profile_picture_url is not None
-                else self.profile_picture_url
-            )
+            if RECEPTION_MODE:
+                if self.reception_profile_picture_url:
+                    data["profile_picture_url"] = self.reception_profile_picture_url
+                else:
+                    if self.reception_name is not None:
+                        data["profile_picture_url"] = None
+                    else:
+                        data["profile_picture_url"] = self.profile_picture_url
 
         return data
 

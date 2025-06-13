@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 from typing import Any
 
-from flask import Flask, Response, jsonify, make_response, request, session, url_for
+from flask import Flask, Response, jsonify, make_response, request, session
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
@@ -45,7 +45,6 @@ from utility.constants import (
     ROUTES,
 )
 from utility.database import db
-from utility.logger import log_error
 from utility.translation import retrieve_languages
 
 
@@ -415,26 +414,28 @@ def register_v1_routes(app: Flask):
 
         return response
 
-    @app.route("/auth")
+    @app.route("/api/v1/auth")
     def auth():
         """
         OAuth route for KTH login. First step in the OAuth flow. See the /oidc route for the second step.
         """
         nonce = secrets.token_urlsafe(32)
-        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
+        filter = request.args.get(key="filter", type=str, default=DEFAULT_FILTER)
 
         if filter not in POSSIBLE_FILTERS:
             return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
 
-        return_url = request.args.get("return_url", type=str, default="/")
-        remember = request.args.get("remember", type=bool, default=False)
-        return_url = urllib.parse.quote(return_url)
+        remember = request.form.get("remember")
+        return_url = request.args.get("return_url", default=None, type=str)
+
         session["filter"] = filter
-        session["return_url"] = return_url
-        session["remember"] = remember
+        session["remember"] = False if remember != "true" else True
         session["oauth_nonce"] = nonce
 
-        redirect_uri = url_for(endpoint="oidc_auth", _external=True)
+        if return_url:
+            session["return_url"] = urllib.parse.quote(return_url)
+
+        redirect_uri = "https://api.medieteknik.com/oidc"
         return oauth.kth.authorize_redirect(redirect_uri, nonce=nonce)
 
     @app.route("/oidc")
@@ -445,7 +446,7 @@ def register_v1_routes(app: Flask):
         try:
             token = oauth.kth.authorize_access_token()
         except Exception as e:
-            app.logger.error(f"OIDC authorization error: {str(e)}")
+            app.logger.exception(f"OIDC authorization error: {str(e)}")
             return jsonify(
                 {
                     "error": "An internal server error has occurred. Contact an administrator."
@@ -463,15 +464,13 @@ def register_v1_routes(app: Flask):
         if not student_data:
             return jsonify({"error": "Invalid credentials"}), 401
 
-        session["student"] = student_data
-
         if not student_data.get("username"):
             return jsonify({"error": "Invalid response"}), 401
 
         student_email = student_data.get("username") + "@kth.se"
 
         student = Student.query.filter_by(email=student_email).one_or_none()
-        filter = session.get("filter", DEFAULT_FILTER)
+        filter = session.get("filter", None)
 
         if not student:
             student = Student(
@@ -526,9 +525,17 @@ def register_v1_routes(app: Flask):
             max_age=expiration.total_seconds(),
         )
         return_url = session.pop("return_url", default=None)
-        if return_url:
-            response.headers.add("Location", f"https://www.medieteknik.com{return_url}")
+        location = ""
+        if filter == "rgbank":
+            location = "https://rgbank.medieteknik.com"
         else:
-            response.headers.add("Location", "https://www.medieteknik.com")
+            location = "https://medieteknik.com"
+
+        if return_url:
+            response.headers.add(
+                "Location", f"{location}{urllib.parse.unquote(return_url)}"
+            )
+        else:
+            response.headers.add("Location", location)
 
         return response

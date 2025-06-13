@@ -1,11 +1,13 @@
 from typing import Any, Dict, List, Tuple
+
+from sqlalchemy import or_, select
+
 from models.committees.committee import Committee
 from models.committees.committee_position import CommitteePosition
 from models.core.author import Author, AuthorResource
 from models.core.permissions import Permissions, Role, StudentPermission
 from models.core.student import Student, StudentMembership
 from utility.constants import AVAILABLE_LANGUAGES
-from sqlalchemy import select
 from utility.database import db
 
 
@@ -60,7 +62,7 @@ def get_student_committee_details(
         :return: Tuple[List[Dict[str, Any]], List[Dict[str, Any]]] - The committees and committee positions.
     """
     if student is None:
-        return None
+        return [], []
 
     committees = []
     committee_positions = []
@@ -77,8 +79,15 @@ def get_student_committee_details(
             StudentMembership.committee_position_id
             == CommitteePosition.committee_position_id,
         )
-        .join(Committee, CommitteePosition.committee_id == Committee.committee_id)
+        .outerjoin(Committee, CommitteePosition.committee_id == Committee.committee_id)
         .where(Student.student_id == student.student_id)
+        .where(
+            # Only active memberships
+            or_(
+                StudentMembership.termination_date.is_(None),
+                StudentMembership.termination_date > db.func.now(),
+            )
+        )
     )
 
     result = db.session.execute(stmt).unique().all()
@@ -88,7 +97,7 @@ def get_student_committee_details(
 
     for index, _ in enumerate(result):
         committee_position: CommitteePosition = result[index][1]
-        committee: Committee = result[index][2]
+        committee: Committee | None = result[index][2]
 
         position_dict = committee_position.to_dict(
             provided_languages=provided_languages, is_public_route=False
@@ -96,11 +105,12 @@ def get_student_committee_details(
 
         committee_positions.append(position_dict)
 
-        committee_dict = committee.to_dict(provided_languages=provided_languages)
+        if committee is not None:
+            committee_dict = committee.to_dict(provided_languages=provided_languages)
 
-        if committee_dict in committees:
-            continue
+            if committee_dict in committees:
+                continue
 
-        committees.append(committee_dict)
+            committees.append(committee_dict)
 
     return committees, committee_positions
