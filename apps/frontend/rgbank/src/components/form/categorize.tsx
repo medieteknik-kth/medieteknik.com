@@ -80,6 +80,10 @@ export default function Categorize({
   const categoryIndex = useRef(categories.length)
 
   const addCategory = useCallback(() => {
+    if (categories.length >= files.length) {
+      return
+    }
+
     const newIndex = categoryIndex.current++
     setCategories((prev) => [
       ...prev,
@@ -91,13 +95,12 @@ export default function Categorize({
         fileId: undefined,
       },
     ])
-  }, [categories])
-
-  console.log('Categories:', categories)
+  }, [categories, files.length])
 
   const validateCategories = useCallback(() => {
     const isValid =
       files.length > 0 &&
+      categories.length === files.length &&
       categories.every((category) => {
         const amount = Number.parseFloat(category.amount.replace(',', '.'))
         return (

@@ -54,6 +54,8 @@
     "admin.categories.category": "Budgetpost",
     "admin.categories.category.select": "Välj en budgetpost",
     "admin.categories.amount": "Belopp (SEK)",
+    "admin.categories.file": "Fil",
+    "admin.categories.fileSearch": "Sök fil.",
     "admin.categories.submit": "Spara Ändringar",
     "admin.status.verification_number.label": "Verifieringsnummer",
     "admin.status.verification_number.placeholder": "Ange verifieringsnummer (N14, A117, etc.)",

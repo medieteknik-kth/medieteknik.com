@@ -31,7 +31,7 @@
     "step_6.label_1": "Date of the invoice",
     "step_6.label_2": "Due date of the invoice",
     "step_7.title": "Categorize the invoice",
-    "step_7.description": "Select the categories and enter the amount for each one.",
+    "step_7.description": "Select the categories and enter the amount for each one. 1 category/file.",
     "finalize": "Finalize Invoice"
 
 

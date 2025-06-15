@@ -54,6 +54,8 @@
     "admin.categories.category": "Category",
     "admin.categories.category.select": "Select a category",
     "admin.categories.amount": "Amount (SEK)",
+    "admin.categories.file": "File",
+    "admin.categories.fileSearch": "Search file.",
     "admin.categories.submit": "Save Changes",
     "admin.status.verification_number.label": "Verification Number",
     "admin.status.verification_number.placeholder": "Enter verification number (N14, A117, etc.)",

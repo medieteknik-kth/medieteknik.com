@@ -44,8 +44,10 @@ export default function AdminCategoriesSection({ language, item }: Props) {
   const [categories, setCategories] = useState<Category[]>(
     item.categories || []
   )
-  const [dropdownOpen, setDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
-  const [partDropdownOpen, setPartDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
+  const [openDropdown, setOpenDropdown] = useState<{
+    index: number
+    type: 'domain' | 'category' | 'file'
+  } | null>(null)
   const {
     data: expenseDomains,
     error,
@@ -67,6 +69,7 @@ export default function AdminCategoriesSection({ language, item }: Props) {
         author: categories[0].author,
         category: '',
         amount: '0',
+        fileId: undefined,
       },
     ])
   }, [categoryIndex, categories])
@@ -109,6 +112,12 @@ export default function AdminCategoriesSection({ language, item }: Props) {
     }
   }
 
+  const id = 'invoice_id' in item ? item.invoice_id : item.expense_id
+
+  if (!id) {
+    return null
+  }
+
   if (
     error ||
     (Array.isArray(expenseDomains) && expenseDomains.length === 0) ||
@@ -139,7 +148,12 @@ export default function AdminCategoriesSection({ language, item }: Props) {
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-6'>
-        <Button variant='outline' className='space-x-2' onClick={addCategory}>
+        <Button
+          variant='outline'
+          className='space-x-2'
+          onClick={addCategory}
+          disabled={categories.length >= (item.file_urls?.length || 0) || false}
+        >
           <PlusIcon className='h-4 w-4' />
           <p>{t('admin.categories.add')}</p>
         </Button>
@@ -164,9 +178,16 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     {t('admin.categories.domain')}
                   </Label>
                   <Popover
-                    open={dropdownOpen === index}
+                    open={
+                      openDropdown?.index === index &&
+                      openDropdown?.type === 'domain'
+                    }
                     onOpenChange={() => {
-                      setDropdownOpen((prev) => (prev === index ? -1 : index))
+                      setOpenDropdown((prev) =>
+                        prev?.index === index && prev?.type === 'domain'
+                          ? null
+                          : { index, type: 'domain' }
+                      )
                     }}
                   >
                     <PopoverTrigger asChild>
@@ -205,7 +226,10 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                                 onSelect={(currentValue) => {
                                   const newCategories = [...categories]
                                   newCategories[index].author = currentValue
-                                  setDropdownOpen(-1)
+                                  setOpenDropdown({
+                                    index: -1,
+                                    type: 'domain',
+                                  })
                                   setCategories([
                                     {
                                       id: index,
@@ -234,10 +258,15 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                     {t('admin.categories.category')}
                   </Label>
                   <Popover
-                    open={partDropdownOpen === index}
+                    open={
+                      openDropdown?.index === index &&
+                      openDropdown?.type === 'category'
+                    }
                     onOpenChange={() => {
-                      setPartDropdownOpen((prev) =>
-                        prev === index ? -1 : index
+                      setOpenDropdown((prev) =>
+                        prev?.index === index && prev?.type === 'category'
+                          ? null
+                          : { index, type: 'category' }
                       )
                     }}
                   >
@@ -281,7 +310,10 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                                   onSelect={(currentValue) => {
                                     const newCategories = [...categories]
                                     newCategories[index].category = currentValue
-                                    setPartDropdownOpen(-1)
+                                    setOpenDropdown({
+                                      index: -1,
+                                      type: 'category',
+                                    })
                                   }}
                                   className='flex items-center justify-between'
                                 >
@@ -323,6 +355,102 @@ export default function AdminCategoriesSection({ language, item }: Props) {
                       }
                     }}
                   />
+                </div>
+
+                <div className='grow flex flex-col gap-2 col-span-4'>
+                  <Label className='sr-only'>
+                    {t('admin.categories.file')}
+                  </Label>
+                  <div className='w-full flex flex-col gap-2 col-span-3'>
+                    <Label id='files' htmlFor='files'>
+                      {t('admin.categories.file')}
+                    </Label>
+                    <Popover
+                      open={
+                        openDropdown?.index === index &&
+                        openDropdown?.type === 'file'
+                      }
+                      onOpenChange={() => {
+                        setOpenDropdown((prev) =>
+                          prev?.index === index && prev?.type === 'file'
+                            ? null
+                            : { index, type: 'file' }
+                        )
+                      }}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          id={`file-${index}`}
+                          name={`file-${index}`}
+                          title={`${t('file')} ${index + 1}`}
+                          variant={'outline'}
+                          // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                          role='combobox'
+                          className='grow items-center justify-between'
+                          aria-expanded={
+                            openDropdown?.index === index &&
+                            openDropdown?.type === 'file'
+                          }
+                          aria-labelledby='files'
+                        >
+                          <span className='sr-only'>
+                            {`${t('file')} ${index + 1}`}
+                          </span>
+                          <div className='flex items-center gap-2'>
+                            {category.fileId !== undefined
+                              ? item.file_urls?.[category.fileId]
+                                  .split(id)[1]
+                                  .split('?')[0]
+                                  .substring(1)
+                              : t('file.select')}
+                          </div>
+                          <ChevronDownIcon className='w-5 h-5' />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className='w-96! p-0'>
+                        <Command>
+                          <CommandInput
+                            placeholder={t('admin.categories.fileSearch')}
+                            title={t('admin.categories.fileSearch')}
+                          />
+                          <CommandList>
+                            <CommandEmpty>{t('file.noneFound')}</CommandEmpty>
+                            <CommandGroup>
+                              {item.file_urls?.map((fileURL, fileIndex) => (
+                                <CommandItem
+                                  key={fileURL}
+                                  value={fileURL}
+                                  onSelect={() => {
+                                    const newCategories = [...categories]
+                                    newCategories[index].fileId = fileIndex
+                                    setCategories(newCategories)
+                                    setOpenDropdown({
+                                      index: -1,
+                                      type: 'file',
+                                    })
+                                  }}
+                                  className='flex items-center justify-between'
+                                >
+                                  <div
+                                    className='flex items-center gap-2'
+                                    title={fileURL
+                                      .split(id)[1]
+                                      .split('?')[0]
+                                      .substring(1)}
+                                  >
+                                    {fileURL
+                                      .split(id)[1]
+                                      .split('?')[0]
+                                      .substring(1)}
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
               </li>
             ))}
