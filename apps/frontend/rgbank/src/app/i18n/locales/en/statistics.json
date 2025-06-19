@@ -1,0 +1,14 @@
+{
+    "title": "Statistics",
+    "description": "Overview of expenses and trends over time. Updates every week.",
+    "totalExpenses": "Total Expenses",
+    "yearToDate": "Year to Date",
+    "forTheYear": "For the Year",
+    "yearFilter.label": "Select Year",
+    "yearFilter.description": "Filter all charts and data",
+    "committeeLeaderboard.title": "Committee Leaderboard",
+    "committeeLeaderboard.description": "Top committees by total expenses",
+    "committeeLeaderboard.committee": "Committee",
+    "committeeLeaderboard.amount": "Amount",
+    "committeeLeaderboard.none": "No statistics available for this year"
+}

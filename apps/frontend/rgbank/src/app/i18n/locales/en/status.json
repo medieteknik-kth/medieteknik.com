@@ -1,0 +1,16 @@
+{
+    "booked": "Booked",
+    "rejected": "Rejected",
+    "paid": "Paid",
+    "confirmed": "Confirmed",
+    "clarification": "Clarification",
+    "unconfirmed": "Unconfirmed",
+    "unknown": "Unknown",
+    "status_changed_booked": "Status changed to booked",
+    "status_changed_rejected": "Status changed to rejected",
+    "status_changed_paid": "Status changed to paid",
+    "status_changed_confirmed": "Status changed to confirmed",
+    "status_changed_clarification": "Status changed to clarification",
+    "status_changed_unconfirmed": "Status changed to unconfirmed",
+    "status_changed_unknown": "Status changed to unknown"
+}

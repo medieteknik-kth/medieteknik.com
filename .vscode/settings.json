@@ -7,5 +7,7 @@
         "source.fixAll.eslint": "always"
     },
     "eslint.run": "onSave",
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+    "tailwindCSS.experimental.configFile": "packages/tailwindcss-config",
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }

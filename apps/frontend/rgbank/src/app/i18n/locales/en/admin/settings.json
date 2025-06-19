@@ -1,0 +1,23 @@
+{
+    "title": "Settings",
+    "description": "This page shows the settings for the application. You can change the settings here.",
+    "domains.title": "Domains",
+    "domains.description": "Select the domain for the expense. This will be used to filter the expenses in the application.",
+    "domains.new": "Or create a new domain",
+    "domains.new.placeholder": "Enter a new domain name",
+    "domains.new.title": "Title",
+    "domains.new.description": "Enter a new title",
+    "domains.parts.title": "Domain Parts",
+    "domains.parts.description": "Inspect or add, remove, modify parts to this domain",
+    "domains.parts.select": "Select a domain",
+    "domains.parts.search": "Search for a domain",
+    "domains.parts.notFound": "No domain found",
+    "domains.parts.remove": "Remove",
+    "domains.parts.new": "Add new part",
+    "domains.parts.save": "Save Changes",
+    "domains.parts.error": "Error while modifying domain parts: {{error}}",
+    "domains.parts.success.title": "Success",
+    "domains.parts.success.description": "Modified domain parts successfully",
+    "noPermissions.title": "You do not have permission to access this page.",
+    "noPermissions.description": "Please contact your administrator if you think this is a mistake."
+}

@@ -1,0 +1,6 @@
+{
+    "select_template.title": "Välj en mall",
+    "select_template.description": "Välj en mall för att komma igång med din faktura eller utgift.",
+    "select_template.button": "Nästa",
+    "*": "* betyder ett obligatoriskt fält"
+}

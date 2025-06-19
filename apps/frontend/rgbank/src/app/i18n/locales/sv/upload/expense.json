@@ -1,0 +1,23 @@
+{
+    "title": "Ladda upp din utgift",
+    "description": "Vänligen ladda upp utgiften och fyll i de nödvändiga detaljerna.",
+    "back": "Tillbaka till uppladdning",
+    "error.title.max_length": "Maximal längd överskriden ({{maxLength}} tecken)",
+    "step_1.title": "Namnge din utgift",
+    "step_1.description": "Ange ett namn för din utgift.",
+    "step_1.placeholder": "Ange ett namn för din utgift.",
+    "step_2.title": "Ladda upp bilden av kvittot",
+    "step_2.description": "Ladda upp bilden av kvittot i PDF-, PNG-, JPG-, JPEG- eller AVIF-format.",
+    "step_3.title": "Ange en beskrivning för utgiften",
+    "step_3.description": "Ange en beskrivning för utgiften.",
+    "step_3.placeholder": "Ange en beskrivning för utgiften.",
+    "step_4.title": "Ange datum för utgiften",
+    "step_4.description": "Ange datum för utgiften. Datumet måste vara i det förflutna.",
+    "step_4.label": "Datum för utgiften",
+    "step_5.title": "Är det en digital utgift?",
+    "step_5.description": "Välj om utgiften är digital eller inte.",
+    "step_5.label": "Detta är en digital utgift",
+    "step_6.title": "Kategorisera utgiften",
+    "step_6.description": "Välj kategorier och ange beloppet för var och en. 1 kategori/fil.",
+    "finalize": "Slutför utgift"
+}

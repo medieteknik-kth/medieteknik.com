@@ -1,0 +1,8 @@
+{
+    "error.file.too_large": "Filen är för stor. Den maximala storleken är {{maxSize}} MB.",
+    "error.file.invalid_format": "Filformatet är ogiltigt. Vänligen ladda upp en fil i {{validFormats}} format.",
+    "error.file.upload_failed": "Filuppladdning misslyckades. Vänligen försök igen.",
+    "success": "Filen har laddats upp.",
+    "label.upload": "Dra och släpp din fil här, eller klicka för att välja en fil.",
+    "file.removed": "Filen har tagits bort."
+}

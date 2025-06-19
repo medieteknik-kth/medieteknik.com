@@ -1,0 +1,23 @@
+{
+    "title": "Inställningar",
+    "description": "Denna sida visar inställningarna för applikationen. Du kan ändra inställningarna här.",
+    "domains.title": "Resultatställen",
+    "domains.description": "Välj resultatställe för utgiften. Detta kommer att användas för att filtrera utgifterna i applikationen.",
+    "domains.new": "Eller skapa ett nytt resultatställe",
+    "domains.new.placeholder": "Ange ett nytt namn på resultatställe",
+    "domains.new.title": "Titel",
+    "domains.new.description": "Ange en ny titel",
+    "domains.parts.title": "Budgetposter",
+    "domains.parts.description": "Inspektera eller lägg till, ta bort, ändra poster till detta resultatställe",
+    "domains.parts.select": "Välj ett resultatställe",
+    "domains.parts.search": "Sök efter ett resultatställe",
+    "domains.parts.notFound": "Inget resultatställe hittades",
+    "domains.parts.remove": "Ta bort",
+    "domains.parts.new": "Lägg till ny post",
+    "domains.parts.save": "Spara ändringar",
+    "domains.parts.error": "Ett fel uppstod vid ändring av resultatställeposter: {{error}}",
+    "domains.parts.success.title": "Sparat",
+    "domains.parts.success.description": "Ändrade resultatställeposter",
+    "noPermissions.title": "Du har inte behörighet att komma åt denna sida.",
+    "noPermissions.description": "Kontakta din administratör om du tror att detta är ett misstag."
+}

@@ -1,0 +1,15 @@
+{
+    "title": "Slutför utgift",
+    "description": "Granska dina utgiftsdetaljer innan du slutför.",
+    "back": "Tillbaka",
+    "error": "Misslyckades med att skapa utgift",
+    "metadata.title": "Utgiftsmetadata",
+    "metadata.text.title": "Titel",
+    "metadata.text.description": "Beskrivning",
+    "metadata.status.title": "Utgiftsstatus",
+    "metadata.status.digital": "Digitalt kvitto",
+    "metadata.amount": "Belopp",
+    "metadata.dates.title": "Viktiga datum",
+    "metadata.dates.expense": "Datum för fakturan",
+    "submit": "Skicka utgift"
+}

@@ -1,0 +1,10 @@
+{
+    "about.title": "Om",
+    "about.description": "Detta är en bokförings-app för att skicka in dina fakturor och utgifter till sektionen.",
+    "contact.title": "Kontakt",
+    "issues.title": "Problem?",
+    "issues.description": "Om du har några problem med appen, vänligen ",
+    "issues.description.github": "skapa ett 'issue' på GitHub.",
+    "privacy_policy.title": "Integritetspolicy",
+    "copyright.content": "© 2025 Sektionen för Medieteknik. Denna hemsida är byggd av studenter vid Medieteknikprogrammet på KTH Kungliga Tekniska Högskolan i Stockholm, Sverige."
+}

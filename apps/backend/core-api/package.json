@@ -1,0 +1,8 @@
+{
+    "name": "core-api",
+    "private": true,
+    "scripts": {
+        "dev": "docker-compose up -d --build",
+        "start": "docker-compose up -d"
+    }
+}

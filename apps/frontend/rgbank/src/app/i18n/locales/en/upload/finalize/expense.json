@@ -1,0 +1,15 @@
+{
+    "title": "Finalize Expense",
+    "description": "Review your expense details before finalizing.",
+    "back": "Back",
+    "error": "Failed to create expense",
+    "metadata.title": "Expense Metadata",
+    "metadata.text.title": "Title",
+    "metadata.text.description": "Description",
+    "metadata.status.title": "Expense Status",
+    "metadata.status.digital": "Digital Receipt",
+    "metadata.amount": "Amount",
+    "metadata.dates.title": "Important Dates",
+    "metadata.dates.expense": "Date of the invoice",
+    "submit": "Submit Expense"
+}

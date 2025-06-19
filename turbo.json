@@ -1,0 +1,21 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "tasks": {
+      "build": {
+        "dependsOn": ["^build"],
+        "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+        "env": ["API_URL", "AUTHORIZATION_TOKEN"]
+      },
+      "check-types": {
+        "dependsOn": ["^check-types"]
+      },
+      "test":{
+        "dependsOn": ["^test"],
+        "outputs": ["coverage/**", "test-results/**"]
+      },
+      "dev": {
+        "persistent": true,
+        "cache": false
+      }
+    }
+}
