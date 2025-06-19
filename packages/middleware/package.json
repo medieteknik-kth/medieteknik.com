@@ -8,7 +8,7 @@
         "test": "bun run jest"
     },
     "dependencies": {
-        "next": "^15.0.0"
+        "next": "15.3.3"
     },
     "devDependencies": {
         "typescript": "^5.0.0",
