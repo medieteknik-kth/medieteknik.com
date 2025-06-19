@@ -75,8 +75,12 @@ export default function ContextSearch({
           const diffHours = Math.floor(diff / (1000 * 60 * 60))
 
           if (diffHours > 24 || Object.keys(previousData).length === 0) {
-            const { data: newData, error: searchError } =
-              await getSearchEntries(language, 0)
+            const { data: newData, error: searchError } = await fetch(
+              `/api/search?language=${language}`,
+              {
+                next: { revalidate: 60 * 60 * 23 },
+              }
+            ).then((res) => res.json())
 
             if (newData) {
               await setIndexedDBSearchEntries(language, newData)

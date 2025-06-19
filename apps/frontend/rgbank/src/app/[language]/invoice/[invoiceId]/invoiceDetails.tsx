@@ -40,6 +40,23 @@ export default function InvoiceDetails({ language }: Props) {
   const { t } = useTranslation(language, 'processing')
   const { t: invoiceT } = useTranslation(language, 'invoice')
 
+  if (!invoice || !studentAuthor) {
+    return (
+      <div className='container min-h-screen flex flex-col items-center justify-center gap-4'>
+        <h1 className='text-3xl font-bold'>
+          {t('error.title', {
+            type: invoiceT('invoice').toLowerCase(),
+          })}
+        </h1>
+        <p className='text-muted-foreground'>
+          {t('error.description', {
+            type: invoiceT('invoice').toLowerCase(),
+          })}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className='mx-auto max-w-4xl flex flex-col gap-4 py-10'>
       <section className='flex justify-between items-center'>
@@ -73,8 +90,8 @@ export default function InvoiceDetails({ language }: Props) {
           </div>
         </div>
       </section>
-      <section className='grid grid-cols-3 gap-4'>
-        <PopIn className='col-span-2'>
+      <section className='grid md:grid-cols-3 gap-4'>
+        <PopIn className='md:col-span-2'>
           <Card>
             <CardHeader>
               <div className='flex items-center justify-between'>

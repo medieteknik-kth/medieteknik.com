@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 /**
  * @name createRecruitmentSchema
@@ -7,16 +7,18 @@ import { z } from 'zod'
  */
 export const createRecruitmentSchema = z.object({
   position: z.string(),
-  end_date: z.coerce.date().refine((date) => date >= new Date(), {
-    message: 'Start date must be today or later',
-  }),
+  end_date: z.coerce.date().check(
+    z.refine((date) => date >= new Date(), {
+      error: 'Start date must be today or later',
+    })
+  ),
   translations: z
     .array(
       z.object({
-        language_code: z.string().optional().or(z.literal('')),
-        link: z.string().url().max(512),
-        description: z.string().max(200),
+        language_code: z.optional(z.string()),
+        link: z.url().check(z.maxLength(512)),
+        description: z.string().check(z.maxLength(200)),
       })
     )
-    .min(1),
+    .check(z.minLength(1)),
 })

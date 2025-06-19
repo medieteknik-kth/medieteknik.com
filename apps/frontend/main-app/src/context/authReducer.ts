@@ -3,8 +3,10 @@ import type { CommitteePosition } from '@/models/Committee'
 import type { AuthorResource } from '@/models/Items'
 import type { Permission, Role } from '@/models/Permission'
 import type Student from '@/models/Student'
+import type { AuthenticationAction } from '@medieteknik/authentication/src'
+import type { SuccessfulAuthenticationResponse } from '@medieteknik/models'
 
-interface AuthenticationState {
+export interface AuthenticationState {
   /**
    * The student object of the authenticated user.
    */
@@ -63,29 +65,12 @@ export interface AuthenticationContextType extends AuthenticationState {
     csrf_token: string,
     remember?: boolean
   ) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
   setStale: (stale: boolean) => void
 }
 
-type AuthenticationAction =
-  | { type: 'LOGIN' }
-  | { type: 'LOGOUT' }
-  | {
-      type: 'SET_STUDENT_DATA'
-      payload: {
-        student: Student
-        committees: Committee[]
-        positions: CommitteePosition[]
-        role: Role
-        permissions: {
-          author: AuthorResource[]
-          student: Permission[]
-        }
-      }
-    }
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string }
-  | { type: 'SET_STALE'; payload: boolean }
+export type AppAuthenticationAction =
+  AuthenticationAction<SuccessfulAuthenticationResponse>
 
 export const initialState: AuthenticationState = {
   student: null,
@@ -111,7 +96,7 @@ export const initialState: AuthenticationState = {
  */
 export function authenticationReducer(
   state: AuthenticationState,
-  action: AuthenticationAction
+  action: AppAuthenticationAction
 ): AuthenticationState {
   switch (action.type) {
     case 'LOGIN':
@@ -140,7 +125,7 @@ export function authenticationReducer(
         ...state,
         student: action.payload.student,
         committees: action.payload.committees,
-        positions: action.payload.positions,
+        positions: action.payload.committee_positions,
         role: action.payload.role,
         permissions: action.payload.permissions,
         isAuthenticated: true,

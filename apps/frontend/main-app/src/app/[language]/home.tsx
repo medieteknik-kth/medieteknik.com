@@ -35,7 +35,7 @@ export default async function Home(props: Props): Promise<JSX.Element> {
         >
           <div className='w-full h-full bg-black/40 z-10' />
           <Image
-            src='https://storage.googleapis.com/medieteknik-static/static/landingpage.webp'
+            src='https://storage.googleapis.com/medieteknik-static/static/landingpage_2019.webp'
             alt='Background'
             fill
             className='w-full h-full object-cover'

@@ -64,7 +64,7 @@ export default function OverviewPage({ language }: Props) {
   }
 
   return (
-    <section className='grow h-fit mb-8 2xl:mb-0 pr-10'>
+    <section className='grow h-fit mb-8 2xl:mb-0 md:pr-10'>
       <div className='w-full mb-4 px-4 pt-4'>
         <h2 className='text-lg font-bold'>{t('title')}</h2>
         <p className='text-sm text-muted-foreground'>{t('description')}</p>

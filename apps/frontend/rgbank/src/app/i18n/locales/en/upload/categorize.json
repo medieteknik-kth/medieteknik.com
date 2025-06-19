@@ -7,6 +7,10 @@
     "category.search.placeholder": "Search for a category",
     "category.select": "Select Category",
     "category.noneFound": "No categories found",
+    "file": "File",
+    "file.select": "Select File",
+    "file.search.placeholder": "Search for a file",
+    "file.noneFound": "No files found",
     "amount": "Amount (SEK)",
     "addCategory": "Add Category"
 }

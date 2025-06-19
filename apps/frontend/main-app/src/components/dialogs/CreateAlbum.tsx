@@ -8,22 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { LanguageCode } from '@/models/Language'
 import { albumUploadSchema } from '@/schemas/items/album'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { useState } from 'react'
+import { z } from 'zod/v4-mini'
 
 interface Props {
   language: LanguageCode
@@ -32,18 +24,56 @@ interface Props {
 
 export default function CreateAlbum({ language, callback }: Props) {
   const { t } = useTranslation(language, 'media')
-  const form = useForm<z.infer<typeof albumUploadSchema>>({
-    resolver: zodResolver(albumUploadSchema),
-    defaultValues: {
-      translations: SUPPORTED_LANGUAGES.map((language) => ({
-        language_code: language,
-        title: '',
-        description: '',
-      })),
-    },
+  const [form, setForm] = useState<z.infer<typeof albumUploadSchema>>({
+    translations: SUPPORTED_LANGUAGES.map((lang) => ({
+      language_code: lang,
+      title: '',
+      description: '',
+    })),
+  })
+  const [formErrors, setFormErrors] = useState({
+    translations: SUPPORTED_LANGUAGES.reduce(
+      (acc, lang) => {
+        acc[lang] = {
+          title: '',
+          description: '',
+        }
+        return acc
+      },
+      {} as Record<LanguageCode, { title: string; description: string }>
+    ),
   })
 
-  const postForm = async (data: z.infer<typeof albumUploadSchema>) => {
+  const submit = async (data: z.infer<typeof albumUploadSchema>) => {
+    const errors = albumUploadSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+
+      const defaultTranslations = SUPPORTED_LANGUAGES.reduce(
+        (acc, lang) => {
+          acc[lang] = { title: '', description: '' }
+          return acc
+        },
+        {} as Record<LanguageCode, { title: string; description: string }>
+      )
+
+      setFormErrors({
+        translations:
+          fieldErrors.properties?.translations?.items?.reduce(
+            (acc, item, index) => {
+              const lang = SUPPORTED_LANGUAGES[index]
+              acc[lang] = {
+                title: item.properties?.title?.errors[0] || '',
+                description: item.properties?.description?.errors[0] || '',
+              }
+              return acc
+            },
+            defaultTranslations
+          ) || defaultTranslations,
+      })
+    }
+
     try {
       const response = await fetch('/api/albums', {
         method: 'POST',
@@ -89,61 +119,69 @@ export default function CreateAlbum({ language, callback }: Props) {
             </TabsTrigger>
           ))}
         </TabsList>
-        <form onSubmit={form.handleSubmit(postForm)}>
-          <Form {...form}>
-            {SUPPORTED_LANGUAGES.map((language, index) => (
-              <TabsContent key={language} value={language}>
-                <FormField
-                  name={`translations[${index}].title`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Input id='language' type='hidden' {...field} />
-                    </FormItem>
-                  )}
-                />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            submit(form)
+          }}
+        >
+          {SUPPORTED_LANGUAGES.map((language, index) => (
+            <TabsContent key={language} value={language}>
+              <Input id='language' type='hidden' value={language} />
 
-                <FormField
-                  name={`translations.${index}.title`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t('title_placeholder')}{' '}
-                        <span className='uppercase text-xs tracking-wide'>
-                          [{language}]
-                        </span>
-                      </FormLabel>
-                      <Input id='title' placeholder='Title' {...field} />
-                      <FormMessage className='text-xs font-bold' />
-                    </FormItem>
-                  )}
+              <div>
+                <Label className='text-sm font-semibold'>
+                  {t('title_placeholder')}{' '}
+                  <span className='uppercase text-xs tracking-wide'>
+                    [{language}]
+                  </span>
+                </Label>
+                <Input
+                  id='language_code'
+                  placeholder='Title'
+                  value={form.translations[index].title}
+                  onChange={(e) => {
+                    const newTranslations = [...form.translations]
+                    newTranslations[index].title = e.target.value
+                    setForm({ ...form, translations: newTranslations })
+                  }}
                 />
+                {formErrors.translations[language].title && (
+                  <p className='text-red-500 text-xs font-bold'>
+                    {formErrors.translations[language].title}
+                  </p>
+                )}
+              </div>
 
-                <FormField
-                  name={`translations.${index}.description`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t('description_placeholder')}{' '}
-                        <span className='uppercase text-xs tracking-wide'>
-                          [{language}]
-                        </span>
-                      </FormLabel>
-                      <Input
-                        id='description'
-                        placeholder='Description'
-                        {...field}
-                      />
-                      <FormMessage className='text-xs font-bold' />
-                    </FormItem>
-                  )}
+              <div>
+                <Label className='text-sm font-semibold'>
+                  {t('description_placeholder')}{' '}
+                  <span className='uppercase text-xs tracking-wide'>
+                    [{language}]
+                  </span>
+                </Label>
+                <Input
+                  id='description'
+                  placeholder='Description'
+                  value={form.translations[index].description}
+                  onChange={(e) => {
+                    const newTranslations = [...form.translations]
+                    newTranslations[index].description = e.target.value
+                    setForm({ ...form, translations: newTranslations })
+                  }}
                 />
-              </TabsContent>
-            ))}
+                {formErrors.translations[language].description && (
+                  <p className='text-red-500 text-xs font-bold'>
+                    {formErrors.translations[language].description}
+                  </p>
+                )}
+              </div>
+            </TabsContent>
+          ))}
 
-            <Button type='submit' className='w-full my-2'>
-              {t('create_album')}
-            </Button>
-          </Form>
+          <Button type='submit' className='w-full my-2'>
+            {t('create_album')}
+          </Button>
         </form>
       </Tabs>
     </DialogContent>

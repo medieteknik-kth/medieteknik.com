@@ -18,6 +18,6 @@
     "step_5.description": "Välj om utgiften är digital eller inte.",
     "step_5.label": "Detta är en digital utgift",
     "step_6.title": "Kategorisera utgiften",
-    "step_6.description": "Välj kategorierna och ange beloppet för var och en.",
+    "step_6.description": "Välj kategorier och ange beloppet för var och en. 1 kategori/fil.",
     "finalize": "Slutför utgift"
 }

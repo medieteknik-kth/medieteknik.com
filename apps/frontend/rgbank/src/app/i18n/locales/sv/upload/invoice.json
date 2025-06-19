@@ -31,7 +31,7 @@
     "step_6.label_1": "Datum för fakturan",
     "step_6.label_2": "Förfallodatum för fakturan",
     "step_7.title": "Kategorisera fakturan",
-    "step_7.description": "Välj kategorierna och ange beloppet för var och en.",
+    "step_7.description": "Välj kategorier och ange beloppet för var och en. 1 kategory/fil.",
     "finalize": "Slutför faktura"
 
 

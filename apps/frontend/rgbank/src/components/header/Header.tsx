@@ -77,7 +77,7 @@ export default async function Header({
         className='relative md:hidden flex w-full h-full items-center justify-center'
       >
         <Link href={`/${language}`}>
-          <HomeIcon className='w-7 h-7' />
+          <HomeIcon className='w-6! h-6!' />
         </Link>
       </Button>
 

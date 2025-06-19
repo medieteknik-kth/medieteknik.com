@@ -120,7 +120,7 @@ export function ExpenseStatusBadge({
           )}
           title='Booked'
         >
-          <ClipboardDocumentCheckIcon className='h-4 w-4' />
+          <ClipboardDocumentCheckIcon className='h-4 w-4 text-inherit' />
           {!short && <span>{t('booked')}</span>}
         </div>
       )
@@ -135,7 +135,7 @@ export function ExpenseStatusBadge({
           )}
           title='Rejected'
         >
-          <XMarkIcon className='h-4 w-4' />
+          <XMarkIcon className='h-4 w-4 text-inherit' />
           {!short && <span>{t('rejected')}</span>}
         </div>
       )
@@ -150,7 +150,7 @@ export function ExpenseStatusBadge({
           )}
           title='Paid'
         >
-          <CreditCardIcon className='h-4 w-4' />
+          <CreditCardIcon className='h-4 w-4 text-inherit' />
           {!short && <span>{t('paid')}</span>}
         </div>
       )
@@ -165,7 +165,7 @@ export function ExpenseStatusBadge({
           )}
           title='Confirmed'
         >
-          <CheckIcon className='h-4 w-4' />
+          <CheckIcon className='h-4 w-4 text-inherit' />
           {!short && <span>{t('confirmed')}</span>}
         </div>
       )
@@ -180,7 +180,7 @@ export function ExpenseStatusBadge({
           )}
           title='Clarification'
         >
-          <ExclamationTriangleIcon className='h-4 w-4' />
+          <ExclamationTriangleIcon className='h-4 w-4 text-inherit' />
           {!short && <span>{t('clarification')}</span>}
         </div>
       )
@@ -194,7 +194,7 @@ export function ExpenseStatusBadge({
           )}
           title='Unconfirmed'
         >
-          <ClockIcon className='h-4 w-4' />
+          <ClockIcon className='h-4 w-4 text-inherit' />
           {!short && <span>{t('unconfirmed')}</span>}
         </div>
       )

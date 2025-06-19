@@ -35,7 +35,7 @@ function BreadcrumbLink({
   asChild,
   className,
   ...props
-}: React.ComponentProps<'a'> & {
+}: React.HTMLAttributes<HTMLElement> & {
   asChild?: boolean
 }) {
   const Comp = asChild ? Slot : 'a'

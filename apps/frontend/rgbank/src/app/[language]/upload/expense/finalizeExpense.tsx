@@ -74,7 +74,12 @@ export default function FinalizeExpense({ language, onBack }: Props) {
     formData.append('description', data.description)
     formData.append('date', data.date.toISOString())
     formData.append('isDigital', data.digital.toString())
-    formData.append('categories', JSON.stringify(data.categories))
+    formData.append('categories', JSON.stringify(
+      data.categories.map(category => ({
+      ...category,
+      amount: category.amount.replace(/,/g, '.')
+      }))
+    ))
 
     try {
       const response = await fetch('/api/rgbank/expenses', {

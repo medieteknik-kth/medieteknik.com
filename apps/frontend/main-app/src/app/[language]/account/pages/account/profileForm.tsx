@@ -1,30 +1,21 @@
 'use client'
+
+import { useTranslation } from '@/app/i18n/client'
 import Loading from '@/components/tooltips/Loading'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import type { LanguageCode } from '@/models/Language'
 import type { Profile } from '@/models/Student'
 import { profileSchema } from '@/schemas/user/profile'
-import { zodResolver } from '@hookform/resolvers/zod'
+import Image from 'next/image'
 import FacebookLogo from 'public/images/logos/Facebook_Logo_Primary.webp'
 import InstagramLogo from 'public/images/logos/Instagram_Glyph_Gradient.webp'
 import LinkedInLogo from 'public/images/logos/LI-In-Bug.webp'
-import { useForm } from 'react-hook-form'
+import { type JSX, useState } from 'react'
 import useSWR from 'swr'
-import type { z } from 'zod'
-
-import { useTranslation } from '@/app/i18n/client'
-import { Separator } from '@/components/ui/separator'
-import type { LanguageCode } from '@/models/Language'
-import Image from 'next/image'
-import type { JSX } from 'react'
+import { z } from 'zod/v4-mini'
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -50,20 +41,34 @@ export default function ProfileForm({ language }: Props): JSX.Element {
     refreshWhenHidden: false,
     shouldRetryOnError: false,
   })
+  const [form, setForm] = useState<z.infer<typeof profileSchema>>({
+    facebook: data?.facebook_url || '',
+    instagram: data?.instagram_url || '',
+    linkedin: data?.linkedin_url || '',
+  })
+  const [formErrors, setFormErrors] = useState({
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+  })
 
   const { t } = useTranslation(language, 'account/profile')
 
-  const profileForm = useForm<z.infer<typeof profileSchema>>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      facebook: '',
-      instagram: '',
-      linkedin: '',
-    },
-  })
   if (isLoading) return <Loading language={language} />
 
-  const postProfileForm = async (data: z.infer<typeof profileSchema>) => {
+  const submit = async (data: z.infer<typeof profileSchema>) => {
+    const errors = profileSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        facebook: fieldErrors.properties?.facebook?.errors[0] || '',
+        instagram: fieldErrors.properties?.instagram?.errors[0] || '',
+        linkedin: fieldErrors.properties?.linkedin?.errors[0] || '',
+      })
+      return
+    }
+
     try {
       const json_data = {
         facebook_url: data.facebook === '' ? null : data.facebook,
@@ -91,133 +96,137 @@ export default function ProfileForm({ language }: Props): JSX.Element {
   }
 
   return (
-    <Form {...profileForm}>
-      <div className='w-full max-w-[1100px] flex mb-8 2xl:mb-0'>
-        <form
-          className='w-full flex flex-col gap-4 max-h-[725px] overflow-y-auto'
-          onSubmit={profileForm.handleSubmit(postProfileForm)}
-        >
-          <div className='w-full mb-4 px-4 pt-4'>
-            <h2 className='text-lg font-bold'>{t('title')}</h2>
-            <p className='text-sm text-muted-foreground'>{t('description')}</p>
-            <Separator className='bg-yellow-400 mt-4' />
-          </div>
-          <FormField
-            control={profileForm.control}
-            name='facebook'
-            render={({ field }) => (
-              <FormItem className='px-4'>
-                <FormLabel className='text-sm font-semibold flex gap-2 items-center'>
-                  <Image
-                    src={FacebookLogo}
-                    width={32}
-                    height={32}
-                    alt='Facebook Logo'
-                  />
-                  Facebook
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={
-                      error || !data?.facebook_url
-                        ? 'https://www.facebook.com/<username>/'
-                        : data.facebook_url
-                    }
-                    onFocus={(e) => {
-                      e.target.value = 'https://www.facebook.com/'
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value === 'https://www.facebook.com/') {
-                        e.target.value = ''
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={profileForm.control}
-            name='instagram'
-            render={({ field }) => (
-              <FormItem className='px-4'>
-                <FormLabel className='text-sm font-semibold flex gap-2 items-center'>
-                  <Image
-                    src={InstagramLogo}
-                    width={32}
-                    height={32}
-                    alt='Instagram Logo'
-                    className='mr-2'
-                  />
-                  Instagram
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={
-                      error || !data?.instagram_url
-                        ? 'https://www.instagram.com/<username>/'
-                        : data.instagram_url
-                    }
-                    onFocus={(e) => {
-                      e.target.value = 'https://www.instagram.com/'
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value === 'https://www.instagram.com/') {
-                        e.target.value = ''
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={profileForm.control}
-            name='linkedin'
-            render={({ field }) => (
-              <FormItem className='px-4'>
-                <FormLabel className='text-sm font-semibold flex gap-2 items-center'>
-                  <Image
-                    src={LinkedInLogo}
-                    width={38}
-                    height={32}
-                    alt='LinkedIn Logo'
-                    className='mr-2'
-                  />
-                  LinkedIn
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={
-                      error || !data?.linkedin_url
-                        ? 'https://www.linkedin.com/in/<username>/'
-                        : data.linkedin_url
-                    }
-                    onFocus={(e) => {
-                      e.target.value = 'https://www.linkedin.com/in/'
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value === 'https://www.linkedin.com/in/') {
-                        e.target.value = ''
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <div className='w-full max-w-[1100px] flex mb-8 2xl:mb-0'>
+      <form
+        className='w-full flex flex-col gap-4 max-h-[725px] overflow-y-auto'
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit(form)
+        }}
+      >
+        <div className='w-full mb-4 px-4 pt-4'>
+          <h2 className='text-lg font-bold'>{t('title')}</h2>
+          <p className='text-sm text-muted-foreground'>{t('description')}</p>
+          <Separator className='bg-yellow-400 mt-4' />
+        </div>
 
-          <Button className='mx-4' type='submit'>
-            {t('save')}
-          </Button>
-        </form>
-      </div>
-    </Form>
+        <div>
+          <Label className='text-sm font-semibold flex gap-2 items-center'>
+            <Image
+              src={FacebookLogo}
+              width={32}
+              height={32}
+              alt='Facebook Logo'
+            />
+            Facebook
+          </Label>
+          <Input
+            value={form.facebook}
+            onChange={(e) => {
+              setForm({
+                ...form,
+                facebook: e.target.value,
+              })
+            }}
+            placeholder={
+              error || !data?.facebook_url
+                ? 'https://www.facebook.com/<username>/'
+                : data.facebook_url
+            }
+            onFocus={(e) => {
+              e.target.value = 'https://www.facebook.com/'
+            }}
+            onBlur={(e) => {
+              if (e.target.value === 'https://www.facebook.com/') {
+                e.target.value = ''
+              }
+            }}
+          />
+          {formErrors.facebook && (
+            <p className='text-red-500 text-sm mt-1'>{formErrors.facebook}</p>
+          )}
+        </div>
+
+        <div>
+          <Label className='text-sm font-semibold flex gap-2 items-center'>
+            <Image
+              src={InstagramLogo}
+              width={32}
+              height={32}
+              alt='Instagram Logo'
+              className='mr-2'
+            />
+            Instagram
+          </Label>
+          <Input
+            value={form.instagram}
+            onChange={(e) => {
+              setForm({
+                ...form,
+                instagram: e.target.value,
+              })
+            }}
+            placeholder={
+              error || !data?.instagram_url
+                ? 'https://www.instagram.com/<username>/'
+                : data.instagram_url
+            }
+            onFocus={(e) => {
+              e.target.value = 'https://www.instagram.com/'
+            }}
+            onBlur={(e) => {
+              if (e.target.value === 'https://www.instagram.com/') {
+                e.target.value = ''
+              }
+            }}
+          />
+          {formErrors.instagram && (
+            <p className='text-red-500 text-sm mt-1'>{formErrors.instagram}</p>
+          )}
+        </div>
+
+        <div>
+          <Label className='text-sm font-semibold flex gap-2 items-center'>
+            <Image
+              src={LinkedInLogo}
+              width={32}
+              height={32}
+              alt='LinkedIn Logo'
+              className='mr-2'
+            />
+            LinkedIn
+          </Label>
+          <Input
+            value={form.linkedin}
+            onChange={(e) => {
+              setForm({
+                ...form,
+                linkedin: e.target.value,
+              })
+            }}
+            placeholder={
+              error || !data?.linkedin_url
+                ? 'https://www.linkedin.com/in/<username>/'
+                : data.linkedin_url
+            }
+            onFocus={(e) => {
+              e.target.value = 'https://www.linkedin.com/in/'
+            }}
+            onBlur={(e) => {
+              if (e.target.value === 'https://www.linkedin.com/in/') {
+                e.target.value = ''
+              }
+            }}
+          />
+          {formErrors.linkedin && (
+            <p className='text-red-500 text-sm mt-1'>{formErrors.linkedin}</p>
+          )}
+        </div>
+
+        <Button className='mx-4' type='submit'>
+          {t('save')}
+        </Button>
+      </form>
+    </div>
   )
 }

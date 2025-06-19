@@ -5,44 +5,45 @@ This script is used to create all tables in the database. It is used to initiali
 """
 
 import argparse
-from main import app
+
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.schema import CreateSchema
-from utility import db
-from models.utility import RevokedTokens  # noqa: F401
+
+from main import app
 from models.apps.rgbank import (
     AccountBankInformation,  # noqa: F401
-    ExpenseDomain,  # noqa: F401
+    BookedItem,  # noqa: F401
     Expense,  # noqa: F401
+    ExpenseCount,  # noqa: F401
+    ExpenseDomain,  # noqa: F401
     Invoice,  # noqa: F401
+    Message,  # noqa: F401
     RGBankPermissions,  # noqa: F401
     Statistics,  # noqa: F401
-    ExpenseCount,  # noqa: F401
     Thread,  # noqa: F401
-    Message,  # noqa: F401
 )
 from models.committees import (
+    Committee,  # noqa: F401
     CommitteeCategory,  # noqa: F401
     CommitteeCategoryTranslation,  # noqa: F401
-    Committee,  # noqa: F401
-    CommitteeTranslation,  # noqa: F401
     CommitteePosition,  # noqa: F401
-    CommitteePositionTranslation,  # noqa: F401
     CommitteePositionRecruitment,  # noqa: F401
     CommitteePositionRecruitmentTranslation,  # noqa: F401
+    CommitteePositionTranslation,  # noqa: F401
+    CommitteeTranslation,  # noqa: F401
 )
 from models.content import (
     Album,  # noqa: F401
     AlbumTranslation,  # noqa: F401
-    Media,  # noqa: F401
-    MediaTranslation,  # noqa: F401
     Document,  # noqa: F401
     DocumentTranslation,  # noqa: F401
     Event,  # noqa: F401
     EventTranslation,  # noqa: F401
+    Item,  # noqa: F401
+    Media,  # noqa: F401
+    MediaTranslation,  # noqa: F401
     News,  # noqa: F401
     NewsTranslation,  # noqa: F401
-    Item,  # noqa: F401
     RepeatableEvent,  # noqa: F401
     Tag,  # noqa: F401
     TagTranslation,  # noqa: F401
@@ -50,21 +51,24 @@ from models.content import (
 from models.core import (
     Author,  # noqa: F401
     Calendar,  # noqa: F401
-    Student,  # noqa: F401
-    NotificationSubscription,  # noqa: F401
+    Language,  # noqa: F401
     NotificationPreferences,  # noqa: F401
     Notifications,  # noqa: F401
     NotificationsTranslation,  # noqa: F401
-    SentNotifications,  # noqa: F401
+    NotificationSubscription,  # noqa: F401
     Permissions,  # noqa: F401
-    Role,  # noqa: F401
-    StudentPermission,  # noqa: F401
     Profile,  # noqa: F401
+    Role,  # noqa: F401
+    SentNotifications,  # noqa: F401
+    Student,  # noqa: F401
     StudentMembership,  # noqa: F401
-    Language,  # noqa: F401
+    StudentPermission,  # noqa: F401
 )
-
-from models.utility import DiscordMessages  # noqa: F401
+from models.utility import (
+    DiscordMessages,  # noqa: F401
+    RevokedTokens,  # noqa: F401
+)
+from utility import db
 
 
 def init_db():

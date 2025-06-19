@@ -17,5 +17,7 @@
     "domains.parts.save": "Save Changes",
     "domains.parts.error": "Error while modifying domain parts: {{error}}",
     "domains.parts.success.title": "Success",
-    "domains.parts.success.description": "Modified domain parts successfully"
+    "domains.parts.success.description": "Modified domain parts successfully",
+    "noPermissions.title": "You do not have permission to access this page.",
+    "noPermissions.description": "Please contact your administrator if you think this is a mistake."
 }

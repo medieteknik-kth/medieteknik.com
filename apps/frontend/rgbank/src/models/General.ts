@@ -1,3 +1,5 @@
+import type { CommitteePosition, Student } from '@medieteknik/models'
+
 export type ExpenseType = 'invoice' | 'expense'
 export type ExpenseStatus =
   | 'BOOKED'
@@ -67,3 +69,10 @@ export const availableStatuses: {
     value: 'UNCONFIRMED',
   },
 ]
+
+export interface BookedItemData {
+  verification_number: string
+  paid_at: string
+  student: Student
+  committee_position: CommitteePosition
+}

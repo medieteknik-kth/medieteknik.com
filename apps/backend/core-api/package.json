@@ -2,8 +2,7 @@
     "name": "core-api",
     "private": true,
     "scripts": {
-        "dev": "docker-compose up -d --build && docker-compose logs -f",
-        "start": "docker-compose up -d",
-        "build": "docker-compose up --build -d"
+        "dev": "docker-compose up -d --build",
+        "start": "docker-compose up -d"
     }
 }

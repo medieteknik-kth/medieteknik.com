@@ -1,29 +1,33 @@
 import json
 import uuid
-from typing import List
 from datetime import timedelta
+from http import HTTPStatus
+from typing import List
+
 from flask import Blueprint, Response, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from http import HTTPStatus
+
 from models.apps.rgbank import (
     AccountBankInformation,
     Expense,
-    PaymentStatus,
     MessageType,
+    PaymentStatus,
     Thread,
 )
+from models.apps.rgbank.expense import BookedItem, ExpenseDomain
 from models.core import Student, StudentMembership
 from services.apps.rgbank import (
     add_committee_statistic,
     add_expense_count,
+    add_message,
     add_student_statistic,
-    retrieve_accessible_cost_items,
     has_access,
     has_full_authority,
-    add_message,
+    retrieve_accessible_cost_items,
 )
 from services.utility.mail import send_expense_message
-from utility import db, upload_file, rgbank_bucket
+from utility import db, rgbank_bucket, upload_file
+from utility.constants import DEFAULT_LANGUAGE_CODE
 
 expense_bp = Blueprint("expense", __name__)
 
@@ -119,6 +123,25 @@ def create_expense() -> Response:
     if not file_urls:
         return jsonify({"message": "No files uploaded"}), HTTPStatus.BAD_REQUEST
 
+    new_categories = []
+    for category in json.loads(categories):
+        domain = ExpenseDomain.query.filter(
+            ExpenseDomain.title == category.get("author", "")
+        ).first()
+
+        new_categories.append(
+            {
+                "id": category.get("id", ""),
+                "amount": category.get("amount", 0),
+                "author": category.get("author", ""),
+                "committee_id": str(domain.committee_id)
+                if domain.committee_id
+                else None,
+                "category": category.get("category", ""),
+                "fileId": category.get("fileId", ""),
+            }
+        )
+
     new_expense = Expense(
         expense_id=new_expense_id,
         file_urls=file_urls,
@@ -126,7 +149,7 @@ def create_expense() -> Response:
         description=description,
         date=date,
         is_digital=is_digital,
-        categories=json.loads(categories),
+        categories=new_categories,
         status="UNCONFIRMED",
         student_id=student_id,
     )
@@ -158,6 +181,7 @@ def all_expenses():
     :rtype: Response
     """
     student_id = get_jwt_identity()
+    language = request.args.get("language", DEFAULT_LANGUAGE_CODE)
     memberships: List[StudentMembership] = StudentMembership.query.filter(
         StudentMembership.student_id == student_id,
         StudentMembership.termination_date.is_(None),
@@ -179,6 +203,8 @@ def all_expenses():
             expense.to_dict(
                 short=True,
                 is_public_route=False,
+                include_booked_item=True,
+                provided_languages=[language],
             )
             for expense in expenses
         ]
@@ -212,7 +238,7 @@ def get_expense(expense_id: str) -> Response:
     if not is_authorized:
         return jsonify({"error": message}), HTTPStatus.UNAUTHORIZED
 
-    student: Student = Student.query.filter_by(student_id=student_id).first()
+    student: Student = Student.query.filter_by(student_id=expense.student_id).first()
     if not student or not isinstance(student, Student):
         return jsonify({"error": "Student not found"}), HTTPStatus.NOT_FOUND
 
@@ -225,7 +251,7 @@ def get_expense(expense_id: str) -> Response:
     ).first()
 
     base_dict = {
-        "expense": expense.to_dict(),
+        "expense": expense.to_dict(include_booked_item=True),
         "student": student.to_dict(is_public_route=False),
         "bank_information": bank_information.to_dict(),
     }
@@ -368,6 +394,12 @@ def update_expense_status(expense_id: str) -> Response:
         return jsonify({"message": str(e)}), HTTPStatus.BAD_REQUEST
 
     if new_status == PaymentStatus.BOOKED:
+        verification_number = data.get("verification_number")
+        if not verification_number:
+            return jsonify(
+                {"message": "Verification number is required"}
+            ), HTTPStatus.BAD_REQUEST
+
         add_student_statistic(student_id=expense.student_id, value=expense.amount)
 
         if expense.committee:
@@ -381,6 +413,14 @@ def update_expense_status(expense_id: str) -> Response:
             committee_id=expense.committee.committee_id if expense.committee else None,
             expense_count=1,
         )
+
+        booked_item = BookedItem(
+            verification_number=verification_number,
+            expense_id=expense.expense_id,
+            booked_by_student_id=student_id,
+        )
+
+        db.session.add(booked_item)
 
     expense.status = status
     db.session.commit()

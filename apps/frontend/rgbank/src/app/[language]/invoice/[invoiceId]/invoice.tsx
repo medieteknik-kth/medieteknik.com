@@ -89,7 +89,7 @@ export default function InvoicePage(props: Props) {
   return (
     <main>
       <HeaderGap />
-      <div className='container '>
+      <div className='md:container px-4 md:px-0'>
         <DetailProvider
           defaultValues={{
             invoice,

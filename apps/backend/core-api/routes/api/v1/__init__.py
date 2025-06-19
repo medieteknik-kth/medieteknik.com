@@ -7,11 +7,12 @@ All routes are registered here via the `register_routes` function.
 import json
 import os
 import secrets
-from typing import Any
 import urllib
-from http import HTTPStatus
 from datetime import datetime, timedelta, timezone
-from flask import Flask, Response, jsonify, make_response, request, session, url_for
+from http import HTTPStatus
+from typing import Any
+
+from flask import Flask, Response, jsonify, make_response, request, session
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
@@ -20,7 +21,10 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_jwt_cookies,
 )
+from flask_wtf.csrf import generate_csrf
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
 from decorators.csrf_protection import csrf_protected
 from models.core.student import Student
 from models.utility.auth import RevokedTokens
@@ -31,7 +35,7 @@ from services.utility.auth import (
     get_student_authorization,
     get_student_committee_details,
 )
-from sqlalchemy.exc import SQLAlchemyError
+from utility.authorization import jwt, oauth
 from utility.constants import (
     API_VERSION,
     DEFAULT_FILTER,
@@ -40,12 +44,8 @@ from utility.constants import (
     PUBLIC_PATH,
     ROUTES,
 )
-from flask_wtf.csrf import generate_csrf
-from utility.authorization import oauth
 from utility.database import db
-from utility.logger import log_error
 from utility.translation import retrieve_languages
-from utility.authorization import jwt
 
 
 def register_v1_routes(app: Flask):
@@ -56,44 +56,43 @@ def register_v1_routes(app: Flask):
         app (Flask): The Flask app.
     """
     # Public Routes
-    from .public import (
-        public_committee_bp,
-        public_committee_category_bp,
-        public_committee_position_bp,
-        public_calendar_bp,
-        public_bp,
-        public_album_bp,
-        public_news_bp,
-        public_media_bp,
-        public_documents_bp,
-        public_student_bp,
+    from ..apps.rgbank import (
+        account_bp,
+        expense_bp,
+        expense_domain_bp,
+        invoice_bp,
+        public_expense_domain_bp,
+        public_statistics_bp,
+        rgbank_permissions_bp,
+        statistics_bp,
     )
 
     # Protected Routes
     from .auth import (
-        committee_bp,
-        committee_position_bp,
-        news_bp,
-        events_bp,
-        documents_bp,
-        media_bp,
         album_bp,
         calendar_bp,
-        student_bp,
-        scheduler_bp,
+        committee_bp,
+        committee_position_bp,
+        documents_bp,
+        events_bp,
+        media_bp,
         message_bp,
+        news_bp,
+        scheduler_bp,
+        student_bp,
         tasks_bp,
     )
-
-    from ..apps.rgbank import (
-        account_bp,
-        expense_domain_bp,
-        public_expense_domain_bp,
-        expense_bp,
-        invoice_bp,
-        rgbank_permissions_bp,
-        statistics_bp,
-        public_statistics_bp,
+    from .public import (
+        public_album_bp,
+        public_bp,
+        public_calendar_bp,
+        public_committee_bp,
+        public_committee_category_bp,
+        public_committee_position_bp,
+        public_documents_bp,
+        public_media_bp,
+        public_news_bp,
+        public_student_bp,
     )
 
     # Public Routes
@@ -285,7 +284,9 @@ def register_v1_routes(app: Flask):
                     identity=student,
                     fresh=False,
                     expires_delta=expiration,
-                    additional_claims=response_dict["rgbank_permissions"],
+                    additional_claims=response_dict["rgbank_permissions"]
+                    if filter == "rgbank"
+                    else None,
                 )
                 set_access_cookies(
                     response, access_token, max_age=expiration.total_seconds()
@@ -413,26 +414,28 @@ def register_v1_routes(app: Flask):
 
         return response
 
-    @app.route("/auth")
+    @app.route("/api/v1/auth")
     def auth():
         """
         OAuth route for KTH login. First step in the OAuth flow. See the /oidc route for the second step.
         """
         nonce = secrets.token_urlsafe(32)
-        filter = request.args.get(key="filter", default=DEFAULT_FILTER, type=str)
+        filter = request.args.get(key="filter", type=str, default=DEFAULT_FILTER)
 
         if filter not in POSSIBLE_FILTERS:
             return jsonify({"error": "Invalid filter"}), HTTPStatus.BAD_REQUEST
 
-        return_url = request.args.get("return_url", type=str, default="/")
-        remember = request.args.get("remember", type=bool, default=False)
-        return_url = urllib.parse.quote(return_url)
+        remember = request.form.get("remember")
+        return_url = request.args.get("return_url", default=None, type=str)
+
         session["filter"] = filter
-        session["return_url"] = return_url
-        session["remember"] = remember
+        session["remember"] = False if remember != "true" else True
         session["oauth_nonce"] = nonce
 
-        redirect_uri = url_for(endpoint="oidc_auth", _external=True)
+        if return_url:
+            session["return_url"] = urllib.parse.quote(return_url)
+
+        redirect_uri = "https://api.medieteknik.com/oidc"
         return oauth.kth.authorize_redirect(redirect_uri, nonce=nonce)
 
     @app.route("/oidc")
@@ -443,7 +446,7 @@ def register_v1_routes(app: Flask):
         try:
             token = oauth.kth.authorize_access_token()
         except Exception as e:
-            app.logger.error(f"OIDC authorization error: {str(e)}")
+            app.logger.exception(f"OIDC authorization error: {str(e)}")
             return jsonify(
                 {
                     "error": "An internal server error has occurred. Contact an administrator."
@@ -461,15 +464,13 @@ def register_v1_routes(app: Flask):
         if not student_data:
             return jsonify({"error": "Invalid credentials"}), 401
 
-        session["student"] = student_data
-
         if not student_data.get("username"):
             return jsonify({"error": "Invalid response"}), 401
 
         student_email = student_data.get("username") + "@kth.se"
 
         student = Student.query.filter_by(email=student_email).one_or_none()
-        filter = session.get("filter", DEFAULT_FILTER)
+        filter = session.get("filter", None)
 
         if not student:
             student = Student(
@@ -514,7 +515,9 @@ def register_v1_routes(app: Flask):
             encoded_access_token=create_access_token(
                 identity=student,
                 fresh=timedelta(minutes=30) if not remember else timedelta(days=7),
-                additional_claims=response_dict["rgbank_permissions"],
+                additional_claims=response_dict["rgbank_permissions"]
+                if filter == "rgbank"
+                else None,
                 expires_delta=timedelta(hours=1)
                 if not remember
                 else timedelta(days=14),
@@ -522,9 +525,17 @@ def register_v1_routes(app: Flask):
             max_age=expiration.total_seconds(),
         )
         return_url = session.pop("return_url", default=None)
-        if return_url:
-            response.headers.add("Location", f"https://www.medieteknik.com{return_url}")
+        location = ""
+        if filter == "rgbank":
+            location = "https://rgbank.medieteknik.com"
         else:
-            response.headers.add("Location", "https://www.medieteknik.com")
+            location = "https://medieteknik.com"
+
+        if return_url:
+            response.headers.add(
+                "Location", f"{location}{urllib.parse.unquote(return_url)}"
+            )
+        else:
+            response.headers.add("Location", location)
 
         return response

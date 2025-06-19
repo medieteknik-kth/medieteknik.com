@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
+import { usePermissions } from '@/providers/AuthenticationProvider'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import type { Committee } from '@medieteknik/models/src/committee'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
@@ -49,6 +50,7 @@ export default function SettingsPage({ language, committees }: Props) {
   )
   const { t } = useTranslation(language, 'admin/settings')
   const { t: errors } = useTranslation(language, 'errors')
+  const { rgbank_permissions } = usePermissions()
 
   if (error || !expenseDomains) {
     return (
@@ -126,6 +128,17 @@ export default function SettingsPage({ language, committees }: Props) {
     }
   }
 
+  if ((rgbank_permissions?.access_level || 0) < 2) {
+    return (
+      <div className='container py-20 flex flex-col items-center justify-center gap-4'>
+        <h1 className='text-3xl font-bold'>{t('noPermissions.title')}</h1>
+        <p className='text-muted-foreground'>
+          {t('noPermissions.description')}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <section className='w-full h-fit max-w-[1100px] mb-8 2xl:mb-0'>
       <div className='-full mb-4 px-4 pt-4'>
@@ -137,11 +150,13 @@ export default function SettingsPage({ language, committees }: Props) {
       <div className='px-4'>
         <h3 className='text-sm font-semibold'>{t('domains.title')}</h3>
 
-        <div className='grid grid-cols-2 grid-rows-[auto_auto] gap-4'>
+        <div className='grid lg:grid-cols-2 grid-rows-[auto_auto] gap-4'>
           <p className='text-xs text-muted-foreground'>
             {t('domains.description')}
           </p>
-          <p className='text-xs text-muted-foreground'>{t('domains.new')}</p>
+          <p className='text-xs text-muted-foreground hidden lg:block'>
+            {t('domains.new')}
+          </p>
           <Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -218,6 +233,9 @@ export default function SettingsPage({ language, committees }: Props) {
               </Command>
             </PopoverContent>
           </Popover>
+          <p className='text-xs text-muted-foreground lg:hidden'>
+            {t('domains.new')}
+          </p>
           <Input
             onChange={(e) => {
               if (selectedDomain !== '') {

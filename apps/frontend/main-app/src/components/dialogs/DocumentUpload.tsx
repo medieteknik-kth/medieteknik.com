@@ -1,4 +1,5 @@
 'use client'
+
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -14,15 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -39,16 +31,22 @@ import { useStudent } from '@/providers/AuthenticationProvider'
 import { documentUploadSchema } from '@/schemas/items/document'
 import { LANGUAGES, SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { type JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 interface TranslatedInputProps {
   index: number
   language: string
   currentFiles: File[]
   setCurrentFile: (index: number, file: File) => void
+  form: z.infer<typeof documentUploadSchema>
+  setForm: React.Dispatch<
+    React.SetStateAction<z.infer<typeof documentUploadSchema>>
+  >
+  formErrors: {
+    type: string
+    translations: Record<string, { title: string; file: string }>
+  }
 }
 
 interface DocumentUploadProps {
@@ -74,80 +72,72 @@ function TranslatedInputs({
   language,
   currentFiles,
   setCurrentFile,
+  form,
+  setForm,
+  formErrors,
 }: TranslatedInputProps): JSX.Element {
   const ACCEPTED_FILE_TYPES = ['application/pdf']
   const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
   return (
     <>
-      <FormField
-        name={`translations.${index}.language_code`}
-        render={({ field }) => (
-          <FormItem>
-            <Input id='language' type='hidden' {...field} />
-          </FormItem>
+      <div>
+        <Label className='text-sm font-bold'>
+          Title{' '}
+          <span className='uppercase text-xs tracking-wide'>[{language}]</span>
+        </Label>
+        <Input
+          id='title'
+          placeholder='Title'
+          onChange={(e) => {
+            const newTranslations = [...form.translations]
+            newTranslations[index].title = e.target.value
+            setForm({ ...form, translations: newTranslations })
+          }}
+          value={form.translations[index].title || ''}
+        />
+        {formErrors.translations[language]?.title && (
+          <p className='text-xs font-bold text-red-600'>
+            {formErrors.translations[language].title}
+          </p>
         )}
-      />
+      </div>
 
-      <FormField
-        name={`translations.${index}.title`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Title{' '}
-              <span className='uppercase text-xs tracking-wide'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <Input id='title' placeholder='Title' {...field} />
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
+      <div>
+        <Label className='text-sm font-bold'>
+          File{' '}
+          <span className='uppercase text-xs tracking-wide'>[{language}]</span>
+        </Label>
+        <Input
+          id='file'
+          type='file'
+          accept={ACCEPTED_FILE_TYPES.join(', ')}
+          onChange={(event) => {
+            const file = event.target.files ? event.target.files[0] : null
+
+            if (!file) return
+
+            if (file.size > MAX_FILE_SIZE) {
+              alert('File is too large')
+              event.target.value = ''
+              return
+            }
+
+            setCurrentFile(index, file)
+
+            const newTranslations = [...form.translations]
+            newTranslations[index].file = file
+            setForm({ ...form, translations: newTranslations })
+          }}
+        />
+        {currentFiles[index] && (
+          <p>Selected file: {currentFiles[index].name}</p>
         )}
-      />
-
-      <FormField
-        name={`translations.${index}.file`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              File{' '}
-              <span className='uppercase text-xs tracking-wide select-none'>
-                [{language}]
-              </span>
-            </FormLabel>
-            <Input
-              id='file'
-              type='file'
-              accept={ACCEPTED_FILE_TYPES.join(', ')}
-              onChange={(event) => {
-                const file = event.target.files ? event.target.files[0] : null
-
-                if (!file) return
-
-                if (file.size > MAX_FILE_SIZE) {
-                  alert('File is too large')
-                  event.target.value = ''
-                  return
-                }
-
-                setCurrentFile(index, file)
-
-                field.onChange({
-                  target: {
-                    name: field.name,
-                    value: file,
-                  },
-                })
-              }}
-            />
-            {currentFiles[index] && (
-              <FormDescription>
-                Selected file: {currentFiles[index].name}
-              </FormDescription>
-            )}
-            <FormMessage className='text-xs font-bold' />
-          </FormItem>
+        {formErrors.translations[language]?.file && (
+          <p className='text-xs font-bold text-red-600'>
+            {formErrors.translations[language].file}
+          </p>
         )}
-      />
+      </div>
     </>
   )
 }
@@ -174,24 +164,51 @@ export default function DocumentUpload({
   const [value, setValue] = useState('DOCUMENT')
   const { student } = useStudent()
   const [files, setFiles] = useState<File[]>([])
+  const [form, setForm] = useState<z.infer<typeof documentUploadSchema>>({
+    type: 'DOCUMENT',
+    translations: SUPPORTED_LANGUAGES.map((lang) => ({
+      language_code: lang,
+      title: '',
+      file: new File([], ''),
+    })),
+  })
+  const [formErrors, setFormErrors] = useState({
+    type: '',
+    translations: SUPPORTED_LANGUAGES.reduce(
+      (acc, lang) => {
+        acc[lang] = { title: '', file: '' }
+        return acc
+      },
+      {} as Record<LanguageCode, { title: string; file: string }>
+    ),
+  })
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024
 
-  const form = useForm<z.infer<typeof documentUploadSchema>>({
-    resolver: zodResolver(documentUploadSchema),
-    defaultValues: {
-      type: 'DOCUMENT',
-      translations: SUPPORTED_LANGUAGES.map((language) => ({
-        language_code: language,
-        title: '',
-      })),
-    },
-  })
-
-  const postForm = async (data: z.infer<typeof documentUploadSchema>) => {
+  const submit = async (data: z.infer<typeof documentUploadSchema>) => {
     if (!student) {
       setErrorMessage('Must be logged in to upload a document.')
       return
+    }
+
+    const errors = documentUploadSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        type: fieldErrors.properties?.type?.errors[0] || '',
+        translations:
+          fieldErrors.properties?.translations?.items?.reduce(
+            (acc, item, index) => {
+              acc[SUPPORTED_LANGUAGES[index]] = {
+                title: item.properties?.title?.errors[0] || '',
+                file: item.properties?.file?.errors[0] || '',
+              }
+              return acc
+            },
+            {} as Record<LanguageCode, { title: string; file: string }>
+          ) || ({} as Record<LanguageCode, { title: string; file: string }>),
+      })
     }
 
     const formData = new FormData()
@@ -291,87 +308,96 @@ export default function DocumentUpload({
             </TabsTrigger>
           ))}
         </TabsList>
-        <form onSubmit={form.handleSubmit(postForm)}>
-          <Form {...form}>
-            <FormField
-              control={form.control}
-              name='type'
-              render={({ field }) => (
-                <FormItem className='flex flex-col my-2'>
-                  <FormLabel>Type</FormLabel>
-                  <Popover
-                    modal={popoverOpen}
-                    open={popoverOpen}
-                    onOpenChange={setPopoverOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
-                          role='combobox'
-                          aria-expanded={popoverOpen}
-                          value={value}
-                          className='w-52 justify-between'
+        <form
+          className='flex flex-col gap-2'
+          onSubmit={(e) => {
+            e.preventDefault()
+            submit(form)
+          }}
+        >
+          <div className='flex flex-col gap-2 mt-2'>
+            <Label className='text-sm font-bold'>Type</Label>
+            <Popover
+              modal={popoverOpen}
+              open={popoverOpen}
+              onOpenChange={setPopoverOpen}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                  role='combobox'
+                  aria-expanded={popoverOpen}
+                  value={value}
+                  className='w-52 justify-between'
+                >
+                  {form.type
+                    ? documentTypes.find((t) => t.value === value)?.label
+                    : 'Document'}
+                  <ChevronDownIcon className='w-4 h-4 ml-2' />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Command>
+                  <CommandInput placeholder='Search document type' />
+                  <CommandEmpty>No documents found.</CommandEmpty>
+                  <CommandList>
+                    <CommandGroup>
+                      {documentTypes.map((documentType) => (
+                        <CommandItem
+                          key={documentType.value}
+                          value={documentType.value}
+                          onSelect={() => {
+                            setForm({
+                              ...form,
+                              type: documentType.value,
+                            })
+                            setValue(documentType.value)
+                            setPopoverOpen(false)
+                          }}
                         >
-                          {field.value
-                            ? documentTypes.find((t) => t.value === value)
-                                ?.label
-                            : 'Document'}
-                          <ChevronDownIcon className='w-4 h-4 ml-2' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <Command>
-                        <CommandInput placeholder='Search document type' />
-                        <CommandEmpty>No documents found.</CommandEmpty>
-                        <CommandList>
-                          <CommandGroup>
-                            {documentTypes.map((documentType) => (
-                              <CommandItem
-                                key={documentType.value}
-                                value={documentType.value}
-                                onSelect={() => {
-                                  form.setValue('type', documentType.value)
-                                  setValue(documentType.value)
-                                  setPopoverOpen(false)
-                                }}
-                              >
-                                {documentType.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage className='text-xs font-bold' />
-                </FormItem>
-              )}
-            />
+                          {documentType.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {formErrors.type && (
+              <p className='text-xs font-bold text-red-600'>
+                {formErrors.type}
+              </p>
+            )}
+          </div>
 
-            {SUPPORTED_LANGUAGES.map((language, index) => (
-              <TabsContent key={language} value={language}>
-                <TranslatedInputs
-                  index={index}
-                  language={LANGUAGES[language].name}
-                  currentFiles={files}
-                  setCurrentFile={(index, file) =>
-                    setFiles((files) => {
-                      const newFiles = [...files]
-                      newFiles[index] = file
-                      return newFiles
-                    })
-                  }
-                />
-              </TabsContent>
-            ))}
+          {SUPPORTED_LANGUAGES.map((language, index) => (
+            <TabsContent
+              key={language}
+              value={language}
+              className='flex flex-col gap-2 mt-0'
+            >
+              <TranslatedInputs
+                index={index}
+                language={LANGUAGES[language].name}
+                currentFiles={files}
+                setCurrentFile={(index, file) =>
+                  setFiles((files) => {
+                    const newFiles = [...files]
+                    newFiles[index] = file
+                    return newFiles
+                  })
+                }
+                form={form}
+                setForm={setForm}
+                formErrors={formErrors}
+              />
+            </TabsContent>
+          ))}
 
-            <Button type='submit' className='w-full my-2'>
-              Upload
-            </Button>
-          </Form>
+          <Button type='submit' className='w-full'>
+            Upload
+          </Button>
         </form>
       </Tabs>
     </DialogContent>

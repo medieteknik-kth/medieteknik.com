@@ -19,12 +19,13 @@ import {
 } from '@/components/ui/popover'
 import type { ExpenseDomain } from '@/models/ExpenseDomain'
 import type { Category } from '@/models/Form'
+import { useFiles } from '@/providers/FormProvider'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import type { Committee } from '@medieteknik/models'
 import type { LanguageCode } from '@medieteknik/models/src/util/Language'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface Props {
   language: LanguageCode
@@ -47,9 +48,12 @@ export default function Categorize({
   completeStep,
   committees,
 }: Props) {
-  let categoryIndex = 0
-  const [dropdownOpen, setDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
-  const [partDropdownOpen, setPartDropdownOpen] = useState(-1) // -1 = none, i = index of the dropdown open
+  const [openDropdown, setOpenDropdown] = useState<{
+    index: number
+    type: 'domain' | 'category' | 'file'
+  } | null>(null)
+
+  const { files } = useFiles()
   const [categories, setCategories] = useState<Category[]>([
     ...(defaultValue && defaultValue.length > 0
       ? defaultValue
@@ -59,6 +63,7 @@ export default function Categorize({
             author: '',
             category: '',
             amount: '0',
+            fileId: files.length > 0 ? 0 : undefined,
           },
         ]),
   ])
@@ -72,38 +77,49 @@ export default function Categorize({
       )?.logo_url,
     }
   })
+  const categoryIndex = useRef(categories.length)
 
   const addCategory = useCallback(() => {
-    categoryIndex++
+    if (categories.length >= files.length) {
+      return
+    }
+
+    const newIndex = categoryIndex.current++
     setCategories((prev) => [
       ...prev,
       {
-        id: categoryIndex,
+        id: newIndex,
         author: categories[0].author,
         category: '',
         amount: '0',
+        fileId: undefined,
       },
     ])
-  }, [categoryIndex, categories])
+  }, [categories, files.length])
 
   const validateCategories = useCallback(() => {
-    const isValid = categories.every(
-      (category) =>
-        category.author !== '' &&
-        category.category !== '' &&
-        category.amount !== '' &&
-        category.amount !== '0' &&
-        (Number.isNaN(category.amount)
-          ? false
-          : Number.parseFloat(category.amount) > 0)
-    )
+    const isValid =
+      files.length > 0 &&
+      categories.length === files.length &&
+      categories.every((category) => {
+        const amount = Number.parseFloat(category.amount.replace(',', '.'))
+        return (
+          category.author !== '' &&
+          category.category !== '' &&
+          category.amount !== '' &&
+          category.amount !== '0' &&
+          category.fileId !== undefined &&
+          !Number.isNaN(amount) &&
+          amount > 0
+        )
+      })
 
     if (isValid) {
       completeStep(categoryStep)
     } else {
       uncompleteStep(categoryStep)
     }
-  }, [categories, categoryStep, completeStep, uncompleteStep])
+  }, [categories, categoryStep, completeStep, uncompleteStep, files.length])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Update categories and validateCategories
   useEffect(() => {
@@ -122,7 +138,7 @@ export default function Categorize({
             key={category.id}
             className='w-full flex xl:grid grid-cols-12 md:gap-4 items-center gap-2 flex-wrap'
           >
-            <div className='grow flex flex-col gap-2 col-span-4'>
+            <div className='grow flex flex-col gap-2 col-span-3'>
               {index === 0 && (
                 <Label id='domains' htmlFor='domains'>
                   {t('domain')}
@@ -130,9 +146,16 @@ export default function Categorize({
                 </Label>
               )}
               <Popover
-                open={dropdownOpen === index}
+                open={
+                  openDropdown?.index === index &&
+                  openDropdown?.type === 'domain'
+                }
                 onOpenChange={() => {
-                  setDropdownOpen((prev) => (prev === index ? -1 : index))
+                  setOpenDropdown((prev) =>
+                    prev?.index === index && prev?.type === 'domain'
+                      ? null
+                      : { index, type: 'domain' }
+                  )
                 }}
               >
                 <PopoverTrigger asChild>
@@ -145,7 +168,10 @@ export default function Categorize({
                     disabled={index !== 0}
                     role='combobox'
                     className='w-full items-center justify-between'
-                    aria-expanded={dropdownOpen === index}
+                    aria-expanded={
+                      openDropdown?.index === index &&
+                      openDropdown?.type === 'domain'
+                    }
                     aria-labelledby='domains'
                   >
                     <span className='sr-only'>
@@ -165,9 +191,11 @@ export default function Categorize({
                           height={24}
                         />
                       </div>
-                      {allDomains.find(
-                        (domain) => domain.label === category.author
-                      )?.label || t('domain.select')}
+                      <p className='truncate'>
+                        {allDomains.find(
+                          (domain) => domain.label === category.author
+                        )?.label || t('domain.select')}
+                      </p>
                     </div>
                     <ChevronDownIcon className='w-5 h-5' />
                   </Button>
@@ -188,13 +216,17 @@ export default function Categorize({
                             onSelect={(currentValue) => {
                               const newCategories = [...categories]
                               newCategories[index].author = currentValue
-                              setDropdownOpen(-1)
+                              setOpenDropdown({
+                                index: -1,
+                                type: 'domain',
+                              })
                               setCategories([
                                 {
                                   id: index,
                                   author: currentValue,
                                   amount: '0',
                                   category: '',
+                                  fileId: categories[index].fileId,
                                 },
                               ])
 
@@ -214,7 +246,7 @@ export default function Categorize({
                                   />
                                 </div>
                               )}
-                              {domain.label}
+                              <p className='truncate'>{domain.label}</p>
                             </div>
                           </CommandItem>
                         ))}
@@ -225,7 +257,7 @@ export default function Categorize({
               </Popover>
             </div>
 
-            <div className='grow flex flex-col gap-2 col-span-4'>
+            <div className='grow flex flex-col gap-2 col-span-3'>
               {index === 0 && (
                 <Label id='categories' htmlFor='categories'>
                   {t('category')}
@@ -233,9 +265,16 @@ export default function Categorize({
                 </Label>
               )}
               <Popover
-                open={partDropdownOpen === index}
+                open={
+                  openDropdown?.index === index &&
+                  openDropdown?.type === 'category'
+                }
                 onOpenChange={() => {
-                  setPartDropdownOpen((prev) => (prev === index ? -1 : index))
+                  setOpenDropdown((prev) =>
+                    prev?.index === index && prev?.type === 'category'
+                      ? null
+                      : { index, type: 'category' }
+                  )
                 }}
               >
                 <PopoverTrigger asChild>
@@ -247,7 +286,10 @@ export default function Categorize({
                     // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
                     role='combobox'
                     className='grow items-center justify-between'
-                    aria-expanded={partDropdownOpen === index}
+                    aria-expanded={
+                      openDropdown?.index === index &&
+                      openDropdown?.type === 'category'
+                    }
                     aria-labelledby='categories'
                   >
                     <span className='sr-only'>
@@ -292,7 +334,11 @@ export default function Categorize({
                               onSelect={(currentValue) => {
                                 const newCategories = [...categories]
                                 newCategories[index].category = currentValue
-                                setPartDropdownOpen(-1)
+                                setOpenDropdown({
+                                  index: -1,
+                                  type: 'category',
+                                })
+
                                 validateCategories()
                               }}
                               className='flex items-center justify-between'
@@ -309,7 +355,94 @@ export default function Categorize({
               </Popover>
             </div>
 
-            <div className='w-full flex flex-col gap-2 col-span-3'>
+            <div className='grow flex flex-col gap-2 col-span-3'>
+              {index === 0 && (
+                <Label id='files' htmlFor='files'>
+                  {t('file')}
+                  <span className='text-red-500 dark:text-red-300'>*</span>
+                </Label>
+              )}
+              <Popover
+                open={
+                  openDropdown?.index === index && openDropdown?.type === 'file'
+                }
+                onOpenChange={() => {
+                  setOpenDropdown((prev) =>
+                    prev?.index === index && prev?.type === 'file'
+                      ? null
+                      : { index, type: 'file' }
+                  )
+                }}
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    id={`file-${index}`}
+                    name={`file-${index}`}
+                    title={`${t('file')} ${index + 1}`}
+                    variant={'outline'}
+                    // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                    role='combobox'
+                    className='w-full items-center justify-between'
+                    aria-expanded={
+                      openDropdown?.index === index &&
+                      openDropdown?.type === 'file'
+                    }
+                    aria-labelledby='files'
+                    disabled={files.length === 0}
+                  >
+                    <span className='sr-only'>
+                      {`${t('file')} ${index + 1}`}
+                    </span>
+                    <div className='flex items-center gap-2'>
+                      {category.fileId !== undefined
+                        ? files[category.fileId]?.name
+                        : t('file.select')}
+                    </div>
+                    <ChevronDownIcon className='w-5 h-5' />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className='w-96! p-0'>
+                  <Command>
+                    <CommandInput
+                      placeholder={t('file.search.placeholder')}
+                      title={t('file.search.placeholder')}
+                    />
+                    <CommandList>
+                      <CommandEmpty>{t('file.noneFound')}</CommandEmpty>
+                      <CommandGroup>
+                        {files.map((file, fileIndex) => (
+                          <CommandItem
+                            key={file.name}
+                            value={file.name}
+                            onSelect={() => {
+                              const newCategories = [...categories]
+                              newCategories[index].fileId = fileIndex
+                              setCategories(newCategories)
+                              setOpenDropdown({
+                                index: -1,
+                                type: 'file',
+                              })
+                              validateCategories()
+                            }}
+                            className='flex items-center justify-between'
+                            disabled={categories.some(
+                              (cat, catIndex) =>
+                                catIndex !== index && cat.fileId === fileIndex
+                            )}
+                          >
+                            <div className='flex items-center gap-2'>
+                              {file.name}
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className='w-full flex flex-col gap-2 col-span-2'>
               {index === 0 && (
                 <Label id='amounts' htmlFor='amounts'>
                   {t('amount')}
@@ -371,7 +504,9 @@ export default function Categorize({
         name='add-category'
         size={'sm'}
         onClick={addCategory}
-        disabled={categories[0].author === ''}
+        disabled={
+          categories[0].author === '' || categories.length >= files.length
+        }
       >
         {t('addCategory')}
       </Button>

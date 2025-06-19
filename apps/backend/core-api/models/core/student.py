@@ -1,22 +1,24 @@
 import enum
 import uuid
 from typing import Any, Dict
-from sqlalchemy.dialects.postgresql import UUID
+
 from sqlalchemy import (
-    String,
     Column,
-    ForeignKey,
     DateTime,
     Enum,
+    ForeignKey,
+    String,
     func,
     inspect,
     or_,
     text,
 )
+from sqlalchemy.dialects.postgresql import UUID
+
 from models.utility.auth import RevokedTokens
+from utility.authorization import jwt
 from utility.database import db
 from utility.reception_mode import RECEPTION_MODE
-from utility.authorization import jwt
 
 
 class StudentType(enum.Enum):
@@ -104,6 +106,12 @@ class Student(db.Model):
         uselist=False,
         cascade="all, delete-orphan",
     )
+    rgbank_booked_items = db.relationship(
+        "BookedItem",
+        back_populates="booked_by",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self):
         return "<Student %r>" % self.student_id
@@ -140,11 +148,14 @@ class Student(db.Model):
                 if RECEPTION_MODE and self.reception_name is not None
                 else self.last_name
             )
-            data["profile_picture_url"] = (
-                self.reception_profile_picture_url
-                if RECEPTION_MODE and self.reception_profile_picture_url is not None
-                else self.profile_picture_url
-            )
+            if RECEPTION_MODE:
+                if self.reception_profile_picture_url:
+                    data["profile_picture_url"] = self.reception_profile_picture_url
+                else:
+                    if self.reception_name is not None:
+                        data["profile_picture_url"] = None
+                    else:
+                        data["profile_picture_url"] = self.profile_picture_url
 
         return data
 

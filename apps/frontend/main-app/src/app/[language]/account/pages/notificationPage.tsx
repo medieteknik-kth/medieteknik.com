@@ -13,13 +13,6 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
 import {
   Popover,
@@ -42,13 +35,11 @@ import {
   ChevronDownIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Logo from 'public/images/logo.webp'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import type { z } from 'zod'
+import type { z } from 'zod/v4-mini'
 
 interface Props {
   language: LanguageCode
@@ -75,16 +66,16 @@ export default function NotificationPage({ language }: Props) {
 
   const schema = notificationSchema(data || [])
   type NotificationFormValues = z.infer<typeof schema>
-
-  const notificationForm = useForm<NotificationFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      iana: 'Europe/Stockholm',
-      email: false,
-      push: false,
-      site_updates: true,
-      committees: [],
-    },
+  const [form, setForm] = useState<NotificationFormValues>({
+    iana: 'Europe/Stockholm',
+    email: false,
+    push: false,
+    site_updates: true,
+    committees: data?.map((committee) => ({
+      committee_id: committee.committee_id,
+      news: false,
+      event: false,
+    })),
   })
 
   useEffect(() => {
@@ -106,26 +97,9 @@ export default function NotificationPage({ language }: Props) {
 
       setAllNews(allNews || false)
       setAllEvents(allEvents || false)
-
-      notificationForm.reset({
-        iana: settings.iana,
-        email: settings.email,
-        push: settings.push,
-        site_updates: settings.site_updates,
-        committees: data.map((committee) => ({
-          committee_id: committee.committee_id,
-          news:
-            settings.committees?.find(
-              (c) => c.committee_id === committee.committee_id
-            )?.news || false,
-          event:
-            settings.committees?.find(
-              (c) => c.committee_id === committee.committee_id
-            )?.event || false,
-        })),
-      })
+      setForm(settings)
     } else {
-      notificationForm.reset({
+      setForm({
         iana: 'Europe/Stockholm',
         email: false,
         push: false,
@@ -137,7 +111,7 @@ export default function NotificationPage({ language }: Props) {
         })),
       })
     }
-  }, [data, notificationForm.reset])
+  }, [data])
 
   if (error) return <div>{t('error')}</div>
   if (isLoading) return <Loading language={language} />
@@ -146,22 +120,21 @@ export default function NotificationPage({ language }: Props) {
     return <div>{t('no_committees')}</div>
   }
 
-  const committees = notificationForm.watch('committees')
   const currentNews =
     selectedNotification === 'all'
       ? allNews
-      : committees?.find(
+      : form.committees?.find(
           (committee) => committee.committee_id === selectedNotification
         )?.news || allNews
 
   const currentEvents =
     selectedNotification === 'all'
       ? allEvents
-      : committees?.find(
+      : form.committees?.find(
           (committee) => committee.committee_id === selectedNotification
         )?.event || allEvents
 
-  const updateNotificationSettings = async (data: NotificationFormValues) => {
+  const submit = async (data: NotificationFormValues) => {
     let notificationSubscription: PushSubscription | undefined = undefined
 
     if (data.push) {
@@ -250,370 +223,352 @@ export default function NotificationPage({ language }: Props) {
         <p className='text-sm text-muted-foreground'>{t('description')}</p>
         <Separator className='bg-yellow-400 mt-4' />
       </div>
-      <Form {...notificationForm}>
-        <form
-          className='w-full flex flex-col gap-4 px-4'
-          onSubmit={notificationForm.handleSubmit(updateNotificationSettings)}
-        >
-          <FormField
-            name='iana'
-            render={({ field }) => (
-              <FormItem>
-                <div>
-                  <FormLabel htmlFor='iana' className='text-sm font-semibold'>
-                    {t('notification_timezone')}
-                  </FormLabel>
-                  <p className='text-xs text-muted-foreground'>
-                    {t('notification_timezone_description')}
-                  </p>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <Popover open={timezoneOpen} onOpenChange={setTimezoneOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={'outline'}
-                          // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
-                          role='combobox'
-                          id='iana'
-                          className='w-72 items-center justify-between'
-                        >
-                          {field
-                            ? allIANATimezones.find(
-                                (timezone) => timezone.value === field.value
-                              )?.label
-                            : t('select_timezone')}
-                          <ChevronDownIcon className='w-5 h-5' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-72 p-0'>
-                      <Command>
-                        <CommandInput placeholder={t('search_timezone')} />
-                        <CommandList>
-                          <CommandEmpty>{t('no_timezone_found')}</CommandEmpty>
-                          <CommandGroup>
-                            {allIANATimezones.map((timezone) => (
-                              <CommandItem
-                                key={timezone.value}
-                                value={timezone.value}
-                                onSelect={(currentValue) => {
-                                  notificationForm.setValue(
-                                    'iana',
-                                    currentValue === field.value
-                                      ? ''
-                                      : currentValue
-                                  )
+      <form
+        className='w-full flex flex-col gap-4 px-4'
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit(form)
+        }}
+      >
+        <div>
+          <Label htmlFor='iana' className='text-sm font-semibold'>
+            {t('notification_timezone')}
+          </Label>
+          <p className='text-xs text-muted-foreground'>
+            {t('notification_timezone_description')}
+          </p>
+        </div>
+        <div className='flex items-center gap-2'>
+          <Popover open={timezoneOpen} onOpenChange={setTimezoneOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                role='combobox'
+                id='iana'
+                className='w-72 items-center justify-between'
+              >
+                {form.iana
+                  ? allIANATimezones.find(
+                      (timezone) => timezone.value === form.iana
+                    )?.label
+                  : t('select_timezone')}
+                <ChevronDownIcon className='w-5 h-5' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-72 p-0'>
+              <Command>
+                <CommandInput placeholder={t('search_timezone')} />
+                <CommandList>
+                  <CommandEmpty>{t('no_timezone_found')}</CommandEmpty>
+                  <CommandGroup>
+                    {allIANATimezones.map((timezone) => (
+                      <CommandItem
+                        key={timezone.value}
+                        value={timezone.value}
+                        onSelect={(currentValue) => {
+                          setForm({
+                            ...form,
+                            iana:
+                              currentValue === form.iana
+                                ? 'Europe/Stockholm'
+                                : currentValue,
+                          })
 
-                                  setTimezoneOpen(false)
-                                }}
-                                className='flex items-center justify-between'
-                              >
-                                {timezone.label}
-                                <CheckIcon
-                                  className={`w-4 h-4 ${selectedTimezone === timezone.value ? 'text-green-500' : 'hidden'}`}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className='rounded-full p-1 border my-auto'>
-                        <InformationCircleIcon className='w-4 h-4' />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className='text-xs text-muted-foreground'>
-                          {t('notification_timezone_tooltip')}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              </FormItem>
-            )}
-          />
+                          setTimezoneOpen(false)
+                        }}
+                        className='flex items-center justify-between'
+                      >
+                        {timezone.label}
+                        <CheckIcon
+                          className={`w-4 h-4 ${selectedTimezone === timezone.value ? 'text-green-500' : 'hidden'}`}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className='rounded-full p-1 border my-auto'>
+                <InformationCircleIcon className='w-4 h-4' />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className='text-xs text-muted-foreground'>
+                  {t('notification_timezone_tooltip')}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
 
-          <section className='flex flex-col gap-2'>
-            <div>
-              <h3 className='text-sm font-semibold'>
-                {t('notification_settings')}
-              </h3>
-              <p className='text-xs text-muted-foreground'>
-                {t('notification_settings_description')}
-              </p>
-            </div>
-            <div className='flex items-center gap-2'>
-              <Checkbox disabled checked />
-              <Label>{t('web_notifications')}</Label>
-            </div>
-            <FormField
-              name='email'
+        <section className='flex flex-col gap-2'>
+          <div>
+            <h3 className='text-sm font-semibold'>
+              {t('notification_settings')}
+            </h3>
+            <p className='text-xs text-muted-foreground'>
+              {t('notification_settings_description')}
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Checkbox disabled checked />
+            <Label>{t('web_notifications')}</Label>
+          </div>
+
+          <div>
+            <Label htmlFor='email' className='text-sm font-semibold'>
+              {t('email_notifications')}
+              <sup
+                className='text-xs text-amber-400 ml-0.5'
+                title='Work in progress'
+              >
+                WIP
+              </sup>
+            </Label>
+            <Checkbox
               disabled
-              render={({ field }) => (
-                <div className='flex items-center gap-2'>
-                  <FormControl>
-                    <Checkbox
-                      {...field}
-                      disabled
-                      id='email'
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        if (checked === 'indeterminate') return
-                        notificationForm.setValue('push', checked)
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormLabel htmlFor='email'>
-                    {t('email_notifications')}
-                    <sup
-                      className='text-xs text-amber-400 ml-0.5'
-                      title='Work in progress'
-                    >
-                      WIP
-                    </sup>
-                  </FormLabel>
-                </div>
-              )}
+              id='email'
+              checked={form.email}
+              onCheckedChange={(checked) => {
+                if (checked === 'indeterminate') return
+                setForm({
+                  ...form,
+                  email: checked,
+                })
+              }}
             />
-            <FormField
-              name='push'
-              render={({ field }) => (
-                <div className='flex items-center gap-2'>
-                  <FormControl>
-                    <Checkbox
-                      {...field}
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        if (checked === 'indeterminate') return
-                        notificationForm.setValue('push', checked)
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel>{t('push_notifications')}</FormLabel>
-                </div>
-              )}
-            />
-          </section>
+          </div>
 
-          <section className='flex flex-col gap-2'>
-            <div>
-              <h3 className='text-sm font-semibold'>
-                {t('general_notifications')}
-              </h3>
-              <p className='text-xs text-muted-foreground'>
-                {t('general_notifications_description')}
-              </p>
-            </div>
-            <FormField
+          <div>
+            <Label htmlFor='push' className='text-sm font-semibold'>
+              {t('push_notifications')}
+            </Label>
+            <Checkbox
+              id='push'
+              checked={form.push}
+              onCheckedChange={(checked) => {
+                if (checked === 'indeterminate') return
+                setForm({
+                  ...form,
+                  push: checked,
+                })
+              }}
+            />
+          </div>
+        </section>
+
+        <section className='flex flex-col gap-2'>
+          <div>
+            <h3 className='text-sm font-semibold'>
+              {t('general_notifications')}
+            </h3>
+            <p className='text-xs text-muted-foreground'>
+              {t('general_notifications_description')}
+            </p>
+          </div>
+          <div>
+            <Checkbox
+              id='site_updates'
               name='site_updates'
-              render={({ field }) => (
-                <div className='flex items-center gap-2'>
-                  <FormControl>
-                    <Checkbox
-                      {...field}
-                      id='site_updates'
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        if (checked === 'indeterminate') return
-                        notificationForm.setValue('push', checked)
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel htmlFor='site_updates'>
-                    {t('site_update_notifications')}
-                  </FormLabel>
-                </div>
-              )}
+              checked={form.site_updates}
+              onCheckedChange={(checked) => {
+                if (checked === 'indeterminate') return
+                setForm({
+                  ...form,
+                  site_updates: checked,
+                })
+              }}
             />
-          </section>
+            <Label htmlFor='site_updates'>
+              {t('site_update_notifications')}
+            </Label>
+          </div>
+        </section>
 
-          <section className='flex flex-col gap-2'>
-            <div>
-              <h3 className='text-sm font-semibold'>
-                {t('committee_notifications')}
-              </h3>
-              <p className='text-xs text-muted-foreground'>
-                {t('committee_notifications_description')}
-              </p>
-            </div>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={'outline'}
-                  // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
-                  role='combobox'
-                  className='min-w-52 max-w-72 md:w-72 items-center justify-between'
-                >
-                  <div className='flex items-center gap-2'>
-                    <div className='bg-white p-1 rounded-lg'>
-                      <Image
-                        src={
-                          allCommittees.find(
-                            (committee) =>
-                              committee.value === selectedNotification
-                          )?.icon || Logo.src
-                        }
-                        alt='Committee'
-                        unoptimized
-                        width={24}
-                        height={24}
-                      />
-                    </div>
-                    {selectedNotification
-                      ? allCommittees.find(
+        <section className='flex flex-col gap-2'>
+          <div>
+            <h3 className='text-sm font-semibold'>
+              {t('committee_notifications')}
+            </h3>
+            <p className='text-xs text-muted-foreground'>
+              {t('committee_notifications_description')}
+            </p>
+          </div>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                // biome-ignore lint/a11y/useSemanticElements: This is a shadcn/ui component for a combobox
+                role='combobox'
+                className='min-w-52 max-w-72 md:w-72 items-center justify-between'
+              >
+                <div className='flex items-center gap-2'>
+                  <div className='bg-white p-1 rounded-lg'>
+                    <Image
+                      src={
+                        allCommittees.find(
                           (committee) =>
                             committee.value === selectedNotification
-                        )?.label
-                      : t('select_committee')}
+                        )?.icon || Logo.src
+                      }
+                      alt='Committee'
+                      unoptimized
+                      width={24}
+                      height={24}
+                    />
                   </div>
-                  <ChevronDownIcon className='w-5 h-5' />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className='w-72 p-0'>
-                <Command>
-                  <CommandInput placeholder={t('search_committee')} />
-                  <CommandList>
-                    <CommandEmpty>{t('no_committees_found')}</CommandEmpty>
-                    <CommandGroup>
-                      {allCommittees.map((committee) => (
-                        <CommandItem
-                          key={committee.value}
-                          value={committee.value}
-                          onSelect={(currentValue) => {
-                            setSelectedNotification(
-                              currentValue === selectedNotification
-                                ? 'all'
-                                : currentValue
-                            )
-                            setOpen(false)
-                          }}
-                          className='flex items-center justify-between'
-                        >
-                          <div className='flex items-center gap-2'>
-                            <div className='bg-white p-1 rounded-lg'>
-                              <Image
-                                src={committee.icon}
-                                alt={committee.label}
-                                unoptimized
-                                width={24}
-                                height={24}
-                              />
-                            </div>
-                            {committee.label}
+                  {selectedNotification
+                    ? allCommittees.find(
+                        (committee) => committee.value === selectedNotification
+                      )?.label
+                    : t('select_committee')}
+                </div>
+                <ChevronDownIcon className='w-5 h-5' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-72 p-0'>
+              <Command>
+                <CommandInput placeholder={t('search_committee')} />
+                <CommandList>
+                  <CommandEmpty>{t('no_committees_found')}</CommandEmpty>
+                  <CommandGroup>
+                    {allCommittees.map((committee) => (
+                      <CommandItem
+                        key={committee.value}
+                        value={committee.value}
+                        onSelect={(currentValue) => {
+                          setSelectedNotification(
+                            currentValue === selectedNotification
+                              ? 'all'
+                              : currentValue
+                          )
+                          setOpen(false)
+                        }}
+                        className='flex items-center justify-between'
+                      >
+                        <div className='flex items-center gap-2'>
+                          <div className='bg-white p-1 rounded-lg'>
+                            <Image
+                              src={committee.icon}
+                              alt={committee.label}
+                              unoptimized
+                              width={24}
+                              height={24}
+                            />
                           </div>
-                          <CheckIcon
-                            className={`w-4 h-4 ${selectedNotification === committee.value ? 'text-green-500' : 'text-transparent'}`}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
+                          {committee.label}
+                        </div>
+                        <CheckIcon
+                          className={`w-4 h-4 ${selectedNotification === committee.value ? 'text-green-500' : 'text-transparent'}`}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
-            <div className='flex items-center gap-2'>
-              <Checkbox
-                checked={currentNews}
-                onCheckedChange={(checked) => {
-                  if (checked === 'indeterminate') return
-                  if (selectedNotification === 'all') {
-                    setAllNews(checked)
-                    notificationForm
-                      .getValues()
-                      .committees?.forEach((_, index) => {
-                        notificationForm.setValue(
-                          `committees.${index}.news`,
-                          checked
-                        )
-                      })
-                  } else {
-                    setAllNews(false)
-                    const index = notificationForm
-                      .getValues()
-                      .committees?.findIndex(
-                        (committee) =>
-                          committee.committee_id === selectedNotification
-                      )
-                    if (!index) {
-                      console.warn('Invalid committee ID')
-                      return
-                    }
+          <div className='flex items-center gap-2'>
+            <Checkbox
+              checked={currentNews}
+              onCheckedChange={(checked) => {
+                if (checked === 'indeterminate') return
+                if (selectedNotification === 'all') {
+                  setAllNews(checked)
+                  setForm({
+                    ...form,
+                    committees: form.committees?.map((committee) => ({
+                      ...committee,
+                      news: checked,
+                    })),
+                  })
+                } else {
+                  setAllNews(false)
 
-                    notificationForm.setValue(
-                      `committees.${index}.news`,
-                      checked
-                    )
+                  const index = form.committees?.findIndex(
+                    (committee) =>
+                      committee.committee_id === selectedNotification
+                  )
+
+                  if (!index) {
+                    console.warn('Invalid committee ID')
+                    return
                   }
-                }}
-              />
-              <Label>
-                {t('news_notifications')}
-                {currentNews && allNews && selectedNotification !== 'all' && (
-                  <span className='text-xs text-muted-foreground'>
-                    {' '}
-                    (inherited from <b>{t('all_committees')}</b>)
-                  </span>
-                )}
-              </Label>
-            </div>
-            <div className='flex items-center gap-2'>
-              <Checkbox
-                checked={currentEvents}
-                onCheckedChange={(checked) => {
-                  if (checked === 'indeterminate') return
-                  if (selectedNotification === 'all') {
-                    setAllEvents(checked)
-                    notificationForm
-                      .getValues()
-                      .committees?.forEach((_, index) => {
-                        notificationForm.setValue(
-                          `committees.${index}.event`,
-                          checked
-                        )
-                      })
-                  } else {
-                    setAllEvents(false)
-                    const index = notificationForm
-                      .getValues()
-                      .committees?.findIndex(
-                        (committee) =>
-                          committee.committee_id === selectedNotification
-                      )
-                    if (!index) {
-                      console.error(`Invalid committee ID (${index})`)
-                      return
-                    }
 
-                    notificationForm.setValue(
-                      `committees.${index}.event`,
-                      checked
-                    )
+                  setForm({
+                    ...form,
+                    committees: form.committees?.map((committee, idx) =>
+                      idx === index
+                        ? { ...committee, news: checked }
+                        : committee
+                    ),
+                  })
+                }
+              }}
+            />
+            <Label>
+              {t('news_notifications')}
+              {currentNews && allNews && selectedNotification !== 'all' && (
+                <span className='text-xs text-muted-foreground'>
+                  {' '}
+                  (inherited from <b>{t('all_committees')}</b>)
+                </span>
+              )}
+            </Label>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Checkbox
+              checked={currentEvents}
+              onCheckedChange={(checked) => {
+                if (checked === 'indeterminate') return
+                if (selectedNotification === 'all') {
+                  setAllEvents(checked)
+                  setForm({
+                    ...form,
+                    committees: form.committees?.map((committee) => ({
+                      ...committee,
+                      event: checked,
+                    })),
+                  })
+                } else {
+                  setAllEvents(false)
+                  const index = form.committees?.findIndex(
+                    (committee) =>
+                      committee.committee_id === selectedNotification
+                  )
+                  if (!index) {
+                    console.error(`Invalid committee ID (${index})`)
+                    return
                   }
-                }}
-              />
-              <Label>
-                {t('upcoming_event_notifications')}
-                {currentEvents &&
-                  allEvents &&
-                  selectedNotification !== 'all' && (
-                    <span className='text-xs text-muted-foreground'>
-                      {' '}
-                      (inherited from <b>{t('all_committees')}</b>)
-                    </span>
-                  )}
-              </Label>
-            </div>
-          </section>
+                  setForm({
+                    ...form,
+                    committees: form.committees?.map((committee, idx) =>
+                      idx === index
+                        ? { ...committee, event: checked }
+                        : committee
+                    ),
+                  })
+                }
+              }}
+            />
+            <Label>
+              {t('upcoming_event_notifications')}
+              {currentEvents && allEvents && selectedNotification !== 'all' && (
+                <span className='text-xs text-muted-foreground'>
+                  {' '}
+                  (inherited from <b>{t('all_committees')}</b>)
+                </span>
+              )}
+            </Label>
+          </div>
+        </section>
 
-          <Button type='submit'>{t('save')}</Button>
-        </form>
-      </Form>
+        <Button type='submit'>{t('save')}</Button>
+      </form>
     </section>
   )
 }

@@ -26,7 +26,7 @@ export default function CreateButton({ language }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className='rounded-full md:hidden overflow-hidden h-[4.5rem] w-[4.5rem] flex items-center hover:opacity-100 transition-opacity duration-500 ease-in-out col-start-3'>
-          <PlusIcon className='w-6 h-6' />
+          <PlusIcon className='w-6! h-6!' />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='grid grid-cols-2 gap-2'>

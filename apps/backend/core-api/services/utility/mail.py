@@ -1,6 +1,8 @@
-import os
-import requests
 import json
+import os
+
+import requests
+
 from models.apps.rgbank import Expense, Invoice
 
 
@@ -20,12 +22,14 @@ def send_expense_message(
     name = expense_item.title
     item_type = "utgift" if isinstance(expense_item, Expense) else "faktura"
     expense_author_name = (
-        (expense_item.student.to_dict())["first_name"]
+        (expense_item.student.to_dict(is_public_route=False))["first_name"]
         + " "
-        + (expense_item.student.to_dict())["last_name"]
+        + (expense_item.student.to_dict(is_public_route=False))["last_name"]
     )
 
-    expense_author_email = (expense_item.student.to_dict())["email"]
+    expense_author_email = (expense_item.student.to_dict(is_public_route=False))[
+        "email"
+    ]
 
     return requests.post(
         "https://api.eu.mailgun.net/v3/mail.medieteknik.com/messages",

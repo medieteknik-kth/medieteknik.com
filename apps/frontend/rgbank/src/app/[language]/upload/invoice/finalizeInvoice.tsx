@@ -82,7 +82,15 @@ export default function FinalizeInvoice({ language, onBack }: Props) {
     formData.append('is_original', data.isOriginal?.toString() || 'false')
     formData.append('is_booked', data.isBooked?.toString() || 'false')
     formData.append('already_paid', data.hasChapterPaid?.toString() || 'false')
-    formData.append('categories', JSON.stringify(data.categories))
+    formData.append(
+      'categories',
+      JSON.stringify(
+        data.categories.map((category) => ({
+          ...category,
+          amount: category.amount.replace(/,/g, '.'),
+        }))
+      )
+    )
 
     try {
       const response = await fetch('/api/rgbank/invoices', {

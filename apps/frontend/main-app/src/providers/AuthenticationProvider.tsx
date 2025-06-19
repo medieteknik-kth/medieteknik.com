@@ -1,6 +1,6 @@
 'use client'
 
-import { AuthenticationContext } from '@/context/AuthenticationContext'
+import { AuthenticationContext } from '@/context/AuthContext'
 import type Committee from '@/models/Committee'
 import type { CommitteePosition } from '@/models/Committee'
 import type { AuthorResource } from '@/models/Items'

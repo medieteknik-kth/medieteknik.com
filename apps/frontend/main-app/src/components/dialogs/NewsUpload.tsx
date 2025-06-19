@@ -8,25 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import type { Author } from '@/models/Items'
 import type { LanguageCode } from '@/models/Language'
 import { useStudent } from '@/providers/AuthenticationProvider'
 import { createNewsSchema } from '@/schemas/items/news'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type JSX, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import type { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 interface NewsUploadProps {
   language: LanguageCode
@@ -48,12 +38,11 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
   const [loading, setLoading] = useState(false)
   const { student } = useStudent()
   const { push } = useRouter()
-
-  const form = useForm<z.infer<typeof createNewsSchema>>({
-    resolver: zodResolver(createNewsSchema),
-    defaultValues: {
-      title: 'Untitled Article',
-    },
+  const [form, setForm] = useState<z.infer<typeof createNewsSchema>>({
+    title: '',
+  })
+  const [formErrors, setFormErrors] = useState({
+    title: '',
   })
 
   useEffect(() => {
@@ -66,9 +55,18 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
     return <></>
   }
 
-  const postForm = async (data: z.infer<typeof createNewsSchema>) => {
+  const submit = async (data: z.infer<typeof createNewsSchema>) => {
     if (!student) {
       return
+    }
+
+    const errors = createNewsSchema.safeParse(data)
+
+    if (!errors.success) {
+      const fieldErrors = z.treeifyError(errors.error)
+      setFormErrors({
+        title: fieldErrors.properties?.title?.errors[0] || '',
+      })
     }
 
     const json: {
@@ -124,37 +122,40 @@ export function NewsUpload({ language, author }: NewsUploadProps): JSX.Element {
           <span className='text-red-500'>{error}</span>
         </DialogDescription>
       </DialogHeader>
-      <Form {...form}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            form.handleSubmit(postForm)()
-            setLoading(true)
-            setTimeout(() => {
-              setLoading(false)
-            }, 3000)
-          }}
-        >
-          <FormField
-            name='title'
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input id='title' placeholder='Title' {...field} />
-                </FormControl>
-                <FormDescription>The title of your article</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit(form)
+          setLoading(true)
+          setTimeout(() => {
+            setLoading(false)
+          }, 3000)
+        }}
+      >
+        <div>
+          <Label className='text-sm font-semibold'>Title</Label>
+          <p className='text-xs text-muted-foreground'>
+            The title of your article, it will be used to identify the article
+            in the news list. You can change it later.
+          </p>
+          <Input
+            id='title'
+            placeholder='Title'
+            value={form.title}
+            onChange={(e) => {
+              setForm({ ...form, title: e.target.value })
+              setFormErrors({ ...formErrors, title: '' })
+            }}
           />
+          {formErrors.title && (
+            <p className='text-xs text-red-500 mt-1'>{formErrors.title}</p>
+          )}
+        </div>
 
-          <Button type='submit' className='w-full my-4' disabled={loading}>
-            {loading ? <Loading language={language} /> : 'Upload'}
-          </Button>
-        </form>
-      </Form>
+        <Button type='submit' className='w-full my-4' disabled={loading}>
+          {loading ? <Loading language={language} /> : 'Upload'}
+        </Button>
+      </form>
     </DialogContent>
   )
 }

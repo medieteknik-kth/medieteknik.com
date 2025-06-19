@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 /**
  * @name profileSchema
@@ -6,7 +6,7 @@ import { z } from 'zod'
  *  - src/app/[language]/account/pages/profile/profileForm.tsx
  */
 export const profileSchema = z.object({
-  facebook: z.string().url().optional().or(z.literal('')),
-  instagram: z.string().url().optional().or(z.literal('')),
-  linkedin: z.string().url().optional().or(z.literal('')),
+  facebook: z.optional(z.url()),
+  instagram: z.optional(z.url()),
+  linkedin: z.optional(z.url()),
 })

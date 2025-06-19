@@ -147,20 +147,44 @@ export default function Invoice({
             }}
           >
             <div className='flex items-center space-x-2'>
-              <RadioGroupItem value='no_chapter' id='no_chapter' />
-              <Label htmlFor='no_chapter'>{t('step_1.option_1')}</Label>
+              <RadioGroupItem
+                value='no_chapter'
+                id='no_chapter'
+                className='cursor-pointer'
+              />
+              <Label htmlFor='no_chapter' className='cursor-pointer'>
+                {t('step_1.option_1')}
+              </Label>
             </div>
             <div className='flex items-center space-x-2'>
-              <RadioGroupItem value='no_personal' id='no_personal' />
-              <Label htmlFor='no_personal'>{t('step_1.option_2')}</Label>
+              <RadioGroupItem
+                value='no_personal'
+                id='no_personal'
+                className='cursor-pointer'
+              />
+              <Label htmlFor='no_personal' className='cursor-pointer'>
+                {t('step_1.option_2')}
+              </Label>
             </div>
             <div className='flex items-center space-x-2'>
-              <RadioGroupItem value='yes_chapter' id='yes_chapter' />
-              <Label htmlFor='yes_chapter'>{t('step_1.option_3')}</Label>
+              <RadioGroupItem
+                value='yes_chapter'
+                id='yes_chapter'
+                className='cursor-pointer'
+              />
+              <Label htmlFor='yes_chapter' className='cursor-pointer'>
+                {t('step_1.option_3')}
+              </Label>
             </div>
             <div className='flex items-center space-x-2'>
-              <RadioGroupItem value='yes_personal' id='yes_personal' />
-              <Label htmlFor='yes_personal'>{t('step_1.option_4')}</Label>
+              <RadioGroupItem
+                value='yes_personal'
+                id='yes_personal'
+                className='cursor-pointer'
+              />
+              <Label htmlFor='yes_personal' className='cursor-pointer'>
+                {t('step_1.option_4')}
+              </Label>
             </div>
           </RadioGroup>
         </FormStep>

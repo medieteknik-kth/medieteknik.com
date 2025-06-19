@@ -1,5 +1,7 @@
 import enum
 import uuid
+from typing import List
+
 from sqlalchemy import (
     TIMESTAMP,
     UUID,
@@ -10,14 +12,19 @@ from sqlalchemy import (
     ForeignKey,
     MetaData,
     String,
-    text,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
+
+from models.apps.rgbank.permissions import RGBankPermissions
 from models.committees import Committee
+from models.committees.committee_position import CommitteePosition
 from models.core import Student
+from models.core.student import StudentMembership
 from utility import db
+from utility.constants import AVAILABLE_LANGUAGES
 from utility.uuid_util import is_valid_uuid
 
 
@@ -130,6 +137,10 @@ class Expense(db.Model):
         "Thread", back_populates="expense", cascade="all, delete-orphan"
     )
 
+    booked_items = db.relationship(
+        "BookedItem", back_populates="expense", cascade="all, delete-orphan"
+    )
+
     @hybrid_property
     def amount(self) -> float:
         """Calculate the total amount from the categories JSONB field."""
@@ -152,11 +163,11 @@ class Expense(db.Model):
 
     @hybrid_property
     def committee_id(self):
-        return self.categories[0].get("author") if self.categories else None
+        return self.categories[0].get("committee_id") if self.categories else None
 
     @committee_id.expression
     def committee_id(cls):
-        return func.jsonb_extract_path_text(cls.categories, "author")
+        return func.jsonb_extract_path_text(cls.categories, "committee_id")
 
     @property
     def committee(self) -> Committee | None:
@@ -166,7 +177,17 @@ class Expense(db.Model):
     def __repr__(self):
         return f"<Expense {self.expense_id}>"
 
-    def to_dict(self, short: bool = False, is_public_route: bool = True):
+    def to_dict(
+        self,
+        short: bool = False,
+        is_public_route: bool = True,
+        provided_languages: List[str] = AVAILABLE_LANGUAGES,
+        include_booked_item: bool = False,
+    ):
+        booked_data: BookedItem | None = BookedItem.query.filter_by(
+            expense_id=self.expense_id
+        ).first()
+
         if short:
             base_dict = {
                 "expense_id": str(self.expense_id),
@@ -196,6 +217,11 @@ class Expense(db.Model):
         if not is_public_route:
             base_dict["student"] = (
                 self.student.to_dict(is_public_route=False) if self.student else None
+            )
+
+        if include_booked_item and booked_data:
+            base_dict["booked_item"] = booked_data.to_dict(
+                provided_languages=provided_languages
             )
 
         return base_dict
@@ -242,6 +268,11 @@ class Invoice(db.Model):
         "Thread", back_populates="invoice", cascade="all, delete-orphan"
     )
 
+    booked_items = db.relationship(
+        "BookedItem",
+        back_populates="invoice",
+    )
+
     @hybrid_property
     def amount(self) -> float:
         """Calculate the total amount from the categories JSONB field."""
@@ -263,11 +294,11 @@ class Invoice(db.Model):
 
     @hybrid_property
     def committee_id(self):
-        return self.categories[0].get("author") if self.categories else None
+        return self.categories[0].get("committee_id") if self.categories else None
 
     @committee_id.expression
     def committee_id(cls):
-        return func.jsonb_extract_path_text(cls.categories, "author")
+        return func.jsonb_extract_path_text(cls.categories, "committee_id")
 
     @property
     def committee(self) -> Committee | None:
@@ -277,7 +308,17 @@ class Invoice(db.Model):
     def __repr__(self):
         return f"<Invoice {self.invoice_id}>"
 
-    def to_dict(self, short: bool = False, is_public_route: bool = True):
+    def to_dict(
+        self,
+        short: bool = False,
+        is_public_route: bool = True,
+        provided_languages: List[str] = AVAILABLE_LANGUAGES,
+        include_booked_item: bool = False,
+    ):
+        booked_data: BookedItem | None = BookedItem.query.filter_by(
+            invoice_id=self.invoice_id
+        ).first()
+
         if short:
             base_dict = {
                 "invoice_id": str(self.invoice_id),
@@ -318,4 +359,79 @@ class Invoice(db.Model):
                 self.student.to_dict(is_public_route=False) if self.student else None
             )
 
+        if include_booked_item and booked_data:
+            base_dict["booked_item"] = booked_data.to_dict(
+                provided_languages=provided_languages
+            )
+
         return base_dict
+
+
+class BookedItem(db.Model):
+    __tablename__ = "booked_item"
+    __table_args__ = {"schema": "rgbank"}
+
+    booked_item_id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
+    )
+
+    verification_number = Column(String, nullable=False)
+
+    # Meta information
+    paid_at = Column(DateTime, default=func.now(), server_default=text("now()"))
+
+    # Foreign Keys
+    booked_by_student_id = Column(
+        UUID(as_uuid=True), ForeignKey(Student.student_id), nullable=False
+    )
+    expense_id = Column(
+        UUID(as_uuid=True), ForeignKey(Expense.expense_id), nullable=True
+    )
+    invoice_id = Column(
+        UUID(as_uuid=True), ForeignKey(Invoice.invoice_id), nullable=True
+    )
+
+    # Relationships
+    booked_by = db.relationship("Student", back_populates="rgbank_booked_items")
+    expense = db.relationship("Expense", back_populates="booked_items")
+    invoice = db.relationship("Invoice", back_populates="booked_items")
+
+    def to_dict(self, provided_languages: List[str] = AVAILABLE_LANGUAGES):
+        student: Student = Student.query.filter_by(
+            student_id=self.booked_by_student_id
+        ).first()
+        committee_position: CommitteePosition = (
+            CommitteePosition.query.join(
+                RGBankPermissions,
+                CommitteePosition.committee_position_id
+                == RGBankPermissions.committee_position_id,
+            )
+            .join(
+                StudentMembership,
+                StudentMembership.committee_position_id
+                == CommitteePosition.committee_position_id,
+            )
+            .filter(
+                StudentMembership.student_id == self.booked_by_student_id,
+            )
+            .order_by(
+                StudentMembership.initiation_date.desc()
+            )  # NOTE: Should work for past memberships
+            .first()
+        )
+
+        return {
+            "verification_number": self.verification_number,
+            "paid_at": self.paid_at.isoformat() if self.paid_at else None,
+            "student": student.to_dict(
+                is_public_route=False,
+            ),
+            "committee_position": committee_position.to_dict(
+                include_parent=True,
+                is_public_route=False,
+                provided_languages=provided_languages,
+            ),
+        }

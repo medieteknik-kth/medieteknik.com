@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:1c0baf18db60cf0103013cc43806847ab4727c3c7cca1055dfd96c44743964e7 AS build
+FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:1532f083c2d2b709373725897a7abdff4d4db9aef165ebda45078240e6a52d8f AS build
 
 ENV PATH=/opt/venv/bin:$PATH
 
@@ -29,7 +29,7 @@ RUN uv pip install python-minifier
 COPY . .
 
 # Minify the Python files in the app directory, can also use "--remove-literal-statements" to remove string literals
-RUN find . -name "*.py" -exec sh -c 'pyminify "$1" > "$1.tmp" && mv "$1.tmp" "$1"' _ {} \;
+# RUN find . -name "*.py" -exec sh -c 'pyminify "$1" > "$1.tmp" && mv "$1.tmp" "$1"' _ {} \;
 
 # Remove unnecessary files
 RUN rm -rf .gitignore requirements.txt package.json init.sql .vscode .turbo .mypy_cache .docker __pycache__
@@ -40,7 +40,7 @@ RUN uv pip uninstall python-minifier
 # ----------------------------------------------
 
 # Stage 2: Final stage
-FROM python:alpine@sha256:18159b2be11db91f84b8f8f655cd860f805dbd9e49a583ddaac8ab39bf4fe1a7
+FROM python:alpine@sha256:b4d299311845147e7e47c970566906caf8378a1f04e5d3de65b5f2e834f8e3bf
 
 # Install runtime dependencies
 RUN apk add --no-cache libpq

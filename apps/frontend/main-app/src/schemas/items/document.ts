@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 /**
  * @name documentUploadSchema
@@ -9,9 +9,9 @@ export const documentUploadSchema = z.object({
   type: z.enum(['DOCUMENT', 'FORM']),
   translations: z.array(
     z.object({
-      language_code: z.string().optional().or(z.literal('')),
-      title: z.string().min(1, { message: 'Required' }),
-      file: z.instanceof(window.File),
+      language_code: z.optional(z.string()),
+      title: z.string().check(z.minLength(1, { error: 'Title is required' })),
+      file: z.file(),
     })
   ),
 })

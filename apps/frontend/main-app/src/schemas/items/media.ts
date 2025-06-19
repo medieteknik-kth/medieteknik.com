@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4-mini'
 
 /**
  * @name mediaUploadSchema
@@ -8,13 +8,9 @@ import { z } from 'zod'
 export const mediaUploadSchema = z
   .object({
     media_type: z.enum(['image', 'video']),
-    media: z.instanceof(window.File).optional().or(z.literal('')),
-    youtube_url: z
-      .string()
-      .url()
-      .optional()
-      .or(z.literal(''))
-      .refine((url) => {
+    media: z.optional(z.file()),
+    youtube_url: z.optional(z.url()).check(
+      z.refine((url) => {
         if (!url) return true
         try {
           const parsedUrl = new URL(url)
@@ -23,25 +19,28 @@ export const mediaUploadSchema = z
         } catch (e) {
           return false
         }
-      }),
+      })
+    ),
     translations: z.array(
       z.object({
-        language_code: z.string().optional().or(z.literal('')),
+        language_code: z.optional(z.string()),
         title: z
           .string()
-          .min(1, { message: 'Required' })
-          .max(100, { message: 'Max 100 characters' }),
-        description: z
-          .string()
-          .max(254, { message: 'Max 255 characters' })
-          .optional()
-          .or(z.literal('')),
+          .check(
+            z.minLength(1, { error: 'Title is required' }),
+            z.maxLength(100, { error: 'Max 100 characters' })
+          ),
+        description: z.optional(
+          z.string().check(z.maxLength(254, { error: 'Max 255 characters' }))
+        ),
       })
     ),
   })
-  .refine((data) => {
-    if (data.media_type === 'video') {
-      return data.youtube_url !== ''
-    }
-    return data.media !== ''
-  })
+  .check(
+    z.refine((data) => {
+      if (data.media_type === 'video') {
+        return data.youtube_url !== ''
+      }
+      return data.media !== undefined && data.media !== null
+    })
+  )

@@ -24,16 +24,16 @@ export default function AlternativeLogin({
   remember,
 }: Props): JSX.Element {
   const searchParams = useSearchParams()
-  const returnUrl = searchParams.get('return_url') || return_url
+  const returnUrl = searchParams.get('return_url') || return_url || null
 
   const loginKTH = () => {
     const redirectURL =
       process.env.NODE_ENV === 'production'
-        ? `https://api.medieteknik.com/auth${
-            returnUrl && `?return_url=${returnUrl}&remember=${remember}`
+        ? `https://api.medieteknik.com/api/v1/auth?filter=rgbank&remember=${remember}${
+            returnUrl ? `&return_url=${returnUrl}` : ''
           }`
-        : `http://localhost:8080/auth${
-            returnUrl && `?return_url=${returnUrl}&remember=${remember}`
+        : `http://localhost:80/api/v1/auth?filter=rgbank&remember=${remember}${
+            returnUrl ? `&return_url=${returnUrl}` : ''
           }`
     window.location.href = `${redirectURL}`
   }
@@ -57,7 +57,7 @@ export default function AlternativeLogin({
           >
             <Image
               src='https://storage.googleapis.com/medieteknik-static/static/logos/kth.svg'
-              alt='KTH logo'
+              alt='KTH Logo'
               width={80}
               height={80}
               unoptimized
