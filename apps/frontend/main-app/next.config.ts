@@ -4,9 +4,13 @@ import type {
   NextJsWebpackConfig,
 } from 'next/dist/server/config-shared'
 
-const experimentalConfig: ExperimentalConfig = {
-  turbo: {
-    moduleIdStrategy: 'named',
+const experimentalConfig: ExperimentalConfig = {}
+
+const nextConfig: NextConfig = {
+  experimental: experimentalConfig,
+
+  turbopack: {
+    moduleIds: 'named',
     rules: {
       '*.svg': {
         loaders: ['@svgr/webpack'],
@@ -14,10 +18,7 @@ const experimentalConfig: ExperimentalConfig = {
       },
     },
   },
-}
 
-const nextConfig: NextConfig = {
-  experimental: experimentalConfig,
   images: {
     remotePatterns: [
       {

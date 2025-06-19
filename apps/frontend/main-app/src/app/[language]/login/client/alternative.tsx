@@ -32,11 +32,11 @@ export default function AlternativeLogin({
   const loginKTH = () => {
     const redirectURL =
       process.env.NODE_ENV === 'production'
-        ? `https://api.medieteknik.com/auth${
-            return_url && `?return_url=${return_url}&remember=${remember}`
+        ? `https://api.medieteknik.com/api/v1/auth?remember=${remember}${
+            return_url ? `&return_url=${return_url}` : ''
           }`
-        : `http://localhost:8080/auth${
-            return_url && `?return_url=${return_url}&remember=${remember}`
+        : `http://localhost:80/api/v1/auth?remember=${remember}${
+            return_url ? `&return_url=${return_url}` : ''
           }`
     window.location.href = `${redirectURL}`
   }

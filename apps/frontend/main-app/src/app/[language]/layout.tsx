@@ -1,4 +1,3 @@
-import LanguageAlert from '@/app/[language]/languageAlert'
 import { useTranslation } from '@/app/i18n'
 import CookiePopup from '@/components/cookie/Cookie'
 import { ClientErrorBoundary } from '@/components/error/ClientErrorBoundary'
@@ -103,7 +102,7 @@ export default async function RootLayout(props: Props): Promise<JSX.Element> {
       </noscript>
 
       <ClientProviders language={language}>
-        <LanguageAlert language={language} />
+        {/*<LanguageAlert language={language} />*/}
         <Header language={language} />
         <ClientErrorBoundary>{children}</ClientErrorBoundary>
         <Footer language={language} />

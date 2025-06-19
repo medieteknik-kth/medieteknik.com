@@ -1,10 +1,10 @@
 import { SUPPORTED_LANGUAGES } from '@/utility/Constants'
 import { handleAuth } from '@/utility/middlware/auth'
-import { handleCookieUpdates } from '@/utility/middlware/cookie'
 import { setResponseHeaders } from '@/utility/middlware/headers'
-import { handleLanguage } from '@/utility/middlware/language'
+import { mergeResponses } from '@/utility/middlware/util'
+import { handleCookieUpdates, handleLanguage } from '@medieteknik/middleware'
 import acceptLanguage from 'accept-language'
-import type { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 acceptLanguage.languages(SUPPORTED_LANGUAGES)
 
@@ -42,11 +42,42 @@ export const config = {
   ],
 }
 
+const BLACKLISTED_URLS_REGEX = new RegExp(
+  [
+    '^/_next',
+    '^/_vercel',
+    '^/\\.well-known',
+    '^/static',
+    '^/robots\\.txt',
+    '^/sitemap\\.xml',
+    '^/manifest\\.webmanifest',
+    '^/favicon',
+    '^/icon',
+    '^/service-worker\\.js',
+    '^/web-app-manifest-192x192\\.png',
+    '^/web-app-manifest-192x192-maskable\\.png',
+    '^/web-app-manifest-512x512\\.png',
+    '/screenshots.*',
+    '/apple-icon\\.png',
+    '/react_devtools_backend_compact\\.js\\.map',
+    '/installHook\\.js\\.map',
+    '/ads\\.txt',
+    '/__nextjs_original-stack-frame.*',
+    '/discord',
+  ].join('|')
+)
+
 export async function middleware(request: NextRequest): Promise<NextResponse> {
-  let response = await handleLanguage(request)
-  response = await setResponseHeaders(response) // Add request if needed
-  response = await handleCookieUpdates(request, response)
+  let response = NextResponse.next()
   response = await handleAuth(request, response)
+  response = handleLanguage(
+    request,
+    response,
+    BLACKLISTED_URLS_REGEX,
+    mergeResponses
+  )
+  response = setResponseHeaders(response)
+  response = handleCookieUpdates(request, response)
 
   return response
 }

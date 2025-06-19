@@ -41,6 +41,6 @@ export const mediaUploadSchema = z
       if (data.media_type === 'video') {
         return data.youtube_url !== ''
       }
-      return data.media !== ''
+      return data.media !== undefined && data.media !== null
     })
   )

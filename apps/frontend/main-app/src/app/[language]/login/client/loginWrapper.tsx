@@ -24,7 +24,7 @@ export default function LoginWrapper({ language }: Props) {
         <h1 className='text-3xl md:text-5xl uppercase font-bold tracking-wider text-[#111] dark:text-white text-center mb-8'>
           {t('login')}
         </h1>
-        <AlternativeLogin language={language} />
+        <AlternativeLogin language={language} remember={remember} />
         <div className='flex justify-center items-center gap-2'>
           <Checkbox
             id='remember_me'
